@@ -20,8 +20,8 @@ def test_model_registry_fallbacks_from_config():
     registry = build_model_registry()
     status = registry.get_status()
     assert status["detector"]["backend"] in ("real_yoloe", "mock_yoloe_fallback")
-    assert status["visual_embedder"]["backend"] in ("real_dinov3", "mock_dinov3_fallback")
-    assert status["image_text_embedder"]["backend"] in ("real_siglip2", "mock_siglip2_fallback")
+    assert status["visual_embedder"]["backend"] in ("real_dinov3", "real_dinov2_compatible", "mock_dinov3_fallback")
+    assert status["image_text_embedder"]["backend"] in ("real_siglip2", "real_siglip_compatible", "mock_siglip2_fallback")
 
 
 def test_yoloe_fallback_no_weights():

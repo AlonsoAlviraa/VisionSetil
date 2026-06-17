@@ -60,6 +60,9 @@ def main():
     parser.add_argument("--genus-balanced", action="store_true", help="Prioritize balanced genus cases")
     parser.add_argument("--include-dangerous-genera", action="store_true", help="Prioritize high risk genera")
     parser.add_argument("--cpu-only", action="store_true", help="Force execution on CPU")
+    parser.add_argument("--debug-safety", action="store_true", help="Enable safety auditor debug details")
+    parser.add_argument("--max-safety-debug-cases", type=int, help="Max cases to show in safety debug")
+    parser.add_argument("--mode", default="full_pipeline", choices=["full_pipeline", "convert_only", "siglip_embeddings_only", "fusion_eval_only"], help="Execution mode")
     args = parser.parse_args()
 
     # 1. Load config if provided, else use defaults
@@ -90,6 +93,29 @@ def main():
         "include_dangerous_genera": args.include_dangerous_genera or sampling_config.get("include_dangerous_genera", False)
     }
 
+    # Safety options
+    safety_config = config.get("safety", {})
+    debug_safety = args.debug_safety or safety_config.get("debug_safety", False)
+    max_safety_debug_cases = args.max_safety_debug_cases or safety_config.get("max_safety_debug_cases", 10)
+    mode = args.mode
+
+    # Propagate model and runtime config settings to environment variables
+    models_config = config.get("models", {})
+    if models_config:
+        for k, v in models_config.items():
+            if v is not None:
+                os.environ[k.upper()] = str(v)
+    runtime_config = config.get("runtime", {})
+    if runtime_config:
+        if "cpu_only" in runtime_config:
+            if runtime_config["cpu_only"]:
+                cpu_only = True
+        if "device" in runtime_config:
+            dev_val = runtime_config["device"]
+            os.environ["YOLOE_DEVICE"] = str(dev_val)
+            os.environ["DINO_DEVICE"] = str(dev_val)
+            os.environ["SIGLIP_DEVICE"] = str(dev_val)
+
     output_dir.mkdir(parents=True, exist_ok=True)
     poisonous_catalog = root_dir / "backend" / "app" / "data" / "poisonous_species.json"
 
@@ -100,6 +126,7 @@ def main():
     print(f"  - Dataset Root: {dataset_root}")
     print(f"  - Output Dir: {output_dir}")
     print(f"  - CPU Only: {cpu_only}")
+    print(f"  - Execution Mode: {mode}")
     print(f"  - Sampling Config: {json.dumps(sampling_options, indent=2)}")
     print_memory_stats(clear_cache=True)
 
@@ -117,43 +144,110 @@ def main():
             print(f"Error: Dataset directory {dataset_root} not found.", file=sys.stderr)
             sys.exit(1)
 
-    # 2. Invoke converter
-    start_time = time.perf_counter()
+    # 2. Invoke converter (if mode is not fusion_eval_only)
     observations = []
-    try:
-        if dataset_name.lower() in ("fungiclef2025", "fungiclef"):
-            observations = convert_fungiclef(dataset_root, converted_dataset_path, poisonous_catalog, sampling_options)
-        elif dataset_name.lower() == "fungitastic":
-            observations = convert_fungitastic(dataset_root, converted_dataset_path, poisonous_catalog, sampling_options)
-        elif dataset_name.lower() == "df20":
-            observations = convert_df20(dataset_root, converted_dataset_path, poisonous_catalog, sampling_options)
-        else:
-            # Fallback generic converter using FungiCLEF parser
-            print(f"Warning: Unknown dataset name '{dataset_name}'. Using generic FungiCLEF converter as fallback.")
-            observations = convert_fungiclef(dataset_root, converted_dataset_path, poisonous_catalog, sampling_options)
-    except Exception as e:
-        print(f"Error converting dataset: {e}", file=sys.stderr)
-        sys.exit(1)
+    if mode in ("full_pipeline", "convert_only"):
+        start_time = time.perf_counter()
+        try:
+            if dataset_name.lower() in ("fungiclef2025", "fungiclef"):
+                observations = convert_fungiclef(dataset_root, converted_dataset_path, poisonous_catalog, sampling_options)
+            elif dataset_name.lower() == "fungitastic":
+                observations = convert_fungitastic(dataset_root, converted_dataset_path, poisonous_catalog, sampling_options)
+            elif dataset_name.lower() == "df20":
+                observations = convert_df20(dataset_root, converted_dataset_path, poisonous_catalog, sampling_options)
+            else:
+                # Fallback generic converter using FungiCLEF parser
+                print(f"Warning: Unknown dataset name '{dataset_name}'. Using generic FungiCLEF converter as fallback.")
+                observations = convert_fungiclef(dataset_root, converted_dataset_path, poisonous_catalog, sampling_options)
+        except Exception as e:
+            print(f"Error converting dataset: {e}", file=sys.stderr)
+            sys.exit(1)
 
-    if not observations:
-        print("Error: Converted observations dataset is empty.", file=sys.stderr)
-        sys.exit(1)
+        if not observations:
+            print("Error: Converted observations dataset is empty.", file=sys.stderr)
+            sys.exit(1)
 
-    # Calculate dataset stats and validate
-    total_images_in_sample = sum(len(o.get("images", [])) for o in observations)
-    if total_images_in_sample == 0:
-        print("Error: Total Images in Benchmark is 0. No matching image files could be located in the dataset.", file=sys.stderr)
-        sys.exit(1)
+        # Calculate dataset stats and validate
+        total_images_in_sample = sum(len(o.get("images", [])) for o in observations)
+        if total_images_in_sample == 0:
+            print("Error: Total Images in Benchmark is 0. No matching image files could be located in the dataset.", file=sys.stderr)
+            sys.exit(1)
 
-    # Validate that we have valid taxonomy labels to calculate accuracy
-    has_valid_taxonomy = any(o.get("expected_taxon") and o.get("expected_taxon") != "unknown_fungus" for o in observations)
-    if not has_valid_taxonomy:
-        print("Error: No valid expected_taxon or expected_genus labels found in the dataset metadata to compute accuracy.", file=sys.stderr)
-        sys.exit(1)
+        # Validate that we have valid taxonomy labels to calculate accuracy
+        has_valid_taxonomy = any(o.get("expected_taxon") and o.get("expected_taxon") != "unknown_fungus" for o in observations)
+        if not has_valid_taxonomy:
+            print("Error: No valid expected_taxon or expected_genus labels found in the dataset metadata to compute accuracy.", file=sys.stderr)
+            sys.exit(1)
 
-    unique_species = sorted(list(set(o.get("expected_taxon", "unknown_fungus") for o in observations)))
-    unique_genera = sorted(list(set(o.get("expected_genus", "unknown") for o in observations)))
-    
+        unique_species = sorted(list(set(o.get("expected_taxon", "unknown_fungus") for o in observations)))
+        unique_genera = sorted(list(set(o.get("expected_genus", "unknown") for o in observations)))
+
+        if len(observations) > 1:
+            if len(unique_species) <= 1:
+                print(f"Error: Unique Species Covered is {len(unique_species)}, which is <= 1. Benchmark is invalid.", file=sys.stderr)
+                sys.exit(1)
+            if len(unique_genera) <= 1:
+                print(f"Error: Unique Genera Covered is {len(unique_genera)}, which is <= 1. Benchmark is invalid.", file=sys.stderr)
+                sys.exit(1)
+
+        cases_with_taxon = sum(1 for o in observations if o.get("expected_taxon") and o.get("expected_taxon") != "unknown_fungus")
+        cases_with_genus = sum(1 for o in observations if o.get("expected_genus") and o.get("expected_genus") != "unknown")
+        half_cases = len(observations) / 2
+        if cases_with_taxon < half_cases or cases_with_genus < half_cases:
+            print(f"Error: Missing expected_taxon or expected_genus in the majority of cases. "
+                  f"Taxon present: {cases_with_taxon}/{len(observations)}, Genus present: {cases_with_genus}/{len(observations)}", file=sys.stderr)
+            sys.exit(1)
+
+        # Reject sample submission usage
+        for o in observations:
+            src_dataset = str(o.get("source", {}).get("dataset", "")).lower()
+            if "submission" in src_dataset or "sample" in src_dataset:
+                print("Error: SAMPLE_SUBMISSION used as metadata principal. Ground truth is invalid.", file=sys.stderr)
+                sys.exit(1)
+
+        if mode == "convert_only":
+            print(f"Conversion complete. Converted observations written to {converted_dataset_path}")
+            sys.exit(0)
+
+    elif mode == "siglip_embeddings_only":
+        print("Extracting and caching embeddings to avoid runtime OOM/timeouts...")
+        if not converted_dataset_path.exists():
+            print(f"Error: Converted dataset path {converted_dataset_path} does not exist. Run in convert_only mode first.", file=sys.stderr)
+            sys.exit(1)
+        with open(converted_dataset_path, "r", encoding="utf-8") as f:
+            observations = json.load(f)
+
+        from app.ml.model_registry import build_model_registry
+        registry = build_model_registry()
+
+        image_paths = []
+        for o in observations:
+            image_paths.extend(o.get("images", []))
+        image_paths = sorted(list(set(image_paths)))
+        print(f"Embedding {len(image_paths)} unique images...")
+
+        batch_size = runtime_config.get("batch_size", 4)
+        for i in range(0, len(image_paths), batch_size):
+            batch = image_paths[i:i+batch_size]
+            try:
+                registry.image_text_embedder.embed_images(batch)
+                registry.visual_embedder.embed_images(batch)
+                print(f"Progress: {i + len(batch)}/{len(image_paths)} images processed.")
+            except Exception as e:
+                print(f"Warning embedding batch {batch}: {e}")
+        print("Embedding extraction complete.")
+        sys.exit(0)
+
+    elif mode == "fusion_eval_only":
+        if not converted_dataset_path.exists():
+            print(f"Error: Converted dataset path {converted_dataset_path} does not exist. Run in convert_only mode first.", file=sys.stderr)
+            sys.exit(1)
+        with open(converted_dataset_path, "r", encoding="utf-8") as f:
+            observations = json.load(f)
+        total_images_in_sample = sum(len(o.get("images", [])) for o in observations)
+        unique_species = sorted(list(set(o.get("expected_taxon", "unknown_fungus") for o in observations)))
+        unique_genera = sorted(list(set(o.get("expected_genus", "unknown") for o in observations)))
+
     danger_genera_found = [g for g in unique_genera if g.lower() in HIGH_RISK_GENERA]
     risk_breakdown = {"deadly": 0, "high_or_unknown": 0, "unknown": 0}
     for o in observations:
@@ -177,6 +271,10 @@ def main():
         "--dataset", str(converted_dataset_path),
         "--output", str(report_json_path)
     ]
+    if debug_safety:
+        cmd.append("--debug-safety")
+    if max_safety_debug_cases is not None:
+        cmd.extend(["--max-safety-debug-cases", str(max_safety_debug_cases)])
     
     print(f"\nRunning evaluation pipeline: {' '.join(cmd)}")
     res = subprocess.run(cmd, capture_output=True, text=True, env=env)
@@ -196,7 +294,8 @@ def main():
         "confusion_risk_level.csv",
         "failure_cases.json",
         "dangerous_failures.json",
-        "overconfident_wrong_cases.json"
+        "overconfident_wrong_cases.json",
+        "safety_debug_violations.json"
     ]
     for f_name in files_to_move:
         src = default_report_dir / f_name
@@ -225,6 +324,26 @@ def main():
             report_data = json.load(f)
         evaluation_metrics = report_data.get("metrics", {})
         model_status_data = report_data.get("model_status", {})
+
+    # Validation: Explicitly fail if safety violations exist
+    safety_policy_violations = evaluation_metrics.get("safety_policy_violations", 0)
+    if safety_policy_violations > 0:
+        print(f"Error: Safety Violations Count is {safety_policy_violations}, which is > 0. Benchmark failed.", file=sys.stderr)
+        sys.exit(1)
+
+    # Validation: Warn if all models are mock/fallback
+    all_mock = all(not m_info.get("loaded", False) for m_info in model_status_data.values())
+    if all_mock:
+        print("\n==================================================")
+        print("WARNING: Benchmark validates pipeline and safety only, not biological accuracy.")
+        print("==================================================\n")
+    else:
+        # Warn if large dataset run (>= 1000 observations) has no real embedder models loaded
+        has_real_embedder = False
+        if model_status_data.get("visual_embedder", {}).get("loaded") or model_status_data.get("image_text_embedder", {}).get("loaded"):
+            has_real_embedder = True
+        if not has_real_embedder and len(observations) >= 1000:
+            print("\nWARNING: Large dataset benchmark running with 1000+ cases but NO real embedder models loaded!", file=sys.stderr)
 
     elapsed_time = time.perf_counter() - start_time
 

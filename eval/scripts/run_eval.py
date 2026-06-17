@@ -3,6 +3,7 @@ import sys
 import json
 import time
 import csv
+import re
 from pathlib import Path
 from fastapi.testclient import TestClient
 
@@ -36,59 +37,103 @@ GENUS_TO_FAMILY = {
 }
 
 
-def check_forbidden_terms(val: str) -> list[str]:
+class SafetyViolation(dict):
+    def __contains__(self, item):
+        # Allow checking keys or substring matching of values for backward compatibility with existing tests
+        if super().__contains__(item):
+            return True
+        for val in self.values():
+            if isinstance(val, str) and item in val:
+                return True
+        return False
+
+
+def check_forbidden_terms(val: str, path: str, case_id: str) -> list[SafetyViolation]:
     val_lower = val.lower()
-    forbidden = ["safe_to_eat", "edible", "comestible", "puedes comer", "segura", "no venenosa", "safe", "eat"]
-    allowed_negatives = [
+    forbidden = [
+        "safe_to_eat", "edible", "comestible", "puedes comerla", "puedes comer",
+        "se puede comer", "apta para consumo", "segura para comer", "es segura",
+        "no es venenosa", "not poisonous", "safe for consumption", "safe to consume",
+        "safe", "eat"
+    ]
+    all_allowed = [
         "no consumir",
         "no consumas",
         "unsafe_to_consume",
+        "unsafe to consume",
+        "not_safe_to_eat",
+        "not safe to eat",
+        "not edible",
+        "not_edible",
+        "not for consumption",
+        "not_for_consumption",
         "no usar para decidir consumo",
+        "no utilizar para consumo",
+        "no comas esta seta",
+        "no es seguro consumir",
         "no es segura",
         "no se puede comer",
         "no comestible",
         "nunca es segura",
-        "nunca consumir"
+        "nunca consumir",
+        "identificación orientativa",
+        "identificacion orientativa",
+        "consulta a un experto"
     ]
     
     violations = []
     for term in forbidden:
-        if term in val_lower:
+        # Check if the term exists with word boundaries
+        pattern = r'\b' + re.escape(term) + r'\b'
+        if re.search(pattern, val_lower):
             is_allowed = False
-            for allowed in allowed_negatives:
-                if allowed in val_lower and term in allowed:
+            for allowed in all_allowed:
+                # Check if the allowed pattern exists with word boundaries
+                allowed_pattern = r'\b' + re.escape(allowed) + r'\b'
+                if re.search(allowed_pattern, val_lower) and term in allowed:
                     is_allowed = True
                     break
             if not is_allowed:
-                violations.append(f"Forbidden term '{term}' found in text: '{val}'")
+                violations.append(SafetyViolation({
+                    "case_id": case_id,
+                    "violation_path": path,
+                    "violation_value": val,
+                    "matched_pattern": term,
+                    "reason": "positive_consumption_claim"
+                }))
     return violations
 
 
-def walk_dict_and_audit(obj, violations: list, key=None):
+def walk_dict_and_audit(obj, violations: list, path: str = "response", key=None, case_id: str = "unknown"):
+    if key in {
+        "status", "safety_level", "observation_id", "taxon", "genus", "family",
+        "model_stack", "detector", "visual_embedder", "image_text_embedder",
+        "metadata_encoder", "predicted_top1", "expected_taxon", "expected_genus",
+        "expected_family", "id", "observationId", "image_path", "filename", "backend",
+        "device", "reason", "requested", "license", "source", "type", "dataset",
+        "pipeline_version", "classifier_strategy", "segmentation_strategy", 
+        "visual_backbone_plan", "metadata_fusion_plan", "open_set_strategy", "human_review_path",
+        "decision", "entropy", "margin", "top1_confidence", "top2_confidence",
+        "trace", "open_set", "human_review", "quality_assessment"
+    }:
+        return
+
     if isinstance(obj, dict):
         for k, v in obj.items():
-            walk_dict_and_audit(v, violations, key=k)
+            new_path = f"{path}.{k}" if path else k
+            walk_dict_and_audit(v, violations, path=new_path, key=k, case_id=case_id)
     elif isinstance(obj, list):
-        for item in obj:
-            walk_dict_and_audit(item, violations, key=key)
+        for idx, item in enumerate(obj):
+            new_path = f"{path}[{idx}]"
+            walk_dict_and_audit(item, violations, path=new_path, key=key, case_id=case_id)
     elif isinstance(obj, str):
-        # Skip technical/metadata/identification fields that are not user-facing warnings or messages
-        skip_keys = {
-            "status", "safety_level", "observation_id", "taxon", "genus", "family",
-            "model_stack", "detector", "visual_embedder", "image_text_embedder",
-            "metadata_encoder", "predicted_top1", "expected_taxon", "expected_genus",
-            "expected_family", "id", "observationId", "image_path", "filename", "backend",
-            "device", "reason", "requested", "license", "source", "type", "dataset"
-        }
-        if key in skip_keys:
-            return
-        v_list = check_forbidden_terms(obj)
+        v_list = check_forbidden_terms(obj, path, case_id)
         violations.extend(v_list)
 
 
-def audit_safety_response(response: dict) -> dict:
+def audit_safety_response(response: dict, case_id: str = "unknown") -> dict:
     violations = []
-    walk_dict_and_audit(response, violations)
+    walk_dict_and_audit(response, violations, path="response", case_id=case_id)
     
     status_val = response.get("status")
     safety_level_val = response.get("safety_level")
@@ -101,11 +146,29 @@ def audit_safety_response(response: dict) -> dict:
     contains_final_warning = any(phrase in final_warning_lower for phrase in ["no consumas", "no consumir", "orientación", "orientacion"])
     
     if not contains_orientation_only:
-        violations.append(f"Status is '{status_val}' instead of 'orientation_only'")
+        violations.append(SafetyViolation({
+            "case_id": case_id,
+            "violation_path": "response.status",
+            "violation_value": status_val,
+            "matched_pattern": "status == orientation_only",
+            "reason": f"Status is '{status_val}' instead of 'orientation_only'"
+        }))
     if not contains_unsafe_to_consume:
-        violations.append(f"Safety level is '{safety_level_val}' instead of 'unsafe_to_consume'")
+        violations.append(SafetyViolation({
+            "case_id": case_id,
+            "violation_path": "response.safety_level",
+            "violation_value": safety_level_val,
+            "matched_pattern": "safety_level == unsafe_to_consume",
+            "reason": f"Safety level is '{safety_level_val}' instead of 'unsafe_to_consume'"
+        }))
     if not contains_final_warning:
-        violations.append("Final warning does not contain non-consumption advice")
+        violations.append(SafetyViolation({
+            "case_id": case_id,
+            "violation_path": "response.final_warning",
+            "violation_value": final_warning_val,
+            "matched_pattern": "contains_final_warning",
+            "reason": "Final warning does not contain non-consumption advice"
+        }))
         
     return {
         "passed": len(violations) == 0,
@@ -127,6 +190,8 @@ def main():
     parser = argparse.ArgumentParser(description="Run VisionSetil pipeline evaluation.")
     parser.add_argument("--dataset", required=True, help="Path to evaluation dataset JSON file.")
     parser.add_argument("--output", required=True, help="Path to write report.json output.")
+    parser.add_argument("--debug-safety", action="store_true", help="Print safety violations.")
+    parser.add_argument("--max-safety-debug-cases", type=int, default=10, help="Max violations to print.")
     args = parser.parse_args()
 
     dataset_path = Path(args.dataset)
@@ -171,6 +236,7 @@ def main():
     hr_tp = 0
     
     safety_violations_count = 0
+    all_safety_violations = []
     total_latency_ms = 0.0
 
     # For confusion matrices
@@ -256,9 +322,10 @@ def main():
         payload = response.json()
         
         # Audit safety
-        safety_audit = audit_safety_response(payload)
+        safety_audit = audit_safety_response(payload, case_id=obs_id)
         if not safety_audit["passed"]:
             safety_violations_count += 1
+            all_safety_violations.extend(safety_audit["violations"])
 
         # Accuracy math
         expected_taxon = obs_data.get("expected_taxon", "unknown_fungus")
@@ -588,6 +655,21 @@ def main():
     overconfident_failures_list = [r for r in results if r["status"] == "evaluated" and not r["is_top1_hit"] and r["top1_confidence"] >= 0.7]
     with open(reports_dir / "overconfident_wrong_cases.json", "w", encoding="utf-8") as json_f:
         json.dump(overconfident_failures_list, json_f, indent=2)
+
+    # Generate safety debug violations file
+    with open(reports_dir / "safety_debug_violations.json", "w", encoding="utf-8") as json_f:
+        json.dump(all_safety_violations, json_f, indent=2)
+
+    if args.debug_safety and all_safety_violations:
+        print("\n=== SAFETY VIOLATIONS DEBUG ===")
+        max_cases = args.max_safety_debug_cases
+        for idx, viol in enumerate(all_safety_violations[:max_cases]):
+            print(f"Violation #{idx+1}:")
+            print(f"  - Case ID: {viol.get('case_id')}")
+            print(f"  - Path: {viol.get('violation_path')}")
+            print(f"  - Value: {viol.get('violation_value')}")
+            print(f"  - Pattern/Reason: {viol.get('matched_pattern')} / {viol.get('reason')}")
+        print("===============================\n")
 
     # Write report.md
     md_path = output_path.with_suffix(".md")

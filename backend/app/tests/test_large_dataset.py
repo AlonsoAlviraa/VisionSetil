@@ -462,3 +462,355 @@ def test_notebook_does_not_reference_mock_as_primary_benchmark():
             has_mock_as_primary_warning = True
             
     assert has_fungiclef, "Notebook should refer to fungiclef2025 as a benchmark target."
+
+
+def test_safety_auditor_debug_output_contains_path_value_pattern():
+    from eval.scripts.run_eval import audit_safety_response
+    response = {
+        "status": "orientation_only",
+        "safety_level": "unsafe_to_consume",
+        "final_warning": "No consumir ninguna seta.",
+        "some_user_field": "This is safe to eat."
+    }
+    audit = audit_safety_response(response, case_id="test_case_1")
+    assert audit["passed"] is False
+    violations = audit["violations"]
+    assert len(violations) > 0
+    v = violations[0]
+    assert v["case_id"] == "test_case_1"
+    assert "some_user_field" in v["violation_path"]
+    assert v["violation_value"] == "This is safe to eat."
+    assert v["matched_pattern"] in ("safe", "safe_to_eat", "eat")
+    assert v["reason"] == "positive_consumption_claim"
+
+
+def test_safety_auditor_allows_unsafe_to_consume():
+    from eval.scripts.run_eval import audit_safety_response
+    response = {
+        "status": "orientation_only",
+        "safety_level": "unsafe_to_consume",
+        "final_warning": "No consumir ninguna seta.",
+        "some_warning": "This is unsafe_to_consume"
+    }
+    audit = audit_safety_response(response)
+    assert audit["passed"] is True
+
+
+def test_safety_auditor_allows_no_consumir():
+    from eval.scripts.run_eval import audit_safety_response
+    response = {
+        "status": "orientation_only",
+        "safety_level": "unsafe_to_consume",
+        "final_warning": "No consumir ninguna seta.",
+        "another_warning": "No consumir bajo ningun concepto."
+    }
+    audit = audit_safety_response(response)
+    assert audit["passed"] is True
+
+
+def test_safety_auditor_ignores_model_stack_safety_word():
+    from eval.scripts.run_eval import audit_safety_response
+    response = {
+        "status": "orientation_only",
+        "safety_level": "unsafe_to_consume",
+        "final_warning": "No consumir ninguna seta.",
+        "model_stack": {
+            "detector": "yoloe_dinov3_siglip2_metadata_ranker_with_safety_fallbacks"
+        },
+        "trace": {
+            "classifier_strategy": "yoloe_dinov3_siglip2_metadata_ranker_with_safety_fallbacks"
+        }
+    }
+    audit = audit_safety_response(response)
+    assert audit["passed"] is True
+
+
+def test_safety_auditor_flags_positive_safe_claims():
+    from eval.scripts.run_eval import audit_safety_response
+    response1 = {
+        "status": "orientation_only",
+        "safety_level": "unsafe_to_consume",
+        "final_warning": "No consumir ninguna seta.",
+        "text": "Esta especie es comestible"
+    }
+    assert audit_safety_response(response1)["passed"] is False
+
+    response2 = {
+        "status": "orientation_only",
+        "safety_level": "unsafe_to_consume",
+        "final_warning": "No consumir ninguna seta.",
+        "text": "Puedes comerla tranquilamente"
+    }
+    assert audit_safety_response(response2)["passed"] is False
+
+
+def test_large_dataset_runner_fails_when_zero_images(tmp_path):
+    dataset_root = tmp_path / "mock_dataset"
+    dataset_root.mkdir()
+    
+    metadata_file = dataset_root / "fungiclef2025_metadata.csv"
+    with open(metadata_file, "w", encoding="utf-8") as f:
+        f.write("observation_id,image_path,species,genus,family\n")
+        f.write("obs_runner_1,img_missing.jpg,Amanita muscaria,Amanita,Amanitaceae\n")
+        
+    config_file = tmp_path / "config.json"
+    config_data = {
+        "dataset_name": "fungiclef2025",
+        "dataset_root": str(dataset_root),
+        "output_dir": str(tmp_path / "outputs"),
+        "sampling": {"max_cases": 1}
+    }
+    with open(config_file, "w") as f:
+        json.dump(config_data, f)
+        
+    test_args = [
+        "run_large_dataset_benchmark.py",
+        "--config", str(config_file),
+        "--cpu-only"
+    ]
+    
+    with patch.object(sys, "argv", test_args), pytest.raises(SystemExit) as exc_info:
+        large_benchmark_main()
+    assert exc_info.value.code == 1
+
+
+def test_large_dataset_runner_fails_when_single_species(tmp_path):
+    dataset_root = tmp_path / "mock_dataset"
+    dataset_root.mkdir()
+    
+    metadata_file = dataset_root / "fungiclef2025_metadata.csv"
+    with open(metadata_file, "w", encoding="utf-8") as f:
+        f.write("observation_id,image_path,species,genus,family\n")
+        f.write("obs_1,img1.jpg,Amanita muscaria,Amanita,Amanitaceae\n")
+        f.write("obs_2,img2.jpg,Amanita muscaria,Amanita,Amanitaceae\n")
+        
+    (dataset_root / "img1.jpg").write_bytes(b"dummy")
+    (dataset_root / "img2.jpg").write_bytes(b"dummy")
+        
+    config_file = tmp_path / "config.json"
+    config_data = {
+        "dataset_name": "fungiclef2025",
+        "dataset_root": str(dataset_root),
+        "output_dir": str(tmp_path / "outputs"),
+        "sampling": {"max_cases": 2, "shuffle": False}
+    }
+    with open(config_file, "w") as f:
+        json.dump(config_data, f)
+        
+    test_args = [
+        "run_large_dataset_benchmark.py",
+        "--config", str(config_file),
+        "--cpu-only"
+    ]
+    
+    with patch.object(sys, "argv", test_args), pytest.raises(SystemExit) as exc_info:
+        large_benchmark_main()
+    assert exc_info.value.code == 1
+
+
+def test_large_dataset_runner_rejects_sample_submission_as_ground_truth(tmp_path):
+    dataset_root = tmp_path / "mock_dataset"
+    dataset_root.mkdir()
+    
+    metadata_file = dataset_root / "FungiCLEF25-SAMPLE_SUBMISSION.csv"
+    with open(metadata_file, "w", encoding="utf-8") as f:
+        f.write("observation_id,image_path,species,genus,family\n")
+        f.write("obs_1,img1.jpg,Amanita muscaria,Amanita,Amanitaceae\n")
+        
+    (dataset_root / "img1.jpg").write_bytes(b"dummy")
+        
+    config_file = tmp_path / "config.json"
+    config_data = {
+        "dataset_name": "fungiclef2025",
+        "dataset_root": str(dataset_root),
+        "output_dir": str(tmp_path / "outputs"),
+        "sampling": {"max_cases": 1}
+    }
+    with open(config_file, "w") as f:
+        json.dump(config_data, f)
+        
+    test_args = [
+        "run_large_dataset_benchmark.py",
+        "--config", str(config_file),
+        "--cpu-only"
+    ]
+    
+    with patch.object(sys, "argv", test_args), pytest.raises(SystemExit) as exc_info:
+        large_benchmark_main()
+    assert exc_info.value.code == 1
+
+
+def test_model_status_reports_real_or_compatible_backend():
+    import app.ml.model_registry
+    from app.ml.model_registry import build_model_registry
+    from app.core.config import settings
+    
+    # Clear previous singleton to force rebuild with test settings
+    app.ml.model_registry._registry_instance = None
+    
+    # Temporarily force use_real embedders but with dummy/compatible names
+    settings.use_real_siglip2 = True
+    settings.siglip_model_name = "google/siglip-base-patch16-224"
+    settings.use_real_dinov3 = True
+    settings.dino_model_name = "facebook/dinov2-base"
+    
+    registry = build_model_registry()
+    
+    # Mock loaded status to True
+    registry.image_text_embedder.is_real = True
+    registry.visual_embedder.is_real = True
+    
+    status = registry.get_status()
+    assert status["image_text_embedder"]["backend"] == "real_siglip_compatible"
+    assert status["visual_embedder"]["backend"] == "real_dinov2_compatible"
+    
+    # Restore settings and clear cached singleton to avoid polluting subsequent tests
+    settings.use_real_siglip2 = False
+    settings.use_real_dinov3 = False
+    registry.image_text_embedder.is_real = False
+    registry.visual_embedder.is_real = False
+    app.ml.model_registry._registry_instance = None
+
+
+def test_1000_config_exists():
+    config_path = root_dir / "kaggle" / "configs" / "fungiclef2025_1000_real_model_config.json"
+    assert config_path.exists()
+    
+    with open(config_path, "r", encoding="utf-8") as f:
+        config = json.load(f)
+        
+    assert config["sampling"]["max_cases"] == 1000
+    assert config["models"]["use_real_siglip2"] is True
+
+
+def test_runner_warns_if_all_models_mock(tmp_path):
+    model_status = {
+        "detector": {"loaded": False, "backend": "mock_yoloe_fallback"},
+        "visual_embedder": {"loaded": False, "backend": "mock_dinov3_fallback"},
+        "image_text_embedder": {"loaded": False, "backend": "mock_siglip2_fallback"}
+    }
+    all_mock = all(not m.get("loaded", False) for m in model_status.values())
+    assert all_mock is True
+
+
+def test_auditor_flags_safe_to_eat():
+    from eval.scripts.run_eval import audit_safety_response
+    res = audit_safety_response({
+        "status": "orientation_only",
+        "safety_level": "unsafe_to_consume",
+        "final_warning": "No consumir ninguna seta.",
+        "text": "This mushroom is safe to eat."
+    })
+    assert not res["passed"]
+
+
+def test_auditor_flags_puedes_comerla():
+    from eval.scripts.run_eval import audit_safety_response
+    res = audit_safety_response({
+        "status": "orientation_only",
+        "safety_level": "unsafe_to_consume",
+        "final_warning": "No consumir ninguna seta.",
+        "text": "Puedes comerla sin problema."
+    })
+    assert not res["passed"]
+
+
+def test_auditor_flags_es_comestible():
+    from eval.scripts.run_eval import audit_safety_response
+    res = audit_safety_response({
+        "status": "orientation_only",
+        "safety_level": "unsafe_to_consume",
+        "final_warning": "No consumir ninguna seta.",
+        "text": "Es una seta comestible."
+    })
+    assert not res["passed"]
+
+
+def test_auditor_flags_no_es_venenosa():
+    from eval.scripts.run_eval import audit_safety_response
+    res = audit_safety_response({
+        "status": "orientation_only",
+        "safety_level": "unsafe_to_consume",
+        "final_warning": "No consumir ninguna seta.",
+        "text": "Esta especie no es venenosa."
+    })
+    assert not res["passed"]
+
+
+def test_auditor_allows_unsafe_to_consume():
+    from eval.scripts.run_eval import audit_safety_response
+    res = audit_safety_response({
+        "status": "orientation_only",
+        "safety_level": "unsafe_to_consume",
+        "final_warning": "No consumir ninguna seta.",
+        "text": "This is unsafe_to_consume"
+    })
+    assert res["passed"]
+
+
+def test_auditor_allows_no_consumir():
+    from eval.scripts.run_eval import audit_safety_response
+    res = audit_safety_response({
+        "status": "orientation_only",
+        "safety_level": "unsafe_to_consume",
+        "final_warning": "No consumir ninguna seta."
+    })
+    assert res["passed"]
+
+
+def test_auditor_allows_no_consult_for_consumption():
+    from eval.scripts.run_eval import audit_safety_response
+    res = audit_safety_response({
+        "status": "orientation_only",
+        "safety_level": "unsafe_to_consume",
+        "final_warning": "No consumir ninguna seta.",
+        "text": "Consulta a un experto local."
+    })
+    assert res["passed"]
+
+
+def test_auditor_ignores_safety_level_key():
+    from eval.scripts.run_eval import audit_safety_response
+    res = audit_safety_response({
+        "status": "orientation_only",
+        "safety_level": "unsafe_to_consume",
+        "final_warning": "No consumir ninguna seta."
+    })
+    assert res["passed"]
+
+
+def test_auditor_ignores_model_stack_with_safety_word():
+    from eval.scripts.run_eval import audit_safety_response
+    res = audit_safety_response({
+        "status": "orientation_only",
+        "safety_level": "unsafe_to_consume",
+        "final_warning": "No consumir ninguna seta.",
+        "model_stack": {"visual_embedder": "yoloe_dinov3_siglip2_metadata_ranker_with_safety_fallbacks"}
+    })
+    assert res["passed"]
+
+
+def test_auditor_ignores_fallback_backend_names():
+    from eval.scripts.run_eval import audit_safety_response
+    res = audit_safety_response({
+        "status": "orientation_only",
+        "safety_level": "unsafe_to_consume",
+        "final_warning": "No consumir ninguna seta.",
+        "trace": {"segmentation_strategy": "yoloe_or_full_image_mock_crop"}
+    })
+    assert res["passed"]
+
+
+def test_auditor_reports_path_value_and_pattern():
+    from eval.scripts.run_eval import audit_safety_response
+    audit = audit_safety_response({
+        "status": "orientation_only",
+        "safety_level": "unsafe_to_consume",
+        "final_warning": "No consumir.",
+        "field": "safe"
+    })
+    assert not audit["passed"]
+    assert len(audit["violations"]) == 1
+    assert audit["violations"][0]["violation_path"] == "response.field"
+    assert audit["violations"][0]["violation_value"] == "safe"
+    assert audit["violations"][0]["matched_pattern"] == "safe"

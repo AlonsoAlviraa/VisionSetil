@@ -223,6 +223,7 @@ def classify_observation_advanced(observation_id: int, db: Session = Depends(get
         candidates = [human_cand] + candidates
 
     primary_risk_state = baseline.risk_state
+    registry_status = registry.get_status()
     result = ClassificationResponse(
         observation_id=observation.id,
         status=safe["status"],
@@ -230,9 +231,9 @@ def classify_observation_advanced(observation_id: int, db: Session = Depends(get
         risk_state=primary_risk_state,
         message=safe["message"],
         model_stack=ModelStackResponse(
-            detector="real_yoloe" if getattr(registry.detector, "is_real", False) else "mock_yoloe_fallback",
-            visual_embedder="real_dinov3" if getattr(registry.visual_embedder, "is_real", False) else "mock_dinov3_fallback",
-            image_text_embedder="real_siglip2" if getattr(registry.image_text_embedder, "is_real", False) else "mock_siglip2_fallback",
+            detector=registry_status["detector"]["backend"],
+            visual_embedder=registry_status["visual_embedder"]["backend"],
+            image_text_embedder=registry_status["image_text_embedder"]["backend"],
             metadata_encoder="FungiTastic/FungiCLEF-inspired metadata encoder",
         ),
         candidates=candidates,

@@ -18,6 +18,22 @@ class ModelRegistry:
         if detector_path:
             detector_path = detector_path[-30:] if len(detector_path) > 30 else detector_path
 
+        visual_backend = "mock_dinov3_fallback"
+        if self.visual_embedder.is_real:
+            model_name_lower = (self.visual_embedder.model_name or "").lower()
+            if "dinov3" in model_name_lower or "dinov-3" in model_name_lower:
+                visual_backend = "real_dinov3"
+            else:
+                visual_backend = "real_dinov2_compatible"
+
+        siglip_backend = "mock_siglip2_fallback"
+        if self.image_text_embedder.is_real:
+            model_name_lower = (self.image_text_embedder.model_name or "").lower()
+            if "siglip2" in model_name_lower or "siglip-2" in model_name_lower:
+                siglip_backend = "real_siglip2"
+            else:
+                siglip_backend = "real_siglip_compatible"
+
         return {
             "detector": {
                 "requested": "YOLOE-26",
@@ -28,14 +44,14 @@ class ModelRegistry:
             },
             "visual_embedder": {
                 "requested": "DINOv3",
-                "backend": "real_dinov3" if self.visual_embedder.is_real else "mock_dinov3_fallback",
+                "backend": visual_backend,
                 "loaded": self.visual_embedder.is_real,
                 "device": self.visual_embedder.device,
                 "embedding_dim": settings.dino_embedding_dim,
             },
             "image_text_embedder": {
                 "requested": "SigLIP 2",
-                "backend": "real_siglip2" if self.image_text_embedder.is_real else "mock_siglip2_fallback",
+                "backend": siglip_backend,
                 "loaded": self.image_text_embedder.is_real,
                 "device": self.image_text_embedder.device,
                 "embedding_dim": settings.siglip_embedding_dim,
