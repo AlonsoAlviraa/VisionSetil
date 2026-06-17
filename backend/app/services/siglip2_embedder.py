@@ -34,8 +34,13 @@ class SigLIP2Embedder(ImageTextEmbedder):
                 import torch
                 from transformers import AutoProcessor, AutoModel
 
+                from app.core.config import is_cuda_really_compatible
+
                 if device == "auto":
-                    device = "cuda" if torch.cuda.is_available() else "cpu"
+                    device = "cuda" if is_cuda_really_compatible() else "cpu"
+                elif device == "cuda" and not is_cuda_really_compatible():
+                    logger.warning("CUDA device was requested but is incompatible. Overriding to cpu.")
+                    device = "cpu"
 
                 model_identifier = model_path if (model_path and Path(model_path).exists()) else model_name
                 

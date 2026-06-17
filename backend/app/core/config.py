@@ -3,6 +3,26 @@ from pathlib import Path
 
 from pydantic import BaseModel
 
+_cuda_compatible_cache: bool | None = None
+
+def is_cuda_really_compatible() -> bool:
+    global _cuda_compatible_cache
+    if _cuda_compatible_cache is not None:
+        return _cuda_compatible_cache
+    try:
+        import torch
+        if not torch.cuda.is_available():
+            _cuda_compatible_cache = False
+            return False
+        x = torch.ones(1, device="cuda")
+        _ = x * 2.0
+        torch.cuda.synchronize()
+        _cuda_compatible_cache = True
+    except Exception:
+        _cuda_compatible_cache = False
+    return _cuda_compatible_cache
+
+
 
 class Settings(BaseModel):
     base_dir: Path = Path(__file__).resolve().parents[2]
