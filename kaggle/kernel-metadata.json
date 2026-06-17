@@ -11,7 +11,9 @@
   "dataset_sources": [
     "alonsoalvira/visionsetil-real-data"
   ],
-  "competition_sources": [],
+  "competition_sources": [
+    "fungi-clef-2025"
+  ],
   "kernel_sources": [],
   "model_sources": []
 }
