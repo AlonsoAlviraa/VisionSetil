@@ -7,14 +7,16 @@
 - mostrar advertencias repetidas y visibles
 - abstencion por defecto cuando falten vistas o contexto
 - requerir experto humano para decisiones sensibles
+- open-set rejection para abstenerse ante setas no listadas o inciertas
 
 ## Reglas de producto
 
 - la API siempre devuelve `orientation_only`
 - la API siempre devuelve `unsafe_to_consume`
 - la respuesta siempre incluye `No consumas ninguna seta identificada unicamente mediante una app.`
-- el clasificador nunca devuelve `safe_to_eat`
+- el clasificador nunca devuelve `safe_to_eat` o similar de consumo seguro
 - el frontend nunca usa etiquetas verdes ni lenguaje de seguridad alimentaria
+- la API de revisión humana prohíbe taxones y notas que indiquen comestibilidad o digan que es seguro comer (e.g. `safe_to_eat`, `comestible`, `no es venenosa`, `se puede comer`)
 
 ## Metricas orientadas a riesgo
 

@@ -14,29 +14,36 @@ La app funciona con fallbacks conservadores y mantiene toda la safety layer.
 
 Variables de entorno:
 
-- `YOLOE_MODEL_NAME`
-- `YOLOE_MODEL_PATH`
-- `DINO_MODEL_NAME`
-- `DINO_MODEL_PATH`
-- `SIGLIP_MODEL_NAME`
-- `SIGLIP_MODEL_PATH`
-- `TOP_K_CANDIDATES`
-- `MAX_IMAGE_MB`
-- `UPLOAD_DIR`
+- `USE_REAL_YOLOE=true`
+- `YOLOE_MODEL_NAME=yolov8n.pt`
+- `YOLOE_MODEL_PATH=`
+- `YOLOE_DEVICE=auto`
+- `YOLOE_CONF_THRESHOLD=0.25`
+- `YOLOE_IOU_THRESHOLD=0.7`
 
-## Dependencias opcionales
+- `USE_REAL_DINOV3=true`
+- `DINO_MODEL_NAME=facebook/dinov2-base`
+- `DINO_MODEL_PATH=`
+- `DINO_DEVICE=auto`
+- `DINO_EMBEDDING_DIM=1024`
 
-El repo no afirma cargar modelos reales por defecto. Los adaptadores estan preparados, pero la integracion efectiva de pesos queda pendiente.
+- `USE_REAL_SIGLIP2=true`
+- `SIGLIP_MODEL_NAME=google/siglip-base-patch16-224`
+- `SIGLIP_MODEL_PATH=`
+- `SIGLIP_DEVICE=auto`
+- `SIGLIP_EMBEDDING_DIM=768`
 
-## ONNX y TensorRT
+## Dependencias de Deep Learning
 
-La arquitectura deja previsto:
+Para activar el modo real, debes instalar las dependencias necesarias en el entorno virtual de Python:
 
-- exportacion ONNX para detector y embedders
-- despliegue TensorRT si hay NVIDIA
-- servicio desacoplado de inferencia en produccion
+```bash
+pip install torch torchvision transformers ultralytics Pillow
+```
 
-## Servidor y edge
+Si no están instaladas, el sistema hará fallback silencioso al modo mock con un warning en los logs sin interrumpir la ejecución del API.
 
-- servidor: FastAPI + cola futura + almacenamiento objetual
-- edge: detector ligero y preclasificacion local, con resolucion final en backend
+## Base de Datos y Caché
+
+- **SQLite Database:** La aplicación utiliza SQLite por defecto (`mushroom_photo_id.db`). Las tablas `observations`, `observation_images` y `human_review_requests` se crean automáticamente al arrancar.
+- **Embedding Cache:** Los embeddings de imágenes se guardan automáticamente en una base de datos SQLite caché (`embedding_cache.db` en el directorio de subidas) para evitar recálculos lentos.

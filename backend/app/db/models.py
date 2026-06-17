@@ -31,6 +31,9 @@ class Observation(Base):
     images: Mapped[list["ObservationImage"]] = relationship(
         "ObservationImage", back_populates="observation", cascade="all, delete-orphan"
     )
+    human_reviews: Mapped[list["HumanReviewRequest"]] = relationship(
+        "HumanReviewRequest", back_populates="observation", cascade="all, delete-orphan"
+    )
 
 
 class ObservationImage(Base):
@@ -49,3 +52,20 @@ class ObservationImage(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     observation: Mapped[Observation] = relationship("Observation", back_populates="images")
+
+
+class HumanReviewRequest(Base):
+    __tablename__ = "human_review_requests"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    observation_id: Mapped[int] = mapped_column(ForeignKey("observations.id"))
+    status: Mapped[str] = mapped_column(String(40), default="pending")  # pending, in_review, resolved, rejected
+    priority: Mapped[str] = mapped_column(String(40), default="low")  # low, medium, high, critical
+    reason: Mapped[str] = mapped_column(String(255))
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    resolved_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    reviewer_notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    reviewer_taxon: Mapped[str | None] = mapped_column(String(160), nullable=True)
+    reviewer_confidence: Mapped[float | None] = mapped_column(nullable=True)
+
+    observation: Mapped[Observation] = relationship("Observation", back_populates="human_reviews")

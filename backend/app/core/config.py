@@ -23,6 +23,17 @@ class Settings(BaseModel):
     dino_model_path: str = os.getenv("DINO_MODEL_PATH", "")
     siglip_model_name: str = os.getenv("SIGLIP_MODEL_NAME", "")
     siglip_model_path: str = os.getenv("SIGLIP_MODEL_PATH", "")
+    yoloe_device: str = os.getenv("YOLOE_DEVICE", "auto")
+    yoloe_conf_threshold: float = float(os.getenv("YOLOE_CONF_THRESHOLD", "0.25"))
+    yoloe_iou_threshold: float = float(os.getenv("YOLOE_IOU_THRESHOLD", "0.7"))
+    dino_device: str = os.getenv("DINO_DEVICE", "auto")
+    dino_embedding_dim: int = int(os.getenv("DINO_EMBEDDING_DIM", "1024"))
+    siglip_device: str = os.getenv("SIGLIP_DEVICE", "auto")
+    siglip_embedding_dim: int = int(os.getenv("SIGLIP_EMBEDDING_DIM", "768"))
+    open_set_min_confidence: float = float(os.getenv("OPEN_SET_MIN_CONFIDENCE", "0.55"))
+    open_set_min_margin: float = float(os.getenv("OPEN_SET_MIN_MARGIN", "0.15"))
+    open_set_reject_on_missing_critical_evidence: bool = os.getenv("OPEN_SET_REJECT_ON_MISSING_CRITICAL_EVIDENCE", "true").lower() == "true"
+    open_set_reject_on_deadly_lookalikes: bool = os.getenv("OPEN_SET_REJECT_ON_DEADLY_LOOKALIKES", "true").lower() == "true"
     required_views: tuple[str, ...] = (
         "cap_top",
         "gills_or_pores",

@@ -3,8 +3,18 @@ from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.db.database import get_db
-from app.db.models import Observation
-from app.db.schemas import CandidateResult, ClassificationResponse, ModelStackResponse, QualityAssessmentResponse, TraceResponse
+from app.db.models import Observation, HumanReviewRequest
+from app.db.schemas import (
+    CandidateResult,
+    ClassificationResponse,
+    ModelStackResponse,
+    QualityAssessmentResponse,
+    TraceResponse,
+    OpenSetResponse,
+    HumanReviewResponse
+)
+from app.services.open_set_rejection import OpenSetRejectionService
+from app.services.poisonous_lookalikes import HIGH_RISK_GENERA
 from app.ml.interfaces import MushroomObservationMetadata
 from app.ml.model_registry import build_model_registry
 from app.services.candidate_ranker import CandidateRanker
@@ -59,6 +69,12 @@ def classify_observation_advanced(observation_id: int, db: Session = Depends(get
     quality = quality_service.evaluate(images)
     registry = build_model_registry()
     detections = registry.detector.detect_and_crop(image_paths)
+    for img, det in zip(images, detections):
+        img.crop_path = det.crop_path
+        img.mask_path = det.mask_path
+        db.add(img)
+    db.commit()
+
     detected_views = [item.estimated_view_type for item in detections]
     crop_paths = [item.crop_path for item in detections]
     dino_embeddings = registry.visual_embedder.embed_images(crop_paths)
@@ -89,6 +105,17 @@ def classify_observation_advanced(observation_id: int, db: Session = Depends(get
         quality_warnings=quality.quality_warnings,
     )
 
+    from sqlalchemy import select
+
+    # 1. Open Set Rejection Evaluation
+    open_set_service = OpenSetRejectionService()
+    open_set_decision = open_set_service.evaluate(safe["candidates"], representation, safe["missing_evidence"])
+
+    # Apply degradation if rejection triggers
+    if open_set_decision.is_unknown_or_uncertain:
+        safe["candidates"] = open_set_service.degrade_candidates(safe["candidates"], open_set_decision)
+
+    # Convert to schema structures
     candidates = [
         CandidateResult(
             taxon=item["taxon"],
@@ -106,6 +133,95 @@ def classify_observation_advanced(observation_id: int, db: Session = Depends(get
         )
         for item in safe["candidates"]
     ]
+
+    # 2. Human Review Evaluation & DB persistence
+    existing_req = db.scalars(
+        select(HumanReviewRequest).where(HumanReviewRequest.observation_id == observation.id)
+    ).first()
+
+    recommend_review = False
+    review_reason = "none"
+    review_priority = "low"
+
+    if open_set_decision.is_unknown_or_uncertain:
+        recommend_review = True
+        review_reason = open_set_decision.reason
+        
+        first_taxon = safe["candidates"][0]["taxon"] if safe["candidates"] else ""
+        first_genus = first_taxon.split()[0].lower() if first_taxon else ""
+        has_deadly_lookalike = False
+        lookalikes = safe["candidates"][0].get("lookalikes", []) if safe["candidates"] else []
+        for lk in lookalikes:
+            if lk.split()[0].lower() in HIGH_RISK_GENERA:
+                has_deadly_lookalike = True
+                break
+                
+        if open_set_decision.reason in ("high_risk_genus", "deadly_lookalike_or_high_risk_genus") or first_genus in HIGH_RISK_GENERA or has_deadly_lookalike:
+            review_priority = "critical"
+        elif open_set_decision.reason == "missing_critical_evidence":
+            review_priority = "high"
+        else:
+            review_priority = "medium"
+    else:
+        # Check high-risk genus or deadly lookalikes
+        first_taxon = safe["candidates"][0]["taxon"] if safe["candidates"] else ""
+        first_genus = first_taxon.split()[0].lower() if first_taxon else ""
+        has_deadly_lookalike = False
+        lookalikes = safe["candidates"][0].get("lookalikes", []) if safe["candidates"] else []
+        for lk in lookalikes:
+            if lk.split()[0].lower() in HIGH_RISK_GENERA:
+                has_deadly_lookalike = True
+                break
+
+        if first_genus in HIGH_RISK_GENERA:
+            recommend_review = True
+            review_reason = "high_risk_genus"
+            review_priority = "critical"
+        elif has_deadly_lookalike:
+            recommend_review = True
+            review_reason = "deadly_lookalike_or_high_risk_genus"
+            review_priority = "critical"
+        elif safe["missing_evidence"]:
+            recommend_review = True
+            review_reason = "missing_critical_evidence"
+            review_priority = "medium"
+
+    request_id = None
+    if recommend_review:
+        if existing_req is None:
+            new_req = HumanReviewRequest(
+                observation_id=observation.id,
+                priority=review_priority,
+                reason=review_reason,
+                status="pending"
+            )
+            db.add(new_req)
+            db.commit()
+            db.refresh(new_req)
+            request_id = new_req.id
+        else:
+            request_id = existing_req.id
+    elif existing_req is not None:
+        request_id = existing_req.id
+
+    # If resolved human review, overwrite prediction
+    if existing_req and existing_req.status == "resolved" and existing_req.reviewer_taxon:
+        human_cand = CandidateResult(
+            taxon=existing_req.reviewer_taxon,
+            rank="species" if " " in existing_req.reviewer_taxon.strip() else "genus",
+            confidence=existing_req.reviewer_confidence or 0.9,
+            evidence_score=1.0,
+            metadata_score=1.0,
+            visual_score=1.0,
+            risk_level="high",
+            edibility_label="dangerous_or_unknown",
+            reasoning=["Validado por revisor experto."],
+            danger_notes=[existing_req.reviewer_notes or "Revisado por experto humano."],
+            lookalikes=[],
+            explanation=f"Revision humana completa: {existing_req.reviewer_notes or ''}"
+        )
+        candidates = [human_cand] + candidates
+
     primary_risk_state = baseline.risk_state
     result = ClassificationResponse(
         observation_id=observation.id,
@@ -114,9 +230,9 @@ def classify_observation_advanced(observation_id: int, db: Session = Depends(get
         risk_state=primary_risk_state,
         message=safe["message"],
         model_stack=ModelStackResponse(
-            detector="YOLOE-26" if getattr(registry.detector, "is_real", False) else "YOLOE-26 or fallback",
-            visual_embedder="DINOv3" if getattr(registry.visual_embedder, "is_real", False) else "DINOv3 or fallback",
-            image_text_embedder="SigLIP 2" if getattr(registry.image_text_embedder, "is_real", False) else "SigLIP 2 or fallback",
+            detector="real_yoloe" if getattr(registry.detector, "is_real", False) else "mock_yoloe_fallback",
+            visual_embedder="real_dinov3" if getattr(registry.visual_embedder, "is_real", False) else "mock_dinov3_fallback",
+            image_text_embedder="real_siglip2" if getattr(registry.image_text_embedder, "is_real", False) else "mock_siglip2_fallback",
             metadata_encoder="FungiTastic/FungiCLEF-inspired metadata encoder",
         ),
         candidates=candidates,
@@ -139,7 +255,7 @@ def classify_observation_advanced(observation_id: int, db: Session = Depends(get
             quality_warnings=quality.quality_warnings,
         ),
         trace=TraceResponse(
-            pipeline_version="advanced-mvp-v1",
+            pipeline_version="advanced-mvp-v2",
             classifier_strategy="yoloe_dinov3_siglip2_metadata_ranker_with_safety_fallbacks",
             segmentation_strategy="yoloe_or_full_image_mock_crop",
             visual_backbone_plan=["DINOv3", "SigLIP2", "FungiTastic/FungiCLEF metadata"],
@@ -148,6 +264,21 @@ def classify_observation_advanced(observation_id: int, db: Session = Depends(get
             human_review_path="expert_review_recommended_for_risky_or_low_evidence_cases",
         ),
         final_warning=safe["final_warning"],
+        open_set=OpenSetResponse(
+            is_unknown_or_uncertain=open_set_decision.is_unknown_or_uncertain,
+            reason=open_set_decision.reason,
+            top1_confidence=open_set_decision.top1_confidence,
+            top2_confidence=open_set_decision.top2_confidence,
+            margin=open_set_decision.margin,
+            entropy=open_set_decision.entropy,
+            decision=open_set_decision.decision,
+        ),
+        human_review=HumanReviewResponse(
+            recommended=recommend_review,
+            priority=review_priority,
+            reason=review_reason,
+            request_id=request_id,
+        ) if (recommend_review or existing_req is not None) else None,
     )
     observation.last_classification = result.model_dump()
     db.add(observation)

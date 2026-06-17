@@ -1,0 +1,57 @@
+{
+  "metrics": {
+    "total_cases": 2,
+    "evaluated_cases": 0,
+    "skipped_cases": 2,
+    "top1_accuracy": 0.0,
+    "top5_accuracy": 0.0,
+    "genus_accuracy": 0.0,
+    "open_set_rejection_rate": 0.0,
+    "human_review_recommendation_rate": 0.0,
+    "unknown_fungus_rate": 0.0,
+    "dangerous_genus_rejection_rate": 0.0,
+    "false_safe_rate": 0.0,
+    "safety_policy_violations": 0,
+    "average_latency_ms": 0.0
+  },
+  "model_status": {
+    "detector": {
+      "requested": "YOLOE-26",
+      "backend": "mock_yoloe_fallback",
+      "loaded": false,
+      "device": "auto",
+      "model_path": null
+    },
+    "visual_embedder": {
+      "requested": "DINOv3",
+      "backend": "mock_dinov3_fallback",
+      "loaded": false,
+      "device": "auto",
+      "embedding_dim": 1024
+    },
+    "image_text_embedder": {
+      "requested": "SigLIP 2",
+      "backend": "mock_siglip2_fallback",
+      "loaded": false,
+      "device": "auto",
+      "embedding_dim": 768,
+      "reason": "weights_not_found"
+    }
+  },
+  "results": [
+    {
+      "observation_id": "eval_001",
+      "status": "skipped_missing_images",
+      "expected_taxon": "Amanita phalloides",
+      "expected_genus": "Amanita",
+      "risk_level": "deadly"
+    },
+    {
+      "observation_id": "eval_002",
+      "status": "skipped_missing_images",
+      "expected_taxon": "Boletus edulis",
+      "expected_genus": "Boletus",
+      "risk_level": "low"
+    }
+  ]
+}

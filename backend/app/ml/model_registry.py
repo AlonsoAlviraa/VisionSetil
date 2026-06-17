@@ -8,14 +8,51 @@ from app.services.yoloe_detector import YOLOEDetector
 
 @dataclass
 class ModelRegistry:
-    detector: object
-    visual_embedder: object
-    image_text_embedder: object
+    detector: YOLOEDetector
+    visual_embedder: DINOv3Embedder
+    image_text_embedder: SigLIP2Embedder
+
+    def get_status(self) -> dict:
+        # Avoid exposing full local path if not needed
+        detector_path = self.detector.model_path
+        if detector_path:
+            detector_path = detector_path[-30:] if len(detector_path) > 30 else detector_path
+
+        return {
+            "detector": {
+                "requested": "YOLOE-26",
+                "backend": "real_yoloe" if self.detector.is_real else "mock_yoloe_fallback",
+                "loaded": self.detector.is_real,
+                "device": self.detector.device,
+                "model_path": detector_path or None,
+            },
+            "visual_embedder": {
+                "requested": "DINOv3",
+                "backend": "real_dinov3" if self.visual_embedder.is_real else "mock_dinov3_fallback",
+                "loaded": self.visual_embedder.is_real,
+                "device": self.visual_embedder.device,
+                "embedding_dim": settings.dino_embedding_dim,
+            },
+            "image_text_embedder": {
+                "requested": "SigLIP 2",
+                "backend": "real_siglip2" if self.image_text_embedder.is_real else "mock_siglip2_fallback",
+                "loaded": self.image_text_embedder.is_real,
+                "device": self.image_text_embedder.device,
+                "embedding_dim": settings.siglip_embedding_dim,
+                **({} if self.image_text_embedder.is_real else {"reason": "weights_not_found"})
+            }
+        }
+
+
+_registry_instance: ModelRegistry | None = None
 
 
 def build_model_registry() -> ModelRegistry:
-    return ModelRegistry(
-        detector=YOLOEDetector.from_settings(settings),
-        visual_embedder=DINOv3Embedder.from_settings(settings),
-        image_text_embedder=SigLIP2Embedder.from_settings(settings),
-    )
+    global _registry_instance
+    if _registry_instance is None:
+        _registry_instance = ModelRegistry(
+            detector=YOLOEDetector.from_settings(settings),
+            visual_embedder=DINOv3Embedder.from_settings(settings),
+            image_text_embedder=SigLIP2Embedder.from_settings(settings),
+        )
+    return _registry_instance

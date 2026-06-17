@@ -1,0 +1,91 @@
+{
+  "metrics": {
+    "total_cases": 1,
+    "evaluated_cases": 0,
+    "skipped_cases": 1,
+    "species_top1_accuracy": 0.0,
+    "species_top5_accuracy": 0.0,
+    "genus_accuracy": 0.0,
+    "family_accuracy": 0.0,
+    "risk_level_accuracy": 0.0,
+    "open_set_rejection_rate": 0.0,
+    "human_review_recommendation_rate": 0.0,
+    "unknown_fungus_rate": 0.0,
+    "toxic_not_flagged_rate": 0.0,
+    "dangerous_case_without_human_review_rate": 0.0,
+    "dangerous_genus_missed_rate": 0.0,
+    "overconfident_wrong_rate": 0.0,
+    "open_set_true_positive_rate": 0.0,
+    "open_set_false_positive_rate": 0.0,
+    "human_review_recall_on_dangerous_cases": 0.0,
+    "mean_confidence_correct": 0.0,
+    "mean_confidence_wrong": 0.0,
+    "expected_calibration_error": 0.0,
+    "false_safe_rate": 0.0,
+    "safety_policy_violations": 0,
+    "average_latency_ms": 0.0
+  },
+  "model_status": {
+    "detector": {
+      "requested": "YOLOE-26",
+      "backend": "mock_yoloe_fallback",
+      "loaded": false,
+      "device": "auto",
+      "model_path": null
+    },
+    "visual_embedder": {
+      "requested": "DINOv3",
+      "backend": "mock_dinov3_fallback",
+      "loaded": false,
+      "device": "auto",
+      "embedding_dim": 1024
+    },
+    "image_text_embedder": {
+      "requested": "SigLIP 2",
+      "backend": "mock_siglip2_fallback",
+      "loaded": false,
+      "device": "auto",
+      "embedding_dim": 768,
+      "reason": "weights_not_found"
+    }
+  },
+  "detector_evaluation": {
+    "detector_backend": "mock_yoloe_fallback",
+    "total_images": 0,
+    "images_with_detection": 0,
+    "detection_rate": 0.0,
+    "mean_detection_confidence": 0.0,
+    "full_image_fallback_rate": 0.0,
+    "crop_files_created": 0,
+    "mask_files_created": 0
+  },
+  "embedding_evaluation": {
+    "dino_backend": "mock_dinov3_fallback",
+    "siglip_backend": "mock_siglip2_fallback",
+    "embedding_dim_dino": 1024,
+    "embedding_dim_siglip": 768,
+    "embedding_normalization_ok": true,
+    "embedding_cache_hit_rate": 0.0,
+    "mean_pairwise_similarity_same_genus": 0.0,
+    "mean_pairwise_similarity_different_genus": 0.0,
+    "details": "not_enough_data"
+  },
+  "calibration": {
+    "expected_calibration_error": 0.0,
+    "bins": [],
+    "overconfident_wrong_cases": []
+  },
+  "production_readiness": {
+    "status": "NOT_READY_FOR_PRODUCTION",
+    "reason": "Model in fallback/mock mode, insufficient dataset size (< 100 cases), lack of dangerous validation cases, or safety violations."
+  },
+  "results": [
+    {
+      "observation_id": "real_001",
+      "status": "skipped_missing_images",
+      "expected_taxon": "Amanita phalloides",
+      "expected_genus": "Amanita",
+      "risk_level": "deadly"
+    }
+  ]
+}

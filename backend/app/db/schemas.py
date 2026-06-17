@@ -87,6 +87,23 @@ class ModelStackResponse(BaseModel):
     metadata_encoder: str
 
 
+class OpenSetResponse(BaseModel):
+    is_unknown_or_uncertain: bool
+    reason: str
+    top1_confidence: float | None = None
+    top2_confidence: float | None = None
+    margin: float | None = None
+    entropy: float | None = None
+    decision: str
+
+
+class HumanReviewResponse(BaseModel):
+    recommended: bool
+    priority: str
+    reason: str
+    request_id: int | None = None
+
+
 class ClassificationResponse(BaseModel):
     observation_id: int
     status: str
@@ -104,6 +121,35 @@ class ClassificationResponse(BaseModel):
     quality_assessment: QualityAssessmentResponse
     trace: TraceResponse
     final_warning: str
+    open_set: OpenSetResponse | None = None
+    human_review: HumanReviewResponse | None = None
+
+
+class HumanReviewRequestCreate(BaseModel):
+    priority: str = "low"
+    reason: str
+
+
+class HumanReviewRequestUpdate(BaseModel):
+    status: str | None = None
+    reviewer_notes: str | None = None
+    reviewer_taxon: str | None = None
+    reviewer_confidence: float | None = None
+
+
+class HumanReviewRequestRead(BaseModel):
+    id: int
+    observation_id: int
+    status: str
+    priority: str
+    reason: str
+    created_at: datetime
+    resolved_at: datetime | None = None
+    reviewer_notes: str | None = None
+    reviewer_taxon: str | None = None
+    reviewer_confidence: float | None = None
+
+    model_config = {"from_attributes": True}
 
 
 class StoredImageResult(BaseModel):

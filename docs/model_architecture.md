@@ -5,14 +5,17 @@
 La pipeline avanzada implementada sigue este flujo:
 
 1. validacion de calidad
-2. detector compatible con YOLOE-26 o fallback mock
-3. crop conservador de la seta
-4. embeddings visuales con adaptador DINOv3 o fallback
-5. embeddings imagen-texto con adaptador SigLIP 2 o fallback
-6. fusion multi-imagen
-7. fusion con metadatos inspirados en FungiTastic/FungiCLEF
-8. ranking top-k
-9. safety layer estricta
+2. detector compatible con YOLOE-26 (Real si está activo y con pesos, o fallback mock)
+3. crop conservador de la seta en disco (`/uploads/observations/{id}/crops/`) y máscara si existe (`/uploads/observations/{id}/masks/`)
+4. embeddings visuales con adaptador DINOv3 (Real o fallback) y normalización L2
+5. embeddings imagen-texto con adaptador SigLIP 2 (Real o fallback) y similitud coseno
+6. Caché de embeddings persistente en SQLite para optimizar tiempos de cómputo
+7. fusion multi-imagen
+8. fusion con metadatos inspirados en FungiTastic/FungiCLEF
+9. ranking top-k
+10. Open-Set Rejection (Rechazo y degradación por incertidumbre, falta de evidencias o riesgo alto)
+11. safety layer estricta
+12. Revisión humana experta (Si se requiere, permitiendo anular predicción una vez resuelta)
 
 ## Por que YOLOE-26 no es el clasificador final
 
@@ -29,6 +32,10 @@ SigLIP 2 permite comparar imagenes con descripciones textuales de especies. Eso 
 ## Metadata estilo FungiTastic/FungiCLEF
 
 El encoder actual representa pais, region, temporada, habitat, sustrato, arboles, altitud y notas como vector numerico simple. Esta capa queda preparada para sustituirse por un encoder aprendido.
+
+## Caché de Embeddings
+
+Para evitar la recomputación redundante de características de imágenes idénticas (muy costoso en CPU/GPU), se ha integrado un `EmbeddingCache` en SQLite. Almacena vectores calculados vinculándolos al hash MD5 del archivo original.
 
 ## Fusion multi-imagen
 
@@ -49,8 +56,8 @@ Tambien aplica penalizacion por evidencias faltantes.
 
 El ranker combina:
 
-- similitud visual mock
-- similitud imagen-texto mock
+- similitud visual (DINOv3)
+- similitud imagen-texto (SigLIP 2)
 - ajuste por metadatos
 - penalizacion por evidencia insuficiente
 

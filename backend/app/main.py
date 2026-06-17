@@ -8,6 +8,7 @@ from app.api.routes_images import router as images_router
 from app.api.routes_models import router as models_router
 from app.api.routes_observations import router as observations_router
 from app.api.routes_species import router as species_router
+from app.api.routes_human_review import router as human_review_router
 from app.core.config import settings
 from app.db.database import Base, engine
 from app.services.species_catalog import ensure_seed_data
@@ -31,3 +32,4 @@ app.include_router(images_router)
 app.include_router(classification_router)
 app.include_router(species_router)
 app.include_router(models_router)
+app.include_router(human_review_router)
