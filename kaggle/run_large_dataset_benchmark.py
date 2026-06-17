@@ -139,8 +139,18 @@ def main():
         print("Error: Converted observations dataset is empty.", file=sys.stderr)
         sys.exit(1)
 
-    # Calculate dataset stats
+    # Calculate dataset stats and validate
     total_images_in_sample = sum(len(o.get("images", [])) for o in observations)
+    if total_images_in_sample == 0:
+        print("Error: Total Images in Benchmark is 0. No matching image files could be located in the dataset.", file=sys.stderr)
+        sys.exit(1)
+
+    # Validate that we have valid taxonomy labels to calculate accuracy
+    has_valid_taxonomy = any(o.get("expected_taxon") and o.get("expected_taxon") != "unknown_fungus" for o in observations)
+    if not has_valid_taxonomy:
+        print("Error: No valid expected_taxon or expected_genus labels found in the dataset metadata to compute accuracy.", file=sys.stderr)
+        sys.exit(1)
+
     unique_species = sorted(list(set(o.get("expected_taxon", "unknown_fungus") for o in observations)))
     unique_genera = sorted(list(set(o.get("expected_genus", "unknown") for o in observations)))
     

@@ -5,13 +5,15 @@ from .common import (
     read_rows_from_file,
     detect_column_heuristics,
     infer_risk_level,
-    apply_sampling
+    apply_sampling,
+    resolve_image_path
 )
 
 def convert_fungitastic(dataset_root, output_json, poisonous_catalog_path=None, sampling_options=None):
     """
     Converts FungiTastic dataset metadata to VisionSetil format.
     """
+    root_path = Path(dataset_root)
     metadata_file = find_metadata_file(dataset_root, "fungitastic")
     if not metadata_file:
         raise FileNotFoundError(f"Could not find any metadata file for FungiTastic under {dataset_root}")
@@ -35,7 +37,6 @@ def convert_fungitastic(dataset_root, output_json, poisonous_catalog_path=None, 
         obs_groups.setdefault(str(obs_id_val), []).append(row)
 
     converted_list = []
-    root_path = Path(dataset_root)
 
     for obs_id, group in obs_groups.items():
         first_row = group[0]
@@ -60,28 +61,6 @@ def convert_fungitastic(dataset_root, output_json, poisonous_catalog_path=None, 
             family = first_row.get(mapping["family"])
         if not family:
             family = "unknown"
-
-        # Resolve image paths
-        images = []
-        for r in group:
-            img_rel = ""
-            if mapping["image_path"]:
-                img_rel = r.get(mapping["image_path"]) or ""
-            
-            if img_rel:
-                img_path = Path(img_rel)
-                candidates = [
-                    root_path / img_path.name,
-                    root_path / img_path,
-                    img_path
-                ]
-                resolved = None
-                for cand in candidates:
-                    if cand.exists() and cand.is_file():
-                        resolved = cand
-                        break
-                if resolved:
-                    images.append(str(resolved.resolve()))
 
         # Infer risk level
         risk_level = infer_risk_level(taxon, genus, poisonous_catalog_path)
@@ -116,7 +95,8 @@ def convert_fungitastic(dataset_root, output_json, poisonous_catalog_path=None, 
             "expected_genus": genus,
             "expected_family": family,
             "risk_level": risk_level,
-            "images": images,
+            "images": [],
+            "raw_images": [r.get(mapping["image_path"]) for r in group if mapping["image_path"] and r.get(mapping["image_path"])],
             "metadata": metadata,
             "source": {
                 "type": "public_dataset",
@@ -134,14 +114,30 @@ def convert_fungitastic(dataset_root, output_json, poisonous_catalog_path=None, 
         }
         converted_list.append(converted_obs)
 
-    # Apply sampling options
+    # Apply sampling options BEFORE resolving images (saves massive time!)
     sampled_list = apply_sampling(converted_list, sampling_options)
+
+    # Resolve image paths and filter observations to those with existing images
+    final_sampled_list = []
+    for obs in sampled_list:
+        resolved_images = []
+        for raw_img in obs.get("raw_images", []):
+            resolved = resolve_image_path(root_path, raw_img)
+            if resolved:
+                resolved_images.append(resolved)
+        
+        if resolved_images:
+            obs["images"] = resolved_images
+            obs.pop("raw_images", None)
+            final_sampled_list.append(obs)
+        else:
+            print(f"Warning: Skipping observation '{obs['observation_id']}' because none of its images could be found.")
 
     # Save to output file
     output_path = Path(output_json)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with open(output_path, "w", encoding="utf-8") as f:
-        json.dump(sampled_list, f, indent=2, ensure_ascii=False)
+        json.dump(final_sampled_list, f, indent=2, ensure_ascii=False)
 
-    print(f"FungiTastic Converter: Converted and saved {len(sampled_list)} cases to {output_json}")
-    return sampled_list
+    print(f"FungiTastic Converter: Converted and saved {len(final_sampled_list)} cases to {output_json}")
+    return final_sampled_list

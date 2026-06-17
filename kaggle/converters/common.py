@@ -27,10 +27,81 @@ def find_metadata_file(dataset_root, dataset_name):
     for pat in patterns:
         for p in root_path.rglob(pat):
             if p.is_file() and p.suffix in (".csv", ".parquet", ".json", ".jsonl"):
+                # Avoid submission or sample files
+                if "submission" in p.name.lower() or "sample" in p.name.lower():
+                    continue
                 # Avoid temp files or our output folder
                 if "visionsetil_outputs" not in p.parts:
                     return p
     return None
+
+def resolve_image_path(root_path, img_rel):
+    """
+    Tries to locate the image under root_path.
+    1. Direct relative check: root_path / img_rel
+    2. Direct filename check: root_path / img_rel.name
+    3. Common subdirectories (train, val, test, images)
+    4. Recursive search for img_rel.name under root_path
+    """
+    if not img_rel:
+        return None
+        
+    root_path = Path(root_path)
+    img_path = Path(img_rel)
+    
+    # Candidate 1: direct relative check
+    cand1 = root_path / img_path
+    if cand1.exists() and cand1.is_file():
+        return str(cand1.resolve())
+        
+    # Candidate 2: direct filename check in root
+    cand2 = root_path / img_path.name
+    if cand2.exists() and cand2.is_file():
+        return str(cand2.resolve())
+        
+    # Candidate 3: common subdirectories
+    common_subs = ["train", "val", "test", "images", "FewShot-Train", "FewShot-Val", "FewShot-Test", "FungiTastic-FewShot-Train", "FungiTastic-FewShot-Val", "FungiTastic-FewShot-Test"]
+    for sub in common_subs:
+        cand_sub = root_path / sub / img_path
+        if cand_sub.exists() and cand_sub.is_file():
+            return str(cand_sub.resolve())
+        cand_sub_name = root_path / sub / img_path.name
+        if cand_sub_name.exists() and cand_sub_name.is_file():
+            return str(cand_sub_name.resolve())
+            
+    # Candidate 4: recursive search (glob)
+    try:
+        for p in root_path.rglob(img_path.name):
+            if p.is_file():
+                return str(p.resolve())
+    except Exception:
+        pass
+        
+    return None
+
+def scan_individual_jsons(root_path):
+    """
+    Recursively scans for individual json metadata files under root_path.
+    """
+    rows = []
+    root_path = Path(root_path)
+    count = 0
+    # Search for json files, avoiding typical package/config json files
+    for p in root_path.rglob("*.json"):
+        if "visionsetil_outputs" in p.parts or p.name in ("kernel-metadata.json", "package.json", "tsconfig.json", "dataset-metadata.json"):
+            continue
+        try:
+            with open(p, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                if isinstance(data, dict):
+                    data["_source_json_file"] = str(p)
+                    rows.append(data)
+                    count += 1
+                    if count >= 10000:
+                        break
+        except Exception:
+            pass
+    return rows
 
 def infer_risk_level(species_name, genus_name, poisonous_catalog_path=None):
     """

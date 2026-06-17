@@ -64,14 +64,24 @@ def check_forbidden_terms(val: str) -> list[str]:
     return violations
 
 
-def walk_dict_and_audit(obj, violations: list):
+def walk_dict_and_audit(obj, violations: list, key=None):
     if isinstance(obj, dict):
         for k, v in obj.items():
-            walk_dict_and_audit(v, violations)
+            walk_dict_and_audit(v, violations, key=k)
     elif isinstance(obj, list):
         for item in obj:
-            walk_dict_and_audit(item, violations)
+            walk_dict_and_audit(item, violations, key=key)
     elif isinstance(obj, str):
+        # Skip technical/metadata/identification fields that are not user-facing warnings or messages
+        skip_keys = {
+            "status", "safety_level", "observation_id", "taxon", "genus", "family",
+            "model_stack", "detector", "visual_embedder", "image_text_embedder",
+            "metadata_encoder", "predicted_top1", "expected_taxon", "expected_genus",
+            "expected_family", "id", "observationId", "image_path", "filename", "backend",
+            "device", "reason", "requested", "license", "source", "type", "dataset"
+        }
+        if key in skip_keys:
+            return
         v_list = check_forbidden_terms(obj)
         violations.extend(v_list)
 

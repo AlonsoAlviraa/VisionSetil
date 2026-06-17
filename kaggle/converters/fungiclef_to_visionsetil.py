@@ -5,28 +5,55 @@ from .common import (
     read_rows_from_file,
     detect_column_heuristics,
     infer_risk_level,
-    apply_sampling
+    apply_sampling,
+    resolve_image_path,
+    scan_individual_jsons
 )
 
 def convert_fungiclef(dataset_root, output_json, poisonous_catalog_path=None, sampling_options=None):
     """
     Converts FungiCLEF 2025 metadata to VisionSetil format.
     """
-    metadata_file = find_metadata_file(dataset_root, "fungiclef2025")
+    root_path = Path(dataset_root)
+    
+    # 1. Search for train/val CSV metadata first, avoiding submission files
+    metadata_file = None
+    for name in ["FungiTastic-FewShot-Train.csv", "FungiTastic-FewShot-Val.csv", "FungiTastic-FewShot-Test.csv", "FewShot-Train", "FewShot-Val", "FewShot-Test"]:
+        for p in root_path.rglob(f"*{name}*"):
+            if p.is_file() and p.suffix in (".csv", ".json", ".parquet"):
+                # Make sure it's not a sample submission
+                if "submission" not in p.name.lower() and "sample" not in p.name.lower():
+                    metadata_file = p
+                    break
+        if metadata_file:
+            break
+            
+    if not metadata_file:
+        metadata_file = find_metadata_file(dataset_root, "fungiclef2025")
     if not metadata_file:
         metadata_file = find_metadata_file(dataset_root, "fungiclef")
-        
-    if not metadata_file:
-        raise FileNotFoundError(f"Could not find any metadata file for FungiCLEF under {dataset_root}")
 
-    print(f"FungiCLEF Converter: Found metadata file at {metadata_file}")
-    rows, columns = read_rows_from_file(metadata_file)
+    rows = []
+    columns = []
+    
+    if metadata_file:
+        print(f"FungiCLEF Converter: Found metadata file at {metadata_file}")
+        rows, columns = read_rows_from_file(metadata_file)
+        
+    # 2. Fallback to scanning individual JSONs if no file was found or no rows read
     if not rows:
-        raise ValueError(f"No rows read from FungiCLEF metadata file {metadata_file}")
+        print("FungiCLEF Converter: No CSV metadata file or empty file. Scanning for individual JSON metadata files...")
+        rows = scan_individual_jsons(dataset_root)
+        if rows:
+            columns = list(rows[0].keys())
+            print(f"FungiCLEF Converter: Found {len(rows)} individual JSON metadata files.")
+
+    if not rows:
+        raise FileNotFoundError(f"Could not find any CSV metadata or individual JSON files under {dataset_root}")
 
     mapping = detect_column_heuristics(columns)
     
-    # If heuristics missed, apply fallback column mappings for FungiCLEF
+    # Heuristics updates for custom fields if not mapped
     if not mapping["observation_id"]:
         for c in columns:
             if "obs" in c.lower() or "id" in c.lower():
@@ -40,6 +67,7 @@ def convert_fungiclef(dataset_root, output_json, poisonous_catalog_path=None, sa
 
     print(f"FungiCLEF Column Mapping Heuristics: {json.dumps(mapping, indent=2)}")
 
+    # Group rows by observation
     obs_groups = {}
     for idx, row in enumerate(rows):
         obs_id_val = None
@@ -51,7 +79,6 @@ def convert_fungiclef(dataset_root, output_json, poisonous_catalog_path=None, sa
         obs_groups.setdefault(str(obs_id_val), []).append(row)
 
     converted_list = []
-    root_path = Path(dataset_root)
 
     for obs_id, group in obs_groups.items():
         first_row = group[0]
@@ -77,33 +104,10 @@ def convert_fungiclef(dataset_root, output_json, poisonous_catalog_path=None, sa
         if not family:
             family = "unknown"
 
-        # Resolve image paths
-        images = []
-        for r in group:
-            img_rel = ""
-            if mapping["image_path"]:
-                img_rel = r.get(mapping["image_path"]) or ""
-            
-            if img_rel:
-                img_path = Path(img_rel)
-                # Check absolute or relative to root
-                candidates = [
-                    root_path / img_path.name,
-                    root_path / img_path,
-                    img_path
-                ]
-                resolved = None
-                for cand in candidates:
-                    if cand.exists() and cand.is_file():
-                        resolved = cand
-                        break
-                if resolved:
-                    images.append(str(resolved.resolve()))
-
-        # Infer risk level
+        # Risk Level
         risk_level = infer_risk_level(taxon, genus, poisonous_catalog_path)
 
-        # Map metadata
+        # Metadata
         metadata = {
             "country": first_row.get(mapping["country"]) if mapping["country"] else None,
             "region": None,
@@ -119,7 +123,6 @@ def convert_fungiclef(dataset_root, output_json, poisonous_catalog_path=None, sa
             "user_notes": "Converted from FungiCLEF 2025."
         }
 
-        # Clean metadata fields
         for k in ["latitude", "longitude", "altitude_m"]:
             if metadata[k] is not None:
                 try:
@@ -133,7 +136,8 @@ def convert_fungiclef(dataset_root, output_json, poisonous_catalog_path=None, sa
             "expected_genus": genus,
             "expected_family": family,
             "risk_level": risk_level,
-            "images": images,
+            "images": [], # To resolve on sampled list
+            "raw_images": [r.get(mapping["image_path"]) for r in group if mapping["image_path"] and r.get(mapping["image_path"])],
             "metadata": metadata,
             "source": {
                 "type": "public_dataset",
@@ -151,14 +155,32 @@ def convert_fungiclef(dataset_root, output_json, poisonous_catalog_path=None, sa
         }
         converted_list.append(converted_obs)
 
-    # Apply sampling options
+    # 3. Apply sampling options BEFORE resolving images (saves massive time!)
     sampled_list = apply_sampling(converted_list, sampling_options)
+
+    # 4. Resolve image paths and filter observations to those with existing images
+    final_sampled_list = []
+    for obs in sampled_list:
+        resolved_images = []
+        for raw_img in obs.get("raw_images", []):
+            resolved = resolve_image_path(root_path, raw_img)
+            if resolved:
+                resolved_images.append(resolved)
+        
+        # Keep observation only if at least one image exists!
+        if resolved_images:
+            obs["images"] = resolved_images
+            # Clean temporary raw_images field
+            obs.pop("raw_images", None)
+            final_sampled_list.append(obs)
+        else:
+            print(f"Warning: Skipping observation '{obs['observation_id']}' because none of its images could be found.")
 
     # Save to output file
     output_path = Path(output_json)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with open(output_path, "w", encoding="utf-8") as f:
-        json.dump(sampled_list, f, indent=2, ensure_ascii=False)
+        json.dump(final_sampled_list, f, indent=2, ensure_ascii=False)
 
-    print(f"FungiCLEF Converter: Converted and saved {len(sampled_list)} cases to {output_json}")
-    return sampled_list
+    print(f"FungiCLEF Converter: Converted and saved {len(final_sampled_list)} cases to {output_json}")
+    return final_sampled_list

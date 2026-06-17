@@ -26,6 +26,9 @@ VisionSetil includes converters to automatically translate metadata and schemas 
 *   **How to attach in Kaggle:** Search for "FungiCLEF 2025" under Kaggle Datasets and link it to your notebook.
 *   **Execution config:** `kaggle/configs/fungiclef2025_config.example.json`
 
+> [!WARNING]
+> **Do NOT use `FungiCLEF25-SAMPLE_SUBMISSION.csv` for evaluation.** This file only contains `observationId` and `predictions` placeholders and does not include the ground truth or the paths to the physical images. The benchmark runner will automatically reject this file and fail if it cannot locate real taxonomic labels or images. Use the proper train/validation metadata split files (e.g., `FungiTastic-FewShot-Train.csv`).
+
 ### 2. FungiTastic
 *   **Dataset Focus:** Multimodal fungi dataset.
 *   **Schema Features:** Broad species and environmental metadata.
