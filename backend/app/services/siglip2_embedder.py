@@ -48,11 +48,21 @@ class SigLIP2Embedder(ImageTextEmbedder):
 
                 logger.info(f"SigLIP2Embedder real model successfully loaded on {device}")
             except Exception as e:
-                logger.warning(f"Failed to load real SigLIP2Embedder: {e}")
-                is_real = False
-                if not config.allow_mock_fallbacks:
-                    raise RuntimeError(f"SigLIP2Embedder real model failed to load (allow_mock_fallbacks is False): {e}") from e
-                device = "cpu"
+                logger.warning(f"Failed to load real SigLIP2Embedder on {device}, trying on cpu: {e}")
+                try:
+                    import torch
+                    from transformers import AutoProcessor, AutoModel
+                    processor = AutoProcessor.from_pretrained(model_identifier)
+                    model = AutoModel.from_pretrained(model_identifier).to("cpu")
+                    model.eval()
+                    device = "cpu"
+                    logger.info("SigLIP2Embedder real model successfully loaded on cpu as fallback")
+                except Exception as e2:
+                    logger.warning(f"Failed to load real SigLIP2Embedder on cpu: {e2}")
+                    is_real = False
+                    if not config.allow_mock_fallbacks:
+                        raise RuntimeError(f"SigLIP2Embedder real model failed to load (allow_mock_fallbacks is False): {e2}") from e2
+                    device = "cpu"
 
         if not is_real:
             if not config.allow_mock_fallbacks:

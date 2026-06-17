@@ -37,14 +37,24 @@ class YOLOEDetector(MushroomDetector):
                 
                 model_identifier = model_path if (model_path and Path(model_path).exists()) else model_name
                 model = YOLO(model_identifier)
+                if device == "cuda":
+                    model.to("cuda")
                 
                 logger.info(f"YOLOEDetector real model successfully loaded on {device}")
             except Exception as e:
-                logger.warning(f"Failed to load real YOLOEDetector: {e}")
-                is_real = False
-                if not config.allow_mock_fallbacks:
-                    raise RuntimeError(f"YOLOEDetector real model failed to load (allow_mock_fallbacks is False): {e}") from e
-                device = "cpu"
+                logger.warning(f"Failed to load real YOLOEDetector on {device}, trying on cpu: {e}")
+                try:
+                    from ultralytics import YOLO
+                    model_identifier = model_path if (model_path and Path(model_path).exists()) else model_name
+                    model = YOLO(model_identifier)
+                    device = "cpu"
+                    logger.info("YOLOEDetector real model successfully loaded on cpu as fallback")
+                except Exception as e2:
+                    logger.warning(f"Failed to load real YOLOEDetector on cpu: {e2}")
+                    is_real = False
+                    if not config.allow_mock_fallbacks:
+                        raise RuntimeError(f"YOLOEDetector real model failed to load (allow_mock_fallbacks is False): {e2}") from e2
+                    device = "cpu"
 
         if not is_real:
             if not config.allow_mock_fallbacks:

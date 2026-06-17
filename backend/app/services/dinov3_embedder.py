@@ -49,11 +49,21 @@ class DINOv3Embedder(VisualEmbedder):
 
                 logger.info(f"DINOv3Embedder real model successfully loaded on {device}")
             except Exception as e:
-                logger.warning(f"Failed to load real DINOv3Embedder: {e}")
-                is_real = False
-                if not config.allow_mock_fallbacks:
-                    raise RuntimeError(f"DINOv3Embedder real model failed to load (allow_mock_fallbacks is False): {e}") from e
-                device = "cpu"
+                logger.warning(f"Failed to load real DINOv3Embedder on {device}, trying on cpu: {e}")
+                try:
+                    import torch
+                    from transformers import AutoImageProcessor, AutoModel
+                    processor = AutoImageProcessor.from_pretrained(model_identifier)
+                    model = AutoModel.from_pretrained(model_identifier).to("cpu")
+                    model.eval()
+                    device = "cpu"
+                    logger.info("DINOv3Embedder real model successfully loaded on cpu as fallback")
+                except Exception as e2:
+                    logger.warning(f"Failed to load real DINOv3Embedder on cpu: {e2}")
+                    is_real = False
+                    if not config.allow_mock_fallbacks:
+                        raise RuntimeError(f"DINOv3Embedder real model failed to load (allow_mock_fallbacks is False): {e2}") from e2
+                    device = "cpu"
 
         if not is_real:
             if not config.allow_mock_fallbacks:
