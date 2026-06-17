@@ -22,10 +22,12 @@ class DINOv3Embedder(VisualEmbedder):
 
     @classmethod
     def from_settings(cls, config: Settings) -> "DINOv3Embedder":
-        is_real = bool(config.use_real_dinov3 and (config.dino_model_name or config.dino_model_path))
+        is_real = bool(config.use_real_dinov3)
         device = config.dino_device
         model = None
         processor = None
+        model_name = config.dino_model_name or "facebook/dinov2-base"
+        model_path = config.dino_model_path or ""
 
         if is_real:
             try:
@@ -35,7 +37,7 @@ class DINOv3Embedder(VisualEmbedder):
                 if device == "auto":
                     device = "cuda" if torch.cuda.is_available() else "cpu"
 
-                model_identifier = config.dino_model_path or config.dino_model_name or "facebook/dinov2-base"
+                model_identifier = model_path if (model_path and Path(model_path).exists()) else model_name
                 
                 # Check if it's a local path and verify existence
                 if config.dino_model_path and not Path(config.dino_model_path).exists():
@@ -47,16 +49,20 @@ class DINOv3Embedder(VisualEmbedder):
 
                 logger.info(f"DINOv3Embedder real model successfully loaded on {device}")
             except Exception as e:
-                logger.warning(f"Failed to load real DINOv3Embedder, falling back to mock: {e}")
+                logger.warning(f"Failed to load real DINOv3Embedder: {e}")
                 is_real = False
+                if not config.allow_mock_fallbacks:
+                    raise RuntimeError(f"DINOv3Embedder real model failed to load (allow_mock_fallbacks is False): {e}") from e
                 device = "cpu"
 
         if not is_real:
+            if not config.allow_mock_fallbacks:
+                raise RuntimeError("DINOv3Embedder real model failed to load (allow_mock_fallbacks is False).")
             logger.warning("DINOv3 real model not available, using fallback embedder")
 
         return cls(
-            model_name=config.dino_model_name or "mock-dinov3",
-            model_path=config.dino_model_path or "",
+            model_name=config.dino_model_name or ("facebook/dinov2-base" if config.use_real_dinov3 else "mock-dinov3"),
+            model_path=model_path,
             is_real=is_real,
             device=device,
             model=model,
@@ -65,6 +71,8 @@ class DINOv3Embedder(VisualEmbedder):
 
     def embed_images(self, image_paths: list[str]) -> list[ImageEmbedding]:
         if not self.is_real or self.model is None or self.processor is None:
+            if not settings.allow_mock_fallbacks:
+                raise RuntimeError("DINOv3Embedder real model is required but not loaded.")
             # Adjust mock model_name to match backend expectations (mock_dinov3)
             embeddings = self.fallback.embed_images(image_paths)
             for emb in embeddings:
@@ -137,7 +145,9 @@ class DINOv3Embedder(VisualEmbedder):
                 )
             return embeddings
         except Exception as e:
-            logger.warning(f"Error executing real DINOv3Embedder embed_images, falling back to mock: {e}")
+            logger.warning(f"Error executing real DINOv3Embedder embed_images: {e}")
+            if not settings.allow_mock_fallbacks:
+                raise RuntimeError(f"DINOv3Embedder failed at runtime: {e}") from e
             fallback_embs = self.fallback.embed_images(image_paths)
             for emb in fallback_embs:
                 emb.model_name = "mock_dinov3"

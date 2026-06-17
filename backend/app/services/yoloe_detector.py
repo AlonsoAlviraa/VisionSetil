@@ -21,9 +21,11 @@ class YOLOEDetector(MushroomDetector):
 
     @classmethod
     def from_settings(cls, config: Settings) -> "YOLOEDetector":
-        is_real = bool(config.use_real_yoloe and (config.yoloe_model_name or config.yoloe_model_path))
+        is_real = bool(config.use_real_yoloe)
         device = config.yoloe_device
         model = None
+        model_name = config.yoloe_model_name or "yolov8n.pt"
+        model_path = config.yoloe_model_path or ""
         
         if is_real:
             try:
@@ -33,25 +35,25 @@ class YOLOEDetector(MushroomDetector):
                 if device == "auto":
                     device = "cuda" if torch.cuda.is_available() else "cpu"
                 
-                if config.yoloe_model_path and Path(config.yoloe_model_path).exists():
-                    model = YOLO(config.yoloe_model_path)
-                elif config.yoloe_model_name:
-                    model = YOLO(config.yoloe_model_name)
-                else:
-                    raise ValueError("Neither valid model_path nor model_name provided")
+                model_identifier = model_path if (model_path and Path(model_path).exists()) else model_name
+                model = YOLO(model_identifier)
                 
                 logger.info(f"YOLOEDetector real model successfully loaded on {device}")
             except Exception as e:
-                logger.warning(f"Failed to load real YOLOEDetector, falling back to mock: {e}")
+                logger.warning(f"Failed to load real YOLOEDetector: {e}")
                 is_real = False
+                if not config.allow_mock_fallbacks:
+                    raise RuntimeError(f"YOLOEDetector real model failed to load (allow_mock_fallbacks is False): {e}") from e
                 device = "cpu"
 
         if not is_real:
+            if not config.allow_mock_fallbacks:
+                raise RuntimeError("YOLOEDetector real model failed to load (allow_mock_fallbacks is False).")
             logger.warning("YOLOE real model not available, using fallback detector")
 
         return cls(
-            model_name=config.yoloe_model_name or "mock-yoloe-26",
-            model_path=config.yoloe_model_path or "",
+            model_name=config.yoloe_model_name or ("yolov8n.pt" if config.use_real_yoloe else "mock-yoloe-26"),
+            model_path=model_path,
             is_real=is_real,
             device=device,
             model=model,
@@ -59,6 +61,8 @@ class YOLOEDetector(MushroomDetector):
 
     def detect_and_crop(self, image_paths: list[str]) -> list[DetectedMushroomCrop]:
         if not self.is_real or self.model is None:
+            if not settings.allow_mock_fallbacks:
+                raise RuntimeError("YOLOEDetector real model is required but not loaded.")
             return self.fallback.detect_and_crop(image_paths)
 
         detections: list[DetectedMushroomCrop] = []
@@ -168,5 +172,7 @@ class YOLOEDetector(MushroomDetector):
                     )
             return detections
         except Exception as e:
-            logger.warning(f"Error executing real detect_and_crop, falling back to mock: {e}")
+            logger.warning(f"Error executing real detect_and_crop: {e}")
+            if not settings.allow_mock_fallbacks:
+                raise RuntimeError(f"YOLOEDetector failed at runtime: {e}") from e
             return self.fallback.detect_and_crop(image_paths)

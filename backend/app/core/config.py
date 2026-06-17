@@ -17,6 +17,7 @@ class Settings(BaseModel):
     use_real_yoloe: bool = os.getenv("USE_REAL_YOLOE", "false").lower() == "true"
     use_real_dinov3: bool = os.getenv("USE_REAL_DINOV3", "false").lower() == "true"
     use_real_siglip2: bool = os.getenv("USE_REAL_SIGLIP2", "false").lower() == "true"
+    allow_mock_fallbacks: bool = os.getenv("ALLOW_MOCK_FALLBACKS", "true").lower() == "true"
     yoloe_model_name: str = os.getenv("YOLOE_MODEL_NAME", "")
     yoloe_model_path: str = os.getenv("YOLOE_MODEL_PATH", "")
     dino_model_name: str = os.getenv("DINO_MODEL_NAME", "")

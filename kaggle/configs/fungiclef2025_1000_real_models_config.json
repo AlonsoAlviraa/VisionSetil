@@ -1,0 +1,35 @@
+{
+  "dataset_name": "fungiclef2025",
+  "dataset_root": "/kaggle/input/fungi-clef-2025",
+  "output_dir": "/kaggle/working/visionsetil_outputs",
+  "converted_dataset_path": "/kaggle/working/visionsetil_outputs/converted_fungiclef2025_observations.json",
+  "images_root": "/kaggle/input/fungi-clef-2025",
+  "sampling": {
+    "max_cases": 1000,
+    "shuffle": true,
+    "seed": 42,
+    "risk_balanced": true,
+    "include_dangerous_genera": true,
+    "min_images_per_observation": 1,
+    "max_images_per_observation": 5
+  },
+  "models": {
+    "use_real_yoloe": true,
+    "use_real_dinov3": true,
+    "use_real_siglip2": true,
+    "allow_mock_fallbacks": false
+  },
+  "runtime": {
+    "device": "cuda",
+    "batch_size": 1,
+    "num_workers": 2,
+    "mode": "full_pipeline",
+    "clear_cuda_cache_between_stages": true
+  },
+  "safety": {
+    "enforce_safety_audit": true,
+    "fail_on_safety_violation": true,
+    "debug_safety": true,
+    "max_safety_debug_cases": 10
+  }
+}

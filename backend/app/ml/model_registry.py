@@ -18,21 +18,8 @@ class ModelRegistry:
         if detector_path:
             detector_path = detector_path[-30:] if len(detector_path) > 30 else detector_path
 
-        visual_backend = "mock_dinov3_fallback"
-        if self.visual_embedder.is_real:
-            model_name_lower = (self.visual_embedder.model_name or "").lower()
-            if "dinov3" in model_name_lower or "dinov-3" in model_name_lower:
-                visual_backend = "real_dinov3"
-            else:
-                visual_backend = "real_dinov2_compatible"
-
-        siglip_backend = "mock_siglip2_fallback"
-        if self.image_text_embedder.is_real:
-            model_name_lower = (self.image_text_embedder.model_name or "").lower()
-            if "siglip2" in model_name_lower or "siglip-2" in model_name_lower:
-                siglip_backend = "real_siglip2"
-            else:
-                siglip_backend = "real_siglip_compatible"
+        visual_backend = "real_dinov3" if self.visual_embedder.is_real else "mock_dinov3_fallback"
+        siglip_backend = "real_siglip2" if self.image_text_embedder.is_real else "mock_siglip2_fallback"
 
         return {
             "detector": {

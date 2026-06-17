@@ -654,26 +654,25 @@ def test_model_status_reports_real_or_compatible_backend():
     settings.use_real_dinov3 = True
     settings.dino_model_name = "facebook/dinov2-base"
     
-    registry = build_model_registry()
-    
-    # Mock loaded status to True
-    registry.image_text_embedder.is_real = True
-    registry.visual_embedder.is_real = True
-    
-    status = registry.get_status()
-    assert status["image_text_embedder"]["backend"] == "real_siglip_compatible"
-    assert status["visual_embedder"]["backend"] == "real_dinov2_compatible"
-    
-    # Restore settings and clear cached singleton to avoid polluting subsequent tests
-    settings.use_real_siglip2 = False
-    settings.use_real_dinov3 = False
-    registry.image_text_embedder.is_real = False
-    registry.visual_embedder.is_real = False
-    app.ml.model_registry._registry_instance = None
+    try:
+        registry = build_model_registry()
+        
+        # Mock loaded status to True
+        registry.image_text_embedder.is_real = True
+        registry.visual_embedder.is_real = True
+        
+        status = registry.get_status()
+        assert status["image_text_embedder"]["backend"] == "real_siglip2"
+        assert status["visual_embedder"]["backend"] == "real_dinov3"
+    finally:
+        # Restore settings and clear cached singleton to avoid polluting subsequent tests
+        settings.use_real_siglip2 = False
+        settings.use_real_dinov3 = False
+        app.ml.model_registry._registry_instance = None
 
 
 def test_1000_config_exists():
-    config_path = root_dir / "kaggle" / "configs" / "fungiclef2025_1000_real_model_config.json"
+    config_path = root_dir / "kaggle" / "configs" / "fungiclef2025_1000_real_models_config.json"
     assert config_path.exists()
     
     with open(config_path, "r", encoding="utf-8") as f:
@@ -814,3 +813,49 @@ def test_auditor_reports_path_value_and_pattern():
     assert audit["violations"][0]["violation_path"] == "response.field"
     assert audit["violations"][0]["violation_value"] == "safe"
     assert audit["violations"][0]["matched_pattern"] == "safe"
+
+
+def test_allow_mock_fallbacks_false_raises_exception_when_mock_yoloe():
+    from app.services.yoloe_detector import YOLOEDetector
+    from app.core.config import Settings
+    
+    config = Settings(
+        use_real_yoloe=True,
+        yoloe_model_name="non_existent_yolo_weights.pt",
+        allow_mock_fallbacks=False
+    )
+    
+    with pytest.raises(RuntimeError) as exc_info:
+        YOLOEDetector.from_settings(config)
+    assert "YOLOEDetector real model failed to load" in str(exc_info.value)
+
+
+def test_allow_mock_fallbacks_false_raises_exception_when_mock_dinov3():
+    from app.services.dinov3_embedder import DINOv3Embedder
+    from app.core.config import Settings
+    
+    config = Settings(
+        use_real_dinov3=True,
+        dino_model_name="non_existent_dino_model",
+        allow_mock_fallbacks=False
+    )
+    
+    with pytest.raises(RuntimeError) as exc_info:
+        DINOv3Embedder.from_settings(config)
+    assert "DINOv3Embedder real model failed to load" in str(exc_info.value)
+
+
+def test_allow_mock_fallbacks_false_raises_exception_when_mock_siglip2():
+    from app.services.siglip2_embedder import SigLIP2Embedder
+    from app.core.config import Settings
+    
+    config = Settings(
+        use_real_siglip2=True,
+        siglip_model_name="non_existent_siglip_model",
+        allow_mock_fallbacks=False
+    )
+    
+    with pytest.raises(RuntimeError) as exc_info:
+        SigLIP2Embedder.from_settings(config)
+    assert "SigLIP2Embedder real model failed to load" in str(exc_info.value)
+
