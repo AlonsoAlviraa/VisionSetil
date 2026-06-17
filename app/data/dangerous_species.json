@@ -1,0 +1,52 @@
+[
+  {
+    "common_name": "Oronja verde",
+    "latin_name": "Amanita phalloides",
+    "risk_level": "critical",
+    "warning": "Contiene amatoxinas potencialmente mortales incluso en cantidades pequenas.",
+    "lookalikes": ["Russula virescens", "Amanita caesarea inmadura"],
+    "markers": ["amanita", "volva", "anillo", "laminas blancas", "sombrero verdoso", "base bulbosa"],
+    "symptoms": ["latencia prolongada", "vomitos", "danio hepatico"],
+    "response": "Derivacion medica urgente ante ingestiones sospechosas. No esperar a sintomas graves."
+  },
+  {
+    "common_name": "Angel destructor",
+    "latin_name": "Amanita virosa",
+    "risk_level": "critical",
+    "warning": "Amanita blanca muy toxica con riesgo vital.",
+    "lookalikes": ["Agaricus joven", "Leucoagaricus leucothites"],
+    "markers": ["blanca", "volva", "anillo", "pie esbelto", "laminas blancas"],
+    "symptoms": ["vomitos", "diarrea", "fallo hepatico"],
+    "response": "Tratar cualquier sospecha como emergencia toxicologica."
+  },
+  {
+    "common_name": "Galerina mortal",
+    "latin_name": "Galerina marginata",
+    "risk_level": "critical",
+    "warning": "Pequena especie lignicola con toxinas graves y confusion frecuente con setas de madera.",
+    "lookalikes": ["Kuehneromyces mutabilis", "Flammulina velutipes"],
+    "markers": ["madera", "tocones", "pequena marron", "anillo fragil"],
+    "symptoms": ["latencia", "gastrointestinal", "danio hepatico"],
+    "response": "No recolectar especies pequenas de madera para consumo sin peritaje experto."
+  },
+  {
+    "common_name": "Cortinario de montana",
+    "latin_name": "Cortinarius orellanus",
+    "risk_level": "high",
+    "warning": "Puede provocar insuficiencia renal con sintomas tardios.",
+    "lookalikes": ["Lactarius deliciosus envejecido", "otros cortinarius"],
+    "markers": ["cortina", "ocre", "bosque", "pie fibrilloso"],
+    "symptoms": ["sed intensa", "fallo renal", "latencia larga"],
+    "response": "Evitar cualquier consumo de cortinarius no verificado a especie."
+  },
+  {
+    "common_name": "Falsa colmenilla",
+    "latin_name": "Gyromitra esculenta",
+    "risk_level": "high",
+    "warning": "Especie toxica con compuestos neurotoxicos; la preparacion casera no es garantia.",
+    "lookalikes": ["Morchella spp."],
+    "markers": ["cerebro", "plegado", "primavera", "marron rojizo"],
+    "symptoms": ["mareo", "convulsiones", "toxicidad hepatica"],
+    "response": "No asumir seguridad por coccion ni por consumo tradicional."
+  }
+]
