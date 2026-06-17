@@ -61,11 +61,14 @@ python -m pytest backend/app/tests
 ## Documentación Detallada
 
 *   [docs/real_model_loading.md](./docs/real_model_loading.md)
+*   [docs/real_model_loading.md](./docs/real_model_loading.md)
 *   [docs/open_set_rejection.md](./docs/open_set_rejection.md)
 *   [docs/human_review_workflow.md](./docs/human_review_workflow.md)
 *   [docs/evaluation_strategy.md](./docs/evaluation_strategy.md)
 *   [docs/real_benchmark_strategy.md](./docs/real_benchmark_strategy.md)
 *   [docs/production_readiness.md](./docs/production_readiness.md)
+*   [docs/large_public_dataset_benchmark.md](./docs/large_public_dataset_benchmark.md)
+*   [docs/kaggle_benchmark.md](./docs/kaggle_benchmark.md)
 *   [docs/product_spec.md](./docs/product_spec.md)
 *   [docs/model_architecture.md](./docs/model_architecture.md)
 *   [docs/safety_policy.md](./docs/safety_policy.md)

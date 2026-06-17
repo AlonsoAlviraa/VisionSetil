@@ -1,0 +1,30 @@
+{
+  "dataset_name": "fungitastic",
+  "dataset_root": "/kaggle/input/fungitastic",
+  "output_dir": "/kaggle/working/visionsetil_outputs",
+  "converted_dataset_path": "/kaggle/working/visionsetil_outputs/converted_fungitastic_observations.json",
+  "images_root": "/kaggle/input/fungitastic",
+  "sampling": {
+    "max_cases": 500,
+    "shuffle": true,
+    "seed": 42,
+    "risk_balanced": true,
+    "min_images_per_observation": 1,
+    "max_images_per_observation": 5
+  },
+  "models": {
+    "use_real_yoloe": false,
+    "use_real_dinov3": false,
+    "use_real_siglip2": false
+  },
+  "runtime": {
+    "device": "auto",
+    "batch_size": 8,
+    "num_workers": 2,
+    "mode": "full_pipeline"
+  },
+  "safety": {
+    "enforce_safety_audit": true,
+    "fail_on_safety_violation": true
+  }
+}

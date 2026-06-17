@@ -1,0 +1,29 @@
+{
+  "environment": "kaggle",
+  "device": "cuda",
+  "gpu_name": "Tesla P100-PCIE-16GB",
+  "models": {
+    "detector": {
+      "requested": "YOLOE-26",
+      "backend": "mock_yoloe_fallback",
+      "loaded": false,
+      "device": "auto",
+      "model_path": null
+    },
+    "visual_embedder": {
+      "requested": "DINOv3",
+      "backend": "mock_dinov3_fallback",
+      "loaded": false,
+      "device": "auto",
+      "embedding_dim": 1024
+    },
+    "image_text_embedder": {
+      "requested": "SigLIP 2",
+      "backend": "mock_siglip2_fallback",
+      "loaded": false,
+      "device": "auto",
+      "embedding_dim": 768,
+      "reason": "weights_not_found"
+    }
+  }
+}
