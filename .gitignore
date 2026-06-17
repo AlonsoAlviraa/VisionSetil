@@ -9,3 +9,17 @@ backend/uploads/
 backend/*.db
 frontend/node_modules/
 frontend/dist/
+
+# Kaggle / Local evaluation temp files and logs
+download_output.log
+download_output_utf8.log
+kaggle/temp_pull/
+kaggle/temp_starter/
+kaggle/temp_user_starter/
+kaggle_run.log
+kaggle_run_starter.log
+version7_logs.log
+version7_logs.txt
+download.log
+kaggle_cloud_outputs/
+backend/mushroom_photo_id.db-journal
