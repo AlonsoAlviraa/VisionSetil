@@ -1,22 +1,24 @@
-# Safety policy
+# Safety Policy
 
 ## Principios
 
-- La aplicacion no diagnostica intoxicaciones ni identifica especies con garantia.
-- La aplicacion no debe decir que una seta es comestible, segura o apta para consumo.
-- Las respuestas se limitan a orientacion educativa, senales de riesgo y sugerencia de consulta experta.
-- Coincidencias de baja confianza no reducen el riesgo.
-- La ausencia de alerta no implica ausencia de toxicidad.
+- nunca dar consejos de consumo
+- evitar falsos seguros por encima de cualquier otra metrica
+- mostrar advertencias repetidas y visibles
+- abstencion por defecto cuando falten vistas o contexto
+- requerir experto humano para decisiones sensibles
 
 ## Reglas de producto
 
-- Mostrar advertencia fuerte en portada y en cada clasificacion.
-- Bloquear en el chatbot cualquier peticion de consejo de consumo.
-- Priorizar especies peligrosas y dobles toxicos en la explicacion.
-- Solicitar fotos de base completa, himenio y habitat antes de ampliar hipotesis.
-- Preparar integracion futura con modelos solo bajo la misma politica conservadora.
+- la API siempre devuelve `orientation_only`
+- la API siempre devuelve `unsafe_to_consume`
+- la respuesta siempre incluye `No consumas ninguna seta identificada unicamente mediante una app.`
+- el clasificador nunca devuelve `safe_to_eat`
+- el frontend nunca usa etiquetas verdes ni lenguaje de seguridad alimentaria
 
-## Escalado recomendado
+## Metricas orientadas a riesgo
 
-- Derivar a una persona experta o asociacion micologica local para identificacion.
-- Ante sospecha de ingesta de una especie toxica, derivar a servicios sanitarios y toxicologia.
+- casos con falsa sensacion de seguridad
+- recall sobre especies peligrosas o lookalikes toxicos
+- calidad de abstencion y deteccion de evidencia insuficiente
+- estabilidad del mensaje de no consumo

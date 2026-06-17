@@ -2,28 +2,41 @@
 
 ## Fase 1
 
-- clasificador mock conservador
-- coleccion de observaciones
-- frontend movil-first
-- catalogo de especies peligrosas
-- chatbot educativo con safety rails
+MVP mock funcional con FastAPI, React, SQLite, subida multiple de fotos, clasificacion orientativa y safety rails.
 
 ## Fase 2
 
-- autenticacion ligera para cuadernos personales de campo
-- geolocalizacion opcional
-- etiquetas por temporada, bosque y sustrato
-- panel de revision para expertos humanos
+Integracion con API externa tipo mushroom.id o primer pipeline visual con:
+
+- crop por YOLOE o YOLO26-seg
+- embeddings congelados con DINOv3, SigLIP2 y BioCLIP
+- ranking top-k sin romper la capa de seguridad
 
 ## Fase 3
 
-- adaptador HTTP para API externa de vision
-- ingestores y normalizacion de datasets FungiTastic, DF20 y FungiCLEF
-- evaluacion offline por clases de riesgo
-- versionado de prompts y politicas de seguridad
+Pipeline de datasets y entrenamiento con FungiTastic, DF20 y FungiCLEF, incluyendo:
+
+- fusion multi-imagen
+- fusion con metadatos
+- evaluacion top-k
+- coste de falsos seguros
+- checkpoints especificos de fungi
 
 ## Fase 4
 
-- modelo propio afinado para priorizacion de especies peligrosas
-- soporte multilingue
-- exportacion de observaciones anonimizadas para investigacion
+Risk engine y validacion humana:
+
+- lookalikes peligrosos
+- abstencion
+- open-set rejection
+- conformal prediction
+- cuentas, cola de revision, roles de experto y moderacion
+
+## Fase 5
+
+Produccion controlada:
+
+- PostgreSQL y almacenamiento objetual
+- cola de inferencia
+- observabilidad y versionado
+- modelo multimodal con imagen, metadatos, geografia, temporada y abstencion calibrada

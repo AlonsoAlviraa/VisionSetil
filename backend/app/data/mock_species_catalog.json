@@ -1,0 +1,74 @@
+[
+  {
+    "taxon": "Amanita phalloides",
+    "rank": "species",
+    "common_names": ["death cap", "oronja verde"],
+    "risk_level": "deadly",
+    "edibility_label": "dangerous_or_unknown",
+    "description": "Amanita phalloides. Greenish to olive cap, white gills, white stem, ring, bulbous base and volva. Deadly poisonous.",
+    "diagnostic_features": ["white gills", "volva", "ring", "bulbous base"],
+    "habitats": ["broadleaf forest", "oak forest", "beech forest"],
+    "substrates": ["soil"],
+    "lookalikes": ["Agaricus campestris", "Russula virescens", "Amanita citrina"]
+  },
+  {
+    "taxon": "Amanita virosa",
+    "rank": "species",
+    "common_names": ["destroying angel"],
+    "risk_level": "deadly",
+    "edibility_label": "dangerous_or_unknown",
+    "description": "Amanita virosa. White Amanita with white gills, ring and volva. Deadly poisonous.",
+    "diagnostic_features": ["white cap", "white gills", "volva", "ring"],
+    "habitats": ["forest"],
+    "substrates": ["soil"],
+    "lookalikes": ["Agaricus arvensis", "Leucoagaricus leucothites"]
+  },
+  {
+    "taxon": "Galerina marginata",
+    "rank": "species",
+    "common_names": ["funeral bell"],
+    "risk_level": "deadly",
+    "edibility_label": "dangerous_or_unknown",
+    "description": "Galerina marginata. Small brown mushroom growing on wood. Deadly poisonous and can be confused with edible wood-loving species.",
+    "diagnostic_features": ["brown cap", "wood substrate", "brown spores"],
+    "habitats": ["woodland"],
+    "substrates": ["dead wood"],
+    "lookalikes": ["Kuehneromyces mutabilis"]
+  },
+  {
+    "taxon": "Macrolepiota procera",
+    "rank": "species",
+    "common_names": ["parasol mushroom", "apagador"],
+    "risk_level": "risky_lookalikes",
+    "edibility_label": "dangerous_or_unknown",
+    "description": "Macrolepiota procera. Large parasol-like mushroom. Some similar species can cause poisoning.",
+    "diagnostic_features": ["large cap", "tall stem", "movable ring", "snake-skin stem pattern"],
+    "habitats": ["grassland", "forest edge"],
+    "substrates": ["soil"],
+    "lookalikes": ["Chlorophyllum brunneum", "Chlorophyllum molybdites", "Lepiota brunneoincarnata"]
+  },
+  {
+    "taxon": "Cortinarius orellanus",
+    "rank": "species",
+    "common_names": ["deadly webcap"],
+    "risk_level": "deadly",
+    "edibility_label": "dangerous_or_unknown",
+    "description": "Cortinarius orellanus. Brown to orange mushroom with cortina-like veil remains and serious toxic risk.",
+    "diagnostic_features": ["brown cap", "cortina", "forest habitat"],
+    "habitats": ["forest"],
+    "substrates": ["soil"],
+    "lookalikes": ["Cortinarius rubellus"]
+  },
+  {
+    "taxon": "Gyromitra esculenta",
+    "rank": "species",
+    "common_names": ["false morel"],
+    "risk_level": "high",
+    "edibility_label": "dangerous_or_unknown",
+    "description": "Gyromitra esculenta. Brain-like folded cap with known toxic risk.",
+    "diagnostic_features": ["brain-like cap", "folded surface", "spring"],
+    "habitats": ["conifer forest"],
+    "substrates": ["soil"],
+    "lookalikes": ["Morchella spp."]
+  }
+]

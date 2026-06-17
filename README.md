@@ -1,35 +1,56 @@
-# VisionSetil
+# mushroom-photo-id
 
-VisionSetil es una app educativa de identificacion visual de setas inspirada en patrones de mini-programa ligero: flujo movil-first, backend simple, coleccion de observaciones, chatbot explicativo y alertas reforzadas para especies peligrosas.
+MVP serio y seguro para identificacion orientativa de setas desde fotos. La app sigue un enfoque conservador inspirado en patrones chinos de mini-programa ligero: flujo guiado, backend simple, clasificador visual sustituible, coleccion personal, explicacion educativa y avisos fuertes para especies venenosas.
 
-La aplicacion nunca declara que una seta sea comestible o segura. Todas las respuestas se presentan como orientacion educativa con recomendacion explicita de validacion por una persona experta.
+Nunca usa lenguaje de consumo seguro. La salida siempre es orientativa y recomienda validacion humana.
 
-## Stack
+## Estructura
 
-- FastAPI
-- SQLite con SQLAlchemy
-- Jinja2 + HTML/CSS/JS movil-first
-- Pytest para tests
+```txt
+backend/
+  app/
+  requirements.txt
+  README.md
+frontend/
+  src/
+  package.json
+  README.md
+docs/
+```
 
-## Inicio rapido
+## Research usada
+
+Se ha alineado con `research_deteccion_setas_desde_fotos.md`, localizada en el entorno en `C:\Users\alonso.alvira\Downloads\research_deteccion_setas_desde_fotos.md`.
+
+## Backend
 
 ```bash
 python -m venv .venv
 .venv\Scripts\activate
-pip install -e .[dev]
+pip install -r backend/requirements.txt
 uvicorn app.main:app --reload
 ```
 
-La app queda disponible en `http://127.0.0.1:8000`.
+Ejecuta el servidor desde `backend/`.
+
+## Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
 ## Tests
 
 ```bash
-pytest
+python -m pytest backend/app/tests
 ```
 
 ## Documentacion
 
-- [Documentacion tecnica](./docs/TECHNICAL.md)
-- [Safety policy](./docs/SAFETY_POLICY.md)
-- [Roadmap](./docs/ROADMAP.md)
+- [docs/product_spec.md](./docs/product_spec.md)
+- [docs/architecture.md](./docs/architecture.md)
+- [docs/safety_policy.md](./docs/safety_policy.md)
+- [docs/chinese_reference_patterns.md](./docs/chinese_reference_patterns.md)
+- [docs/roadmap.md](./docs/roadmap.md)

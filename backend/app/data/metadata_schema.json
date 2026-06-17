@@ -1,0 +1,24 @@
+{
+  "schema_name": "fungitastic_fungiclef_inspired_metadata",
+  "fields": [
+    "country",
+    "region",
+    "latitude",
+    "longitude",
+    "observed_at",
+    "habitat",
+    "substrate",
+    "nearby_trees",
+    "altitude_m",
+    "smell",
+    "color_change_on_cut",
+    "user_notes"
+  ],
+  "encoding_strategy": {
+    "categorical": "hashing_or_one_hot",
+    "seasonality": "month_and_season_bucket",
+    "trees": "presence_count",
+    "coordinates": "optional_numeric_features",
+    "notes": "future_text_encoder_placeholder"
+  }
+}
