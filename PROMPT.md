@@ -1,496 +1,599 @@
-Actúa como un **Senior Computer Vision Evaluation Engineer + ML Safety Auditor**.
+Actúa como un **Senior ML Platform Engineer + Computer Vision Benchmark Engineer**.
 
-El proyecto VisionSetil ya tiene completadas:
+El proyecto VisionSetil ya tiene implementadas:
 
 * Fase 1: MVP funcional.
-* Fase 2: arquitectura avanzada con YOLOE-26, DINOv3, SigLIP 2, metadata encoder, open-set rejection y human review.
-* Fase 3: evaluación reproducible, auditoría de seguridad, reportes y 32 tests verdes.
+* Fase 2: pipeline avanzado con YOLOE-26, DINOv3, SigLIP 2, metadata encoder, open-set rejection y human review.
+* Fase 3: evaluación reproducible y auditoría de seguridad.
+* Fase 4: benchmark biológico, métricas taxonómicas, calibración, matrices de confusión y production readiness.
 
-Ahora quiero implementar la **Fase 4: Real Model Benchmark + Biological Validation**.
+Ahora quiero implementar la **Fase 5: Kaggle Benchmark Runner**.
 
-El objetivo de esta fase no es añadir features nuevas, sino demostrar con imágenes reales y modelos reales si el sistema identifica correctamente, cuándo falla, cuándo se abstiene y cuándo recomienda revisión humana.
+El objetivo es poder ejecutar VisionSetil en Kaggle con muchas imágenes, sin depender del ordenador local, generando reportes reproducibles.
 
 ---
 
 # 1. OBJETIVO PRINCIPAL
 
-Implementar una fase de validación real con:
+Preparar el proyecto para ejecutarse en Kaggle como benchmark batch.
 
-* modelos reales activados si están disponibles,
-* imágenes reales etiquetadas,
-* evaluación por especie,
-* evaluación por género,
-* evaluación por nivel de riesgo,
-* matriz de errores,
-* calibración de confianza,
-* análisis de casos peligrosos,
-* detección de sobreconfianza,
-* reporte técnico reproducible.
+No quiero servir la API FastAPI como producto en Kaggle. Quiero usar Kaggle para:
 
-El sistema debe seguir diferenciando claramente entre:
+* cargar datasets grandes de imágenes,
+* ejecutar el pipeline de evaluación,
+* generar crops,
+* generar embeddings,
+* guardar outputs intermedios,
+* calcular métricas,
+* generar reportes,
+* descargar resultados.
 
-* evaluación con mocks,
-* evaluación con modelos reales,
-* evaluación mixta.
+La ejecución debe funcionar aunque los modelos reales no estén disponibles, usando mocks/fallbacks, pero el reporte debe indicar claramente si se ha evaluado con:
 
-Si los modelos siguen en mock, el reporte debe indicar que no se está evaluando precisión biológica.
+* modelos reales,
+* mocks,
+* mezcla real/mock.
 
 ---
 
-# 2. INSPECCIÓN INICIAL
+# 2. CONTEXTO TÉCNICO ACTUAL
 
-Antes de tocar código:
-
-1. Lee:
-
-   * `walkthrough.md`
-   * `task.md`
-   * `README.md`
-   * `docs/evaluation_strategy.md`
-   * `docs/model_architecture.md`
-   * `docs/real_model_loading.md`
-   * `docs/safety_policy.md`
-   * `docs/open_set_rejection.md`
-   * `docs/human_review_workflow.md`
-
-2. Ejecuta:
+El benchmark local se ejecuta actualmente así:
 
 ```bash
-pytest
+python eval/scripts/run_eval.py \
+  --dataset eval/real_data/labels/real_observations_template.json \
+  --output eval/reports/real_report.json
 ```
 
-3. Ejecuta:
-
-```bash
-python eval/scripts/run_eval.py --dataset eval/datasets/sample_observations.json --output eval/reports/report.json
-```
-
-4. Comprueba el endpoint:
+Y genera:
 
 ```txt
-GET /models/status
-```
-
-5. Resume:
-
-   * qué modelos están reales,
-   * qué modelos están en fallback,
-   * qué datasets existen,
-   * qué métricas existen,
-   * qué falta para benchmark real.
-
-No pidas confirmación salvo bloqueo técnico real.
-
----
-
-# 3. DATASET REAL DE VALIDACIÓN
-
-Crear soporte para un dataset local de imágenes reales:
-
-```txt
-eval/real_data/
-  README.md
-  images/
-    .gitkeep
-  labels/
-    real_observations_template.json
-```
-
-El schema debe soportar:
-
-```json
-{
-  "observation_id": "real_001",
-  "expected_taxon": "Amanita phalloides",
-  "expected_genus": "Amanita",
-  "expected_family": "Amanitaceae",
-  "risk_level": "deadly",
-  "images": [
-    "eval/real_data/images/real_001_cap.jpg",
-    "eval/real_data/images/real_001_gills.jpg",
-    "eval/real_data/images/real_001_base.jpg"
-  ],
-  "metadata": {
-    "country": "España",
-    "region": "Navarra",
-    "observed_at": "2026-10-12",
-    "habitat": "broadleaf forest",
-    "substrate": "soil",
-    "nearby_trees": ["oak", "beech"],
-    "altitude_m": 500,
-    "smell": null,
-    "color_change_on_cut": null,
-    "user_notes": "Fotos etiquetadas por experto o fuente validada."
-  },
-  "source": {
-    "type": "expert_labeled",
-    "license": "local_private",
-    "verified_by": "human_expert",
-    "notes": "No redistribuir imágenes si no hay licencia."
-  },
-  "expected_behavior": {
-    "must_not_claim_safe": true,
-    "should_detect_genus": true,
-    "should_recommend_human_review": true,
-    "should_flag_dangerous_lookalikes": true
-  }
-}
-```
-
-No descargues datasets automáticamente.
-
-Deja documentación clara para que el usuario pueda añadir imágenes reales manualmente.
-
----
-
-# 4. NUEVAS MÉTRICAS DE VALIDACIÓN BIOLÓGICA
-
-Añade al motor de evaluación métricas adicionales:
-
-```json
-{
-  "species_top1_accuracy": 0.0,
-  "species_top5_accuracy": 0.0,
-  "genus_accuracy": 0.0,
-  "family_accuracy": 0.0,
-  "risk_level_accuracy": 0.0,
-
-  "toxic_not_flagged_rate": 0.0,
-  "dangerous_case_without_human_review_rate": 0.0,
-  "dangerous_genus_missed_rate": 0.0,
-  "overconfident_wrong_rate": 0.0,
-
-  "open_set_true_positive_rate": 0.0,
-  "open_set_false_positive_rate": 0.0,
-  "human_review_recall_on_dangerous_cases": 0.0,
-
-  "mean_confidence_correct": 0.0,
-  "mean_confidence_wrong": 0.0,
-  "expected_calibration_error": 0.0
-}
-```
-
-Define claramente cada métrica en `docs/evaluation_strategy.md`.
-
----
-
-# 5. MATRIZ DE ERRORES
-
-Implementa generación de matrices:
-
-```txt
+eval/reports/real_report.json
+eval/reports/real_report.md
 eval/reports/confusion_species.csv
 eval/reports/confusion_genus.csv
 eval/reports/confusion_risk_level.csv
-```
-
-Cada fila debe incluir:
-
-```csv
-expected,predicted,count
-Amanita phalloides,Amanita sp.,3
-Amanita phalloides,unknown_fungus,2
-Macrolepiota procera,Chlorophyllum sp.,1
-```
-
-También genera:
-
-```txt
 eval/reports/failure_cases.json
 eval/reports/dangerous_failures.json
 eval/reports/overconfident_wrong_cases.json
 ```
 
----
-
-# 6. CALIBRACIÓN DE CONFIANZA
-
-Añade un módulo:
+Ahora quiero que esto pueda ejecutarse en Kaggle usando rutas tipo:
 
 ```txt
-eval/scripts/calibration.py
+/kaggle/input/...
+/kaggle/working/...
 ```
 
-Debe calcular:
+---
 
-* confidence bins,
-* accuracy por bin,
-* expected calibration error,
-* overconfident wrong cases.
+# 3. TAREAS PRINCIPALES
 
-Ejemplo de bins:
+Implementa soporte completo para Kaggle.
+
+Crea o modifica estos elementos:
+
+```txt
+kaggle/
+  README.md
+  vision_setil_kaggle_benchmark.ipynb
+  kaggle_run_config.example.json
+  prepare_kaggle_dataset.py
+  run_kaggle_benchmark.py
+
+docs/
+  kaggle_benchmark.md
+```
+
+Si el repo ya tiene otra estructura, adapta sin romper lo existente.
+
+---
+
+# 4. CONFIGURACIÓN KAGGLE
+
+Crear un archivo:
+
+```txt
+kaggle/kaggle_run_config.example.json
+```
+
+Con estructura:
 
 ```json
-[
-  {
-    "bin": "0.0-0.1",
-    "count": 12,
-    "accuracy": 0.08,
-    "mean_confidence": 0.06
+{
+  "dataset_path": "/kaggle/input/visionsetil-real-data/real_observations.json",
+  "images_root": "/kaggle/input/visionsetil-real-data/images",
+  "output_dir": "/kaggle/working/visionsetil_outputs",
+  "mode": "full_pipeline",
+  "stages": {
+    "run_detection": true,
+    "run_dino_embeddings": true,
+    "run_siglip_embeddings": true,
+    "run_fusion_and_eval": true
   },
-  {
-    "bin": "0.8-0.9",
-    "count": 5,
-    "accuracy": 0.40,
-    "mean_confidence": 0.84
+  "models": {
+    "use_real_yoloe": false,
+    "use_real_dinov3": false,
+    "use_real_siglip2": false,
+    "yoloe_model_path": "/kaggle/input/visionsetil-models/yoloe.pt",
+    "dino_model_path": "/kaggle/input/visionsetil-models/dinov3",
+    "siglip_model_path": "/kaggle/input/visionsetil-models/siglip2"
+  },
+  "runtime": {
+    "device": "auto",
+    "batch_size": 8,
+    "num_workers": 2,
+    "max_cases": null,
+    "save_intermediate_outputs": true
+  },
+  "safety": {
+    "enforce_safety_audit": true,
+    "fail_on_safety_violation": true
   }
-]
-```
-
-El reporte debe avisar si hay predicciones incorrectas con confianza alta.
-
----
-
-# 7. VALIDACIÓN DE YOLOE REAL
-
-Añade evaluación específica del detector:
-
-```json
-{
-  "detector_backend": "real_yoloe",
-  "total_images": 0,
-  "images_with_detection": 0,
-  "detection_rate": 0.0,
-  "mean_detection_confidence": 0.0,
-  "full_image_fallback_rate": 0.0,
-  "crop_files_created": 0,
-  "mask_files_created": 0
 }
 ```
 
-Si no hay anotaciones de bbox, no calcules IoU real. Solo mide cobertura operativa.
-
-Si en el futuro existen bboxes etiquetados, deja preparada la estructura para calcular:
-
-* IoU,
-* mAP,
-* recall detector,
-* precision detector.
-
 ---
 
-# 8. VALIDACIÓN DE DINOv3 Y SIGLIP 2
+# 5. SCRIPT PRINCIPAL PARA KAGGLE
 
-Añade desglose de embeddings:
-
-```json
-{
-  "dino_backend": "real_dinov3",
-  "siglip_backend": "real_siglip2",
-  "embedding_dim_dino": 1024,
-  "embedding_dim_siglip": 768,
-  "embedding_normalization_ok": true,
-  "embedding_cache_hit_rate": 0.0,
-  "mean_pairwise_similarity_same_genus": 0.0,
-  "mean_pairwise_similarity_different_genus": 0.0
-}
-```
-
-Si hay suficientes casos reales, calcula separación básica:
+Crear:
 
 ```txt
-same_genus_similarity > different_genus_similarity
+kaggle/run_kaggle_benchmark.py
 ```
 
-Si no hay suficientes casos, reporta `not_enough_data`.
+Debe ejecutarse así:
+
+```bash
+python kaggle/run_kaggle_benchmark.py \
+  --config kaggle/kaggle_run_config.example.json
+```
+
+Debe hacer:
+
+1. Leer config.
+2. Validar rutas `/kaggle/input`.
+3. Crear output dir en `/kaggle/working`.
+4. Copiar o adaptar dataset labels si hace falta.
+5. Resolver rutas relativas de imágenes.
+6. Ejecutar `eval/scripts/run_eval.py`.
+7. Guardar reportes en `/kaggle/working/visionsetil_outputs`.
+8. Copiar outputs relevantes al final.
+9. Imprimir resumen claro en consola.
+10. No romper si faltan algunas imágenes; marcarlas como skipped.
+
+Debe generar:
+
+```txt
+/kaggle/working/visionsetil_outputs/
+  real_report.json
+  real_report.md
+  confusion_species.csv
+  confusion_genus.csv
+  confusion_risk_level.csv
+  failure_cases.json
+  dangerous_failures.json
+  overconfident_wrong_cases.json
+  model_status.json
+  kaggle_run_summary.md
+```
 
 ---
 
-# 9. REPORTE MARKDOWN AVANZADO
+# 6. MODO STAGED PARA AHORRAR MEMORIA
 
-Actualiza `report.md` para incluir:
+Kaggle puede quedarse corto si intenta cargar YOLOE-26 + DINOv3 + SigLIP 2 a la vez.
+
+Implementa un modo staged.
+
+Debe soportar estos modos:
+
+```txt
+full_pipeline
+detection_only
+dino_embeddings_only
+siglip_embeddings_only
+fusion_eval_only
+```
+
+La idea:
+
+```txt
+Stage 1:
+YOLOE → crops/masks → guardar crops
+
+Stage 2:
+DINOv3 → embeddings visuales → guardar embeddings_dino.parquet/jsonl/npy
+
+Stage 3:
+SigLIP 2 → embeddings imagen-texto → guardar embeddings_siglip.parquet/jsonl/npy
+
+Stage 4:
+Fusion + ranking + evaluation → reportes finales
+```
+
+Añade argumentos:
+
+```bash
+python kaggle/run_kaggle_benchmark.py --config kaggle/config.json --mode detection_only
+
+python kaggle/run_kaggle_benchmark.py --config kaggle/config.json --mode dino_embeddings_only
+
+python kaggle/run_kaggle_benchmark.py --config kaggle/config.json --mode siglip_embeddings_only
+
+python kaggle/run_kaggle_benchmark.py --config kaggle/config.json --mode fusion_eval_only
+```
+
+Si todavía no existen implementaciones separadas para stages, deja wrappers preparados y documenta qué parte llama al pipeline actual.
+
+---
+
+# 7. NOTEBOOK KAGGLE
+
+Crear:
+
+```txt
+kaggle/vision_setil_kaggle_benchmark.ipynb
+```
+
+El notebook debe tener secciones claras:
 
 ```md
-# VisionSetil Real Model Benchmark Report
+# VisionSetil Kaggle Benchmark
 
-## Executive Summary
+## 1. Environment Check
 
-## Model Status
+## 2. Install Dependencies
 
-## Dataset
+## 3. Paths and Config
 
-## Real vs Mock Warning
+## 4. Model Status
 
-## Biological Identification Metrics
+## 5. Dataset Preview
 
-## Safety Metrics
+## 6. Run Benchmark
 
-## Open-Set Rejection Metrics
+## 7. Summarize Results
 
-## Human Review Metrics
+## 8. Show Key Metrics
 
-## Detector Evaluation
+## 9. Inspect Dangerous Failures
 
-## Embedding Evaluation
-
-## Calibration
-
-## Confusion Matrices
-
-## Dangerous Failure Cases
-
-## Overconfident Wrong Cases
-
-## Skipped Cases
-
-## Recommendations
-
-## Production Readiness Assessment
+## 10. Download Outputs
 ```
 
-La sección `Production Readiness Assessment` debe clasificar el sistema como:
+Debe incluir comandos como:
 
-```txt
-NOT_READY_FOR_PRODUCTION
-READY_FOR_INTERNAL_TESTING
-READY_FOR_EXPERT_REVIEW_PILOT
-READY_FOR_LIMITED_PUBLIC_EDUCATIONAL_PILOT
+```bash
+!python kaggle/run_kaggle_benchmark.py --config kaggle/kaggle_run_config.example.json
 ```
 
-Por defecto, si no hay dataset real suficiente o modelos reales, debe ser:
+Y después:
+
+```bash
+!python eval/scripts/summarize_eval.py --report /kaggle/working/visionsetil_outputs/real_report.json
+```
+
+Debe mostrar:
+
+* model stack,
+* real/mock warning,
+* species_top1_accuracy,
+* species_top5_accuracy,
+* genus_accuracy,
+* false_safe_rate,
+* toxic_not_flagged_rate,
+* dangerous_case_without_human_review_rate,
+* overconfident_wrong_rate,
+* readiness.
+
+---
+
+# 8. PREPARACIÓN DE DATASET PARA KAGGLE
+
+Crear:
 
 ```txt
-NOT_READY_FOR_PRODUCTION
+kaggle/prepare_kaggle_dataset.py
+```
+
+Debe ayudar a convertir un dataset local a formato Kaggle.
+
+Entrada esperada:
+
+```bash
+python kaggle/prepare_kaggle_dataset.py \
+  --labels eval/real_data/labels/real_observations_template.json \
+  --images-root eval/real_data/images \
+  --output-dir kaggle_dataset_export
+```
+
+Debe generar:
+
+```txt
+kaggle_dataset_export/
+  real_observations.json
+  images/
+    ...
+  README.md
+```
+
+El JSON debe usar rutas relativas compatibles con Kaggle:
+
+```json
+{
+  "images": [
+    "images/real_001_cap.jpg",
+    "images/real_001_gills.jpg"
+  ]
+}
+```
+
+No debe incluir rutas absolutas locales tipo:
+
+```txt
+C:\Users\...
+/home/user/...
 ```
 
 ---
 
-# 10. CRITERIOS DE READINESS
+# 9. SOPORTE PARA DATASETS GRANDES
 
-Implementa reglas simples:
+Añade opciones:
 
 ```txt
-NOT_READY_FOR_PRODUCTION:
-- modelos en mock
-- menos de 100 casos reales
-- no hay casos peligrosos reales
-- toxic_not_flagged_rate > 0
-- dangerous_case_without_human_review_rate > 0
-- overconfident_wrong_rate alto
+--max-cases
+--sample-risk-level
+--sample-genus
+--shuffle
+--seed
+```
 
-READY_FOR_INTERNAL_TESTING:
-- modelos reales funcionando
-- dataset real pequeño
-- sin violaciones de safety
-- reportes completos
+Ejemplos:
 
-READY_FOR_EXPERT_REVIEW_PILOT:
-- modelos reales
-- dataset real suficiente
-- revisión humana operativa
-- casos peligrosos correctamente derivados a revisión
+```bash
+python kaggle/run_kaggle_benchmark.py \
+  --config kaggle/config.json \
+  --max-cases 500 \
+  --shuffle \
+  --seed 42
+```
 
-READY_FOR_LIMITED_PUBLIC_EDUCATIONAL_PILOT:
-- validación amplia
-- revisión humana operativa
-- disclaimers fuertes
-- monitorización de errores
-- baja sobreconfianza
+Debe permitir probar primero un subset pequeño:
+
+```txt
+50 casos → smoke test
+500 casos → benchmark medio
+2000+ casos → benchmark serio
 ```
 
 ---
 
-# 11. TESTS NUEVOS
+# 10. VALIDACIÓN DE MODELOS EN KAGGLE
 
-Añade tests para:
+Añade lógica para guardar:
 
-1. Cargar dataset real template.
-2. Calcular `toxic_not_flagged_rate`.
-3. Calcular `dangerous_case_without_human_review_rate`.
-4. Calcular `dangerous_genus_missed_rate`.
-5. Detectar `overconfident_wrong_cases`.
-6. Generar matrices de confusión.
-7. Calcular calibration bins.
-8. Calcular expected calibration error.
-9. Generar detector evaluation.
-10. Generar embedding evaluation.
-11. Reportar `not_enough_data` cuando falten casos.
-12. Clasificar readiness como `NOT_READY_FOR_PRODUCTION` si hay mocks.
-13. Clasificar readiness como `NOT_READY_FOR_PRODUCTION` si hay pocos datos reales.
-14. Generar `report.md` avanzado.
+```txt
+model_status.json
+```
+
+Debe contener:
+
+```json
+{
+  "environment": "kaggle",
+  "device": "cuda",
+  "gpu_name": "...",
+  "models": {
+    "detector": {
+      "backend": "mock_yoloe_fallback",
+      "loaded": false
+    },
+    "visual_embedder": {
+      "backend": "real_dinov3",
+      "loaded": true
+    },
+    "image_text_embedder": {
+      "backend": "mock_siglip2_fallback",
+      "loaded": false
+    }
+  }
+}
+```
+
+El reporte debe advertir:
+
+```txt
+If all models are mocks, this run validates pipeline behavior and safety logic, not biological identification accuracy.
+```
+
+---
+
+# 11. CONTROL DE MEMORIA
+
+Añade recomendaciones y checks:
+
+* imprimir uso de GPU si está disponible,
+* imprimir uso de RAM si es sencillo,
+* permitir batch size configurable,
+* permitir limpiar caché de CUDA entre stages,
+* permitir `--cpu-only`,
+* no cargar todos los modelos si el modo staged no lo requiere.
+
+Variables:
+
+```txt
+KAGGLE_BATCH_SIZE=8
+KAGGLE_CPU_ONLY=false
+KAGGLE_CLEAR_CUDA_CACHE_BETWEEN_STAGES=true
+```
 
 ---
 
 # 12. DOCUMENTACIÓN
 
-Crear o actualizar:
+Crear:
 
 ```txt
-docs/real_benchmark_strategy.md
-docs/production_readiness.md
-eval/real_data/README.md
-docs/evaluation_strategy.md
-README.md
+docs/kaggle_benchmark.md
 ```
 
-Debe quedar claro:
+Debe explicar:
 
-* cómo añadir imágenes reales,
-* cómo etiquetar observaciones,
-* cómo ejecutar benchmark,
-* cómo interpretar readiness,
-* por qué mocks no validan identificación biológica,
-* qué métricas bloquean producción,
-* cómo revisar dangerous failures.
+## Objetivo
+
+Ejecutar VisionSetil con muchas imágenes fuera del entorno local.
+
+## Cuándo usar Kaggle
+
+* benchmark batch,
+* datasets grandes,
+* evaluación reproducible,
+* outputs descargables.
+
+## Cuándo no usar Kaggle
+
+* API persistente,
+* producto en producción,
+* inferencia en tiempo real.
+
+## Cómo preparar dataset
+
+Incluir pasos:
+
+```bash
+python kaggle/prepare_kaggle_dataset.py \
+  --labels eval/real_data/labels/real_observations_template.json \
+  --images-root eval/real_data/images \
+  --output-dir kaggle_dataset_export
+```
+
+## Cómo subirlo a Kaggle
+
+Explicar:
+
+1. Crear Dataset en Kaggle.
+2. Subir `real_observations.json`.
+3. Subir carpeta `images/`.
+4. Añadir dataset al notebook.
+5. Ajustar config.
+
+## Cómo ejecutar benchmark
+
+```bash
+python kaggle/run_kaggle_benchmark.py \
+  --config kaggle/kaggle_run_config.example.json
+```
+
+## Cómo interpretar resultados
+
+Explicar:
+
+* real vs mock,
+* readiness,
+* safety metrics,
+* biological metrics,
+* skipped cases,
+* dangerous failures,
+* overconfident wrong cases.
+
+## Cuándo pasar a RunPod/Modal
+
+Explicar:
+
+* si Kaggle no tiene VRAM suficiente,
+* si se quieren cargar los tres modelos grandes a la vez,
+* si se necesitan muchas horas,
+* si se quiere API temporal.
 
 ---
 
-# 13. NO HACER
+# 13. TESTS
 
-No descargues datasets grandes automáticamente.
+Añadir tests para:
 
-No afirmes que el sistema es preciso sin benchmark real.
-
-No elimines mocks.
-
-No relajes la Safety Layer.
-
-No permitas salidas de consumo seguro.
-
-No conviertas open-set rejection en un simple warning: debe afectar ranking, taxón final y human review.
+1. Cargar config Kaggle.
+2. Resolver rutas `/kaggle/input`.
+3. Crear output dir.
+4. Preparar dataset export con rutas relativas.
+5. Ejecutar benchmark con dataset pequeño/mock.
+6. Generar `kaggle_run_summary.md`.
+7. Generar `model_status.json`.
+8. Manejar imágenes faltantes sin romper.
+9. `--max-cases` limita casos.
+10. `--shuffle --seed` es reproducible.
+11. Modo `full_pipeline` funciona.
+12. Modos staged no rompen aunque usen mocks.
 
 ---
 
-# 14. ORDEN DE TRABAJO
+# 14. NO HACER
+
+No descargar datasets enormes automáticamente.
+
+No subir claves ni credenciales.
+
+No hardcodear rutas personales.
+
+No asumir GPU siempre disponible.
+
+No romper ejecución local.
+
+No eliminar scripts existentes de `eval/`.
+
+No afirmar precisión biológica si se ejecuta con mocks.
+
+No relajar la Safety Layer.
+
+---
+
+# 15. ORDEN DE TRABAJO
 
 Sigue este orden:
 
-1. Inspecciona estado actual.
-2. Ejecuta tests existentes.
-3. Revisa evaluación Fase 3.
-4. Crea soporte `eval/real_data`.
-5. Extiende schema de dataset.
-6. Añade métricas biológicas.
-7. Añade métricas de seguridad avanzadas.
-8. Añade matrices de confusión.
-9. Añade calibración.
-10. Añade evaluación de detector.
-11. Añade evaluación de embeddings.
-12. Añade production readiness assessment.
-13. Actualiza reportes JSON/MD.
-14. Añade tests.
-15. Actualiza documentación.
+1. Inspecciona el repo actual.
+2. Lee README y docs de evaluación.
+3. Ejecuta tests existentes.
+4. Crea carpeta `kaggle/`.
+5. Crea config example.
+6. Crea script de preparación de dataset.
+7. Crea script runner de Kaggle.
+8. Añade soporte para rutas `/kaggle/input` y `/kaggle/working`.
+9. Añade soporte `--max-cases`, `--shuffle`, `--seed`.
+10. Añade modo staged.
+11. Crea notebook Kaggle.
+12. Añade model status export.
+13. Añade summary markdown.
+14. Crea documentación.
+15. Añade tests.
 16. Ejecuta suite completa.
 17. Devuelve resumen final con:
 
-    * archivos creados/modificados,
-    * métricas añadidas,
-    * cómo ejecutar benchmark real,
-    * cómo interpretar readiness,
-    * qué falta para piloto con expertos.
+    * archivos creados,
+    * cómo exportar dataset,
+    * cómo subirlo a Kaggle,
+    * cómo ejecutar notebook,
+    * cómo ejecutar benchmark,
+    * cómo interpretar resultados,
+    * limitaciones de Kaggle,
+    * cuándo pasar a RunPod/Modal.
 
 ---
 
-# 15. RESULTADO ESPERADO
+# 16. RESULTADO ESPERADO
 
-Al terminar debe existir una Fase 4 donde podamos decir:
+Al terminar debe existir una Fase 5 donde podamos decir:
 
-* El sistema tiene benchmark real preparado.
-* El sistema distingue claramente mock vs real.
-* El sistema mide errores biológicos, no solo seguridad textual.
-* El sistema detecta casos peligrosos no bien tratados.
-* El sistema mide sobreconfianza.
-* El sistema genera matrices de confusión.
-* El sistema evalúa detector y embeddings.
-* El sistema emite un nivel de readiness conservador.
-* El sistema sigue bloqueando cualquier consejo de consumo.
+* VisionSetil puede ejecutarse en Kaggle.
+* El dataset local puede exportarse a formato Kaggle.
+* El benchmark puede correr con muchas imágenes.
+* Los outputs se guardan en `/kaggle/working`.
+* Hay notebook preparado.
+* Hay modo staged para ahorrar memoria.
+* Hay resumen de modelos real/mock.
+* Hay reportes descargables.
+* El sistema sigue siendo seguro y auditable.
+* Kaggle se usa como entorno de benchmark, no como producción.

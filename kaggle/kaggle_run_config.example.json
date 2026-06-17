@@ -1,0 +1,31 @@
+{
+  "dataset_path": "/kaggle/input/visionsetil-real-data/real_observations.json",
+  "images_root": "/kaggle/input/visionsetil-real-data/images",
+  "output_dir": "/kaggle/working/visionsetil_outputs",
+  "mode": "full_pipeline",
+  "stages": {
+    "run_detection": true,
+    "run_dino_embeddings": true,
+    "run_siglip_embeddings": true,
+    "run_fusion_and_eval": true
+  },
+  "models": {
+    "use_real_yoloe": false,
+    "use_real_dinov3": false,
+    "use_real_siglip2": false,
+    "yoloe_model_path": "/kaggle/input/visionsetil-models/yoloe.pt",
+    "dino_model_path": "/kaggle/input/visionsetil-models/dinov3",
+    "siglip_model_path": "/kaggle/input/visionsetil-models/siglip2"
+  },
+  "runtime": {
+    "device": "auto",
+    "batch_size": 8,
+    "num_workers": 2,
+    "max_cases": null,
+    "save_intermediate_outputs": true
+  },
+  "safety": {
+    "enforce_safety_audit": true,
+    "fail_on_safety_violation": true
+  }
+}
