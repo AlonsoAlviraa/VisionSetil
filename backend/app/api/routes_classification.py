@@ -79,7 +79,20 @@ def classify_observation_advanced(observation_id: int, db: Session = Depends(get
     crop_paths = [item.crop_path for item in detections]
     dino_embeddings = registry.visual_embedder.embed_images(crop_paths)
     siglip_image_embeddings = registry.image_text_embedder.embed_images(crop_paths)
-    species_catalog = list_mock_species_catalog()
+    
+    # Try to load real species index with precomputed prototypes
+    species_catalog = None
+    index_metadata = {}
+    catalog_version = "mock_catalog_v1"
+    try:
+        from app.services.species_catalog import load_real_species_index
+        species_catalog, index_metadata = load_real_species_index()
+        catalog_version = f"real_species_catalog_v2_{index_metadata.get('total_species', 0)}_species"
+    except FileNotFoundError:
+        # Fallback to mock catalog
+        species_catalog = list_mock_species_catalog()
+        catalog_version = "mock_catalog_v1_fallback"
+    
     has_precomputed = False
     if species_catalog and "dino_reference_embedding" in species_catalog[0]:
         has_precomputed = True
@@ -295,13 +308,17 @@ def classify_observation_advanced(observation_id: int, db: Session = Depends(get
             quality_warnings=quality.quality_warnings,
         ),
         trace=TraceResponse(
-            pipeline_version="advanced-mvp-v2",
-            classifier_strategy="yoloe_dinov3_siglip2_metadata_ranker_with_safety_fallbacks",
+            pipeline_version="advanced-mvp-v2-phase6",
+            classifier_strategy="candidate_ranker_v2_cosine_similarity_l2_normalized",
             segmentation_strategy="yoloe_or_full_image_mock_crop",
             visual_backbone_plan=["DINOv3", "SigLIP2", "FungiTastic/FungiCLEF metadata"],
             metadata_fusion_plan="weighted_multi_image_plus_metadata_fusion",
-            open_set_strategy="fallback_margin_and_unknown_rejection_planned",
+            open_set_strategy="calibrated_thresholds_with_margin_and_unknown_rejection",
             human_review_path="expert_review_recommended_for_risky_or_low_evidence_cases",
+            ranker_version="candidate_ranker_v2",
+            catalog_version=catalog_version,
+            similarity_metric="cosine_l2_normalized",
+            index_metadata=index_metadata,
         ),
         final_warning=safe["final_warning"],
         open_set=OpenSetResponse(

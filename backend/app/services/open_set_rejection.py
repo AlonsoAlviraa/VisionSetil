@@ -73,12 +73,14 @@ class OpenSetRejectionService:
                     has_deadly_lookalike = True
                     break
 
+        # Load calibrated thresholds
         min_conf = settings.open_set_min_confidence
+        min_margin = settings.open_set_min_margin
         try:
-            from app.services.species_catalog import list_mock_species_catalog
-            catalog = list_mock_species_catalog()
-            if catalog and "open_set_min_confidence_calibrated" in catalog[0]:
-                min_conf = catalog[0]["open_set_min_confidence_calibrated"]
+            from app.services.species_catalog import load_open_set_thresholds
+            thresholds = load_open_set_thresholds()
+            min_conf = thresholds.get("calibrated_threshold", min_conf)
+            min_margin = thresholds.get("calibrated_margin", min_margin)
         except Exception:
             pass
 
@@ -86,7 +88,7 @@ class OpenSetRejectionService:
             is_unknown_or_uncertain = True
             reason = "low_top1_confidence"
             decision = "reject_to_genus_or_human_review"
-        elif margin < settings.open_set_min_margin:
+        elif margin < min_margin:
             is_unknown_or_uncertain = True
             reason = "low_margin"
             decision = "reject_to_genus_or_human_review"

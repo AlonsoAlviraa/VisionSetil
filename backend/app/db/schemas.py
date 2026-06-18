@@ -82,6 +82,10 @@ class TraceResponse(BaseModel):
     metadata_fusion_plan: str
     open_set_strategy: str
     human_review_path: str
+    ranker_version: str | None = None
+    catalog_version: str | None = None
+    similarity_metric: str | None = None
+    index_metadata: dict | None = None
 
 
 class ModelStackResponse(BaseModel):
