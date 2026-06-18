@@ -267,6 +267,31 @@ def main():
     if cpu_only:
         env["FORCE_CPU"] = "true"
 
+    # Precompute reference embeddings if they do not exist
+    real_catalog_path = output_dir / "real_species_catalog.json"
+    if not real_catalog_path.exists():
+        print(f"\nReal species catalog not found at {real_catalog_path}. Precomputing reference embeddings...")
+        precompute_script_path = root_dir / "eval" / "scripts" / "precompute_reference_embeddings.py"
+        precompute_cmd = [
+            sys.executable,
+            str(precompute_script_path),
+            "--dataset", str(converted_dataset_path),
+            "--output", str(real_catalog_path),
+            "--images-root", str(dataset_root)
+        ]
+        print(f"Running precomputation: {' '.join(precompute_cmd)}")
+        pre_res = subprocess.run(precompute_cmd, capture_output=True, text=True, env=env)
+        if pre_res.returncode != 0:
+            print("Error running precompute_reference_embeddings.py:", file=sys.stderr)
+            print(pre_res.stderr, file=sys.stderr)
+            sys.exit(pre_res.returncode)
+        print(pre_res.stdout)
+    else:
+        print(f"\nFound existing real species catalog at {real_catalog_path}")
+
+    # Point backend to the real species catalog
+    env["MOCK_SPECIES_CATALOG_PATH"] = str(real_catalog_path)
+
     cmd = [
         sys.executable,
         str(eval_script_path),

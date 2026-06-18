@@ -80,7 +80,17 @@ def classify_observation_advanced(observation_id: int, db: Session = Depends(get
     dino_embeddings = registry.visual_embedder.embed_images(crop_paths)
     siglip_image_embeddings = registry.image_text_embedder.embed_images(crop_paths)
     species_catalog = list_mock_species_catalog()
-    species_text_embeddings = registry.image_text_embedder.embed_texts([item["description"] for item in species_catalog])
+    has_precomputed = False
+    if species_catalog and "dino_reference_embedding" in species_catalog[0]:
+        has_precomputed = True
+        species_text_embeddings = []
+    else:
+        species_text_embeddings = registry.image_text_embedder.embed_texts([item["description"] for item in species_catalog])
+        for idx, text_emb in enumerate(species_text_embeddings):
+            species_catalog[idx]["dino_reference_embedding"] = [0.0] * settings.dino_embedding_dim
+            species_catalog[idx]["siglip_text_embedding"] = text_emb.vector
+            species_catalog[idx]["siglip_reference_embedding"] = [0.0] * settings.siglip_embedding_dim
+
     metadata_vector = MetadataEncoder().encode(metadata)
     representation = MultimodalFusionService().fuse(
         dino_embeddings=dino_embeddings,
@@ -98,6 +108,30 @@ def classify_observation_advanced(observation_id: int, db: Session = Depends(get
 
     mock = MockMushroomClassifier()
     baseline = mock.classify(observation, images)
+
+    # Store raw candidates before safety layer or open-set rejection degrades them
+    raw_candidates_results = [
+        CandidateResult(
+            taxon=item["taxon"],
+            rank=item["rank"],
+            confidence=item["confidence"],
+            evidence_score=item["evidence_score"],
+            metadata_score=item["metadata_score"],
+            visual_score=item["visual_score"],
+            dino_visual_score=item.get("dino_visual_score", 0.0),
+            siglip_image_text_score=item.get("siglip_image_text_score", 0.0),
+            risk_score=item.get("risk_score", 0.0),
+            fusion_score=item.get("fusion_score", 0.0),
+            risk_level=item["risk_level"],
+            edibility_label=item["edibility_label"],
+            reasoning=baseline.candidates[0].reasoning if baseline.candidates else [],
+            danger_notes=baseline.candidates[0].danger_notes if baseline.candidates else [],
+            lookalikes=item["lookalikes"],
+            explanation=item["explanation"],
+        )
+        for item in ranked
+    ]
+
     safe = SafetyLayer().apply(
         candidates=ranked,
         missing_evidence=list(baseline.missing_evidence),
@@ -124,6 +158,10 @@ def classify_observation_advanced(observation_id: int, db: Session = Depends(get
             evidence_score=item["evidence_score"],
             metadata_score=item["metadata_score"],
             visual_score=item["visual_score"],
+            dino_visual_score=item.get("dino_visual_score", 0.0),
+            siglip_image_text_score=item.get("siglip_image_text_score", 0.0),
+            risk_score=item.get("risk_score", 0.0),
+            fusion_score=item.get("fusion_score", 0.0),
             risk_level=item["risk_level"],
             edibility_label=item["edibility_label"],
             reasoning=baseline.candidates[0].reasoning if baseline.candidates else [],
@@ -238,6 +276,7 @@ def classify_observation_advanced(observation_id: int, db: Session = Depends(get
         ),
         candidates=candidates,
         top_candidates=candidates,
+        raw_candidates=raw_candidates_results,
         missing_evidence=safe["missing_evidence"],
         explanation=baseline.explanation,
         questions_for_user=baseline.questions_for_user,

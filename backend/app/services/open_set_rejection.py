@@ -73,7 +73,16 @@ class OpenSetRejectionService:
                     has_deadly_lookalike = True
                     break
 
-        if top1_conf < settings.open_set_min_confidence:
+        min_conf = settings.open_set_min_confidence
+        try:
+            from app.services.species_catalog import list_mock_species_catalog
+            catalog = list_mock_species_catalog()
+            if catalog and "open_set_min_confidence_calibrated" in catalog[0]:
+                min_conf = catalog[0]["open_set_min_confidence_calibrated"]
+        except Exception:
+            pass
+
+        if top1_conf < min_conf:
             is_unknown_or_uncertain = True
             reason = "low_top1_confidence"
             decision = "reject_to_genus_or_human_review"

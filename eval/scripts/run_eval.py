@@ -336,14 +336,18 @@ def main():
         risk_level = obs_data.get("risk_level", "low")
 
         candidates = payload.get("candidates", [])
-        predicted_top1 = candidates[0]["taxon"] if candidates else "unknown_fungus"
+        raw_candidates = payload.get("raw_candidates", [])
+        if not raw_candidates:
+            raw_candidates = candidates
+
+        predicted_top1 = raw_candidates[0]["taxon"] if raw_candidates else "unknown_fungus"
         predicted_genus = predicted_top1.split()[0] if predicted_top1 and predicted_top1 != "unknown_fungus" else "unknown"
         predicted_family = GENUS_TO_FAMILY.get(predicted_genus.lower(), "unknown")
-        predicted_risk_level = candidates[0].get("risk_level", "unknown") if candidates else "unknown"
-        top1_conf = candidates[0].get("confidence", 0.0) if candidates else 0.0
+        predicted_risk_level = raw_candidates[0].get("risk_level", "unknown") if raw_candidates else "unknown"
+        top1_conf = raw_candidates[0].get("confidence", 0.0) if raw_candidates else 0.0
 
         is_top1 = (predicted_top1.lower() == expected_taxon.lower())
-        is_top5 = any(c["taxon"].lower() == expected_taxon.lower() for c in candidates)
+        is_top5 = any(c["taxon"].lower() == expected_taxon.lower() for c in raw_candidates)
         is_genus = (predicted_genus.lower() == expected_genus.lower())
         is_family = (predicted_family.lower() == expected_family.lower())
         is_risk_level = (predicted_risk_level.lower() == risk_level.lower())

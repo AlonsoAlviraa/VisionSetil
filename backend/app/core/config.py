@@ -29,7 +29,7 @@ class Settings(BaseModel):
     database_path: Path = Path(os.getenv("DATABASE_PATH", Path(__file__).resolve().parents[2] / "mushroom_photo_id.db"))
     upload_dir: Path = Path(os.getenv("UPLOAD_DIR", Path(__file__).resolve().parents[2] / "uploads"))
     poisonous_species_path: Path = Path(__file__).resolve().parents[1] / "data" / "poisonous_species.json"
-    mock_species_catalog_path: Path = Path(__file__).resolve().parents[1] / "data" / "mock_species_catalog.json"
+    mock_species_catalog_path: Path = Path(os.getenv("MOCK_SPECIES_CATALOG_PATH", Path(__file__).resolve().parents[1] / "data" / "mock_species_catalog.json"))
     metadata_schema_path: Path = Path(__file__).resolve().parents[1] / "data" / "metadata_schema.json"
     max_upload_size_bytes: int = int(os.getenv("MAX_IMAGE_MB", "10")) * 1024 * 1024
     allowed_extensions: set[str] = {"jpg", "jpeg", "png", "webp"}

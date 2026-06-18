@@ -49,6 +49,10 @@ class CandidateResult(BaseModel):
     evidence_score: float = 0.0
     metadata_score: float = 0.0
     visual_score: float = 0.0
+    dino_visual_score: float = 0.0
+    siglip_image_text_score: float = 0.0
+    risk_score: float = 0.0
+    fusion_score: float = 0.0
     risk_level: str = "unknown"
     edibility_label: str = "unknown_or_risky"
     reasoning: list[str] = Field(default_factory=list)
@@ -113,6 +117,7 @@ class ClassificationResponse(BaseModel):
     model_stack: ModelStackResponse
     candidates: list[CandidateResult]
     top_candidates: list[CandidateResult]
+    raw_candidates: list[CandidateResult] = Field(default_factory=list)
     missing_evidence: list[str]
     explanation: str
     questions_for_user: list[str]
