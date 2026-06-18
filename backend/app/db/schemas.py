@@ -49,8 +49,15 @@ class CandidateResult(BaseModel):
     evidence_score: float = 0.0
     metadata_score: float = 0.0
     visual_score: float = 0.0
+    species_visual_score: float = 0.0
+    genus_visual_score: float = 0.0
+    family_visual_score: float = 0.0
+    taxonomic_score: float = 0.0
+    prototype_quality: float = 0.0
+    ranker_margin_to_next: float = 0.0
     dino_visual_score: float = 0.0
     siglip_image_text_score: float = 0.0
+    siglip_visual_score: float = 0.0
     risk_score: float = 0.0
     fusion_score: float = 0.0
     risk_level: str = "unknown"
@@ -59,6 +66,9 @@ class CandidateResult(BaseModel):
     danger_notes: list[str]
     lookalikes: list[str]
     explanation: str = ""
+    ranker_version: str | None = None
+    similarity_metric: str | None = None
+    ml_improvement_version: str | None = None
 
 
 class QualityAssessmentResponse(BaseModel):
@@ -83,9 +93,16 @@ class TraceResponse(BaseModel):
     open_set_strategy: str
     human_review_path: str
     ranker_version: str | None = None
+    ml_improvement_version: str | None = None
     catalog_version: str | None = None
     similarity_metric: str | None = None
     index_metadata: dict | None = None
+    index_path: str | None = None
+    thresholds_path: str | None = None
+    open_set_thresholds: str | None = None
+    top1_score: float | None = None
+    top1_margin: float | None = None
+    open_set_reasons: list[str] = Field(default_factory=list)
 
 
 class ModelStackResponse(BaseModel):
@@ -103,6 +120,9 @@ class OpenSetResponse(BaseModel):
     margin: float | None = None
     entropy: float | None = None
     decision: str
+    reasons: list[str] = Field(default_factory=list)
+    thresholds_path: str | None = None
+    thresholds_status: str | None = None
 
 
 class HumanReviewResponse(BaseModel):

@@ -64,6 +64,7 @@ def main():
     parser.add_argument("--cpu-only", action="store_true", help="Force execution on CPU")
     parser.add_argument("--debug-safety", action="store_true", help="Enable safety auditor debug details")
     parser.add_argument("--max-safety-debug-cases", type=int, help="Max cases to show in safety debug")
+    parser.add_argument("--require-phase6", action="store_true", help="Fail if the final report is not wired to Phase 6.")
     parser.add_argument("--mode", default="full_pipeline", choices=["full_pipeline", "convert_only", "siglip_embeddings_only", "fusion_eval_only"], help="Execution mode")
     args = parser.parse_args()
 
@@ -313,6 +314,15 @@ def main():
 
     print(res.stdout)
 
+    if args.require_phase6:
+        with open(report_json_path, "r", encoding="utf-8") as f:
+            report_data = json.load(f)
+        phase6 = report_data.get("phase6_pipeline", {})
+        if not phase6.get("valid"):
+            print("ERROR: Phase 6 pipeline is not valid for this benchmark.", file=sys.stderr)
+            print(json.dumps(phase6, indent=2), file=sys.stderr)
+            sys.exit(2)
+
     # Copy files created in eval/reports to output_dir
     default_report_dir = root_dir / "eval" / "reports"
     files_to_move = [
@@ -346,11 +356,13 @@ def main():
     # 4. Load report metrics
     evaluation_metrics = {}
     model_status_data = {}
+    phase6_pipeline = {}
     if report_json_path.exists():
         with open(report_json_path, "r", encoding="utf-8") as f:
             report_data = json.load(f)
         evaluation_metrics = report_data.get("metrics", {})
         model_status_data = report_data.get("model_status", {})
+        phase6_pipeline = report_data.get("phase6_pipeline", {})
 
     # Validation: Explicitly fail if safety violations exist
     safety_policy_violations = evaluation_metrics.get("safety_policy_violations", 0)
@@ -388,6 +400,7 @@ def main():
         "dangerous_genera_included": danger_genera_found,
         "risk_levels_counts": risk_breakdown,
         "model_status": model_status_data,
+        "phase6_pipeline": phase6_pipeline,
         "metrics": evaluation_metrics
     }
     
@@ -436,6 +449,21 @@ def main():
 """
     for m_name, m_info in model_status_data.items():
         summary_md += f"- **{m_name}:** `{m_info.get('backend')}` (Loaded: {m_info.get('loaded')}, Device: {m_info.get('device')})\n"
+
+    summary_md += f"""
+---
+
+## Phase 6 Pipeline Wiring
+- **Benchmark Valid For Phase 6:** `{phase6_pipeline.get('valid')}`
+- **Ranker:** `{phase6_pipeline.get('ranker')}`
+- **ML improvement:** `{phase6_pipeline.get('ml_improvement')}`
+- **Catalog:** `{phase6_pipeline.get('catalog')}`
+- **Similarity:** `{phase6_pipeline.get('similarity')}`
+- **Open-set thresholds:** `{phase6_pipeline.get('open_set_thresholds')}`
+- **Index Path:** `{phase6_pipeline.get('index_path')}`
+- **Thresholds Path:** `{phase6_pipeline.get('thresholds_path')}`
+- **Score signals:** `{phase6_pipeline.get('score_signals')}`
+"""
 
     # Warning for mock stack
     all_mock = all(not m_info.get("loaded", False) for m_info in model_status_data.values())

@@ -74,6 +74,51 @@ def test_embedding_cache(tmp_path):
     assert cache.get("img_hash_2", "test_model") is None
 
 
+def test_candidate_ranker_v2_orders_by_cosine_not_risk():
+    from app.services.candidate_ranker_v2 import CandidateRankerV2
+
+    rep = ObservationRepresentation(
+        vector=[],
+        detected_views=["gills_or_pores", "base", "environment"],
+        evidence_penalty=0.0,
+        metadata_vector=MetadataVector(values=[0.0] * 10, feature_names=[]),
+        visual_component=[1.0, 0.0],
+        text_component=[1.0, 0.0],
+    )
+    catalog = [
+        {
+            "taxon": "Amanita phalloides",
+            "rank": "species",
+            "risk_level": "deadly",
+            "edibility_label": "dangerous_or_unknown",
+            "lookalikes": [],
+            "habitats": [],
+            "substrates": [],
+            "description": "",
+            "dino_reference_embedding": [0.0, 1.0],
+            "siglip_text_embedding": [0.0, 1.0],
+        },
+        {
+            "taxon": "Boletus edulis",
+            "rank": "species",
+            "risk_level": "unknown",
+            "edibility_label": "dangerous_or_unknown",
+            "lookalikes": [],
+            "habitats": [],
+            "substrates": [],
+            "description": "",
+            "dino_reference_embedding": [1.0, 0.0],
+            "siglip_text_embedding": [1.0, 0.0],
+        },
+    ]
+
+    ranked = CandidateRankerV2().rank(rep, catalog, top_k=2)
+
+    assert ranked[0]["taxon"] == "Boletus edulis"
+    assert ranked[0]["ranker_version"] == "candidate_ranker_v2"
+    assert ranked[0]["similarity_metric"] == "cosine"
+
+
 def test_open_set_rejection_low_confidence():
     service = OpenSetRejectionService()
     candidates = [{"taxon": "Boletus edulis", "confidence": 0.3, "lookalikes": []}]

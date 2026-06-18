@@ -1,6 +1,7 @@
 import sys
 import os
 import builtins
+import requests
 from pathlib import Path
 
 # 1. Unshadow kaggle package by removing local kaggle folder from sys.path
@@ -20,11 +21,13 @@ builtins.open = patched_open
 
 # 3. Import and authenticate Kaggle API
 from kaggle.api.kaggle_api_extended import KaggleApi
+from kagglesdk.kernels.types.kernels_api_service import ApiListKernelSessionOutputRequest
+
 api = KaggleApi()
 api.authenticate()
 
 # 4. Target files list
-report_files = [
+target_names = {
     "real_report.json",
     "real_report.md",
     "large_dataset_summary.json",
@@ -37,27 +40,64 @@ report_files = [
     "confusion_risk_level.csv",
     "failure_cases.json",
     "dangerous_failures.json",
-    "overconfident_wrong_cases.json"
-]
+    "overconfident_wrong_cases.json",
+    "ablation_report.json",
+    "ablation_report.md",
+    "open_set_thresholds.json",
+    "open_set_thresholds.md",
+    "real_species_catalog.json",
+    "species_index",
+    "species_visual_prototypes.json",
+    "genus_prototypes.json",
+    "family_prototypes.json",
+    "index_metadata.json",
+}
 
 dest_dir = Path(__file__).resolve().parents[2] / "kaggle_cloud_outputs" / "starter_outputs" / "visionsetil_outputs"
 dest_dir.mkdir(parents=True, exist_ok=True)
 
-print(f"Downloading reports to {dest_dir}...")
+kernel = os.getenv("KAGGLE_KERNEL", "alonsoalvira/fungiclef25-starter-notebook")
+owner_slug, kernel_slug, _version = api.parse_kernel_string(kernel)
+print(f"Downloading latest reports from {kernel} to {dest_dir}...")
 
-for filename in report_files:
-    # Build regex pattern for specific file
-    pattern = f".*{filename}$"
-    print(f"Downloading {filename}...")
-    try:
-        api.kernels_output(
-            kernel="alonsoalvira/fungiclef25-starter-notebook/5",
-            path=str(dest_dir),
-            file_pattern=pattern,
-            force=True,
-            quiet=True
-        )
-    except Exception as e:
-        print(f"Error downloading {filename}: {e}")
+downloaded = []
+page_token = None
+with api.build_kaggle_client() as kaggle:
+    while True:
+        request = ApiListKernelSessionOutputRequest()
+        request.user_name = owner_slug
+        request.kernel_slug = kernel_slug
+        if page_token:
+            request.page_token = page_token
+        response = kaggle.kernels.kernels_api_client.list_kernel_session_output(request)
 
-print("All downloads completed!")
+        for item in response.files or []:
+            file_name = item.file_name.replace("\\", "/")
+            base_name = Path(file_name).name
+            is_target = base_name in target_names or "/species_index/" in file_name
+            if not is_target:
+                continue
+
+            relative_name = file_name
+            marker = "visionsetil_outputs/"
+            if marker in relative_name:
+                relative_name = relative_name.split(marker, 1)[1]
+            outfile = dest_dir / relative_name
+            outfile.parent.mkdir(parents=True, exist_ok=True)
+
+            data = requests.get(item.url, timeout=120)
+            data.raise_for_status()
+            outfile.write_bytes(data.content)
+            downloaded.append(str(outfile))
+            print(f"Downloaded {file_name} -> {outfile}")
+
+        page_token = response.next_page_token
+        if not page_token:
+            break
+
+if response.log:
+    log_path = dest_dir / f"{kernel_slug}.log"
+    log_path.write_text(response.log, encoding="utf-8")
+    downloaded.append(str(log_path))
+
+print(f"All downloads completed. Files downloaded: {len(downloaded)}")

@@ -19,6 +19,7 @@ def main():
 
     metrics = data.get("metrics", {})
     status = data.get("model_status", {})
+    phase6 = data.get("phase6_pipeline", {})
 
     print("==================================================")
     print("           VISIONSETIL EVALUATION SUMMARY         ")
@@ -38,6 +39,20 @@ def main():
     print(f"False Safe Rate:      {metrics.get('false_safe_rate') * 100:.2f}% (Must be 0%)")
     print(f"Safety Violations:    {metrics.get('safety_policy_violations')}")
     print(f"Avg Latency:          {metrics.get('average_latency_ms')} ms")
+    print("==================================================")
+    print("Phase 6 Pipeline:")
+    print(f"  - Valid: {phase6.get('valid')}")
+    print(f"  - Ranker: {phase6.get('ranker')}")
+    print(f"  - ML improvement: {phase6.get('ml_improvement')}")
+    print(f"  - Catalog: {phase6.get('catalog')}")
+    print(f"  - Similarity: {phase6.get('similarity')}")
+    print(f"  - Open-set thresholds: {phase6.get('open_set_thresholds')}")
+    print(f"  - Index path: {phase6.get('index_path')}")
+    print(f"  - Thresholds path: {phase6.get('thresholds_path')}")
+    score_signals = phase6.get("score_signals", {})
+    print(f"  - Cases with taxonomic score: {score_signals.get('cases_with_taxonomic_score')}")
+    print(f"  - Mean taxonomic score: {score_signals.get('mean_taxonomic_score')}")
+    print(f"  - Mean prototype quality: {score_signals.get('mean_prototype_quality')}")
     print("==================================================")
     
     # Print model backends

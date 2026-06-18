@@ -31,6 +31,11 @@ def test_advanced_endpoint_responds_and_uses_fallbacks(client):
     assert "fallback" in payload["model_stack"]["detector"].lower()
     assert "fallback" in payload["model_stack"]["visual_embedder"].lower()
     assert "fallback" in payload["model_stack"]["image_text_embedder"].lower()
+    assert payload["trace"]["ranker_version"] == "candidate_ranker_v2"
+    assert payload["trace"]["similarity_metric"] == "cosine"
+    assert "top1_score" in payload["trace"]
+    assert "top1_margin" in payload["trace"]
+    assert payload["open_set"]["reasons"]
 
 
 def test_advanced_ranking_respects_top_k(client):
@@ -42,3 +47,4 @@ def test_advanced_ranking_respects_top_k(client):
     response = client.post(f"/observations/{observation_id}/classify-advanced")
     payload = response.json()
     assert len(payload["candidates"]) <= 5
+    assert payload["trace"]["ranker_version"] == "candidate_ranker_v2"

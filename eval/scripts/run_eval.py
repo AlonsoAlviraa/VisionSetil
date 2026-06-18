@@ -248,6 +248,15 @@ def main():
 
     # For calibration
     calibration_preds = []
+    phase6_trace = {
+        "ranker_version": "",
+        "ml_improvement_version": "",
+        "catalog_version": "",
+        "index_path": "",
+        "thresholds_path": "",
+        "similarity_metric": "",
+        "open_set_thresholds": "",
+    }
     
     # For detector evaluation
     total_images_processed = 0
@@ -322,6 +331,17 @@ def main():
         total_latency_ms += latency
 
         payload = response.json()
+        trace = payload.get("trace", {})
+        if trace:
+            phase6_trace = {
+                "ranker_version": trace.get("ranker_version", ""),
+                "ml_improvement_version": trace.get("ml_improvement_version", ""),
+                "catalog_version": trace.get("catalog_version", ""),
+                "index_path": trace.get("index_path", ""),
+                "thresholds_path": trace.get("thresholds_path", ""),
+                "similarity_metric": trace.get("similarity_metric", ""),
+                "open_set_thresholds": trace.get("open_set_thresholds", ""),
+            }
         
         # Audit safety
         safety_audit = audit_safety_response(payload, case_id=obs_id)
@@ -475,7 +495,27 @@ def main():
             "human_review_recommended": is_reviewed,
             "safety_audit": safety_audit,
             "latency_ms": round(latency, 2),
-            "model_stack": payload.get("model_stack")
+            "model_stack": payload.get("model_stack"),
+            "phase6_trace": {
+                "ranker_version": trace.get("ranker_version", ""),
+                "ml_improvement_version": trace.get("ml_improvement_version", ""),
+                "catalog_version": trace.get("catalog_version", ""),
+                "index_path": trace.get("index_path", ""),
+                "thresholds_path": trace.get("thresholds_path", ""),
+                "similarity_metric": trace.get("similarity_metric", ""),
+                "open_set_thresholds": trace.get("open_set_thresholds", ""),
+                "top1_score": trace.get("top1_score"),
+                "top1_margin": trace.get("top1_margin"),
+                "open_set_reasons": trace.get("open_set_reasons", []),
+            },
+            "top1_phase6_scores": {
+                "species_visual_score": raw_candidates[0].get("species_visual_score") if raw_candidates else None,
+                "genus_visual_score": raw_candidates[0].get("genus_visual_score") if raw_candidates else None,
+                "family_visual_score": raw_candidates[0].get("family_visual_score") if raw_candidates else None,
+                "taxonomic_score": raw_candidates[0].get("taxonomic_score") if raw_candidates else None,
+                "prototype_quality": raw_candidates[0].get("prototype_quality") if raw_candidates else None,
+                "ranker_margin_to_next": raw_candidates[0].get("ranker_margin_to_next") if raw_candidates else None,
+            },
         })
 
     # Calculations of advanced metrics
@@ -567,6 +607,36 @@ def main():
 
     # Production readiness check
     all_mock = not (model_status["detector"]["loaded"] or model_status["visual_embedder"]["loaded"] or model_status["image_text_embedder"]["loaded"])
+    phase6_score_rows = [
+        result.get("top1_phase6_scores", {})
+        for result in results
+        if result.get("status") == "evaluated"
+    ]
+    taxonomic_values = [
+        score.get("taxonomic_score")
+        for score in phase6_score_rows
+        if isinstance(score.get("taxonomic_score"), (int, float))
+    ]
+    prototype_quality_values = [
+        score.get("prototype_quality")
+        for score in phase6_score_rows
+        if isinstance(score.get("prototype_quality"), (int, float))
+    ]
+    phase6_score_summary = {
+        "cases_with_taxonomic_score": len(taxonomic_values),
+        "cases_with_prototype_quality": len(prototype_quality_values),
+        "mean_taxonomic_score": round(sum(taxonomic_values) / len(taxonomic_values), 4) if taxonomic_values else 0.0,
+        "mean_prototype_quality": round(sum(prototype_quality_values) / len(prototype_quality_values), 4) if prototype_quality_values else 0.0,
+    }
+    phase6_scores_present = evaluated_cases > 0 and phase6_score_summary["cases_with_taxonomic_score"] == evaluated_cases
+    phase6_valid = (
+        phase6_trace["ranker_version"] == "candidate_ranker_v2"
+        and phase6_trace["ml_improvement_version"] == "taxonomic_prototype_ensemble_v1"
+        and phase6_trace["catalog_version"] == "real_species_catalog_v2"
+        and phase6_trace["similarity_metric"] == "cosine"
+        and phase6_trace["open_set_thresholds"] == "calibrated"
+        and phase6_scores_present
+    )
     
     # Apply readiness rules
     if all_mock or evaluated_cases < 100 or total_poisonous_or_risky == 0 or toxic_not_flagged_rate > 0.0 or dangerous_case_without_human_review_rate > 0.0 or overconfident_wrong_rate > 0.1:
@@ -618,6 +688,17 @@ def main():
     report = {
         "metrics": metrics,
         "model_status": model_status,
+        "phase6_pipeline": {
+            "valid": phase6_valid,
+            "ranker": phase6_trace["ranker_version"],
+            "ml_improvement": phase6_trace["ml_improvement_version"],
+            "catalog": phase6_trace["catalog_version"],
+            "similarity": phase6_trace["similarity_metric"],
+            "open_set_thresholds": phase6_trace["open_set_thresholds"],
+            "index_path": phase6_trace["index_path"],
+            "thresholds_path": phase6_trace["thresholds_path"],
+            "score_signals": phase6_score_summary,
+        },
         "detector_evaluation": detector_metrics,
         "embedding_evaluation": embedding_metrics,
         "calibration": cal_results,
@@ -706,6 +787,23 @@ def main():
     for k, v in model_status.items():
         md_content.append(f"| {k} | {v.get('requested')} | {v.get('backend')} | {v.get('loaded')} | {v.get('device')} | {v.get('model_path', v.get('embedding_dim', ''))} |")
     md_content.append("\n")
+
+    md_content.append("## Phase 6 Pipeline Wiring\n")
+    md_content.append(f"- **Benchmark Valid For Phase 6:** `{phase6_valid}`")
+    md_content.append(f"- **Ranker:** `{phase6_trace['ranker_version']}`")
+    md_content.append(f"- **ML improvement:** `{phase6_trace['ml_improvement_version']}`")
+    md_content.append(f"- **Catalog:** `{phase6_trace['catalog_version']}`")
+    md_content.append(f"- **Similarity:** `{phase6_trace['similarity_metric']}`")
+    md_content.append(f"- **Open-set thresholds:** `{phase6_trace['open_set_thresholds']}`")
+    md_content.append(f"- **Index Path:** `{phase6_trace['index_path']}`")
+    md_content.append(f"- **Thresholds Path:** `{phase6_trace['thresholds_path']}`")
+    md_content.append(f"- **Cases with taxonomic score:** `{phase6_score_summary['cases_with_taxonomic_score']}`")
+    md_content.append(f"- **Mean taxonomic score:** `{phase6_score_summary['mean_taxonomic_score']}`")
+    md_content.append(f"- **Mean prototype quality:** `{phase6_score_summary['mean_prototype_quality']}`")
+    if not phase6_valid:
+        md_content.append("- **Invalidation Reason:** Fase 6 no esta completamente enchufada; no aceptes estas metricas como benchmark final de Fase 6.\n")
+    else:
+        md_content.append("- **Invalidation Reason:** none\n")
 
     md_content.append("## Dataset\n")
     md_content.append(f"- **Dataset Path:** `{args.dataset}`")

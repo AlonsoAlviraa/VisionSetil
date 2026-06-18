@@ -181,6 +181,8 @@ def test_run_eval_outputs_and_matrices(tmp_path):
         
     # Check 11. Report not_enough_data
     assert report_data["embedding_evaluation"]["details"] == "not_enough_data"
+    assert report_data["phase6_pipeline"]["ranker"] == "candidate_ranker_v2"
+    assert "valid" in report_data["phase6_pipeline"]
     
     # Check 12 & 13. Readiness NOT_READY_FOR_PRODUCTION
     assert report_data["production_readiness"]["status"] == "NOT_READY_FOR_PRODUCTION"

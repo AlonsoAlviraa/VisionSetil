@@ -15,6 +15,9 @@ class OpenSetDecision:
     margin: float
     entropy: float
     decision: str
+    reasons: list[str]
+    thresholds_path: str
+    thresholds_status: str
 
 
 class OpenSetRejectionService:
@@ -32,7 +35,10 @@ class OpenSetRejectionService:
                 top2_confidence=0.0,
                 margin=0.0,
                 entropy=0.0,
-                decision="reject_to_unknown"
+                decision="reject_to_unknown",
+                reasons=["no_candidates"],
+                thresholds_path="",
+                thresholds_status="unknown",
             )
 
         # 1. Gather confidences
@@ -52,6 +58,7 @@ class OpenSetRejectionService:
         # 2. Check triggers
         is_unknown_or_uncertain = False
         reason = "none"
+        reasons = []
         decision = "accept"
 
         # Check critical evidence
@@ -76,34 +83,45 @@ class OpenSetRejectionService:
         # Load calibrated thresholds
         min_conf = settings.open_set_min_confidence
         min_margin = settings.open_set_min_margin
+        thresholds_path = "settings"
+        thresholds_status = "settings_fallback"
         try:
             from app.services.species_catalog import load_open_set_thresholds
             thresholds = load_open_set_thresholds()
             min_conf = thresholds.get("calibrated_threshold", min_conf)
             min_margin = thresholds.get("calibrated_margin", min_margin)
+            thresholds_path = thresholds.get("source", thresholds_path)
+            thresholds_status = thresholds.get("status", thresholds_status)
         except Exception:
             pass
 
         if top1_conf < min_conf:
             is_unknown_or_uncertain = True
             reason = "low_top1_confidence"
+            reasons.append(reason)
             decision = "reject_to_genus_or_human_review"
         elif margin < min_margin:
             is_unknown_or_uncertain = True
             reason = "low_margin"
+            reasons.append(reason)
             decision = "reject_to_genus_or_human_review"
         elif settings.open_set_reject_on_missing_critical_evidence and missing_critical:
             is_unknown_or_uncertain = True
             reason = "missing_critical_evidence"
+            reasons.append(reason)
             decision = "reject_to_unknown"
         elif first_genus in HIGH_RISK_GENERA:
             is_unknown_or_uncertain = True
             reason = "high_risk_genus"
+            reasons.append(reason)
             decision = "reject_to_genus_or_human_review"
         elif has_deadly_lookalike:
             is_unknown_or_uncertain = True
             reason = "deadly_lookalike_or_high_risk_genus"
+            reasons.append(reason)
             decision = "reject_to_genus_or_human_review"
+        else:
+            reasons.append("accepted")
 
         return OpenSetDecision(
             is_unknown_or_uncertain=is_unknown_or_uncertain,
@@ -112,7 +130,10 @@ class OpenSetRejectionService:
             top2_confidence=top2_conf,
             margin=margin,
             entropy=entropy,
-            decision=decision
+            decision=decision,
+            reasons=reasons,
+            thresholds_path=thresholds_path,
+            thresholds_status=thresholds_status,
         )
 
     def degrade_candidates(self, candidates: list[dict], decision: OpenSetDecision) -> list[dict]:
@@ -124,14 +145,16 @@ class OpenSetRejectionService:
 
         degraded = []
         if decision.decision == "reject_to_unknown":
+            top = candidates[0]
             # Completely degrade to unknown
             degraded.append({
                 "taxon": "unknown_fungus",
                 "rank": "unknown",
                 "confidence": 0.0,
-                "evidence_score": candidates[0].get("evidence_score", 0.0),
-                "metadata_score": candidates[0].get("metadata_score", 0.0),
-                "visual_score": candidates[0].get("visual_score", 0.0),
+                "evidence_score": top.get("evidence_score", 0.0),
+                "metadata_score": top.get("metadata_score", 0.0),
+                "visual_score": top.get("visual_score", 0.0),
+                **self._phase6_diagnostics(top),
                 "risk_level": "high",
                 "edibility_label": "dangerous_or_unknown",
                 "lookalikes": [],
@@ -163,6 +186,7 @@ class OpenSetRejectionService:
                 "evidence_score": top.get("evidence_score", 0.0),
                 "metadata_score": top.get("metadata_score", 0.0),
                 "visual_score": top.get("visual_score", 0.0),
+                **self._phase6_diagnostics(top),
                 "risk_level": top.get("risk_level", "high"),
                 "edibility_label": "dangerous_or_unknown",
                 "lookalikes": top.get("lookalikes", []),
@@ -171,3 +195,21 @@ class OpenSetRejectionService:
             })
             
         return degraded
+
+    def _phase6_diagnostics(self, candidate: dict) -> dict:
+        return {
+            "species_visual_score": candidate.get("species_visual_score", 0.0),
+            "genus_visual_score": candidate.get("genus_visual_score", 0.0),
+            "family_visual_score": candidate.get("family_visual_score", 0.0),
+            "taxonomic_score": candidate.get("taxonomic_score", 0.0),
+            "prototype_quality": candidate.get("prototype_quality", 0.0),
+            "ranker_margin_to_next": candidate.get("ranker_margin_to_next", 0.0),
+            "dino_visual_score": candidate.get("dino_visual_score", 0.0),
+            "siglip_image_text_score": candidate.get("siglip_image_text_score", 0.0),
+            "siglip_visual_score": candidate.get("siglip_visual_score", 0.0),
+            "fusion_score": candidate.get("fusion_score", 0.0),
+            "risk_score": candidate.get("risk_score", 0.0),
+            "ranker_version": candidate.get("ranker_version", ""),
+            "similarity_metric": candidate.get("similarity_metric", ""),
+            "ml_improvement_version": candidate.get("ml_improvement_version", ""),
+        }

@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -17,7 +19,7 @@ from app.services.open_set_rejection import OpenSetRejectionService
 from app.services.poisonous_lookalikes import HIGH_RISK_GENERA
 from app.ml.interfaces import MushroomObservationMetadata
 from app.ml.model_registry import build_model_registry
-from app.services.candidate_ranker import CandidateRanker
+from app.services.candidate_ranker_v2 import CandidateRankerV2
 from app.services.classifier import MockMushroomClassifier
 from app.services.image_quality import ImageQualityValidationService
 from app.services.metadata_encoder import MetadataEncoder
@@ -27,6 +29,7 @@ from app.services.safety_layer import SafetyLayer
 from app.services.species_catalog import list_mock_species_catalog
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 
 @router.post("/observations/{observation_id}/classify")
@@ -87,7 +90,7 @@ def classify_observation_advanced(observation_id: int, db: Session = Depends(get
     try:
         from app.services.species_catalog import load_real_species_index
         species_catalog, index_metadata = load_real_species_index()
-        catalog_version = f"real_species_catalog_v2_{index_metadata.get('total_species', 0)}_species"
+        catalog_version = "real_species_catalog_v2"
     except FileNotFoundError:
         # Fallback to mock catalog
         species_catalog = list_mock_species_catalog()
@@ -111,7 +114,8 @@ def classify_observation_advanced(observation_id: int, db: Session = Depends(get
         metadata_vector=metadata_vector,
         detected_views=detected_views,
     )
-    ranked = CandidateRanker().rank(
+    ranker = CandidateRankerV2()
+    ranked = ranker.rank(
         observation_representation=representation,
         species_catalog=species_catalog,
         species_text_embeddings=species_text_embeddings,
@@ -131,8 +135,15 @@ def classify_observation_advanced(observation_id: int, db: Session = Depends(get
             evidence_score=item["evidence_score"],
             metadata_score=item["metadata_score"],
             visual_score=item["visual_score"],
+            species_visual_score=item.get("species_visual_score", 0.0),
+            genus_visual_score=item.get("genus_visual_score", 0.0),
+            family_visual_score=item.get("family_visual_score", 0.0),
+            taxonomic_score=item.get("taxonomic_score", 0.0),
+            prototype_quality=item.get("prototype_quality", 0.0),
+            ranker_margin_to_next=item.get("ranker_margin_to_next", 0.0),
             dino_visual_score=item.get("dino_visual_score", 0.0),
             siglip_image_text_score=item.get("siglip_image_text_score", 0.0),
+            siglip_visual_score=item.get("siglip_visual_score", 0.0),
             risk_score=item.get("risk_score", 0.0),
             fusion_score=item.get("fusion_score", 0.0),
             risk_level=item["risk_level"],
@@ -141,6 +152,9 @@ def classify_observation_advanced(observation_id: int, db: Session = Depends(get
             danger_notes=baseline.candidates[0].danger_notes if baseline.candidates else [],
             lookalikes=item["lookalikes"],
             explanation=item["explanation"],
+            ranker_version=item.get("ranker_version"),
+            similarity_metric=item.get("similarity_metric"),
+            ml_improvement_version=item.get("ml_improvement_version"),
         )
         for item in ranked
     ]
@@ -157,6 +171,24 @@ def classify_observation_advanced(observation_id: int, db: Session = Depends(get
     # 1. Open Set Rejection Evaluation
     open_set_service = OpenSetRejectionService()
     open_set_decision = open_set_service.evaluate(safe["candidates"], representation, safe["missing_evidence"])
+    top1_score = ranked[0].get("confidence", 0.0) if ranked else 0.0
+    top2_score = ranked[1].get("confidence", 0.0) if len(ranked) > 1 else 0.0
+    top1_margin = round(top1_score - top2_score, 4)
+    index_path = index_metadata.get("index_path", "")
+
+    logger.info(
+        "classification_phase6",
+        extra={
+            "ranker_version": ranker.version,
+            "ml_improvement_version": ranker.improvement_version,
+            "catalog_version": catalog_version,
+            "index_path": index_path,
+            "thresholds_path": open_set_decision.thresholds_path,
+            "top1_score": top1_score,
+            "top1_margin": top1_margin,
+            "open_set_reasons": open_set_decision.reasons,
+        },
+    )
 
     # Apply degradation if rejection triggers
     if open_set_decision.is_unknown_or_uncertain:
@@ -171,8 +203,15 @@ def classify_observation_advanced(observation_id: int, db: Session = Depends(get
             evidence_score=item["evidence_score"],
             metadata_score=item["metadata_score"],
             visual_score=item["visual_score"],
+            species_visual_score=item.get("species_visual_score", 0.0),
+            genus_visual_score=item.get("genus_visual_score", 0.0),
+            family_visual_score=item.get("family_visual_score", 0.0),
+            taxonomic_score=item.get("taxonomic_score", 0.0),
+            prototype_quality=item.get("prototype_quality", 0.0),
+            ranker_margin_to_next=item.get("ranker_margin_to_next", 0.0),
             dino_visual_score=item.get("dino_visual_score", 0.0),
             siglip_image_text_score=item.get("siglip_image_text_score", 0.0),
+            siglip_visual_score=item.get("siglip_visual_score", 0.0),
             risk_score=item.get("risk_score", 0.0),
             fusion_score=item.get("fusion_score", 0.0),
             risk_level=item["risk_level"],
@@ -181,6 +220,9 @@ def classify_observation_advanced(observation_id: int, db: Session = Depends(get
             danger_notes=baseline.candidates[0].danger_notes if baseline.candidates else [],
             lookalikes=item["lookalikes"],
             explanation=item["explanation"],
+            ranker_version=item.get("ranker_version"),
+            similarity_metric=item.get("similarity_metric"),
+            ml_improvement_version=item.get("ml_improvement_version"),
         )
         for item in safe["candidates"]
     ]
@@ -315,10 +357,17 @@ def classify_observation_advanced(observation_id: int, db: Session = Depends(get
             metadata_fusion_plan="weighted_multi_image_plus_metadata_fusion",
             open_set_strategy="calibrated_thresholds_with_margin_and_unknown_rejection",
             human_review_path="expert_review_recommended_for_risky_or_low_evidence_cases",
-            ranker_version="candidate_ranker_v2",
+            ranker_version=ranker.version,
+            ml_improvement_version=ranker.improvement_version,
             catalog_version=catalog_version,
-            similarity_metric="cosine_l2_normalized",
+            similarity_metric=ranker.similarity_metric,
             index_metadata=index_metadata,
+            index_path=index_path,
+            thresholds_path=open_set_decision.thresholds_path,
+            open_set_thresholds=open_set_decision.thresholds_status,
+            top1_score=top1_score,
+            top1_margin=top1_margin,
+            open_set_reasons=open_set_decision.reasons,
         ),
         final_warning=safe["final_warning"],
         open_set=OpenSetResponse(
@@ -329,6 +378,9 @@ def classify_observation_advanced(observation_id: int, db: Session = Depends(get
             margin=open_set_decision.margin,
             entropy=open_set_decision.entropy,
             decision=open_set_decision.decision,
+            reasons=open_set_decision.reasons,
+            thresholds_path=open_set_decision.thresholds_path,
+            thresholds_status=open_set_decision.thresholds_status,
         ),
         human_review=HumanReviewResponse(
             recommended=recommend_review,
