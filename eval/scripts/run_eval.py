@@ -6,6 +6,8 @@ import csv
 import re
 from pathlib import Path
 from fastapi.testclient import TestClient
+from PIL import ImageFile
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 # Add backend and root folder to path
 root_dir = Path(__file__).resolve().parents[2]

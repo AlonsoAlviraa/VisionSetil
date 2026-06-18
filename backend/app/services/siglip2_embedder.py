@@ -95,7 +95,8 @@ class SigLIP2Embedder(ImageTextEmbedder):
         embeddings: list[ImageEmbedding] = []
         try:
             import torch
-            from PIL import Image
+            from PIL import Image, ImageFile
+            ImageFile.LOAD_TRUNCATED_IMAGES = True
             from app.services.embedding_cache import EmbeddingCache
 
             cache = EmbeddingCache()

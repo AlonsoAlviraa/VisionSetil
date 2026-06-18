@@ -7,6 +7,8 @@ import subprocess
 import time
 import shutil
 from pathlib import Path
+from PIL import ImageFile
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 # Add project root and backend to sys.path
 root_dir = Path(__file__).resolve().parents[1]

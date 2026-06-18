@@ -82,7 +82,8 @@ class YOLOEDetector(MushroomDetector):
 
         detections: list[DetectedMushroomCrop] = []
         try:
-            from PIL import Image, ImageDraw
+            from PIL import Image, ImageDraw, ImageFile
+            ImageFile.LOAD_TRUNCATED_IMAGES = True
             
             for path in image_paths:
                 results = self.model(
