@@ -33,10 +33,7 @@ class SafetyLayer:
                 candidate["confidence"] = round(max(0.12, candidate["confidence"] - 0.04), 4)
                 candidate["explanation"] = "La observacion requiere mas evidencias criticas y revision humana."
 
-        safe_candidates.sort(
-            key=lambda item: (item["risk_level"] in {"deadly", "high", "risky_lookalikes"}, item["confidence"]),
-            reverse=True,
-        )
+        safe_candidates.sort(key=lambda item: item["confidence"], reverse=True)
         return {
             "status": ORIENTATION_ONLY_STATUS,
             "safety_level": UNSAFE_TO_CONSUME,

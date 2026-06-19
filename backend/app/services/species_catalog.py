@@ -1,4 +1,6 @@
 import json
+import os
+from functools import lru_cache
 from pathlib import Path
 
 from app.core.config import settings
@@ -16,6 +18,7 @@ def list_mock_species_catalog() -> list[dict]:
     return _load_json(settings.mock_species_catalog_path)
 
 
+@lru_cache(maxsize=4)
 def load_real_species_index(index_dir: Path = None) -> tuple[list[dict], dict]:
     """Load real species visual prototypes and metadata from species_index directory.
     
@@ -23,12 +26,16 @@ def load_real_species_index(index_dir: Path = None) -> tuple[list[dict], dict]:
         tuple: (species_catalog, index_metadata)
     """
     if index_dir is None:
-        # Try default locations
-        candidates = [
-            Path("/kaggle/working/visionsetil_outputs/species_index"),
-            settings.base_dir / "species_index",
-            settings.base_dir / "eval" / "species_index",
-        ]
+        configured_index = os.getenv("SPECIES_INDEX_DIR")
+        candidates = (
+            [Path(configured_index)]
+            if configured_index
+            else [
+                Path("/kaggle/working/visionsetil_outputs/species_index"),
+                settings.base_dir / "species_index",
+                settings.base_dir / "eval" / "species_index",
+            ]
+        )
         for candidate in candidates:
             if candidate.exists() and (candidate / "species_visual_prototypes.json").exists():
                 index_dir = candidate
@@ -86,12 +93,16 @@ def load_open_set_thresholds(thresholds_path: Path = None) -> dict:
         dict: Calibrated thresholds with keys like 'calibrated_threshold', 'calibrated_margin'
     """
     if thresholds_path is None:
-        # Try default locations
-        candidates = [
-            Path("/kaggle/working/visionsetil_outputs/open_set_thresholds.json"),
-            settings.base_dir / "open_set_thresholds.json",
-            settings.base_dir / "eval" / "reports" / "open_set_thresholds.json",
-        ]
+        configured_thresholds = os.getenv("OPEN_SET_THRESHOLDS_PATH")
+        candidates = (
+            [Path(configured_thresholds)]
+            if configured_thresholds
+            else [
+                Path("/kaggle/working/visionsetil_outputs/open_set_thresholds.json"),
+                settings.base_dir / "open_set_thresholds.json",
+                settings.base_dir / "eval" / "reports" / "open_set_thresholds.json",
+            ]
+        )
         for candidate in candidates:
             if candidate.exists():
                 thresholds_path = candidate
@@ -102,13 +113,13 @@ def load_open_set_thresholds(thresholds_path: Path = None) -> dict:
         return {
             "calibrated_threshold": settings.open_set_min_confidence,
             "calibrated_margin": settings.open_set_min_margin,
-            "source": "default_config",
+            "source": str(thresholds_path) if thresholds_path else "default_config",
             "status": "settings_fallback",
         }
     
     thresholds = json.loads(thresholds_path.read_text(encoding="utf-8"))
     thresholds["source"] = str(thresholds_path)
-    thresholds["status"] = "calibrated"
+    thresholds["status"] = thresholds.get("status", "calibrated")
     return thresholds
 
 

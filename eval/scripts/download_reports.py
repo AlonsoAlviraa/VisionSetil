@@ -51,6 +51,10 @@ target_names = {
     "genus_prototypes.json",
     "family_prototypes.json",
     "index_metadata.json",
+    "catalog_diagnostics.json",
+    "catalog_diagnostics.md",
+    "phase6_split_manifest.json",
+    "phase6_index_excluded_ids.json",
 }
 
 dest_dir = Path(__file__).resolve().parents[2] / "kaggle_cloud_outputs" / "starter_outputs" / "visionsetil_outputs"

@@ -49,10 +49,14 @@ def main():
     print(f"  - Open-set thresholds: {phase6.get('open_set_thresholds')}")
     print(f"  - Index path: {phase6.get('index_path')}")
     print(f"  - Thresholds path: {phase6.get('thresholds_path')}")
+    print(f"  - Split manifest path: {phase6.get('split_manifest_path')}")
+    print(f"  - Split overlap count: {phase6.get('split_manifest', {}).get('overlap_count')}")
     score_signals = phase6.get("score_signals", {})
     print(f"  - Cases with taxonomic score: {score_signals.get('cases_with_taxonomic_score')}")
     print(f"  - Mean taxonomic score: {score_signals.get('mean_taxonomic_score')}")
     print(f"  - Mean prototype quality: {score_signals.get('mean_prototype_quality')}")
+    print(f"  - Cases with nonzero genus score: {score_signals.get('cases_with_nonzero_genus_score')}")
+    print(f"  - Cases with nonzero family score: {score_signals.get('cases_with_nonzero_family_score')}")
     print("==================================================")
     
     # Print model backends

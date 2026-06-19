@@ -59,11 +59,21 @@ def main():
 
     correct_confs = sorted([r.get("top1_confidence", 0.0) for r in evaluated_results if r.get("is_top1_hit")])
     wrong_confs = sorted([r.get("top1_confidence", 0.0) for r in evaluated_results if not r.get("is_top1_hit")])
+    correct_margins = sorted([
+        r.get("phase6_trace", {}).get("top1_margin", 0.0)
+        for r in evaluated_results
+        if r.get("is_top1_hit")
+    ])
+    wrong_margins = sorted([
+        r.get("phase6_trace", {}).get("top1_margin", 0.0)
+        for r in evaluated_results
+        if not r.get("is_top1_hit")
+    ])
 
     if not correct_confs:
         print("WARNING: No correct predictions found. Using default thresholds.", file=sys.stderr)
         calibrated_threshold = 0.35
-        calibrated_margin = 0.15
+        calibrated_margin = 0.03
     else:
         p5_correct = compute_percentile(correct_confs, 0.05)
         p10_correct = compute_percentile(correct_confs, 0.10)
@@ -76,18 +86,26 @@ def main():
 
         raw_threshold = p5_correct
         calibrated_threshold = max(args.min_threshold, min(args.max_threshold, round(raw_threshold, 4)))
-        calibrated_margin = max(0.10, min(0.30, round(median_correct - median_wrong, 4)))
+        p5_correct_margin = compute_percentile(correct_margins, 0.05) if correct_margins else 0.03
+        calibrated_margin = max(0.01, min(0.15, round(p5_correct_margin, 4)))
 
     rejections_at_threshold = sum(1 for r in evaluated_results
-                                   if r.get("top1_confidence", 0.0) < calibrated_threshold)
+                                   if r.get("top1_confidence", 0.0) < calibrated_threshold
+                                   or r.get("phase6_trace", {}).get("top1_margin", 0.0) < calibrated_margin)
     rejection_rate = round(rejections_at_threshold / len(evaluated_results), 4) if evaluated_results else 0.0
 
     correct_rejections = sum(1 for r in evaluated_results
-                             if r.get("is_top1_hit") and r.get("top1_confidence", 0.0) < calibrated_threshold)
+                             if r.get("is_top1_hit") and (
+                                 r.get("top1_confidence", 0.0) < calibrated_threshold
+                                 or r.get("phase6_trace", {}).get("top1_margin", 0.0) < calibrated_margin
+                             ))
     false_rejection_rate = round(correct_rejections / len(correct_confs), 4) if correct_confs else 0.0
 
     wrong_rejections = sum(1 for r in evaluated_results
-                           if not r.get("is_top1_hit") and r.get("top1_confidence", 0.0) < calibrated_threshold)
+                           if not r.get("is_top1_hit") and (
+                               r.get("top1_confidence", 0.0) < calibrated_threshold
+                               or r.get("phase6_trace", {}).get("top1_margin", 0.0) < calibrated_margin
+                           ))
     true_rejection_rate = round(wrong_rejections / len(wrong_confs), 4) if wrong_confs else 0.0
 
     confidence_bins = Counter()
@@ -112,6 +130,7 @@ def main():
             }
 
     thresholds_report = {
+        "status": "calibrated" if len(correct_confs) >= 20 else "insufficient_correct_predictions",
         "total_evaluated_cases": len(evaluated_results),
         "correct_predictions_count": len(correct_confs),
         "wrong_predictions_count": len(wrong_confs),
@@ -139,6 +158,11 @@ def main():
         "threshold_bounds": {
             "min": args.min_threshold,
             "max": args.max_threshold,
+        },
+        "margin_distribution": {
+            "correct_p5": round(compute_percentile(correct_margins, 0.05), 4) if correct_margins else 0.0,
+            "correct_median": round(compute_percentile(correct_margins, 0.50), 4) if correct_margins else 0.0,
+            "wrong_median": round(compute_percentile(wrong_margins, 0.50), 4) if wrong_margins else 0.0,
         },
     }
 

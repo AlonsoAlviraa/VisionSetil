@@ -1,4 +1,5 @@
 import argparse
+import hashlib
 import json
 import os
 import random
@@ -6,6 +7,7 @@ import sys
 import subprocess
 import time
 import shutil
+from collections import defaultdict
 from pathlib import Path
 from PIL import ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
@@ -19,6 +21,222 @@ sys.path.insert(0, str(backend_dir))
 # Import converters
 from kaggle.converters import convert_fungiclef, convert_fungitastic, convert_df20
 from kaggle.converters.common import HIGH_RISK_GENERA
+
+
+def run_checked(command: list[str], env: dict, label: str) -> None:
+    print(f"\n[{label}] {' '.join(command)}")
+    result = subprocess.run(command, env=env)
+    if result.returncode != 0:
+        print(f"ERROR: {label} failed with exit code {result.returncode}.", file=sys.stderr)
+        sys.exit(result.returncode)
+
+
+def write_json(path: Path, payload) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(path, "w", encoding="utf-8") as handle:
+        json.dump(payload, handle, indent=2, ensure_ascii=False)
+
+
+def stable_observation_order(observation: dict, seed: int) -> str:
+    observation_id = str(observation.get("observation_id", ""))
+    return hashlib.sha256(f"{seed}:{observation_id}".encode("utf-8")).hexdigest()
+
+
+def split_phase6_observations(pool: list[dict], target_cases: int, seed: int) -> tuple[list[dict], list[dict], list[dict]]:
+    by_taxon = defaultdict(list)
+    for observation in pool:
+        taxon = observation.get("expected_taxon")
+        if taxon and taxon != "unknown_fungus":
+            by_taxon[taxon].append(observation)
+
+    calibration_candidates = []
+    test_candidates = []
+    for taxon, observations in sorted(by_taxon.items()):
+        ordered = sorted(observations, key=lambda item: stable_observation_order(item, seed))
+        if len(ordered) >= 3:
+            calibration_candidates.append(ordered[0])
+            test_candidates.append(ordered[1])
+        elif len(ordered) == 2:
+            taxon_bucket = int(hashlib.sha256(f"{seed}:{taxon}".encode("utf-8")).hexdigest(), 16) % 2
+            (calibration_candidates if taxon_bucket == 0 else test_candidates).append(ordered[0])
+
+    calibration_candidates.sort(key=lambda item: stable_observation_order(item, seed + 1))
+    test_candidates.sort(key=lambda item: stable_observation_order(item, seed + 2))
+    if len(calibration_candidates) < target_cases or len(test_candidates) < target_cases:
+        print(
+            f"ERROR: Not enough taxa with disjoint reference observations. "
+            f"Calibration candidates: {len(calibration_candidates)}, test candidates: {len(test_candidates)}, "
+            f"required per split: {target_cases}. Increase --pool-multiplier.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+    calibration_observations = calibration_candidates[:target_cases]
+    test_observations = test_candidates[:target_cases]
+    held_out_ids = {
+        item["observation_id"]
+        for item in calibration_observations + test_observations
+    }
+    reference_observations = [
+        item for item in pool
+        if item["observation_id"] not in held_out_ids
+    ]
+
+    reference_taxa = {item.get("expected_taxon") for item in reference_observations}
+    held_out_taxa = {item.get("expected_taxon") for item in calibration_observations + test_observations}
+    missing_reference_taxa = sorted(held_out_taxa.difference(reference_taxa))
+    if missing_reference_taxa:
+        print(f"ERROR: Held-out taxa missing from reference split: {missing_reference_taxa[:10]}", file=sys.stderr)
+        sys.exit(1)
+    return reference_observations, calibration_observations, test_observations
+
+
+def run_phase6_full_pipeline(args, config: dict, output_dir: Path, dataset_root: str, env: dict) -> None:
+    target_cases = args.max_cases or config.get("sampling", {}).get("max_cases") or 1000
+    pool_multiplier = max(args.pool_multiplier, 3)
+    pool_cases = target_cases * pool_multiplier
+    seed = args.seed if args.seed is not None else config.get("sampling", {}).get("seed", 42)
+    script_path = Path(__file__).resolve()
+
+    def child_command() -> list[str]:
+        command = [sys.executable, str(script_path)]
+        if args.config:
+            command.extend(["--config", args.config])
+        return command
+
+    pool_path = output_dir / "phase6_pool_observations.json"
+    convert_command = child_command() + [
+        "--mode", "convert_only",
+        "--max-cases", str(pool_cases),
+        "--converted-dataset-path", str(pool_path),
+        "--output-dir", str(output_dir),
+    ]
+    run_checked(convert_command, env, "phase6-convert-pool")
+
+    with open(pool_path, "r", encoding="utf-8") as handle:
+        pool = json.load(handle)
+    if len(pool) < target_cases * 3:
+        print(
+            f"ERROR: Phase 6 requires at least {target_cases * 3} observations for disjoint "
+            f"reference/calibration/test splits, but only {len(pool)} were converted.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+    reference_observations, calibration_observations, test_observations = split_phase6_observations(
+        pool,
+        target_cases,
+        seed,
+    )
+
+    reference_ids = {item["observation_id"] for item in reference_observations}
+    calibration_ids = {item["observation_id"] for item in calibration_observations}
+    test_ids = {item["observation_id"] for item in test_observations}
+    if reference_ids & calibration_ids or reference_ids & test_ids or calibration_ids & test_ids:
+        print("ERROR: Phase 6 split overlap detected.", file=sys.stderr)
+        sys.exit(1)
+
+    reference_path = output_dir / "phase6_reference_observations.json"
+    calibration_path = output_dir / "phase6_calibration_observations.json"
+    test_path = output_dir / "phase6_test_observations.json"
+    excluded_ids_path = output_dir / "phase6_index_excluded_ids.json"
+    write_json(reference_path, reference_observations)
+    write_json(calibration_path, calibration_observations)
+    write_json(test_path, test_observations)
+    write_json(excluded_ids_path, sorted(calibration_ids | test_ids))
+    split_manifest_path = output_dir / "phase6_split_manifest.json"
+    write_json(
+        split_manifest_path,
+        {
+            "seed": seed,
+            "pool_cases": len(pool),
+            "reference_cases": len(reference_observations),
+            "calibration_cases": len(calibration_observations),
+            "test_cases": len(test_observations),
+            "overlap_count": 0,
+            "reference_unique_species": len({item.get("expected_taxon") for item in reference_observations}),
+            "calibration_unique_species": len({item.get("expected_taxon") for item in calibration_observations}),
+            "test_unique_species": len({item.get("expected_taxon") for item in test_observations}),
+            "held_out_taxa_missing_from_reference": 0,
+        },
+    )
+
+    staging_index_dir = output_dir / "species_index_staging"
+    index_dir = output_dir / "species_index"
+    staging_index_dir.mkdir(parents=True, exist_ok=True)
+    expected_index_files = [
+        "species_visual_prototypes.json",
+        "genus_prototypes.json",
+        "family_prototypes.json",
+        "index_metadata.json",
+    ]
+    for file_name in expected_index_files:
+        staging_file = staging_index_dir / file_name
+        if staging_file.exists():
+            staging_file.unlink()
+
+    build_command = [
+        sys.executable,
+        str(root_dir / "eval" / "scripts" / "build_species_index.py"),
+        "--dataset-root", dataset_root,
+        "--converted", str(pool_path),
+        "--output-dir", str(staging_index_dir),
+        "--split", "reference",
+        "--test-split-ids", str(excluded_ids_path),
+        "--models", "yoloe,dinov3,siglip2",
+        "--device", "cuda",
+    ]
+    run_checked(build_command, env, "phase6-build-species-index")
+
+    index_dir.mkdir(parents=True, exist_ok=True)
+    for file_name in expected_index_files:
+        source = staging_index_dir / file_name
+        if not source.exists() or source.stat().st_size == 0:
+            print(f"ERROR: Required index artifact missing or empty: {source}", file=sys.stderr)
+            sys.exit(1)
+        source.replace(index_dir / file_name)
+
+    phase6_env = env.copy()
+    phase6_env["SPECIES_INDEX_DIR"] = str(index_dir)
+    diagnose_command = [
+        sys.executable,
+        str(root_dir / "eval" / "scripts" / "diagnose_catalog.py"),
+        "--converted", str(test_path),
+        "--catalog", str(index_dir / "species_visual_prototypes.json"),
+        "--output", str(output_dir / "catalog_diagnostics.json"),
+    ]
+    run_checked(diagnose_command, phase6_env, "phase6-diagnose-index-coverage")
+
+    calibration_output_dir = output_dir / "calibration"
+    calibration_env = phase6_env.copy()
+    calibration_env["OPEN_SET_THRESHOLDS_PATH"] = str(output_dir / "uncalibrated_thresholds.not_created.json")
+    calibration_command = child_command() + [
+        "--mode", "fusion_eval_only",
+        "--converted-dataset-path", str(calibration_path),
+        "--output-dir", str(calibration_output_dir),
+    ]
+    run_checked(calibration_command, calibration_env, "phase6-calibration-evaluation")
+
+    thresholds_path = output_dir / "open_set_thresholds.json"
+    calibrate_command = [
+        sys.executable,
+        str(root_dir / "eval" / "scripts" / "calibrate_open_set.py"),
+        "--predictions", str(calibration_output_dir / "real_report.json"),
+        "--output", str(thresholds_path),
+    ]
+    run_checked(calibrate_command, phase6_env, "phase6-calibrate-open-set")
+
+    final_env = phase6_env.copy()
+    final_env["OPEN_SET_THRESHOLDS_PATH"] = str(thresholds_path)
+    final_env["PHASE6_SPLIT_MANIFEST"] = str(split_manifest_path)
+    final_command = child_command() + [
+        "--mode", "fusion_eval_only",
+        "--converted-dataset-path", str(test_path),
+        "--output-dir", str(output_dir),
+        "--require-phase6",
+    ]
+    run_checked(final_command, final_env, "phase6-final-disjoint-evaluation")
+    print("\nPhase 6 full pipeline completed with disjoint reference, calibration, and test splits.")
 
 def print_memory_stats(clear_cache=False):
     print("--------------------------------------------------")
@@ -56,6 +274,7 @@ def main():
     parser.add_argument("--dataset-root", help="Path to raw dataset directory")
     parser.add_argument("--output-dir", help="Path to write benchmark reports")
     parser.add_argument("--max-cases", type=int, help="Override maximum cases to evaluate")
+    parser.add_argument("--converted-dataset-path", help="Override converted observations JSON path")
     parser.add_argument("--shuffle", action="store_true", help="Shuffle dataset before running")
     parser.add_argument("--seed", type=int, help="Seed for shuffle reproducibility")
     parser.add_argument("--risk-balanced", action="store_true", help="Prioritize balanced risk cases")
@@ -65,6 +284,8 @@ def main():
     parser.add_argument("--debug-safety", action="store_true", help="Enable safety auditor debug details")
     parser.add_argument("--max-safety-debug-cases", type=int, help="Max cases to show in safety debug")
     parser.add_argument("--require-phase6", action="store_true", help="Fail if the final report is not wired to Phase 6.")
+    parser.add_argument("--phase6-full-run", action="store_true", help="Build index, calibrate, and evaluate on disjoint splits.")
+    parser.add_argument("--pool-multiplier", type=int, default=5, help="Observation pool multiplier for Phase 6 splits.")
     parser.add_argument("--mode", default="full_pipeline", choices=["full_pipeline", "convert_only", "siglip_embeddings_only", "fusion_eval_only"], help="Execution mode")
     args = parser.parse_args()
 
@@ -82,7 +303,7 @@ def main():
     dataset_name = args.dataset_name or config.get("dataset_name", "fungiclef2025")
     dataset_root = args.dataset_root or config.get("dataset_root", "/kaggle/input/fungi-clef-2025")
     output_dir = Path(args.output_dir or config.get("output_dir", "/kaggle/working/visionsetil_outputs"))
-    converted_dataset_path = Path(config.get("converted_dataset_path", output_dir / f"converted_{dataset_name}_observations.json"))
+    converted_dataset_path = Path(args.converted_dataset_path or config.get("converted_dataset_path", output_dir / f"converted_{dataset_name}_observations.json"))
     cpu_only = args.cpu_only or config.get("runtime", {}).get("device") == "cpu"
     
     # Extract sampling options
@@ -122,6 +343,12 @@ def main():
     output_dir.mkdir(parents=True, exist_ok=True)
     poisonous_catalog = root_dir / "backend" / "app" / "data" / "poisonous_species.json"
 
+    if args.phase6_full_run:
+        phase6_env = os.environ.copy()
+        phase6_env["PYTHONPATH"] = str(root_dir) + os.pathsep + phase6_env.get("PYTHONPATH", "")
+        run_phase6_full_pipeline(args, config, output_dir, dataset_root, phase6_env)
+        return
+
     print("==================================================")
     print("      VISIONSETIL LARGE DATASET BENCHMARK         ")
     print("==================================================")
@@ -149,8 +376,8 @@ def main():
 
     # 2. Invoke converter (if mode is not fusion_eval_only)
     observations = []
+    start_time = time.perf_counter()
     if mode in ("full_pipeline", "convert_only"):
-        start_time = time.perf_counter()
         try:
             if dataset_name.lower() in ("fungiclef2025", "fungiclef"):
                 observations = convert_fungiclef(dataset_root, converted_dataset_path, poisonous_catalog, sampling_options)
@@ -265,12 +492,20 @@ def main():
     
     env = os.environ.copy()
     env["PYTHONPATH"] = str(root_dir) + os.pathsep + env.get("PYTHONPATH", "")
+    env["DATABASE_PATH"] = str(output_dir / "benchmark.db")
+    env["UPLOAD_DIR"] = str(output_dir / "uploads")
     if cpu_only:
         env["FORCE_CPU"] = "true"
 
     # Precompute reference embeddings if they do not exist
+    configured_index_dir = Path(env.get("SPECIES_INDEX_DIR", output_dir / "species_index"))
+    index_catalog_path = configured_index_dir / "species_visual_prototypes.json"
     real_catalog_path = output_dir / "real_species_catalog.json"
-    if not real_catalog_path.exists():
+    if index_catalog_path.exists():
+        env["SPECIES_INDEX_DIR"] = str(configured_index_dir)
+        env["MOCK_SPECIES_CATALOG_PATH"] = str(index_catalog_path)
+        print(f"\nUsing Phase 6 species index at {configured_index_dir}")
+    elif not real_catalog_path.exists():
         print(f"\nReal species catalog not found at {real_catalog_path}. Precomputing reference embeddings...")
         precompute_script_path = root_dir / "eval" / "scripts" / "precompute_reference_embeddings.py"
         precompute_cmd = [
@@ -287,11 +522,10 @@ def main():
             print(pre_res.stderr, file=sys.stderr)
             sys.exit(pre_res.returncode)
         print(pre_res.stdout)
+        env["MOCK_SPECIES_CATALOG_PATH"] = str(real_catalog_path)
     else:
         print(f"\nFound existing real species catalog at {real_catalog_path}")
-
-    # Point backend to the real species catalog
-    env["MOCK_SPECIES_CATALOG_PATH"] = str(real_catalog_path)
+        env["MOCK_SPECIES_CATALOG_PATH"] = str(real_catalog_path)
 
     cmd = [
         sys.executable,
@@ -462,6 +696,8 @@ def main():
 - **Open-set thresholds:** `{phase6_pipeline.get('open_set_thresholds')}`
 - **Index Path:** `{phase6_pipeline.get('index_path')}`
 - **Thresholds Path:** `{phase6_pipeline.get('thresholds_path')}`
+- **Split Manifest Path:** `{phase6_pipeline.get('split_manifest_path')}`
+- **Split Overlap Count:** `{phase6_pipeline.get('split_manifest', {}).get('overlap_count')}`
 - **Score signals:** `{phase6_pipeline.get('score_signals')}`
 """
 

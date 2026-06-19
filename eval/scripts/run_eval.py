@@ -1,4 +1,5 @@
 import argparse
+import os
 import sys
 import json
 import time
@@ -607,6 +608,12 @@ def main():
 
     # Production readiness check
     all_mock = not (model_status["detector"]["loaded"] or model_status["visual_embedder"]["loaded"] or model_status["image_text_embedder"]["loaded"])
+    all_real_models = all(model_info.get("loaded", False) for model_info in model_status.values())
+    split_manifest = {}
+    split_manifest_path = os.getenv("PHASE6_SPLIT_MANIFEST", "")
+    if split_manifest_path and Path(split_manifest_path).exists():
+        with open(split_manifest_path, "r", encoding="utf-8") as handle:
+            split_manifest = json.load(handle)
     phase6_score_rows = [
         result.get("top1_phase6_scores", {})
         for result in results
@@ -622,19 +629,44 @@ def main():
         for score in phase6_score_rows
         if isinstance(score.get("prototype_quality"), (int, float))
     ]
+    genus_values = [
+        score.get("genus_visual_score")
+        for score in phase6_score_rows
+        if isinstance(score.get("genus_visual_score"), (int, float))
+    ]
+    family_values = [
+        score.get("family_visual_score")
+        for score in phase6_score_rows
+        if isinstance(score.get("family_visual_score"), (int, float))
+    ]
     phase6_score_summary = {
         "cases_with_taxonomic_score": len(taxonomic_values),
         "cases_with_prototype_quality": len(prototype_quality_values),
+        "cases_with_nonzero_genus_score": sum(value > 0.0 for value in genus_values),
+        "cases_with_nonzero_family_score": sum(value > 0.0 for value in family_values),
         "mean_taxonomic_score": round(sum(taxonomic_values) / len(taxonomic_values), 4) if taxonomic_values else 0.0,
         "mean_prototype_quality": round(sum(prototype_quality_values) / len(prototype_quality_values), 4) if prototype_quality_values else 0.0,
+        "mean_genus_score": round(sum(genus_values) / len(genus_values), 4) if genus_values else 0.0,
+        "mean_family_score": round(sum(family_values) / len(family_values), 4) if family_values else 0.0,
     }
-    phase6_scores_present = evaluated_cases > 0 and phase6_score_summary["cases_with_taxonomic_score"] == evaluated_cases
+    phase6_scores_present = (
+        evaluated_cases > 0
+        and phase6_score_summary["cases_with_taxonomic_score"] == evaluated_cases
+        and phase6_score_summary["cases_with_nonzero_genus_score"] > 0
+        and phase6_score_summary["cases_with_nonzero_family_score"] > 0
+    )
     phase6_valid = (
-        phase6_trace["ranker_version"] == "candidate_ranker_v2"
+        all_real_models
+        and phase6_trace["ranker_version"] == "candidate_ranker_v2"
         and phase6_trace["ml_improvement_version"] == "taxonomic_prototype_ensemble_v1"
         and phase6_trace["catalog_version"] == "real_species_catalog_v2"
         and phase6_trace["similarity_metric"] == "cosine"
         and phase6_trace["open_set_thresholds"] == "calibrated"
+        and bool(phase6_trace["index_path"])
+        and split_manifest.get("overlap_count") == 0
+        and split_manifest.get("reference_cases", 0) > 0
+        and split_manifest.get("calibration_cases", 0) > 0
+        and split_manifest.get("test_cases", 0) == evaluated_cases
         and phase6_scores_present
     )
     
@@ -698,6 +730,8 @@ def main():
             "index_path": phase6_trace["index_path"],
             "thresholds_path": phase6_trace["thresholds_path"],
             "score_signals": phase6_score_summary,
+            "split_manifest_path": split_manifest_path,
+            "split_manifest": split_manifest,
         },
         "detector_evaluation": detector_metrics,
         "embedding_evaluation": embedding_metrics,
@@ -797,9 +831,13 @@ def main():
     md_content.append(f"- **Open-set thresholds:** `{phase6_trace['open_set_thresholds']}`")
     md_content.append(f"- **Index Path:** `{phase6_trace['index_path']}`")
     md_content.append(f"- **Thresholds Path:** `{phase6_trace['thresholds_path']}`")
+    md_content.append(f"- **Split Manifest Path:** `{split_manifest_path}`")
+    md_content.append(f"- **Split Overlap Count:** `{split_manifest.get('overlap_count')}`")
     md_content.append(f"- **Cases with taxonomic score:** `{phase6_score_summary['cases_with_taxonomic_score']}`")
     md_content.append(f"- **Mean taxonomic score:** `{phase6_score_summary['mean_taxonomic_score']}`")
     md_content.append(f"- **Mean prototype quality:** `{phase6_score_summary['mean_prototype_quality']}`")
+    md_content.append(f"- **Cases with nonzero genus score:** `{phase6_score_summary['cases_with_nonzero_genus_score']}`")
+    md_content.append(f"- **Cases with nonzero family score:** `{phase6_score_summary['cases_with_nonzero_family_score']}`")
     if not phase6_valid:
         md_content.append("- **Invalidation Reason:** Fase 6 no esta completamente enchufada; no aceptes estas metricas como benchmark final de Fase 6.\n")
     else:

@@ -18,6 +18,10 @@ def main():
     parser.add_argument("--converted", required=True, help="Path to converted observations JSON.")
     parser.add_argument("--catalog", required=True, help="Path to real species catalog JSON.")
     parser.add_argument("--output", required=True, help="Path to write diagnostics JSON.")
+    parser.add_argument("--min-species-coverage", type=float, default=0.50,
+                        help="Minimum observation-level species coverage required.")
+    parser.add_argument("--min-genus-coverage", type=float, default=0.50,
+                        help="Minimum observation-level genus coverage required.")
     args = parser.parse_args()
 
     converted_path = Path(args.converted)
@@ -98,17 +102,20 @@ def main():
         "unique_missing_genera": unique_missing_genera,
         "top_expected_taxa": expected_taxa.most_common(20),
         "top_expected_genera": expected_genera.most_common(20),
-        "validation_passed": species_coverage > 0.5 and genus_coverage > 0.5,
+        "validation_passed": (
+            species_coverage >= args.min_species_coverage
+            and genus_coverage >= args.min_genus_coverage
+        ),
     }
 
-    # Abort if coverage is critically low
-    if species_coverage < 0.1:
-        print(f"ERROR: Species coverage is critically low ({species_coverage*100:.2f}%). "
-              f"Catalog is incompatible with evaluation dataset.", file=sys.stderr)
+    if species_coverage < args.min_species_coverage:
+        print(f"ERROR: Species coverage is below the required threshold "
+              f"({species_coverage*100:.2f}% < {args.min_species_coverage*100:.2f}%).", file=sys.stderr)
         sys.exit(1)
 
-    if len(unique_missing_genera) > 0 and genus_coverage < 0.3:
-        print(f"ERROR: Genus coverage is too low ({genus_coverage*100:.2f}%). "
+    if genus_coverage < args.min_genus_coverage:
+        print(f"ERROR: Genus coverage is too low ({genus_coverage*100:.2f}% < "
+              f"{args.min_genus_coverage*100:.2f}%). "
               f"Missing genera: {unique_missing_genera[:10]}", file=sys.stderr)
         sys.exit(1)
 

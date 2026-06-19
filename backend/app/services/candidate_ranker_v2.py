@@ -1,5 +1,7 @@
 from math import log1p
 
+import numpy as np
+
 from app.ml.interfaces import ImageEmbedding, ObservationRepresentation, TextEmbedding
 from app.services.poisonous_lookalikes import elevate_risk_for_genus
 
@@ -8,6 +10,7 @@ class CandidateRankerV2:
     version = "candidate_ranker_v2"
     similarity_metric = "cosine"
     improvement_version = "taxonomic_prototype_ensemble_v1"
+    _matrix_cache: dict[tuple, dict[str, np.ndarray]] = {}
 
     def rank(
         self,
@@ -19,30 +22,18 @@ class CandidateRankerV2:
     ) -> list[dict]:
         ranked: list[dict] = []
         metadata_factor = 1.0 - observation_representation.evidence_penalty
+        score_arrays = self._vectorized_prototype_scores(observation_representation, species_catalog)
 
         for idx, species in enumerate(species_catalog):
             text_embedding = species_text_embeddings[idx] if (species_text_embeddings and idx < len(species_text_embeddings)) else None
-            species_scores = self._score_prototype_level(
-                observation_representation=observation_representation,
-                dino_ref=species.get("dino_reference_embedding") or species.get("dino_prototype") or [],
-                siglip_ref=species.get("siglip_reference_embedding") or species.get("siglip_prototype") or [],
-                siglip_text_ref=species.get("siglip_text_embedding") or species.get("siglip_text_prototype") or [],
-                fallback_text_embedding=text_embedding,
-            )
-            genus_scores = self._score_prototype_level(
-                observation_representation=observation_representation,
-                dino_ref=species.get("genus_dino_prototype") or [],
-                siglip_ref=species.get("genus_siglip_prototype") or [],
-                siglip_text_ref=species.get("genus_siglip_text_prototype") or [],
-                fallback_text_embedding=None,
-            )
-            family_scores = self._score_prototype_level(
-                observation_representation=observation_representation,
-                dino_ref=species.get("family_dino_prototype") or [],
-                siglip_ref=species.get("family_siglip_prototype") or [],
-                siglip_text_ref=species.get("family_siglip_text_prototype") or [],
-                fallback_text_embedding=None,
-            )
+            species_scores = self._scores_for_index(score_arrays, "species", idx)
+            genus_scores = self._scores_for_index(score_arrays, "genus", idx)
+            family_scores = self._scores_for_index(score_arrays, "family", idx)
+            if species_scores["siglip_image_text_score"] == 0.0 and text_embedding is not None:
+                species_scores["siglip_image_text_score"] = self._cosine_similarity(
+                    observation_representation.text_component,
+                    text_embedding.vector,
+                )
 
             species_visual_score = self._combine_modalities(species_scores)
             genus_visual_score = self._combine_modalities(genus_scores)
@@ -110,6 +101,83 @@ class CandidateRankerV2:
             next_score = ranked[position + 1]["confidence"] if position + 1 < len(ranked) else 0.0
             item["ranker_margin_to_next"] = round(item["confidence"] - next_score, 4)
         return ranked[:top_k]
+
+    def _vectorized_prototype_scores(
+        self,
+        observation_representation: ObservationRepresentation,
+        species_catalog: list[dict],
+    ) -> dict[str, np.ndarray]:
+        if not species_catalog:
+            return {}
+
+        cache_key = (
+            id(species_catalog),
+            len(species_catalog),
+            species_catalog[0].get("taxon", ""),
+            species_catalog[-1].get("taxon", ""),
+        )
+        matrices = self._matrix_cache.get(cache_key)
+        if matrices is None:
+            matrices = {
+                "species_dino": self._prototype_matrix(species_catalog, ("dino_reference_embedding", "dino_prototype")),
+                "species_visual": self._prototype_matrix(species_catalog, ("siglip_reference_embedding", "siglip_prototype")),
+                "species_text": self._prototype_matrix(species_catalog, ("siglip_text_embedding", "siglip_text_prototype")),
+                "genus_dino": self._prototype_matrix(species_catalog, ("genus_dino_prototype",)),
+                "genus_visual": self._prototype_matrix(species_catalog, ("genus_siglip_prototype",)),
+                "genus_text": self._prototype_matrix(species_catalog, ("genus_siglip_text_prototype",)),
+                "family_dino": self._prototype_matrix(species_catalog, ("family_dino_prototype",)),
+                "family_visual": self._prototype_matrix(species_catalog, ("family_siglip_prototype",)),
+                "family_text": self._prototype_matrix(species_catalog, ("family_siglip_text_prototype",)),
+            }
+            if len(self._matrix_cache) >= 3:
+                self._matrix_cache.clear()
+            self._matrix_cache[cache_key] = matrices
+
+        dino_query = self._normalize_array(observation_representation.visual_component)
+        siglip_query = self._normalize_array(observation_representation.text_component)
+        return {
+            name: self._matrix_cosine(matrix, dino_query if name.endswith("dino") else siglip_query)
+            for name, matrix in matrices.items()
+        }
+
+    def _prototype_matrix(self, catalog: list[dict], keys: tuple[str, ...]) -> np.ndarray:
+        vectors = []
+        dimension = 0
+        for item in catalog:
+            vector = next((item.get(key) for key in keys if item.get(key)), [])
+            vectors.append(vector)
+            if not dimension and vector:
+                dimension = len(vector)
+        if dimension == 0:
+            return np.zeros((len(catalog), 0), dtype=np.float32)
+
+        matrix = np.zeros((len(catalog), dimension), dtype=np.float32)
+        for idx, vector in enumerate(vectors):
+            if len(vector) == dimension:
+                matrix[idx] = np.asarray(vector, dtype=np.float32)
+        norms = np.linalg.norm(matrix, axis=1, keepdims=True)
+        nonzero = norms[:, 0] > 0
+        matrix[nonzero] /= norms[nonzero]
+        return matrix
+
+    def _normalize_array(self, vector: list[float]) -> np.ndarray:
+        array = np.asarray(vector, dtype=np.float32)
+        norm = np.linalg.norm(array)
+        if norm <= 0.0:
+            return np.zeros_like(array)
+        return array / norm
+
+    def _matrix_cosine(self, matrix: np.ndarray, query: np.ndarray) -> np.ndarray:
+        if matrix.shape[1] == 0 or matrix.shape[1] != query.size:
+            return np.zeros(matrix.shape[0], dtype=np.float32)
+        return np.clip(matrix @ query, 0.0, 1.0)
+
+    def _scores_for_index(self, score_arrays: dict[str, np.ndarray], level: str, idx: int) -> dict:
+        return {
+            "dino_visual_score": float(score_arrays[f"{level}_dino"][idx]),
+            "siglip_visual_score": float(score_arrays[f"{level}_visual"][idx]),
+            "siglip_image_text_score": float(score_arrays[f"{level}_text"][idx]),
+        }
 
     def _score_prototype_level(
         self,

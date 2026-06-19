@@ -3,7 +3,21 @@ import json
 import random
 from pathlib import Path
 
+from PIL import Image, ImageFile
+
+ImageFile.LOAD_TRUNCATED_IMAGES = True
+
 HIGH_RISK_GENERA = ["amanita", "galerina", "cortinarius", "lepiota", "gyromitra", "inocybe", "clitocybe", "conocybe"]
+
+
+def is_readable_image(path) -> bool:
+    """Return True only when Pillow can decode the complete image container."""
+    try:
+        with Image.open(path) as image:
+            image.verify()
+        return True
+    except (OSError, ValueError, SyntaxError):
+        return False
 
 def find_metadata_file(dataset_root, dataset_name):
     """

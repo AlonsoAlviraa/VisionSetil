@@ -61,11 +61,6 @@ class OpenSetRejectionService:
         reasons = []
         decision = "accept"
 
-        # Check critical evidence
-        required_views = {"gills_or_pores", "base", "environment"}
-        detected_views = set(observation_representation.detected_views)
-        missing_critical = required_views.difference(detected_views)
-
         # Check high risk genus
         first_taxon = candidates[0].get("taxon", "")
         first_genus = first_taxon.split()[0].lower() if first_taxon else ""
@@ -105,11 +100,6 @@ class OpenSetRejectionService:
             reason = "low_margin"
             reasons.append(reason)
             decision = "reject_to_genus_or_human_review"
-        elif settings.open_set_reject_on_missing_critical_evidence and missing_critical:
-            is_unknown_or_uncertain = True
-            reason = "missing_critical_evidence"
-            reasons.append(reason)
-            decision = "reject_to_unknown"
         elif first_genus in HIGH_RISK_GENERA:
             is_unknown_or_uncertain = True
             reason = "high_risk_genus"

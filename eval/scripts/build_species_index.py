@@ -15,12 +15,13 @@ Usage:
       --device cuda
 """
 import argparse
+import hashlib
 import json
 import sys
 import time
 from collections import defaultdict
 from pathlib import Path
-from PIL import ImageFile
+from PIL import Image, ImageFile
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
@@ -32,6 +33,20 @@ sys.path.insert(0, str(backend_dir))
 
 from app.core.config import settings
 from app.ml.model_registry import build_model_registry
+
+
+def is_readable_image(path: str) -> bool:
+    try:
+        with Image.open(path) as image:
+            image.verify()
+        return True
+    except (OSError, ValueError, SyntaxError):
+        return False
+
+
+def stable_split_bucket(observation_id: str) -> int:
+    digest = hashlib.sha256(str(observation_id).encode("utf-8")).digest()
+    return int.from_bytes(digest[:8], "big") % 100
 
 
 def cosine_similarity(left: list[float], right: list[float]) -> float:
@@ -98,13 +113,11 @@ def main():
             print(f"Loaded {len(test_ids)} test observation IDs to exclude (leakage prevention).")
 
     # If no explicit test IDs, use a hash-based 80/20 split
-    if not test_ids:
+    if not test_ids and args.split != "all":
         print("No explicit test split provided. Using 80/20 hash-based split for leakage prevention.")
         for obs in observations:
-            obs_id = obs.get("observation_id", str(hash(obs.get("title", ""))))
-            # Deterministic hash split: last 20% go to test
-            hash_val = hash(str(obs_id)) % 100
-            if hash_val >= 80:
+            obs_id = obs.get("observation_id", obs.get("title", ""))
+            if stable_split_bucket(obs_id) >= 80:
                 test_ids.add(obs_id)
         print(f"Auto-generated {len(test_ids)} test observation IDs to exclude.")
 
@@ -135,6 +148,7 @@ def main():
         "substrates": set(),
     })
 
+    unreadable_reference_images = 0
     for obs in reference_observations:
         taxon = obs.get("expected_taxon")
         if not taxon or taxon == "unknown_fungus":
@@ -151,8 +165,10 @@ def main():
                 img_path = dataset_root / img_rel
             if not img_path.exists():
                 img_path = Path(img_rel)
-            if img_path.exists() and img_path.is_file():
+            if img_path.exists() and img_path.is_file() and is_readable_image(str(img_path)):
                 group["images"].append(str(img_path))
+            elif img_path.exists() and img_path.is_file():
+                unreadable_reference_images += 1
 
         meta = obs.get("metadata", {})
         if meta.get("habitat"):
@@ -168,9 +184,14 @@ def main():
 
     # Verify models are real (no silent fallback)
     model_status = registry.get_status()
-    all_mock = all(not m_info.get("loaded", False) for m_info in model_status.values())
-    if all_mock:
-        print("ERROR: All models are in mock/fallback mode. Cannot build real embeddings index.", file=sys.stderr)
+    missing_real_models = [name for name, info in model_status.items() if not info.get("loaded", False)]
+    if missing_real_models:
+        print(
+            f"ERROR: Required real models are not loaded: {', '.join(missing_real_models)}. "
+            "Cannot build a Phase 6 index.",
+            file=sys.stderr,
+        )
+        print(json.dumps(model_status, indent=2), file=sys.stderr)
         sys.exit(1)
 
     # Extract embeddings per species
@@ -190,34 +211,40 @@ def main():
 
     print("Extracting visual prototypes...")
     total_images_processed = 0
+    failed_images = unreadable_reference_images
+    skipped_species = 0
     start_time = time.time()
 
     for i, taxon in enumerate(taxa):
         g = species_groups[taxon]
         image_paths = g["images"]
 
-        if not image_paths:
-            dino_vector = [0.0] * settings.dino_embedding_dim
-            siglip_vector = [0.0] * settings.siglip_embedding_dim
-        else:
+        dino_vectors = []
+        siglip_vectors = []
+        for image_path in image_paths:
             try:
-                detections = registry.detector.detect_and_crop(image_paths)
+                detections = registry.detector.detect_and_crop([image_path])
                 crop_paths = [det.crop_path for det in detections]
-            except Exception as e:
-                print(f"Warning: Cropping failed for species {taxon}, using full images: {e}")
-                crop_paths = image_paths
-
-            try:
                 dino_embs = registry.visual_embedder.embed_images(crop_paths)
                 siglip_embs = registry.image_text_embedder.embed_images(crop_paths)
+                if not dino_embs or not siglip_embs:
+                    raise RuntimeError("Embedding service returned no vectors")
+                if any(not emb.model_name.startswith("real_") for emb in dino_embs + siglip_embs):
+                    raise RuntimeError("Runtime embedding fallback detected")
+                dino_vectors.extend(emb.vector for emb in dino_embs)
+                siglip_vectors.extend(emb.vector for emb in siglip_embs)
+                total_images_processed += 1
+            except Exception as exc:
+                failed_images += 1
+                print(f"Warning: Failed reference image for {taxon}: {image_path}: {exc}")
 
-                dino_vector = average_vectors([e.vector for e in dino_embs])
-                siglip_vector = average_vectors([e.vector for e in siglip_embs])
-                total_images_processed += len(image_paths)
-            except Exception as e:
-                print(f"Warning: Failed to extract embeddings for species {taxon}: {e}")
-                dino_vector = [0.0] * settings.dino_embedding_dim
-                siglip_vector = [0.0] * settings.siglip_embedding_dim
+        if not dino_vectors or not siglip_vectors:
+            skipped_species += 1
+            print(f"Warning: Skipping {taxon}; no valid real visual embeddings were produced.")
+            continue
+
+        dino_vector = average_vectors(dino_vectors)
+        siglip_vector = average_vectors(siglip_vectors)
 
         edibility_label = "dangerous_or_unknown"
         if g["risk_level"] == "low":
@@ -238,7 +265,7 @@ def main():
             "dino_reference_embedding": dino_vector,
             "siglip_reference_embedding": siglip_vector,
             "siglip_text_embedding": taxon_to_text_embedding[taxon],
-            "image_count": len(image_paths),
+            "image_count": len(dino_vectors),
         })
 
         if (i + 1) % 100 == 0 or (i + 1) == len(taxa):
@@ -246,6 +273,15 @@ def main():
 
     elapsed = time.time() - start_time
     print(f"Prototypes computed in {elapsed:.2f}s for {total_images_processed} images.")
+
+    indexed_species_ratio = len(species_catalog) / len(species_groups) if species_groups else 0.0
+    if indexed_species_ratio < 0.5:
+        print(
+            f"ERROR: Only {len(species_catalog)}/{len(species_groups)} species produced real prototypes "
+            f"({indexed_species_ratio*100:.2f}%). Refusing to publish a defective index.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
 
     # Build genus prototypes (average of species prototypes in same genus)
     genus_groups = defaultdict(list)
@@ -315,6 +351,10 @@ def main():
         "total_genera": len(genus_prototypes),
         "total_families": len(family_prototypes),
         "total_images_processed": total_images_processed,
+        "failed_images": failed_images,
+        "source_species": len(species_groups),
+        "skipped_species": skipped_species,
+        "indexed_species_ratio": round(indexed_species_ratio, 4),
         "extraction_time_seconds": round(elapsed, 2),
         "models_used": args.models.split(","),
         "device": args.device,

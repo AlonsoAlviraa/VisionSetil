@@ -78,7 +78,10 @@ def classify_observation_advanced(observation_id: int, db: Session = Depends(get
         db.add(img)
     db.commit()
 
-    detected_views = [item.estimated_view_type for item in detections]
+    detected_views = [
+        image.view_type or detection.estimated_view_type
+        for image, detection in zip(images, detections, strict=False)
+    ]
     crop_paths = [item.crop_path for item in detections]
     dino_embeddings = registry.visual_embedder.embed_images(crop_paths)
     siglip_image_embeddings = registry.image_text_embedder.embed_images(crop_paths)
@@ -170,7 +173,7 @@ def classify_observation_advanced(observation_id: int, db: Session = Depends(get
 
     # 1. Open Set Rejection Evaluation
     open_set_service = OpenSetRejectionService()
-    open_set_decision = open_set_service.evaluate(safe["candidates"], representation, safe["missing_evidence"])
+    open_set_decision = open_set_service.evaluate(ranked, representation, safe["missing_evidence"])
     top1_score = ranked[0].get("confidence", 0.0) if ranked else 0.0
     top2_score = ranked[1].get("confidence", 0.0) if len(ranked) > 1 else 0.0
     top1_margin = round(top1_score - top2_score, 4)
@@ -274,9 +277,9 @@ def classify_observation_advanced(observation_id: int, db: Session = Depends(get
             recommend_review = True
             review_reason = "deadly_lookalike_or_high_risk_genus"
             review_priority = "critical"
-        elif safe["missing_evidence"]:
+        elif quality.possible_multiple_species or quality.heavy_compression_or_blur:
             recommend_review = True
-            review_reason = "missing_critical_evidence"
+            review_reason = "image_quality_requires_review"
             review_priority = "medium"
 
     request_id = None

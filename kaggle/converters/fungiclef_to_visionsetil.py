@@ -5,6 +5,7 @@ from .common import (
     read_rows_from_file,
     detect_column_heuristics,
     infer_risk_level,
+    is_readable_image,
     apply_sampling,
     resolve_image_path,
     scan_individual_jsons
@@ -160,12 +161,15 @@ def convert_fungiclef(dataset_root, output_json, poisonous_catalog_path=None, sa
 
     # 4. Resolve image paths and filter observations to those with existing images
     final_sampled_list = []
+    unreadable_images = 0
     for obs in sampled_list:
         resolved_images = []
         for raw_img in obs.get("raw_images", []):
             resolved = resolve_image_path(root_path, raw_img)
-            if resolved:
+            if resolved and is_readable_image(resolved):
                 resolved_images.append(resolved)
+            elif resolved:
+                unreadable_images += 1
         
         # Keep observation only if at least one image exists!
         if resolved_images:
@@ -183,4 +187,5 @@ def convert_fungiclef(dataset_root, output_json, poisonous_catalog_path=None, sa
         json.dump(final_sampled_list, f, indent=2, ensure_ascii=False)
 
     print(f"FungiCLEF Converter: Converted and saved {len(final_sampled_list)} cases to {output_json}")
+    print(f"FungiCLEF Converter: Skipped {unreadable_images} unreadable image files.")
     return final_sampled_list
