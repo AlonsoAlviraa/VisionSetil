@@ -42,7 +42,13 @@ def stable_observation_order(observation: dict, seed: int) -> str:
     return hashlib.sha256(f"{seed}:{observation_id}".encode("utf-8")).hexdigest()
 
 
-def split_phase6_observations(pool: list[dict], target_cases: int, seed: int) -> tuple[list[dict], list[dict], list[dict]]:
+def split_phase6_observations(
+    pool: list[dict],
+    target_cases: int,
+    seed: int,
+    minimum_cases: int,
+    max_reference_per_taxon: int,
+) -> tuple[list[dict], list[dict], list[dict], dict]:
     by_taxon = defaultdict(list)
     for observation in pool:
         taxon = observation.get("expected_taxon")
@@ -62,39 +68,67 @@ def split_phase6_observations(pool: list[dict], target_cases: int, seed: int) ->
 
     calibration_candidates.sort(key=lambda item: stable_observation_order(item, seed + 1))
     test_candidates.sort(key=lambda item: stable_observation_order(item, seed + 2))
-    if len(calibration_candidates) < target_cases or len(test_candidates) < target_cases:
+    available_cases = min(len(calibration_candidates), len(test_candidates))
+    if available_cases < minimum_cases:
         print(
             f"ERROR: Not enough taxa with disjoint reference observations. "
             f"Calibration candidates: {len(calibration_candidates)}, test candidates: {len(test_candidates)}, "
-            f"required per split: {target_cases}. Increase --pool-multiplier.",
+            f"minimum required per split: {minimum_cases}. Increase --pool-multiplier or use a larger dataset.",
             file=sys.stderr,
         )
         sys.exit(1)
 
-    calibration_observations = calibration_candidates[:target_cases]
-    test_observations = test_candidates[:target_cases]
+    effective_cases = min(target_cases, available_cases)
+    if effective_cases < target_cases:
+        print(
+            f"WARNING: Requested {target_cases} cases per split, but only {available_cases} are possible "
+            f"with disjoint reference observations. Continuing with {effective_cases}; the reduction will "
+            "be recorded in the Phase 6 manifest."
+        )
+
+    calibration_observations = calibration_candidates[:effective_cases]
+    test_observations = test_candidates[:effective_cases]
     held_out_ids = {
         item["observation_id"]
         for item in calibration_observations + test_observations
     }
-    reference_observations = [
-        item for item in pool
-        if item["observation_id"] not in held_out_ids
-    ]
+    held_out_taxa = {item.get("expected_taxon") for item in calibration_observations + test_observations}
+    reference_by_taxon = defaultdict(list)
+    for item in pool:
+        if item["observation_id"] not in held_out_ids and item.get("expected_taxon") in held_out_taxa:
+            reference_by_taxon[item.get("expected_taxon")].append(item)
+
+    reference_observations = []
+    for taxon in sorted(reference_by_taxon):
+        ordered = sorted(reference_by_taxon[taxon], key=lambda item: stable_observation_order(item, seed + 3))
+        reference_observations.extend(ordered[:max_reference_per_taxon])
 
     reference_taxa = {item.get("expected_taxon") for item in reference_observations}
-    held_out_taxa = {item.get("expected_taxon") for item in calibration_observations + test_observations}
     missing_reference_taxa = sorted(held_out_taxa.difference(reference_taxa))
     if missing_reference_taxa:
         print(f"ERROR: Held-out taxa missing from reference split: {missing_reference_taxa[:10]}", file=sys.stderr)
         sys.exit(1)
-    return reference_observations, calibration_observations, test_observations
+    split_stats = {
+        "requested_cases_per_split": target_cases,
+        "effective_cases_per_split": effective_cases,
+        "target_reduced": effective_cases < target_cases,
+        "calibration_candidates": len(calibration_candidates),
+        "test_candidates": len(test_candidates),
+        "minimum_cases_per_split": minimum_cases,
+        "max_reference_observations_per_taxon": max_reference_per_taxon,
+    }
+    return reference_observations, calibration_observations, test_observations, split_stats
 
 
 def run_phase6_full_pipeline(args, config: dict, output_dir: Path, dataset_root: str, env: dict) -> None:
     target_cases = args.max_cases or config.get("sampling", {}).get("max_cases") or 1000
+    if target_cases < 1:
+        print("ERROR: --max-cases must be greater than zero.", file=sys.stderr)
+        sys.exit(2)
     pool_multiplier = max(args.pool_multiplier, 3)
     pool_cases = target_cases * pool_multiplier
+    minimum_cases = min(max(args.min_phase6_cases, 1), target_cases)
+    max_reference_per_taxon = max(args.max_reference_per_taxon, 1)
     seed = args.seed if args.seed is not None else config.get("sampling", {}).get("seed", 42)
     script_path = Path(__file__).resolve()
 
@@ -115,18 +149,12 @@ def run_phase6_full_pipeline(args, config: dict, output_dir: Path, dataset_root:
 
     with open(pool_path, "r", encoding="utf-8") as handle:
         pool = json.load(handle)
-    if len(pool) < target_cases * 3:
-        print(
-            f"ERROR: Phase 6 requires at least {target_cases * 3} observations for disjoint "
-            f"reference/calibration/test splits, but only {len(pool)} were converted.",
-            file=sys.stderr,
-        )
-        sys.exit(1)
-
-    reference_observations, calibration_observations, test_observations = split_phase6_observations(
+    reference_observations, calibration_observations, test_observations, split_stats = split_phase6_observations(
         pool,
         target_cases,
         seed,
+        minimum_cases,
+        max_reference_per_taxon,
     )
 
     reference_ids = {item["observation_id"] for item in reference_observations}
@@ -150,6 +178,7 @@ def run_phase6_full_pipeline(args, config: dict, output_dir: Path, dataset_root:
         {
             "seed": seed,
             "pool_cases": len(pool),
+            **split_stats,
             "reference_cases": len(reference_observations),
             "calibration_cases": len(calibration_observations),
             "test_cases": len(test_observations),
@@ -179,10 +208,9 @@ def run_phase6_full_pipeline(args, config: dict, output_dir: Path, dataset_root:
         sys.executable,
         str(root_dir / "eval" / "scripts" / "build_species_index.py"),
         "--dataset-root", dataset_root,
-        "--converted", str(pool_path),
+        "--converted", str(reference_path),
         "--output-dir", str(staging_index_dir),
-        "--split", "reference",
-        "--test-split-ids", str(excluded_ids_path),
+        "--split", "all",
         "--models", "yoloe,dinov3,siglip2",
         "--device", "cuda",
     ]
@@ -285,7 +313,9 @@ def main():
     parser.add_argument("--max-safety-debug-cases", type=int, help="Max cases to show in safety debug")
     parser.add_argument("--require-phase6", action="store_true", help="Fail if the final report is not wired to Phase 6.")
     parser.add_argument("--phase6-full-run", action="store_true", help="Build index, calibrate, and evaluate on disjoint splits.")
-    parser.add_argument("--pool-multiplier", type=int, default=5, help="Observation pool multiplier for Phase 6 splits.")
+    parser.add_argument("--pool-multiplier", type=int, default=8, help="Observation pool multiplier for Phase 6 splits.")
+    parser.add_argument("--min-phase6-cases", type=int, default=500, help="Minimum valid disjoint cases per Phase 6 split.")
+    parser.add_argument("--max-reference-per-taxon", type=int, default=3, help="Maximum reference observations used per evaluated taxon.")
     parser.add_argument("--mode", default="full_pipeline", choices=["full_pipeline", "convert_only", "siglip_embeddings_only", "fusion_eval_only"], help="Execution mode")
     args = parser.parse_args()
 

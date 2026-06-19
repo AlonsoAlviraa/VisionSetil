@@ -8,6 +8,7 @@ from PIL import Image, ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 HIGH_RISK_GENERA = ["amanita", "galerina", "cortinarius", "lepiota", "gyromitra", "inocybe", "clitocybe", "conocybe"]
+IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".bmp", ".tif", ".tiff"}
 
 
 def is_readable_image(path) -> bool:
@@ -18,6 +19,20 @@ def is_readable_image(path) -> bool:
         return True
     except (OSError, ValueError, SyntaxError):
         return False
+
+
+def build_image_path_index(root_path):
+    """Index image paths once instead of recursively searching for every row."""
+    root_path = Path(root_path)
+    index = {}
+    for path in root_path.rglob("*"):
+        if not path.is_file() or path.suffix.lower() not in IMAGE_EXTENSIONS:
+            continue
+        resolved = str(path.resolve())
+        relative_key = path.relative_to(root_path).as_posix().lower()
+        index.setdefault(relative_key, resolved)
+        index.setdefault(path.name.lower(), resolved)
+    return index
 
 def find_metadata_file(dataset_root, dataset_name):
     """
@@ -49,19 +64,20 @@ def find_metadata_file(dataset_root, dataset_name):
                     return p
     return None
 
-def resolve_image_path(root_path, img_rel):
+def resolve_image_path(root_path, img_rel, image_path_index=None):
     """
     Tries to locate the image under root_path.
     1. Direct relative check: root_path / img_rel
     2. Direct filename check: root_path / img_rel.name
     3. Common subdirectories (train, val, test, images)
-    4. Recursive search for img_rel.name under root_path
+    4. Indexed lookup, with recursive search only for legacy callers
     """
     if not img_rel:
         return None
         
     root_path = Path(root_path)
-    img_path = Path(img_rel)
+    normalized_relative = str(img_rel).replace("\\", "/").lstrip("./")
+    img_path = Path(normalized_relative)
     
     # Candidate 1: direct relative check
     cand1 = root_path / img_path
@@ -83,7 +99,11 @@ def resolve_image_path(root_path, img_rel):
         if cand_sub_name.exists() and cand_sub_name.is_file():
             return str(cand_sub_name.resolve())
             
-    # Candidate 4: recursive search (glob)
+    # Candidate 4: constant-time lookup in the index built by the converter.
+    if image_path_index is not None:
+        return image_path_index.get(normalized_relative.lower()) or image_path_index.get(img_path.name.lower())
+
+    # Backward-compatible fallback for callers that do not provide an index.
     try:
         for p in root_path.rglob(img_path.name):
             if p.is_file():

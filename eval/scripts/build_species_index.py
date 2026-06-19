@@ -360,7 +360,7 @@ def main():
         "device": args.device,
         "leakage_prevention": {
             "test_ids_excluded": len(test_ids),
-            "method": "explicit_file" if args.test_split_ids else "hash_80_20",
+            "method": "explicit_file" if args.test_split_ids else ("pre_split_reference" if args.split == "all" else "hash_80_20"),
         },
     }
     with open(metadata_path, "w", encoding="utf-8") as f:

@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 from .common import (
+    build_image_path_index,
     find_metadata_file,
     read_rows_from_file,
     detect_column_heuristics,
@@ -159,26 +160,35 @@ def convert_fungiclef(dataset_root, output_json, poisonous_catalog_path=None, sa
     # 3. Apply sampling options BEFORE resolving images (saves massive time!)
     sampled_list = apply_sampling(converted_list, sampling_options)
 
-    # 4. Resolve image paths and filter observations to those with existing images
+    # 4. Resolve image paths and filter observations to those with existing images.
+    # Building this once avoids one recursive filesystem walk per image.
+    image_path_index = build_image_path_index(root_path)
+    print(f"FungiCLEF Converter: Indexed {len(image_path_index)} image path keys.")
     final_sampled_list = []
     unreadable_images = 0
+    missing_image_observations = 0
+    readability_cache = {}
     for obs in sampled_list:
         resolved_images = []
         for raw_img in obs.get("raw_images", []):
-            resolved = resolve_image_path(root_path, raw_img)
-            if resolved and is_readable_image(resolved):
+            resolved = resolve_image_path(root_path, raw_img, image_path_index)
+            if resolved not in readability_cache:
+                readability_cache[resolved] = bool(resolved) and is_readable_image(resolved)
+            if resolved and readability_cache[resolved]:
                 resolved_images.append(resolved)
             elif resolved:
                 unreadable_images += 1
         
         # Keep observation only if at least one image exists!
         if resolved_images:
-            obs["images"] = resolved_images
+            obs["images"] = list(dict.fromkeys(resolved_images))
             # Clean temporary raw_images field
             obs.pop("raw_images", None)
             final_sampled_list.append(obs)
         else:
-            print(f"Warning: Skipping observation '{obs['observation_id']}' because none of its images could be found.")
+            missing_image_observations += 1
+            if missing_image_observations <= 10:
+                print(f"Warning: Skipping observation '{obs['observation_id']}' because none of its images could be found.")
 
     # Save to output file
     output_path = Path(output_json)
@@ -188,4 +198,5 @@ def convert_fungiclef(dataset_root, output_json, poisonous_catalog_path=None, sa
 
     print(f"FungiCLEF Converter: Converted and saved {len(final_sampled_list)} cases to {output_json}")
     print(f"FungiCLEF Converter: Skipped {unreadable_images} unreadable image files.")
+    print(f"FungiCLEF Converter: Skipped {missing_image_observations} observations without usable images.")
     return final_sampled_list
