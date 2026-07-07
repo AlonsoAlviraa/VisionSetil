@@ -21,7 +21,7 @@ def list_mock_species_catalog() -> list[dict]:
 @lru_cache(maxsize=4)
 def load_real_species_index(index_dir: Path = None) -> tuple[list[dict], dict]:
     """Load real species visual prototypes and metadata from species_index directory.
-    
+
     Returns:
         tuple: (species_catalog, index_metadata)
     """
@@ -42,23 +42,31 @@ def load_real_species_index(index_dir: Path = None) -> tuple[list[dict], dict]:
                 break
     else:
         candidates = [index_dir]
-    
+
     if index_dir is None or not index_dir.exists():
         raise FileNotFoundError(f"Species index directory not found. Tried: {candidates}")
-    
+
     species_path = index_dir / "species_visual_prototypes.json"
     genus_path = index_dir / "genus_prototypes.json"
     family_path = index_dir / "family_prototypes.json"
     metadata_path = index_dir / "index_metadata.json"
-    
+
     if not species_path.exists():
         raise FileNotFoundError(f"Species prototypes not found at {species_path}")
-    
+
     species_catalog = json.loads(species_path.read_text(encoding="utf-8"))
-    genus_catalog = json.loads(genus_path.read_text(encoding="utf-8")) if genus_path.exists() else []
-    family_catalog = json.loads(family_path.read_text(encoding="utf-8")) if family_path.exists() else []
-    genus_by_name = {item.get("genus", "").lower(): item for item in genus_catalog if item.get("genus")}
-    family_by_name = {item.get("family", "").lower(): item for item in family_catalog if item.get("family")}
+    genus_catalog = (
+        json.loads(genus_path.read_text(encoding="utf-8")) if genus_path.exists() else []
+    )
+    family_catalog = (
+        json.loads(family_path.read_text(encoding="utf-8")) if family_path.exists() else []
+    )
+    genus_by_name = {
+        item.get("genus", "").lower(): item for item in genus_catalog if item.get("genus")
+    }
+    family_by_name = {
+        item.get("family", "").lower(): item for item in family_catalog if item.get("family")
+    }
 
     for species in species_catalog:
         genus_prototype = genus_by_name.get(str(species.get("genus", "")).lower(), {})
@@ -71,7 +79,7 @@ def load_real_species_index(index_dir: Path = None) -> tuple[list[dict], dict]:
         species["family_siglip_prototype"] = family_prototype.get("siglip_prototype", [])
         species["family_siglip_text_prototype"] = family_prototype.get("siglip_text_prototype", [])
         species["family_species_count"] = family_prototype.get("species_count", 0)
-    
+
     metadata = {}
     if metadata_path.exists():
         metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
@@ -82,13 +90,13 @@ def load_real_species_index(index_dir: Path = None) -> tuple[list[dict], dict]:
     metadata["genus_prototypes_loaded"] = len(genus_catalog)
     metadata["family_prototypes_loaded"] = len(family_catalog)
     metadata["catalog_version"] = "real_species_catalog_v2"
-    
+
     return species_catalog, metadata
 
 
 def load_open_set_thresholds(thresholds_path: Path = None) -> dict:
     """Load calibrated open-set thresholds from JSON file.
-    
+
     Returns:
         dict: Calibrated thresholds with keys like 'calibrated_threshold', 'calibrated_margin'
     """
@@ -107,7 +115,7 @@ def load_open_set_thresholds(thresholds_path: Path = None) -> dict:
             if candidate.exists():
                 thresholds_path = candidate
                 break
-    
+
     if thresholds_path is None or not thresholds_path.exists():
         # Return default thresholds
         return {
@@ -116,7 +124,7 @@ def load_open_set_thresholds(thresholds_path: Path = None) -> dict:
             "source": str(thresholds_path) if thresholds_path else "default_config",
             "status": "settings_fallback",
         }
-    
+
     thresholds = json.loads(thresholds_path.read_text(encoding="utf-8"))
     thresholds["source"] = str(thresholds_path)
     thresholds["status"] = thresholds.get("status", "calibrated")

@@ -1,11 +1,16 @@
 from datetime import datetime
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.db.database import get_db
-from app.db.models import Observation, HumanReviewRequest
-from app.db.schemas import HumanReviewRequestCreate, HumanReviewRequestRead, HumanReviewRequestUpdate
+from app.db.models import HumanReviewRequest, Observation
+from app.db.schemas import (
+    HumanReviewRequestCreate,
+    HumanReviewRequestRead,
+    HumanReviewRequestUpdate,
+)
 
 router = APIRouter()
 
@@ -19,7 +24,7 @@ def check_safety_policy(notes: str | None, taxon: str | None):
         "segura",
         "no es venenosa",
         "se puede comer",
-        "comible"
+        "comible",
     ]
     for text in (notes, taxon):
         if text:
@@ -27,15 +32,17 @@ def check_safety_policy(notes: str | None, taxon: str | None):
                 if word in text.lower():
                     raise HTTPException(
                         status_code=400,
-                        detail="Safety policy violation: Reviewers are strictly forbidden from marking mushrooms as safe to eat."
+                        detail="Safety policy violation: Reviewers are strictly forbidden from marking mushrooms as safe to eat.",
                     )
 
 
-@router.post("/observations/{observation_id}/request-human-review", response_model=HumanReviewRequestRead, status_code=201)
+@router.post(
+    "/observations/{observation_id}/request-human-review",
+    response_model=HumanReviewRequestRead,
+    status_code=201,
+)
 def request_human_review(
-    observation_id: int,
-    payload: HumanReviewRequestCreate,
-    db: Session = Depends(get_db)
+    observation_id: int, payload: HumanReviewRequestCreate, db: Session = Depends(get_db)
 ) -> HumanReviewRequest:
     observation = db.get(Observation, observation_id)
     if observation is None:
@@ -64,8 +71,7 @@ def request_human_review(
 
 @router.get("/human-reviews", response_model=list[HumanReviewRequestRead])
 def list_human_reviews(
-    status: str | None = None,
-    db: Session = Depends(get_db)
+    status: str | None = None, db: Session = Depends(get_db)
 ) -> list[HumanReviewRequest]:
     stmt = select(HumanReviewRequest)
     if status:
@@ -75,10 +81,7 @@ def list_human_reviews(
 
 
 @router.get("/human-reviews/{review_id}", response_model=HumanReviewRequestRead)
-def get_human_review(
-    review_id: int,
-    db: Session = Depends(get_db)
-) -> HumanReviewRequest:
+def get_human_review(review_id: int, db: Session = Depends(get_db)) -> HumanReviewRequest:
     request = db.get(HumanReviewRequest, review_id)
     if request is None:
         raise HTTPException(status_code=404, detail="Human review request not found")
@@ -87,9 +90,7 @@ def get_human_review(
 
 @router.patch("/human-reviews/{review_id}", response_model=HumanReviewRequestRead)
 def update_human_review(
-    review_id: int,
-    payload: HumanReviewRequestUpdate,
-    db: Session = Depends(get_db)
+    review_id: int, payload: HumanReviewRequestUpdate, db: Session = Depends(get_db)
 ) -> HumanReviewRequest:
     request = db.get(HumanReviewRequest, review_id)
     if request is None:

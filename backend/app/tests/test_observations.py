@@ -1,5 +1,9 @@
 from io import BytesIO
 
+# Magic bytes: JPEG starts with FF D8 FF; PNG starts with 89 50 4E 47 0D 0A 1A 0A.
+_JPEG_MAGIC = b"\xff\xd8\xff\xe0" + b"\x00" * 16
+_PNG_MAGIC = b"\x89PNG\r\n\x1a\n" + b"\x00" * 16
+
 
 def test_create_observation_works(client):
     payload = {
@@ -25,8 +29,8 @@ def test_upload_images_validates_and_saves(client):
     create = client.post("/observations", json={"title": "Con imagenes"})
     observation_id = create.json()["id"]
     files = [
-        ("images", ("cap-top.jpg", BytesIO(b"cap"), "image/jpeg")),
-        ("images", ("base-view.png", BytesIO(b"base"), "image/png")),
+        ("images", ("cap-top.jpg", BytesIO(_JPEG_MAGIC), "image/jpeg")),
+        ("images", ("base-view.png", BytesIO(_PNG_MAGIC), "image/png")),
     ]
     response = client.post(f"/observations/{observation_id}/images", files=files)
     assert response.status_code == 200

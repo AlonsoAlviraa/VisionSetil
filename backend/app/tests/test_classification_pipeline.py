@@ -1,5 +1,9 @@
 from io import BytesIO
 
+# Minimal JPEG magic bytes so the upload magic-byte validator accepts the
+# placeholder content used in tests.
+_JPEG_MAGIC = b"\xff\xd8\xff\xe0"
+
 
 def test_advanced_endpoint_responds_and_uses_fallbacks(client):
     create = client.post(
@@ -16,9 +20,9 @@ def test_advanced_endpoint_responds_and_uses_fallbacks(client):
     )
     observation_id = create.json()["id"]
     files = [
-        ("images", ("cap-top.jpg", BytesIO(b"cap-image-content"), "image/jpeg")),
-        ("images", ("gills-view.jpg", BytesIO(b"gills-image-content"), "image/jpeg")),
-        ("images", ("base-view.jpg", BytesIO(b"base-image-content"), "image/jpeg")),
+        ("images", ("cap-top.jpg", BytesIO(_JPEG_MAGIC + b"cap-image-content"), "image/jpeg")),
+        ("images", ("gills-view.jpg", BytesIO(_JPEG_MAGIC + b"gills-image-content"), "image/jpeg")),
+        ("images", ("base-view.jpg", BytesIO(_JPEG_MAGIC + b"base-image-content"), "image/jpeg")),
     ]
     upload = client.post(f"/observations/{observation_id}/images", files=files)
     assert upload.status_code == 200
@@ -41,7 +45,7 @@ def test_advanced_endpoint_responds_and_uses_fallbacks(client):
 def test_advanced_ranking_respects_top_k(client):
     create = client.post("/observations", json={"title": "Ranking test", "habitat": "forest"})
     observation_id = create.json()["id"]
-    files = [("images", ("cap-top.jpg", BytesIO(b"image-content"), "image/jpeg"))]
+    files = [("images", ("cap-top.jpg", BytesIO(_JPEG_MAGIC + b"image-content"), "image/jpeg"))]
     client.post(f"/observations/{observation_id}/images", files=files)
 
     response = client.post(f"/observations/{observation_id}/classify-advanced")

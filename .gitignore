@@ -23,3 +23,6 @@ version7_logs.txt
 download.log
 kaggle_cloud_outputs/
 backend/mushroom_photo_id.db-journal
+
+yolov8n.pt
+*.pt

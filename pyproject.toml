@@ -13,7 +13,8 @@ dependencies = [
   "uvicorn[standard]>=0.30,<1.0",
   "sqlalchemy>=2.0,<3.0",
   "python-multipart>=0.0.9,<1.0",
-  "pydantic>=2.7,<3.0"
+  "pydantic>=2.7,<3.0",
+  "pydantic-settings>=2.3,<3.0"
 ]
 
 [project.optional-dependencies]
@@ -21,7 +22,23 @@ dev = [
   "pytest>=8.2,<9.0",
   "httpx>=0.27,<1.0",
   "ruff>=0.6,<1.0",
-  "black>=24.0,<25.0"
+  "black>=24.0,<25.0",
+  "mypy>=1.10,<2.0",
+  "types-PyYAML"
+]
+ml = [
+  "torch>=2.2,<3.0",
+  "torchvision>=0.17,<1.0",
+  "numpy>=1.26,<3.0",
+  "pillow>=10.0,<12.0",
+  "transformers>=4.40,<5.0",
+  "ultralytics>=8.2,<9.0",
+  "scikit-learn>=1.4,<2.0"
+]
+eval = [
+  "pandas>=2.2,<3.0",
+  "matplotlib>=3.8,<4.0",
+  "seaborn>=0.13,<1.0"
 ]
 
 [tool.pytest.ini_options]
@@ -35,3 +52,59 @@ package-dir = {"" = "backend"}
 [tool.setuptools.packages.find]
 where = ["backend"]
 include = ["app*"]
+
+# --- Tooling configs --------------------------------------------------------
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+extend-exclude = '''
+/(
+    \.venv
+  | venv
+  | build
+  | dist
+  | node_modules
+)/
+'''
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+extend-exclude = ["build", "dist", ".venv", "venv", "node_modules"]
+
+[tool.ruff.lint]
+select = [
+  "E",    # pycodestyle errors
+  "F",    # pyflakes
+  "W",    # pycodestyle warnings
+  "I",    # isort
+  "B",    # flake8-bugbear
+  "UP",   # pyupgrade
+  "SIM",  # flake8-simplify
+]
+ignore = [
+  "E501",  # line length handled by black
+  "B008",  # function calls in defaults (FastAPI Depends)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"backend/app/tests/*" = ["B011"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["app"]
+
+[tool.mypy]
+python_version = "3.11"
+namespace_packages = true
+explicit_package_bases = true
+mypy_path = "backend"
+strict = false
+warn_unused_ignores = true
+warn_redundant_casts = true
+ignore_missing_imports = true
+exclude = [
+  "build/",
+  "dist/",
+  "node_modules/",
+]

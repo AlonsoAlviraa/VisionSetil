@@ -1,8 +1,19 @@
 from typing import Protocol
 
-from app.core.safety import FINAL_WARNING, ORIENTATION_ONLY_STATUS, PRIMARY_MESSAGE, UNSAFE_TO_CONSUME
+from app.core.safety import (
+    FINAL_WARNING,
+    ORIENTATION_ONLY_STATUS,
+    PRIMARY_MESSAGE,
+    UNSAFE_TO_CONSUME,
+)
 from app.db.models import Observation, ObservationImage
-from app.db.schemas import CandidateResult, ClassificationResponse, ModelStackResponse, QualityAssessmentResponse, TraceResponse
+from app.db.schemas import (
+    CandidateResult,
+    ClassificationResponse,
+    ModelStackResponse,
+    QualityAssessmentResponse,
+    TraceResponse,
+)
 from app.services.quality_validation import ImageQualityValidationService
 from app.services.safety_explanation import SafetyExplanationService
 from app.services.species_catalog import list_mock_species_catalog, list_poisonous_species
@@ -13,8 +24,7 @@ class MushroomClassifier(Protocol):
         self,
         observation: Observation,
         images: list[ObservationImage],
-    ) -> ClassificationResponse:
-        ...
+    ) -> ClassificationResponse: ...
 
 
 class MockMushroomClassifier:
@@ -41,7 +51,7 @@ class MockMushroomClassifier:
                     observation.smell,
                     observation.color_change_on_cut,
                     " ".join(observation.nearby_trees or []),
-                    " ".join((image.original_name for image in images)),
+                    " ".join(image.original_name for image in images),
                 ],
             )
         ).lower()
@@ -123,7 +133,12 @@ class MockMushroomClassifier:
                 pipeline_version="mvp-safety-v2",
                 classifier_strategy="mock_multimodal_ranker_with_risk_layer",
                 segmentation_strategy="planned_yoloe_or_yolo26_seg_crop",
-                visual_backbone_plan=["DINOv3", "SigLIP2", "BioCLIP", "FungiTastic_or_FungiCLEF_checkpoint"],
+                visual_backbone_plan=[
+                    "DINOv3",
+                    "SigLIP2",
+                    "BioCLIP",
+                    "FungiTastic_or_FungiCLEF_checkpoint",
+                ],
                 metadata_fusion_plan="planned_multi_image_plus_metadata_fusion",
                 open_set_strategy="planned_margin_threshold_and_unknown_rejection",
                 human_review_path="planned_expert_review_for_high_risk_or_low_evidence_cases",
@@ -148,12 +163,17 @@ class MockMushroomClassifier:
         return max(0.12, min(confidence, 0.78))
 
     def _danger_notes(self, candidate: dict, images: list[ObservationImage]) -> list[str]:
-        notes = [candidate.get("warning") or candidate.get("description", "La coincidencia requiere validacion experta.")]
+        notes = [
+            candidate.get("warning")
+            or candidate.get("description", "La coincidencia requiere validacion experta.")
+        ]
         if not any(image.view_type == "base" for image in images):
             notes.append("Se necesita foto de la base y volva si existe.")
         if not any(image.view_type == "gills_or_pores" for image in images):
             notes.append("Se necesita vista inferior para revisar laminas o poros.")
-        if any(item["latin_name"].startswith("Amanita") for item in self.poisonous) and candidate["taxon"].startswith("Amanita"):
+        if any(item["latin_name"].startswith("Amanita") for item in self.poisonous) and candidate[
+            "taxon"
+        ].startswith("Amanita"):
             notes.append("El genero contiene especies mortales.")
         return notes
 
@@ -203,7 +223,11 @@ class MockMushroomClassifier:
 
     def _lookalikes(self, candidate: dict) -> list[str]:
         if candidate["taxon"].startswith("Amanita"):
-            poisonous = [item["latin_name"] for item in self.poisonous if item["latin_name"].startswith("Amanita")]
+            poisonous = [
+                item["latin_name"]
+                for item in self.poisonous
+                if item["latin_name"].startswith("Amanita")
+            ]
             merged = poisonous + candidate.get("lookalikes", [])
             return list(dict.fromkeys(merged))
         return candidate.get("lookalikes", [])

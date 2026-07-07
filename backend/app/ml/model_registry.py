@@ -19,7 +19,9 @@ class ModelRegistry:
             detector_path = detector_path[-30:] if len(detector_path) > 30 else detector_path
 
         visual_backend = "real_dinov3" if self.visual_embedder.is_real else "mock_dinov3_fallback"
-        siglip_backend = "real_siglip2" if self.image_text_embedder.is_real else "mock_siglip2_fallback"
+        siglip_backend = (
+            "real_siglip2" if self.image_text_embedder.is_real else "mock_siglip2_fallback"
+        )
 
         return {
             "detector": {
@@ -42,8 +44,8 @@ class ModelRegistry:
                 "loaded": self.image_text_embedder.is_real,
                 "device": self.image_text_embedder.device,
                 "embedding_dim": settings.siglip_embedding_dim,
-                **({} if self.image_text_embedder.is_real else {"reason": "weights_not_found"})
-            }
+                **({} if self.image_text_embedder.is_real else {"reason": "weights_not_found"}),
+            },
         }
 
 

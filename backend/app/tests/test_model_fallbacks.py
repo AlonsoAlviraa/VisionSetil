@@ -1,4 +1,3 @@
-from app.core.config import settings
 from app.ml.model_registry import build_model_registry
 from app.services.species_catalog import list_mock_species_catalog
 

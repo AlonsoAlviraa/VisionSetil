@@ -11,7 +11,11 @@ router = APIRouter()
 
 @router.get("/observations", response_model=list[ObservationRead])
 def list_observations(db: Session = Depends(get_db)) -> list[Observation]:
-    stmt = select(Observation).options(selectinload(Observation.images)).order_by(Observation.created_at.desc())
+    stmt = (
+        select(Observation)
+        .options(selectinload(Observation.images))
+        .order_by(Observation.created_at.desc())
+    )
     return list(db.scalars(stmt))
 
 

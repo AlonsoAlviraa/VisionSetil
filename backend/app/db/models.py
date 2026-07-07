@@ -59,7 +59,9 @@ class HumanReviewRequest(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     observation_id: Mapped[int] = mapped_column(ForeignKey("observations.id"))
-    status: Mapped[str] = mapped_column(String(40), default="pending")  # pending, in_review, resolved, rejected
+    status: Mapped[str] = mapped_column(
+        String(40), default="pending"
+    )  # pending, in_review, resolved, rejected
     priority: Mapped[str] = mapped_column(String(40), default="low")  # low, medium, high, critical
     reason: Mapped[str] = mapped_column(String(255))
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)

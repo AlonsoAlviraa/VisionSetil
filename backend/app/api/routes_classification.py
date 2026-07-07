@@ -5,18 +5,16 @@ from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.db.database import get_db
-from app.db.models import Observation, HumanReviewRequest
+from app.db.models import HumanReviewRequest, Observation
 from app.db.schemas import (
     CandidateResult,
     ClassificationResponse,
+    HumanReviewResponse,
     ModelStackResponse,
+    OpenSetResponse,
     QualityAssessmentResponse,
     TraceResponse,
-    OpenSetResponse,
-    HumanReviewResponse
 )
-from app.services.open_set_rejection import OpenSetRejectionService
-from app.services.poisonous_lookalikes import HIGH_RISK_GENERA
 from app.ml.interfaces import MushroomObservationMetadata
 from app.ml.model_registry import build_model_registry
 from app.services.candidate_ranker_v2 import CandidateRankerV2
@@ -24,7 +22,8 @@ from app.services.classifier import MockMushroomClassifier
 from app.services.image_quality import ImageQualityValidationService
 from app.services.metadata_encoder import MetadataEncoder
 from app.services.multimodal_fusion import MultimodalFusionService
-from app.services.safety_explanation import SafetyExplanationService
+from app.services.open_set_rejection import OpenSetRejectionService
+from app.services.poisonous_lookalikes import HIGH_RISK_GENERA
 from app.services.safety_layer import SafetyLayer
 from app.services.species_catalog import list_mock_species_catalog
 
@@ -33,7 +32,9 @@ logger = logging.getLogger(__name__)
 
 
 @router.post("/observations/{observation_id}/classify")
-def classify_observation(observation_id: int, db: Session = Depends(get_db)) -> ClassificationResponse:
+def classify_observation(
+    observation_id: int, db: Session = Depends(get_db)
+) -> ClassificationResponse:
     observation = db.get(Observation, observation_id)
     if observation is None:
         raise HTTPException(status_code=404, detail="Observation not found")
@@ -45,8 +46,12 @@ def classify_observation(observation_id: int, db: Session = Depends(get_db)) -> 
     return result
 
 
-@router.post("/observations/{observation_id}/classify-advanced", response_model=ClassificationResponse)
-def classify_observation_advanced(observation_id: int, db: Session = Depends(get_db)) -> ClassificationResponse:
+@router.post(
+    "/observations/{observation_id}/classify-advanced", response_model=ClassificationResponse
+)
+def classify_observation_advanced(
+    observation_id: int, db: Session = Depends(get_db)
+) -> ClassificationResponse:
     observation = db.get(Observation, observation_id)
     if observation is None:
         raise HTTPException(status_code=404, detail="Observation not found")
@@ -72,7 +77,7 @@ def classify_observation_advanced(observation_id: int, db: Session = Depends(get
     quality = quality_service.evaluate(images)
     registry = build_model_registry()
     detections = registry.detector.detect_and_crop(image_paths)
-    for img, det in zip(images, detections):
+    for img, det in zip(images, detections, strict=False):
         img.crop_path = det.crop_path
         img.mask_path = det.mask_path
         db.add(img)
@@ -85,30 +90,33 @@ def classify_observation_advanced(observation_id: int, db: Session = Depends(get
     crop_paths = [item.crop_path for item in detections]
     dino_embeddings = registry.visual_embedder.embed_images(crop_paths)
     siglip_image_embeddings = registry.image_text_embedder.embed_images(crop_paths)
-    
+
     # Try to load real species index with precomputed prototypes
     species_catalog = None
     index_metadata = {}
     catalog_version = "mock_catalog_v1"
     try:
         from app.services.species_catalog import load_real_species_index
+
         species_catalog, index_metadata = load_real_species_index()
         catalog_version = "real_species_catalog_v2"
     except FileNotFoundError:
         # Fallback to mock catalog
         species_catalog = list_mock_species_catalog()
         catalog_version = "mock_catalog_v1_fallback"
-    
-    has_precomputed = False
+
     if species_catalog and "dino_reference_embedding" in species_catalog[0]:
-        has_precomputed = True
         species_text_embeddings = []
     else:
-        species_text_embeddings = registry.image_text_embedder.embed_texts([item["description"] for item in species_catalog])
+        species_text_embeddings = registry.image_text_embedder.embed_texts(
+            [item["description"] for item in species_catalog]
+        )
         for idx, text_emb in enumerate(species_text_embeddings):
             species_catalog[idx]["dino_reference_embedding"] = [0.0] * settings.dino_embedding_dim
             species_catalog[idx]["siglip_text_embedding"] = text_emb.vector
-            species_catalog[idx]["siglip_reference_embedding"] = [0.0] * settings.siglip_embedding_dim
+            species_catalog[idx]["siglip_reference_embedding"] = [
+                0.0
+            ] * settings.siglip_embedding_dim
 
     metadata_vector = MetadataEncoder().encode(metadata)
     representation = MultimodalFusionService().fuse(
@@ -195,7 +203,9 @@ def classify_observation_advanced(observation_id: int, db: Session = Depends(get
 
     # Apply degradation if rejection triggers
     if open_set_decision.is_unknown_or_uncertain:
-        safe["candidates"] = open_set_service.degrade_candidates(safe["candidates"], open_set_decision)
+        safe["candidates"] = open_set_service.degrade_candidates(
+            safe["candidates"], open_set_decision
+        )
 
     # Convert to schema structures
     candidates = [
@@ -242,7 +252,7 @@ def classify_observation_advanced(observation_id: int, db: Session = Depends(get
     if open_set_decision.is_unknown_or_uncertain:
         recommend_review = True
         review_reason = open_set_decision.reason
-        
+
         first_taxon = safe["candidates"][0]["taxon"] if safe["candidates"] else ""
         first_genus = first_taxon.split()[0].lower() if first_taxon else ""
         has_deadly_lookalike = False
@@ -251,8 +261,12 @@ def classify_observation_advanced(observation_id: int, db: Session = Depends(get
             if lk.split()[0].lower() in HIGH_RISK_GENERA:
                 has_deadly_lookalike = True
                 break
-                
-        if open_set_decision.reason in ("high_risk_genus", "deadly_lookalike_or_high_risk_genus") or first_genus in HIGH_RISK_GENERA or has_deadly_lookalike:
+
+        if (
+            open_set_decision.reason in ("high_risk_genus", "deadly_lookalike_or_high_risk_genus")
+            or first_genus in HIGH_RISK_GENERA
+            or has_deadly_lookalike
+        ):
             review_priority = "critical"
         elif open_set_decision.reason == "missing_critical_evidence":
             review_priority = "high"
@@ -289,7 +303,7 @@ def classify_observation_advanced(observation_id: int, db: Session = Depends(get
                 observation_id=observation.id,
                 priority=review_priority,
                 reason=review_reason,
-                status="pending"
+                status="pending",
             )
             db.add(new_req)
             db.commit()
@@ -314,7 +328,7 @@ def classify_observation_advanced(observation_id: int, db: Session = Depends(get
             reasoning=["Validado por revisor experto."],
             danger_notes=[existing_req.reviewer_notes or "Revisado por experto humano."],
             lookalikes=[],
-            explanation=f"Revision humana completa: {existing_req.reviewer_notes or ''}"
+            explanation=f"Revision humana completa: {existing_req.reviewer_notes or ''}",
         )
         candidates = [human_cand] + candidates
 
@@ -385,12 +399,16 @@ def classify_observation_advanced(observation_id: int, db: Session = Depends(get
             thresholds_path=open_set_decision.thresholds_path,
             thresholds_status=open_set_decision.thresholds_status,
         ),
-        human_review=HumanReviewResponse(
-            recommended=recommend_review,
-            priority=review_priority,
-            reason=review_reason,
-            request_id=request_id,
-        ) if (recommend_review or existing_req is not None) else None,
+        human_review=(
+            HumanReviewResponse(
+                recommended=recommend_review,
+                priority=review_priority,
+                reason=review_reason,
+                request_id=request_id,
+            )
+            if (recommend_review or existing_req is not None)
+            else None
+        ),
     )
     observation.last_classification = result.model_dump()
     db.add(observation)

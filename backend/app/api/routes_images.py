@@ -19,4 +19,6 @@ async def upload_images(
     if observation is None:
         raise HTTPException(status_code=404, detail="Observation not found")
     saved = await store_observation_images(db, observation, images)
-    return ImageUploadResponse(observation_id=observation_id, uploaded_count=len(saved), images=saved)
+    return ImageUploadResponse(
+        observation_id=observation_id, uploaded_count=len(saved), images=saved
+    )

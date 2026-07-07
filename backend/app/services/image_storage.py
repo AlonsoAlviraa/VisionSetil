@@ -1,3 +1,7 @@
+"""Hardened image upload: extension + magic-byte + size + path-traversal checks."""
+
+from __future__ import annotations
+
 from pathlib import Path
 from uuid import uuid4
 
@@ -6,6 +10,48 @@ from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.db.models import Observation, ObservationImage
+
+# https://en.wikipedia.org/wiki/List_of_file_signatures
+_MAGIC_BYTES: dict[str, tuple[bytes, ...]] = {
+    "jpg": (b"\xff\xd8\xff",),
+    "jpeg": (b"\xff\xd8\xff",),
+    "png": (b"\x89PNG\r\n\x1a\n",),
+    "webp": (b"RIFF",),  # WEBP starts with RIFF....WEBP
+}
+
+# Maximum number of bytes inspected for the magic-number check.
+_MAGIC_SNIFF_LEN = 16
+
+
+def _validate_magic(extension: str, content: bytes) -> None:
+    """Ensure the file content matches its declared extension."""
+    signatures = _MAGIC_BYTES.get(extension)
+    if signatures is None:  # unknown exts not in allow-list anyway
+        return
+    head = content[:_MAGIC_SNIFF_LEN]
+    if extension == "webp":
+        if not head.startswith(b"RIFF") or b"WEBP" not in content[:16]:
+            raise HTTPException(status_code=415, detail="File content does not match WebP")
+        return
+    if not any(head.startswith(sig) for sig in signatures):
+        raise HTTPException(
+            status_code=415,
+            detail=f"File content does not match extension '{extension}'",
+        )
+
+
+def _safe_target_path(stored_name: str) -> Path:
+    """Return the absolute path inside UPLOAD_DIR, rejecting traversal attempts."""
+    upload_root = settings.upload_dir.resolve()
+    # stored_name is server-generated, but double-check defensively.
+    candidate = (upload_root / stored_name).resolve()
+    try:
+        candidate.relative_to(upload_root)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail="Invalid file path") from exc
+    if candidate == upload_root or not candidate.is_relative_to(upload_root):
+        raise HTTPException(status_code=400, detail="Invalid file path")
+    return candidate
 
 
 async def store_observation_images(
@@ -19,6 +65,10 @@ async def store_observation_images(
     saved_images: list[ObservationImage] = []
     for upload in images:
         original_name = upload.filename or "image"
+        # Reject obvious path-traversal in the *client-provided* filename.
+        if "/" in original_name or "\\" in original_name or ".." in original_name:
+            raise HTTPException(status_code=400, detail="Invalid filename")
+
         extension = Path(original_name).suffix.lower().lstrip(".")
         if extension not in settings.allowed_extensions:
             raise HTTPException(status_code=400, detail="Unsupported image extension")
@@ -26,9 +76,13 @@ async def store_observation_images(
         content = await upload.read()
         if len(content) > settings.max_upload_size_bytes:
             raise HTTPException(status_code=400, detail="Image exceeds maximum allowed size")
+        if not content:
+            raise HTTPException(status_code=400, detail="Empty image upload")
+
+        _validate_magic(extension, content)
 
         safe_name = f"{observation.id}-{uuid4().hex}.{extension}"
-        target = settings.upload_dir / safe_name
+        target = _safe_target_path(safe_name)
         target.write_bytes(content)
 
         lowered = original_name.lower()

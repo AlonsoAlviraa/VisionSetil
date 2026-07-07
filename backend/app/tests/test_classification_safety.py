@@ -36,17 +36,27 @@ def test_poisonous_catalog_loads(client):
     assert "Lepiota brunneoincarnata" in names
 
 
+_JPEG_MAGIC = b"\xff\xd8\xff\xe0"
+
+
 def test_classification_with_high_risk_lookalikes_exposes_trace_and_warnings(client):
     create = client.post(
         "/observations",
-        json={"title": "Amanita en bosque", "notes": "amanita con volva", "nearby_trees": ["roble"]},
+        json={
+            "title": "Amanita en bosque",
+            "notes": "amanita con volva",
+            "nearby_trees": ["roble"],
+        },
     )
     observation_id = create.json()["id"]
     files = [
-        ("images", ("cap-top.jpg", b"cap-image-content-here", "image/jpeg")),
-        ("images", ("gills-view.jpg", b"gills-image-content-here", "image/jpeg")),
-        ("images", ("base-view.jpg", b"base-image-content-here", "image/jpeg")),
-        ("images", ("context-entorno.jpg", b"context-image-content-here", "image/jpeg")),
+        ("images", ("cap-top.jpg", _JPEG_MAGIC + b"cap-image-content-here", "image/jpeg")),
+        ("images", ("gills-view.jpg", _JPEG_MAGIC + b"gills-image-content-here", "image/jpeg")),
+        ("images", ("base-view.jpg", _JPEG_MAGIC + b"base-image-content-here", "image/jpeg")),
+        (
+            "images",
+            ("context-entorno.jpg", _JPEG_MAGIC + b"context-image-content-here", "image/jpeg"),
+        ),
     ]
     upload = client.post(f"/observations/{observation_id}/images", files=files)
     assert upload.status_code == 200

@@ -1,9 +1,9 @@
 import math
 from dataclasses import dataclass
+
 from app.core.config import settings
 from app.ml.interfaces import ObservationRepresentation
 from app.services.poisonous_lookalikes import HIGH_RISK_GENERA
-from app.services.species_catalog import list_poisonous_species
 
 
 @dataclass
@@ -25,7 +25,7 @@ class OpenSetRejectionService:
         self,
         candidates: list[dict],
         observation_representation: ObservationRepresentation,
-        missing_evidence: list[str]
+        missing_evidence: list[str],
     ) -> OpenSetDecision:
         if not candidates:
             return OpenSetDecision(
@@ -82,6 +82,7 @@ class OpenSetRejectionService:
         thresholds_status = "settings_fallback"
         try:
             from app.services.species_catalog import load_open_set_thresholds
+
             thresholds = load_open_set_thresholds()
             min_conf = thresholds.get("calibrated_threshold", min_conf)
             min_margin = thresholds.get("calibrated_margin", min_margin)
@@ -90,7 +91,14 @@ class OpenSetRejectionService:
         except Exception:
             pass
 
-        if top1_conf < min_conf:
+        # Check for missing critical evidence (high evidence penalty)
+        evidence_penalty = getattr(observation_representation, "evidence_penalty", 0.0)
+        if evidence_penalty >= settings.open_set_max_evidence_penalty:
+            is_unknown_or_uncertain = True
+            reason = "missing_critical_evidence"
+            reasons.append(reason)
+            decision = "reject_to_genus_or_human_review"
+        elif top1_conf < min_conf:
             is_unknown_or_uncertain = True
             reason = "low_top1_confidence"
             reasons.append(reason)
@@ -137,27 +145,29 @@ class OpenSetRejectionService:
         if decision.decision == "reject_to_unknown":
             top = candidates[0]
             # Completely degrade to unknown
-            degraded.append({
-                "taxon": "unknown_fungus",
-                "rank": "unknown",
-                "confidence": 0.0,
-                "evidence_score": top.get("evidence_score", 0.0),
-                "metadata_score": top.get("metadata_score", 0.0),
-                "visual_score": top.get("visual_score", 0.0),
-                **self._phase6_diagnostics(top),
-                "risk_level": "high",
-                "edibility_label": "dangerous_or_unknown",
-                "lookalikes": [],
-                "explanation": "La observacion no contiene evidencias suficientes para una identificacion fiable.",
-                "description": "Hongo no identificado debido a falta de vistas criticas."
-            })
+            degraded.append(
+                {
+                    "taxon": "unknown_fungus",
+                    "rank": "unknown",
+                    "confidence": 0.0,
+                    "evidence_score": top.get("evidence_score", 0.0),
+                    "metadata_score": top.get("metadata_score", 0.0),
+                    "visual_score": top.get("visual_score", 0.0),
+                    **self._phase6_diagnostics(top),
+                    "risk_level": "high",
+                    "edibility_label": "dangerous_or_unknown",
+                    "lookalikes": [],
+                    "explanation": "La observacion no contiene evidencias suficientes para una identificacion fiable.",
+                    "description": "Hongo no identificado debido a falta de vistas criticas.",
+                }
+            )
         else:
             # Degrade from species to genus
             top = candidates[0]
             taxon = top.get("taxon", "")
             genus = taxon.split()[0] if taxon else "Unknown"
             genus_name = f"{genus} sp."
-            
+
             # Map genus to family
             genus_lower = genus.lower()
             family_map = {
@@ -165,25 +175,27 @@ class OpenSetRejectionService:
                 "galerina": "Hymenogastraceae",
                 "cortinarius": "Cortinariaceae",
                 "lepiota": "Agaricaceae",
-                "gyromitra": "Discinaceae"
+                "gyromitra": "Discinaceae",
             }
             family_name = family_map.get(genus_lower, "Unknown Family")
 
-            degraded.append({
-                "taxon": genus_name,
-                "rank": "genus",
-                "confidence": round(top.get("confidence", 0.0) * 0.5, 4), # reduce confidence
-                "evidence_score": top.get("evidence_score", 0.0),
-                "metadata_score": top.get("metadata_score", 0.0),
-                "visual_score": top.get("visual_score", 0.0),
-                **self._phase6_diagnostics(top),
-                "risk_level": top.get("risk_level", "high"),
-                "edibility_label": "dangerous_or_unknown",
-                "lookalikes": top.get("lookalikes", []),
-                "explanation": f"Identificacion degradada a genero '{genus_name}' debido a incertidumbre o riesgo.",
-                "description": f"Pertenece al genero {genus} (Familia {family_name})."
-            })
-            
+            degraded.append(
+                {
+                    "taxon": genus_name,
+                    "rank": "genus",
+                    "confidence": round(top.get("confidence", 0.0) * 0.5, 4),  # reduce confidence
+                    "evidence_score": top.get("evidence_score", 0.0),
+                    "metadata_score": top.get("metadata_score", 0.0),
+                    "visual_score": top.get("visual_score", 0.0),
+                    **self._phase6_diagnostics(top),
+                    "risk_level": top.get("risk_level", "high"),
+                    "edibility_label": "dangerous_or_unknown",
+                    "lookalikes": top.get("lookalikes", []),
+                    "explanation": f"Identificacion degradada a genero '{genus_name}' debido a incertidumbre o riesgo.",
+                    "description": f"Pertenece al genero {genus} (Familia {family_name}).",
+                }
+            )
+
         return degraded
 
     def _phase6_diagnostics(self, candidate: dict) -> dict:

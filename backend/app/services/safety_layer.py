@@ -1,6 +1,11 @@
 from copy import deepcopy
 
-from app.core.safety import FINAL_WARNING, ORIENTATION_ONLY_STATUS, PRIMARY_MESSAGE, UNSAFE_TO_CONSUME
+from app.core.safety import (
+    FINAL_WARNING,
+    ORIENTATION_ONLY_STATUS,
+    PRIMARY_MESSAGE,
+    UNSAFE_TO_CONSUME,
+)
 from app.ml.interfaces import MushroomObservationMetadata
 from app.services.poisonous_lookalikes import HIGH_RISK_GENERA
 
@@ -14,7 +19,11 @@ class SafetyLayer:
         quality_warnings: list[str],
     ) -> dict:
         safe_candidates = deepcopy(candidates)
-        warnings = ["Identificacion orientativa.", "No consumir basandose en esta app.", "Consulta a un experto local."]
+        warnings = [
+            "Identificacion orientativa.",
+            "No consumir basandose en esta app.",
+            "Consulta a un experto local.",
+        ]
         if quality_warnings:
             warnings.extend(quality_warnings)
         if not metadata.habitat:
@@ -31,7 +40,9 @@ class SafetyLayer:
                 warnings.append("Algunos generos contienen especies mortales.")
             if missing_evidence:
                 candidate["confidence"] = round(max(0.12, candidate["confidence"] - 0.04), 4)
-                candidate["explanation"] = "La observacion requiere mas evidencias criticas y revision humana."
+                candidate["explanation"] = (
+                    "La observacion requiere mas evidencias criticas y revision humana."
+                )
 
         safe_candidates.sort(key=lambda item: item["confidence"], reverse=True)
         return {

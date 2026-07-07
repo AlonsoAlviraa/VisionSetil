@@ -45,7 +45,9 @@ class SafetyExplanationService:
             risk_state=risk_state,
         )
 
-    def _missing_evidence(self, observation: Observation, images: list[ObservationImage]) -> list[str]:
+    def _missing_evidence(
+        self, observation: Observation, images: list[ObservationImage]
+    ) -> list[str]:
         present = {image.view_type for image in images if image.view_type}
         missing_map = {
             "cap_top": "Foto del sombrero desde arriba",

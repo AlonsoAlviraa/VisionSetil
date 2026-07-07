@@ -2,7 +2,9 @@ ORIENTATION_ONLY_STATUS = "orientation_only"
 UNSAFE_TO_CONSUME = "unsafe_to_consume"
 FINAL_WARNING = "No consumas ninguna seta identificada unicamente mediante una app."
 PRIMARY_MESSAGE = "Identificacion orientativa. No consumir basandose en esta app."
-EXPERT_RECOMMENDATION = "Consulta a un experto local o asociacion micologica antes de cualquier decision."
+EXPERT_RECOMMENDATION = (
+    "Consulta a un experto local o asociacion micologica antes de cualquier decision."
+)
 ALLOWED_RISK_STATES = {
     "needs_more_evidence",
     "needs_expert_review",

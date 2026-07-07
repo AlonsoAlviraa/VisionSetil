@@ -22,10 +22,16 @@ class CandidateRankerV2:
     ) -> list[dict]:
         ranked: list[dict] = []
         metadata_factor = 1.0 - observation_representation.evidence_penalty
-        score_arrays = self._vectorized_prototype_scores(observation_representation, species_catalog)
+        score_arrays = self._vectorized_prototype_scores(
+            observation_representation, species_catalog
+        )
 
         for idx, species in enumerate(species_catalog):
-            text_embedding = species_text_embeddings[idx] if (species_text_embeddings and idx < len(species_text_embeddings)) else None
+            text_embedding = (
+                species_text_embeddings[idx]
+                if (species_text_embeddings and idx < len(species_text_embeddings))
+                else None
+            )
             species_scores = self._scores_for_index(score_arrays, "species", idx)
             genus_scores = self._scores_for_index(score_arrays, "genus", idx)
             family_scores = self._scores_for_index(score_arrays, "family", idx)
@@ -50,7 +56,8 @@ class CandidateRankerV2:
             )
             prototype_quality = self._prototype_quality(species, species_scores)
             metadata_score = round(
-                self._metadata_score(species, observation_representation.metadata_vector.values) * metadata_factor,
+                self._metadata_score(species, observation_representation.metadata_vector.values)
+                * metadata_factor,
                 4,
             )
             evidence_score = max(0.05, 1.0 - observation_representation.evidence_penalty)
@@ -61,10 +68,14 @@ class CandidateRankerV2:
                 + prototype_quality * 0.08,
                 4,
             )
-            fusion_score = self._cap_score_without_real_visual_evidence(fusion_score, taxonomic_score, prototype_quality)
+            fusion_score = self._cap_score_without_real_visual_evidence(
+                fusion_score, taxonomic_score, prototype_quality
+            )
             confidence = round(min(0.95, max(0.0, fusion_score)), 4)
 
-            risk_level, lookalikes = elevate_risk_for_genus(species["taxon"], species.get("lookalikes", []))
+            risk_level, lookalikes = elevate_risk_for_genus(
+                species["taxon"], species.get("lookalikes", [])
+            )
             risk_level = species.get("risk_level", risk_level)
 
             ranked.append(
@@ -119,15 +130,29 @@ class CandidateRankerV2:
         matrices = self._matrix_cache.get(cache_key)
         if matrices is None:
             matrices = {
-                "species_dino": self._prototype_matrix(species_catalog, ("dino_reference_embedding", "dino_prototype")),
-                "species_visual": self._prototype_matrix(species_catalog, ("siglip_reference_embedding", "siglip_prototype")),
-                "species_text": self._prototype_matrix(species_catalog, ("siglip_text_embedding", "siglip_text_prototype")),
+                "species_dino": self._prototype_matrix(
+                    species_catalog, ("dino_reference_embedding", "dino_prototype")
+                ),
+                "species_visual": self._prototype_matrix(
+                    species_catalog, ("siglip_reference_embedding", "siglip_prototype")
+                ),
+                "species_text": self._prototype_matrix(
+                    species_catalog, ("siglip_text_embedding", "siglip_text_prototype")
+                ),
                 "genus_dino": self._prototype_matrix(species_catalog, ("genus_dino_prototype",)),
-                "genus_visual": self._prototype_matrix(species_catalog, ("genus_siglip_prototype",)),
-                "genus_text": self._prototype_matrix(species_catalog, ("genus_siglip_text_prototype",)),
+                "genus_visual": self._prototype_matrix(
+                    species_catalog, ("genus_siglip_prototype",)
+                ),
+                "genus_text": self._prototype_matrix(
+                    species_catalog, ("genus_siglip_text_prototype",)
+                ),
                 "family_dino": self._prototype_matrix(species_catalog, ("family_dino_prototype",)),
-                "family_visual": self._prototype_matrix(species_catalog, ("family_siglip_prototype",)),
-                "family_text": self._prototype_matrix(species_catalog, ("family_siglip_text_prototype",)),
+                "family_visual": self._prototype_matrix(
+                    species_catalog, ("family_siglip_prototype",)
+                ),
+                "family_text": self._prototype_matrix(
+                    species_catalog, ("family_siglip_text_prototype",)
+                ),
             }
             if len(self._matrix_cache) >= 3:
                 self._matrix_cache.clear()
@@ -197,8 +222,12 @@ class CandidateRankerV2:
                 fallback_text_embedding.vector,
             )
         return {
-            "dino_visual_score": self._cosine_similarity(observation_representation.visual_component, dino_ref),
-            "siglip_visual_score": self._cosine_similarity(observation_representation.text_component, siglip_ref),
+            "dino_visual_score": self._cosine_similarity(
+                observation_representation.visual_component, dino_ref
+            ),
+            "siglip_visual_score": self._cosine_similarity(
+                observation_representation.text_component, siglip_ref
+            ),
             "siglip_image_text_score": siglip_image_text_score,
         }
 
@@ -236,7 +265,9 @@ class CandidateRankerV2:
             return 0.0
 
         image_count = float(species.get("image_count") or species.get("reference_count") or 0.0)
-        image_factor = min(1.0, log1p(max(image_count, 0.0)) / log1p(8.0)) if image_count > 0.0 else 0.25
+        image_factor = (
+            min(1.0, log1p(max(image_count, 0.0)) / log1p(8.0)) if image_count > 0.0 else 0.25
+        )
         taxonomy_bonus = 0.0
         if int(species.get("genus_species_count") or 0) > 1:
             taxonomy_bonus += 0.10
@@ -265,7 +296,7 @@ class CandidateRankerV2:
         right_norm = self._l2_normalize(right)
         if not left_norm or not right_norm:
             return 0.0
-        dot = sum(a * b for a, b in zip(left_norm, right_norm))
+        dot = sum(a * b for a, b in zip(left_norm, right_norm, strict=False))
         return max(0.0, min(1.0, round(dot, 4)))
 
     def _l2_normalize(self, vector: list[float]) -> list[float]:

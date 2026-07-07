@@ -24,11 +24,14 @@ class ImageQualityValidationService:
         has_lower_view = any(image.view_type == "gills_or_pores" for image in images)
         has_base_view = any(image.view_type == "base" for image in images)
         has_environment_view = any(
-            token in names for token in ("context", "environment", "habitat", "entorno", "substrate")
+            token in names
+            for token in ("context", "environment", "habitat", "entorno", "substrate")
         )
         heavy_compression = bool(sizes) and min(sizes) < 12
         obstruction = any(token in names for token in ("hand", "mano", "finger", "dedo"))
-        multiple_species = any(token in names for token in ("mixed", "grupo", "cluster", "multiple"))
+        multiple_species = any(
+            token in names for token in ("mixed", "grupo", "cluster", "multiple")
+        )
         sharpness_ok = not any(token in names for token in ("blur", "blurry", "borrosa"))
         lighting_ok = not any(token in names for token in ("dark", "shadow", "night", "oscura"))
         mushroom_large_enough = len(images) >= 2 or any(size > 30 for size in sizes)

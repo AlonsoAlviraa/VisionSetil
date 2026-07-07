@@ -57,7 +57,11 @@ class MockVisualEmbedder(VisualEmbedder):
     def embed_images(self, image_paths: list[str]) -> list[ImageEmbedding]:
         logger.warning("Using MockVisualEmbedder fallback")
         return [
-            ImageEmbedding(source_path=path, vector=_vector_from_text(f"visual::{path}"), model_name="mock-dinov3")
+            ImageEmbedding(
+                source_path=path,
+                vector=_vector_from_text(f"visual::{path}"),
+                model_name="mock-dinov3",
+            )
             for path in image_paths
         ]
 
@@ -66,17 +70,27 @@ class MockImageTextEmbedder(ImageTextEmbedder):
     def embed_images(self, image_paths: list[str]) -> list[ImageEmbedding]:
         logger.warning("Using MockImageTextEmbedder fallback for images")
         return [
-            ImageEmbedding(source_path=path, vector=_vector_from_text(f"siglip-image::{path}"), model_name="mock-siglip2")
+            ImageEmbedding(
+                source_path=path,
+                vector=_vector_from_text(f"siglip-image::{path}"),
+                model_name="mock-siglip2",
+            )
             for path in image_paths
         ]
 
     def embed_texts(self, texts: list[str]) -> list[TextEmbedding]:
         logger.warning("Using MockImageTextEmbedder fallback for texts")
         return [
-            TextEmbedding(source_text=text, vector=_vector_from_text(f"siglip-text::{text}"), model_name="mock-siglip2")
+            TextEmbedding(
+                source_text=text,
+                vector=_vector_from_text(f"siglip-text::{text}"),
+                model_name="mock-siglip2",
+            )
             for text in texts
         ]
 
     def similarity(self, image_embedding: ImageEmbedding, text_embedding: TextEmbedding) -> float:
-        total = sum(abs(a - b) for a, b in zip(image_embedding.vector, text_embedding.vector))
+        total = sum(
+            abs(a - b) for a, b in zip(image_embedding.vector, text_embedding.vector, strict=False)
+        )
         return round(max(0.0, 1.0 - total / len(image_embedding.vector)), 4)

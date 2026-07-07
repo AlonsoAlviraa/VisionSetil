@@ -1,8 +1,7 @@
-import os
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from app.core.config import settings, Settings
+from app.core.config import Settings, settings
 from app.core.logging import get_logger
 from app.ml.fallbacks import MockImageTextEmbedder
 from app.ml.interfaces import ImageEmbedding, ImageTextEmbedder, TextEmbedding
@@ -31,21 +30,26 @@ class SigLIP2Embedder(ImageTextEmbedder):
 
         if is_real:
             try:
-                import torch
-                from transformers import AutoProcessor, AutoModel
+                from transformers import AutoModel, AutoProcessor
 
                 from app.core.config import is_cuda_really_compatible
 
                 if device == "auto":
                     device = "cuda" if is_cuda_really_compatible() else "cpu"
                 elif device == "cuda" and not is_cuda_really_compatible():
-                    logger.warning("CUDA device was requested but is incompatible. Overriding to cpu.")
+                    logger.warning(
+                        "CUDA device was requested but is incompatible. Overriding to cpu."
+                    )
                     device = "cpu"
 
-                model_identifier = model_path if (model_path and Path(model_path).exists()) else model_name
-                
+                model_identifier = (
+                    model_path if (model_path and Path(model_path).exists()) else model_name
+                )
+
                 if config.siglip_model_path and not Path(config.siglip_model_path).exists():
-                    raise FileNotFoundError(f"Local model path not found: {config.siglip_model_path}")
+                    raise FileNotFoundError(
+                        f"Local model path not found: {config.siglip_model_path}"
+                    )
 
                 processor = AutoProcessor.from_pretrained(model_identifier)
                 model = AutoModel.from_pretrained(model_identifier).to(device)
@@ -53,10 +57,12 @@ class SigLIP2Embedder(ImageTextEmbedder):
 
                 logger.info(f"SigLIP2Embedder real model successfully loaded on {device}")
             except Exception as e:
-                logger.warning(f"Failed to load real SigLIP2Embedder on {device}, trying on cpu: {e}")
+                logger.warning(
+                    f"Failed to load real SigLIP2Embedder on {device}, trying on cpu: {e}"
+                )
                 try:
-                    import torch
-                    from transformers import AutoProcessor, AutoModel
+                    from transformers import AutoModel, AutoProcessor
+
                     processor = AutoProcessor.from_pretrained(model_identifier)
                     model = AutoModel.from_pretrained(model_identifier).to("cpu")
                     model.eval()
@@ -66,16 +72,21 @@ class SigLIP2Embedder(ImageTextEmbedder):
                     logger.warning(f"Failed to load real SigLIP2Embedder on cpu: {e2}")
                     is_real = False
                     if not config.allow_mock_fallbacks:
-                        raise RuntimeError(f"SigLIP2Embedder real model failed to load (allow_mock_fallbacks is False): {e2}") from e2
+                        raise RuntimeError(
+                            f"SigLIP2Embedder real model failed to load (allow_mock_fallbacks is False): {e2}"
+                        ) from e2
                     device = "cpu"
 
         if not is_real:
             if not config.allow_mock_fallbacks:
-                raise RuntimeError("SigLIP2Embedder real model failed to load (allow_mock_fallbacks is False).")
+                raise RuntimeError(
+                    "SigLIP2Embedder real model failed to load (allow_mock_fallbacks is False)."
+                )
             logger.warning("SigLIP 2 real model not available, using fallback image-text embedder")
 
         return cls(
-            model_name=config.siglip_model_name or ("google/siglip-base-patch16-224" if config.use_real_siglip2 else "mock-siglip2"),
+            model_name=config.siglip_model_name
+            or ("google/siglip-base-patch16-224" if config.use_real_siglip2 else "mock-siglip2"),
             model_path=model_path,
             is_real=is_real,
             device=device,
@@ -96,6 +107,7 @@ class SigLIP2Embedder(ImageTextEmbedder):
         try:
             import torch
             from PIL import Image, ImageFile
+
             ImageFile.LOAD_TRUNCATED_IMAGES = True
             from app.services.embedding_cache import EmbeddingCache
 
@@ -133,7 +145,7 @@ class SigLIP2Embedder(ImageTextEmbedder):
                     else:
                         vector = vector + [0.0] * (dim - len(vector))
 
-                norm = sum(x*x for x in vector) ** 0.5
+                norm = sum(x * x for x in vector) ** 0.5
                 if norm > 0:
                     vector = [round(x / norm, 4) for x in vector]
 
@@ -150,7 +162,9 @@ class SigLIP2Embedder(ImageTextEmbedder):
         except Exception as e:
             logger.warning(f"Error in real SigLIP2Embedder embed_images: {e}")
             if not settings.allow_mock_fallbacks:
-                raise RuntimeError(f"SigLIP2Embedder failed at runtime inside embed_images: {e}") from e
+                raise RuntimeError(
+                    f"SigLIP2Embedder failed at runtime inside embed_images: {e}"
+                ) from e
             fallback_embs = self.fallback.embed_images(image_paths)
             for emb in fallback_embs:
                 emb.model_name = "mock_siglip2"
@@ -169,7 +183,9 @@ class SigLIP2Embedder(ImageTextEmbedder):
         try:
             import torch
 
-            inputs = self.processor(text=texts, padding="max_length", return_tensors="pt").to(self.device)
+            inputs = self.processor(text=texts, padding="max_length", return_tensors="pt").to(
+                self.device
+            )
 
             with torch.no_grad():
                 text_features = self.model.get_text_features(**inputs)
@@ -184,7 +200,7 @@ class SigLIP2Embedder(ImageTextEmbedder):
                     else:
                         vector = vector + [0.0] * (dim - len(vector))
 
-                norm = sum(x*x for x in vector) ** 0.5
+                norm = sum(x * x for x in vector) ** 0.5
                 if norm > 0:
                     vector = [round(x / norm, 4) for x in vector]
 
@@ -199,7 +215,9 @@ class SigLIP2Embedder(ImageTextEmbedder):
         except Exception as e:
             logger.warning(f"Error in real SigLIP2Embedder embed_texts: {e}")
             if not settings.allow_mock_fallbacks:
-                raise RuntimeError(f"SigLIP2Embedder failed at runtime inside embed_texts: {e}") from e
+                raise RuntimeError(
+                    f"SigLIP2Embedder failed at runtime inside embed_texts: {e}"
+                ) from e
             fallback_embs = self.fallback.embed_texts(texts)
             for emb in fallback_embs:
                 emb.model_name = "mock_siglip2"
@@ -210,11 +228,12 @@ class SigLIP2Embedder(ImageTextEmbedder):
         right = text_embedding.vector
         if not left or not right or len(left) != len(right):
             return 0.0
-        dot = sum(a * b for a, b in zip(left, right))
+        dot = sum(a * b for a, b in zip(left, right, strict=False))
         return round(max(0.0, dot), 4)
 
     def _get_image_hash(self, path: str) -> str:
         import hashlib
+
         try:
             with open(path, "rb") as f:
                 return hashlib.md5(f.read()).hexdigest()

@@ -1,8 +1,7 @@
-import os
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from app.core.config import settings, Settings
+from app.core.config import Settings, settings
 from app.core.logging import get_logger
 from app.ml.fallbacks import MockVisualEmbedder
 from app.ml.interfaces import ImageEmbedding, VisualEmbedder
@@ -31,7 +30,6 @@ class DINOv3Embedder(VisualEmbedder):
 
         if is_real:
             try:
-                import torch
                 from transformers import AutoImageProcessor, AutoModel
 
                 from app.core.config import is_cuda_really_compatible
@@ -39,11 +37,15 @@ class DINOv3Embedder(VisualEmbedder):
                 if device == "auto":
                     device = "cuda" if is_cuda_really_compatible() else "cpu"
                 elif device == "cuda" and not is_cuda_really_compatible():
-                    logger.warning("CUDA device was requested but is incompatible. Overriding to cpu.")
+                    logger.warning(
+                        "CUDA device was requested but is incompatible. Overriding to cpu."
+                    )
                     device = "cpu"
 
-                model_identifier = model_path if (model_path and Path(model_path).exists()) else model_name
-                
+                model_identifier = (
+                    model_path if (model_path and Path(model_path).exists()) else model_name
+                )
+
                 # Check if it's a local path and verify existence
                 if config.dino_model_path and not Path(config.dino_model_path).exists():
                     raise FileNotFoundError(f"Local model path not found: {config.dino_model_path}")
@@ -54,10 +56,12 @@ class DINOv3Embedder(VisualEmbedder):
 
                 logger.info(f"DINOv3Embedder real model successfully loaded on {device}")
             except Exception as e:
-                logger.warning(f"Failed to load real DINOv3Embedder on {device}, trying on cpu: {e}")
+                logger.warning(
+                    f"Failed to load real DINOv3Embedder on {device}, trying on cpu: {e}"
+                )
                 try:
-                    import torch
                     from transformers import AutoImageProcessor, AutoModel
+
                     processor = AutoImageProcessor.from_pretrained(model_identifier)
                     model = AutoModel.from_pretrained(model_identifier).to("cpu")
                     model.eval()
@@ -67,16 +71,21 @@ class DINOv3Embedder(VisualEmbedder):
                     logger.warning(f"Failed to load real DINOv3Embedder on cpu: {e2}")
                     is_real = False
                     if not config.allow_mock_fallbacks:
-                        raise RuntimeError(f"DINOv3Embedder real model failed to load (allow_mock_fallbacks is False): {e2}") from e2
+                        raise RuntimeError(
+                            f"DINOv3Embedder real model failed to load (allow_mock_fallbacks is False): {e2}"
+                        ) from e2
                     device = "cpu"
 
         if not is_real:
             if not config.allow_mock_fallbacks:
-                raise RuntimeError("DINOv3Embedder real model failed to load (allow_mock_fallbacks is False).")
+                raise RuntimeError(
+                    "DINOv3Embedder real model failed to load (allow_mock_fallbacks is False)."
+                )
             logger.warning("DINOv3 real model not available, using fallback embedder")
 
         return cls(
-            model_name=config.dino_model_name or ("facebook/dinov2-base" if config.use_real_dinov3 else "mock-dinov3"),
+            model_name=config.dino_model_name
+            or ("facebook/dinov2-base" if config.use_real_dinov3 else "mock-dinov3"),
             model_path=model_path,
             is_real=is_real,
             device=device,
@@ -98,6 +107,7 @@ class DINOv3Embedder(VisualEmbedder):
         try:
             import torch
             from PIL import Image, ImageFile
+
             ImageFile.LOAD_TRUNCATED_IMAGES = True
             from app.services.embedding_cache import EmbeddingCache
 
@@ -146,7 +156,7 @@ class DINOv3Embedder(VisualEmbedder):
 
                 # Normalize the final vector again if padded
                 # L2 norm of python list
-                norm = sum(x*x for x in vector) ** 0.5
+                norm = sum(x * x for x in vector) ** 0.5
                 if norm > 0:
                     vector = [round(x / norm, 4) for x in vector]
 
@@ -171,6 +181,7 @@ class DINOv3Embedder(VisualEmbedder):
 
     def _get_image_hash(self, path: str) -> str:
         import hashlib
+
         try:
             with open(path, "rb") as f:
                 return hashlib.md5(f.read()).hexdigest()
