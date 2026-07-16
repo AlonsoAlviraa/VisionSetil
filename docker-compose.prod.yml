@@ -1,0 +1,74 @@
+# Production-grade compose stack for VisionSetil v0.3.0+
+# Usage: docker compose -f docker-compose.prod.yml up -d
+#
+# Services:
+#   - postgresql: Primary database (replaces SQLite)
+#   - redis: Distributed cache for embeddings + rate limiting
+#   - backend: FastAPI app (CPU-only image)
+#   - (optional) frontend served separately or via CDN
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-visionsetil}
+      POSTGRES_USER: ${POSTGRES_USER:-visionsetil}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-visionsetil}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --maxmemory 512mb --maxmemory-policy allkeys-lru
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.cpu
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      # ── Database ──
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-visionsetil}:${POSTGRES_PASSWORD:-changeme}@postgres:5432/${POSTGRES_DB:-visionsetil}
+      # ── Redis ──
+      REDIS_URL: redis://redis:6379/0
+      # ── ML Config ──
+      USE_REAL_YOLOE: ${USE_REAL_YOLOE:-false}
+      USE_REAL_DINOV3: ${USE_REAL_DINOV3:-false}
+      ALLOW_MOCK_FALLBACKS: ${ALLOW_MOCK_FALLBACKS:-true}
+      # ── Security ──
+      API_KEYS: ${API_KEYS:-}
+      CORS_ORIGINS: ${CORS_ORIGINS:-*}
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    volumes:
+      - model_weights:/app/backend/app/ml/weights
+      - upload_data:/app/backend/uploads
+
+volumes:
+  pgdata:
+  redisdata:
+  model_weights:
+  upload_data:

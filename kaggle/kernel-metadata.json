@@ -1,20 +1,18 @@
 {
-  "id": "alonsoalvira/fungiclef25-starter-notebook",
-  "id_no": 123419595,
-  "title": "fungiclef25-starter-notebook",
-  "code_file": "fungiclef25-starter-notebook.ipynb",
+  "id": "alonsoalviraaaa/visionsetil-fungi-v11",
+  "title": "visionsetil-fungi-v11",
+  "code_file": "visionsetil_mega_training.ipynb",
   "language": "python",
   "kernel_type": "notebook",
   "is_private": true,
+  "version": "11.0.0",
   "enable_gpu": true,
   "enable_tpu": false,
   "enable_internet": true,
-  "keywords": [],
-  "dataset_sources": [],
-  "kernel_sources": [],
-  "competition_sources": [
-    "fungi-clef-2025"
+  "dataset_sources": [
+    "seemshukla/fungiclef",
+    "picekl/fungitastic"
   ],
-  "model_sources": [],
-  "machine_shape": "Gpu"
+  "competition_sources": [],
+  "kernel_sources": []
 }

@@ -21,6 +21,7 @@ import sys
 import time
 from collections import defaultdict
 from pathlib import Path
+
 from PIL import Image, ImageFile
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
@@ -31,7 +32,6 @@ backend_dir = root_dir / "backend"
 sys.path.insert(0, str(root_dir))
 sys.path.insert(0, str(backend_dir))
 
-from app.core.config import settings
 from app.ml.model_registry import build_model_registry
 
 
@@ -100,7 +100,7 @@ def main():
         sys.exit(1)
 
     # Load observations
-    with open(converted_path, "r", encoding="utf-8") as f:
+    with open(converted_path, encoding="utf-8") as f:
         observations = json.load(f)
 
     # Load test split IDs to exclude (leakage prevention)
@@ -108,7 +108,7 @@ def main():
     if args.test_split_ids:
         test_ids_path = Path(args.test_split_ids)
         if test_ids_path.exists():
-            with open(test_ids_path, "r", encoding="utf-8") as f:
+            with open(test_ids_path, encoding="utf-8") as f:
                 test_ids = set(json.load(f))
             print(f"Loaded {len(test_ids)} test observation IDs to exclude (leakage prevention).")
 

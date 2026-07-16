@@ -1,0 +1,254 @@
+{
+  "experiment_name": "mega_training_v4_sota_ensemble",
+  "description": "SOTA ensemble config: 3-backbone ensemble (ConvNeXt-V2-Base + DINOv2-B + EVA-02-B) with progressive resizing (224→384→448), SAM optimizer, SWA, ArcFace head, RandAugment, and metadata fusion. Targets MAP@3 >= 0.72 (competition top-5 territory).",
+  "version": "4.0",
+  "dataset": {
+    "source": "kaggle",
+    "name": "fungi-clef-2025",
+    "root": "/kaggle/input/fungi-clef-2025",
+    "format": "fungitastic",
+    "min_resolution": 448,
+    "num_classes_expected": 2829
+  },
+  "split": {
+    "method": "anti_leak_group_stratified_session_aware",
+    "group_by": "observation_id",
+    "stratify_by": ["species", "genus", "family"],
+    "session_aware": true,
+    "session_cols": ["user_id", "observed_at"],
+    "test_size": 0.15,
+    "val_size": 0.15,
+    "min_class_count": 3,
+    "rare_class_oversample": true,
+    "rare_class_min_samples": 5,
+    "rare_class_strategy": "effective_num",
+    "random_state": 42,
+    "n_crossval_folds": 5
+  },
+  "ensemble": {
+    "enabled": true,
+    "backbones": [
+      {
+        "name": "convnextv2_base",
+        "pretrained": "fcmae",
+        "weight": 0.40,
+        "image_size": 448,
+        "label_smoothing": 0.1
+      },
+      {
+        "name": "dinov2_vitb14_reg",
+        "pretrained": "lvd142m",
+        "weight": 0.35,
+        "image_size": 448,
+        "label_smoothing": 0.1
+      },
+      {
+        "name": "eva02_base_patch14_224",
+        "pretrained": "in21k_ft1k",
+        "weight": 0.25,
+        "image_size": 448,
+        "label_smoothing": 0.1
+      }
+    ],
+    "fusion_strategy": "logit_average",
+    "search_weights": true,
+    "weight_search_method": "scipy_minimize_on_val"
+  },
+  "model": {
+    "backbone": "convnextv2_base",
+    "pretrained": "fcmae",
+    "image_size": 448,
+    "freeze_backbone_epochs": 1,
+    "dropout": 0.3,
+    "classifier_hidden_dim": 1024,
+    "stochastic_depth": true,
+    "stochastic_depth_max_rate": 0.2,
+    "head_type": "arcface",
+    "arcface": {
+      "s": 30.0,
+      "m": 0.50,
+      "inter_dim": 512
+    }
+  },
+  "progressive_resizing": {
+    "enabled": true,
+    "schedule": [
+      { "until_epoch": 10, "image_size": 224, "batch_size": 64 },
+      { "until_epoch": 30, "image_size": 384, "batch_size": 32 },
+      { "until_epoch": 60, "image_size": 448, "batch_size": 16 }
+    ]
+  },
+  "training": {
+    "epochs": 60,
+    "batch_size": 16,
+    "lr_head": 0.0003,
+    "lr_backbone": 2e-05,
+    "weight_decay": 0.05,
+    "warmup_epochs": 3,
+    "label_smoothing": 0.1,
+    "focal_gamma": 2.0,
+    "focal_alpha": 0.25,
+    "amp": true,
+    "grad_accum_steps": 2,
+    "max_grad_norm": 1.0,
+    "early_stopping_patience": 10,
+    "early_stopping_metric": "map_at_3_observation"
+  },
+  "optimizer": {
+    "type": "sam",
+    "base_optimizer": "adamw",
+    "rho": 0.05,
+    "adaptive": false
+  },
+  "scheduler": {
+    "type": "cosine_with_warmup",
+    "warmup_epochs": 3,
+    "min_lr": 1e-06,
+    "warmup_method": "linear"
+  },
+  "swa": {
+    "enabled": true,
+    "start_epoch": 40,
+    "swa_lr": 5e-06,
+    "swa_anneal_epochs": 5,
+    "update_every_n_steps": 1
+  },
+  "advanced": {
+    "use_ema": true,
+    "ema_decay": 0.9998,
+    "ema_start_epoch": 3,
+    "use_weighted_sampler": true,
+    "weighted_sampler_strategy": "effective_num",
+    "use_tta": true,
+    "tta_transforms": [
+      "hflip",
+      "center_crop",
+      "five_crop_average",
+      "scale_jitter_1.1x",
+      "scale_jitter_0.9x"
+    ],
+    "multi_gpu": true,
+    "gradient_checkpointing": true,
+    "compile_model": true,
+    "channels_last": true
+  },
+  "augmentation": {
+    "train": {
+      "hflip": true,
+      "vflip": true,
+      "rotation_degrees": 30,
+      "color_jitter": {
+        "brightness": 0.3,
+        "contrast": 0.3,
+        "saturation": 0.2,
+        "hue": 0.1
+      },
+      "random_erasing": true,
+      "random_erasing_p": 0.25,
+      "mixup_alpha": 0.4,
+      "cutmix_alpha": 1.0,
+      "mixup_prob": 0.5,
+      "cutmix_prob": 0.5,
+      "randaugment": {
+        "enabled": true,
+        "num_ops": 2,
+        "magnitude": 9
+      },
+      "random_resized_crop": {
+        "scale": [0.6, 1.0],
+        "ratio": [0.75, 1.33]
+      }
+    },
+    "val": {
+      "resize": 448,
+      "center_crop": 448
+    }
+  },
+  "metadata_fusion": {
+    "enabled": true,
+    "features": ["habitat", "substrate", "month", "geo_region", "elevation"],
+    "embedding_dim": 128,
+    "fusion_method": "concat_after_backbone",
+    "tabular_encoder": {
+      "hidden_dims": [256, 128],
+      "dropout": 0.3,
+      "activation": "gelu"
+    }
+  },
+  "loss": {
+    "primary": "focal_label_smoothing",
+    "focal_gamma": 2.0,
+    "focal_alpha": 0.25,
+    "label_smoothing": 0.1,
+    "class_balanced": {
+      "enabled": true,
+      "type": "effective_num",
+      "beta": 0.9999
+    }
+  },
+  "output": {
+    "dir": "/kaggle/working/visionsetil_outputs",
+    "save_best_model": true,
+    "save_history": true,
+    "save_per_class_report": true,
+    "save_confusion_matrix": true,
+    "export_onnx": true,
+    "onnx_opset": 17,
+    "export_quantized": true,
+    "save_calibration_curve": true,
+    "save_pr_curves": true
+  },
+  "anti_leak_checks": [
+    "observation_id_disjoint",
+    "session_key_disjoint",
+    "phash_prefix_disjoint",
+    "class_coverage_train_complete",
+    "stratification_balance_within_50pct",
+    "cross_validation_leak_audit"
+  ],
+  "data_policy": {
+    "synthetic_data": false,
+    "real_data_only": true,
+    "license": "see_original_dataset_terms",
+    "deduplicate": true,
+    "deduplicate_method": "phash_cluster"
+  },
+  "metrics": {
+    "primary": "map_at_3_observation",
+    "secondary": [
+      "top1_acc",
+      "top3_acc",
+      "top5_acc",
+      "f1_macro",
+      "f1_micro",
+      "balanced_acc",
+      "open_set_f1",
+      "open_set_auroc",
+      "calibration_ece",
+      "calibration_mce"
+    ],
+    "safety_metrics": [
+      "toxic_recall",
+      "deadly_recall",
+      "false_edible_rate",
+      "lookalike_confusion_rate"
+    ],
+    "official_benchmark": "FungiCLEF 2025 MAP@3",
+    "target_map_at_3": 0.72,
+    "bootstrap_confidence": 0.95,
+    "bootstrap_n_resamples": 10000
+  },
+  "benchmark_context": {
+    "fungiclef_2025_top1_map_at_3": 0.742,
+    "fungiclef_2025_top5_median_map_at_3": 0.708,
+    "fungiclef_2025_top10_median_map_at_3": 0.685,
+    "competition_baseline_map_at_3": 0.412,
+    "notes": "3-backbone ensemble target; single ConvNeXt-B achieves ~0.63. Ensemble + ArcFace + progressive resizing + SWA expected to close gap to top-5."
+  },
+  "compute_budget": {
+    "target_hardware": "Kaggle T4 x2 or A100",
+    "estimated_train_hours": 18,
+    "estimated_inference_ms_gpu": 85,
+    "estimated_inference_ms_cpu_int8": 280
+  }
+}

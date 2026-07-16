@@ -90,6 +90,30 @@ class Settings(BaseSettings):
         )
     )
 
+    # --- Multi-view model (v5) ----------------------------------------------
+    # Path to the trained MultiViewModel checkpoint (torch .pt).
+    multi_view_weights_path: Path = Field(
+        default=_BASE_DIR / "backend" / "app" / "ml" / "weights" / "multiview_v1.pt"
+    )
+    # Path to the view classifier ONNX weights.
+    view_classifier_model_path: str = Field(default="")
+    # Inference device: "cpu" or "cuda".
+    model_device: str = Field(default="cpu")
+    # Open-set cosine threshold for multi-view ArcFace embeddings.
+    model_open_set_threshold: float = Field(default=0.55)
+    # Fallback scalar temperature when no learned temperature is available.
+    model_temperature: float = Field(default=1.5)
+    # If True, fall back to MockMushroomClassifier when weights are absent.
+    model_fallback_to_mock: bool = Field(default=True)
+    # Toggle pipeline stages (allows A/B ablation per ML_IMPROVEMENT_PROMPT §6.2).
+    model_enable_roi_detection: bool = Field(default=True)
+    model_enable_view_classifier: bool = Field(default=True)
+    model_enable_metadata_fusion: bool = Field(default=True)
+    # Canonical 4-view taxonomy (ML_IMPROVEMENT_PROMPT §2.1).
+    canonical_view_types: Annotated[tuple[str, ...], NoDecode] = Field(
+        default=("gills", "front", "habitat", "detail")
+    )
+
     # --- Security / runtime (new in hardening sprint) ----------------------
     cors_origins: Annotated[list[str], NoDecode] = Field(default_factory=list)
     log_level: str = Field(default="INFO")
@@ -118,7 +142,7 @@ class Settings(BaseSettings):
                 return mb * 1024 * 1024
         return v
 
-    @field_validator("cors_origins", "allowed_extensions", "required_views", mode="before")
+    @field_validator("cors_origins", "allowed_extensions", "required_views", "canonical_view_types", mode="before")
     @classmethod
     def _split_csv(cls, v):
         """Accept comma-separated string or collection for complex env fields."""

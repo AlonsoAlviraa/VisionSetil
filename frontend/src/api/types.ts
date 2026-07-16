@@ -1,0 +1,50 @@
+/** API type definitions matching the FastAPI backend /classify endpoint. */
+
+export interface SpeciesPrediction {
+  species: string
+  common_name: string | null
+  confidence: number
+  edibility: string | null
+}
+
+export interface ModelStack {
+  detector: string
+  visual_embedder: string
+  image_text_embedder: string
+  metadata_encoder: string
+}
+
+export interface ClassificationResult {
+  request_id: string
+  decision: 'accepted' | 'rejected'
+  predictions: SpeciesPrediction[]
+  rejection_reason: string | null
+  processing_time_ms: number
+  observation_id: number | null
+  safety_level: string
+  missing_evidence: string[]
+  warnings: string[]
+  quality_warnings: string[]
+  dangerous_lookalikes: string[]
+  questions_for_user: string[]
+  model_stack: ModelStack | null
+  open_set_reason: string | null
+  recommend_human_review: boolean
+  final_warning: string
+}
+
+export interface ApiError {
+  error: string
+  message: string
+}
+
+/** Metadata that can be optionally submitted with images for better accuracy. */
+export interface ObservationMetadata {
+  title?: string
+  country?: string
+  region?: string
+  habitat?: string
+  substrate?: string
+  notes?: string
+  smell?: string
+}

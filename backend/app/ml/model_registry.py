@@ -61,3 +61,33 @@ def build_model_registry() -> ModelRegistry:
             image_text_embedder=SigLIP2Embedder.from_settings(settings),
         )
     return _registry_instance
+
+
+def get_model_status() -> dict:
+    """Aggregate status of all models, including the multi-view classifier.
+
+    Used by the ``/readyz`` endpoint to report real-vs-mock model status.
+    Safe to call even when the registry cannot be built (returns error dict).
+    """
+    status_report: dict = {}
+
+    # Legacy detector/embedder stack.
+    try:
+        registry = build_model_registry()
+        status_report.update(registry.get_status())
+    except Exception as exc:  # noqa: BLE001
+        status_report["registry"] = f"error: {exc.__class__.__name__}: {exc}"
+
+    # Multi-view classifier (v5).
+    try:
+        from app.services.multi_view_classifier import get_multi_view_classifier
+
+        mv = get_multi_view_classifier()
+        status_report["multi_view_classifier"] = mv.get_status()
+    except Exception as exc:  # noqa: BLE001
+        status_report["multi_view_classifier"] = {
+            "backend": "error",
+            "error": f"{exc.__class__.__name__}: {exc}",
+        }
+
+    return status_report

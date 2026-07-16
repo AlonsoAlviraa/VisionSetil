@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "kaggle": {
+      "command": "node",
+      "args": [
+        "C:\\Users\\alons\\AppData\\Roaming\\npm\\node_modules\\@iflow-mcp\\dishant27-kaggle-mcp\\build\\index.js"
+      ],
+      "env": {
+        "KAGGLE_USERNAME": "alonsoalviraaaa",
+        "KAGGLE_KEY": "KGAT_47893c54215cc359ba93342189276b23"
+      },
+      "disabled": false,
+      "autoApprove": []
+    }
+  }
+}

@@ -1,0 +1,144 @@
+[{"stream_name":"stderr","time":6.4928182660000004,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":6.492882253,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":6.492886857,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":6.492889483,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":7.056316551,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":7.056347155,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":7.056351974,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":7.056368752,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":21.316944611,"data":"GPU detected but PyTorch CUDA kernels broken. Reinstalling...\n"}
+,{"stream_name":"stdout","time":49.771932877,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 780.4/780.4 MB 2.3 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":49.978476097,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 780.4/780.4 MB 2.3 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":52.386083563,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.3/7.3 MB 116.8 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":52.589018846,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.3/7.3 MB 116.8 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":52.749223286,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 23.7/23.7 MB 79.6 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":52.95120098,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 23.7/23.7 MB 79.6 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":53.085821218,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 823.6/823.6 kB 42.7 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":53.2878139,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 823.6/823.6 kB 42.7 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":53.327888993,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.1/14.1 MB 103.1 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":53.528120258,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.1/14.1 MB 103.1 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":61.319603443,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 664.8/664.8 MB 2.2 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":61.521683212,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 664.8/664.8 MB 2.2 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":67.379528428,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 410.6/410.6 MB 4.5 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":67.581756145,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 410.6/410.6 MB 4.5 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":70.067473633,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 121.6/121.6 MB 15.6 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":70.269972646,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 121.6/121.6 MB 15.6 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":71.095273578,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 56.5/56.5 MB 33.0 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":71.297219289,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 56.5/56.5 MB 33.0 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":72.725525523,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 124.2/124.2 MB 15.3 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":72.928460855,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 124.2/124.2 MB 15.3 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":78.431110285,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 196.0/196.0 MB 2.5 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":78.633175603,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 196.0/196.0 MB 2.5 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":81.129469376,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 188.7/188.7 MB 10.0 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":81.336027182,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 188.7/188.7 MB 10.0 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":81.83115508,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 99.1/99.1 kB 7.2 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":82.033012206,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 99.1/99.1 kB 7.2 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":84.318807982,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 209.6/209.6 MB 7.9 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":84.519823475,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 209.6/209.6 MB 7.9 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":85.877753271,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.2/6.2 MB 65.8 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":86.079956518,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.2/6.2 MB 65.8 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":182.482743982,"data":"CUDA after reinstall: True\n"}
+,{"stream_name":"stdout","time":182.483549049,"data":"Dependencies installed. CUDA ready: True\n"}
+,{"stream_name":"stdout","time":184.691589718,"data":"PyTorch: 2.5.1+cu121\n"}
+,{"stream_name":"stdout","time":184.694042309,"data":"CUDA available: True\n"}
+,{"stream_name":"stdout","time":184.848351039,"data":"✓ CUDA smoke test PASSED. GPU: Tesla P100-PCIE-16GB\n"}
+,{"stream_name":"stdout","time":184.849136659,"data":"  Memory: 17.1 GB\n"}
+,{"stream_name":"stdout","time":192.278244541,"data":"timm: 1.0.26\n"}
+,{"stream_name":"stdout","time":192.278984461,"data":"[08:08:45] [INFO] Environment ready.\n"}
+,{"stream_name":"stdout","time":192.304667197,"data":"[08:08:45] [INFO] Scanning 1 top-level dirs in /kaggle/input...\n"}
+,{"stream_name":"stdout","time":192.305575219,"data":"[08:08:45] [INFO] Phase 1 found nothing. Trying nested paths...\n"}
+,{"stream_name":"stdout","time":192.306522189,"data":"[08:08:45] [INFO]   ✓ Found FungiTastic (nested): /kaggle/input/datasets/picekl\n"}
+,{"stream_name":"stdout","time":192.307444614,"data":"[08:08:45] [INFO]   ✓ Found FungiCLEF (nested): /kaggle/input/datasets/seemshukla\n"}
+,{"stream_name":"stdout","time":192.308468229,"data":"[08:08:45] [INFO] Total datasets detected: 2\n"}
+,{"stream_name":"stdout","time":192.309752819,"data":"[08:08:45] [INFO]   fungitastic: /kaggle/input/datasets/picekl\n"}
+,{"stream_name":"stdout","time":192.310337942,"data":"[08:08:45] [INFO]   fungiclef: /kaggle/input/datasets/seemshukla\n"}
+,{"stream_name":"stdout","time":192.341655834,"data":"[08:08:45] [INFO] Loading dataset 'fungitastic' from /kaggle/input/datasets/picekl...\n"}
+,{"stream_name":"stdout","time":192.439346604,"data":"[08:08:45] [INFO]   Trying bounded rglob scan (max 200 CSVs)...\n"}
+,{"stream_name":"stdout","time":3150.117833098,"data":"[08:58:03] [INFO]   CSV found (rglob, validated): /kaggle/input/datasets/picekl/fungitastic/metadata/FungiTastic/FungiTastic-ClosedSet-Test.csv\n"}
+,{"stream_name":"stdout","time":3152.696001044,"data":"[08:58:06] [INFO]   Shape: (91832, 29), Columns: ['eventDate', 'year', 'month', 'day', 'habitat', 'countryCode', 'scientificName', 'kingdom', 'phylum', 'class', 'order', 'family', 'genus', 'specificEpithet', 'hasCoordinate']...\n"}
+,{"stream_name":"stdout","time":3153.46782327,"data":"[08:58:06] [INFO]   Loaded: 91832 images, 2301 species, 48378 observations\n"}
+,{"stream_name":"stdout","time":3153.468558748,"data":"[08:58:06] [INFO] Loading dataset 'fungiclef' from /kaggle/input/datasets/seemshukla...\n"}
+,{"stream_name":"stdout","time":3153.477681249,"data":"[08:58:06] [INFO]   Trying bounded rglob scan (max 200 CSVs)...\n"}
+,{"stream_name":"stdout","time":3153.480079631,"data":"[08:58:06] [INFO]   WARNING: No valid image metadata CSV found in /kaggle/input/datasets/seemshukla\n"}
+,{"stream_name":"stdout","time":3153.480852422,"data":"[08:58:06] [INFO]   No CSV found. Building from image files (bounded scan)...\n"}
+,{"stream_name":"stdout","time":3153.489440921,"data":"[08:58:06] [INFO]   Built from files: 0 images\n"}
+,{"stream_name":"stdout","time":3153.493194502,"data":"[08:58:06] [INFO]   ⚠️ WARNING: Only 0 species found! CSV may be wrong.\n"}
+,{"stream_name":"stdout","time":3153.49393014,"data":"[08:58:06] [INFO]   Trying parent-directory as species label...\n"}
+,{"stream_name":"stdout","time":3153.495632037,"data":"[08:58:06] [INFO]   Loaded: 0 images, 0 species, 0 observations\n"}
+,{"stream_name":"stdout","time":3153.513750586,"data":"[08:58:06] [INFO] \n"}
+,{"stream_name":"stdout","time":3153.513782745,"data":"COMBINED: 91832 images, 2301 species, 48378 observations from 1 DBs\n"}
+,{"stream_name":"stdout","time":3153.720386058,"data":"[08:58:07] [INFO] After min-3 filter: 89642 images, 1721 species\n"}
+,{"stream_name":"stdout","time":3154.090517028,"data":"[08:58:07] [INFO] After subsampling (top-500 × 5 obs):\n"}
+,{"stream_name":"stdout","time":3154.091290534,"data":"[08:58:07] [INFO]   Images: 4632\n"}
+,{"stream_name":"stdout","time":3154.093170924,"data":"[08:58:07] [INFO]   Species: 500\n"}
+,{"stream_name":"stdout","time":3154.095444187,"data":"[08:58:07] [INFO]   Observations: 2500\n"}
+,{"stream_name":"stdout","time":3154.097222419,"data":"[08:58:07] [INFO]   Source DBs: {'fungitastic': 4632}\n"}
+,{"stream_name":"stdout","time":3158.094003588,"data":"[08:58:11] [INFO] View type distribution:\n"}
+,{"stream_name":"stdout","time":3158.094049705,"data":"view_type\n"}
+,{"stream_name":"stdout","time":3158.094057274,"data":"gills      2567\n"}
+,{"stream_name":"stdout","time":3158.094063102,"data":"front      1314\n"}
+,{"stream_name":"stdout","time":3158.094068989,"data":"habitat     555\n"}
+,{"stream_name":"stdout","time":3158.094081229,"data":"detail      196\n"}
+,{"stream_name":"stdout","time":3158.123322578,"data":"[08:58:11] [INFO] Valid observations: 2500 | Valid species: 500\n"}
+,{"stream_name":"stderr","time":3160.671986956,"data":"Traceback (most recent call last):\n"}
+,{"stream_name":"stderr","time":3160.672036094,"data":"  File \"\u003cstring\u003e\", line 1, in \u003cmodule\u003e\n"}
+,{"stream_name":"stderr","time":3160.672043637,"data":"  File \"/usr/local/lib/python3.12/dist-packages/papermill/execute.py\", line 131, in execute_notebook\n"}
+,{"stream_name":"stderr","time":3160.673070973,"data":"    raise_for_execution_errors(nb, output_path)\n"}
+,{"stream_name":"stderr","time":3160.673092868,"data":"  File \"/usr/local/lib/python3.12/dist-packages/papermill/execute.py\", line 251, in raise_for_execution_errors\n"}
+,{"stream_name":"stderr","time":3160.673246287,"data":"    raise error\n"}
+,{"stream_name":"stderr","time":3160.673510906,"data":"papermill.exceptions.PapermillExecutionError: \n"}
+,{"stream_name":"stderr","time":3160.673522852,"data":"---------------------------------------------------------------------------\n"}
+,{"stream_name":"stderr","time":3160.673527589,"data":"Exception encountered at \"In [7]\":\n"}
+,{"stream_name":"stderr","time":3160.673532529,"data":"---------------------------------------------------------------------------\n"}
+,{"stream_name":"stderr","time":3160.673537104,"data":"ValueError                                Traceback (most recent call last)\n"}
+,{"stream_name":"stderr","time":3160.673541668,"data":"/tmp/ipykernel_23/923116150.py in \u003ccell line: 0\u003e()\n"}
+,{"stream_name":"stderr","time":3160.673546149,"data":"     48 \n"}
+,{"stream_name":"stderr","time":3160.673551212,"data":"     49 \n"}
+,{"stream_name":"stderr","time":3160.673555471,"data":"---\u003e 50 train_df, val_df, test_df = anti_leak_split(df)\n"}
+,{"stream_name":"stderr","time":3160.673560017,"data":"\n"}
+,{"stream_name":"stderr","time":3160.673564424,"data":"/tmp/ipykernel_23/923116150.py in anti_leak_split(df, val_size, test_size, seed, min_per_class)\n"}
+,{"stream_name":"stderr","time":3160.673569677,"data":"     24             random_state=seed, stratify=obs_df['species']\n"}
+,{"stream_name":"stderr","time":3160.673574042,"data":"     25         )\n"}
+,{"stream_name":"stderr","time":3160.67357875,"data":"---\u003e 26         val_obs, test_obs = train_test_split(\n"}
+,{"stream_name":"stderr","time":3160.673583986,"data":"     27             temp_obs, test_size=test_size / (val_size + test_size),\n"}
+,{"stream_name":"stderr","time":3160.673589367,"data":"     28             random_state=seed, stratify=temp_obs['species']\n"}
+,{"stream_name":"stderr","time":3160.673594441,"data":"\n"}
+,{"stream_name":"stderr","time":3160.673608747,"data":"/usr/local/lib/python3.12/dist-packages/sklearn/utils/_param_validation.py in wrapper(*args, **kwargs)\n"}
+,{"stream_name":"stderr","time":3160.673613134,"data":"    214                     )\n"}
+,{"stream_name":"stderr","time":3160.673616902,"data":"    215                 ):\n"}
+,{"stream_name":"stderr","time":3160.673620456,"data":"--\u003e 216                     return func(*args, **kwargs)\n"}
+,{"stream_name":"stderr","time":3160.673624056,"data":"    217             except InvalidParameterError as e:\n"}
+,{"stream_name":"stderr","time":3160.673628173,"data":"    218                 # When the function is just a wrapper around an estimator, we allow\n"}
+,{"stream_name":"stderr","time":3160.673632091,"data":"\n"}
+,{"stream_name":"stderr","time":3160.673635704,"data":"/usr/local/lib/python3.12/dist-packages/sklearn/model_selection/_split.py in train_test_split(test_size, train_size, random_state, shuffle, stratify, *arrays)\n"}
+,{"stream_name":"stderr","time":3160.673639287,"data":"   2870         cv = CVClass(test_size=n_test, train_size=n_train, random_state=random_state)\n"}
+,{"stream_name":"stderr","time":3160.673642941,"data":"   2871 \n"}
+,{"stream_name":"stderr","time":3160.673646234,"data":"-\u003e 2872         train, test = next(cv.split(X=arrays[0], y=stratify))\n"}
+,{"stream_name":"stderr","time":3160.673649801,"data":"   2873 \n"}
+,{"stream_name":"stderr","time":3160.673654504,"data":"   2874     train, test = ensure_common_namespace_device(arrays[0], train, test)\n"}
+,{"stream_name":"stderr","time":3160.67366211,"data":"\n"}
+,{"stream_name":"stderr","time":3160.673664766,"data":"/usr/local/lib/python3.12/dist-packages/sklearn/model_selection/_split.py in split(self, X, y, groups)\n"}
+,{"stream_name":"stderr","time":3160.673667124,"data":"   1907         \"\"\"\n"}
+,{"stream_name":"stderr","time":3160.673669521,"data":"   1908         X, y, groups = indexable(X, y, groups)\n"}
+,{"stream_name":"stderr","time":3160.673671765,"data":"-\u003e 1909         for train, test in self._iter_indices(X, y, groups):\n"}
+,{"stream_name":"stderr","time":3160.673674076,"data":"   1910             yield train, test\n"}
+,{"stream_name":"stderr","time":3160.673676631,"data":"   1911 \n"}
+,{"stream_name":"stderr","time":3160.673679009,"data":"\n"}
+,{"stream_name":"stderr","time":3160.673681209,"data":"/usr/local/lib/python3.12/dist-packages/sklearn/model_selection/_split.py in _iter_indices(self, X, y, groups)\n"}
+,{"stream_name":"stderr","time":3160.673684492,"data":"   2316         class_counts = np.bincount(y_indices)\n"}
+,{"stream_name":"stderr","time":3160.673686817,"data":"   2317         if np.min(class_counts) \u003c 2:\n"}
+,{"stream_name":"stderr","time":3160.673689211,"data":"-\u003e 2318             raise ValueError(\n"}
+,{"stream_name":"stderr","time":3160.673691477,"data":"   2319                 \"The least populated class in y has only 1\"\n"}
+,{"stream_name":"stderr","time":3160.673729638,"data":"   2320                 \" member, which is too few. The minimum\"\n"}
+,{"stream_name":"stderr","time":3160.673736594,"data":"\n"}
+,{"stream_name":"stderr","time":3160.673739982,"data":"ValueError: The least populated class in y has only 1 member, which is too few. The minimum number of groups for any class cannot be less than 2.\n"}
+,{"stream_name":"stderr","time":3160.673743682,"data":"\n"}
+,{"stream_name":"stderr","time":3162.769656586,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":3162.769685473,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":3162.912262401,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":3162.9123001,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":3163.489761174,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":3163.794432276,"data":"[NbConvertApp] Writing 103755 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":3166.061767903,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":3167.110120573,"data":"[NbConvertApp] Writing 621201 bytes to __results__.html\n"}
+]

@@ -46,7 +46,7 @@ def main():
         print(f"ERROR: Predictions file not found: {predictions_path}", file=sys.stderr)
         sys.exit(1)
 
-    with open(predictions_path, "r", encoding="utf-8") as f:
+    with open(predictions_path, encoding="utf-8") as f:
         report_data = json.load(f)
 
     results = report_data.get("results", [])
@@ -205,10 +205,10 @@ def main():
     md_content.append("\n## Usage\n")
     md_content.append("To re-run the benchmark with calibrated thresholds:\n")
     md_content.append("```bash")
-    md_content.append(f"python kaggle/run_large_dataset_benchmark.py \\")
-    md_content.append(f"  --config kaggle/configs/fungiclef2025_1000_real_models_config.json \\")
-    md_content.append(f"  --max-cases 1000 \\")
-    md_content.append(f"  --ranker candidate_ranker_v2 \\")
+    md_content.append("python kaggle/run_large_dataset_benchmark.py \\")
+    md_content.append("  --config kaggle/configs/fungiclef2025_1000_real_models_config.json \\")
+    md_content.append("  --max-cases 1000 \\")
+    md_content.append("  --ranker candidate_ranker_v2 \\")
     md_content.append(f"  --open-set-thresholds {output_path}")
     md_content.append("```")
 

@@ -154,6 +154,21 @@ class ClassificationResponse(BaseModel):
     human_review: HumanReviewResponse | None = None
 
 
+class ClassificationJobRead(BaseModel):
+    """Schema for reading classification job status (Sprint N+4 SC-3)."""
+
+    id: str
+    observation_id: int
+    status: str
+    result: dict | None = None
+    error: str | None = None
+    created_at: datetime
+    started_at: datetime | None = None
+    completed_at: datetime | None = None
+
+    model_config = {"from_attributes": True}
+
+
 class HumanReviewRequestCreate(BaseModel):
     priority: str = "low"
     reason: str
@@ -161,6 +176,7 @@ class HumanReviewRequestCreate(BaseModel):
 
 class HumanReviewRequestUpdate(BaseModel):
     status: str | None = None
+    assigned_to: str | None = None
     reviewer_notes: str | None = None
     reviewer_taxon: str | None = None
     reviewer_confidence: float | None = None
@@ -172,6 +188,7 @@ class HumanReviewRequestRead(BaseModel):
     status: str
     priority: str
     reason: str
+    assigned_to: str | None = None
     created_at: datetime
     resolved_at: datetime | None = None
     reviewer_notes: str | None = None
@@ -197,3 +214,36 @@ class ImageUploadResponse(BaseModel):
     observation_id: int
     uploaded_count: int
     images: list[StoredImageResult]
+
+
+# ─── Simple classification schema (for the /classify convenience endpoint) ────
+
+
+class SimpleSpeciesPrediction(BaseModel):
+    """Simplified species prediction for the quick-classify endpoint."""
+
+    species: str
+    common_name: str | None = None
+    confidence: float
+    edibility: str | None = None
+
+
+class SimpleClassificationResult(BaseModel):
+    """Simplified result matching what the frontend expects from /classify."""
+
+    request_id: str
+    decision: str  # "accepted" | "rejected"
+    predictions: list[SimpleSpeciesPrediction]
+    rejection_reason: str | None = None
+    processing_time_ms: int
+    observation_id: int | None = None
+    safety_level: str = "unknown_or_risky"
+    missing_evidence: list[str] = Field(default_factory=list)
+    warnings: list[str] = Field(default_factory=list)
+    quality_warnings: list[str] = Field(default_factory=list)
+    dangerous_lookalikes: list[str] = Field(default_factory=list)
+    questions_for_user: list[str] = Field(default_factory=list)
+    model_stack: ModelStackResponse | None = None
+    open_set_reason: str | None = None
+    recommend_human_review: bool = False
+    final_warning: str = ""

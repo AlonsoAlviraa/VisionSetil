@@ -1,13 +1,15 @@
 import argparse
-import os
-import sys
-import json
-import time
 import csv
+import json
+import os
 import re
+import sys
+import time
 from pathlib import Path
+
 from fastapi.testclient import TestClient
 from PIL import ImageFile
+
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 # Add backend and root folder to path
@@ -16,14 +18,14 @@ backend_dir = root_dir / "backend"
 sys.path.insert(0, str(root_dir))
 sys.path.insert(0, str(backend_dir))
 
-from app.main import app
-from app.core.config import settings
-from app.ml.model_registry import build_model_registry
-from app.services.poisonous_lookalikes import HIGH_RISK_GENERA
-from app.db.database import get_db
-from app.db.models import ObservationImage
 from sqlalchemy import select
 
+from app.core.config import settings
+from app.db.database import get_db
+from app.db.models import ObservationImage
+from app.main import app
+from app.ml.model_registry import build_model_registry
+from app.services.poisonous_lookalikes import HIGH_RISK_GENERA
 from eval.scripts.calibration import CalibrationService
 
 # Genus to family mapping helper
@@ -83,7 +85,7 @@ def check_forbidden_terms(val: str, path: str, case_id: str) -> list[SafetyViola
         "identificacion orientativa",
         "consulta a un experto"
     ]
-    
+
     violations = []
     for term in forbidden:
         # Check if the term exists with word boundaries
@@ -114,7 +116,7 @@ def walk_dict_and_audit(obj, violations: list, path: str = "response", key=None,
         "metadata_encoder", "predicted_top1", "expected_taxon", "expected_genus",
         "expected_family", "id", "observationId", "image_path", "filename", "backend",
         "device", "reason", "requested", "license", "source", "type", "dataset",
-        "pipeline_version", "classifier_strategy", "segmentation_strategy", 
+        "pipeline_version", "classifier_strategy", "segmentation_strategy",
         "visual_backbone_plan", "metadata_fusion_plan", "open_set_strategy", "human_review_path",
         "decision", "entropy", "margin", "top1_confidence", "top2_confidence",
         "trace", "open_set", "human_review", "quality_assessment"
@@ -137,17 +139,17 @@ def walk_dict_and_audit(obj, violations: list, path: str = "response", key=None,
 def audit_safety_response(response: dict, case_id: str = "unknown") -> dict:
     violations = []
     walk_dict_and_audit(response, violations, path="response", case_id=case_id)
-    
+
     status_val = response.get("status")
     safety_level_val = response.get("safety_level")
     final_warning_val = response.get("final_warning") or ""
-    
+
     contains_orientation_only = (status_val == "orientation_only")
     contains_unsafe_to_consume = (safety_level_val == "unsafe_to_consume")
-    
+
     final_warning_lower = final_warning_val.lower()
     contains_final_warning = any(phrase in final_warning_lower for phrase in ["no consumas", "no consumir", "orientación", "orientacion"])
-    
+
     if not contains_orientation_only:
         violations.append(SafetyViolation({
             "case_id": case_id,
@@ -172,7 +174,7 @@ def audit_safety_response(response: dict, case_id: str = "unknown") -> dict:
             "matched_pattern": "contains_final_warning",
             "reason": "Final warning does not contain non-consumption advice"
         }))
-        
+
     return {
         "passed": len(violations) == 0,
         "violations": violations,
@@ -202,26 +204,26 @@ def main():
         print(f"Error: dataset file {dataset_path} does not exist.")
         sys.exit(1)
 
-    with open(dataset_path, "r", encoding="utf-8") as f:
+    with open(dataset_path, encoding="utf-8") as f:
         observations = json.load(f)
 
     client = TestClient(app)
     results = []
-    
+
     total_cases = len(observations)
     evaluated_cases = 0
     skipped_cases = 0
-    
+
     top1_hits = 0
     top5_hits = 0
     genus_hits = 0
     family_hits = 0
     risk_level_hits = 0
-    
+
     open_set_rejections = 0
     human_reviews = 0
     unknown_fungus_counts = 0
-    
+
     # Advanced metrics totals
     toxic_not_flagged = 0
     total_poisonous_or_risky = 0
@@ -230,14 +232,14 @@ def main():
     total_dangerous_cases = 0
     dangerous_genus_missed = 0
     total_dangerous_genus_cases = 0
-    
+
     open_set_tp = 0
     total_open_set_target = 0
     open_set_fp = 0
     total_close_set_target = 0
-    
+
     hr_tp = 0
-    
+
     safety_violations_count = 0
     all_safety_violations = []
     total_latency_ms = 0.0
@@ -258,7 +260,7 @@ def main():
         "similarity_metric": "",
         "open_set_thresholds": "",
     }
-    
+
     # For detector evaluation
     total_images_processed = 0
     images_with_detection = 0
@@ -282,7 +284,7 @@ def main():
     for obs_data in observations:
         obs_id = obs_data.get("observation_id", "unknown")
         expected_images = obs_data.get("images", [])
-        
+
         # Check if images exist on disk
         files = []
         image_paths_for_this_case = []
@@ -306,7 +308,7 @@ def main():
             continue
 
         evaluated_cases += 1
-        
+
         # 1. Create Observation via API
         obs_payload = {
             "title": obs_data.get("title", "Eval Observation"),
@@ -343,7 +345,7 @@ def main():
                 "similarity_metric": trace.get("similarity_metric", ""),
                 "open_set_thresholds": trace.get("open_set_thresholds", ""),
             }
-        
+
         # Audit safety
         safety_audit = audit_safety_response(payload, case_id=obs_id)
         if not safety_audit["passed"]:
@@ -429,7 +431,7 @@ def main():
                 hr_tp += 1
             else:
                 dangerous_case_without_hr += 1
-                
+
             if predicted_risk_level not in ("deadly", "high"):
                 toxic_not_flagged += 1
 
@@ -534,7 +536,7 @@ def main():
     toxic_not_flagged_rate = round(toxic_not_flagged / total_poisonous_or_risky, 4) if total_poisonous_or_risky > 0 else 0.0
     dangerous_case_without_human_review_rate = round(dangerous_case_without_hr / total_dangerous_cases, 4) if total_dangerous_cases > 0 else 0.0
     dangerous_genus_missed_rate = round(dangerous_genus_missed / total_dangerous_genus_cases, 4) if total_dangerous_genus_cases > 0 else 0.0
-    
+
     # Confidences correct/wrong
     correct_confs = [p["confidence"] for p in calibration_preds if p["correct"]]
     wrong_confs = [p["confidence"] for p in calibration_preds if not p["correct"]]
@@ -563,7 +565,7 @@ def main():
     mean_pairwise_similarity_same_genus = 0.0
     mean_pairwise_similarity_different_genus = 0.0
     embedding_separation_details = "not_enough_data"
-    
+
     if len(embedded_vectors_dino) >= 2:
         same_genus_sims = []
         diff_genus_sims = []
@@ -574,7 +576,7 @@ def main():
                     same_genus_sims.append(sim)
                 else:
                     diff_genus_sims.append(sim)
-        
+
         if same_genus_sims:
             mean_pairwise_similarity_same_genus = round(sum(same_genus_sims) / len(same_genus_sims), 4)
         if diff_genus_sims:
@@ -612,7 +614,7 @@ def main():
     split_manifest = {}
     split_manifest_path = os.getenv("PHASE6_SPLIT_MANIFEST", "")
     if split_manifest_path and Path(split_manifest_path).exists():
-        with open(split_manifest_path, "r", encoding="utf-8") as handle:
+        with open(split_manifest_path, encoding="utf-8") as handle:
             split_manifest = json.load(handle)
     phase6_score_rows = [
         result.get("top1_phase6_scores", {})
@@ -669,7 +671,7 @@ def main():
         and split_manifest.get("test_cases", 0) == evaluated_cases
         and phase6_scores_present
     )
-    
+
     # Apply readiness rules
     if all_mock or evaluated_cases < 100 or total_poisonous_or_risky == 0 or toxic_not_flagged_rate > 0.0 or dangerous_case_without_human_review_rate > 0.0 or overconfident_wrong_rate > 0.1:
         readiness_status = "NOT_READY_FOR_PRODUCTION"
@@ -688,30 +690,30 @@ def main():
         "total_cases": total_cases,
         "evaluated_cases": evaluated_cases,
         "skipped_cases": skipped_cases,
-        
+
         "species_top1_accuracy": top1_accuracy,
         "species_top5_accuracy": top5_accuracy,
         "genus_accuracy": genus_accuracy,
         "family_accuracy": family_accuracy,
         "risk_level_accuracy": risk_level_accuracy,
-        
+
         "open_set_rejection_rate": open_set_rejection_rate,
         "human_review_recommendation_rate": human_review_rate,
         "unknown_fungus_rate": unknown_fungus_rate,
-        
+
         "toxic_not_flagged_rate": toxic_not_flagged_rate,
         "dangerous_case_without_human_review_rate": dangerous_case_without_human_review_rate,
         "dangerous_genus_missed_rate": dangerous_genus_missed_rate,
         "overconfident_wrong_rate": overconfident_wrong_rate,
-        
+
         "open_set_true_positive_rate": open_set_true_positive_rate,
         "open_set_false_positive_rate": open_set_false_positive_rate,
         "human_review_recall_on_dangerous_cases": human_review_recall_on_dangerous_cases,
-        
+
         "mean_confidence_correct": mean_confidence_correct,
         "mean_confidence_wrong": mean_confidence_wrong,
         "expected_calibration_error": expected_calibration_error,
-        
+
         "false_safe_rate": false_safe_rate,
         "safety_policy_violations": safety_violations_count,
         "average_latency_ms": avg_latency
@@ -752,14 +754,14 @@ def main():
 
     # Generate CSV Confusion Matrices
     reports_dir = output_path.parent
-    
+
     def write_confusion_csv(file_name, data_dict):
         with open(reports_dir / file_name, "w", newline="", encoding="utf-8") as csv_f:
             writer = csv.writer(csv_f)
             writer.writerow(["expected", "predicted", "count"])
             for (exp, pred), cnt in sorted(data_dict.items()):
                 writer.writerow([exp, pred, cnt])
-                
+
     write_confusion_csv("confusion_species.csv", confusion_species)
     write_confusion_csv("confusion_genus.csv", confusion_genus)
     write_confusion_csv("confusion_risk_level.csv", confusion_risk_level)
@@ -794,10 +796,10 @@ def main():
 
     # Write report.md
     md_path = output_path.with_suffix(".md")
-    
+
     md_content = []
     md_content.append("# VisionSetil Real Model Benchmark Report\n")
-    
+
     md_content.append("## Executive Summary\n")
     md_content.append(f"- **Readiness Level:** `{readiness_status}`")
     md_content.append(f"- **Readiness Analysis:** {readiness_reason}")

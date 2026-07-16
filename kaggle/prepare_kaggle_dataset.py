@@ -4,6 +4,7 @@ import shutil
 import sys
 from pathlib import Path
 
+
 def main():
     parser = argparse.ArgumentParser(description="Convert a local dataset to Kaggle format.")
     parser.add_argument("--labels", required=True, help="Path to input local labels JSON.")
@@ -25,7 +26,7 @@ def main():
     output_images_dir = output_dir_path / "images"
     output_images_dir.mkdir(parents=True, exist_ok=True)
 
-    with open(labels_path, "r", encoding="utf-8") as f:
+    with open(labels_path, encoding="utf-8") as f:
         data = json.load(f)
 
     if not isinstance(data, list):
@@ -39,7 +40,7 @@ def main():
     for idx, case in enumerate(data):
         expected_images = case.get("images", [])
         new_images = []
-        
+
         for img_path_str in expected_images:
             # Try to resolve path
             img_path = Path(img_path_str)
@@ -49,7 +50,7 @@ def main():
             candidate2 = images_root_path / img_path
             # Try 3: check if img_path is absolute and exists
             candidate3 = img_path
-            
+
             resolved_img = None
             for cand in [candidate1, candidate2, candidate3]:
                 if cand.exists() and cand.is_file():
@@ -81,7 +82,7 @@ def main():
     # Write a quick README
     readme_path = output_dir_path / "README.md"
     with open(readme_path, "w", encoding="utf-8") as f:
-        f.write(f"""# VisionSetil Kaggle Dataset Export
+        f.write("""# VisionSetil Kaggle Dataset Export
 
 This dataset was exported using `prepare_kaggle_dataset.py` and is formatted for use as a Kaggle Dataset.
 
@@ -97,7 +98,7 @@ This dataset was exported using `prepare_kaggle_dataset.py` and is formatted for
 5. Link this dataset to your Kaggle Notebook to execute the batch benchmark.
 """)
 
-    print(f"Dataset export completed successfully!")
+    print("Dataset export completed successfully!")
     print(f"  - Labels written to: {export_json_path}")
     print(f"  - Images copied to: {output_images_dir} ({copied_images_count} files)")
     if skipped_images_count > 0:

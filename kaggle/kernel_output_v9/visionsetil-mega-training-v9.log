@@ -1,0 +1,376 @@
+[{"stream_name":"stderr","time":6.410809254,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":6.411590796,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":6.411597307,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":6.41160107,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":6.996721583,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":6.996755194,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":6.996760252,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":6.996763909,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":21.025602806,"data":"GPU detected but PyTorch CUDA kernels broken. Reinstalling...\n"}
+,{"stream_name":"stdout","time":49.542911294,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 780.4/780.4 MB 2.4 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":49.748944957,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 780.4/780.4 MB 2.4 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":52.0546018,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.3/7.3 MB 104.2 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":52.257463993,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.3/7.3 MB 104.2 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":52.880344585,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 23.7/23.7 MB 74.0 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":53.082373274,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 23.7/23.7 MB 74.0 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":53.554367391,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 823.6/823.6 kB 51.1 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":53.75636586,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 823.6/823.6 kB 51.1 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":54.277064685,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.1/14.1 MB 99.2 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":54.478880038,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.1/14.1 MB 99.2 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":61.912371236,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 664.8/664.8 MB 2.6 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":62.115059323,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 664.8/664.8 MB 2.6 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":68.834066745,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 410.6/410.6 MB 4.0 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":69.035669055,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 410.6/410.6 MB 4.0 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":72.53810244,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 121.6/121.6 MB 7.0 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":72.7406446,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 121.6/121.6 MB 7.0 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":73.97144053,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 56.5/56.5 MB 35.6 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":74.173540179,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 56.5/56.5 MB 35.6 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":76.917678442,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 124.2/124.2 MB 5.9 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":77.119737797,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 124.2/124.2 MB 5.9 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":79.809861532,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 196.0/196.0 MB 9.6 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":80.016253787,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 196.0/196.0 MB 9.6 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":83.742709906,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 188.7/188.7 MB 5.1 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":83.94481698,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 188.7/188.7 MB 5.1 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":84.873656722,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 99.1/99.1 kB 7.1 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":85.076478665,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 99.1/99.1 kB 7.1 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":88.553601791,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 209.6/209.6 MB 4.1 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":88.755677927,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 209.6/209.6 MB 4.1 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":89.899341188,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.2/6.2 MB 17.4 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":90.101730584,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.2/6.2 MB 17.4 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":186.053467896,"data":"CUDA after reinstall: True\n"}
+,{"stream_name":"stdout","time":186.054370063,"data":"Dependencies installed. CUDA ready: True\n"}
+,{"stream_name":"stdout","time":188.35880293,"data":"PyTorch: 2.5.1+cu121\n"}
+,{"stream_name":"stdout","time":188.392341987,"data":"CUDA available: True\n"}
+,{"stream_name":"stdout","time":188.550516729,"data":"✓ CUDA smoke test PASSED. GPU: Tesla P100-PCIE-16GB\n"}
+,{"stream_name":"stdout","time":188.551414444,"data":"  Memory: 17.1 GB\n"}
+,{"stream_name":"stdout","time":196.31297108,"data":"timm: 1.0.26\n"}
+,{"stream_name":"stdout","time":196.31365427,"data":"[11:01:39] [INFO] Environment ready.\n"}
+,{"stream_name":"stdout","time":196.335955682,"data":"[11:01:39] [INFO]   ✓ Found FungiTastic: /kaggle/input/datasets/picekl/fungitastic\n"}
+,{"stream_name":"stdout","time":196.33862862,"data":"[11:01:39] [INFO]   ✓ Found FungiCLEF: /kaggle/input/datasets/seemshukla/fungiclef\n"}
+,{"stream_name":"stdout","time":196.339809554,"data":"[11:01:39] [INFO] Total datasets detected: 2\n"}
+,{"stream_name":"stdout","time":196.340821226,"data":"[11:01:39] [INFO]   fungitastic: /kaggle/input/datasets/picekl/fungitastic\n"}
+,{"stream_name":"stdout","time":196.341834355,"data":"[11:01:39] [INFO]   fungiclef: /kaggle/input/datasets/seemshukla/fungiclef\n"}
+,{"stream_name":"stdout","time":196.374116004,"data":"[11:01:39] [INFO] Loading dataset 'fungitastic' from /kaggle/input/datasets/picekl/fungitastic...\n"}
+,{"stream_name":"stdout","time":196.375155585,"data":"[11:01:39] [INFO]   Trying direct CSV paths (no filesystem scanning)...\n"}
+,{"stream_name":"stdout","time":196.521825473,"data":"[11:01:40] [INFO]   ✓ CSV found (direct path): /kaggle/input/datasets/picekl/fungitastic/metadata/FungiTastic/FungiTastic-ClosedSet-Val.csv\n"}
+,{"stream_name":"stdout","time":207.314031487,"data":"[11:01:50] [INFO]   Shape: (89659, 32), Columns: ['eventDate', 'year', 'month', 'day', 'habitat', 'countryCode', 'scientificName', 'kingdom', 'phylum', 'class', 'order', 'family', 'genus', 'specificEpithet', 'hasCoordinate']...\n"}
+,{"stream_name":"stdout","time":208.0547054,"data":"[11:01:51] [INFO]   Loaded: 89659 images, 2275 species, 45613 observations\n"}
+,{"stream_name":"stdout","time":208.055779402,"data":"[11:01:51] [INFO] Loading dataset 'fungiclef' from /kaggle/input/datasets/seemshukla/fungiclef...\n"}
+,{"stream_name":"stdout","time":208.056523371,"data":"[11:01:51] [INFO]   Trying direct CSV paths (no filesystem scanning)...\n"}
+,{"stream_name":"stdout","time":208.082328491,"data":"[11:01:51] [INFO]   Direct paths exhausted. Trying 1-level glob...\n"}
+,{"stream_name":"stdout","time":208.11466867,"data":"[11:01:51] [INFO]   WARNING: No valid image CSV found in /kaggle/input/datasets/seemshukla/fungiclef\n"}
+,{"stream_name":"stdout","time":208.115510824,"data":"[11:01:51] [INFO]   No CSV found. Building from image files (1-level glob)...\n"}
+,{"stream_name":"stdout","time":208.125474594,"data":"[11:01:51] [INFO]   Built from files: 0 images\n"}
+,{"stream_name":"stdout","time":208.130004544,"data":"[11:01:51] [INFO]   ⚠️ WARNING: Only 0 species! Trying parent-dir relabel...\n"}
+,{"stream_name":"stdout","time":208.131221486,"data":"[11:01:51] [INFO]   Loaded: 0 images, 0 species, 0 observations\n"}
+,{"stream_name":"stdout","time":208.150699164,"data":"[11:01:51] [INFO] \n"}
+,{"stream_name":"stdout","time":208.150745744,"data":"COMBINED: 89659 images, 2275 species, 45613 observations from 1 DBs\n"}
+,{"stream_name":"stdout","time":208.371057558,"data":"[11:01:51] [INFO] After min-4 filter: 85633 images, 1477 species\n"}
+,{"stream_name":"stdout","time":208.76840306,"data":"[11:01:52] [INFO] After subsampling (top-500 × 8 obs):\n"}
+,{"stream_name":"stdout","time":208.76919875,"data":"[11:01:52] [INFO]   Images: 7585\n"}
+,{"stream_name":"stdout","time":208.770996136,"data":"[11:01:52] [INFO]   Species: 500\n"}
+,{"stream_name":"stdout","time":208.773814789,"data":"[11:01:52] [INFO]   Observations: 4000\n"}
+,{"stream_name":"stdout","time":208.775929606,"data":"[11:01:52] [INFO]   Source DBs: {'fungitastic': 7585}\n"}
+,{"stream_name":"stdout","time":217.508790592,"data":"[11:02:01] [INFO] View type distribution:\n"}
+,{"stream_name":"stdout","time":217.508838801,"data":"view_type\n"}
+,{"stream_name":"stdout","time":217.508844651,"data":"gills      4115\n"}
+,{"stream_name":"stdout","time":217.508849279,"data":"front      2220\n"}
+,{"stream_name":"stdout","time":217.508853704,"data":"habitat     906\n"}
+,{"stream_name":"stdout","time":217.508858168,"data":"detail      344\n"}
+,{"stream_name":"stdout","time":217.546249355,"data":"[11:02:01] [INFO] Valid observations: 4000 | Valid species: 500\n"}
+,{"stream_name":"stdout","time":217.549779382,"data":"[11:02:01] [INFO]   Large classes (\u003e=4 obs): 500 species, 4000 obs\n"}
+,{"stream_name":"stdout","time":217.550632427,"data":"[11:02:01] [INFO]   Small classes (2-3 obs): 0 species, 0 obs\n"}
+,{"stream_name":"stdout","time":217.583944589,"data":"[11:02:01] [INFO] Split: train=2800 obs (5346 imgs) | val=600 obs (1160 imgs) | test=600 obs (1079 imgs)\n"}
+,{"stream_name":"stdout","time":219.073944916,"data":"[11:02:02] [INFO] Observations: train=2800 | val=600 | test=600\n"}
+,{"stream_name":"stdout","time":219.07592934,"data":"[11:02:02] [INFO] Classes: 500\n"}
+,{"stream_name":"stdout","time":219.1181446,"data":"[11:02:02] [INFO] MultiViewDataset + collate_fn defined.\n"}
+,{"stream_name":"stdout","time":219.139718491,"data":"[11:02:02] [INFO] VectorizedLoRA defined.\n"}
+,{"stream_name":"stdout","time":219.164376458,"data":"[11:02:02] [INFO] ViewConditionedBackbone defined.\n"}
+,{"stream_name":"stdout","time":219.185332946,"data":"[11:02:02] [INFO] MetadataEncoder defined.\n"}
+,{"stream_name":"stdout","time":219.212619608,"data":"[11:02:02] [INFO] AttentionFusion defined.\n"}
+,{"stream_name":"stdout","time":219.236578954,"data":"[11:02:02] [INFO] ArcFaceHead, CenterLoss, TemperatureScaler defined.\n"}
+,{"stream_name":"stdout","time":219.260219305,"data":"[11:02:02] [INFO] MultiViewModel defined.\n"}
+,{"stream_name":"stdout","time":219.28530169,"data":"[11:02:02] [INFO] Metadata vocab sizes: {'habitat': 33, 'substrate': 28, 'smell': 2, 'country': 2}\n"}
+,{"stream_name":"stdout","time":219.28668068,"data":"[11:02:02] [INFO] Testing model forward pass...\n"}
+,{"stream_name":"stdout","time":227.157561154,"data":"[11:02:10] [INFO]   Forward OK | logits: torch.Size([4, 100]) | emb: torch.Size([4, 288]) | params: 28.8M\n"}
+,{"stream_name":"stdout","time":227.199329094,"data":"[11:02:10] [INFO] Deadly species in dataset: 4\n"}
+,{"stream_name":"stdout","time":227.203761123,"data":"[11:02:10] [INFO] Config: backbone=convnextv2_tiny.fcmae_ft_in22k_in1k, epochs=8, batch=16\n"}
+,{"stream_name":"stderr","time":227.981487288,"data":"Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n"}
+,{"stream_name":"stderr","time":227.982489745,"data":"\n"}
+,{"stream_name":"stderr","time":227.98251396,"data":"Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n"}
+,{"stream_name":"stdout","time":228.102720443,"data":"[11:02:11] [INFO] Model parameters: 31.1M\n"}
+,{"stream_name":"stdout","time":228.140845129,"data":"[11:02:11] [INFO] Optimizer + AMP + SWA ready.\n"}
+,{"stream_name":"stdout","time":228.184691052,"data":"[11:02:11] [INFO] Ep0: Backbone FROZEN (warmup)\n"}
+,{"stream_name":"stdout","time":228.186658253,"data":"[11:02:11] [INFO]   Loaders: 175 train batches, 38 val batches\n"}
+,{"stream_name":"stdout","time":228.187633233,"data":"[11:02:11] [INFO] ============================================================\n"}
+,{"stream_name":"stdout","time":228.188801401,"data":"[11:02:11] [INFO] EPOCH 0/7\n"}
+,{"stream_name":"stdout","time":228.189788089,"data":"[11:02:11] [INFO] ============================================================\n"}
+,{"stream_name":"stdout","time":229.580927561,"data":"[11:02:13] [INFO]   Ep0 B0/175 | loss=28.5503 | 1s | ETA 4.0min\n"}
+,{"stream_name":"stdout","time":231.45417536,"data":"[11:02:14] [INFO]   Ep0 B10/175 | loss=14.2005 | 3s | ETA 0.8min\n"}
+,{"stream_name":"stdout","time":233.168348599,"data":"[11:02:16] [INFO]   Ep0 B20/175 | loss=25.8519 | 5s | ETA 0.6min\n"}
+,{"stream_name":"stdout","time":234.953950432,"data":"[11:02:18] [INFO]   Ep0 B30/175 | loss=26.2700 | 7s | ETA 0.5min\n"}
+,{"stream_name":"stdout","time":236.786941337,"data":"[11:02:20] [INFO]   Ep0 B40/175 | loss=25.8930 | 9s | ETA 0.5min\n"}
+,{"stream_name":"stdout","time":238.41954634,"data":"[11:02:21] [INFO]   Ep0 B50/175 | loss=13.4135 | 10s | ETA 0.4min\n"}
+,{"stream_name":"stdout","time":240.084272519,"data":"[11:02:23] [INFO]   Ep0 B60/175 | loss=26.2173 | 12s | ETA 0.4min\n"}
+,{"stream_name":"stdout","time":241.758710814,"data":"[11:02:25] [INFO]   Ep0 B70/175 | loss=12.9733 | 14s | ETA 0.3min\n"}
+,{"stream_name":"stdout","time":243.474847168,"data":"[11:02:26] [INFO]   Ep0 B80/175 | loss=25.9037 | 15s | ETA 0.3min\n"}
+,{"stream_name":"stdout","time":245.193112573,"data":"[11:02:28] [INFO]   Ep0 B90/175 | loss=12.8324 | 17s | ETA 0.3min\n"}
+,{"stream_name":"stdout","time":246.753540199,"data":"[11:02:30] [INFO]   Ep0 B100/175 | loss=12.9171 | 19s | ETA 0.2min\n"}
+,{"stream_name":"stdout","time":248.495138444,"data":"[11:02:31] [INFO]   Ep0 B110/175 | loss=25.8456 | 20s | ETA 0.2min\n"}
+,{"stream_name":"stdout","time":250.048342931,"data":"[11:02:33] [INFO]   Ep0 B120/175 | loss=25.6305 | 22s | ETA 0.2min\n"}
+,{"stream_name":"stdout","time":251.765861569,"data":"[11:02:35] [INFO]   Ep0 B130/175 | loss=12.1932 | 24s | ETA 0.1min\n"}
+,{"stream_name":"stdout","time":253.488574337,"data":"[11:02:36] [INFO]   Ep0 B140/175 | loss=13.0890 | 25s | ETA 0.1min\n"}
+,{"stream_name":"stdout","time":255.19933891,"data":"[11:02:38] [INFO]   Ep0 B150/175 | loss=25.0122 | 27s | ETA 0.1min\n"}
+,{"stream_name":"stdout","time":256.848505354,"data":"[11:02:40] [INFO]   Ep0 B160/175 | loss=12.0503 | 29s | ETA 0.0min\n"}
+,{"stream_name":"stdout","time":258.557775256,"data":"[11:02:42] [INFO]   Ep0 B170/175 | loss=25.5019 | 30s | ETA 0.0min\n"}
+,{"stream_name":"stdout","time":259.237257334,"data":"[11:02:42] [INFO]   Ep0 DONE | avg_loss=19.5188 | time=31s (0.5min)\n"}
+,{"stream_name":"stdout","time":263.523908695,"data":"[11:02:47] [INFO] Ep0 RESULT | loss=19.5188 | acc=0.0083 | map3=0.0133 | f1=0.0030\n"}
+,{"stream_name":"stdout","time":263.677672472,"data":"[11:02:47] [INFO]   ★ New best MAP@3: 0.0133 — saved!\n"}
+,{"stream_name":"stdout","time":263.866585147,"data":"[11:02:47] [INFO] ============================================================\n"}
+,{"stream_name":"stdout","time":263.867833872,"data":"[11:02:47] [INFO] EPOCH 1/7\n"}
+,{"stream_name":"stdout","time":263.869079076,"data":"[11:02:47] [INFO] ============================================================\n"}
+,{"stream_name":"stdout","time":265.427944552,"data":"[11:02:48] [INFO]   Ep1 B0/175 | loss=11.8330 | 2s | ETA 4.5min\n"}
+,{"stream_name":"stdout","time":275.720215339,"data":"[11:02:59] [INFO]   Ep1 B10/175 | loss=11.9948 | 12s | ETA 2.9min\n"}
+,{"stream_name":"stdout","time":285.849555067,"data":"[11:03:09] [INFO]   Ep1 B20/175 | loss=25.2838 | 22s | ETA 2.7min\n"}
+,{"stream_name":"stdout","time":296.100338603,"data":"[11:03:19] [INFO]   Ep1 B30/175 | loss=11.5240 | 32s | ETA 2.5min\n"}
+,{"stream_name":"stdout","time":306.51702335,"data":"[11:03:30] [INFO]   Ep1 B40/175 | loss=24.7966 | 43s | ETA 2.3min\n"}
+,{"stream_name":"stdout","time":316.972701568,"data":"[11:03:40] [INFO]   Ep1 B50/175 | loss=25.0536 | 53s | ETA 2.2min\n"}
+,{"stream_name":"stdout","time":327.308860891,"data":"[11:03:50] [INFO]   Ep1 B60/175 | loss=11.2500 | 63s | ETA 2.0min\n"}
+,{"stream_name":"stdout","time":337.411565609,"data":"[11:04:00] [INFO]   Ep1 B70/175 | loss=24.8922 | 74s | ETA 1.8min\n"}
+,{"stream_name":"stdout","time":347.710645846,"data":"[11:04:11] [INFO]   Ep1 B80/175 | loss=24.7767 | 84s | ETA 1.6min\n"}
+,{"stream_name":"stdout","time":358.086321132,"data":"[11:04:21] [INFO]   Ep1 B90/175 | loss=25.0062 | 94s | ETA 1.4min\n"}
+,{"stream_name":"stdout","time":368.51144809,"data":"[11:04:32] [INFO]   Ep1 B100/175 | loss=11.5324 | 105s | ETA 1.3min\n"}
+,{"stream_name":"stdout","time":378.917034484,"data":"[11:04:42] [INFO]   Ep1 B110/175 | loss=24.9851 | 115s | ETA 1.1min\n"}
+,{"stream_name":"stdout","time":388.927519792,"data":"[11:04:52] [INFO]   Ep1 B120/175 | loss=24.6556 | 125s | ETA 0.9min\n"}
+,{"stream_name":"stdout","time":399.519170844,"data":"[11:05:03] [INFO]   Ep1 B130/175 | loss=11.8571 | 136s | ETA 0.8min\n"}
+,{"stream_name":"stdout","time":410.166564391,"data":"[11:05:13] [INFO]   Ep1 B140/175 | loss=24.5014 | 146s | ETA 0.6min\n"}
+,{"stream_name":"stdout","time":420.793830346,"data":"[11:05:24] [INFO]   Ep1 B150/175 | loss=24.7817 | 157s | ETA 0.4min\n"}
+,{"stream_name":"stdout","time":431.643541323,"data":"[11:05:35] [INFO]   Ep1 B160/175 | loss=24.6422 | 168s | ETA 0.2min\n"}
+,{"stream_name":"stdout","time":442.418293343,"data":"[11:05:45] [INFO]   Ep1 B170/175 | loss=24.0288 | 179s | ETA 0.1min\n"}
+,{"stream_name":"stdout","time":446.380714417,"data":"[11:05:49] [INFO]   Ep1 DONE | avg_loss=18.4562 | time=183s (3.0min)\n"}
+,{"stream_name":"stdout","time":450.691046786,"data":"[11:05:54] [INFO] Ep1 RESULT | loss=18.4562 | acc=0.0200 | map3=0.0311 | f1=0.0075\n"}
+,{"stream_name":"stdout","time":450.974316073,"data":"[11:05:54] [INFO]   ★ New best MAP@3: 0.0311 — saved!\n"}
+,{"stream_name":"stdout","time":451.642101755,"data":"[11:05:55] [INFO] ============================================================\n"}
+,{"stream_name":"stdout","time":451.643220137,"data":"[11:05:55] [INFO] EPOCH 2/7\n"}
+,{"stream_name":"stdout","time":451.644166244,"data":"[11:05:55] [INFO] ============================================================\n"}
+,{"stream_name":"stdout","time":453.340025851,"data":"[11:05:56] [INFO]   Ep2 B0/175 | loss=24.0900 | 2s | ETA 4.9min\n"}
+,{"stream_name":"stdout","time":463.580984675,"data":"[11:06:07] [INFO]   Ep2 B10/175 | loss=24.3333 | 12s | ETA 3.0min\n"}
+,{"stream_name":"stdout","time":473.746371332,"data":"[11:06:17] [INFO]   Ep2 B20/175 | loss=24.0281 | 22s | ETA 2.7min\n"}
+,{"stream_name":"stdout","time":484.024973318,"data":"[11:06:27] [INFO]   Ep2 B30/175 | loss=24.4371 | 32s | ETA 2.5min\n"}
+,{"stream_name":"stdout","time":494.902765913,"data":"[11:06:38] [INFO]   Ep2 B40/175 | loss=24.4229 | 43s | ETA 2.4min\n"}
+,{"stream_name":"stdout","time":505.375850939,"data":"[11:06:48] [INFO]   Ep2 B50/175 | loss=10.9456 | 54s | ETA 2.2min\n"}
+,{"stream_name":"stdout","time":516.111738881,"data":"[11:06:59] [INFO]   Ep2 B60/175 | loss=24.2870 | 64s | ETA 2.0min\n"}
+,{"stream_name":"stdout","time":526.465908136,"data":"[11:07:09] [INFO]   Ep2 B70/175 | loss=11.2290 | 75s | ETA 1.8min\n"}
+,{"stream_name":"stdout","time":536.678269637,"data":"[11:07:20] [INFO]   Ep2 B80/175 | loss=11.4059 | 85s | ETA 1.6min\n"}
+,{"stream_name":"stdout","time":546.918042111,"data":"[11:07:30] [INFO]   Ep2 B90/175 | loss=24.2142 | 95s | ETA 1.5min\n"}
+,{"stream_name":"stdout","time":557.530989292,"data":"[11:07:41] [INFO]   Ep2 B100/175 | loss=23.8675 | 106s | ETA 1.3min\n"}
+,{"stream_name":"stdout","time":568.040471489,"data":"[11:07:51] [INFO]   Ep2 B110/175 | loss=11.4240 | 116s | ETA 1.1min\n"}
+,{"stream_name":"stdout","time":578.708003766,"data":"[11:08:02] [INFO]   Ep2 B120/175 | loss=11.0348 | 127s | ETA 0.9min\n"}
+,{"stream_name":"stdout","time":589.321277969,"data":"[11:08:12] [INFO]   Ep2 B130/175 | loss=10.4954 | 138s | ETA 0.8min\n"}
+,{"stream_name":"stdout","time":599.487301859,"data":"[11:08:22] [INFO]   Ep2 B140/175 | loss=11.6629 | 148s | ETA 0.6min\n"}
+,{"stream_name":"stdout","time":609.667493341,"data":"[11:08:33] [INFO]   Ep2 B150/175 | loss=24.6598 | 158s | ETA 0.4min\n"}
+,{"stream_name":"stdout","time":620.040806045,"data":"[11:08:43] [INFO]   Ep2 B160/175 | loss=10.9791 | 168s | ETA 0.2min\n"}
+,{"stream_name":"stdout","time":630.314020537,"data":"[11:08:53] [INFO]   Ep2 B170/175 | loss=23.6627 | 179s | ETA 0.1min\n"}
+,{"stream_name":"stdout","time":634.426287943,"data":"[11:08:57] [INFO]   Ep2 DONE | avg_loss=17.4936 | time=183s (3.0min)\n"}
+,{"stream_name":"stdout","time":638.671089105,"data":"[11:09:02] [INFO] Ep2 RESULT | loss=17.4936 | acc=0.0350 | map3=0.0528 | f1=0.0200\n"}
+,{"stream_name":"stdout","time":638.937712273,"data":"[11:09:02] [INFO]   ★ New best MAP@3: 0.0528 — saved!\n"}
+,{"stream_name":"stdout","time":639.684040569,"data":"[11:09:03] [INFO] ============================================================\n"}
+,{"stream_name":"stdout","time":639.684977405,"data":"[11:09:03] [INFO] EPOCH 3/7\n"}
+,{"stream_name":"stdout","time":639.685741624,"data":"[11:09:03] [INFO] ============================================================\n"}
+,{"stream_name":"stdout","time":641.211212926,"data":"[11:09:04] [INFO]   Ep3 B0/175 | loss=23.4277 | 2s | ETA 4.4min\n"}
+,{"stream_name":"stdout","time":651.817479435,"data":"[11:09:15] [INFO]   Ep3 B10/175 | loss=23.1863 | 12s | ETA 3.0min\n"}
+,{"stream_name":"stdout","time":662.141110335,"data":"[11:09:25] [INFO]   Ep3 B20/175 | loss=23.8445 | 22s | ETA 2.7min\n"}
+,{"stream_name":"stdout","time":672.499560518,"data":"[11:09:35] [INFO]   Ep3 B30/175 | loss=23.4368 | 33s | ETA 2.5min\n"}
+,{"stream_name":"stdout","time":682.819253089,"data":"[11:09:46] [INFO]   Ep3 B40/175 | loss=24.0263 | 43s | ETA 2.4min\n"}
+,{"stream_name":"stdout","time":693.07155218,"data":"[11:09:56] [INFO]   Ep3 B50/175 | loss=24.2050 | 53s | ETA 2.2min\n"}
+,{"stream_name":"stdout","time":703.206125217,"data":"[11:10:06] [INFO]   Ep3 B60/175 | loss=10.8237 | 64s | ETA 2.0min\n"}
+,{"stream_name":"stdout","time":713.184311873,"data":"[11:10:16] [INFO]   Ep3 B70/175 | loss=23.9426 | 74s | ETA 1.8min\n"}
+,{"stream_name":"stdout","time":723.753975417,"data":"[11:10:27] [INFO]   Ep3 B80/175 | loss=24.0741 | 84s | ETA 1.6min\n"}
+,{"stream_name":"stdout","time":734.085976243,"data":"[11:10:37] [INFO]   Ep3 B90/175 | loss=10.3382 | 94s | ETA 1.5min\n"}
+,{"stream_name":"stdout","time":744.88344799,"data":"[11:10:48] [INFO]   Ep3 B100/175 | loss=23.6865 | 105s | ETA 1.3min\n"}
+,{"stream_name":"stdout","time":755.341481974,"data":"[11:10:58] [INFO]   Ep3 B110/175 | loss=11.0922 | 116s | ETA 1.1min\n"}
+,{"stream_name":"stdout","time":765.726514888,"data":"[11:11:09] [INFO]   Ep3 B120/175 | loss=10.8150 | 126s | ETA 0.9min\n"}
+,{"stream_name":"stdout","time":775.934274522,"data":"[11:11:19] [INFO]   Ep3 B130/175 | loss=10.7637 | 136s | ETA 0.8min\n"}
+,{"stream_name":"stdout","time":786.248266212,"data":"[11:11:29] [INFO]   Ep3 B140/175 | loss=23.7601 | 147s | ETA 0.6min\n"}
+,{"stream_name":"stdout","time":796.774717815,"data":"[11:11:40] [INFO]   Ep3 B150/175 | loss=23.7360 | 157s | ETA 0.4min\n"}
+,{"stream_name":"stdout","time":807.377956725,"data":"[11:11:50] [INFO]   Ep3 B160/175 | loss=10.7326 | 168s | ETA 0.2min\n"}
+,{"stream_name":"stdout","time":817.745975977,"data":"[11:12:01] [INFO]   Ep3 B170/175 | loss=24.2384 | 178s | ETA 0.1min\n"}
+,{"stream_name":"stdout","time":822.313940912,"data":"[11:12:05] [INFO]   Ep3 DONE | avg_loss=17.4101 | time=183s (3.0min)\n"}
+,{"stream_name":"stdout","time":826.606408881,"data":"[11:12:10] [INFO] Ep3 RESULT | loss=17.4101 | acc=0.0300 | map3=0.0481 | f1=0.0187\n"}
+,{"stream_name":"stdout","time":826.606452607,"data":"[11:12:10] [INFO]   No improvement for 1 epoch(s).\n"}
+,{"stream_name":"stdout","time":827.376680186,"data":"[11:12:10] [INFO] ============================================================\n"}
+,{"stream_name":"stdout","time":827.377558137,"data":"[11:12:10] [INFO] EPOCH 4/7\n"}
+,{"stream_name":"stdout","time":827.378333141,"data":"[11:12:10] [INFO] ============================================================\n"}
+,{"stream_name":"stdout","time":828.924217927,"data":"[11:12:12] [INFO]   Ep4 B0/175 | loss=23.5815 | 2s | ETA 4.5min\n"}
+,{"stream_name":"stdout","time":839.434655234,"data":"[11:12:22] [INFO]   Ep4 B10/175 | loss=23.5387 | 12s | ETA 3.0min\n"}
+,{"stream_name":"stdout","time":849.9520206,"data":"[11:12:33] [INFO]   Ep4 B20/175 | loss=10.5701 | 23s | ETA 2.8min\n"}
+,{"stream_name":"stdout","time":860.425829857,"data":"[11:12:43] [INFO]   Ep4 B30/175 | loss=10.0275 | 33s | ETA 2.6min\n"}
+,{"stream_name":"stdout","time":871.213559043,"data":"[11:12:54] [INFO]   Ep4 B40/175 | loss=23.2497 | 44s | ETA 2.4min\n"}
+,{"stream_name":"stdout","time":881.313776254,"data":"[11:13:04] [INFO]   Ep4 B50/175 | loss=10.4501 | 54s | ETA 2.2min\n"}
+,{"stream_name":"stdout","time":891.59298602,"data":"[11:13:15] [INFO]   Ep4 B60/175 | loss=23.8285 | 64s | ETA 2.0min\n"}
+,{"stream_name":"stdout","time":902.082951215,"data":"[11:13:25] [INFO]   Ep4 B70/175 | loss=23.8201 | 75s | ETA 1.8min\n"}
+,{"stream_name":"stdout","time":912.400342696,"data":"[11:13:35] [INFO]   Ep4 B80/175 | loss=23.7279 | 85s | ETA 1.6min\n"}
+,{"stream_name":"stdout","time":923.089240159,"data":"[11:13:46] [INFO]   Ep4 B90/175 | loss=23.5070 | 96s | ETA 1.5min\n"}
+,{"stream_name":"stdout","time":933.352970119,"data":"[11:13:56] [INFO]   Ep4 B100/175 | loss=10.3007 | 106s | ETA 1.3min\n"}
+,{"stream_name":"stdout","time":943.562849064,"data":"[11:14:07] [INFO]   Ep4 B110/175 | loss=10.8365 | 116s | ETA 1.1min\n"}
+,{"stream_name":"stdout","time":953.808601445,"data":"[11:14:17] [INFO]   Ep4 B120/175 | loss=24.3173 | 126s | ETA 0.9min\n"}
+,{"stream_name":"stdout","time":963.989022483,"data":"[11:14:27] [INFO]   Ep4 B130/175 | loss=23.7773 | 137s | ETA 0.8min\n"}
+,{"stream_name":"stdout","time":974.2303427,"data":"[11:14:37] [INFO]   Ep4 B140/175 | loss=10.5489 | 147s | ETA 0.6min\n"}
+,{"stream_name":"stdout","time":984.767901082,"data":"[11:14:48] [INFO]   Ep4 B150/175 | loss=23.4120 | 157s | ETA 0.4min\n"}
+,{"stream_name":"stdout","time":995.484772613,"data":"[11:14:58] [INFO]   Ep4 B160/175 | loss=23.6241 | 168s | ETA 0.2min\n"}
+,{"stream_name":"stdout","time":1005.853228091,"data":"[11:15:09] [INFO]   Ep4 B170/175 | loss=23.5965 | 178s | ETA 0.1min\n"}
+,{"stream_name":"stdout","time":1010.003177242,"data":"[11:15:13] [INFO]   Ep4 DONE | avg_loss=17.9616 | time=183s (3.0min)\n"}
+,{"stream_name":"stdout","time":1014.347283035,"data":"[11:15:17] [INFO] Ep4 RESULT | loss=17.9616 | acc=0.0317 | map3=0.0539 | f1=0.0162\n"}
+,{"stream_name":"stdout","time":1014.627156768,"data":"[11:15:18] [INFO]   ★ New best MAP@3: 0.0539 — saved!\n"}
+,{"stream_name":"stdout","time":1015.413785654,"data":"[11:15:18] [INFO] ============================================================\n"}
+,{"stream_name":"stdout","time":1015.414704875,"data":"[11:15:18] [INFO] EPOCH 5/7\n"}
+,{"stream_name":"stdout","time":1015.415464091,"data":"[11:15:18] [INFO] ============================================================\n"}
+,{"stream_name":"stdout","time":1017.080466166,"data":"[11:15:20] [INFO]   Ep5 B0/175 | loss=22.6850 | 2s | ETA 4.9min\n"}
+,{"stream_name":"stdout","time":1027.390398603,"data":"[11:15:30] [INFO]   Ep5 B10/175 | loss=23.5528 | 12s | ETA 3.0min\n"}
+,{"stream_name":"stdout","time":1037.999947953,"data":"[11:15:41] [INFO]   Ep5 B20/175 | loss=10.2755 | 23s | ETA 2.8min\n"}
+,{"stream_name":"stdout","time":1048.361815751,"data":"[11:15:51] [INFO]   Ep5 B30/175 | loss=23.0610 | 33s | ETA 2.6min\n"}
+,{"stream_name":"stdout","time":1058.440788787,"data":"[11:16:01] [INFO]   Ep5 B40/175 | loss=10.4612 | 43s | ETA 2.3min\n"}
+,{"stream_name":"stdout","time":1068.665849889,"data":"[11:16:12] [INFO]   Ep5 B50/175 | loss=10.3020 | 53s | ETA 2.2min\n"}
+,{"stream_name":"stdout","time":1079.191634169,"data":"[11:16:22] [INFO]   Ep5 B60/175 | loss=23.5716 | 64s | ETA 2.0min\n"}
+,{"stream_name":"stdout","time":1089.534566667,"data":"[11:16:33] [INFO]   Ep5 B70/175 | loss=9.9646 | 74s | ETA 1.8min\n"}
+,{"stream_name":"stdout","time":1100.292295112,"data":"[11:16:43] [INFO]   Ep5 B80/175 | loss=23.1883 | 85s | ETA 1.6min\n"}
+,{"stream_name":"stdout","time":1110.337786687,"data":"[11:16:53] [INFO]   Ep5 B90/175 | loss=10.2286 | 95s | ETA 1.5min\n"}
+,{"stream_name":"stdout","time":1120.928951238,"data":"[11:17:04] [INFO]   Ep5 B100/175 | loss=10.6621 | 106s | ETA 1.3min\n"}
+,{"stream_name":"stdout","time":1131.219530764,"data":"[11:17:14] [INFO]   Ep5 B110/175 | loss=23.1222 | 116s | ETA 1.1min\n"}
+,{"stream_name":"stdout","time":1141.680195387,"data":"[11:17:25] [INFO]   Ep5 B120/175 | loss=10.3642 | 126s | ETA 0.9min\n"}
+,{"stream_name":"stdout","time":1152.051088587,"data":"[11:17:35] [INFO]   Ep5 B130/175 | loss=9.9847 | 137s | ETA 0.8min\n"}
+,{"stream_name":"stdout","time":1162.391953874,"data":"[11:17:45] [INFO]   Ep5 B140/175 | loss=10.6673 | 147s | ETA 0.6min\n"}
+,{"stream_name":"stdout","time":1172.776736292,"data":"[11:17:56] [INFO]   Ep5 B150/175 | loss=22.8147 | 157s | ETA 0.4min\n"}
+,{"stream_name":"stdout","time":1183.456739426,"data":"[11:18:06] [INFO]   Ep5 B160/175 | loss=23.6206 | 168s | ETA 0.2min\n"}
+,{"stream_name":"stdout","time":1193.972609993,"data":"[11:18:17] [INFO]   Ep5 B170/175 | loss=23.6268 | 179s | ETA 0.1min\n"}
+,{"stream_name":"stdout","time":1198.161347443,"data":"[11:18:21] [INFO]   Ep5 DONE | avg_loss=17.0103 | time=183s (3.0min)\n"}
+,{"stream_name":"stdout","time":1202.458470702,"data":"[11:18:25] [INFO] Ep5 RESULT | loss=17.0103 | acc=0.0300 | map3=0.0500 | f1=0.0195\n"}
+,{"stream_name":"stdout","time":1202.460944031,"data":"[11:18:25] [INFO]   No improvement for 1 epoch(s).\n"}
+,{"stream_name":"stdout","time":1203.270911452,"data":"[11:18:26] [INFO] ============================================================\n"}
+,{"stream_name":"stdout","time":1203.271760704,"data":"[11:18:26] [INFO] EPOCH 6/7\n"}
+,{"stream_name":"stdout","time":1203.272513772,"data":"[11:18:26] [INFO] ============================================================\n"}
+,{"stream_name":"stdout","time":1204.602954272,"data":"[11:18:28] [INFO]   Ep6 B0/175 | loss=22.5925 | 1s | ETA 3.9min\n"}
+,{"stream_name":"stdout","time":1214.992282401,"data":"[11:18:38] [INFO]   Ep6 B10/175 | loss=22.8190 | 12s | ETA 2.9min\n"}
+,{"stream_name":"stdout","time":1225.295988928,"data":"[11:18:48] [INFO]   Ep6 B20/175 | loss=22.7581 | 22s | ETA 2.7min\n"}
+,{"stream_name":"stdout","time":1235.795069769,"data":"[11:18:59] [INFO]   Ep6 B30/175 | loss=9.7308 | 33s | ETA 2.5min\n"}
+,{"stream_name":"stdout","time":1245.894364641,"data":"[11:19:09] [INFO]   Ep6 B40/175 | loss=23.0460 | 43s | ETA 2.3min\n"}
+,{"stream_name":"stdout","time":1255.595435819,"data":"[11:19:19] [INFO]   Ep6 B50/175 | loss=10.0070 | 52s | ETA 2.1min\n"}
+,{"stream_name":"stdout","time":1265.98932849,"data":"[11:19:29] [INFO]   Ep6 B60/175 | loss=23.1977 | 63s | ETA 2.0min\n"}
+,{"stream_name":"stdout","time":1276.302993342,"data":"[11:19:39] [INFO]   Ep6 B70/175 | loss=23.5812 | 73s | ETA 1.8min\n"}
+,{"stream_name":"stdout","time":1286.733340751,"data":"[11:19:50] [INFO]   Ep6 B80/175 | loss=22.7896 | 83s | ETA 1.6min\n"}
+,{"stream_name":"stdout","time":1297.034015549,"data":"[11:20:00] [INFO]   Ep6 B90/175 | loss=22.9497 | 94s | ETA 1.4min\n"}
+,{"stream_name":"stdout","time":1307.40153732,"data":"[11:20:10] [INFO]   Ep6 B100/175 | loss=10.0358 | 104s | ETA 1.3min\n"}
+,{"stream_name":"stdout","time":1317.85206279,"data":"[11:20:21] [INFO]   Ep6 B110/175 | loss=10.3450 | 115s | ETA 1.1min\n"}
+,{"stream_name":"stdout","time":1328.463248612,"data":"[11:20:31] [INFO]   Ep6 B120/175 | loss=10.1568 | 125s | ETA 0.9min\n"}
+,{"stream_name":"stdout","time":1339.448685094,"data":"[11:20:42] [INFO]   Ep6 B130/175 | loss=22.7059 | 136s | ETA 0.8min\n"}
+,{"stream_name":"stdout","time":1350.093897665,"data":"[11:20:53] [INFO]   Ep6 B140/175 | loss=22.6772 | 147s | ETA 0.6min\n"}
+,{"stream_name":"stdout","time":1360.70540337,"data":"[11:21:04] [INFO]   Ep6 B150/175 | loss=23.3232 | 157s | ETA 0.4min\n"}
+,{"stream_name":"stdout","time":1370.862659151,"data":"[11:21:14] [INFO]   Ep6 B160/175 | loss=10.1431 | 168s | ETA 0.2min\n"}
+,{"stream_name":"stdout","time":1381.455446413,"data":"[11:21:24] [INFO]   Ep6 B170/175 | loss=23.0997 | 178s | ETA 0.1min\n"}
+,{"stream_name":"stdout","time":1385.673233226,"data":"[11:21:29] [INFO]   Ep6 DONE | avg_loss=16.5869 | time=182s (3.0min)\n"}
+,{"stream_name":"stdout","time":1389.924540517,"data":"[11:21:33] [INFO] Ep6 RESULT | loss=16.5869 | acc=0.0433 | map3=0.0658 | f1=0.0233\n"}
+,{"stream_name":"stdout","time":1390.200583804,"data":"[11:21:33] [INFO]   ★ New best MAP@3: 0.0658 — saved!\n"}
+,{"stream_name":"stdout","time":1390.964475115,"data":"[11:21:34] [INFO] ============================================================\n"}
+,{"stream_name":"stdout","time":1390.965586066,"data":"[11:21:34] [INFO] EPOCH 7/7\n"}
+,{"stream_name":"stdout","time":1390.966468791,"data":"[11:21:34] [INFO] ============================================================\n"}
+,{"stream_name":"stdout","time":1392.374954042,"data":"[11:21:35] [INFO]   Ep7 B0/175 | loss=9.2631 | 1s | ETA 4.1min\n"}
+,{"stream_name":"stdout","time":1403.236977817,"data":"[11:21:46] [INFO]   Ep7 B10/175 | loss=10.0994 | 12s | ETA 3.1min\n"}
+,{"stream_name":"stdout","time":1413.854060088,"data":"[11:21:57] [INFO]   Ep7 B20/175 | loss=22.6486 | 23s | ETA 2.8min\n"}
+,{"stream_name":"stdout","time":1424.435208299,"data":"[11:22:07] [INFO]   Ep7 B30/175 | loss=10.1919 | 33s | ETA 2.6min\n"}
+,{"stream_name":"stdout","time":1434.63495548,"data":"[11:22:18] [INFO]   Ep7 B40/175 | loss=22.7461 | 44s | ETA 2.4min\n"}
+,{"stream_name":"stdout","time":1444.768514534,"data":"[11:22:28] [INFO]   Ep7 B50/175 | loss=9.6551 | 54s | ETA 2.2min\n"}
+,{"stream_name":"stdout","time":1454.78105205,"data":"[11:22:38] [INFO]   Ep7 B60/175 | loss=23.2357 | 64s | ETA 2.0min\n"}
+,{"stream_name":"stdout","time":1465.159520346,"data":"[11:22:48] [INFO]   Ep7 B70/175 | loss=23.2317 | 74s | ETA 1.8min\n"}
+,{"stream_name":"stdout","time":1475.304579534,"data":"[11:22:58] [INFO]   Ep7 B80/175 | loss=23.4355 | 84s | ETA 1.6min\n"}
+,{"stream_name":"stdout","time":1485.622585985,"data":"[11:23:09] [INFO]   Ep7 B90/175 | loss=9.7774 | 95s | ETA 1.5min\n"}
+,{"stream_name":"stdout","time":1495.79294112,"data":"[11:23:19] [INFO]   Ep7 B100/175 | loss=10.0425 | 105s | ETA 1.3min\n"}
+,{"stream_name":"stdout","time":1506.267538536,"data":"[11:23:29] [INFO]   Ep7 B110/175 | loss=10.1562 | 115s | ETA 1.1min\n"}
+,{"stream_name":"stdout","time":1516.520589155,"data":"[11:23:40] [INFO]   Ep7 B120/175 | loss=9.8735 | 126s | ETA 0.9min\n"}
+,{"stream_name":"stdout","time":1527.241481455,"data":"[11:23:50] [INFO]   Ep7 B130/175 | loss=10.1294 | 136s | ETA 0.8min\n"}
+,{"stream_name":"stdout","time":1537.516617264,"data":"[11:24:01] [INFO]   Ep7 B140/175 | loss=10.1456 | 147s | ETA 0.6min\n"}
+,{"stream_name":"stdout","time":1547.966341301,"data":"[11:24:11] [INFO]   Ep7 B150/175 | loss=23.6264 | 157s | ETA 0.4min\n"}
+,{"stream_name":"stdout","time":1559.035330327,"data":"[11:24:22] [INFO]   Ep7 B160/175 | loss=10.3971 | 168s | ETA 0.2min\n"}
+,{"stream_name":"stdout","time":1569.186332711,"data":"[11:24:32] [INFO]   Ep7 B170/175 | loss=22.6000 | 178s | ETA 0.1min\n"}
+,{"stream_name":"stdout","time":1573.453871934,"data":"[11:24:36] [INFO]   Ep7 DONE | avg_loss=16.2838 | time=183s (3.0min)\n"}
+,{"stream_name":"stdout","time":1577.765337622,"data":"[11:24:41] [INFO] Ep7 RESULT | loss=16.2838 | acc=0.0350 | map3=0.0542 | f1=0.0198\n"}
+,{"stream_name":"stdout","time":1577.766216307,"data":"[11:24:41] [INFO]   No improvement for 1 epoch(s).\n"}
+,{"stream_name":"stdout","time":1578.556303034,"data":"[11:24:42] [INFO] \n"}
+,{"stream_name":"stdout","time":1578.556335325,"data":"TRAINING COMPLETE! Best MAP@3: 0.0658 @ epoch 6\n"}
+,{"stream_name":"stdout","time":1578.594311585,"data":"[11:24:42] [INFO] Updating SWA BatchNorm...\n"}
+,{"stream_name":"stdout","time":1578.754738975,"data":"[11:24:42] [INFO] SWA model saved.\n"}
+,{"stream_name":"stdout","time":1578.755717558,"data":"[11:24:42] [INFO] Calibrating temperature...\n"}
+,{"stream_name":"stdout","time":1583.314445338,"data":"[11:24:46] [INFO] Learned temperature: 1.1202\n"}
+,{"stream_name":"stdout","time":1583.366044354,"data":"[11:24:46] [INFO] ============================================================\n"}
+,{"stream_name":"stdout","time":1583.367658779,"data":"[11:24:46] [INFO] FINAL TEST EVALUATION\n"}
+,{"stream_name":"stdout","time":1583.37093115,"data":"[11:24:46] [INFO] ============================================================\n"}
+,{"stream_name":"stdout","time":1588.299637498,"data":"[11:24:51] [INFO]   Accuracy:       0.0500\n"}
+,{"stream_name":"stdout","time":1588.30061038,"data":"[11:24:51] [INFO]   MAP@3:          0.0758\n"}
+,{"stream_name":"stdout","time":1588.301398777,"data":"[11:24:51] [INFO]   Macro-F1:       0.0294\n"}
+,{"stream_name":"stdout","time":1588.302269815,"data":"[11:24:51] [INFO]   Balanced Acc:   0.0490\n"}
+,{"stream_name":"stdout","time":1588.303080419,"data":"[11:24:51] [INFO]   ECE:            0.1106\n"}
+,{"stream_name":"stdout","time":1588.304905175,"data":"[11:24:51] [INFO]   🔴 DEADLY species in test: 5\n"}
+,{"stream_name":"stdout","time":1588.305847132,"data":"[11:24:51] [INFO]   🔴 Safety Recall Deadly: 0.0000\n"}
+,{"stream_name":"stdout","time":1588.306743761,"data":"[11:24:51] [INFO] Computing IC 95%...\n"}
+,{"stream_name":"stdout","time":1594.829731039,"data":"[11:24:58] [INFO]   MAP@3 95% CI:   [0.0589, 0.0944]\n"}
+,{"stream_name":"stdout","time":1594.830601699,"data":"[11:24:58] [INFO] \n"}
+,{"stream_name":"stdout","time":1594.83062962,"data":"Per-species accuracy (worst 20):\n"}
+,{"stream_name":"stdout","time":1594.835918973,"data":"[11:24:58] [INFO]      Stereum hirsutum                        : 0.00\n"}
+,{"stream_name":"stdout","time":1594.836668309,"data":"[11:24:58] [INFO]      Auricularia auricula-judae              : 0.00\n"}
+,{"stream_name":"stdout","time":1594.837697345,"data":"[11:24:58] [INFO]      Ischnoderma benzoinum                   : 0.00\n"}
+,{"stream_name":"stdout","time":1594.838918503,"data":"[11:24:58] [INFO]      Phlyctis argena                         : 0.00\n"}
+,{"stream_name":"stdout","time":1594.84010454,"data":"[11:24:58] [INFO]      Hypogymnia physodes                     : 0.00\n"}
+,{"stream_name":"stdout","time":1594.841378465,"data":"[11:24:58] [INFO]      Tulostoma brumale                       : 0.00\n"}
+,{"stream_name":"stdout","time":1594.84243966,"data":"[11:24:58] [INFO]      Typhula fistulosa                       : 0.00\n"}
+,{"stream_name":"stdout","time":1594.843498933,"data":"[11:24:58] [INFO]      Byssomerulius corium                    : 0.00\n"}
+,{"stream_name":"stdout","time":1594.844463917,"data":"[11:24:58] [INFO]      Ganoderma lucidum                       : 0.00\n"}
+,{"stream_name":"stdout","time":1594.845529706,"data":"[11:24:58] [INFO]      Lyomyces sambuci                        : 0.00\n"}
+,{"stream_name":"stdout","time":1594.846780647,"data":"[11:24:58] [INFO]      Ascocoryne cylichnium                   : 0.00\n"}
+,{"stream_name":"stdout","time":1594.847814642,"data":"[11:24:58] [INFO]      Myxarium nucleatum                      : 0.00\n"}
+,{"stream_name":"stdout","time":1594.849019249,"data":"[11:24:58] [INFO]      Hydnoporia tabacina                     : 0.00\n"}
+,{"stream_name":"stdout","time":1594.849969878,"data":"[11:24:58] [INFO]      Daedalea quercina                       : 0.00\n"}
+,{"stream_name":"stdout","time":1594.851201781,"data":"[11:24:58] [INFO]      Apioperdon pyriforme                    : 0.00\n"}
+,{"stream_name":"stdout","time":1594.8522145,"data":"[11:24:58] [INFO]      Exidia nigricans                        : 0.00\n"}
+,{"stream_name":"stdout","time":1594.85325764,"data":"[11:24:58] [INFO]      Tremella mesenterica                    : 0.00\n"}
+,{"stream_name":"stdout","time":1594.854566448,"data":"[11:24:58] [INFO]      Trametes versicolor                     : 0.00\n"}
+,{"stream_name":"stdout","time":1594.855411425,"data":"[11:24:58] [INFO]      Daedaleopsis confragosa                 : 0.00\n"}
+,{"stream_name":"stdout","time":1594.85614085,"data":"[11:24:58] [INFO]      Schizopora paradoxa                     : 0.00\n"}
+,{"stream_name":"stdout","time":1594.906739639,"data":"[11:24:58] [INFO] Artifacts saved:\n"}
+,{"stream_name":"stdout","time":1594.90797976,"data":"[11:24:58] [INFO]   best.pt: 124.6 MB\n"}
+,{"stream_name":"stdout","time":1594.908945653,"data":"[11:24:58] [INFO]   checkpoint_latest.pt: 373.7 MB\n"}
+,{"stream_name":"stdout","time":1594.909810205,"data":"[11:24:58] [INFO]   label2idx.json: 14.9 KB\n"}
+,{"stream_name":"stdout","time":1594.910731562,"data":"[11:24:58] [INFO]   metrics.json: 0.8 KB\n"}
+,{"stream_name":"stdout","time":1594.911870764,"data":"[11:24:58] [INFO]   swa.pt: 124.6 MB\n"}
+,{"stream_name":"stdout","time":1594.912957601,"data":"[11:24:58] [INFO]   temperature_scaler.pt: 1.4 KB\n"}
+,{"stream_name":"stdout","time":1594.913918356,"data":"[11:24:58] [INFO]   test_predictions.npz: 1.2 MB\n"}
+,{"stream_name":"stdout","time":1594.91507964,"data":"[11:24:58] [INFO]   training_history.json: 1.3 KB\n"}
+,{"stream_name":"stdout","time":1594.91582984,"data":"[11:24:58] [INFO] \n"}
+,{"stream_name":"stdout","time":1594.915843601,"data":"============================================================\n"}
+,{"stream_name":"stdout","time":1594.917757128,"data":"[11:24:58] [INFO] TRAINING COMPLETE! (v8)\n"}
+,{"stream_name":"stdout","time":1594.918704434,"data":"[11:24:58] [INFO]   MAP@3:          0.0758 (CI: [0.0589, 0.0944])\n"}
+,{"stream_name":"stdout","time":1594.919632137,"data":"[11:24:58] [INFO]   Accuracy:       0.0500\n"}
+,{"stream_name":"stdout","time":1594.920843017,"data":"[11:24:58] [INFO]   Macro-F1:       0.0294\n"}
+,{"stream_name":"stdout","time":1594.9225949,"data":"[11:24:58] [INFO]   ECE:            0.1106\n"}
+,{"stream_name":"stdout","time":1594.923730479,"data":"[11:24:58] [INFO]   Safety Recall:  0.0000\n"}
+,{"stream_name":"stdout","time":1594.925137723,"data":"[11:24:58] [INFO]   DBs:            ['fungitastic', 'fungiclef']\n"}
+,{"stream_name":"stdout","time":1594.926058226,"data":"[11:24:58] [INFO] ============================================================\n"}
+,{"stream_name":"stdout","time":1594.926984306,"data":"[11:24:58] [INFO] \n"}
+,{"stream_name":"stdout","time":1594.927000644,"data":"📋 DEFINITION OF DONE STATUS:\n"}
+,{"stream_name":"stdout","time":1594.927918365,"data":"[11:24:58] [INFO]   DO1: Runs \u003c 8h ............... ✅ (est. ~2.5-3h)\n"}
+,{"stream_name":"stdout","time":1594.92898588,"data":"[11:24:58] [INFO]   DO2: MAP@3 ≥ 0.450 ........... ⚠️ (0.0758)\n"}
+,{"stream_name":"stdout","time":1594.930013362,"data":"[11:24:58] [INFO]   DO3: Safety Recall = 100% .... ❌ (0.0000)\n"}
+,{"stream_name":"stdout","time":1594.930979478,"data":"[11:24:58] [INFO]   DO4: Logging real-time ....... ✅\n"}
+,{"stream_name":"stdout","time":1594.93165203,"data":"[11:24:58] [INFO]   DO5: Checkpoint each epoch ... ✅\n"}
+,{"stream_name":"stdout","time":1594.933084647,"data":"[11:24:58] [INFO]   DO6: LoRA vectorized .......... ✅\n"}
+,{"stream_name":"stdout","time":1594.93416724,"data":"[11:24:58] [INFO]   DO7: Multi-DB detected ........ ✅ (['fungitastic', 'fungiclef'])\n"}
+,{"stream_name":"stdout","time":1594.935249229,"data":"[11:24:58] [INFO]   DO8: Artifacts exported ...... ✅\n"}
+,{"stream_name":"stdout","time":1594.936277742,"data":"[11:24:58] [INFO]   DO9: ECE \u003c 0.15 .............. ✅ (0.1106)\n"}
+,{"stream_name":"stdout","time":1594.937182659,"data":"[11:24:58] [INFO]   DO10: Per-species diag ....... ✅\n"}
+,{"stream_name":"stderr","time":1600.43793816,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":1600.437979883,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":1600.587814725,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":1600.587844102,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":1601.178133552,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":1601.532925853,"data":"[NbConvertApp] Writing 126647 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":1603.978393038,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":1605.07442903,"data":"[NbConvertApp] Writing 625456 bytes to __results__.html\n"}
+]

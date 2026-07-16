@@ -130,7 +130,7 @@ def main():
         print(f"ERROR: Report file not found: {report_path}", file=sys.stderr)
         sys.exit(1)
 
-    with open(report_path, "r", encoding="utf-8") as f:
+    with open(report_path, encoding="utf-8") as f:
         report_data = json.load(f)
 
     results = report_data.get("results", [])

@@ -1,6 +1,6 @@
-from datetime import date, datetime
+from datetime import UTC, date, datetime
 
-from sqlalchemy import JSON, Boolean, Date, DateTime, ForeignKey, Integer, String, Text
+from sqlalchemy import JSON, Boolean, Date, DateTime, ForeignKey, Index, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.database import Base
@@ -8,8 +8,12 @@ from app.db.database import Base
 
 class Observation(Base):
     __tablename__ = "observations"
+    __table_args__ = (
+        Index("ix_observations_organization_id", "organization_id"),
+    )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    organization_id: Mapped[str] = mapped_column(String(80), default="default")
     title: Mapped[str] = mapped_column(String(160))
     country: Mapped[str | None] = mapped_column(String(80), nullable=True)
     region: Mapped[str | None] = mapped_column(String(120), nullable=True)
@@ -26,7 +30,7 @@ class Observation(Base):
     color_change_on_cut: Mapped[str | None] = mapped_column(String(120), nullable=True)
     personal_collection: Mapped[bool] = mapped_column(Boolean, default=True)
     last_classification: Mapped[dict | None] = mapped_column(JSON, nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
 
     images: Mapped[list["ObservationImage"]] = relationship(
         "ObservationImage", back_populates="observation", cascade="all, delete-orphan"
@@ -49,25 +53,54 @@ class ObservationImage(Base):
     view_type: Mapped[str | None] = mapped_column(String(40), nullable=True)
     crop_path: Mapped[str | None] = mapped_column(String(255), nullable=True)
     mask_path: Mapped[str | None] = mapped_column(String(255), nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
 
     observation: Mapped[Observation] = relationship("Observation", back_populates="images")
 
 
 class HumanReviewRequest(Base):
     __tablename__ = "human_review_requests"
+    __table_args__ = (
+        Index("ix_human_review_requests_organization_id", "organization_id"),
+    )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     observation_id: Mapped[int] = mapped_column(ForeignKey("observations.id"))
+    organization_id: Mapped[str] = mapped_column(String(80), default="default")
     status: Mapped[str] = mapped_column(
         String(40), default="pending"
     )  # pending, in_review, resolved, rejected
     priority: Mapped[str] = mapped_column(String(40), default="low")  # low, medium, high, critical
     reason: Mapped[str] = mapped_column(String(255))
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    assigned_to: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
     resolved_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     reviewer_notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     reviewer_taxon: Mapped[str | None] = mapped_column(String(160), nullable=True)
     reviewer_confidence: Mapped[float | None] = mapped_column(nullable=True)
 
     observation: Mapped[Observation] = relationship("Observation", back_populates="human_reviews")
+
+
+class ClassificationJob(Base):
+    """Async classification job for the task queue (Sprint N+4 SC-3)."""
+
+    __tablename__ = "classification_jobs"
+    __table_args__ = (
+        Index("ix_classification_jobs_organization_id", "organization_id"),
+        Index("ix_classification_jobs_status", "status"),
+    )
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    observation_id: Mapped[int] = mapped_column(ForeignKey("observations.id"))
+    organization_id: Mapped[str] = mapped_column(String(80), default="default")
+    status: Mapped[str] = mapped_column(
+        String(20), default="queued"
+    )  # queued, running, completed, failed
+    result: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    error: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
+    started_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+
+    observation: Mapped[Observation] = relationship("Observation")

@@ -1,8 +1,9 @@
-import sys
-import os
 import builtins
-import requests
+import os
+import sys
 from pathlib import Path
+
+import requests
 
 # 1. Unshadow kaggle package by removing local kaggle folder from sys.path
 sys.path = [p for p in sys.path if p != "" and p != "." and Path(p).resolve() != Path(__file__).resolve().parents[2]]

@@ -2,14 +2,15 @@ import argparse
 import hashlib
 import json
 import os
-import random
-import sys
-import subprocess
-import time
 import shutil
+import subprocess
+import sys
+import time
 from collections import defaultdict
 from pathlib import Path
+
 from PIL import ImageFile
+
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 # Add project root and backend to sys.path
@@ -19,7 +20,7 @@ sys.path.insert(0, str(root_dir))
 sys.path.insert(0, str(backend_dir))
 
 # Import converters
-from kaggle.converters import convert_fungiclef, convert_fungitastic, convert_df20
+from kaggle.converters import convert_df20, convert_fungiclef, convert_fungitastic
 from kaggle.converters.common import HIGH_RISK_GENERA
 
 
@@ -39,7 +40,7 @@ def write_json(path: Path, payload) -> None:
 
 def stable_observation_order(observation: dict, seed: int) -> str:
     observation_id = str(observation.get("observation_id", ""))
-    return hashlib.sha256(f"{seed}:{observation_id}".encode("utf-8")).hexdigest()
+    return hashlib.sha256(f"{seed}:{observation_id}".encode()).hexdigest()
 
 
 def split_phase6_observations(
@@ -63,7 +64,7 @@ def split_phase6_observations(
             calibration_candidates.append(ordered[0])
             test_candidates.append(ordered[1])
         elif len(ordered) == 2:
-            taxon_bucket = int(hashlib.sha256(f"{seed}:{taxon}".encode("utf-8")).hexdigest(), 16) % 2
+            taxon_bucket = int(hashlib.sha256(f"{seed}:{taxon}".encode()).hexdigest(), 16) % 2
             (calibration_candidates if taxon_bucket == 0 else test_candidates).append(ordered[0])
 
     calibration_candidates.sort(key=lambda item: stable_observation_order(item, seed + 1))
@@ -147,7 +148,7 @@ def run_phase6_full_pipeline(args, config: dict, output_dir: Path, dataset_root:
     ]
     run_checked(convert_command, env, "phase6-convert-pool")
 
-    with open(pool_path, "r", encoding="utf-8") as handle:
+    with open(pool_path, encoding="utf-8") as handle:
         pool = json.load(handle)
     reference_observations, calibration_observations, test_observations, split_stats = split_phase6_observations(
         pool,
@@ -280,7 +281,7 @@ def print_memory_stats(clear_cache=False):
     try:
         import torch
         if torch.cuda.is_available():
-            print(f"  - CUDA Available: True")
+            print("  - CUDA Available: True")
             print(f"  - Current Device: {torch.cuda.get_device_name(0)}")
             if clear_cache:
                 torch.cuda.empty_cache()
@@ -324,7 +325,7 @@ def main():
     if args.config:
         config_path = Path(args.config)
         if config_path.exists():
-            with open(config_path, "r", encoding="utf-8") as f:
+            with open(config_path, encoding="utf-8") as f:
                 config = json.load(f)
         else:
             print(f"Warning: Config file not found at {config_path}. Using CLI parameters.")
@@ -335,7 +336,7 @@ def main():
     output_dir = Path(args.output_dir or config.get("output_dir", "/kaggle/working/visionsetil_outputs"))
     converted_dataset_path = Path(args.converted_dataset_path or config.get("converted_dataset_path", output_dir / f"converted_{dataset_name}_observations.json"))
     cpu_only = args.cpu_only or config.get("runtime", {}).get("device") == "cpu"
-    
+
     # Extract sampling options
     sampling_config = config.get("sampling", {})
     sampling_options = {
@@ -474,7 +475,7 @@ def main():
         if not converted_dataset_path.exists():
             print(f"Error: Converted dataset path {converted_dataset_path} does not exist. Run in convert_only mode first.", file=sys.stderr)
             sys.exit(1)
-        with open(converted_dataset_path, "r", encoding="utf-8") as f:
+        with open(converted_dataset_path, encoding="utf-8") as f:
             observations = json.load(f)
 
         from app.ml.model_registry import build_model_registry
@@ -502,7 +503,7 @@ def main():
         if not converted_dataset_path.exists():
             print(f"Error: Converted dataset path {converted_dataset_path} does not exist. Run in convert_only mode first.", file=sys.stderr)
             sys.exit(1)
-        with open(converted_dataset_path, "r", encoding="utf-8") as f:
+        with open(converted_dataset_path, encoding="utf-8") as f:
             observations = json.load(f)
         total_images_in_sample = sum(len(o.get("images", [])) for o in observations)
         unique_species = sorted(list(set(o.get("expected_taxon", "unknown_fungus") for o in observations)))
@@ -517,9 +518,9 @@ def main():
     # 3. Execute eval/scripts/run_eval.py
     report_json_path = output_dir / "real_report.json"
     report_md_path = output_dir / "real_report.md"
-    
+
     eval_script_path = root_dir / "eval" / "scripts" / "run_eval.py"
-    
+
     env = os.environ.copy()
     env["PYTHONPATH"] = str(root_dir) + os.pathsep + env.get("PYTHONPATH", "")
     env["DATABASE_PATH"] = str(output_dir / "benchmark.db")
@@ -567,10 +568,10 @@ def main():
         cmd.append("--debug-safety")
     if max_safety_debug_cases is not None:
         cmd.extend(["--max-safety-debug-cases", str(max_safety_debug_cases)])
-    
+
     print(f"\nRunning evaluation pipeline: {' '.join(cmd)}")
     res = subprocess.run(cmd, capture_output=True, text=True, env=env)
-    
+
     if res.returncode != 0:
         print("Error running run_eval.py pipeline:", file=sys.stderr)
         print(res.stderr, file=sys.stderr)
@@ -579,7 +580,7 @@ def main():
     print(res.stdout)
 
     if args.require_phase6:
-        with open(report_json_path, "r", encoding="utf-8") as f:
+        with open(report_json_path, encoding="utf-8") as f:
             report_data = json.load(f)
         phase6 = report_data.get("phase6_pipeline", {})
         if not phase6.get("valid"):
@@ -622,7 +623,7 @@ def main():
     model_status_data = {}
     phase6_pipeline = {}
     if report_json_path.exists():
-        with open(report_json_path, "r", encoding="utf-8") as f:
+        with open(report_json_path, encoding="utf-8") as f:
             report_data = json.load(f)
         evaluation_metrics = report_data.get("metrics", {})
         model_status_data = report_data.get("model_status", {})
@@ -667,7 +668,7 @@ def main():
         "phase6_pipeline": phase6_pipeline,
         "metrics": evaluation_metrics
     }
-    
+
     with open(output_dir / "large_dataset_summary.json", "w", encoding="utf-8") as f:
         json.dump(summary_json, f, indent=2, ensure_ascii=False)
 
@@ -743,7 +744,7 @@ def main():
     with open(output_dir / "model_status.json", "w", encoding="utf-8") as f:
         json.dump(model_status_data, f, indent=2)
 
-    print(f"\nLarge Dataset Benchmark Completed successfully.")
+    print("\nLarge Dataset Benchmark Completed successfully.")
     print(f"  - Summary Markdown written to: {output_dir / 'large_dataset_summary.md'}")
     print(f"  - Summary JSON written to: {output_dir / 'large_dataset_summary.json'}")
     print_memory_stats(clear_cache=True)

@@ -1,0 +1,209 @@
+/**
+ * 🍄 VISIONSETIL — PREMIUM ANIMATIONS & 3D SYSTEM
+ * Professional-grade animations: 3D tilt cards, spore particles, micro-interactions.
+ */
+
+/* ═══════════════════════════════════════════════════════════
+   1. SPHERE PARTICLES (Floating spores in background)
+   ═══════════════════════════════════════════════════════════ */
+.spore-particles-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.spore-dot {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(1px);
+  will-change: transform, opacity;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   2. TILT CARD 3D (Professional cursor-following tilt)
+   ═══════════════════════════════════════════════════════════ */
+.tilt-card-3d {
+  position: relative;
+  border-radius: 24px;
+  will-change: transform;
+  transform-style: preserve-3d;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.06),
+    0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.tilt-card-3d:hover {
+  box-shadow:
+    0 25px 60px rgba(45, 74, 43, 0.18),
+    0 8px 25px rgba(0, 0, 0, 0.08);
+  border-color: var(--primary-light, #588157);
+}
+
+/* Glare effect overlay */
+.tilt-card-glare {
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  pointer-events: none;
+  z-index: 10;
+  mix-blend-mode: overlay;
+}
+
+/* Ensure card content renders above glare */
+.tilt-card-3d > div:first-child {
+  position: relative;
+  z-index: 5;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   3. BUTTON MICRO-INTERACTIONS
+   ═══════════════════════════════════════════════════════════ */
+.btn-hero-primary,
+.btn-hero-secondary,
+.btn-primary,
+.btn-secondary {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Ripple effect on click */
+.btn-hero-primary::after,
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+}
+
+.btn-hero-primary:active::after,
+.btn-primary:active::after {
+  width: 300px;
+  height: 300px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   4. HERO PARALLAX & DEPTH
+   ═══════════════════════════════════════════════════════════ */
+.hero-bg-image {
+  animation: heroZoom 25s ease-in-out infinite alternate;
+}
+
+@keyframes heroZoom {
+  from { transform: scale(1); }
+  to { transform: scale(1.12); }
+}
+
+.hero-content > * {
+  animation: heroFadeIn 0.8s ease forwards;
+}
+
+.hero-content > *:nth-child(1) { animation-delay: 0.1s; }
+.hero-content > *:nth-child(2) { animation-delay: 0.2s; }
+.hero-content > *:nth-child(3) { animation-delay: 0.3s; }
+.hero-content > *:nth-child(4) { animation-delay: 0.4s; }
+.hero-content > *:nth-child(5) { animation-delay: 0.5s; }
+
+@keyframes heroFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   5. FEATURE TILE MICRO-INTERACTIONS
+   ═══════════════════════════════════════════════════════════ */
+.feature-tile {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+}
+
+.feature-tile:hover {
+  transform: translateY(-6px) !important;
+}
+
+.feature-tile-icon {
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.feature-tile:hover .feature-tile-icon {
+  transform: scale(1.15) rotate(-5deg);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   6. LEAFLET Z-INDEX FIX (Dropdowns above map)
+   ═══════════════════════════════════════════════════════════ */
+.leaflet-container { z-index: 1 !important; }
+.leaflet-pane { z-index: 1 !important; }
+.leaflet-top, .leaflet-bottom { z-index: 500 !important; }
+.leaflet-control { z-index: 500 !important; }
+.map-toolbar select,
+.map-toolbar,
+.map-sidebar,
+.spain-map-controls { z-index: 1000 !important; position: relative !important; }
+
+/* ═══════════════════════════════════════════════════════════
+   7. IMAGE STAIN FIX (Remove glow overlays)
+   ═══════════════════════════════════════════════════════════ */
+.mushroom-card.card-glow::before,
+.featured-mushroom-card.card-glow::before,
+.mushroom-card-image::after,
+.featured-mushroom-image::after,
+.tilt-card-3d.card-glow::before {
+  display: none !important;
+  content: none !important;
+  opacity: 0 !important;
+  background: none !important;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   8. WIDER CONTAINER
+   ═══════════════════════════════════════════════════════════ */
+.container {
+  max-width: 1200px !important;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   9. SHIMMER LOADING (Skeleton placeholders)
+   ═══════════════════════════════════════════════════════════ */
+.mushroom-card-placeholder {
+  background: linear-gradient(
+    135deg,
+    rgba(58, 90, 64, 0.08) 0%,
+    rgba(90, 129, 87, 0.12) 50%,
+    rgba(58, 90, 64, 0.08) 100%
+  ) !important;
+  background-size: 200% 200% !important;
+  animation: shimmerMove 2s ease-in-out infinite;
+}
+
+@keyframes shimmerMove {
+  0% { background-position: 0% 0%; }
+  50% { background-position: 100% 100%; }
+  100% { background-position: 0% 0%; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   10. SCROLL REVEAL (Respect reduced motion)
+   ═══════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  .spore-dot { display: none !important; }
+  .hero-bg-image { animation: none !important; }
+  .mushroom-card-placeholder { animation: none !important; }
+}

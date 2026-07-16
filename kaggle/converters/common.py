@@ -52,7 +52,7 @@ def find_metadata_file(dataset_root, dataset_name):
         "*.parquet",
         "*.json"
     ]
-    
+
     for pat in patterns:
         for p in root_path.rglob(pat):
             if p.is_file() and p.suffix in (".csv", ".parquet", ".json", ".jsonl"):
@@ -74,21 +74,21 @@ def resolve_image_path(root_path, img_rel, image_path_index=None):
     """
     if not img_rel:
         return None
-        
+
     root_path = Path(root_path)
     normalized_relative = str(img_rel).replace("\\", "/").lstrip("./")
     img_path = Path(normalized_relative)
-    
+
     # Candidate 1: direct relative check
     cand1 = root_path / img_path
     if cand1.exists() and cand1.is_file():
         return str(cand1.resolve())
-        
+
     # Candidate 2: direct filename check in root
     cand2 = root_path / img_path.name
     if cand2.exists() and cand2.is_file():
         return str(cand2.resolve())
-        
+
     # Candidate 3: common subdirectories
     common_subs = ["train", "val", "test", "images", "FewShot-Train", "FewShot-Val", "FewShot-Test", "FungiTastic-FewShot-Train", "FungiTastic-FewShot-Val", "FungiTastic-FewShot-Test"]
     for sub in common_subs:
@@ -98,7 +98,7 @@ def resolve_image_path(root_path, img_rel, image_path_index=None):
         cand_sub_name = root_path / sub / img_path.name
         if cand_sub_name.exists() and cand_sub_name.is_file():
             return str(cand_sub_name.resolve())
-            
+
     # Candidate 4: constant-time lookup in the index built by the converter.
     if image_path_index is not None:
         return image_path_index.get(normalized_relative.lower()) or image_path_index.get(img_path.name.lower())
@@ -110,7 +110,7 @@ def resolve_image_path(root_path, img_rel, image_path_index=None):
                 return str(p.resolve())
     except Exception:
         pass
-        
+
     return None
 
 def scan_individual_jsons(root_path):
@@ -125,7 +125,7 @@ def scan_individual_jsons(root_path):
         if "visionsetil_outputs" in p.parts or p.name in ("kernel-metadata.json", "package.json", "tsconfig.json", "dataset-metadata.json"):
             continue
         try:
-            with open(p, "r", encoding="utf-8") as f:
+            with open(p, encoding="utf-8") as f:
                 data = json.load(f)
                 if isinstance(data, dict):
                     data["_source_json_file"] = str(p)
@@ -147,14 +147,14 @@ def infer_risk_level(species_name, genus_name, poisonous_catalog_path=None):
         p_path = Path(poisonous_catalog_path)
         if p_path.exists():
             try:
-                with open(p_path, "r", encoding="utf-8") as f:
+                with open(p_path, encoding="utf-8") as f:
                     poisonous_list = json.load(f)
             except Exception:
                 pass
 
     sp_clean = (species_name or "").strip().lower()
     gen_clean = (genus_name or "").strip().lower()
-    
+
     if not gen_clean and sp_clean:
         gen_clean = sp_clean.split()[0]
 
@@ -189,7 +189,7 @@ def detect_column_heuristics(columns):
         "country": None,
         "date": None
     }
-    
+
     # Heuristics for observation id
     obs_terms = ["observation_id", "observationid", "obs_id", "obsid", "observation", "id"]
     for term in obs_terms:
@@ -216,7 +216,7 @@ def detect_column_heuristics(columns):
         mapping["genus"] = columns[cols_lower.index("genus")]
     if "family" in cols_lower:
         mapping["family"] = columns[cols_lower.index("family")]
-        
+
     # Extra metadata
     if "habitat" in cols_lower:
         mapping["habitat"] = columns[cols_lower.index("habitat")]
@@ -239,11 +239,11 @@ def read_rows_from_file(file_path):
     """
     p = Path(file_path)
     if p.suffix == ".csv":
-        with open(p, "r", encoding="utf-8", errors="replace") as f:
+        with open(p, encoding="utf-8", errors="replace") as f:
             reader = csv.DictReader(f)
             return list(reader), reader.fieldnames
     elif p.suffix == ".json":
-        with open(p, "r", encoding="utf-8") as f:
+        with open(p, encoding="utf-8") as f:
             data = json.load(f)
             if isinstance(data, list):
                 if data:
@@ -287,12 +287,12 @@ def apply_sampling(observations, sampling_options):
                 dangerous_list.append(obs)
             else:
                 other_list.append(obs)
-        
+
         # Prioritize dangerous cases, but shuffle them if shuffle is on
         if shuffle:
             random.Random(seed).shuffle(dangerous_list)
             random.Random(seed).shuffle(other_list)
-            
+
         observations = dangerous_list + other_list
 
     # Risk Balanced sampling
@@ -300,22 +300,22 @@ def apply_sampling(observations, sampling_options):
         deadly_cases = [o for o in observations if o.get("risk_level") == "deadly"]
         high_cases = [o for o in observations if o.get("risk_level") == "high_or_unknown"]
         other_cases = [o for o in observations if o.get("risk_level") == "unknown"]
-        
+
         if shuffle:
             r = random.Random(seed)
             r.shuffle(deadly_cases)
             r.shuffle(high_cases)
             r.shuffle(other_cases)
-            
+
         # Select equal shares if possible
         num_deadly = len(deadly_cases)
         num_high = len(high_cases)
         num_other = len(other_cases)
-        
+
         target_per_cat = max_cases // 3 if max_cases else min(num_deadly, num_high, num_other)
         if target_per_cat == 0:
             target_per_cat = 50 # Default baseline
-            
+
         balanced = deadly_cases[:target_per_cat] + high_cases[:target_per_cat] + other_cases[:target_per_cat]
         # Fill remaining spots if max_cases not reached
         if max_cases and len(balanced) < max_cases:
@@ -331,19 +331,19 @@ def apply_sampling(observations, sampling_options):
         for o in observations:
             gen = (o.get("expected_genus") or "unknown").lower()
             genus_buckets.setdefault(gen, []).append(o)
-            
+
         if shuffle:
             r = random.Random(seed)
             for gen in genus_buckets:
                 r.shuffle(genus_buckets[gen])
-                
+
         # Interleave buckets
         balanced = []
         bucket_keys = list(genus_buckets.keys())
         r = random.Random(seed)
         if shuffle:
             r.shuffle(bucket_keys)
-            
+
         idx = 0
         while len(balanced) < len(observations):
             added_any = False
@@ -354,7 +354,7 @@ def apply_sampling(observations, sampling_options):
             if not added_any:
                 break
             idx += 1
-            
+
         observations = balanced
 
     # Standard shuffle

@@ -35,9 +35,9 @@ def main():
         print(f"ERROR: Species catalog file not found: {catalog_path}", file=sys.stderr)
         sys.exit(1)
 
-    with open(converted_path, "r", encoding="utf-8") as f:
+    with open(converted_path, encoding="utf-8") as f:
         observations = json.load(f)
-    with open(catalog_path, "r", encoding="utf-8") as f:
+    with open(catalog_path, encoding="utf-8") as f:
         catalog = json.load(f)
 
     # Build catalog lookup sets

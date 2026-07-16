@@ -1,0 +1,136 @@
+{
+  "experiment_name": "mega_training_v3_sota_single_model",
+  "description": "SOTA single-model config informed by FungiCLEF 2025 top solutions. ConvNeXt-Base @ 384px + EMA + MixUp + WeightedSampler + observation-level MAP@3 + TTA. Targets MAP@3 >= 0.63.",
+  "dataset": {
+    "source": "kaggle",
+    "name": "fungi-clef-2025",
+    "root": "/kaggle/input/fungi-clef-2025",
+    "format": "fungitastic",
+    "min_resolution": 384
+  },
+  "split": {
+    "method": "anti_leak_group_stratified",
+    "group_by": "observation_id",
+    "stratify_by": ["species", "genus"],
+    "session_aware": true,
+    "session_cols": ["user_id", "observed_at"],
+    "test_size": 0.15,
+    "val_size": 0.15,
+    "min_class_count": 3,
+    "rare_class_oversample": true,
+    "rare_class_min_samples": 5,
+    "random_state": 42
+  },
+  "model": {
+    "backbone": "convnext_base",
+    "pretrained": "imagenet1k_v1",
+    "image_size": 384,
+    "freeze_backbone_epochs": 2,
+    "dropout": 0.3,
+    "classifier_hidden_dim": 1024,
+    "stochastic_depth": true
+  },
+  "training": {
+    "epochs": 50,
+    "batch_size": 32,
+    "lr_head": 0.0003,
+    "lr_backbone": 2e-05,
+    "weight_decay": 0.01,
+    "warmup_epochs": 3,
+    "label_smoothing": 0.1,
+    "focal_gamma": 2.0,
+    "focal_alpha": 0.25,
+    "amp": true,
+    "grad_accum_steps": 1,
+    "max_grad_norm": 1.0,
+    "early_stopping_patience": 8,
+    "early_stopping_metric": "map_at_3_observation"
+  },
+  "scheduler": {
+    "type": "cosine_with_warmup",
+    "warmup_epochs": 3,
+    "min_lr": 1e-06,
+    "decay_factor": 0.98
+  },
+  "advanced": {
+    "use_ema": true,
+    "ema_decay": 0.999,
+    "ema_start_epoch": 3,
+    "use_weighted_sampler": true,
+    "weighted_sampler_strategy": "effective_num",
+    "use_tta": true,
+    "tta_transforms": ["hflip", "center_crop", "five_crop_average"],
+    "multi_gpu": false,
+    "gradient_checkpointing": true,
+    "compile_model": false
+  },
+  "augmentation": {
+    "train": {
+      "hflip": true,
+      "vflip": true,
+      "rotation_degrees": 30,
+      "color_jitter": {
+        "brightness": 0.3,
+        "contrast": 0.3,
+        "saturation": 0.2,
+        "hue": 0.1
+      },
+      "random_erasing": true,
+      "mixup_alpha": 0.2,
+      "cutmix_alpha": 0.0,
+      "random_resized_crop": {
+        "scale": [0.7, 1.0],
+        "ratio": [0.75, 1.33]
+      }
+    },
+    "val": {
+      "resize": 384,
+      "center_crop": 384
+    }
+  },
+  "metadata_fusion": {
+    "enabled": true,
+    "features": ["habitat", "substrate", "month", "geo_region"],
+    "embedding_dim": 64,
+    "fusion_method": "concat_after_backbone"
+  },
+  "output": {
+    "dir": "/kaggle/working/visionsetil_outputs",
+    "save_best_model": true,
+    "save_history": true,
+    "save_per_class_report": true,
+    "save_confusion_matrix": true,
+    "export_onnx": true,
+    "onnx_opset": 17,
+    "export_quantized": true
+  },
+  "anti_leak_checks": [
+    "observation_id_disjoint",
+    "session_key_disjoint",
+    "phash_prefix_disjoint",
+    "class_coverage_train_complete",
+    "stratification_balance_within_50pct"
+  ],
+  "data_policy": {
+    "synthetic_data": false,
+    "real_data_only": true,
+    "license": "see_original_dataset_terms"
+  },
+  "metrics": {
+    "primary": "map_at_3_observation",
+    "secondary": ["top3_acc", "f1_macro", "balanced_acc", "open_set_f1"],
+    "safety_metrics": [
+      "toxic_recall",
+      "deadly_recall",
+      "false_edible_rate"
+    ],
+    "official_benchmark": "FungiCLEF 2025 MAP@3",
+    "target_map_at_3": 0.63
+  },
+  "benchmark_context": {
+    "fungiclef_2025_top1_map_at_3": 0.742,
+    "fungiclef_2025_top10_median_map_at_3": 0.685,
+    "competition_baseline_map_at_3": 0.412,
+    "notes": "Single model target; ensembles typically gain 3-5% MAP@3."
+  }
+}

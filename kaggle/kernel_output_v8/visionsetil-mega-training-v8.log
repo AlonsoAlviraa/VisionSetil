@@ -1,0 +1,196 @@
+[{"stream_name":"stderr","time":6.7272737320000005,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":6.727378117,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":6.727383214,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":6.727385858,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":7.317451958,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":7.317490494,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":7.317506069,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":7.317511249,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":22.033647414,"data":"GPU detected but PyTorch CUDA kernels broken. Reinstalling...\n"}
+,{"stream_name":"stdout","time":52.49873508,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 780.4/780.4 MB 2.4 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":52.704669558,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 780.4/780.4 MB 2.4 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":55.003371445,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.3/7.3 MB 98.9 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":55.205724291,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.3/7.3 MB 98.9 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":55.462052197,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 23.7/23.7 MB 76.8 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":55.663374313,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 23.7/23.7 MB 76.8 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":55.815761762,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 823.6/823.6 kB 46.8 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":56.017160079,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 823.6/823.6 kB 46.8 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":56.072273725,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.1/14.1 MB 102.8 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":56.274720135,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.1/14.1 MB 102.8 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":62.730431523,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 664.8/664.8 MB 2.6 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":62.932759859,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 664.8/664.8 MB 2.6 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":69.194615029,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 410.6/410.6 MB 3.8 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":69.396954164,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 410.6/410.6 MB 3.8 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":72.33499095,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 121.6/121.6 MB 7.7 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":72.537364017,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 121.6/121.6 MB 7.7 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":73.463298261,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 56.5/56.5 MB 35.0 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":73.665580527,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 56.5/56.5 MB 35.0 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":75.004006625,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 124.2/124.2 MB 15.3 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":75.206166264,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 124.2/124.2 MB 15.3 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":79.477911455,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 196.0/196.0 MB 3.4 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":79.680146258,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 196.0/196.0 MB 3.4 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":82.173284902,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 188.7/188.7 MB 9.5 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":82.375932926,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 188.7/188.7 MB 9.5 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":84.620823833,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 99.1/99.1 kB 55.8 kB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":84.827076364,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 99.1/99.1 kB 55.8 kB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":86.969618828,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 209.6/209.6 MB 9.0 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":87.171689302,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 209.6/209.6 MB 9.0 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":87.85827453,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.2/6.2 MB 70.0 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":88.060224341,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.2/6.2 MB 70.0 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":182.184622357,"data":"CUDA after reinstall: True\n"}
+,{"stream_name":"stdout","time":182.185590588,"data":"Dependencies installed. CUDA ready: True\n"}
+,{"stream_name":"stdout","time":184.592823327,"data":"PyTorch: 2.5.1+cu121\n"}
+,{"stream_name":"stdout","time":184.595394173,"data":"CUDA available: True\n"}
+,{"stream_name":"stdout","time":184.754143626,"data":"✓ CUDA smoke test PASSED. GPU: Tesla P100-PCIE-16GB\n"}
+,{"stream_name":"stdout","time":184.754889565,"data":"  Memory: 17.1 GB\n"}
+,{"stream_name":"stdout","time":193.070349117,"data":"timm: 1.0.26\n"}
+,{"stream_name":"stdout","time":193.071212774,"data":"[10:55:27] [INFO] Environment ready.\n"}
+,{"stream_name":"stdout","time":193.098503272,"data":"[10:55:27] [INFO]   ✓ Found FungiTastic: /kaggle/input/datasets/picekl/fungitastic\n"}
+,{"stream_name":"stdout","time":193.101524362,"data":"[10:55:27] [INFO]   ✓ Found FungiCLEF: /kaggle/input/datasets/seemshukla/fungiclef\n"}
+,{"stream_name":"stdout","time":193.10251427,"data":"[10:55:27] [INFO] Total datasets detected: 2\n"}
+,{"stream_name":"stdout","time":193.103463552,"data":"[10:55:27] [INFO]   fungitastic: /kaggle/input/datasets/picekl/fungitastic\n"}
+,{"stream_name":"stdout","time":193.104339008,"data":"[10:55:27] [INFO]   fungiclef: /kaggle/input/datasets/seemshukla/fungiclef\n"}
+,{"stream_name":"stdout","time":193.140696159,"data":"[10:55:27] [INFO] Loading dataset 'fungitastic' from /kaggle/input/datasets/picekl/fungitastic...\n"}
+,{"stream_name":"stdout","time":193.141528517,"data":"[10:55:27] [INFO]   Trying direct CSV paths (no filesystem scanning)...\n"}
+,{"stream_name":"stdout","time":193.177751467,"data":"[10:55:27] [INFO]   ✓ CSV found (direct path): /kaggle/input/datasets/picekl/fungitastic/metadata/FungiTastic/FungiTastic-ClosedSet-Val.csv\n"}
+,{"stream_name":"stdout","time":197.492414352,"data":"[10:55:31] [INFO]   Shape: (89659, 32), Columns: ['eventDate', 'year', 'month', 'day', 'habitat', 'countryCode', 'scientificName', 'kingdom', 'phylum', 'class', 'order', 'family', 'genus', 'specificEpithet', 'hasCoordinate']...\n"}
+,{"stream_name":"stdout","time":198.265667335,"data":"[10:55:32] [INFO]   Loaded: 89659 images, 2275 species, 45613 observations\n"}
+,{"stream_name":"stdout","time":198.266796828,"data":"[10:55:32] [INFO] Loading dataset 'fungiclef' from /kaggle/input/datasets/seemshukla/fungiclef...\n"}
+,{"stream_name":"stdout","time":198.267585933,"data":"[10:55:32] [INFO]   Trying direct CSV paths (no filesystem scanning)...\n"}
+,{"stream_name":"stdout","time":198.27381305,"data":"[10:55:32] [INFO]   Direct paths exhausted. Trying 1-level glob...\n"}
+,{"stream_name":"stdout","time":198.285448766,"data":"[10:55:32] [INFO]   WARNING: No valid image CSV found in /kaggle/input/datasets/seemshukla/fungiclef\n"}
+,{"stream_name":"stdout","time":198.286286193,"data":"[10:55:32] [INFO]   No CSV found. Building from image files (1-level glob)...\n"}
+,{"stream_name":"stdout","time":198.294938226,"data":"[10:55:32] [INFO]   Built from files: 0 images\n"}
+,{"stream_name":"stdout","time":198.299598439,"data":"[10:55:32] [INFO]   ⚠️ WARNING: Only 0 species! Trying parent-dir relabel...\n"}
+,{"stream_name":"stdout","time":198.300545866,"data":"[10:55:32] [INFO]   Loaded: 0 images, 0 species, 0 observations\n"}
+,{"stream_name":"stdout","time":198.32105289,"data":"[10:55:32] [INFO] \n"}
+,{"stream_name":"stdout","time":198.321090189,"data":"COMBINED: 89659 images, 2275 species, 45613 observations from 1 DBs\n"}
+,{"stream_name":"stdout","time":198.549243547,"data":"[10:55:32] [INFO] After min-4 filter: 85633 images, 1477 species\n"}
+,{"stream_name":"stdout","time":198.967647724,"data":"[10:55:32] [INFO] After subsampling (top-500 × 8 obs):\n"}
+,{"stream_name":"stdout","time":198.968458573,"data":"[10:55:32] [INFO]   Images: 7585\n"}
+,{"stream_name":"stdout","time":198.970185916,"data":"[10:55:32] [INFO]   Species: 500\n"}
+,{"stream_name":"stdout","time":198.973342132,"data":"[10:55:32] [INFO]   Observations: 4000\n"}
+,{"stream_name":"stdout","time":198.975651556,"data":"[10:55:32] [INFO]   Source DBs: {'fungitastic': 7585}\n"}
+,{"stream_name":"stdout","time":207.90534068,"data":"[10:55:41] [INFO] View type distribution:\n"}
+,{"stream_name":"stdout","time":207.905391734,"data":"view_type\n"}
+,{"stream_name":"stdout","time":207.905399827,"data":"gills      4115\n"}
+,{"stream_name":"stdout","time":207.905403075,"data":"front      2220\n"}
+,{"stream_name":"stdout","time":207.90540656,"data":"habitat     906\n"}
+,{"stream_name":"stdout","time":207.905409659,"data":"detail      344\n"}
+,{"stream_name":"stdout","time":207.943703572,"data":"[10:55:41] [INFO] Valid observations: 4000 | Valid species: 500\n"}
+,{"stream_name":"stdout","time":207.947872614,"data":"[10:55:41] [INFO]   Large classes (\u003e=4 obs): 500 species, 4000 obs\n"}
+,{"stream_name":"stdout","time":207.948865618,"data":"[10:55:41] [INFO]   Small classes (2-3 obs): 0 species, 0 obs\n"}
+,{"stream_name":"stdout","time":207.98790506,"data":"[10:55:41] [INFO] Split: train=2800 obs (5346 imgs) | val=600 obs (1160 imgs) | test=600 obs (1079 imgs)\n"}
+,{"stream_name":"stdout","time":209.536628938,"data":"[10:55:43] [INFO] Observations: train=2800 | val=600 | test=600\n"}
+,{"stream_name":"stdout","time":209.538902939,"data":"[10:55:43] [INFO] Classes: 500\n"}
+,{"stream_name":"stdout","time":209.586366557,"data":"[10:55:43] [INFO] MultiViewDataset + collate_fn defined.\n"}
+,{"stream_name":"stdout","time":209.608882578,"data":"[10:55:43] [INFO] VectorizedLoRA defined.\n"}
+,{"stream_name":"stdout","time":209.634743467,"data":"[10:55:43] [INFO] ViewConditionedBackbone defined.\n"}
+,{"stream_name":"stdout","time":209.657875484,"data":"[10:55:43] [INFO] MetadataEncoder defined.\n"}
+,{"stream_name":"stdout","time":209.686504233,"data":"[10:55:43] [INFO] AttentionFusion defined.\n"}
+,{"stream_name":"stdout","time":209.712036523,"data":"[10:55:43] [INFO] ArcFaceHead, CenterLoss, TemperatureScaler defined.\n"}
+,{"stream_name":"stdout","time":209.73559502,"data":"[10:55:43] [INFO] MultiViewModel defined.\n"}
+,{"stream_name":"stdout","time":209.762373009,"data":"[10:55:43] [INFO] Metadata vocab sizes: {'habitat': 33, 'substrate': 28, 'smell': 2, 'country': 2}\n"}
+,{"stream_name":"stdout","time":209.763588114,"data":"[10:55:43] [INFO] Testing model forward pass...\n"}
+,{"stream_name":"stderr","time":210.382646404,"data":"Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n"}
+,{"stream_name":"stderr","time":210.382672755,"data":"\n"}
+,{"stream_name":"stderr","time":210.382678415,"data":"Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n"}
+,{"stream_name":"stderr","time":216.916214862,"data":"Traceback (most recent call last):\n"}
+,{"stream_name":"stderr","time":216.916251358,"data":"  File \"\u003cstring\u003e\", line 1, in \u003cmodule\u003e\n"}
+,{"stream_name":"stderr","time":216.916258398,"data":"  File \"/usr/local/lib/python3.12/dist-packages/papermill/execute.py\", line 131, in execute_notebook\n"}
+,{"stream_name":"stderr","time":216.916376041,"data":"    raise_for_execution_errors(nb, output_path)\n"}
+,{"stream_name":"stderr","time":216.916400208,"data":"  File \"/usr/local/lib/python3.12/dist-packages/papermill/execute.py\", line 251, in raise_for_execution_errors\n"}
+,{"stream_name":"stderr","time":216.916602134,"data":"    raise error\n"}
+,{"stream_name":"stderr","time":216.91708994,"data":"papermill.exceptions.PapermillExecutionError: \n"}
+,{"stream_name":"stderr","time":216.917100868,"data":"---------------------------------------------------------------------------\n"}
+,{"stream_name":"stderr","time":216.917105621,"data":"Exception encountered at \"In [16]\":\n"}
+,{"stream_name":"stderr","time":216.917109448,"data":"---------------------------------------------------------------------------\n"}
+,{"stream_name":"stderr","time":216.917113163,"data":"TypeError                                 Traceback (most recent call last)\n"}
+,{"stream_name":"stderr","time":216.917116673,"data":"/tmp/ipykernel_23/2566717563.py in \u003ccell line: 0\u003e()\n"}
+,{"stream_name":"stderr","time":216.917122076,"data":"     38 test_labels = torch.tensor([0,1,2,3]).to(DEVICE)\n"}
+,{"stream_name":"stderr","time":216.917129045,"data":"     39 \n"}
+,{"stream_name":"stderr","time":216.917131475,"data":"---\u003e 40 test_logits, test_emb = test_model(test_images, test_view_idx, test_mask, test_meta, test_labels)\n"}
+,{"stream_name":"stderr","time":216.917133936,"data":"     41 param_count = sum(p.numel() for p in test_model.parameters()) / 1e6\n"}
+,{"stream_name":"stderr","time":216.917136263,"data":"     42 log(f\"  Forward OK | logits: {test_logits.shape} | emb: {test_emb.shape} | params: {param_count:.1f}M\")\n"}
+,{"stream_name":"stderr","time":216.917138801,"data":"\n"}
+,{"stream_name":"stderr","time":216.917141068,"data":"/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py in _wrapped_call_impl(self, *args, **kwargs)\n"}
+,{"stream_name":"stderr","time":216.91714355,"data":"   1734             return self._compiled_call_impl(*args, **kwargs)  # type: ignore[misc]\n"}
+,{"stream_name":"stderr","time":216.917145893,"data":"   1735         else:\n"}
+,{"stream_name":"stderr","time":216.917148175,"data":"-\u003e 1736             return self._call_impl(*args, **kwargs)\n"}
+,{"stream_name":"stderr","time":216.917150533,"data":"   1737 \n"}
+,{"stream_name":"stderr","time":216.917152705,"data":"   1738     # torchrec tests the code consistency with the following code\n"}
+,{"stream_name":"stderr","time":216.917155095,"data":"\n"}
+,{"stream_name":"stderr","time":216.917157231,"data":"/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py in _call_impl(self, *args, **kwargs)\n"}
+,{"stream_name":"stderr","time":216.917159609,"data":"   1745                 or _global_backward_pre_hooks or _global_backward_hooks\n"}
+,{"stream_name":"stderr","time":216.917162041,"data":"   1746                 or _global_forward_hooks or _global_forward_pre_hooks):\n"}
+,{"stream_name":"stderr","time":216.917164416,"data":"-\u003e 1747             return forward_call(*args, **kwargs)\n"}
+,{"stream_name":"stderr","time":216.917166773,"data":"   1748 \n"}
+,{"stream_name":"stderr","time":216.917168946,"data":"   1749         result = None\n"}
+,{"stream_name":"stderr","time":216.917171195,"data":"\n"}
+,{"stream_name":"stderr","time":216.917173332,"data":"/tmp/ipykernel_23/3545480439.py in forward(self, images, view_idx, attention_mask, metadata_indices, labels)\n"}
+,{"stream_name":"stderr","time":216.917175695,"data":"     19         meta_concat = torch.cat(meta_embeds, dim=-1)\n"}
+,{"stream_name":"stderr","time":216.91717798,"data":"     20         metadata_emb = self.metadata_encoder.mlp(meta_concat)\n"}
+,{"stream_name":"stderr","time":216.917180256,"data":"---\u003e 21         obs_emb = self.fusion(visual_emb, attention_mask, metadata_emb)\n"}
+,{"stream_name":"stderr","time":216.91718258,"data":"     22         logits = self.arcface(obs_emb, labels)\n"}
+,{"stream_name":"stderr","time":216.917193847,"data":"     23         return logits, obs_emb\n"}
+,{"stream_name":"stderr","time":216.917196269,"data":"\n"}
+,{"stream_name":"stderr","time":216.917198395,"data":"/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py in _wrapped_call_impl(self, *args, **kwargs)\n"}
+,{"stream_name":"stderr","time":216.917201451,"data":"   1734             return self._compiled_call_impl(*args, **kwargs)  # type: ignore[misc]\n"}
+,{"stream_name":"stderr","time":216.917203808,"data":"   1735         else:\n"}
+,{"stream_name":"stderr","time":216.917206118,"data":"-\u003e 1736             return self._call_impl(*args, **kwargs)\n"}
+,{"stream_name":"stderr","time":216.917208453,"data":"   1737 \n"}
+,{"stream_name":"stderr","time":216.917210605,"data":"   1738     # torchrec tests the code consistency with the following code\n"}
+,{"stream_name":"stderr","time":216.917212965,"data":"\n"}
+,{"stream_name":"stderr","time":216.917215124,"data":"/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py in _call_impl(self, *args, **kwargs)\n"}
+,{"stream_name":"stderr","time":216.917217465,"data":"   1745                 or _global_backward_pre_hooks or _global_backward_hooks\n"}
+,{"stream_name":"stderr","time":216.917219773,"data":"   1746                 or _global_forward_hooks or _global_forward_pre_hooks):\n"}
+,{"stream_name":"stderr","time":216.917222079,"data":"-\u003e 1747             return forward_call(*args, **kwargs)\n"}
+,{"stream_name":"stderr","time":216.917224388,"data":"   1748 \n"}
+,{"stream_name":"stderr","time":216.917226721,"data":"   1749         result = None\n"}
+,{"stream_name":"stderr","time":216.917229204,"data":"\n"}
+,{"stream_name":"stderr","time":216.917231386,"data":"/tmp/ipykernel_23/668024973.py in forward(self, visual_embeddings, attention_mask, metadata_emb)\n"}
+,{"stream_name":"stderr","time":216.917233806,"data":"     26         if metadata_emb is not None:\n"}
+,{"stream_name":"stderr","time":216.917236048,"data":"     27             meta_token = self.meta_proj(metadata_emb).unsqueeze(1)\n"}
+,{"stream_name":"stderr","time":216.917238318,"data":"---\u003e 28             meta_token = meta_token + self.view_pos(self.max_views).unsqueeze(0)\n"}
+,{"stream_name":"stderr","time":216.917240657,"data":"     29             tokens = torch.cat([meta_token, tokens], dim=1)\n"}
+,{"stream_name":"stderr","time":216.917243006,"data":"     30             meta_pad = torch.zeros(B, 1, dtype=torch.bool, device=tokens.device)\n"}
+,{"stream_name":"stderr","time":216.91724535,"data":"\n"}
+,{"stream_name":"stderr","time":216.917247505,"data":"/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py in _wrapped_call_impl(self, *args, **kwargs)\n"}
+,{"stream_name":"stderr","time":216.917249957,"data":"   1734             return self._compiled_call_impl(*args, **kwargs)  # type: ignore[misc]\n"}
+,{"stream_name":"stderr","time":216.917252276,"data":"   1735         else:\n"}
+,{"stream_name":"stderr","time":216.917254575,"data":"-\u003e 1736             return self._call_impl(*args, **kwargs)\n"}
+,{"stream_name":"stderr","time":216.917256876,"data":"   1737 \n"}
+,{"stream_name":"stderr","time":216.917259042,"data":"   1738     # torchrec tests the code consistency with the following code\n"}
+,{"stream_name":"stderr","time":216.917261333,"data":"\n"}
+,{"stream_name":"stderr","time":216.917263476,"data":"/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py in _call_impl(self, *args, **kwargs)\n"}
+,{"stream_name":"stderr","time":216.917265803,"data":"   1745                 or _global_backward_pre_hooks or _global_backward_hooks\n"}
+,{"stream_name":"stderr","time":216.917268186,"data":"   1746                 or _global_forward_hooks or _global_forward_pre_hooks):\n"}
+,{"stream_name":"stderr","time":216.917272734,"data":"-\u003e 1747             return forward_call(*args, **kwargs)\n"}
+,{"stream_name":"stderr","time":216.917275151,"data":"   1748 \n"}
+,{"stream_name":"stderr","time":216.91727732,"data":"   1749         result = None\n"}
+,{"stream_name":"stderr","time":216.917279546,"data":"\n"}
+,{"stream_name":"stderr","time":216.917281664,"data":"/usr/local/lib/python3.12/dist-packages/torch/nn/modules/sparse.py in forward(self, input)\n"}
+,{"stream_name":"stderr","time":216.917284015,"data":"    188 \n"}
+,{"stream_name":"stderr","time":216.917286176,"data":"    189     def forward(self, input: Tensor) -\u003e Tensor:\n"}
+,{"stream_name":"stderr","time":216.917288689,"data":"--\u003e 190         return F.embedding(\n"}
+,{"stream_name":"stderr","time":216.917290985,"data":"    191             input,\n"}
+,{"stream_name":"stderr","time":216.917293216,"data":"    192             self.weight,\n"}
+,{"stream_name":"stderr","time":216.917295458,"data":"\n"}
+,{"stream_name":"stderr","time":216.917297918,"data":"/usr/local/lib/python3.12/dist-packages/torch/nn/functional.py in embedding(input, weight, padding_idx, max_norm, norm_type, scale_grad_by_freq, sparse)\n"}
+,{"stream_name":"stderr","time":216.917300455,"data":"   2549         # remove once script supports set_grad_enabled\n"}
+,{"stream_name":"stderr","time":216.917302746,"data":"   2550         _no_grad_embedding_renorm_(weight, input, max_norm, norm_type)\n"}
+,{"stream_name":"stderr","time":216.917305066,"data":"-\u003e 2551     return torch.embedding(weight, input, padding_idx, scale_grad_by_freq, sparse)\n"}
+,{"stream_name":"stderr","time":216.91730749,"data":"   2552 \n"}
+,{"stream_name":"stderr","time":216.917309671,"data":"   2553 \n"}
+,{"stream_name":"stderr","time":216.917311844,"data":"\n"}
+,{"stream_name":"stderr","time":216.917313996,"data":"TypeError: embedding(): argument 'indices' (position 2) must be Tensor, not int\n"}
+,{"stream_name":"stderr","time":216.917316312,"data":"\n"}
+,{"stream_name":"stderr","time":219.307891155,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":219.307937833,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":219.459849002,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":219.459878421,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":220.10215948,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":220.440928964,"data":"[NbConvertApp] Writing 120170 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":223.067952738,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":224.311840546,"data":"[NbConvertApp] Writing 623021 bytes to __results__.html\n"}
+]

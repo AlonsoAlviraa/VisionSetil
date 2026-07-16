@@ -1,0 +1,62 @@
+#!/usr/bin/env python3
+"""Wait for v1 processing to finish, then push v2 with GPU enabled.
+Uses retry loop since we can't check status via the KGAT token."""
+import json, os, subprocess, time, sys
+from pathlib import Path
+
+USERNAME = "alonsoalviraaaa"
+os.environ["KAGGLE_USERNAME"] = USERNAME
+os.environ["KAGGLE_KEY"] = "KGAT_47893c54215cc359ba93342189276b23"
+
+push_dir = Path("tmp/push_v11")
+
+# Ensure GPU is enabled in metadata
+meta = json.loads((push_dir / "kernel-metadata.json").read_text())
+meta["enable_gpu"] = True
+meta["id"] = "alonsoalviraaaa/visionsetil-v11"
+meta["title"] = "visionsetil-v11"
+(push_dir / "kernel-metadata.json").write_text(json.dumps(meta, indent=2))
+
+print("Waiting for v1 to finish processing before pushing GPU version...")
+print("(The no-GPU v1 should fail quickly since it needs CUDA)")
+
+max_attempts = 20
+wait_seconds = 60
+
+for attempt in range(1, max_attempts + 1):
+    print(f"\n--- Attempt {attempt}/{max_attempts} ({time.strftime('%H:%M:%S')}) ---")
+    
+    result = subprocess.run(
+        ["kaggle", "kernels", "push", "-p", str(push_dir)],
+        capture_output=True, text=True, timeout=60
+    )
+    
+    stdout = result.stdout.strip()
+    stderr = result.stderr.strip()
+    
+    if result.returncode == 0:
+        print(f"✅ SUCCESS: {stdout}")
+        print(f"\nKernel URL: https://www.kaggle.com/code/alonsoalvira/visionsetil-v11")
+        print("Training should now start on GPU!")
+        sys.exit(0)
+    
+    if "Maximum batch GPU session count" in stdout:
+        print(f"❌ GPU SESSION LIMIT REACHED")
+        print(f"   You need to free up GPU slots on Kaggle.")
+        print(f"   Go to: https://www.kaggle.com/code?contentName=visionsetil-v11")
+        print(f"   Cancel running kernels to free slots, then re-run this script.")
+        sys.exit(1)
+    
+    if "409" in stdout or "Conflict" in stdout:
+        print(f"⏳ Still processing v1... waiting {wait_seconds}s")
+        time.sleep(wait_seconds)
+        continue
+    
+    print(f"Unexpected: rc={result.returncode}")
+    print(f"  stdout: {stdout}")
+    print(f"  stderr: {stderr}")
+    time.sleep(wait_seconds)
+
+print(f"\n❌ Failed after {max_attempts} attempts. Try pushing manually:")
+print(f"   kaggle kernels push -p tmp/push_v11")
+print(f"   Or edit settings in the Kaggle UI: https://www.kaggle.com/code/alonsoalvira/visionsetil-v11")

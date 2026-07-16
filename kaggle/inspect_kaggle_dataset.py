@@ -2,7 +2,9 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from converters.common import find_metadata_file, read_rows_from_file, detect_column_heuristics
+
+from converters.common import detect_column_heuristics, read_rows_from_file
+
 
 def main():
     parser = argparse.ArgumentParser(description="Inspect a Kaggle dataset's files and metadata schema.")
@@ -22,7 +24,7 @@ def main():
     extensions = {}
     total_files = 0
     metadata_candidates = []
-    
+
     for p in root_path.rglob("*"):
         if p.is_file():
             total_files += 1
@@ -42,7 +44,7 @@ def main():
     for cand in metadata_candidates[:10]:
         size_kb = cand.stat().st_size / 1024
         print(f"  - {cand.name} ({size_kb:.2f} KB)")
-        
+
     if not metadata_candidates:
         print("  - None found. This dataset may contain only raw images or custom directories.")
         sys.exit(0)
@@ -56,22 +58,22 @@ def main():
         if not rows:
             print("  - Metadata file is empty.")
             sys.exit(0)
-            
+
         print(f"Total rows in metadata: {len(rows)}")
         print(f"Columns available: {', '.join(columns)}")
-        
+
         # Heuristics
         mapping = detect_column_heuristics(columns)
         print("\nCandidate Column Heuristics:")
         for key, val in mapping.items():
             print(f"  - {key}: {val or '(could not infer)'}")
-            
+
         # Example rows
         print("\nPreview of first 3 rows:")
         for i, row in enumerate(rows[:3]):
             print(f"Row {i+1}:")
             print(json.dumps(row, indent=2))
-            
+
     except Exception as e:
         print(f"Error reading metadata file: {e}", file=sys.stderr)
 

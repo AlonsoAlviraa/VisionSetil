@@ -4,25 +4,32 @@
 
 ---
 
-## Estado Actual — Fase 6 (Sprint completado)
+## Estado Actual — Fase 7 (Frontend MVP + Mega Training + Seguridad)
 
 ### ✅ Logros del sprint
 
 | Área                     | Entregable                                                        | Estado |
 | ------------------------ | ----------------------------------------------------------------- | ------ |
 | **Configuración**        | Migración a `pydantic-settings`, `.env.example`, `docs/configuration.md` | ✅ |
-| **Seguridad**            | Validación magic bytes en uploads, anti path traversal, tests de seguridad (11 tests) | ✅ |
-| **Observabilidad**       | Request-id middleware, logging JSON estructurado, `/health` + `/readyz` | ✅ |
+| **Seguridad**            | Validación magic bytes en uploads, anti path traversal, tests de seguridad | ✅ |
+| **Seguridad**            | Security headers middleware (HSTS, CSP, X-Frame-Options, XSS) + API key auth + rate limiting | ✅ |
+| **Observabilidad**       | Request-id middleware, logging JSON estructurado, `/health` + `/readyz` + `/metrics` | ✅ |
 | **CI/CD**                | GitHub Actions matrix (Python 3.11/3.12/3.13), ruff + black + pytest | ✅ |
-| **Contenerización**      | `Dockerfile` multi-stage, `.dockerignore`, `docker-compose.yml`    | ✅ |
-| **Calidad de código**    | Ruff (0 errores), Black, 91/91 tests pasan                        | ✅ |
-| **Documentación**        | README reestructurado, ROADMAP, `configuration.md`                | ✅ |
+| **Contenerización**      | `Dockerfile.cpu` multi-stage, `.dockerignore`, `docker-compose.yml` + `docker-compose.prod.yml` | ✅ |
+| **Frontend**             | React + TypeScript + Vite SPA, PWA offline-first, camera capture, multi-image upload, redesigned UI | ✅ |
+| **Frontend**             | Metadata form (hábitat, sustrato, olor, árboles cercanos), result cards con feedback | ✅ |
+| **Backend**              | `POST /classify` endpoint simplificado (frontend → pipeline completo en 1 llamada) | ✅ |
+| **ML Training**          | Mega Training Pipeline: ConvNeXt/DINOv2/EfficientNet + focal loss + label smoothing | ✅ |
+| **ML Training**          | Métricas FungiCLEF reales: MAP@3, top-k acc, balanced acc, macro/micro F1 | ✅ |
+| **ML Training**          | Anti-leak splitting (observation + session aware), best checkpoint on MAP@3 | ✅ |
+| **Calidad de código**    | Ruff (0 errores en archivos modificados), 101/101 tests pasan     | ✅ |
+| **Documentación**        | README reestructurado, ROADMAP, `configuration.md`, docs técnicos  | ✅ |
 
 ### 📊 Métricas del sprint
 
-- **Tests:** 91/91 pasando (0 fallos)
-- **Cobertura de linting:** 0 errores de ruff
-- **Tiempo de suite:** ~38s
+- **Tests:** 101/101 pasando (0 fallos)
+- **Cobertura de linting:** 0 errores de ruff en archivos del backend
+- **Frontend:** TypeScript compila limpio, 103 módulos, bundle 268 KB (86 KB gzip)
 - **Deuda técnica crítica:** Eliminada
 
 ---
@@ -139,4 +146,4 @@
 
 ---
 
-_Última actualización: Fin del Sprint Fase 6_
+_Última actualización: Fin del Sprint Fase 7 — Frontend MVP + Mega Training Pipeline + Seguridad_

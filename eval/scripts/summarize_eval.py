@@ -14,7 +14,7 @@ def main():
         print(f"Error: report file {report_path} not found.")
         sys.exit(1)
 
-    with open(report_path, "r", encoding="utf-8") as f:
+    with open(report_path, encoding="utf-8") as f:
         data = json.load(f)
 
     metrics = data.get("metrics", {})
@@ -58,7 +58,7 @@ def main():
     print(f"  - Cases with nonzero genus score: {score_signals.get('cases_with_nonzero_genus_score')}")
     print(f"  - Cases with nonzero family score: {score_signals.get('cases_with_nonzero_family_score')}")
     print("==================================================")
-    
+
     # Print model backends
     print("Model Stack Configuration:")
     for k, v in status.items():

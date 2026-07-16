@@ -1,0 +1,112 @@
+[{"stream_name":"stderr","time":6.390954832,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":6.39103752,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":6.391043395,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":6.391047163,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":6.954563142,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":6.954591337,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":6.954596503,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":6.954600623,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":15.16962194,"data":"Dependencies installed.\n"}
+,{"stream_name":"stdout","time":19.975676443,"data":"PyTorch: 2.10.0+cu128\n"}
+,{"stream_name":"stdout","time":19.975714878,"data":"CUDA available (is_available): True\n"}
+,{"stream_name":"stdout","time":20.197882817,"data":"✗ CUDA smoke test FAILED: PyTorch binary lacks kernels for this GPU arch.\n"}
+,{"stream_name":"stdout","time":20.198090361,"data":"  Error: CUDA error: no kernel image is available for execution on the device\n"}
+,{"stream_name":"stdout","time":20.198105363,"data":"Search for `cudaErrorNoKernelImageForDevice' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.\n"}
+,{"stream_name":"stdout","time":20.198109708,"data":"CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.\n"}
+,{"stream_name":"stdout","time":20.198113808,"data":"For debugging consider passing CUDA_LAUNCH_BLOCKING=1\n"}
+,{"stream_name":"stdout","time":20.198117474,"data":"Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.\n"}
+,{"stream_name":"stdout","time":20.198121392,"data":"\n"}
+,{"stream_name":"stdout","time":20.19812515,"data":"  Will attempt to reinstall a compatible PyTorch build...\n"}
+,{"stream_name":"stdout","time":20.198129502,"data":"\n"}
+,{"stream_name":"stdout","time":20.198132599,"data":"Reinstalling PyTorch with CUDA 12.1 wheels (broadest arch support)...\n"}
+,{"stream_name":"stdout","time":47.30851464,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 798.9/798.9 MB 2.3 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":47.517009915,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 798.9/798.9 MB 2.3 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":50.3512927,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.1/7.1 MB 67.2 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":50.553260961,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.1/7.1 MB 67.2 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":50.799113383,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 23.7/23.7 MB 79.9 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":51.001312492,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 23.7/23.7 MB 79.9 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":51.065092553,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 823.6/823.6 kB 47.9 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":51.267367804,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 823.6/823.6 kB 47.9 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":51.383189872,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.1/14.1 MB 98.7 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":51.58504808,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.1/14.1 MB 98.7 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":58.67978954,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 664.8/664.8 MB 2.5 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":58.881470441,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 664.8/664.8 MB 2.5 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":65.867977458,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 410.6/410.6 MB 3.1 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":66.069834153,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 410.6/410.6 MB 3.1 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":69.26676311,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 121.6/121.6 MB 6.7 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":69.46870789,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 121.6/121.6 MB 6.7 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":70.259652457,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 56.5/56.5 MB 35.9 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":70.461756673,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 56.5/56.5 MB 35.9 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":72.543913663,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 124.2/124.2 MB 7.0 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":72.745031906,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 124.2/124.2 MB 7.0 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":75.207501758,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 196.0/196.0 MB 9.6 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":75.409447854,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 196.0/196.0 MB 9.6 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":78.607415964,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 176.2/176.2 MB 5.2 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":78.813640434,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 176.2/176.2 MB 5.2 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":79.343448998,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 99.1/99.1 kB 7.6 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":79.545607866,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 99.1/99.1 kB 7.6 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":82.552501841,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 209.5/209.5 MB 7.1 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":82.754798219,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 209.5/209.5 MB 7.1 MB/s eta 0:00:00\n"}
+,{"stream_name":"stderr","time":163.499143929,"data":"Traceback (most recent call last):\n"}
+,{"stream_name":"stderr","time":163.499179361,"data":"  File \"\u003cstring\u003e\", line 1, in \u003cmodule\u003e\n"}
+,{"stream_name":"stderr","time":163.499186174,"data":"  File \"/usr/local/lib/python3.12/dist-packages/papermill/execute.py\", line 131, in execute_notebook\n"}
+,{"stream_name":"stderr","time":163.499250311,"data":"    raise_for_execution_errors(nb, output_path)\n"}
+,{"stream_name":"stderr","time":163.499351773,"data":"  File \"/usr/local/lib/python3.12/dist-packages/papermill/execute.py\", line 251, in raise_for_execution_errors\n"}
+,{"stream_name":"stderr","time":163.499472467,"data":"    raise error\n"}
+,{"stream_name":"stderr","time":163.499721281,"data":"papermill.exceptions.PapermillExecutionError: \n"}
+,{"stream_name":"stderr","time":163.499735614,"data":"---------------------------------------------------------------------------\n"}
+,{"stream_name":"stderr","time":163.49974051,"data":"Exception encountered at \"In [2]\":\n"}
+,{"stream_name":"stderr","time":163.499744986,"data":"---------------------------------------------------------------------------\n"}
+,{"stream_name":"stderr","time":163.499749806,"data":"RuntimeError                              Traceback (most recent call last)\n"}
+,{"stream_name":"stderr","time":163.499754609,"data":"/tmp/ipykernel_23/2581233193.py in \u003ccell line: 0\u003e()\n"}
+,{"stream_name":"stderr","time":163.499759195,"data":"     49     # Reload torch\n"}
+,{"stream_name":"stderr","time":163.499763668,"data":"     50     import importlib\n"}
+,{"stream_name":"stderr","time":163.499769246,"data":"---\u003e 51     importlib.reload(torch)\n"}
+,{"stream_name":"stderr","time":163.499773787,"data":"     52     print(f\"Reinstalled PyTorch: {torch.__version__}\")\n"}
+,{"stream_name":"stderr","time":163.499778794,"data":"     53 \n"}
+,{"stream_name":"stderr","time":163.499783874,"data":"\n"}
+,{"stream_name":"stderr","time":163.49978797,"data":"/usr/lib/python3.12/importlib/__init__.py in reload(module)\n"}
+,{"stream_name":"stderr","time":163.499792641,"data":"    129         if spec is None:\n"}
+,{"stream_name":"stderr","time":163.499797354,"data":"    130             raise ModuleNotFoundError(f\"spec not found for the module {name!r}\", name=name)\n"}
+,{"stream_name":"stderr","time":163.499801511,"data":"--\u003e 131         _bootstrap._exec(spec, module)\n"}
+,{"stream_name":"stderr","time":163.499805971,"data":"    132         # The module may have replaced itself in sys.modules!\n"}
+,{"stream_name":"stderr","time":163.499810203,"data":"    133         return sys.modules[name]\n"}
+,{"stream_name":"stderr","time":163.499831114,"data":"\n"}
+,{"stream_name":"stderr","time":163.499837599,"data":"/usr/lib/python3.12/importlib/_bootstrap.py in _exec(spec, module)\n"}
+,{"stream_name":"stderr","time":163.499866654,"data":"\n"}
+,{"stream_name":"stderr","time":163.499870801,"data":"/usr/lib/python3.12/importlib/_bootstrap_external.py in exec_module(self, module)\n"}
+,{"stream_name":"stderr","time":163.499874044,"data":"\n"}
+,{"stream_name":"stderr","time":163.499877254,"data":"/usr/lib/python3.12/importlib/_bootstrap.py in _call_with_frames_removed(f, *args, **kwds)\n"}
+,{"stream_name":"stderr","time":163.499880752,"data":"\n"}
+,{"stream_name":"stderr","time":163.499891495,"data":"/usr/local/lib/python3.12/dist-packages/torch/__init__.py in \u003cmodule\u003e\n"}
+,{"stream_name":"stderr","time":163.499895213,"data":"   2162     from torch import compiler as compiler\n"}
+,{"stream_name":"stderr","time":163.499898533,"data":"   2163 \n"}
+,{"stream_name":"stderr","time":163.499901747,"data":"-\u003e 2164     class _TritonLibrary:\n"}
+,{"stream_name":"stderr","time":163.499905038,"data":"   2165         lib = torch.library.Library(\"triton\", \"DEF\")\n"}
+,{"stream_name":"stderr","time":163.499908579,"data":"   2166         ops_table: Dict[Tuple[str, str], Callable] = {}\n"}
+,{"stream_name":"stderr","time":163.499911989,"data":"\n"}
+,{"stream_name":"stderr","time":163.499915319,"data":"/usr/local/lib/python3.12/dist-packages/torch/__init__.py in _TritonLibrary()\n"}
+,{"stream_name":"stderr","time":163.499931449,"data":"   2163 \n"}
+,{"stream_name":"stderr","time":163.499935068,"data":"   2164     class _TritonLibrary:\n"}
+,{"stream_name":"stderr","time":163.499938381,"data":"-\u003e 2165         lib = torch.library.Library(\"triton\", \"DEF\")\n"}
+,{"stream_name":"stderr","time":163.499942182,"data":"   2166         ops_table: Dict[Tuple[str, str], Callable] = {}\n"}
+,{"stream_name":"stderr","time":163.499945578,"data":"   2167 \n"}
+,{"stream_name":"stderr","time":163.499948854,"data":"\n"}
+,{"stream_name":"stderr","time":163.499952656,"data":"/usr/local/lib/python3.12/dist-packages/torch/library.py in __init__(self, ns, kind, dispatch_key)\n"}
+,{"stream_name":"stderr","time":163.499956421,"data":"     99         Returns:\n"}
+,{"stream_name":"stderr","time":163.499959655,"data":"    100             name of the operator as inferred from the schema.\n"}
+,{"stream_name":"stderr","time":163.4999631,"data":"--\u003e 101 \n"}
+,{"stream_name":"stderr","time":163.499966732,"data":"    102         Example::\n"}
+,{"stream_name":"stderr","time":163.499970466,"data":"    103             \u003e\u003e\u003e my_lib = Library(\"mylib\", \"DEF\")\n"}
+,{"stream_name":"stderr","time":163.499974728,"data":"\n"}
+,{"stream_name":"stderr","time":163.499982061,"data":"RuntimeError: Only a single TORCH_LIBRARY can be used to register the namespace triton; please put all of your definitions in a single TORCH_LIBRARY block.  If you were trying to specify implementations, consider using TORCH_LIBRARY_IMPL (which can be duplicated).  If you really intended to define operators for a single namespace in a distributed way, you can use TORCH_LIBRARY_FRAGMENT to explicitly indicate this.  Previous registration of TORCH_LIBRARY was registered at /usr/local/lib/python3.12/dist-packages/torch/__init__.py:2805; latest registration was registered at /usr/local/lib/python3.12/dist-packages/torch/__init__.py:2165\n"}
+,{"stream_name":"stderr","time":163.499992,"data":"\n"}
+,{"stream_name":"stderr","time":165.5566007,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":165.556645382,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":165.705249178,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":165.705286781,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":166.299344524,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":166.679553807,"data":"[NbConvertApp] Writing 71019 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":169.0055646,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":169.985273649,"data":"[NbConvertApp] Writing 514891 bytes to __results__.html\n"}
+]

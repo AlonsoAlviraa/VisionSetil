@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import uuid
 
 from fastapi import FastAPI, Request
@@ -10,22 +11,29 @@ from fastapi.staticfiles import StaticFiles
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from app.api.routes_classification import router as classification_router
+from app.api.routes_classify import router as classify_router
+from app.api.routes_feedback import router as feedback_router
 from app.api.routes_health import router as health_router
 from app.api.routes_human_review import router as human_review_router
 from app.api.routes_images import router as images_router
+from app.api.routes_jobs import router as jobs_router
+from app.api.routes_metrics import router as metrics_router
 from app.api.routes_models import router as models_router
 from app.api.routes_observations import router as observations_router
 from app.api.routes_species import router as species_router
 from app.core.config import get_settings
 from app.core.logging import configure_logging
-from app.db.database import Base, engine
+from app.db.database import init_db
+from app.middleware.api_key_auth import APIKeyMiddleware
+from app.middleware.rate_limit import RateLimitMiddleware
+from app.middleware.security_headers import SecurityHeadersMiddleware
 from app.services.species_catalog import ensure_seed_data
 
 settings = get_settings()
 configure_logging(level=settings.log_level, fmt=settings.log_format)
 
 settings.upload_dir.mkdir(parents=True, exist_ok=True)
-Base.metadata.create_all(bind=engine)
+init_db()
 ensure_seed_data()
 
 app = FastAPI(title="mushroom-photo-id")
@@ -55,11 +63,30 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Rate limiting (Sprint N+2)
+_rate_limit_requests = int(os.getenv("RATE_LIMIT_REQUESTS", "60"))
+_rate_limit_window = int(os.getenv("RATE_LIMIT_WINDOW_SECONDS", "60"))
+app.add_middleware(
+    RateLimitMiddleware,
+    max_requests=_rate_limit_requests,
+    window_seconds=_rate_limit_window,
+)
+
+# API Key authentication (Sprint N+2) — active when API_KEYS env is set
+app.add_middleware(APIKeyMiddleware)
+
+# Security headers — OWASP best practices (HSTS, CSP, X-Frame-Options, etc.)
+app.add_middleware(SecurityHeadersMiddleware)
+
 app.mount("/uploads", StaticFiles(directory=str(settings.upload_dir)), name="uploads")
 app.include_router(health_router)
 app.include_router(observations_router)
 app.include_router(images_router)
 app.include_router(classification_router)
+app.include_router(classify_router)
 app.include_router(species_router)
 app.include_router(models_router)
 app.include_router(human_review_router)
+app.include_router(metrics_router)
+app.include_router(feedback_router)
+app.include_router(jobs_router)

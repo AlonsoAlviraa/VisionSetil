@@ -1,0 +1,40 @@
+[{"stream_name":"stderr","time":7.62323982,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":7.623351272,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":7.623358571,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":7.623363486,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":8.237837892,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.237871386,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.237876632,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.237880754,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":15.054166913,"data":"PyTorch: 2.10.0+cu128\n"}
+,{"stream_name":"stdout","time":15.054222316,"data":"CUDA available: True\n"}
+,{"stream_name":"stdout","time":15.0542304,"data":"GPU: Tesla P100-PCIE-16GB\n"}
+,{"stream_name":"stderr","time":17.820384678,"data":"Traceback (most recent call last):\n"}
+,{"stream_name":"stderr","time":17.820440233,"data":"  File \"\u003cstring\u003e\", line 1, in \u003cmodule\u003e\n"}
+,{"stream_name":"stderr","time":17.820448562,"data":"  File \"/usr/local/lib/python3.12/dist-packages/papermill/execute.py\", line 131, in execute_notebook\n"}
+,{"stream_name":"stderr","time":17.82053896,"data":"    raise_for_execution_errors(nb, output_path)\n"}
+,{"stream_name":"stderr","time":17.820560776,"data":"  File \"/usr/local/lib/python3.12/dist-packages/papermill/execute.py\", line 251, in raise_for_execution_errors\n"}
+,{"stream_name":"stderr","time":17.820875233,"data":"    raise error\n"}
+,{"stream_name":"stderr","time":17.820941436,"data":"papermill.exceptions.PapermillExecutionError: \n"}
+,{"stream_name":"stderr","time":17.820957122,"data":"---------------------------------------------------------------------------\n"}
+,{"stream_name":"stderr","time":17.820963239,"data":"Exception encountered at \"In [1]\":\n"}
+,{"stream_name":"stderr","time":17.820968593,"data":"---------------------------------------------------------------------------\n"}
+,{"stream_name":"stderr","time":17.820973289,"data":"AttributeError                            Traceback (most recent call last)\n"}
+,{"stream_name":"stderr","time":17.820977906,"data":"/tmp/ipykernel_23/3078727079.py in \u003ccell line: 0\u003e()\n"}
+,{"stream_name":"stderr","time":17.820999026,"data":"     18 if torch.cuda.is_available():\n"}
+,{"stream_name":"stderr","time":17.821003499,"data":"     19     print(f\"GPU: {torch.cuda.get_device_name(0)}\")\n"}
+,{"stream_name":"stderr","time":17.821008111,"data":"---\u003e 20     print(f\"GPU Memory: {torch.cuda.get_device_properties(0).total_mem / 1e9:.1f} GB\")\n"}
+,{"stream_name":"stderr","time":17.82101464,"data":"     21 \n"}
+,{"stream_name":"stderr","time":17.821025525,"data":"     22 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')\n"}
+,{"stream_name":"stderr","time":17.821031796,"data":"\n"}
+,{"stream_name":"stderr","time":17.821036689,"data":"AttributeError: 'torch._C._CudaDeviceProperties' object has no attribute 'total_mem'\n"}
+,{"stream_name":"stderr","time":17.821042186,"data":"\n"}
+,{"stream_name":"stderr","time":19.928470701,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":19.928546005,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":20.080604956,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":20.080656253,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":20.668168181,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":20.996822637,"data":"[NbConvertApp] Writing 58804 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":23.385857382,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":24.364925331,"data":"[NbConvertApp] Writing 496401 bytes to __results__.html\n"}
+]

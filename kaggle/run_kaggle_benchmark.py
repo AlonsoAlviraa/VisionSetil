@@ -2,10 +2,10 @@ import argparse
 import json
 import os
 import random
-import sys
-import subprocess
-import time
 import shutil
+import subprocess
+import sys
+import time
 from pathlib import Path
 
 # Add project root and backend to sys.path so we can inspect models and registries
@@ -17,7 +17,7 @@ sys.path.insert(0, str(backend_dir))
 def print_memory_stats(clear_cache=False):
     print("--------------------------------------------------")
     print("Runtime Resource Status:")
-    
+
     # RAM Usage
     try:
         import psutil
@@ -63,21 +63,21 @@ def main():
         print(f"Error: Config file not found at {config_path}", file=sys.stderr)
         sys.exit(1)
 
-    with open(config_path, "r", encoding="utf-8") as f:
+    with open(config_path, encoding="utf-8") as f:
         config = json.load(f)
 
     # 2. Extract values and apply overrides
     dataset_path = Path(config.get("dataset_path", "/kaggle/input/visionsetil-real-data/real_observations.json"))
     images_root = Path(config.get("images_root", "/kaggle/input/visionsetil-real-data/images"))
     output_dir = Path(config.get("output_dir", "/kaggle/working/visionsetil_outputs"))
-    
+
     run_mode = args.mode or config.get("mode", "full_pipeline")
     max_cases = args.max_cases if args.max_cases is not None else config.get("runtime", {}).get("max_cases")
-    
+
     # 3. Create output directory
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    print(f"Starting Kaggle Benchmark Runner")
+    print("Starting Kaggle Benchmark Runner")
     print(f"  - Dataset: {dataset_path}")
     print(f"  - Images Root: {images_root}")
     print(f"  - Output Directory: {output_dir}")
@@ -96,7 +96,7 @@ def main():
             print(f"Error: Dataset labels file not found at {dataset_path}", file=sys.stderr)
             sys.exit(1)
 
-    with open(dataset_path, "r", encoding="utf-8") as f:
+    with open(dataset_path, encoding="utf-8") as f:
         observations = json.load(f)
 
     # 5. Filter / Shuffle / Limit
@@ -122,7 +122,7 @@ def main():
     # 6. Resolve relative image paths to absolute paths so eval script works cleanly
     resolved_obs = []
     skipped_images = 0
-    
+
     for obs in filtered_obs:
         obs_copy = dict(obs)
         resolved_images = []
@@ -134,19 +134,19 @@ def main():
             candidate2 = images_root / img_path
             # Try 3: check original absolute/relative
             candidate3 = img_path
-            
+
             resolved = None
             for cand in [candidate1, candidate2, candidate3]:
                 if cand.exists() and cand.is_file():
                     resolved = cand
                     break
-            
+
             if resolved:
                 resolved_images.append(str(resolved.resolve()))
             else:
                 skipped_images += 1
                 resolved_images.append(str(img_path))
-                
+
         obs_copy["images"] = resolved_images
         resolved_obs.append(obs_copy)
 
@@ -161,7 +161,7 @@ def main():
     # 7. Execute based on run mode
     report_json_path = output_dir / "real_report.json"
     report_md_path = output_dir / "real_report.md"
-    
+
     # Build models status JSON data
     model_status_data = {
         "environment": "kaggle" if "/kaggle" in str(output_dir) else "local_emulated",
@@ -173,7 +173,7 @@ def main():
             "image_text_embedder": {"backend": "mock_siglip2_fallback", "loaded": False}
         }
     }
-    
+
     # Query PyTorch device
     try:
         import torch
@@ -198,7 +198,7 @@ def main():
         with open(output_dir / "crops_metadata.json", "w", encoding="utf-8") as f:
             json.dump(crops_metadata, f, indent=2)
         print(f"Detection crops metadata saved to {output_dir / 'crops_metadata.json'}")
-        
+
     elif run_mode == "dino_embeddings_only":
         print("Executing Staged Mode: DINOv3 Embeddings Only")
         embeddings_dino = []
@@ -229,7 +229,7 @@ def main():
         # full_pipeline or fusion_eval_only
         print("Executing Full Pipeline / Fusion Evaluation Stage")
         eval_script_path = root_dir / "eval" / "scripts" / "run_eval.py"
-        
+
         env = os.environ.copy()
         env["PYTHONPATH"] = str(root_dir) + os.pathsep + env.get("PYTHONPATH", "")
         if args.cpu_only:
@@ -241,10 +241,10 @@ def main():
             "--dataset", str(temp_dataset_file),
             "--output", str(report_json_path)
         ]
-        
+
         print(f"Running subprocess command: {' '.join(cmd)}")
         res = subprocess.run(cmd, capture_output=True, text=True, env=env)
-        
+
         if res.returncode != 0:
             print("Error running run_eval.py subprocess:", file=sys.stderr)
             print(res.stderr, file=sys.stderr)
@@ -287,7 +287,7 @@ def main():
 
         # Read generated report and extract status
         if report_json_path.exists():
-            with open(report_json_path, "r", encoding="utf-8") as f:
+            with open(report_json_path, encoding="utf-8") as f:
                 report_data = json.load(f)
             model_status_data["models"] = report_data.get("model_status", model_status_data["models"])
 

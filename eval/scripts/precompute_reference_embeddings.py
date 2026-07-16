@@ -1,8 +1,9 @@
 import argparse
-import sys
 import json
+import sys
 import time
 from pathlib import Path
+
 from PIL import ImageFile
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
@@ -14,11 +15,10 @@ sys.path.insert(0, str(root_dir))
 sys.path.insert(0, str(backend_dir))
 
 from app.core.config import settings
-from app.ml.model_registry import build_model_registry
 from app.ml.interfaces import MushroomObservationMetadata
+from app.ml.model_registry import build_model_registry
 from app.services.metadata_encoder import MetadataEncoder
 from app.services.multimodal_fusion import MultimodalFusionService
-from app.services.poisonous_lookalikes import HIGH_RISK_GENERA
 
 
 def cosine_similarity(left: list[float], right: list[float]) -> float:
@@ -57,7 +57,7 @@ def main():
         sys.exit(1)
 
     print(f"Loading observations from {dataset_path}...")
-    with open(dataset_path, "r", encoding="utf-8") as f:
+    with open(dataset_path, encoding="utf-8") as f:
         observations = json.load(f)
 
     # Initialize models
@@ -80,7 +80,7 @@ def main():
                 "habitats": set(),
                 "substrates": set(),
             }
-        
+
         # Verify and add image paths
         for img_rel in obs.get("images", []):
             img_path = root_dir / img_rel
@@ -88,10 +88,10 @@ def main():
                 img_path = images_root / img_rel
             if not img_path.exists():
                 img_path = Path(img_rel)
-            
+
             if img_path.exists() and img_path.is_file():
                 species_groups[taxon]["images"].append(str(img_path))
-                
+
         # Collect metadata
         meta = obs.get("metadata", {})
         if meta.get("habitat"):
@@ -103,7 +103,7 @@ def main():
 
     # 1. Extract Embeddings per Species
     species_catalog = []
-    
+
     # Pre-embed all text prompts
     taxa = list(species_groups.keys())
     print("Embedding taxonomic text descriptions...")
@@ -112,18 +112,18 @@ def main():
         g = species_groups[taxon]
         prompt = f"Photo of {g['taxon']}, a fungus in the genus {g['genus']} and family {g['family']}."
         text_prompts.append(prompt)
-    
+
     text_embeddings = registry.image_text_embedder.embed_texts(text_prompts)
     taxon_to_text_embedding = {t: emb.vector for t, emb in zip(taxa, text_embeddings)}
 
     print("Extracting visual prototypes...")
     total_images_processed = 0
     start_time = time.time()
-    
+
     for i, taxon in enumerate(taxa):
         g = species_groups[taxon]
         image_paths = g["images"]
-        
+
         # If no images found on disk, use a zero vector fallback
         if not image_paths:
             dino_vector = [0.0] * settings.dino_embedding_dim
@@ -140,20 +140,20 @@ def main():
             try:
                 dino_embs = registry.visual_embedder.embed_images(crop_paths)
                 siglip_embs = registry.image_text_embedder.embed_images(crop_paths)
-                
+
                 # Average embeddings
                 dino_vector = [sum(x) / len(dino_embs) for x in zip(*(e.vector for e in dino_embs))]
                 siglip_vector = [sum(x) / len(siglip_embs) for x in zip(*(e.vector for e in siglip_embs))]
-                
+
                 # Re-normalize averaged vectors
                 dino_norm = sum(x*x for x in dino_vector) ** 0.5
                 if dino_norm > 0:
                     dino_vector = [round(x / dino_norm, 4) for x in dino_vector]
-                
+
                 siglip_norm = sum(x*x for x in siglip_vector) ** 0.5
                 if siglip_norm > 0:
                     siglip_vector = [round(x / siglip_norm, 4) for x in siglip_vector]
-                    
+
                 total_images_processed += len(image_paths)
             except Exception as e:
                 print(f"Warning: Failed to extract embeddings for species {taxon}: {e}")
@@ -188,10 +188,10 @@ def main():
     # 2. Calibrate Rejection Threshold
     print("Calibrating rejection threshold on validation dataset...")
     correct_scores = []
-    
+
     # We build a lookup for species catalog entries to evaluate
     taxon_lookup = {item["taxon"]: item for item in species_catalog}
-    
+
     metadata_encoder = MetadataEncoder()
     fusion_service = MultimodalFusionService()
 
@@ -199,7 +199,7 @@ def main():
         taxon = obs.get("expected_taxon")
         if not taxon or taxon not in taxon_lookup:
             continue
-        
+
         # Determine image files
         image_paths = []
         for img_rel in obs.get("images", []):
@@ -208,7 +208,7 @@ def main():
                 img_path = images_root / img_rel
             if img_path.exists() and img_path.is_file():
                 image_paths.append(str(img_path))
-                
+
         if not image_paths:
             continue
 
@@ -220,7 +220,7 @@ def main():
 
             dino_embs = registry.visual_embedder.embed_images(crop_paths)
             siglip_embs = registry.image_text_embedder.embed_images(crop_paths)
-            
+
             meta_data = MushroomObservationMetadata(
                 country=obs.get("metadata", {}).get("country"),
                 region=obs.get("metadata", {}).get("region"),
@@ -228,7 +228,7 @@ def main():
                 substrate=obs.get("metadata", {}).get("substrate"),
             )
             meta_vector = metadata_encoder.encode(meta_data)
-            
+
             representation = fusion_service.fuse(
                 dino_embeddings=dino_embs,
                 siglip_image_embeddings=siglip_embs,
@@ -240,14 +240,14 @@ def main():
             sp = taxon_lookup[taxon]
             dino_score = cosine_similarity(representation.visual_component, sp["dino_reference_embedding"])
             siglip_score = cosine_similarity(representation.text_component, sp["siglip_text_embedding"])
-            
+
             meta_score = metadata_score(sp, representation.metadata_vector.values)
             evidence_score = max(0.05, 1.0 - representation.evidence_penalty)
-            
+
             visual_score = dino_score * 0.5 + siglip_score * 0.5
             fusion_score = visual_score * 0.55 + meta_score * 0.25 + evidence_score * 0.20
             correct_scores.append(fusion_score)
-        except Exception as e:
+        except Exception:
             # Skip errors
             pass
 

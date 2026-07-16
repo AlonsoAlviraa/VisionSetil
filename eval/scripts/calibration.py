@@ -23,7 +23,7 @@ class CalibrationService:
         for i in range(self.num_bins):
             bin_min = i / self.num_bins
             bin_max = (i + 1) / self.num_bins
-            
+
             # Find predictions in this bin
             # Include upper bound in the last bin
             if i == self.num_bins - 1:

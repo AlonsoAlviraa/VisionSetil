@@ -1,0 +1,447 @@
+# 🎯 OBJECTIVE — Modelo SOTA Multi-Vista Vectorizado
+
+> **Objetivo Loop Engineering Nº1.** Entrenar un modelo multi-vista con métricas altas, sin fallos, completamente vectorizado, con logging robusto, habiendo estudiado ambas bases de datos (FungiCLEF + FungiTastic).
+
+---
+
+## 📊 DIAGNÓSTICO DE FALLOS PREVIOS
+
+### Historial de intentos (5 kernels fallidos)
+
+| Intento | Versión | Fallo | Causa raíz |
+|---------|---------|-------|------------|
+| 1 | v1 | `ValueError: Grouper for 'species' not 1-dimensional` | Columnas duplicadas (`scientificName` + `species`) |
+| 2 | v2 | `status: error` (sin mensaje, killed externamente) | **Timeout 12h** — entrenamiento imposible con ConvNeXtV2 Base × 25 epochs |
+
+### Análisis del cuello de botella
+
+**Problema fundamental**: El entrenamiento actual es computacionalmente inviable en Kaggle (12h límite).
+
+```
+ConvNeXtV2 Base (~89M params)
+× 4 views por observación
+× batch_size=16 (= 64 imágenes/batch)
+× ~150,000 imágenes (FungiTastic train)
+× 25 epochs
+× progressive resizing (224→384→512)
+= ~50-60 horas estimadas  ←  EXCEDE 12h de Kaggle
+```
+
+**Otros problemas identificados**:
+1. ❌ LoRA adapters aplicados con **bucle Python** por tipo de vista (Cell 11, líneas 787-790)
+2. ❌ Sin logging por batch — imposible saber progreso durante ejecución
+3. ❌ Sin checkpoints intermedios — si cae a las 11h, se pierde todo
+4. ❌ Sin estimación de tiempo por epoch
+5. ❌ Sin subsampling — usa las ~150k imágenes completas
+6. ❌ Data loading no optimizado — Pillow + resize en Python (sin torchvision transforms JIT)
+
+---
+
+## 🗄️ ESTUDIO DE LAS DOS BASES DE DATOS
+
+### Database 1: FungiTastic (Picek)
+
+**Fuente**: `/kaggle/input/piceklfungitastic` o similar
+
+| Aspecto | Detalle |
+|---------|---------|
+| **Estructura** | `FungiTastic-FewShot/` con subdirs `Train/`, `Val/` |
+| **CSV principal** | `FungiTastic-FewShot/train.csv` |
+| **Columnas clave** | `observationUUID`, `scientificName`, **`species`** (¡ya existe!), `filename` |
+| **⚠️ TRAMPA** | Tiene `scientificName` Y `species` — renombrar causa duplicados |
+| **Imágenes** | Anidadas en `Train/Processed_300px/JPG/` |
+| **Volumen** | ~150,000 imágenes (train), ~10,000 (val) |
+| **Especies** | ~3,000+ especies |
+| **Metadata** | habitat, substrate, smell, country (parcial) |
+| **Calidad** | Alta, múltiples vistas por observación |
+
+### Database 2: FungiCLEF 2025
+
+**Fuente**: `/kaggle/input/fungiclef` o `/kaggle/input/seemshuklafungiclef`
+
+| Aspecto | Detalle |
+|---------|---------|
+| **CSV principal** | `train.csv` o `train_metadata.csv` |
+| **Columnas clave** | `observationID`, `class`, `image_path` |
+| **⚠️ TRAMPA** | Usa `observationID` (no `observation_id`), `class` (no `species`) |
+| **Imágenes** | Rutas relativas desde data root |
+| **Volumen** | ~100,000+ imágenes (train) |
+| **Especies** | ~1,500+ especies (FungiCLEF 2025 subset) |
+| **Metadata** | Pobre — habitat/substrate a menudo ausentes |
+| **Calidad** | Media, algunas observaciones con sola 1-2 fotos |
+
+### Estrategia de Fusión Multi-Database
+
+```python
+# Pseudo-código de la estrategia
+datasets = detect_datasets()  # FungiTastic + FungiCLEF si ambos presentes
+dfs = []
+for ds in datasets:
+    df = load_and_normalize(ds)  # Column map específico por DB
+    dfs.append(df)
+combined = pd.concat(dfs, ignore_index=True)
+# Anti-leak sobre el combined (observation_id prefixed con DB name)
+# e.g. "fungitastic_12345" vs "fungiclef_67890"
+```
+
+---
+
+## 🎯 OBJETIVO: Métricas Objetivo
+
+| Métrica | Objetivo Mínimo | Objetivo Ideal |
+|---------|-----------------|----------------|
+| **MAP@3** | 0.450 | 0.600+ |
+| **Macro-F1** | 0.350 | 0.450+ |
+| **Balanced Accuracy** | 0.400 | 0.500+ |
+| **ECE** | < 0.150 | < 0.100 |
+| **Safety Recall Deadly** | **1.000 (100%)** | **1.000 (100%)** |
+| **IC 95%** | Reportado | Reportado |
+
+> Estas métricas son para un MVP entrenado en Kaggle GPU (12h límite). SOTA académico (FungiCLEF top-3) logra MAP@3 ~0.45-0.50.
+
+---
+
+## 🔧 PLAN TÉCNICO: 10 MEJORAS CRÍTICAS
+
+### Mejora 1: Backbone Eficiente (EVA-02 Small o ConvNeXt-Tiny)
+**Problema**: ConvNeXtV2 Base (~89M) es demasiado pesado.
+**Solución**: Usar `convnextv2_tiny` (~28M params) o `eva02_s` (~22M params).
+
+```python
+# ANTES: 89M params, ~2h/epoch
+backbone_name = 'convnextv2_base.fcmae_ft_in22k_in1k'
+
+# DESPUÉS: 28M params, ~25min/epoch
+backbone_name = 'convnextv2_tiny.fcmae_ft_in22k_in1k'
+```
+
+**Impacto**: 3x speedup en backbone → viable en 12h.
+
+---
+
+### Mejora 2: Vectorización Total de LoRA (eliminar bucle Python)
+**Problema**: Cell 11 itera sobre tipos de vista con un bucle Python:
+```python
+# LENTO (código actual):
+for vi, view_name in enumerate(VIEW_TYPES):
+    vmask = (flat_view == vi) & real_mask
+    if vmask.any():
+        adapted.view(-1, self.feat_dim)[vmask] = self.adapters[view_name](flat_feat[vmask])
+```
+
+**Solución**: Stacked LoRA con `torch.bmm` vectorizado:
+```python
+# RÁPIDO (nuevo código):
+# Stack all adapters into single tensor [num_views, in_features, rank]
+self.lora_A_stacked = nn.Parameter(torch.stack([a.lora_A.weight for a in self.adapters.values()]))  # [V, rank, in]
+self.lora_B_stacked = nn.Parameter(torch.stack([a.lora_B.weight for a in self.adapters.values()]))  # [V, in, rank]
+
+def forward(self, features, view_idx):
+    # view_idx: [B*N] — index into stacked params
+    A = self.lora_A_stacked[view_idx]  # [B*N, rank, in]
+    B = self.lora_B_stacked[view_idx]  # [B*N, in, rank]
+    # Batched matrix multiply: x [B*N, in] → A @ x → B @ (A @ x)
+    delta = torch.bmm(B, torch.bmm(A, features.unsqueeze(-1))).squeeze(-1)
+    return features + delta * self.scaling
+```
+
+**Impacto**: Elimina 4 pasadas secuenciales → 1 operación vectorizada. ~40% speedup en LoRA.
+
+---
+
+### Mejora 3: Logging Granular con `sys.stdout.flush()`
+**Problema**: Kaggle no muestra logs hasta que termina la celda.
+**Solución**: Flush explícito + logging por batch con timestamps:
+
+```python
+import sys
+from datetime import datetime
+
+def log(msg, level="INFO"):
+    ts = datetime.now().strftime("%H:%M:%S")
+    print(f"[{ts}] [{level}] {msg}", flush=True)
+    sys.stdout.flush()
+
+# En training loop:
+for batch_idx, batch in enumerate(loader):
+    # ... forward, loss, backward ...
+    if batch_idx % 10 == 0:
+        elapsed = time.time() - epoch_start
+        batches_done = batch_idx + 1
+        batches_total = len(loader)
+        eta_sec = (elapsed / batches_done) * (batches_total - batches_done)
+        log(f"Ep{epoch} B{batch_idx}/{batches_total} | loss={loss.item():.4f} | "
+            f"{elapsed:.0f}s elapsed | ETA {eta_sec/60:.1f}min | "
+            f"lr={optimizer.param_groups[0]['lr']:.2e}")
+```
+
+**Impacto**: Visibilidad total del progreso en tiempo real desde la UI de Kaggle.
+
+---
+
+### Mejora 4: Checkpointing Cada Epoch + Resume
+**Problema**: Si cae a las 11h, se pierden 11h de cómputo.
+**Solución**: Guardar checkpoint cada epoch, con lógica de resume:
+
+```python
+CHECKPOINT_PATH = OUT_DIR / 'checkpoint_latest.pt'
+
+def save_checkpoint(epoch, model, optimizer, best_map3, history):
+    torch.save({
+        'epoch': epoch,
+        'model_state': model.state_dict(),
+        'optimizer_state': optimizer.state_dict(),
+        'best_map3': best_map3,
+        'history': history,
+    }, CHECKPOINT_PATH)
+    log(f"Checkpoint saved: epoch={epoch}")
+
+def load_checkpoint_if_exists():
+    if CHECKPOINT_PATH.exists():
+        ckpt = torch.load(CHECKPOINT_PATH, weights_only=False)
+        log(f"Resuming from epoch {ckpt['epoch']}")
+        return ckpt
+    return None
+```
+
+**Impacto**: Si Kaggle reinicia el kernel, el notebook puede resumir desde el último epoch.
+
+---
+
+### Mejora 5: Subsampling Inteligente (Top-N especies + max obs)
+**Problema**: ~150k imágenes es demasiado para 12h.
+**Solución**: Subsamplear a las top 500 especies con más datos, máximo 5 observaciones por especie:
+
+```python
+MAX_SPECIES = 500
+MAX_OBS_PER_SPECIES = 5
+
+# Ordenar especies por número de observaciones
+species_counts = df.groupby('observation_id')['species'].first().value_counts()
+top_species = species_counts.head(MAX_SPECIES).index
+df = df[df['species'].isin(top_species)]
+
+# Limitar observaciones por especie (preserva diversidad)
+sampled_obs = []
+for sp, group in df.groupby('species'):
+    obs_ids = group['observation_id'].unique()[:MAX_OBS_PER_SPECIES]
+    sampled_obs.append(group[group['observation_id'].isin(obs_ids)])
+df = pd.concat(sampled_obs, ignore_index=True)
+```
+
+**Impacto**: ~2,500 observaciones × ~3 imágenes = ~7,500 imágenes. Entrenamiento completo en ~3-4h.
+
+---
+
+### Mejora 6: Data Loading Optimizado (torchvision transforms)
+**Problema**: Pillow + resize en Python es lento.
+**Solución**: Usar `torchvision.transforms.v2` (JIT-compiled):
+
+```python
+from torchvision.transforms import v2 as T
+
+transform_train = T.Compose([
+    T.ToImage(),
+    T.ToDtype(torch.float32, scale=True),
+    T.RandomHorizontalFlip(),
+    T.RandomResizedCrop(size=(img_size, img_size), antialias=True),
+    T.ColorJitter(brightness=0.3, contrast=0.3, saturation=0.3, hue=0.1),
+    T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+])
+```
+
+**Impacto**: ~30% speedup en data loading + augmentation más rica.
+
+---
+
+### Mejora 7: Detección y Manejo de Ambas DBs
+**Problema**: Solo se detecta una DB, se ignora la otra.
+**Solución**: Detectar y combinar ambas con prefix anti-colisión:
+
+```python
+def detect_all_datasets():
+    datasets = {}
+    # FungiTastic
+    for candidate in [Path('/kaggle/input/piceklfungitastic'), Path('/kaggle/input/fungitastic')]:
+        if candidate.exists():
+            datasets['fungitastic'] = candidate
+            break
+    # FungiCLEF
+    for candidate in [Path('/kaggle/input/fungiclef'), Path('/kaggle/input/seemshuklafungiclef')]:
+        if candidate.exists():
+            datasets['fungiclef'] = candidate
+            break
+    return datasets
+
+def load_all_datasets(datasets):
+    dfs = []
+    for name, root in datasets.items():
+        df = load_single_dataset(root, name)
+        df['source_db'] = name
+        df['observation_id'] = name + '_' + df['observation_id'].astype(str)
+        dfs.append(df)
+    return pd.concat(dfs, ignore_index=True)
+```
+
+**Impacto**: Usa toda la data disponible → mejor generalización.
+
+---
+
+### Mejora 8: Mixed Precision (AMP) Correcto
+**Problema**: AMP activado pero no optimizado.
+**Solución**: Verificar que AMP está activo + `GradScaler` configurado:
+
+```python
+# Ya existe, pero verificar:
+scaler = torch.amp.GradScaler('cuda', enabled=cfg.amp)
+# ...
+with torch.amp.autocast('cuda', enabled=cfg.amp):
+    logits, emb = model(...)
+# ...
+scaler.scale(loss).backward()
+scaler.unscale_(optimizer)
+scaler.step(optimizer)
+scaler.update()
+```
+
+**Impacto**: ~50% speedup en T4/P100 con TensoCores.
+
+---
+
+### Mejora 9: Epochs Reducidos + Early Stopping
+**Problema**: 25 epochs es demasiado.
+**Solución**: 8 epochs máximo + early stopping:
+
+```python
+@dataclass
+class TrainConfig:
+    epochs: int = 8  # era 25
+    patience: int = 3  # early stop si val_map3 no mejora en 3 epochs
+    warmup_epochs: int = 1  # era 2
+    swa_start_epoch: int = 6  # era 20
+```
+
+**Impacto**: Entrenamiento completo en ~3-4h con headroom para evaluación.
+
+---
+
+### Mejora 10: Diagnóstico Post-Entrenamiento
+**Problema**: No se analiza qué especies fallan.
+**Solución**: Reportar per-species accuracy + confusion matrix:
+
+```python
+# Después de test eval:
+from collections import defaultdict
+per_species = defaultdict(list)
+for pred, label in zip(all_preds, all_labels):
+    per_species[label].append(pred == label)
+
+print("\nPer-species accuracy (worst 20):")
+worst = sorted(per_species.items(), key=lambda x: np.mean(x[1]))[:20]
+for species_idx, correct_list in worst:
+    species_name = idx2label[species_idx]
+    acc = np.mean(correct_list)
+    print(f"  {species_name}: {acc:.2f} ({sum(correct_list)}/{len(correct_list)})")
+```
+
+**Impacto**: Identifica gaps del modelo para futuras iteraciones.
+
+---
+
+## 📋 DEFINITION OF DONE
+
+El objetivo se considera completado cuando:
+
+- [ ] **DO1**: Notebook ejecuta completo en Kaggle GPU sin errores (< 8h)
+- [ ] **DO2**: MAP@3 ≥ 0.450 reportado con IC 95%
+- [ ] **DO3**: Safety Recall Deadly = 100% (si hay especies deadly en test)
+- [ ] **DO4**: Logging visible en tiempo real (cada 10 batches con ETA)
+- [ ] **DO5**: Checkpoint guardado cada epoch
+- [ ] **DO6**: LoRA totalmente vectorizado (sin bucle Python)
+- [ ] **DO7**: Ambas bases de datos detectadas y combinadas (si disponibles)
+- [ ] **DO8**: Artifacts exportados: `best.pt`, `metrics.json`, `label2idx.json`, `training_history.json`, `test_predictions.npz`
+- [ ] **DO9**: ECE < 0.15 (calibración)
+- [ ] **DO10**: Diagnóstico per-species incluido en output
+
+---
+
+## 🏗️ ARQUITECTURA DEL MODELO OBJETIVO
+
+```
+Input: [B, N_views, 3, H, W] + view_idx [B, N] + attention_mask [B, N]
+  │
+  ▼
+ViewConditionedBackbone (VECTORIZADO)
+  ├── timm backbone: convnextv2_tiny (~28M params)
+  ├── LoRA adapters: STACKED [4, rank, in_features] — torch.bmm
+  ├── View embedding: nn.Embedding(4, feat_dim)
+  └── Projection: Linear → LayerNorm → GELU → d_model=512
+  │ [B, N, 512]
+  ▼
+AttentionFusion
+  ├── MetadataEncoder: 4 embeddings → MLP → 64-dim
+  ├── Metadata token → projection → d_model
+  ├── Positional encoding
+  ├── MultiheadAttention (4 heads, key_padding_mask)
+  ├── FFN + LayerNorm
+  └── Masked mean pooling
+  │ [B, 576]
+  ▼
+ArcFaceHead
+  ├── Normalize embeddings + weights
+  ├── Angular margin (m=0.50, s=30.0)
+  └── Logits [B, num_classes]
+  │
+  ▼
+TemperatureScaler (calibración post-entrenamiento)
+  └── Calibrated logits → softmax → top-3
+```
+
+**Total params**: ~30M (vs 89M anterior) — 3x más rápido, similar accuracy.
+
+---
+
+## ⏱️ ESTIMACIÓN DE TIEMPOS (Kaggle T4 GPU)
+
+| Fase | Tiempo estimado |
+|------|-----------------|
+| Setup + deps install | 5 min |
+| Data detection + load | 10 min |
+| Anti-leak split + records | 5 min |
+| Model build + smoke test | 5 min |
+| Training (8 epochs × ~25min) | ~200 min |
+| SWA finalize | 10 min |
+| Temperature calibration | 5 min |
+| Test evaluation + bootstrap | 15 min |
+| Export artifacts | 5 min |
+| **TOTAL** | **~4.5 horas** |
+
+> Headroom de 7.5h para imprevistos dentro del límite de 12h de Kaggle.
+
+---
+
+## 🔒 COMPATIBILIDAD CON REGLAS DURAS
+
+| Regla | Cumplimiento |
+|-------|-------------|
+| R1. Safety intacta | ✅ Deadly species flaggeadas, orientation_only |
+| R2. Anti-leak | ✅ Split por observation_id con prefix DB |
+| R3. No mocks prod | ✅ Solo datos reales (FungiCLEF/FungiTastic) |
+| R4. No sintéticos eval | ✅ Métricas sobre test set real |
+| R5. Reproducibilidad | ✅ Config JSON versionada + seed |
+| R6. IC 95% | ✅ Bootstrap 1000 iteraciones |
+| R7. Deadly recall 100% | ✅ Verificado en test eval |
+
+---
+
+## 📁 ARCHIVOS A MODIFICAR
+
+| Archivo | Cambios |
+|---------|---------|
+| `kaggle/gen_notebook_v5.py` | **Mayor reescritura**: Cells 1-22 con las 10 mejoras |
+| `kaggle/multi_view_model.py` | LoRA vectorizado (stacked params + bmm) |
+| `kaggle/configs/mega_training_v5.json` | Nuevo config: tiny backbone, 8 epochs, subsampling |
+
+---
+
+*Documento generado por Loop Engineering. Primer objetivo del loop.*

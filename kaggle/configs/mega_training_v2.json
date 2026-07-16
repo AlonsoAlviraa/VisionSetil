@@ -1,0 +1,81 @@
+{
+  "experiment_name": "mega_training_v2_convnext384",
+  "description": "Production-grade training with MixUp, EMA, TTA, weighted sampling, observation-level MAP@3. 40 epochs on ConvNeXt-Base @ 384px.",
+  "dataset": {
+    "source": "kaggle",
+    "name": "fungi-clef-2025",
+    "root": "/kaggle/input/fungi-clef-2025",
+    "format": "fungitastic"
+  },
+  "split": {
+    "method": "anti_leak_group_stratified",
+    "group_by": "observation_id",
+    "stratify_by": ["species", "genus"],
+    "session_aware": true,
+    "session_cols": ["user_id", "observed_at"],
+    "test_size": 0.15,
+    "val_size": 0.15,
+    "min_class_count": 3,
+    "random_state": 42
+  },
+  "model": {
+    "backbone": "convnext_base",
+    "pretrained": "imagenet1k_v1",
+    "image_size": 384,
+    "freeze_backbone_epochs": 2
+  },
+  "training": {
+    "epochs": 40,
+    "batch_size": 32,
+    "lr_head": 0.0003,
+    "lr_backbone": 2e-05,
+    "weight_decay": 0.01,
+    "warmup_epochs": 3,
+    "label_smoothing": 0.1,
+    "focal_gamma": 2.0,
+    "amp": true,
+    "grad_accum_steps": 1,
+    "max_grad_norm": 1.0,
+    "early_stopping_patience": 7
+  },
+  "advanced": {
+    "use_ema": true,
+    "ema_decay": 0.999,
+    "use_weighted_sampler": true,
+    "use_tta": true,
+    "multi_gpu": false
+  },
+  "augmentation": {
+    "hflip": true,
+    "vflip": true,
+    "rotation_degrees": 30,
+    "color_jitter": 0.3,
+    "random_erasing": true,
+    "mixup_alpha": 0.2,
+    "cutmix_alpha": 0.0
+  },
+  "output": {
+    "dir": "/kaggle/working/visionsetil_outputs",
+    "save_best_model": true,
+    "save_history": true,
+    "save_per_class_report": true,
+    "save_confusion_matrix": true
+  },
+  "anti_leak_checks": [
+    "observation_id_disjoint",
+    "session_key_disjoint",
+    "phash_prefix_disjoint",
+    "class_coverage_train_complete",
+    "stratification_balance_within_50pct"
+  ],
+  "data_policy": {
+    "synthetic_data": false,
+    "real_data_only": true,
+    "license": "see_original_dataset_terms"
+  },
+  "metrics": {
+    "primary": "map_at_3_observation",
+    "secondary": ["top3_acc", "f1_macro", "balanced_acc"],
+    "official_benchmark": "FungiCLEF 2025 MAP@3"
+  }
+}

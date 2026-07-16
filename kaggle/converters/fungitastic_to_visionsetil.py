@@ -1,13 +1,15 @@
 import json
 from pathlib import Path
+
 from .common import (
-    find_metadata_file,
-    read_rows_from_file,
-    detect_column_heuristics,
-    infer_risk_level,
     apply_sampling,
-    resolve_image_path
+    detect_column_heuristics,
+    find_metadata_file,
+    infer_risk_level,
+    read_rows_from_file,
+    resolve_image_path,
 )
+
 
 def convert_fungitastic(dataset_root, output_json, poisonous_catalog_path=None, sampling_options=None):
     """
@@ -33,14 +35,14 @@ def convert_fungitastic(dataset_root, output_json, poisonous_catalog_path=None, 
             obs_id_val = row.get(mapping["observation_id"])
         if not obs_id_val:
             obs_id_val = f"fungitastic_obs_{idx}"
-            
+
         obs_groups.setdefault(str(obs_id_val), []).append(row)
 
     converted_list = []
 
     for obs_id, group in obs_groups.items():
         first_row = group[0]
-        
+
         # Extract taxonomy
         taxon = None
         if mapping["species"]:
@@ -125,7 +127,7 @@ def convert_fungitastic(dataset_root, output_json, poisonous_catalog_path=None, 
             resolved = resolve_image_path(root_path, raw_img)
             if resolved:
                 resolved_images.append(resolved)
-        
+
         if resolved_images:
             obs["images"] = resolved_images
             obs.pop("raw_images", None)

@@ -1,0 +1,78 @@
+# Dockerfile.cpu — CPU-only production image for VisionSetil backend.
+#
+# Built to satisfy the CI `docker-build` job (docker build -f Dockerfile.cpu)
+# and the docker-compose `backend` service. Intentionally avoids the CUDA
+# base image to keep the image small and CI-friendly.
+
+# ---------------------------------------------------------------------------
+# Stage 1: builder — install runtime + ML deps into a venv we can copy out
+# ---------------------------------------------------------------------------
+FROM python:3.11-slim AS builder
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+# Build tools needed by some wheels (e.g. psycopg, lxml, pillow).
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        build-essential \
+        curl \
+        libffi-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create an isolated virtualenv so we can copy it cleanly to the runtime stage.
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+WORKDIR /app
+
+# Install dependencies first for better layer caching.
+COPY pyproject.toml ./
+COPY backend/requirements.txt ./backend/
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install --upgrade pip \
+    && pip install -e ".[dev,ml]"
+
+# Copy backend source (pyproject points package-dir to backend/).
+COPY backend/ ./backend/
+RUN pip install -e ".[dev,ml]"
+
+# Pre-download the default YOLOv8n weights so the container is self-contained
+# for the model smoke test. Kept optional: failure does not abort the build.
+RUN python -c "from ultralytics import YOLO; YOLO('yolov8n.pt')" || true
+
+# ---------------------------------------------------------------------------
+# Stage 2: runtime — slim image with only the venv + app code
+# ---------------------------------------------------------------------------
+FROM python:3.11-slim AS runtime
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PATH="/opt/venv/bin:$PATH" \
+    # CPU-only: prevents torch/ultralytics from trying to reach CUDA libs.
+    CUDA_VISIBLE_DEVICES="" \
+    PORT=8000
+
+# curl is required by the docker-compose healthcheck.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy the virtualenv from the builder.
+COPY --from=builder /opt/venv /opt/venv
+
+WORKDIR /app
+
+# Copy application source and the project metadata.
+COPY --from=builder /app /app
+
+# Default uploads / data directories (match docker-compose volume mounts).
+RUN mkdir -p /app/uploads /app/data
+
+EXPOSE 8000
+
+# Run directly with uvicorn. `app.main:app` resolves because pyproject sets
+# package-dir = backend/, and PYTHONPATH is handled by the venv install.
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]

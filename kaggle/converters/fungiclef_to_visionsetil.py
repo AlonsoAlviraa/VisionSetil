@@ -1,23 +1,25 @@
 import json
 from pathlib import Path
+
 from .common import (
+    apply_sampling,
     build_image_path_index,
-    find_metadata_file,
-    read_rows_from_file,
     detect_column_heuristics,
+    find_metadata_file,
     infer_risk_level,
     is_readable_image,
-    apply_sampling,
+    read_rows_from_file,
     resolve_image_path,
-    scan_individual_jsons
+    scan_individual_jsons,
 )
+
 
 def convert_fungiclef(dataset_root, output_json, poisonous_catalog_path=None, sampling_options=None):
     """
     Converts FungiCLEF 2025 metadata to VisionSetil format.
     """
     root_path = Path(dataset_root)
-    
+
     # 1. Search for train/val CSV metadata first, avoiding submission files
     metadata_file = None
     for name in ["FungiTastic-FewShot-Train.csv", "FungiTastic-FewShot-Val.csv", "FungiTastic-FewShot-Test.csv", "FewShot-Train", "FewShot-Val", "FewShot-Test"]:
@@ -29,7 +31,7 @@ def convert_fungiclef(dataset_root, output_json, poisonous_catalog_path=None, sa
                     break
         if metadata_file:
             break
-            
+
     if not metadata_file:
         metadata_file = find_metadata_file(dataset_root, "fungiclef2025")
     if not metadata_file:
@@ -37,11 +39,11 @@ def convert_fungiclef(dataset_root, output_json, poisonous_catalog_path=None, sa
 
     rows = []
     columns = []
-    
+
     if metadata_file:
         print(f"FungiCLEF Converter: Found metadata file at {metadata_file}")
         rows, columns = read_rows_from_file(metadata_file)
-        
+
     # 2. Fallback to scanning individual JSONs if no file was found or no rows read
     if not rows:
         print("FungiCLEF Converter: No CSV metadata file or empty file. Scanning for individual JSON metadata files...")
@@ -54,7 +56,7 @@ def convert_fungiclef(dataset_root, output_json, poisonous_catalog_path=None, sa
         raise FileNotFoundError(f"Could not find any CSV metadata or individual JSON files under {dataset_root}")
 
     mapping = detect_column_heuristics(columns)
-    
+
     # Heuristics updates for custom fields if not mapped
     if not mapping["observation_id"]:
         for c in columns:
@@ -77,14 +79,14 @@ def convert_fungiclef(dataset_root, output_json, poisonous_catalog_path=None, sa
             obs_id_val = row.get(mapping["observation_id"])
         if not obs_id_val:
             obs_id_val = f"fungiclef_obs_{idx}"
-            
+
         obs_groups.setdefault(str(obs_id_val), []).append(row)
 
     converted_list = []
 
     for obs_id, group in obs_groups.items():
         first_row = group[0]
-        
+
         # Extract taxonomy
         taxon = None
         if mapping["species"]:
@@ -178,7 +180,7 @@ def convert_fungiclef(dataset_root, output_json, poisonous_catalog_path=None, sa
                 resolved_images.append(resolved)
             elif resolved:
                 unreadable_images += 1
-        
+
         # Keep observation only if at least one image exists!
         if resolved_images:
             obs["images"] = list(dict.fromkeys(resolved_images))
