@@ -268,9 +268,9 @@ class QualityGatePayload(BaseModel):
 
 
 def _fail_closed_quality_gate() -> QualityGatePayload:
-    """Temporary default so call sites import/instantiate until B-03 sets gate explicitly.
+    """Fail-closed schema default for incomplete constructors/tests only.
 
-    Fail-closed: species ID denied, metrics unacceptable. Mapper (B-03) always overwrites.
+    Live mapper (`_map_to_simple`) always overwrites with dual-signal gate status.
     """
     return QualityGatePayload(
         species_id_allowed=False,
@@ -322,11 +322,10 @@ class SimpleClassificationResult(BaseModel):
     # Stack truth (weights/backends); independent of mode (D-B1) — never derived from mode
     is_mock_stack: bool = True
     ml_notes: list[str] = Field(default_factory=list)
-    # Phase B honesty (D-B1, D-B2, D-B5, D-B22). Fail-closed defaults until B-03 mapper
-    # always sets these explicitly — do not treat defaults as product truth.
-    # Interim (B-01 only): /classify strip path drops the real gate dict, so live
-    # responses re-apply mode=blocked + fail-closed quality_gate even when predictions
-    # are non-empty (gate pass). FE must not consume mode/quality_gate until B-03.
+    # Phase B honesty (D-B1, D-B2, D-B5, D-B22). Mapper (/classify `_map_to_simple`)
+    # always sets mode + quality_gate explicitly from dual-signal gate + stack truth.
+    # Fail-closed defaults below are only for incomplete test constructors — not
+    # product truth on live responses (B-03 stops stripping quality_gate).
     mode: ClassifyMode = ClassifyMode.blocked
     quality_gate: QualityGatePayload = Field(default_factory=_fail_closed_quality_gate)
     locale: str = "es"

@@ -68,8 +68,14 @@ def _map_to_simple(
     processing_time_ms: int,
     *,
     classifier: object | None = None,
+    loaded_weights_path: str | None = None,
 ) -> SimpleClassificationResult:
-    """Convert the rich ClassificationResponse into the simplified frontend schema."""
+    """Convert the rich ClassificationResponse into the simplified frontend schema.
+
+    ``loaded_weights_path`` is the multi-view checkpoint actually resolved for
+    serve (D-B12). Prefer the outer MultiView classifier path even when
+    ``classifier`` is a mock fallback used for diagnostics.
+    """
 
     predictions: list[SimpleSpeciesPrediction] = []
     for candidate in result.top_candidates or result.candidates:
@@ -142,7 +148,15 @@ def _map_to_simple(
     from app.ml.classify_mode import derive_classify_mode
     from app.ml.quality_gate import apply_quality_gate_to_simple_result
 
-    gated = apply_quality_gate_to_simple_result(simple.model_dump())
+    # D-B12: prefer explicit serve path; else classifier.resolved_weights_path
+    weights_path = loaded_weights_path
+    if weights_path is None and classifier is not None:
+        weights_path = getattr(classifier, "resolved_weights_path", None)
+
+    gated = apply_quality_gate_to_simple_result(
+        simple.model_dump(),
+        loaded_weights_path=weights_path,
+    )
     gate = gated.get("quality_gate") or {}
     # Stack truth is independent of mode (D-B1) — never overwrite is_mock_stack from mode
     is_mock_stack = bool(gated.get("is_mock_stack", True))
@@ -234,7 +248,14 @@ async def classify_images(
     elapsed_ms = int((time.perf_counter() - start) * 1000)
     # Prefer mock fallback diagnostics when MultiView wraps Mock
     diag = getattr(classifier, "_mock_fallback", None) or classifier
-    simple_result = _map_to_simple(result, request_id, elapsed_ms, classifier=diag)
+    # D-B12: always take resolved path from the multi-view outer (not mock fallback)
+    simple_result = _map_to_simple(
+        result,
+        request_id,
+        elapsed_ms,
+        classifier=diag,
+        loaded_weights_path=getattr(classifier, "resolved_weights_path", None),
+    )
 
     # If not persisting, delete the observation and images
     if not persist:

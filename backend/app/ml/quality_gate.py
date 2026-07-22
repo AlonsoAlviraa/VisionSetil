@@ -217,12 +217,19 @@ def quality_gate_status(
     }
 
 
-def apply_quality_gate_to_simple_result(simple: dict[str, Any]) -> dict[str, Any]:
+def apply_quality_gate_to_simple_result(
+    simple: dict[str, Any],
+    *,
+    loaded_weights_path: str | Path | None = None,
+) -> dict[str, Any]:
     """Force reject + clear species claims when gate policy denies species ID.
 
     Always attaches dual-signal ``quality_gate`` (pass and fail).
+
+    When ``loaded_weights_path`` is provided (serve path), metrics SSOT uses the
+    sibling of that checkpoint (D-B12 — actually loaded weights).
     """
-    gate = quality_gate_status()
+    gate = quality_gate_status(loaded_weights_path=loaded_weights_path)
     simple["quality_gate"] = gate
 
     if gate["species_id_allowed"]:
