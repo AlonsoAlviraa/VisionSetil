@@ -83,25 +83,43 @@ _OPENAPI_CLASSIFY_EXAMPLES: dict[str, Any] = {
         "description": (
             "Quality gate policy denies species ID. mode is blocked, decision is "
             "rejected, predictions are always empty. quality_gate dual signals: "
-            "metrics_acceptable=false and species_id_allowed=false."
+            "metrics_acceptable=false and species_id_allowed=false. Gate-deny "
+            "side-effects from apply_quality_gate_to_simple_result: "
+            "rejection_reason/open_set_reason=model_quality_gate_failed…, "
+            "safety_level=unsafe_to_consume, GATE warning, final_warning NO IDENTIFICACIÓN."
         ),
         "value": {
             "request_id": "a1b2c3d4e5f6",
             "decision": "rejected",
             "predictions": [],
-            "rejection_reason": None,
+            "rejection_reason": (
+                "model_quality_gate_failed: MAP@3=0.05 deadly_recall=0.5 "
+                "— identificación de especie BLOQUEADA"
+            ),
             "processing_time_ms": 120,
             "observation_id": 42,
-            "safety_level": "unknown_or_risky",
+            "safety_level": "unsafe_to_consume",
             "missing_evidence": [],
-            "warnings": [],
+            "warnings": [
+                (
+                    "GATE DE CALIDAD: el modelo actual NO es aceptable para identificar "
+                    "especies (MAP@3=0.05, recall mortales=0.5). "
+                    "Solo modo educativo / abstención. Consulta a un micólogo."
+                ),
+            ],
             "quality_warnings": [],
             "dangerous_lookalikes": [],
             "questions_for_user": [],
             "model_stack": None,
-            "open_set_reason": None,
+            "open_set_reason": (
+                "model_quality_gate_failed: MAP@3=0.05 deadly_recall=0.5 "
+                "— identificación de especie BLOQUEADA"
+            ),
             "recommend_human_review": True,
-            "final_warning": "",
+            "final_warning": (
+                "NO IDENTIFICACIÓN. El modelo no supera el umbral de calidad. "
+                "Nunca consumas setas basándote en esta aplicación."
+            ),
             "confidence_margin": None,
             "view_coverage": ["front"],
             "is_mock_stack": False,
