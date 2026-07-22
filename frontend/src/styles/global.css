@@ -1107,6 +1107,23 @@ button { font-family: inherit; }
   animation: shake 0.4s ease;
 }
 
+.error-banner__body {
+  flex: 1 1 12rem;
+  min-width: 0;
+}
+
+.error-banner__body p {
+  margin: 0.35rem 0 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.error-banner__detail {
+  font-size: 0.8rem !important;
+  opacity: 0.9;
+  word-break: break-word;
+}
+
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
   25% { transform: translateX(-6px); }

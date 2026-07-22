@@ -5,7 +5,9 @@
 import { useState, useCallback, useEffect, useMemo, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useDropzone } from 'react-dropzone'
-import { classifyImages, submitFeedback } from '../api/client'
+import { useTranslation } from 'react-i18next'
+import { classifyApiError, classifyImages, submitFeedback } from '../api/client'
+import type { ClassifiedApiError } from '../api/classifyErrors'
 import type { ClassificationResult, ObservationMetadata } from '../api/types'
 import i18n from '../i18n'
 import { ResultCard } from '../components/ResultCard'
@@ -48,12 +50,13 @@ interface SelectedImage {
 }
 
 export function IdentifyPage() {
+  const { t } = useTranslation()
   const [selectedImages, setSelectedImages] = useState<SelectedImage[]>([])
   const [assignments, setAssignments] = useState<SlotAssignment>({})
   const [useWizard, setUseWizard] = useState(true)
   const [result, setResult] = useState<ClassificationResult | null>(null)
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<ClassifiedApiError | null>(null)
   const [showCamera, setShowCamera] = useState(false)
   const [metadata, setMetadata] = useState<ObservationMetadata>({})
   const [history, setHistory] = useState<HistoryEntry[]>([])
@@ -203,7 +206,8 @@ export function IdentifyPage() {
       })
       setHistory(appendHistory(entry))
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error desconocido')
+      // B-29: network / timeout / view_types 400 / 4xx / 5xx taxonomy
+      setError(classifyApiError(err))
     } finally {
       setLoading(false)
     }
@@ -433,11 +437,39 @@ export function IdentifyPage() {
       )}
 
       {error && (
-        <div className="error-banner">
-          <strong>Error:</strong> {error}
-          <button className="btn-retry" onClick={reset}>
-            Reintentar
-          </button>
+        <div
+          className="error-banner"
+          role="alert"
+          data-error-kind={error.kind}
+          data-testid="identify-error"
+        >
+          <div className="error-banner__body">
+            <strong>{t(error.titleKey)}</strong>
+            <p>{t(error.messageKey)}</p>
+            {error.serverDetail &&
+              (error.kind === 'view_types' ||
+                error.kind === 'bad_request' ||
+                error.kind === 'client') && (
+                <p className="error-banner__detail muted">
+                  {t('error.detail')}: {error.serverDetail}
+                </p>
+              )}
+          </div>
+          {error.retryable ? (
+            <button
+              type="button"
+              className="btn-retry"
+              onClick={() => {
+                void handleClassify()
+              }}
+            >
+              {t('error.retry')}
+            </button>
+          ) : (
+            <button type="button" className="btn-retry" onClick={() => setError(null)}>
+              {t('error.dismiss')}
+            </button>
+          )}
         </div>
       )}
 

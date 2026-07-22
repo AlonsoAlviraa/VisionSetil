@@ -137,7 +137,26 @@
   },
   "error": {
     "defaultTitle": "Algo salió mal",
-    "defaultDescription": "Inténtalo de nuevo en unos momentos."
+    "defaultDescription": "Inténtalo de nuevo en unos momentos.",
+    "networkTitle": "Sin conexión",
+    "network": "No se pudo contactar con el servidor. Comprueba la red o que el backend esté en marcha.",
+    "timeoutTitle": "Tiempo de espera agotado",
+    "timeout": "La identificación tardó demasiado. Prueba con menos fotos o reintenta.",
+    "viewTypesTitle": "Vistas no válidas",
+    "viewTypes": "Las etiquetas de vista no son válidas. Usa solo: gills, front, habitat, detail.",
+    "badRequestTitle": "Solicitud no válida",
+    "badRequest": "El servidor rechazó la solicitud. Revisa las fotos e inténtalo de nuevo.",
+    "unauthorizedTitle": "No autorizado",
+    "unauthorized": "No tienes permiso para identificar. Comprueba la API key.",
+    "rateLimitedTitle": "Demasiadas peticiones",
+    "rateLimited": "Has superado el límite de uso. Espera un momento y reintenta.",
+    "clientTitle": "Error de solicitud",
+    "client": "La solicitud no pudo completarse (error del cliente).",
+    "serverTitle": "Error del servidor",
+    "server": "El servidor falló al procesar la identificación. Reintenta en unos momentos.",
+    "retry": "Reintentar",
+    "dismiss": "Entendido",
+    "detail": "Detalle"
   },
   "share": {
     "title": "Resultado VisionSetil",

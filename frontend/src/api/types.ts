@@ -100,6 +100,9 @@ export interface ApiError {
   message: string
 }
 
+/** Re-export classify error taxonomy (B-29). Prefer `classifyApiError` from `./client`. */
+export type { ApiErrorKind, ClassifiedApiError } from './classifyErrors'
+
 /** Metadata that can be optionally submitted with images for better accuracy. */
 export interface ObservationMetadata {
   title?: string

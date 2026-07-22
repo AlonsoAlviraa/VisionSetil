@@ -118,7 +118,26 @@
   },
   "error": {
     "defaultTitle": "Something went wrong",
-    "defaultDescription": "Please try again in a moment."
+    "defaultDescription": "Please try again in a moment.",
+    "networkTitle": "No connection",
+    "network": "Could not reach the server. Check your network or that the backend is running.",
+    "timeoutTitle": "Request timed out",
+    "timeout": "Identification took too long. Try fewer photos or retry.",
+    "viewTypesTitle": "Invalid views",
+    "viewTypes": "View labels are not valid. Use only: gills, front, habitat, detail.",
+    "badRequestTitle": "Invalid request",
+    "badRequest": "The server rejected the request. Check your photos and try again.",
+    "unauthorizedTitle": "Unauthorized",
+    "unauthorized": "You are not allowed to identify. Check the API key.",
+    "rateLimitedTitle": "Too many requests",
+    "rateLimited": "Rate limit exceeded. Wait a moment and retry.",
+    "clientTitle": "Request error",
+    "client": "The request could not be completed (client error).",
+    "serverTitle": "Server error",
+    "server": "The server failed while processing identification. Retry in a moment.",
+    "retry": "Retry",
+    "dismiss": "Got it",
+    "detail": "Detail"
   },
   "share": {
     "title": "VisionSetil result",

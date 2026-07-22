@@ -118,7 +118,26 @@
   },
   "error": {
     "defaultTitle": "Zerbait gaizki atera da",
-    "defaultDescription": "Saiatu berriro une batzuk barru."
+    "defaultDescription": "Saiatu berriro une batzuk barru.",
+    "networkTitle": "Konexiorik ez",
+    "network": "Ezin izan da zerbitzariarekin harremanetan jarri. Egiaztatu sarea edo backend-a martxan dagoela.",
+    "timeoutTitle": "Denbora-muga gainditu da",
+    "timeout": "Identifikazioak luzeegi hartu du. Saiatu argazki gutxiagorekin edo berriro saiatu.",
+    "viewTypesTitle": "Ikuspegi baliogabeak",
+    "viewTypes": "Ikuspegi etiketak ez dira baliozkoak. Erabili soilik: gills, front, habitat, detail.",
+    "badRequestTitle": "Eskaera baliogabea",
+    "badRequest": "Zerbitzariak eskaera baztertu du. Egiaztatu argazkiak eta saiatu berriro.",
+    "unauthorizedTitle": "Baimenik gabe",
+    "unauthorized": "Ez duzu identifikatzeko baimenik. Egiaztatu API gakoa.",
+    "rateLimitedTitle": "Eskaera gehiegi",
+    "rateLimited": "Erabilera-muga gainditu duzu. Itxaron une bat eta saiatu berriro.",
+    "clientTitle": "Eskaera errorea",
+    "client": "Eskaera ezin izan da osatu (bezeroaren errorea).",
+    "serverTitle": "Zerbitzari errorea",
+    "server": "Zerbitzariak huts egin du identifikazioa prozesatzean. Saiatu berriro une batzuk barru.",
+    "retry": "Saiatu berriro",
+    "dismiss": "Ulertuta",
+    "detail": "Xehetasuna"
   },
   "share": {
     "title": "VisionSetil emaitza",

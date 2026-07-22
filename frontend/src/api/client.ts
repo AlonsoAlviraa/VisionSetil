@@ -3,12 +3,23 @@
 import axios from 'axios'
 import type { ClassificationResult, ObservationMetadata } from './types'
 
+export {
+  classifyApiError,
+  extractServerDetail,
+  isViewTypesValidationDetail,
+  type ApiErrorKind,
+  type ClassifiedApiError,
+} from './classifyErrors'
+
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api'
 const API_KEY = import.meta.env.VITE_API_KEY || ''
 
+/** Sync classify timeout (ms). Surfaced as taxonomy kind `timeout` when exceeded. */
+export const CLASSIFY_TIMEOUT_MS = 60_000
+
 const client = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 60000,
+  timeout: CLASSIFY_TIMEOUT_MS,
   headers: {
     ...(API_KEY && { 'X-API-Key': API_KEY }),
   },
