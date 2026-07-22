@@ -1,6 +1,9 @@
 /**
- * Identify page: guided multi-view + classify + history.
- * B-11: PreflightBanner + offline-only submit disable (never gate-block submit).
+ * Identify page: honesty flow layout (B-24) + preflight (B-11) + result modes (B-08).
+ *
+ * Visual order (capture): preflight → wizard → (history)
+ * Visual order (result):  result mode chrome → card / images
+ * Preflight is always advisory; only offline disables submit.
  */
 import { useState, useCallback, useEffect, useMemo, useRef } from 'react'
 import { Link } from 'react-router-dom'
@@ -36,6 +39,7 @@ import {
   type HistoryEntry,
 } from '../lib/observationHistory'
 import { decisionLabelEs } from '../lib/decisionLabels'
+import { resolveDisplayMode } from '../lib/classifyMode'
 import {
   canSubmitPreflight,
   fetchPreflight,
@@ -48,6 +52,9 @@ interface SelectedImage {
   file: File
   preview: string
 }
+
+/** Honesty-flow phase for layout chrome (B-24). */
+type IdentifyPhase = 'capture' | 'loading' | 'result'
 
 export function IdentifyPage() {
   const { t } = useTranslation()
@@ -286,9 +293,18 @@ export function IdentifyPage() {
 
   const hasImages = useWizard ? readiness.filled > 0 : selectedImages.length > 0
   const showResult = result !== null && !loading
+  const phase: IdentifyPhase = loading ? 'loading' : showResult ? 'result' : 'capture'
+  const resultMode = result ? resolveDisplayMode(result) : null
+  const preflightSettled = !preflight.loading || preflight.fetched_at > 0
 
   return (
-    <div className="page-identify">
+    <div
+      className="page-identify"
+      data-testid="identify-page"
+      data-phase={phase}
+      data-preflight-mode={preflightEnabled ? preflight.mode : undefined}
+      data-result-mode={resultMode ?? undefined}
+    >
       <div className="atelier-banner">
         <div
           className="atelier-banner__media"
@@ -301,249 +317,337 @@ export function IdentifyPage() {
         </div>
       </div>
 
-      <div className="page-header">
-        <div className="identify-mode-toggle">
-          <button
-            type="button"
-            className={useWizard ? 'btn-atelier btn-atelier--primary' : 'btn-atelier btn-atelier--ghost'}
-            onClick={() => setUseWizard(true)}
+      {/*
+        B-24 honesty flow shell — visual order:
+        1) preflight  2) wizard/capture  3) result modes
+      */}
+      <div
+        className="identify-honesty-flow"
+        data-testid="identify-honesty-flow"
+        data-phase={phase}
+      >
+        <nav
+          className="identify-flow-steps"
+          aria-label="Flujo de identificación honesta"
+          data-testid="identify-flow-steps"
+        >
+          <ol className="identify-flow-steps__list">
+            <li
+              className={[
+                'identify-flow-steps__item',
+                phase === 'capture' && !preflightSettled ? 'is-active' : 'is-done',
+              ].join(' ')}
+              data-step="preflight"
+              data-testid="identify-flow-step-preflight"
+              aria-current={phase === 'capture' && !preflightSettled ? 'step' : undefined}
+            >
+              <span className="identify-flow-steps__index" aria-hidden="true">
+                1
+              </span>
+              <span className="identify-flow-steps__label">Preflight</span>
+            </li>
+            <li
+              className={[
+                'identify-flow-steps__item',
+                phase === 'capture' ? 'is-active' : phase === 'loading' || phase === 'result' ? 'is-done' : '',
+              ].join(' ')}
+              data-step="wizard"
+              data-testid="identify-flow-step-wizard"
+              aria-current={phase === 'capture' ? 'step' : undefined}
+            >
+              <span className="identify-flow-steps__index" aria-hidden="true">
+                2
+              </span>
+              <span className="identify-flow-steps__label">Captura</span>
+            </li>
+            <li
+              className={[
+                'identify-flow-steps__item',
+                phase === 'loading' ? 'is-active' : phase === 'result' ? 'is-active is-done' : '',
+              ].join(' ')}
+              data-step="result"
+              data-testid="identify-flow-step-result"
+              aria-current={phase === 'loading' || phase === 'result' ? 'step' : undefined}
+            >
+              <span className="identify-flow-steps__index" aria-hidden="true">
+                3
+              </span>
+              <span className="identify-flow-steps__label">Resultado</span>
+            </li>
+          </ol>
+        </nav>
+
+        {/* ── 1. Preflight (honesty of system before/during capture) ── */}
+        {preflightEnabled && phase !== 'result' && (
+          <section
+            className="identify-region identify-region--preflight"
+            data-testid="identify-region-preflight"
+            aria-label="Estado del modelo antes de identificar"
           >
-            Modo guiado
-          </button>
-          <button
-            type="button"
-            className={!useWizard ? 'btn-atelier btn-atelier--primary' : 'btn-atelier btn-atelier--ghost'}
-            onClick={() => setUseWizard(false)}
-          >
-            Modo libre
-          </button>
-          <Link to="/historial" className="btn-atelier btn-atelier--ghost">
-            Historial ({historySummary.total})
-          </Link>
-        </div>
-      </div>
+            <PreflightBanner state={preflight} />
+          </section>
+        )}
 
-      {preflightEnabled && !showResult && (
-        <PreflightBanner state={preflight} onRetry={handlePreflightRetry} />
-      )}
-
-      {showCamera && (
-        <CameraCapture
-          onCapture={(file) => {
-            addFiles([file])
-            setShowCamera(false)
-          }}
-          onClose={() => setShowCamera(false)}
-        />
-      )}
-
-      {!showResult && !loading && useWizard && (
-        <>
-          <MultiViewWizard
-            assignments={assignments}
-            onAssign={(view, file, previewUrl) => {
-              onAssignSlot(view, file, previewUrl)
-              setFocusWizardSlot(null)
+        {showCamera && (
+          <CameraCapture
+            onCapture={(file) => {
+              addFiles([file])
+              setShowCamera(false)
             }}
-            onClear={onClearSlot}
-            onOpenCamera={() => setShowCamera(true)}
-            focusView={focusWizardSlot}
+            onClose={() => setShowCamera(false)}
           />
-          {hasImages && (
-            <div className="image-review-section">
-              <MetadataForm metadata={metadata} onChange={setMetadata} />
-              <div className="analyze-actions">
+        )}
+
+        {/* ── 2. Wizard / free capture ── */}
+        {phase === 'capture' && (
+          <section
+            className="identify-region identify-region--wizard"
+            data-testid="identify-region-wizard"
+            aria-label="Captura multi-vista o libre"
+          >
+            <div className="page-header identify-wizard-header">
+              <div className="identify-mode-toggle">
                 <button
                   type="button"
-                  className="btn-atelier btn-atelier--primary"
-                  onClick={handleClassify}
-                  disabled={loading || !readiness.canSubmit || !submitAllowed}
-                  data-testid="identify-submit"
-                  title={
-                    !submitAllowed
-                      ? 'API no disponible — identificación deshabilitada'
-                      : undefined
+                  className={
+                    useWizard
+                      ? 'btn-atelier btn-atelier--primary'
+                      : 'btn-atelier btn-atelier--ghost'
                   }
+                  onClick={() => setUseWizard(true)}
                 >
-                  {loading ? (
-                    'Analizando…'
-                  ) : !submitAllowed ? (
-                    'API desconectada'
-                  ) : (
-                    <>
-                      <IconSearch size={18} />
-                      Analizar ({readiness.filled} vistas)
-                    </>
-                  )}
+                  Modo guiado
                 </button>
-                <button type="button" className="btn-atelier btn-atelier--ghost" onClick={reset}>
-                  Cancelar
-                </button>
-              </div>
-            </div>
-          )}
-        </>
-      )}
-
-      {!showResult && !loading && !useWizard && !hasImages && (
-        <UploadZone
-          getRootProps={getRootProps}
-          getInputProps={getInputProps}
-          isDragActive={isDragActive}
-          fileCount={selectedImages.length}
-          onOpenCamera={() => setShowCamera(true)}
-        />
-      )}
-
-      {!showResult && !loading && !useWizard && hasImages && (
-        <div className="image-review-section">
-          <h2>Fotos seleccionadas ({selectedImages.length})</h2>
-          <div className="image-grid">
-            {selectedImages.map((img, idx) => (
-              <div key={idx} className="image-grid-item" onClick={() => setLightbox(img.preview)}>
-                <img src={img.preview} alt={`Seta ${idx + 1}`} />
                 <button
-                  className="btn-remove-image"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    removeImage(idx)
-                  }}
-                  aria-label="Eliminar imagen"
+                  type="button"
+                  className={
+                    !useWizard
+                      ? 'btn-atelier btn-atelier--primary'
+                      : 'btn-atelier btn-atelier--ghost'
+                  }
+                  onClick={() => setUseWizard(false)}
                 >
-                  <IconClose size={14} />
+                  Modo libre
                 </button>
+                <Link to="/historial" className="btn-atelier btn-atelier--ghost">
+                  Historial ({historySummary.total})
+                </Link>
               </div>
-            ))}
-          </div>
-          <MetadataForm metadata={metadata} onChange={setMetadata} />
-          <div className="analyze-actions">
-            <button
-              type="button"
-              className="btn-atelier btn-atelier--primary"
-              onClick={handleClassify}
-              disabled={loading || !submitAllowed}
-              data-testid="identify-submit"
-              title={
-                !submitAllowed
-                  ? 'API no disponible — identificación deshabilitada'
-                  : undefined
-              }
-            >
-              {loading ? (
-                'Analizando…'
-              ) : !submitAllowed ? (
-                'API desconectada'
-              ) : (
-                <>
-                  <IconSearch size={18} />
-                  Analizar
-                </>
-              )}
-            </button>
-            <button type="button" className="btn-atelier btn-atelier--ghost" {...getRootProps()}>
-              + Añadir más fotos
-            </button>
-            <input {...getInputProps()} />
-            <button type="button" className="btn-atelier btn-atelier--ghost" onClick={reset}>
-              Cancelar
-            </button>
-          </div>
-        </div>
-      )}
+            </div>
 
-      {loading && (
-        <div className="loading">
-          <div className="spinner" />
-          <p>Analizando con multi-vista…</p>
-        </div>
-      )}
-
-      {error && (
-        <div
-          className="error-banner"
-          role="alert"
-          data-error-kind={error.kind}
-          data-testid="identify-error"
-        >
-          <div className="error-banner__body">
-            <strong>{t(error.titleKey)}</strong>
-            <p>{t(error.messageKey)}</p>
-            {error.serverDetail &&
-              (error.kind === 'view_types' ||
-                error.kind === 'bad_request' ||
-                error.kind === 'client') && (
-                <p className="error-banner__detail muted">
-                  {t('error.detail')}: {error.serverDetail}
-                </p>
-              )}
-          </div>
-          {error.retryable ? (
-            <button
-              type="button"
-              className="btn-retry"
-              onClick={() => {
-                void handleClassify()
-              }}
-            >
-              {t('error.retry')}
-            </button>
-          ) : (
-            <button type="button" className="btn-retry" onClick={() => setError(null)}>
-              {t('error.dismiss')}
-            </button>
-          )}
-        </div>
-      )}
-
-      {showResult && result && (
-        <div className="result-layout" data-testid="identify-result">
-          <div className="result-image-section">
-            <div className="result-image-grid">
-              {(useWizard
-                ? orderedSlotKeys(assignments).map((k) => assignments[k]!.previewUrl)
-                : selectedImages.map((i) => i.preview)
-              ).map((src, idx) => (
-                <img
-                  key={idx}
-                  src={src}
-                  alt={`Resultado ${idx + 1}`}
-                  className="preview-image"
-                  onClick={() => setLightbox(src)}
+            {useWizard && (
+              <>
+                <MultiViewWizard
+                  assignments={assignments}
+                  onAssign={onAssignSlot}
+                  onClear={onClearSlot}
+                  onOpenCamera={() => setShowCamera(true)}
                 />
-              ))}
+                {hasImages && (
+                  <div className="image-review-section">
+                    <MetadataForm metadata={metadata} onChange={setMetadata} />
+                    <div className="analyze-actions">
+                      <button
+                        type="button"
+                        className="btn-atelier btn-atelier--primary"
+                        onClick={handleClassify}
+                        disabled={loading || !readiness.canSubmit || !submitAllowed}
+                        data-testid="identify-submit"
+                        title={
+                          !submitAllowed
+                            ? 'API no disponible — identificación deshabilitada'
+                            : undefined
+                        }
+                      >
+                        {loading ? (
+                          'Analizando…'
+                        ) : !submitAllowed ? (
+                          'API desconectada'
+                        ) : (
+                          <>
+                            <IconSearch size={18} />
+                            Analizar ({readiness.filled} vistas)
+                          </>
+                        )}
+                      </button>
+                      <button
+                        type="button"
+                        className="btn-atelier btn-atelier--ghost"
+                        onClick={reset}
+                      >
+                        Cancelar
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+
+            {!useWizard && !hasImages && (
+              <UploadZone
+                getRootProps={getRootProps}
+                getInputProps={getInputProps}
+                isDragActive={isDragActive}
+                fileCount={selectedImages.length}
+                onOpenCamera={() => setShowCamera(true)}
+              />
+            )}
+
+            {!useWizard && hasImages && (
+              <div className="image-review-section">
+                <h2>Fotos seleccionadas ({selectedImages.length})</h2>
+                <div className="image-grid">
+                  {selectedImages.map((img, idx) => (
+                    <div
+                      key={idx}
+                      className="image-grid-item"
+                      onClick={() => setLightbox(img.preview)}
+                    >
+                      <img src={img.preview} alt={`Seta ${idx + 1}`} />
+                      <button
+                        className="btn-remove-image"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          removeImage(idx)
+                        }}
+                        aria-label="Eliminar imagen"
+                      >
+                        <IconClose size={14} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                <MetadataForm metadata={metadata} onChange={setMetadata} />
+                <div className="analyze-actions">
+                  <button
+                    type="button"
+                    className="btn-atelier btn-atelier--primary"
+                    onClick={handleClassify}
+                    disabled={loading || !submitAllowed}
+                    data-testid="identify-submit"
+                    title={
+                      !submitAllowed
+                        ? 'API no disponible — identificación deshabilitada'
+                        : undefined
+                    }
+                  >
+                    {loading ? (
+                      'Analizando…'
+                    ) : !submitAllowed ? (
+                      'API desconectada'
+                    ) : (
+                      <>
+                        <IconSearch size={18} />
+                        Analizar
+                      </>
+                    )}
+                  </button>
+                  <button
+                    type="button"
+                    className="btn-atelier btn-atelier--ghost"
+                    {...getRootProps()}
+                  >
+                    + Añadir más fotos
+                  </button>
+                  <input {...getInputProps()} />
+                  <button
+                    type="button"
+                    className="btn-atelier btn-atelier--ghost"
+                    onClick={reset}
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              </div>
+            )}
+          </section>
+        )}
+
+        {/* ── Loading (between wizard and result) ── */}
+        {phase === 'loading' && (
+          <section
+            className="identify-region identify-region--loading"
+            data-testid="identify-region-loading"
+            aria-busy="true"
+            aria-live="polite"
+          >
+            <div className="loading">
+              <div className="spinner" />
+              <p>Analizando con multi-vista…</p>
             </div>
-            <div className="result-actions-bar">
-              <button type="button" className="btn-atelier btn-atelier--primary" onClick={reset}>
-                Nuevo análisis
-              </button>
-              <Link to="/historial" className="btn-atelier btn-atelier--ghost">
-                <IconHistory size={16} />
-                Cuaderno
-              </Link>
-              <Link to="/revision-experta" className="btn-atelier btn-atelier--ghost">
-                <IconExpert size={16} />
-                Expertos
-              </Link>
-            </div>
+          </section>
+        )}
+
+        {error && (
+          <div className="error-banner" data-testid="identify-error" role="alert">
+            <strong>Error:</strong> {error}
+            <button className="btn-retry" onClick={reset}>
+              Reintentar
+            </button>
           </div>
-          <ResultCard
-            result={result}
-            onFeedback={handleFeedback}
-            viewTypes={
-              useWizard
-                ? orderedSlotKeys(assignments)
-                : // Free upload: omit fake free_N labels; BE/result.view_coverage auto-labels.
-                  undefined
-            }
-            previews={
-              useWizard
-                ? orderedSlotKeys(assignments).map((k) => assignments[k]!.previewUrl)
-                : selectedImages.map((i) => i.preview)
-            }
-            onFocusWizardSlot={handleFocusWizardSlot}
-          />
-        </div>
-      )}
+        )}
+
+        {/* ── 3. Result modes (honesty chrome first via ResultCard banner) ── */}
+        {phase === 'result' && result && (
+          <section
+            className={`identify-region identify-region--result identify-region--mode-${resultMode}`}
+            data-testid="identify-region-result"
+            data-mode={resultMode ?? undefined}
+            aria-label="Resultado de identificación"
+          >
+            <div className="result-layout identify-result-layout" data-testid="identify-result">
+              {/* ResultCard first so ResultModeBanner leads the honesty chrome */}
+              <ResultCard
+                result={result}
+                onFeedback={handleFeedback}
+                viewTypes={
+                  useWizard
+                    ? orderedSlotKeys(assignments)
+                    : selectedImages.map((_, i) => `free_${i + 1}`)
+                }
+                previews={
+                  useWizard
+                    ? orderedSlotKeys(assignments).map((k) => assignments[k]!.previewUrl)
+                    : selectedImages.map((i) => i.preview)
+                }
+              />
+              <div className="result-image-section">
+                <div className="result-image-grid">
+                  {(useWizard
+                    ? orderedSlotKeys(assignments).map((k) => assignments[k]!.previewUrl)
+                    : selectedImages.map((i) => i.preview)
+                  ).map((src, idx) => (
+                    <img
+                      key={idx}
+                      src={src}
+                      alt={`Resultado ${idx + 1}`}
+                      className="preview-image"
+                      onClick={() => setLightbox(src)}
+                    />
+                  ))}
+                </div>
+                <div className="result-actions-bar">
+                  <button
+                    type="button"
+                    className="btn-atelier btn-atelier--primary"
+                    onClick={reset}
+                  >
+                    Nuevo análisis
+                  </button>
+                  <Link to="/historial" className="btn-atelier btn-atelier--ghost">
+                    <IconHistory size={16} />
+                    Cuaderno
+                  </Link>
+                  <Link to="/revision-experta" className="btn-atelier btn-atelier--ghost">
+                    <IconExpert size={16} />
+                    Expertos
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+      </div>
 
       {lightbox && (
         <div className="lightbox" onClick={() => setLightbox(null)}>
@@ -554,8 +658,8 @@ export function IdentifyPage() {
         </div>
       )}
 
-      {history.length > 0 && !loading && !showResult && (
-        <div className="history-section">
+      {history.length > 0 && phase === 'capture' && (
+        <div className="history-section" data-testid="identify-history">
           <div className="history-header">
             <h2>Historial reciente ({historySummary.total})</h2>
             <div className="history-actions">

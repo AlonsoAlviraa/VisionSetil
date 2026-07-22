@@ -5024,13 +5024,204 @@ label,
   border-color: #475569;
 }
 
+/* ── Honesty tokens (Phase B Appendix D.5) — never edible/success green ─── */
+:root {
+  --honesty-real: #0369a1;
+  --honesty-mock: #a16207;
+  --honesty-blocked: #b91c1c;
+  --honesty-offline: #9a3412;
+  --honesty-real-bg: color-mix(in srgb, #0ea5e9 8%, var(--surface, #fff));
+  --honesty-mock-bg: color-mix(in srgb, #f59e0b 10%, var(--surface, #fff));
+  --honesty-blocked-bg: color-mix(in srgb, #ef4444 10%, var(--surface, #fff));
+}
+
+/* ── Identify honesty flow layout (B-24): preflight → wizard → result ───── */
+
+.identify-honesty-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  width: 100%;
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+.identify-flow-steps {
+  margin: 0.15rem 0 0.25rem;
+}
+
+.identify-flow-steps__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.45rem;
+}
+
+.identify-flow-steps__item {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 0.7rem;
+  border-radius: 12px;
+  border: 1px solid var(--line, #e2e8f0);
+  background: var(--surface, #fff);
+  color: var(--ink-mute, #64748b);
+  font-size: 0.82rem;
+  font-weight: 600;
+  min-height: 2.6rem;
+}
+
+.identify-flow-steps__index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.45rem;
+  height: 1.45rem;
+  border-radius: 999px;
+  border: 1px solid var(--line, #e2e8f0);
+  background: var(--surface-alt, #f8fafc);
+  font-size: 0.72rem;
+  font-weight: 750;
+  flex-shrink: 0;
+}
+
+.identify-flow-steps__label {
+  line-height: 1.2;
+}
+
+.identify-flow-steps__item.is-active {
+  border-color: color-mix(in srgb, var(--honesty-real) 40%, var(--line, #e2e8f0));
+  background: var(--honesty-real-bg);
+  color: var(--ink, #0f172a);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--honesty-real) 18%, transparent);
+}
+
+.identify-flow-steps__item.is-active .identify-flow-steps__index {
+  border-color: color-mix(in srgb, var(--honesty-real) 45%, var(--line, #e2e8f0));
+  background: color-mix(in srgb, var(--honesty-real) 14%, var(--surface, #fff));
+  color: var(--honesty-real);
+}
+
+.identify-flow-steps__item.is-done:not(.is-active) {
+  border-color: color-mix(in srgb, var(--honesty-real) 22%, var(--line, #e2e8f0));
+  color: var(--ink-soft, #334155);
+}
+
+.identify-flow-steps__item.is-done:not(.is-active) .identify-flow-steps__index {
+  background: color-mix(in srgb, var(--honesty-real) 10%, var(--surface, #fff));
+  border-color: color-mix(in srgb, var(--honesty-real) 30%, var(--line, #e2e8f0));
+  color: var(--honesty-real);
+}
+
+.identify-region {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.identify-region--preflight {
+  order: 0;
+}
+
+.identify-region--wizard {
+  order: 1;
+}
+
+.identify-region--loading {
+  order: 2;
+  align-items: center;
+  justify-content: center;
+  min-height: 10rem;
+  padding: 1.5rem 1rem;
+  border-radius: 16px;
+  border: 1px dashed var(--line, #e2e8f0);
+  background: var(--surface-alt, #f8fafc);
+}
+
+.identify-region--result {
+  order: 3;
+}
+
+/* Result mode surface tint (no edible green) */
+.identify-region--mode-real {
+  --identify-mode-accent: var(--honesty-real);
+}
+
+.identify-region--mode-mock {
+  --identify-mode-accent: var(--honesty-mock);
+}
+
+.identify-region--mode-blocked {
+  --identify-mode-accent: var(--honesty-blocked);
+}
+
+.identify-result-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* ResultCard (with ResultModeBanner) leads; images follow */
+.identify-result-layout > .result-card {
+  order: 0;
+}
+
+.identify-result-layout > .result-image-section {
+  order: 1;
+}
+
+.identify-wizard-header {
+  margin: 0;
+  padding: 0;
+}
+
+.identify-wizard-header .identify-mode-toggle {
+  margin-top: 0;
+}
+
+/* Mode-tinted result chrome ring */
+.page-identify[data-phase='result'] .identify-region--result .result-card {
+  border-color: color-mix(
+    in srgb,
+    var(--identify-mode-accent, var(--line)) 28%,
+    var(--line, #e2e8f0)
+  );
+}
+
+[data-theme='dark'] .identify-flow-steps__item {
+  background: var(--surface, #1a2420);
+  border-color: var(--line, #2d3b34);
+}
+
+[data-theme='dark'] .identify-flow-steps__item.is-active {
+  background: color-mix(in srgb, #0c4a6e 35%, var(--surface, #1a2420));
+}
+
+[data-theme='dark'] .identify-region--loading {
+  background: color-mix(in srgb, #1e293b 40%, var(--surface, #1a2420));
+}
+
+@media (max-width: 520px) {
+  .identify-flow-steps__label {
+    font-size: 0.75rem;
+  }
+
+  .identify-flow-steps__item {
+    padding: 0.45rem 0.5rem;
+    gap: 0.35rem;
+  }
+}
+
 /* ── Identify preflight (B-11 / Appendix D.1) ────────────────────────────── */
 
 .preflight-banner {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
-  margin: 0 0 1rem;
+  margin: 0;
   padding: 0.75rem 0.95rem;
   border-radius: 14px;
   border: 1px solid var(--line);
