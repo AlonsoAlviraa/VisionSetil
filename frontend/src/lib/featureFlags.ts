@@ -25,6 +25,11 @@ export const featureFlags = {
   OFFLINE_PACK: envBool('VITE_FEATURE_OFFLINE_PACK', true),
   /** Favorites UI (PR-12) */
   FAVORITES: envBool('VITE_FEATURE_FAVORITES', true),
+  /**
+   * Identify PreflightBanner + offline submit disable (B-11).
+   * Kill-switch hides banner; offline submit disable stays active when true (default).
+   */
+  IDENTIFY_PREFLIGHT: envBool('VITE_FEATURE_IDENTIFY_PREFLIGHT', true),
 } as const
 
 export type FeatureFlagKey = keyof typeof featureFlags
