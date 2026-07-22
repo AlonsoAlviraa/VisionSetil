@@ -173,6 +173,8 @@
     "humanReviewTitle": "Recomanada revisió humana",
     "humanReviewBody": "Aquest cas presenta baixa confiança. Un expert l'hauria de revisar.",
     "predictions": "Prediccions",
+    "outOfCatalog": "Fora del catàleg",
+    "outOfCatalogHint": "El model suggereix aquest tàxon, però no és al catàleg de l'app (sense fitxa ni mèdia curada).",
     "dangerTitle": "ESPÈCIE POTENCIALMENT PERILLOSA DETECTADA",
     "dangerBody": "La coincidència més probable pertany a la categoria {{category}}. Mantingueu-la lluny de nens i mascotes.",
     "lookalikesTitle": "Espècies perilloses similars:",

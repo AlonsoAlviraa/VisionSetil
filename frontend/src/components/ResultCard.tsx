@@ -221,10 +221,12 @@ export function ResultCard({ result, onFeedback, viewTypes = [], previews = [] }
               {result.predictions.slice(0, 3).map((pred: SpeciesPrediction, idx: number) => {
                 const meta = getEdibilityMeta(pred.edibility)
                 const fq = getFoodQuality(pred.species)
+                // D-B21 / B-40: badge only when backend explicitly sets in_catalog=false
+                const outOfCatalog = pred.in_catalog === false
                 return (
                   <li
                     key={`${pred.species}-${idx}`}
-                    className={`prediction-item ${meta.class} ${idx === 0 ? 'top-match' : ''}`}
+                    className={`prediction-item ${meta.class} ${idx === 0 ? 'top-match' : ''}${outOfCatalog ? ' prediction-item--out-of-catalog' : ''}`}
                   >
                     <SpeciesThumb
                       taxon={pred.species}
@@ -240,6 +242,14 @@ export function ResultCard({ result, onFeedback, viewTypes = [], previews = [] }
                         size="sm"
                         showFamily
                       />
+                      {outOfCatalog && (
+                        <span
+                          className="catalog-badge catalog-badge--out"
+                          title="El modelo sugiere este taxón, pero no está en el catálogo de la app (sin ficha ni media curada)."
+                        >
+                          Fuera del catálogo
+                        </span>
+                      )}
                       {fq ? (
                         <FoodQualityChip foodClass={fq.food_class} label={fq.label} compact />
                       ) : (

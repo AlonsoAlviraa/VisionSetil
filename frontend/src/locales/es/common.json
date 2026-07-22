@@ -192,6 +192,8 @@
     "humanReviewTitle": "Recomendada revisión humana",
     "humanReviewBody": "Este caso presenta baja confianza. Un experto debería revisarlo.",
     "predictions": "Predicciones",
+    "outOfCatalog": "Fuera del catálogo",
+    "outOfCatalogHint": "El modelo sugiere este taxón, pero no está en el catálogo de la app (sin ficha ni media curada).",
     "dangerTitle": "ESPECIE POTENCIALMENTE PELIGROSA DETECTADA",
     "dangerBody": "La coincidencia más probable pertenece a una categoría {{category}}. Mantenla lejos de niños y mascotas.",
     "lookalikesTitle": "Especies peligrosas similares:",

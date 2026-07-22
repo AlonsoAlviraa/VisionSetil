@@ -5,6 +5,18 @@ export interface SpeciesPrediction {
   common_name: string | null
   confidence: number
   edibility: string | null
+  /** Catalog slug when hydrate finds a hit (Phase B). */
+  slug?: string | null
+  /** Risk level from catalog hydrate (Phase B). */
+  risk_level?: string | null
+  image_card_url?: string | null
+  image_thumb_url?: string | null
+  /**
+   * True only when server hydrate joined this taxon to catalog_v2 (D-B21).
+   * Default / omit / false → treat as out-of-catalog for honest UI.
+   * Badge shows when explicitly `false` (legacy responses omit the field).
+   */
+  in_catalog?: boolean
 }
 
 export interface ModelStack {
