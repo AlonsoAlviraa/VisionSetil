@@ -1,4 +1,6 @@
 from datetime import date, datetime
+from enum import Enum
+from typing import Literal
 
 from pydantic import BaseModel, Field
 
@@ -219,6 +221,52 @@ class ImageUploadResponse(BaseModel):
 # ─── Simple classification schema (for the /classify convenience endpoint) ────
 
 
+class ClassifyMode(str, Enum):
+    """Product honesty mode (D-B1). Independent of is_mock_stack (stack truth)."""
+
+    real = "real"
+    mock = "mock"
+    blocked = "blocked"
+
+
+class QualityGatePayload(BaseModel):
+    """Dual-signal quality gate (D-B15): metrics_acceptable vs species_id_allowed.
+
+    - metrics_acceptable: raw MAP/deadly thresholds only — never forced by disable
+    - species_id_allowed: serve policy (respects block_enabled)
+    - verdict: tracks metrics only (ACCEPTABLE/UNACCEPTABLE), not gate-disable bypass
+    - metrics_path: always full path (D-B23), never basename-only
+    """
+
+    species_id_allowed: bool
+    metrics_acceptable: bool
+    block_enabled: bool
+    reason: str
+    reason_code: str
+    test_map_at_3: float | None = None
+    safety_recall_deadly: float | None = None
+    min_map_at_3: float = 0.20
+    min_deadly_recall: float = 0.90
+    metrics_path: str | None = None  # full path always (D-B23)
+    version: str | None = None
+    verdict: Literal["ACCEPTABLE", "UNACCEPTABLE"]
+
+
+def _fail_closed_quality_gate() -> QualityGatePayload:
+    """Temporary default so call sites import/instantiate until B-03 sets gate explicitly.
+
+    Fail-closed: species ID denied, metrics unacceptable. Mapper (B-03) always overwrites.
+    """
+    return QualityGatePayload(
+        species_id_allowed=False,
+        metrics_acceptable=False,
+        block_enabled=True,
+        reason="unset_fail_closed",
+        reason_code="unset",
+        verdict="UNACCEPTABLE",
+    )
+
+
 class SimpleSpeciesPrediction(BaseModel):
     """Simplified species prediction for the quick-classify endpoint."""
 
@@ -226,6 +274,12 @@ class SimpleSpeciesPrediction(BaseModel):
     common_name: str | None = None
     confidence: float
     edibility: str | None = None
+    slug: str | None = None
+    risk_level: str | None = None
+    image_card_url: str | None = None
+    image_thumb_url: str | None = None
+    # Default false until hydrate succeeds (D-B21); no out_of_catalog twin
+    in_catalog: bool = False
 
 
 class SimpleClassificationResult(BaseModel):
@@ -250,6 +304,12 @@ class SimpleClassificationResult(BaseModel):
     # ML transparency (optional for older clients)
     confidence_margin: float | None = None
     view_coverage: list[str] = Field(default_factory=list)
+    # Stack truth (weights/backends); independent of mode (D-B1) — never derived from mode
     is_mock_stack: bool = True
     ml_notes: list[str] = Field(default_factory=list)
+    # Phase B honesty (D-B1, D-B2, D-B5, D-B22). Fail-closed defaults until B-03 mapper
+    # always sets these explicitly — do not treat defaults as product truth.
+    mode: ClassifyMode = ClassifyMode.blocked
+    quality_gate: QualityGatePayload = Field(default_factory=_fail_closed_quality_gate)
+    locale: str = "es"
 
