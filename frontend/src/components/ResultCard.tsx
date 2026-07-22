@@ -7,7 +7,12 @@
 import { useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import type { ClassificationResult, SpeciesPrediction } from '../api/types'
-import { getRiskMeta } from '../lib/riskLabels'
+import {
+  getRiskMeta,
+  isSevereRisk,
+  resolveJoinRisk,
+  RISK_META,
+} from '../lib/riskLabels'
 import { lookalikeSummary, rankLookalikes } from '../lib/lookalikeRisk'
 import { SpeciesThumb } from './SpeciesThumb'
 import { SpeciesNameBlock } from './SpeciesNameBlock'
@@ -37,11 +42,6 @@ interface ResultCardProps {
   onFeedback?: (isCorrect: boolean, species?: string) => void
   viewTypes?: string[]
   previews?: string[]
-}
-
-function getEdibilityMeta(edibility: string | null): { label: string; class: string } {
-  const meta = getRiskMeta(edibility)
-  return { label: meta.label, class: meta.className }
 }
 
 function getConfidenceInterpretation(confidence: number): {
@@ -88,16 +88,20 @@ export function ResultCard({ result, onFeedback, viewTypes = [], previews = [] }
 
   const isRejected = result.decision === 'rejected'
   const topPrediction = result.predictions[0]
-  const topEdibility = getEdibilityMeta(topPrediction?.edibility ?? null)
-  const isDangerous = [
-    'risk-toxic',
-    'risk-poisonous',
-    'risk-deadly',
-    'ed-toxic',
-    'ed-deadly',
-  ].includes(topEdibility.class)
-  const isDeadly =
-    topEdibility.class === 'risk-deadly' || topEdibility.class === 'ed-deadly'
+  // B-42: catalog risk_level join may be more severe than model edibility.
+  const topJoinRisk = resolveJoinRisk(
+    topPrediction?.edibility,
+    topPrediction?.risk_level,
+  )
+  const topEdibility = {
+    label: RISK_META[topJoinRisk].label,
+    class: RISK_META[topJoinRisk].className,
+  }
+  const isDangerous = isSevereRisk(topJoinRisk)
+  const isDeadly = topJoinRisk === 'deadly'
+  // Visual boost for deadly/poisonous join only on real results (or legacy without mode).
+  // Blocked keeps predictions empty; mock stays quieter (no boost class).
+  const boostJoinRisk = result.mode === 'real' || result.mode == null
   const stackBadge = stackBadgeEs(result.model_stack)
   const topFood = topPrediction ? getFoodQuality(topPrediction.species) : null
 
@@ -219,16 +223,21 @@ export function ResultCard({ result, onFeedback, viewTypes = [], previews = [] }
             <h3>Mejores pistas</h3>
             <ul>
               {result.predictions.slice(0, 3).map((pred: SpeciesPrediction, idx: number) => {
-                const meta = getEdibilityMeta(pred.edibility)
-                const fq = getFoodQuality(pred.species)
+                // B-42: prefer max(edibility, catalog risk_level) so join risk is visible.
+                const joinRisk = resolveJoinRisk(pred.edibility, pred.risk_level)
+                const meta = RISK_META[joinRisk]
+                const severe = isSevereRisk(joinRisk)
+                const fq = severe ? null : getFoodQuality(pred.species)
                 return (
                   <li
                     key={`${pred.species}-${idx}`}
-                    className={`prediction-item ${meta.class} ${idx === 0 ? 'top-match' : ''}`}
+                    className={`prediction-item ${meta.className} ${idx === 0 ? 'top-match' : ''}${
+                      severe && boostJoinRisk ? ' prediction-item--join-severe' : ''
+                    }`}
                   >
                     <SpeciesThumb
                       taxon={pred.species}
-                      riskLabel={pred.edibility}
+                      riskLabel={joinRisk}
                       size={idx === 0 ? 56 : 44}
                       className="prediction-thumb"
                     />
@@ -243,7 +252,11 @@ export function ResultCard({ result, onFeedback, viewTypes = [], previews = [] }
                       {fq ? (
                         <FoodQualityChip foodClass={fq.food_class} label={fq.label} compact />
                       ) : (
-                        <RiskChip risk={pred.edibility} className={`edibility-badge ${meta.class}`} />
+                        <RiskChip
+                          risk={joinRisk}
+                          boost={boostJoinRisk && severe}
+                          className={`edibility-badge ${meta.className}`}
+                        />
                       )}
                       <div className="confidence-bar">
                         <div

@@ -5,6 +5,17 @@ export interface SpeciesPrediction {
   common_name: string | null
   confidence: number
   edibility: string | null
+  /** Catalog slug when hydrate finds a hit (Phase B). */
+  slug?: string | null
+  /**
+   * Risk level from catalog hydrate (Phase B / B-42).
+   * Prefer with edibility via resolveJoinRisk for RiskChip visibility.
+   */
+  risk_level?: string | null
+  image_card_url?: string | null
+  image_thumb_url?: string | null
+  /** True only when server hydrate joined this taxon to catalog_v2. */
+  in_catalog?: boolean
 }
 
 export interface ModelStack {
@@ -13,6 +24,9 @@ export interface ModelStack {
   image_text_embedder: string
   metadata_encoder: string
 }
+
+/** Product honesty mode (Phase B). Optional for legacy responses. */
+export type ClassifyMode = 'real' | 'mock' | 'blocked'
 
 export interface ClassificationResult {
   request_id: string
@@ -36,6 +50,11 @@ export interface ClassificationResult {
   view_coverage?: string[]
   is_mock_stack?: boolean
   ml_notes?: string[]
+  /**
+   * Phase B honesty mode. B-42 boosts deadly/poisonous join chrome only when
+   * `real` (or mode absent / legacy). Blocked keeps predictions empty.
+   */
+  mode?: ClassifyMode
 }
 
 export interface ApiError {
