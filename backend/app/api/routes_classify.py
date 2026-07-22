@@ -10,9 +10,8 @@ Flow:
     1. Validate uploaded images (extension, magic bytes, size).
     2. Create a transient Observation with the provided metadata.
     3. Store images and attach them to the observation.
-    4. Run the classifier pipeline.
-    5. Map the rich ClassificationResponse → SimpleClassificationResult.
-    6. Optionally persist the observation (default: persist so users can review).
+    4. Run the classifier pipeline via shared ``classify_to_simple`` (map+gate+mode).
+    5. Optionally persist the observation (default: persist so users can review).
 """
 
 from __future__ import annotations
@@ -28,13 +27,10 @@ from sqlalchemy.orm import Session
 from app.core.config import settings
 from app.db.database import get_db
 from app.db.models import Observation
-from app.db.schemas import (
-    ClassificationResponse,
-    SimpleClassificationResult,
-    SimpleSpeciesPrediction,
-)
+from app.db.schemas import SimpleClassificationResult
 from app.services import unified_catalog as catalog
-from app.services.classifier import MockMushroomClassifier
+from app.services.classify_simple import classify_to_simple
+from app.services.classify_simple import map_to_simple as _map_to_simple  # noqa: F401 — tests
 from app.services.image_storage import store_observation_images
 from app.services.multi_view_classifier import get_multi_view_classifier
 from app.services.view_classifier import CANONICAL_VIEWS
@@ -69,117 +65,6 @@ def _build_observation(
         smell=smell or None,
         nearby_trees=[],
     )
-
-
-def _map_to_simple(
-    result: ClassificationResponse,
-    request_id: str,
-    processing_time_ms: int,
-    *,
-    classifier: object | None = None,
-    loaded_weights_path: str | None = None,
-    locale: str = "es",
-) -> SimpleClassificationResult:
-    """Convert the rich ClassificationResponse into the simplified frontend schema.
-
-    ``loaded_weights_path`` is the multi-view checkpoint actually resolved for
-    serve (D-B12). Prefer the outer MultiView classifier path even when
-    ``classifier`` is a mock fallback used for diagnostics.
-
-    ``locale`` is the resolved form locale (D-B5); default ``es`` when omitted.
-    """
-
-    predictions: list[SimpleSpeciesPrediction] = []
-    for candidate in result.top_candidates or result.candidates:
-        predictions.append(
-            SimpleSpeciesPrediction(
-                species=candidate.taxon,
-                common_name=None,
-                confidence=candidate.confidence,
-                edibility=candidate.edibility_label,
-            )
-        )
-
-    # Determine decision from open-set analysis
-    decision = "accepted"
-    rejection_reason: str | None = None
-    if result.open_set and result.open_set.is_unknown_or_uncertain:
-        decision = "rejected"
-        rejection_reason = result.open_set.reason
-
-    confs = [p.confidence for p in predictions]
-    margin = None
-    if len(confs) >= 2:
-        margin = round(max(0.0, confs[0] - confs[1]), 4)
-    elif len(confs) == 1:
-        margin = round(confs[0], 4)
-
-    view_coverage: list[str] = []
-    ml_notes: list[str] = []
-    is_mock = True
-    if classifier is not None:
-        view_coverage = list(getattr(classifier, "last_view_coverage", []) or [])
-        ml_notes = list(getattr(classifier, "last_ml_notes", []) or [])
-        if getattr(classifier, "last_confidence_margin", None) is not None:
-            margin = getattr(classifier, "last_confidence_margin")
-        # MultiViewMushroomClassifier sets is_real
-        if getattr(classifier, "is_real", False):
-            is_mock = False
-        stack = result.model_stack
-        if stack and all(
-            "mock" not in str(getattr(stack, f, "")).lower()
-            for f in ("detector", "visual_embedder", "image_text_embedder", "metadata_encoder")
-        ):
-            is_mock = False
-
-    simple = SimpleClassificationResult(
-        request_id=request_id,
-        decision=decision,
-        predictions=predictions,
-        rejection_reason=rejection_reason,
-        processing_time_ms=processing_time_ms,
-        observation_id=result.observation_id,
-        safety_level=result.safety_level,
-        missing_evidence=result.missing_evidence,
-        warnings=result.warnings,
-        quality_warnings=result.quality_assessment.quality_warnings,
-        dangerous_lookalikes=result.dangerous_lookalikes,
-        questions_for_user=result.questions_for_user,
-        model_stack=result.model_stack,
-        open_set_reason=rejection_reason,
-        recommend_human_review=bool(result.human_review and result.human_review.recommended)
-        or decision == "rejected",
-        final_warning=result.final_warning,
-        confidence_margin=margin,
-        view_coverage=view_coverage,
-        is_mock_stack=is_mock,
-        ml_notes=ml_notes,
-        locale=locale,
-    )
-    # Hard quality gate: always attach dual-signal quality_gate (D-B2 / D-B15)
-    from app.ml.classify_mode import derive_classify_mode
-    from app.ml.quality_gate import apply_quality_gate_to_simple_result
-
-    # D-B12: prefer explicit serve path; else classifier.resolved_weights_path
-    weights_path = loaded_weights_path
-    if weights_path is None and classifier is not None:
-        weights_path = getattr(classifier, "resolved_weights_path", None)
-
-    gated = apply_quality_gate_to_simple_result(
-        simple.model_dump(),
-        loaded_weights_path=weights_path,
-    )
-    gate = gated.get("quality_gate") or {}
-    # Stack truth is independent of mode (D-B1) — never overwrite is_mock_stack from mode
-    is_mock_stack = bool(gated.get("is_mock_stack", True))
-    gated["is_mock_stack"] = is_mock_stack
-    gated["mode"] = derive_classify_mode(
-        is_mock_stack=is_mock_stack,
-        species_id_allowed=bool(gate.get("species_id_allowed", False)),
-    )
-    gated["locale"] = locale or gated.get("locale") or catalog.DEFAULT_LOCALE
-    # quality_gate always present from apply_* (pass and fail) — do not strip
-    return SimpleClassificationResult(**gated)
 
 
 @router.post("/classify", response_model=SimpleClassificationResult)
@@ -223,6 +108,9 @@ async def classify_images(
 
     Locale (D-B5 / B-04): optional form ``locale``; omit → ``es``; invalid → 400
     with ``{error, supported}`` parity to species API; echoed on ``result.locale``.
+
+    Honesty (B-05): mapping, quality gate, and mode are applied via shared
+    ``classify_to_simple`` so async workers can reuse the same path later.
     """
     request_id = uuid.uuid4().hex[:12]
     start = time.perf_counter()
@@ -270,26 +158,20 @@ async def classify_images(
             db.commit()
         raise
 
-    # Run classifier. Use the multi-view classifier, which gracefully falls back
-    # to MockMushroomClassifier when real weights are absent.
+    # Shared mapper: classify → map → gate → mode → locale (B-05)
     classifier = get_multi_view_classifier()
-    if hasattr(classifier, "classify") and "view_types" in classifier.classify.__code__.co_varnames:
-        result = classifier.classify(observation, saved_images, view_types=parsed_view_types)
-    else:
-        result = classifier.classify(observation, saved_images)
-
-    elapsed_ms = int((time.perf_counter() - start) * 1000)
-    # Prefer mock fallback diagnostics when MultiView wraps Mock
-    diag = getattr(classifier, "_mock_fallback", None) or classifier
-    # D-B12: always take resolved path from the multi-view outer (not mock fallback)
-    simple_result = _map_to_simple(
-        result,
-        request_id,
-        elapsed_ms,
-        classifier=diag,
-        loaded_weights_path=getattr(classifier, "resolved_weights_path", None),
+    simple_result = classify_to_simple(
+        observation=observation,
+        images=saved_images,
+        view_types=parsed_view_types,
         locale=resolved_locale,
+        request_id=request_id,
+        classifier=classifier,
+        loaded_weights_path=getattr(classifier, "resolved_weights_path", None),
     )
+    # Wall-clock from request start (upload + classify), matching prior /classify semantics
+    elapsed_ms = int((time.perf_counter() - start) * 1000)
+    simple_result = simple_result.model_copy(update={"processing_time_ms": elapsed_ms})
 
     # If not persisting, delete the observation and images
     if not persist:
