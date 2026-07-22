@@ -5512,6 +5512,251 @@ label,
   color: #fdba74;
 }
 
+/* ── B-31 Mobile-first Identify polish ─────────────────────────────────────
+ * Touch targets ≥44px; sticky analyze/result CTA; banners never cover submit.
+ * ────────────────────────────────────────────────────────────────────────── */
+
+.page-identify {
+  /* Room for sticky CTA + home indicator so content is not trapped under it */
+  --identify-sticky-cta-pad: 5.5rem;
+  --identify-touch-min: 44px;
+  padding-bottom: calc(var(--identify-sticky-cta-pad) + env(safe-area-inset-bottom, 0px));
+}
+
+/* Hero banner: static (never fixed/sticky) so it cannot cover the submit bar */
+.page-identify > .atelier-banner {
+  position: relative;
+  z-index: 0;
+}
+
+/* Preflight / mode banners stay in document flow, below sticky CTA z-index */
+.page-identify .identify-region--preflight,
+.page-identify .preflight-banner,
+.page-identify .result-mode-banner,
+.page-identify .error-banner,
+.page-identify .api-status-banner {
+  position: relative;
+  z-index: 1;
+}
+
+/* Optional: keep honesty preflight visible under header without covering CTA */
+@media (max-width: 768px) {
+  .page-identify .identify-region--preflight {
+    position: sticky;
+    /* Sit under sticky app header (~68px) + safe area */
+    top: calc(4.25rem + env(safe-area-inset-top, 0px));
+    z-index: 25;
+    margin-inline: -0.15rem;
+    padding: 0.15rem 0.15rem 0.35rem;
+    background: color-mix(in srgb, var(--surface, #fff) 88%, transparent);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  /* Cap tall banners so they leave room for the sticky submit bar */
+  .page-identify .preflight-banner {
+    max-height: min(32vh, 11rem);
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+}
+
+/* Sticky analyze / result CTA — always above banners & content */
+.page-identify .identify-sticky-cta {
+  position: sticky;
+  bottom: 0;
+  z-index: 45;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  align-items: stretch;
+  margin-top: 1rem;
+  margin-inline: -0.35rem;
+  padding: 0.65rem 0.35rem
+    calc(0.65rem + env(safe-area-inset-bottom, 0px));
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--surface, #fff) 0%, transparent) 0%,
+      color-mix(in srgb, var(--surface, #fff) 92%, transparent) 28%,
+      color-mix(in srgb, var(--surface, #fff) 98%, transparent) 100%
+    );
+  border-top: 1px solid color-mix(in srgb, var(--line, #e2e8f0) 70%, transparent);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  box-shadow: 0 -8px 28px rgba(12, 20, 16, 0.08);
+  /* Isolate from parent stacking so banners cannot paint over the bar */
+  isolation: isolate;
+}
+
+.page-identify .identify-sticky-cta--result {
+  margin-top: 0.85rem;
+}
+
+/* Primary submit fills row on narrow screens; secondary actions share space */
+.page-identify .identify-sticky-cta .identify-submit-btn,
+.page-identify .identify-sticky-cta [data-testid='identify-submit'] {
+  flex: 1 1 12rem;
+  min-height: var(--identify-touch-min);
+  min-width: var(--identify-touch-min);
+}
+
+.page-identify .identify-sticky-cta .btn-atelier {
+  min-height: var(--identify-touch-min);
+  min-width: var(--identify-touch-min);
+  touch-action: manipulation;
+}
+
+/* ── Touch targets (WCAG 2.5.5 / 2.5.8) on Identify surface ─────────────── */
+
+.page-identify .btn-atelier,
+.page-identify .identify-mode-toggle .btn-atelier,
+.page-identify .identify-mode-toggle a.btn-atelier {
+  min-height: var(--identify-touch-min);
+  min-width: var(--identify-touch-min);
+  touch-action: manipulation;
+}
+
+.page-identify .mv-add,
+.page-identify .mv-clear,
+.page-identify .mv-camera-btn {
+  min-height: var(--identify-touch-min);
+  min-width: var(--identify-touch-min);
+  padding: 0.65rem 0.9rem;
+  touch-action: manipulation;
+}
+
+.page-identify .mv-clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.page-identify .btn-remove-image {
+  width: var(--identify-touch-min);
+  height: var(--identify-touch-min);
+  top: 4px;
+  right: 4px;
+  opacity: 1;
+  touch-action: manipulation;
+}
+
+.page-identify .btn-retry,
+.page-identify .btn-compare,
+.page-identify .btn-clear-history {
+  min-height: var(--identify-touch-min);
+  min-width: var(--identify-touch-min);
+  padding: 0.55rem 0.9rem;
+  touch-action: manipulation;
+}
+
+.page-identify .identify-flow-steps__item {
+  min-height: var(--identify-touch-min);
+}
+
+.page-identify .mv-ritual__step {
+  min-height: var(--identify-touch-min);
+}
+
+.page-identify .lightbox-close {
+  width: max(var(--identify-touch-min), 2.75rem);
+  height: max(var(--identify-touch-min), 2.75rem);
+  touch-action: manipulation;
+}
+
+/* Mode toggle wraps cleanly; full-width primary on very small screens */
+@media (max-width: 520px) {
+  .page-identify .identify-mode-toggle {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .page-identify .identify-mode-toggle .btn-atelier {
+    flex: 1 1 calc(50% - 0.35rem);
+    justify-content: center;
+    text-align: center;
+    white-space: normal;
+    line-height: 1.25;
+    padding-inline: 0.75rem;
+  }
+
+  .page-identify .identify-sticky-cta {
+    flex-direction: column;
+    margin-inline: -0.5rem;
+    padding-inline: 0.5rem;
+  }
+
+  .page-identify .identify-sticky-cta .btn-atelier,
+  .page-identify .identify-sticky-cta .identify-submit-btn {
+    width: 100%;
+    flex: 1 1 auto;
+  }
+
+  .page-identify .identify-flow-steps__item {
+    padding: 0.55rem 0.4rem;
+    justify-content: center;
+  }
+
+  .page-identify .identify-flow-steps__label {
+    font-size: 0.72rem;
+  }
+
+  /* Wizard slots: larger gallery/camera taps */
+  .page-identify .mv-slot-actions .mv-add,
+  .page-identify .mv-slot-actions .mv-camera-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Desktop: sticky still helps long forms; slightly softer chrome */
+@media (min-width: 769px) {
+  .page-identify {
+    --identify-sticky-cta-pad: 4.5rem;
+  }
+
+  .page-identify .identify-region--preflight {
+    position: static;
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    margin-inline: 0;
+    padding: 0;
+  }
+
+  .page-identify .preflight-banner {
+    max-height: none;
+    overflow: visible;
+  }
+}
+
+[data-theme='dark'] .page-identify .identify-sticky-cta {
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--surface, #1a2420) 0%, transparent) 0%,
+      color-mix(in srgb, var(--surface, #1a2420) 94%, transparent) 30%,
+      color-mix(in srgb, var(--surface, #1a2420) 98%, transparent) 100%
+    );
+  border-top-color: color-mix(in srgb, var(--line, #2d3b34) 80%, transparent);
+  box-shadow: 0 -8px 28px rgba(0, 0, 0, 0.28);
+}
+
+[data-theme='dark'] .page-identify .identify-region--preflight {
+  background: color-mix(in srgb, var(--surface, #1a2420) 90%, transparent);
+}
+
+/* Reduced motion: keep sticky utility, drop backdrop cost if preferred */
+@media (prefers-reduced-motion: reduce) {
+  .page-identify .identify-sticky-cta,
+  .page-identify .identify-region--preflight {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
 /* ── Result mode honesty (B-08 / D-B9 / D-B16) ──────────────────────────── */
 
 .result-mode-banner {
