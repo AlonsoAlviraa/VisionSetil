@@ -1,6 +1,11 @@
 """
 Convenience endpoint: POST /classify
 
+**Identify product path** (Phase B D-B17 / B-47): the public Identify surface
+(``/identificar`` and product clients) uses **only** this endpoint (and optional
+async simple job). ``POST /observations/{id}/classify-advanced`` is admin/internal
+and returns a different schema family — see ``routes_classification.py``.
+
 Accepts one or more images + optional metadata, creates a transient observation,
 runs the full classification pipeline, and returns a simplified result that the
 frontend can consume directly. This bridges the gap between the frontend's simple
