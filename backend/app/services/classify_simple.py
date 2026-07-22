@@ -1,9 +1,8 @@
-"""Shared classify → SimpleClassificationResult mapper (Phase B / B-05).
+"""Shared classify → SimpleClassificationResult mapper (Phase B / B-05 + B-32).
 
-Single path for map + quality gate + mode + locale so sync ``POST /classify``
-and async workers (B-14) apply identical honesty/safety semantics.
-
-Hydrate is intentionally a no-op hook for now (B-19 later).
+Single path for map + quality gate + mode + locale + catalog hydrate so sync
+``POST /classify`` and async workers (B-14) apply identical honesty/safety
+semantics and rich prediction cards (vernaculars, risk, media URLs).
 """
 
 from __future__ import annotations
@@ -21,6 +20,7 @@ from app.ml.classify_mode import derive_classify_mode
 from app.ml.quality_gate import apply_quality_gate_to_simple_result
 from app.services import unified_catalog as catalog
 from app.services.multi_view_classifier import get_multi_view_classifier
+from app.services.prediction_hydrate import hydrate_prediction
 
 
 def map_to_simple(
@@ -39,6 +39,7 @@ def map_to_simple(
     ``classifier`` is a mock fallback used for diagnostics.
 
     ``locale`` is the resolved form locale (D-B5); default ``es`` when omitted.
+    Predictions are hydrated from catalog_v2 after the gate when species ID is allowed.
     """
     predictions: list[SimpleSpeciesPrediction] = []
     for candidate in result.top_candidates or result.candidates:
@@ -136,9 +137,28 @@ def _hydrate_simple_result(
     *,
     locale: str,
 ) -> SimpleClassificationResult:
-    """Hydrate prediction cards from catalog (hook; no-op until B-19)."""
-    _ = locale  # reserved for vernacular / media hydrate
-    return result
+    """Hydrate prediction cards from catalog_v2 + media (B-32).
+
+    Only when ``species_id_allowed`` and there are predictions left after the gate
+    (sequence: map → gate → mode → hydrate). Skips when blocked/empty so Identify
+    does not dress empty shells.
+    """
+    gate = result.quality_gate
+    if gate is not None and not bool(getattr(gate, "species_id_allowed", False)):
+        return result
+    if not result.predictions:
+        return result
+
+    hydrated = [
+        hydrate_prediction(
+            p.species,
+            p.confidence,
+            p.edibility,
+            locale or result.locale or catalog.DEFAULT_LOCALE,
+        )
+        for p in result.predictions
+    ]
+    return result.model_copy(update={"predictions": hydrated})
 
 
 def classify_to_simple(
