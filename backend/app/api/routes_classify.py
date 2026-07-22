@@ -136,16 +136,24 @@ def _map_to_simple(
         view_coverage=view_coverage,
         is_mock_stack=is_mock,
         ml_notes=ml_notes,
+        locale="es",  # B-04 will add form field; default echo "es"
     )
-    # Hard quality gate: block species ID when on-disk metrics are unacceptable
+    # Hard quality gate: always attach dual-signal quality_gate (D-B2 / D-B15)
+    from app.ml.classify_mode import derive_classify_mode
     from app.ml.quality_gate import apply_quality_gate_to_simple_result
 
     gated = apply_quality_gate_to_simple_result(simple.model_dump())
-    # B-01 interim: strip quality_gate so rebuild uses fail-closed schema defaults
-    # (mode=blocked, species_id_allowed=False). B-03 must stop stripping, attach the
-    # dual-signal gate, and set mode via derive_classify_mode — until then FE must
-    # not treat result.mode / result.quality_gate as product truth.
-    return SimpleClassificationResult(**{k: v for k, v in gated.items() if k != "quality_gate"})
+    gate = gated.get("quality_gate") or {}
+    # Stack truth is independent of mode (D-B1) — never overwrite is_mock_stack from mode
+    is_mock_stack = bool(gated.get("is_mock_stack", True))
+    gated["is_mock_stack"] = is_mock_stack
+    gated["mode"] = derive_classify_mode(
+        is_mock_stack=is_mock_stack,
+        species_id_allowed=bool(gate.get("species_id_allowed", False)),
+    )
+    gated["locale"] = gated.get("locale") or "es"
+    # quality_gate always present from apply_* (pass and fail) — do not strip
+    return SimpleClassificationResult(**gated)
 
 
 @router.post("/classify", response_model=SimpleClassificationResult)
