@@ -3,13 +3,21 @@
  * 1) Safety + decision + top predictions
  * 2) Confidence + lookalikes (if any)
  * 3) Accordion: quality, evidence, questions, feedback, technical
+ *
+ * B-34: lookalikes panel hydrates catalog fichas + RiskChip only (no food chrome).
  */
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import type { ClassificationResult, SpeciesPrediction } from '../api/types'
 import { getRiskMeta } from '../lib/riskLabels'
-import { lookalikeSummary, rankLookalikes } from '../lib/lookalikeRisk'
+import {
+  rankLookalikes,
+  rankLookalikesHydrated,
+  summarizeLookalikes,
+  type RankedLookalike,
+} from '../lib/lookalikeRisk'
 import { SpeciesThumb } from './SpeciesThumb'
+import { SpeciesImage } from './SpeciesImage'
 import { SpeciesNameBlock } from './SpeciesNameBlock'
 import { RiskChip } from './RiskChip'
 import {
@@ -101,18 +109,45 @@ export function ResultCard({ result, onFeedback, viewTypes = [], previews = [] }
   const stackBadge = stackBadgeEs(result.model_stack)
   const topFood = topPrediction ? getFoodQuality(topPrediction.species) : null
 
-  const rankedLookalikes = useMemo(
-    () => rankLookalikes(result.dangerous_lookalikes || []),
-    [result.dangerous_lookalikes],
+  const lookalikeNames = result.dangerous_lookalikes || []
+  // Sync first-paint fallback (may be unhydrated until catalog loads).
+  const [rankedLookalikes, setRankedLookalikes] = useState<RankedLookalike[]>(() =>
+    rankLookalikes(lookalikeNames),
   )
+  const [lookalikesHydrated, setLookalikesHydrated] = useState(false)
+
+  useEffect(() => {
+    let cancelled = false
+    const names = result.dangerous_lookalikes || []
+    if (!names.length) {
+      setRankedLookalikes([])
+      setLookalikesHydrated(true)
+      return
+    }
+    setLookalikesHydrated(false)
+    // Optimistic sync rank, then hydrate from catalog SSOT (vernaculars/risk/slug).
+    setRankedLookalikes(rankLookalikes(names))
+    void rankLookalikesHydrated(names).then((ranked) => {
+      if (cancelled) return
+      setRankedLookalikes(ranked)
+      setLookalikesHydrated(true)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [result.dangerous_lookalikes])
+
   const lookalikeStats = useMemo(
-    () => lookalikeSummary(result.dangerous_lookalikes || []),
-    [result.dangerous_lookalikes],
+    () => summarizeLookalikes(rankedLookalikes),
+    [rankedLookalikes],
   )
 
   const needsExpert = result.recommend_human_review || isRejected || isDangerous
   const hasLayer2 =
-    (!isRejected && !!topPrediction) || rankedLookalikes.length > 0 || isDangerous
+    (!isRejected && !!topPrediction) ||
+    rankedLookalikes.length > 0 ||
+    lookalikeNames.length > 0 ||
+    isDangerous
   const hasLayer3 =
     true /* always show ML insights accordion */
 
@@ -319,30 +354,73 @@ export function ResultCard({ result, onFeedback, viewTypes = [], previews = [] }
                 )
               })()}
 
-              {rankedLookalikes.length > 0 && (
-                <div className="lookalikes-warning lookalikes-ranked" role="alert">
+              {(rankedLookalikes.length > 0 || lookalikeNames.length > 0) && (
+                <div
+                  className="lookalikes-warning lookalikes-ranked lookalikes-panel"
+                  role="alert"
+                  data-testid="lookalikes-panel"
+                  data-hydrated={lookalikesHydrated ? 'true' : 'false'}
+                >
                   <strong className="lookalikes-warning__title">
                     <IconAlert size={16} />
-                    Confusiones de riesgo ({lookalikeStats.total}
-                    {lookalikeStats.deadly > 0 ? ` · ${lookalikeStats.deadly} mortales` : ''}
-                    )
+                    Confusiones de riesgo
+                    {lookalikeStats.total > 0
+                      ? ` (${lookalikeStats.total}${
+                          lookalikeStats.deadly > 0
+                            ? ` · ${lookalikeStats.deadly} mortales`
+                            : ''
+                        })`
+                      : ''}
                   </strong>
-                  <ul className="lookalike-list">
+                  <p className="lookalikes-panel__note muted">
+                    Solo riesgo — sin comestibilidad. Confirma con un micólogo.
+                  </p>
+                  {/* B-34 / D-B16: RiskChip only — no FoodQualityChip / food chrome */}
+                  <ul className="lookalike-list" data-testid="lookalike-list">
                     {rankedLookalikes.map((sp) => {
                       const meta = getRiskMeta(sp.risk_label)
+                      const slug = sp.slug || undefined
                       return (
-                        <li key={sp.name} className={`lookalike-item ${meta.className}`}>
-                          <SpeciesThumb taxon={sp.name} riskLabel={sp.risk_label} size={40} />
+                        <li
+                          key={sp.name}
+                          className={`lookalike-item lookalike-item--hydrated ${meta.className}`}
+                          data-testid="lookalike-item"
+                          data-in-catalog={sp.in_catalog ? 'true' : 'false'}
+                          data-risk={sp.risk_label}
+                        >
+                          <div className="lookalike-item__media">
+                            <SpeciesImage
+                              scientificName={sp.name}
+                              slug={slug}
+                              variant="thumb"
+                              riskLevel={sp.risk_placeholder}
+                              alt={sp.name}
+                              className="lookalike-item__image"
+                            />
+                          </div>
                           <div className="lookalike-item__text">
                             <RiskChip risk={sp.risk_label} />
                             <SpeciesNameBlock
                               taxon={sp.name}
                               commonNames={sp.common_names}
+                              family={sp.family}
                               size="sm"
-                              showFamily={false}
+                              showFamily={Boolean(sp.family)}
                             />
-                            {sp.slug && (
-                              <Link to={`/enciclopedia/${sp.slug}`} className="lookalike-link">
+                            {!sp.in_catalog && (
+                              <span
+                                className="lookalike-item__badge muted"
+                                data-testid="lookalike-out-of-catalog"
+                              >
+                                Fuera de catálogo
+                              </span>
+                            )}
+                            {slug && (
+                              <Link
+                                to={`/enciclopedia/${slug}`}
+                                className="lookalike-link"
+                                data-testid="lookalike-ficha-link"
+                              >
                                 Ver ficha
                               </Link>
                             )}
