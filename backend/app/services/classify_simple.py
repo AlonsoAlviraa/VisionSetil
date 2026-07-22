@@ -186,36 +186,6 @@ def _hydrate_simple_result(
     return result.model_copy(update={"predictions": hydrated})
 
 
-# Job result envelope version (D-B18 / D-B24 — raw kept indefinitely for admin/debug).
-JOB_RESULT_SCHEMA_VERSION = 2
-
-
-def build_job_result_envelope(
-    simple: SimpleClassificationResult,
-    raw: ClassificationResponse | None,
-) -> dict[str, Any]:
-    """Dual-write envelope for async jobs (B-14 / D-B18).
-
-    Product clients read ``simple`` only (always gated). ``raw`` is the full
-    ClassificationResponse for admin/debug and is permanent (D-B24).
-    """
-    raw_dict: dict[str, Any] | None
-    if raw is None:
-        raw_dict = None
-    elif hasattr(raw, "model_dump"):
-        raw_dict = raw.model_dump()
-    elif isinstance(raw, dict):
-        raw_dict = raw
-    else:
-        raw_dict = {"raw": str(raw)}
-
-    return {
-        "schema_version": JOB_RESULT_SCHEMA_VERSION,
-        "simple": simple.model_dump(),
-        "raw": raw_dict,
-    }
-
-
 def classify_to_simple(
     *,
     observation: Observation,

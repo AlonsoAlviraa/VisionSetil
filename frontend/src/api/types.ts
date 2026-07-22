@@ -42,12 +42,13 @@ export interface SpeciesPrediction {
   common_name: string | null
   confidence: number
   edibility: string | null
-  /** Hydrate fields (B-01 / D-B21); optional for legacy responses. */
+  /** Catalog slug when hydrated (B-32+) — drives SpeciesImage media path */
   slug?: string | null
+  /** Risk label from catalog hydrate (deadly/high/…); preferred over edibility for placeholders */
   risk_level?: string | null
   image_card_url?: string | null
   image_thumb_url?: string | null
-  /** true when species resolved in catalog; default false until hydrate (D-B21). */
+  /** True when prediction matched catalog_v2 on the server */
   in_catalog?: boolean
 }
 

@@ -21,8 +21,10 @@ import type { CanonicalView } from '../lib/multiViewSlots'
 import { getRiskMeta } from '../lib/riskLabels'
 import { lookalikeSummary, rankLookalikes } from '../lib/lookalikeRisk'
 import { SpeciesThumb } from './SpeciesThumb'
+import { SpeciesImage } from './SpeciesImage'
 import { SpeciesNameBlock } from './SpeciesNameBlock'
 import { RiskChip } from './RiskChip'
+import { riskToPlaceholder } from '../lib/edibility'
 import {
   buildExpertHandoff,
   expertReviewPath,
@@ -268,23 +270,55 @@ export function ResultCard({
 
             {/* D-B16: FoodQualityChip banned on Identify — risk chips only */}
 
-            {result.predictions.length > 0 && (
-              <div className="predictions" data-testid="predictions-list">
-                <h3>Mejores pistas</h3>
-                <ul>
-                  {result.predictions.slice(0, 3).map((pred: SpeciesPrediction, idx: number) => {
-                    const meta = getEdibilityMeta(pred.edibility)
-                    return (
-                      <li
-                        key={`${pred.species}-${idx}`}
-                        className={`prediction-item ${meta.class} ${idx === 0 ? 'top-match' : ''}`}
-                        data-testid={`prediction-item-${idx}`}
-                      >
-                        <SpeciesThumb
-                          taxon={pred.species}
-                          riskLabel={pred.edibility}
-                          size={idx === 0 ? 56 : 44}
-                          className="prediction-thumb"
+        {result.predictions.length > 0 && (
+          <div className="predictions">
+            <h3>Mejores pistas</h3>
+            <ul>
+              {result.predictions.slice(0, 3).map((pred: SpeciesPrediction, idx: number) => {
+                const meta = getEdibilityMeta(pred.edibility)
+                const fq = getFoodQuality(pred.species)
+                const size = idx === 0 ? 56 : 44
+                const scientificName = pred.species
+                const slug = pred.slug || undefined
+                const alt = pred.common_name
+                  ? `${pred.common_name} (${scientificName})`
+                  : scientificName
+                return (
+                  <li
+                    key={`${pred.species}-${idx}`}
+                    className={`prediction-item ${meta.class} ${idx === 0 ? 'top-match' : ''}`}
+                  >
+                    <div
+                      className="prediction-thumb"
+                      style={{ width: size, height: size }}
+                      data-in-catalog={pred.in_catalog ? 'true' : 'false'}
+                    >
+                      <SpeciesImage
+                        scientificName={scientificName}
+                        slug={slug}
+                        variant={idx === 0 ? 'card' : 'thumb'}
+                        riskLevel={riskToPlaceholder(pred.risk_level, pred.edibility)}
+                        alt={alt}
+                        priority={idx === 0}
+                      />
+                    </div>
+                    <div className="prediction-info">
+                      <span className="rank-badge">#{idx + 1}</span>
+                      <SpeciesNameBlock
+                        taxon={pred.species}
+                        commonNames={pred.common_name}
+                        size="sm"
+                        showFamily
+                      />
+                      {fq ? (
+                        <FoodQualityChip foodClass={fq.food_class} label={fq.label} compact />
+                      ) : (
+                        <RiskChip risk={pred.edibility} className={`edibility-badge ${meta.class}`} />
+                      )}
+                      <div className="confidence-bar">
+                        <div
+                          className="confidence-fill"
+                          style={{ width: `${Math.min(pred.confidence * 100, 100)}%` }}
                         />
                         <div className="prediction-info">
                           <span className="rank-badge">#{idx + 1}</span>

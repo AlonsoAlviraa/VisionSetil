@@ -1381,6 +1381,15 @@ button { font-family: inherit; }
 .prediction-thumb {
   flex-shrink: 0;
   margin-top: 0.1rem;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #e8e2d6;
+  box-shadow: 0 1px 4px rgba(12, 20, 16, 0.08);
+  border: 1px solid var(--line, var(--border));
+}
+
+.prediction-thumb .species-image {
+  min-height: 0;
 }
 
 .rank-badge {
