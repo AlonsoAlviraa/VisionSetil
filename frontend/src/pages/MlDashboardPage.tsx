@@ -115,6 +115,276 @@ function backendTone(backend?: string, loaded?: boolean): 'real' | 'mock' | 'err
   return 'unknown'
 }
 
+/** Dual-signal quality gate from GET /models/quality-gate (D-B15 / B-09). */
+type QualityGatePayload = {
+  species_id_allowed: boolean
+  metrics_acceptable: boolean
+  block_enabled: boolean
+  reason: string
+  reason_code: string
+  test_map_at_3: number | null
+  safety_recall_deadly: number | null
+  min_map_at_3: number
+  min_deadly_recall: number
+  metrics_path: string | null
+  version: string | null
+  verdict: 'ACCEPTABLE' | 'UNACCEPTABLE'
+}
+
+function parseQualityGatePayload(v: unknown): QualityGatePayload | null {
+  if (!v || typeof v !== 'object') return null
+  const o = v as Record<string, unknown>
+  if (typeof o.species_id_allowed !== 'boolean') return null
+  if (typeof o.metrics_acceptable !== 'boolean') return null
+  if (typeof o.block_enabled !== 'boolean') return null
+  if (o.verdict !== 'ACCEPTABLE' && o.verdict !== 'UNACCEPTABLE') return null
+  // D-B15: verdict tracks metrics only — trust metrics_acceptable if mismatch
+  const metrics_acceptable = o.metrics_acceptable
+  const verdict: 'ACCEPTABLE' | 'UNACCEPTABLE' = metrics_acceptable
+    ? 'ACCEPTABLE'
+    : 'UNACCEPTABLE'
+  return {
+    species_id_allowed: o.species_id_allowed,
+    metrics_acceptable,
+    block_enabled: o.block_enabled,
+    reason: typeof o.reason === 'string' ? o.reason : '',
+    reason_code: typeof o.reason_code === 'string' ? o.reason_code : 'unset',
+    test_map_at_3: typeof o.test_map_at_3 === 'number' ? o.test_map_at_3 : null,
+    safety_recall_deadly:
+      typeof o.safety_recall_deadly === 'number' ? o.safety_recall_deadly : null,
+    min_map_at_3: typeof o.min_map_at_3 === 'number' ? o.min_map_at_3 : 0.2,
+    min_deadly_recall:
+      typeof o.min_deadly_recall === 'number' ? o.min_deadly_recall : 0.9,
+    metrics_path: typeof o.metrics_path === 'string' ? o.metrics_path : null,
+    version: typeof o.version === 'string' ? o.version : null,
+    verdict,
+  }
+}
+
+/** Hero tone: metrics drive color; policy diverge → amber warning. */
+function gateHeroTone(gate: QualityGatePayload | null): 'real' | 'mock' | 'error' {
+  if (!gate) return 'mock'
+  if (gate.metrics_acceptable && gate.species_id_allowed) return 'real'
+  // Policy allows ID while metrics fail (gate_disabled) — do not paint green
+  if (!gate.metrics_acceptable && gate.species_id_allowed) return 'mock'
+  if (!gate.species_id_allowed) return 'error'
+  return 'mock'
+}
+
+function SignalCard({
+  title,
+  ok,
+  okLabel,
+  failLabel,
+  detail,
+  testId,
+}: {
+  title: string
+  ok: boolean
+  okLabel: string
+  failLabel: string
+  detail: string
+  testId: string
+}) {
+  const tone = ok ? 'real' : 'error'
+  return (
+    <article className={`ml-dash-card ml-dash-card--${tone}`} data-testid={testId}>
+      <header>
+        <h3>{title}</h3>
+        <span className={`ml-dash-pill ml-dash-pill--${tone}`} data-testid={`${testId}-value`}>
+          {ok ? okLabel : failLabel}
+        </span>
+      </header>
+      <p className="muted" style={{ margin: 0, fontSize: '0.88rem', lineHeight: 1.45 }}>
+        {detail}
+      </p>
+    </article>
+  )
+}
+
+function QualityGateTile({
+  gate,
+  loading,
+  weightsHint,
+}: {
+  gate: QualityGatePayload | null
+  loading: boolean
+  weightsHint?: string | null
+}) {
+  const tone = gateHeroTone(gate)
+  const diverged =
+    gate != null && gate.metrics_acceptable !== gate.species_id_allowed
+
+  return (
+    <section
+      className={`atelier-panel ml-dash-hero ml-dash-hero--${tone === 'error' ? 'mock' : tone} ml-dash-gate-tile`}
+      style={{ marginTop: '0.5rem' }}
+      data-testid="ml-quality-gate-tile"
+      aria-live="polite"
+    >
+      <header
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '0.5rem',
+          marginBottom: '0.5rem',
+        }}
+      >
+        <h2 style={{ margin: 0 }}>Quality gate de producto</h2>
+        {gate && (
+          <span
+            className={`ml-dash-pill ml-dash-pill--${
+              gate.metrics_acceptable ? 'real' : tone === 'error' ? 'error' : 'mock'
+            }`}
+            data-testid="ml-quality-gate-verdict"
+          >
+            verdict {gate.verdict}
+          </span>
+        )}
+      </header>
+
+      <p>
+        Señal dual (D-B15): <strong>metrics_acceptable</strong> es calidad cruda del modelo;
+        <strong> species_id_allowed</strong> es política de serve (respeta{' '}
+        <code>block_enabled</code>). Umbrales: MAP@3 ≥{' '}
+        <strong>{gate?.min_map_at_3 != null ? pct(gate.min_map_at_3, 0) : '20%'}</strong> y
+        recall mortales ≥{' '}
+        <strong>
+          {gate?.min_deadly_recall != null ? pct(gate.min_deadly_recall, 0) : '90%'}
+        </strong>
+        . <code>verdict</code> sigue solo las métricas — nunca el bypass de disable.
+      </p>
+
+      {loading && !gate && <p className="muted">Cargando gate desde /models/quality-gate…</p>}
+
+      {!loading && !gate && (
+        <p className="ml-dash-warn" role="status">
+          No se pudo leer <code>/models/quality-gate</code>. Sin payload dual no se afirma
+          calidad ni permiso de ID.
+        </p>
+      )}
+
+      {gate && (
+        <>
+          <div className="ml-dash-grid" style={{ marginTop: '0.75rem' }}>
+            <SignalCard
+              title="metrics_acceptable"
+              ok={gate.metrics_acceptable}
+              okLabel="true"
+              failLabel="false"
+              detail="MAP@3 y safety recall mortales vs umbrales. Nunca se fuerza a true si el gate está deshabilitado."
+              testId="ml-gate-metrics-acceptable"
+            />
+            <SignalCard
+              title="species_id_allowed"
+              ok={gate.species_id_allowed}
+              okLabel="true"
+              failLabel="false"
+              detail={
+                gate.block_enabled
+                  ? 'Política: block_enabled=true → coincide con metrics_acceptable. Si metrics fallan, /classify bloquea IDs de especie.'
+                  : 'Política: block_enabled=false (dev) → ID permitido aunque métricas fallen. No pintar como ACCEPTABLE.'
+              }
+              testId="ml-gate-species-id-allowed"
+            />
+          </div>
+
+          {diverged && (
+            <p className="ml-dash-warn" role="status" data-testid="ml-gate-signal-diverge">
+              Señales divergentes: métricas <strong>UNACCEPTABLE</strong> pero política permite
+              ID (<code>reason_code={gate.reason_code}</code>). Confidence UI debe seguir
+              oculto (D-B9).
+            </p>
+          )}
+
+          <div className="ml-dash-metrics ml-dash-metrics--compact" style={{ marginTop: '0.85rem' }}>
+            <div>
+              <span>MAP@3 test</span>
+              <strong data-testid="ml-gate-map-at-3">
+                {gate.test_map_at_3 != null ? pct(gate.test_map_at_3, 2) : '—'}
+              </strong>
+              <span className="muted" style={{ textTransform: 'none', letterSpacing: 0 }}>
+                min {pct(gate.min_map_at_3, 0)}
+              </span>
+            </div>
+            <div>
+              <span>Recall mortales</span>
+              <strong data-testid="ml-gate-deadly-recall">
+                {gate.safety_recall_deadly != null
+                  ? pct(gate.safety_recall_deadly, 1)
+                  : '—'}
+              </strong>
+              <span className="muted" style={{ textTransform: 'none', letterSpacing: 0 }}>
+                min {pct(gate.min_deadly_recall, 0)}
+              </span>
+            </div>
+            <div>
+              <span>block_enabled</span>
+              <strong data-testid="ml-gate-block-enabled">
+                {gate.block_enabled ? 'true' : 'false'}
+              </strong>
+            </div>
+            <div>
+              <span>reason_code</span>
+              <strong data-testid="ml-gate-reason-code">
+                <code>{gate.reason_code || '—'}</code>
+              </strong>
+            </div>
+          </div>
+
+          <dl className="ml-dash-meta">
+            <div>
+              <dt>reason</dt>
+              <dd>
+                <code>{gate.reason}</code>
+              </dd>
+            </div>
+            <div>
+              <dt>version</dt>
+              <dd>{gate.version || '—'}</dd>
+            </div>
+            <div>
+              <dt>metrics_path</dt>
+              <dd className="ml-dash-path" data-testid="ml-gate-metrics-path">
+                {gate.metrics_path || '—'}
+              </dd>
+            </div>
+            <div>
+              <dt>endpoint</dt>
+              <dd>
+                <code>GET /models/quality-gate</code>
+              </dd>
+            </div>
+          </dl>
+
+          {!gate.species_id_allowed && (
+            <p className="ml-dash-warn" role="status" data-testid="ml-gate-blocked-copy">
+              Identificación de especie <strong>BLOQUEADA</strong> en /classify. Solo abstención /
+              modo educativo. No se inventan top-k.
+            </p>
+          )}
+
+          {gate.reason_code === 'no_metrics' && (
+            <p className="muted" data-testid="ml-gate-weights-hint">
+              Sin metrics sibling del checkpoint en serve. Coloca{' '}
+              <code>metrics.json</code> junto a los pesos resueltos
+              {weightsHint ? (
+                <>
+                  {' '}
+                  (<code>{weightsHint}</code>)
+                </>
+              ) : null}{' '}
+              o configura <code>MULTI_VIEW_WEIGHTS_PATH</code> y reinicia el backend.
+            </p>
+          )}
+        </>
+      )}
+    </section>
+  )
+}
+
 function ComponentCard({
   title,
   status,
@@ -183,6 +453,7 @@ export function MlDashboardPage() {
     }
     calibrated_thresholds?: Record<string, number | null>
   } | null>(null)
+  const [qualityGate, setQualityGate] = useState<QualityGatePayload | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [ts, setTs] = useState<string>('')
@@ -192,7 +463,7 @@ export function MlDashboardPage() {
     setError(null)
     const headers = API_KEY ? { 'X-API-Key': API_KEY } : {}
     try {
-      const [s, r, exp] = await Promise.all([
+      const [s, r, exp, qg] = await Promise.all([
         axios.get(`${API_BASE}/models/status`, { headers, timeout: 20000 }),
         axios.get(`${API_BASE}/readyz`, {
           headers,
@@ -204,14 +475,21 @@ export function MlDashboardPage() {
           timeout: 15000,
           validateStatus: () => true,
         }),
+        axios.get(`${API_BASE}/models/quality-gate`, {
+          headers,
+          timeout: 15000,
+          validateStatus: () => true,
+        }),
       ])
       setStatus(s.data as ModelsStatus)
       setReady(r.data)
       setExperiments(exp.status === 200 ? exp.data : null)
+      setQualityGate(qg.status === 200 ? parseQualityGatePayload(qg.data) : null)
       setTs(new Date().toLocaleString())
     } catch (e) {
       setError(e instanceof Error ? e.message : 'No se pudo cargar el estado ML')
       setStatus(null)
+      setQualityGate(null)
     } finally {
       setLoading(false)
     }
@@ -315,33 +593,16 @@ export function MlDashboardPage() {
         />
       </div>
 
-      <section
-        className={`atelier-panel ml-dash-hero ${
-          status?.summary?.training_map_at_3 != null &&
-          Number(status.summary.training_map_at_3) < 0.2
-            ? 'ml-dash-hero--mock'
-            : 'ml-dash-hero--real'
-        }`}
-        style={{ marginTop: '0.5rem' }}
-      >
-        <h2>Quality gate de producto</h2>
-        <p>
-          Umbral MAP@3 ≥ <strong>0.20</strong> y recall mortales ≥ <strong>0.90</strong>. Por
-          debajo: <strong>identificación de especie BLOQUEADA</strong> en /classify.
-        </p>
-        <p className="muted">
-          MAP@3 actual:{' '}
-          <strong>
-            {status?.summary?.training_map_at_3 != null
-              ? pct(Number(status.summary.training_map_at_3), 2)
-              : '—'}
-          </strong>
-          {status?.summary?.training_map_at_3 != null &&
-          Number(status.summary.training_map_at_3) < 0.2
-            ? ' → UNACCEPTABLE'
-            : ''}
-        </p>
-      </section>
+      <QualityGateTile
+        gate={qualityGate}
+        loading={loading}
+        weightsHint={
+          status?.weight_discovery?.resolved ||
+          mv?.weights_path ||
+          status?.weight_discovery?.configured ||
+          null
+        }
+      />
 
       {experiments?.available && experiments.executive_summary && (
         <section className="atelier-panel" style={{ marginTop: '1rem' }}>
