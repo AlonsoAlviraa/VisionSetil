@@ -9,7 +9,15 @@ GET /jobs/{job_id}
     Poll job status. Returns ``ClassificationJobRead``.
 
 GET /jobs/{job_id}/result
-    Returns the classification result if completed, 409 if still running.
+    Returns the dual-write job envelope if completed (B-14 / D-B18)::
+
+        {
+          "schema_version": 2,
+          "simple": <SimpleClassificationResult>,  # always gated
+          "raw": <ClassificationResponse|null>     # permanent admin/debug
+        }
+
+    Product clients must read ``simple`` only. Returns 409 if still running.
 
 GET /jobs/stats/summary
     Aggregate counts by status (monitoring), scoped to caller's org.
@@ -24,7 +32,7 @@ from sqlalchemy.orm import Session
 from app.core.config import settings
 from app.db.database import get_db
 from app.db.models import Observation
-from app.db.schemas import ClassificationJobRead
+from app.db.schemas import ClassificationJobRead, JobResultEnvelope
 from app.services.image_storage import store_observation_images
 from app.services.task_queue import create_job, get_job, get_queue_stats, run_classification_job
 
@@ -121,15 +129,18 @@ def get_job_status(
     return ClassificationJobRead.model_validate(job)
 
 
-@router.get("/jobs/{job_id}/result")
+@router.get("/jobs/{job_id}/result", response_model=JobResultEnvelope)
 def get_job_result(
     job_id: str,
     request: Request,
     db: Session = Depends(get_db),
 ) -> dict:
-    """Get the classification result for a completed job.
+    """Get the dual-write classification result for a completed job (B-14).
 
-    Returns 409 Conflict if the job is not yet completed.
+    Envelope: ``{schema_version: 2, simple, raw}``. ``simple`` is always
+    quality-gated via ``classify_to_simple``; ``raw`` is permanent (D-B24).
+
+    Product clients must read ``simple`` only. Returns 409 if not completed.
     """
     org_id = _get_org_id(request)
     job = get_job(db, job_id)

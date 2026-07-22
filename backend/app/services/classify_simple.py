@@ -141,6 +141,36 @@ def _hydrate_simple_result(
     return result
 
 
+# Job result envelope version (D-B18 / D-B24 — raw kept indefinitely for admin/debug).
+JOB_RESULT_SCHEMA_VERSION = 2
+
+
+def build_job_result_envelope(
+    simple: SimpleClassificationResult,
+    raw: ClassificationResponse | None,
+) -> dict[str, Any]:
+    """Dual-write envelope for async jobs (B-14 / D-B18).
+
+    Product clients read ``simple`` only (always gated). ``raw`` is the full
+    ClassificationResponse for admin/debug and is permanent (D-B24).
+    """
+    raw_dict: dict[str, Any] | None
+    if raw is None:
+        raw_dict = None
+    elif hasattr(raw, "model_dump"):
+        raw_dict = raw.model_dump()
+    elif isinstance(raw, dict):
+        raw_dict = raw
+    else:
+        raw_dict = {"raw": str(raw)}
+
+    return {
+        "schema_version": JOB_RESULT_SCHEMA_VERSION,
+        "simple": simple.model_dump(),
+        "raw": raw_dict,
+    }
+
+
 def classify_to_simple(
     *,
     observation: Observation,
@@ -154,16 +184,45 @@ def classify_to_simple(
 ) -> SimpleClassificationResult:
     """Run multi-view (or injected) classifier → map → gate → mode → hydrate.
 
-    Shared by ``routes_classify`` and (later) ``task_queue.run_classification_job``
+    Shared by ``routes_classify`` and ``task_queue.run_classification_job``
     so gate+mode+locale stay in lockstep for sync and async (safety-critical).
+    """
+    simple, _raw = classify_to_simple_with_raw(
+        observation=observation,
+        images=images,
+        view_types=view_types,
+        locale=locale,
+        request_id=request_id,
+        classifier=classifier,
+        processing_time_ms=processing_time_ms,
+        loaded_weights_path=loaded_weights_path,
+    )
+    return simple
+
+
+def classify_to_simple_with_raw(
+    *,
+    observation: Observation,
+    images: list[Any],
+    view_types: list[str] | None,
+    locale: str,
+    request_id: str,
+    classifier: object | None = None,
+    processing_time_ms: int | None = None,
+    loaded_weights_path: str | None = None,
+) -> tuple[SimpleClassificationResult, ClassificationResponse]:
+    """Same as ``classify_to_simple`` but also returns the ungated raw response.
+
+    Used by async workers for dual-write (B-14): gated ``simple`` + permanent
+    ``raw`` for admin/debug. Product path must only expose ``simple``.
     """
     outer = classifier if classifier is not None else get_multi_view_classifier()
     start = time.perf_counter()
 
     if hasattr(outer, "classify") and "view_types" in outer.classify.__code__.co_varnames:
-        result = outer.classify(observation, images, view_types=view_types)
+        raw = outer.classify(observation, images, view_types=view_types)
     else:
-        result = outer.classify(observation, images)
+        raw = outer.classify(observation, images)
 
     elapsed = (
         processing_time_ms
@@ -178,11 +237,12 @@ def classify_to_simple(
     if weights is None:
         weights = getattr(outer, "resolved_weights_path", None)
 
-    return map_to_simple(
-        result,
+    simple = map_to_simple(
+        raw,
         request_id,
         elapsed,
         classifier=diag,
         loaded_weights_path=weights,
         locale=locale,
     )
+    return simple, raw

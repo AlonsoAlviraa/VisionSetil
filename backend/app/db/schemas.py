@@ -330,3 +330,16 @@ class SimpleClassificationResult(BaseModel):
     quality_gate: QualityGatePayload = Field(default_factory=_fail_closed_quality_gate)
     locale: str = "es"
 
+
+class JobResultEnvelope(BaseModel):
+    """Async job result dual-write envelope (B-14 / D-B18 / D-B24).
+
+    Product clients must read ``simple`` only (always quality-gated via
+    ``classify_to_simple``). ``raw`` is the full ClassificationResponse for
+    admin/debug and is kept indefinitely (no deprecation).
+    """
+
+    schema_version: Literal[2] = 2
+    simple: SimpleClassificationResult
+    raw: dict | None = None
+
