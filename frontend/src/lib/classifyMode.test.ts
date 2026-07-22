@@ -124,7 +124,7 @@ describe('resolveMode (D-B20)', () => {
     expect(resolveMode(r)).toBe('blocked')
   })
 
-  it('legacy: GATE DE CALIDAD in warnings → blocked', () => {
+  it('legacy: GATE in warnings + rejected empty → blocked', () => {
     const r = baseResult({
       decision: 'rejected',
       predictions: [],
@@ -136,6 +136,24 @@ describe('resolveMode (D-B20)', () => {
     expect(resolveMode(r)).toBe('blocked')
   })
 
+  it('legacy: GATE in warnings alone does not block without rejected+empty', () => {
+    // D-B20: warnings /GATE/ only applies with decision=rejected && empty preds
+    const r = baseResult({
+      decision: 'accepted',
+      predictions: [
+        {
+          species: 'Boletus edulis',
+          common_name: null,
+          confidence: 0.5,
+          edibility: null,
+        },
+      ],
+      warnings: ['GATE DE CALIDAD: noise'],
+      is_mock_stack: false,
+    })
+    expect(resolveMode(r)).toBe('real')
+  })
+
   it('legacy: is_mock_stack true → mock', () => {
     expect(resolveMode(baseResult({ is_mock_stack: true }))).toBe('mock')
   })
@@ -144,14 +162,15 @@ describe('resolveMode (D-B20)', () => {
     expect(resolveMode(baseResult({ is_mock_stack: false }))).toBe('real')
   })
 
-  it('legacy: is_mock_stack absent + rejected empty → blocked (fail-closed)', () => {
+  it('legacy: is_mock_stack absent + open-set rejected empty → mock (not blocked)', () => {
+    // Open-set abstention is decision=rejected, not mode=blocked (D-B20)
     const r = baseResult({
       decision: 'rejected',
       predictions: [],
       rejection_reason: 'open_set_uncertain',
       // is_mock_stack intentionally omitted
     })
-    expect(resolveMode(r)).toBe('blocked')
+    expect(resolveMode(r)).toBe('mock')
   })
 
   it('legacy: is_mock_stack absent + accepted predictions → mock', () => {

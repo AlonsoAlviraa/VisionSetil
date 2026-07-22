@@ -23,7 +23,10 @@ export const CLASSIFY_MODES: readonly ClassifyMode[] = [
 
 /** Narrow guard: value is a known ClassifyMode string (D-B19). */
 export function isClassifyMode(value: unknown): value is ClassifyMode {
-  return value === 'real' || value === 'mock' || value === 'blocked'
+  return (
+    typeof value === 'string' &&
+    (CLASSIFY_MODES as readonly string[]).includes(value)
+  )
 }
 
 /** Narrow guard for dual-signal quality gate payload shape (minimal). */
@@ -43,58 +46,33 @@ export function isQualityGatePayload(
 }
 
 /**
- * Quality-gate text signals seen on legacy blocked responses
- * (see backend quality_gate.apply_quality_gate_to_simple_result).
- */
-const QUALITY_GATE_SIGNAL =
-  /model_quality_gate|quality_gate|GATE\s+DE\s+CALIDAD/i
-
-/**
- * Resolve product honesty mode for a /classify result (D-B20).
+ * Resolve product honesty mode for a /classify result (D-B20 §10).
  *
  * When `mode` is present and valid → use it.
  * When absent (legacy / partial deploy):
- *  1. quality-gate signals in rejection_reason / ml_notes / warnings → blocked
- *  2. is_mock_stack === true → mock
- *  3. is_mock_stack === false → real
- *  4. is_mock_stack unknown → fail-closed:
- *     blocked if rejected + empty predictions, else mock
+ *  1. `model_quality_gate|quality_gate` in rejection_reason / ml_notes → blocked
+ *  2. else rejected + empty predictions + /GATE/i in warnings → blocked
+ *  3. else is_mock_stack !== false → mock (true or unknown)
+ *  4. else (is_mock_stack === false) → real
+ *
+ * Open-set abstention (rejected + empty, no gate signals) is NOT blocked —
+ * mode is stack-derived; decision carries the abstention.
  */
 export function resolveMode(result: ClassificationResult): ClassifyMode {
   if (isClassifyMode(result.mode)) {
     return result.mode
   }
 
-  // Legacy response — do NOT trust client schema defaults as product truth
-  const textBlob = [
-    result.rejection_reason ?? '',
-    ...(result.ml_notes ?? []),
-    ...(result.warnings ?? []),
-  ].join(' ')
-
-  if (QUALITY_GATE_SIGNAL.test(textBlob)) {
-    return 'blocked'
-  }
-
-  // Explicit GATE warning + empty rejected payload (legacy gate copy)
-  const warningsText = (result.warnings ?? []).join(' ')
+  // Legacy response (field missing) — do NOT trust client schema defaults (D-B20)
+  const rr = `${result.rejection_reason || ''} ${(result.ml_notes || []).join(' ')}`
   if (
-    result.decision === 'rejected' &&
-    (result.predictions?.length ?? 0) === 0 &&
-    /GATE/i.test(warningsText)
+    /model_quality_gate|quality_gate/i.test(rr) ||
+    (result.decision === 'rejected' &&
+      (result.predictions?.length ?? 0) === 0 &&
+      /GATE/i.test((result.warnings || []).join(' ')))
   ) {
     return 'blocked'
   }
-
-  if (result.is_mock_stack === true) return 'mock'
-  if (result.is_mock_stack === false) return 'real'
-
-  // is_mock_stack absent/unknown — fail-closed toward blocked when rejected empty
-  if (
-    result.decision === 'rejected' &&
-    (result.predictions?.length ?? 0) === 0
-  ) {
-    return 'blocked'
-  }
-  return 'mock'
+  if (result.is_mock_stack !== false) return 'mock'
+  return 'real'
 }
