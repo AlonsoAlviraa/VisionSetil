@@ -246,7 +246,8 @@
       "mock": "Modo demo: predicciones de demostración, no identificación de campo.",
       "real": "Modelo en vivo. Identificación solo orientativa.",
       "metrics_warning": "Métricas del modelo por debajo del umbral (gate deshabilitado). No se muestra confianza.",
-      "submit_offline": "Conecta la API para enviar fotos. Identificación deshabilitada sin backend."
+      "submit_offline": "Conecta la API para enviar fotos. Identificación deshabilitada sin backend.",
+      "unknown": "Estado del modelo desconocido. Identificación solo orientativa."
     },
     "decision": {
       "rejected_open_set": "El modelo se abstiene (incertidumbre / open-set)",

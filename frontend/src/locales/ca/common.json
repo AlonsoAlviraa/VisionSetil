@@ -252,7 +252,8 @@
       "mock": "Mode demo: prediccions de demostració, no identificació de camp.",
       "real": "Model en viu. Identificació només orientativa.",
       "metrics_warning": "Mètriques del model per sota del llindar (gate deshabilitat). No es mostra confiança.",
-      "submit_offline": "Connecta l'API per enviar fotos. Identificació deshabilitada sense backend."
+      "submit_offline": "Connecta l'API per enviar fotos. Identificació deshabilitada sense backend.",
+      "unknown": "Estat del model desconegut. Identificació només orientativa."
     },
     "decision": {
       "rejected_open_set": "El model s'absté (incertesa / open-set)",
