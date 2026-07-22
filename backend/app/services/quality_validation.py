@@ -21,9 +21,15 @@ class ImageQualityValidationService:
     def evaluate(self, images: list[ObservationImage]) -> QualityAssessment:
         names = " ".join(image.original_name.lower() for image in images)
         sizes = [image.size_bytes for image in images]
-        has_lower_view = any(image.view_type == "gills_or_pores" for image in images)
-        has_base_view = any(image.view_type == "base" for image in images)
-        has_environment_view = any(
+        # D5b: accept CANONICAL_VIEWS and legacy storage labels
+        present = {image.view_type for image in images if image.view_type}
+        has_lower_view = bool(
+            present & {"gills_or_pores", "gills"}
+        )
+        has_base_view = bool(
+            present & {"base", "detail", "cross_section"}
+        )
+        has_environment_view = bool(present & {"environment", "habitat"}) or any(
             token in names
             for token in ("context", "environment", "habitat", "entorno", "substrate")
         )

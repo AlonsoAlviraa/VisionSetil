@@ -1,0 +1,34 @@
+{
+  "slug": "amanita-phalloides",
+  "scientific_name": "Amanita phalloides",
+  "source": "wikipedia_es",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/99/Amanita_phalloides_1.JPG",
+  "license": "wikipedia-page-image",
+  "license_url": "https://es.wikipedia.org/wiki/Amanita_phalloides",
+  "creator": "Wikipedia/es",
+  "attribution_text": "Wikipedia/es — wikipedia-page-image",
+  "gbif_occurrence_id": null,
+  "sha256_source": "608a192f015e5eb0374351893c2143f99d0055419475d2d0609a76730c069020",
+  "sha256_derivatives": {
+    "lqip": "6227191f5cd9f33dd696eb0f52c58ec7050e4920319dcb0c4dac15a898e3b0a2",
+    "thumb": "620360db035a6def3290a924d29783899bd0936ca167086ae3f515cba192d90b",
+    "card": "b64e29806b8a889333a2c65c85bdb03d92666db93280c7b74674af1ed8a640a3",
+    "detail": "608a192f015e5eb0374351893c2143f99d0055419475d2d0609a76730c069020"
+  },
+  "gallery": [
+    {
+      "file": "gallery/01.webp"
+    },
+    {
+      "file": "gallery/02.webp"
+    },
+    {
+      "file": "gallery/03.webp"
+    },
+    {
+      "file": "gallery/04.webp"
+    }
+  ],
+  "fetched_at": "2026-07-22T14:12:33.356866+00:00",
+  "status": "ok"
+}

@@ -1,15 +1,28 @@
 /**
- * 🍄 Mushroom Image Service — Wikipedia-first for maximum reliability
- * Wikipedia images from upload.wikimedia.org allow hotlinking and work with CORS.
+ * 🍄 Mushroom Image Service — DEPRECATED hotlink cascade (PR-05).
+ *
+ * Prefer `SpeciesImage` + `speciesImageUrl` (own media store /api/media).
+ * These helpers remain only for optional wiki *text* enrichment and
+ * emergency offline demos when FEATURE_SPECIES_MEDIA is disabled.
+ *
+ * @deprecated Use SpeciesImage / speciesImageUrl instead of card hotlinks.
  */
+
+import { speciesImageUrl } from '../lib/speciesImageUrl'
+import { scientificNameToSlug } from '../lib/slug'
+import { featureFlags } from '../lib/featureFlags'
 
 const imageCache = new Map<string, string | null>()
 
 /**
- * Get the best available image for a species.
- * Tries Wikipedia first (most reliable), then GBIF, then iNaturalist.
+ * @deprecated Prefer SpeciesImage component.
+ * When FEATURE_SPECIES_MEDIA is on, returns same-origin media URL (no hotlink).
  */
 export async function getMushroomImage(scientificName: string): Promise<string | null> {
+  if (featureFlags.SPECIES_MEDIA) {
+    return speciesImageUrl(scientificNameToSlug(scientificName), 'card')
+  }
+
   if (imageCache.has(scientificName)) {
     return imageCache.get(scientificName) ?? null
   }

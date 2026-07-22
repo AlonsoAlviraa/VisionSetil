@@ -1,0 +1,236 @@
+{
+  "app": {
+    "name": "VisionSetil",
+    "tagline": "Your smart guide to the world of mushrooms",
+    "footerDisclaimer": "Orientation and educational tool. It does not replace expert mycologist advice. A wrong identification can cost a life.",
+    "poweredBy": "Powered by FungiCLEF 2025"
+  },
+  "nav": {
+    "home": "Home",
+    "identify": "Identify",
+    "encyclopedia": "Encyclopedia",
+    "map": "Map",
+    "education": "Learn"
+  },
+  "actions": {
+    "search": "Search",
+    "clear": "Clear",
+    "retry": "Retry",
+    "back": "Back",
+    "share": "Share",
+    "favorite": "Favorite",
+    "unfavorite": "Remove favorite",
+    "classify": "Identify",
+    "skip": "Skip",
+    "next": "Next",
+    "previous": "Previous",
+    "darkMode": "Dark mode",
+    "lightMode": "Light mode",
+    "menu": "Menu"
+  },
+  "safety": {
+    "bannerTitle": "SAFETY WARNING",
+    "bannerBody": "This identification is orientation-only and may be wrong. NEVER eat a mushroom based only on this result. Always consult an expert mycologist before consumption.",
+    "encyclopediaDisclaimer": "Educational information. VisionSetil does not recommend eating wild mushrooms. Edibility labels are mycological reference only, not permission to consume.",
+    "orientationOnly": "Orientation-only identification. Do not consume based on this app."
+  },
+  "edibility": {
+    "excelente": "High culinary interest (educational only)",
+    "buen_comestible": "Culinary interest (educational reference)",
+    "comestible_con_cautela": "Traditionally cited with caution (educational)",
+    "no_recomendado": "Not recommended (reference)",
+    "toxico": "Toxic",
+    "mortifero": "Deadly",
+    "desconocido": "Unknown"
+  },
+  "home": {
+    "heroTitle": "Mushroom guide for Spain",
+    "heroBody": "Encyclopedia, visual identifier, zone map and safety guide.",
+    "ctaIdentify": "Identify mushroom",
+    "ctaEncyclopedia": "Encyclopedia",
+    "species": "Species",
+    "featured": "Featured",
+    "inSeason": "In season",
+    "deadly": "Deadly species",
+    "featuredHint": "Featured Iberian species",
+    "deadlyShort": "Deadly",
+    "collections": "Collections",
+    "collectionAmanitas": "Amanitas",
+    "collectionBoletales": "Boletales",
+    "collectionMilkcaps": "Milkcaps",
+    "collectionChanterelles": "Chanterelles",
+    "collectionToxic": "Toxic",
+    "collectionTruffles": "Truffles"
+  },
+  "encyclopedia": {
+    "title": "Mycological encyclopedia",
+    "subtitle": "Explore Iberian species with photos, descriptions and key data",
+    "searchPlaceholder": "Search by name, family or description…",
+    "edibilityFilter": "Edibility:",
+    "all": "All",
+    "empty": "No species found",
+    "notFound": "Species not found",
+    "backToEncyclopedia": "Back to encyclopedia",
+    "imageCredits": "Image credits",
+    "riskFilter": "Risk:",
+    "riskHigh": "High risk",
+    "riskDeadly": "Deadly",
+    "familyFilter": "Family:",
+    "showing": "Showing {{shown}} of {{total}}",
+    "loadMore": "Load more"
+  },
+  "identify": {
+    "title": "Identify mushroom",
+    "subtitle": "Upload photos from multiple views for more reliable identification",
+    "wizardTitle": "4-view guide",
+    "views": {
+      "gills": "Gills / pores",
+      "front": "Front / cap",
+      "habitat": "Habitat",
+      "detail": "Detail (base / section)"
+    },
+    "viewHint": {
+      "gills": "Well-lit hymenium (gills or pores)",
+      "front": "Front or top view of the cap",
+      "habitat": "Surroundings and substrate",
+      "detail": "Stem base, volva or cross-section"
+    },
+    "history": "Local history",
+    "clearHistory": "Clear history",
+    "coachTitle": "How to take good photos",
+    "coachTip1": "Front natural light; avoid strong backlight",
+    "coachTip2": "Fill the frame with the mushroom",
+    "coachTip3": "Include stem and base when possible",
+    "coachTip4": "More views = better guidance (never 100 percent safe)",
+    "missingViews": "Recommended missing views",
+    "viewIcon": {
+      "gills": "🔻",
+      "front": "🍄",
+      "habitat": "🌲",
+      "detail": "🔍"
+    },
+    "takePhoto": "Take photo",
+    "uploadPhotos": "Upload photos"
+  },
+  "empty": {
+    "defaultTitle": "Nothing here",
+    "defaultDescription": "Try changing filters or search."
+  },
+  "error": {
+    "defaultTitle": "Something went wrong",
+    "defaultDescription": "Please try again in a moment."
+  },
+  "share": {
+    "title": "VisionSetil result",
+    "copied": "Link copied",
+    "disclaimer": "Orientation only — do not consume"
+  },
+  "risk": {
+    "toxic": "Toxic",
+    "poisonous": "Poisonous",
+    "deadly": "Deadly",
+    "high": "High risk / toxic",
+    "critical": "Critical",
+    "medium": "Moderate risk",
+    "low": "Unknown risk — do not consume",
+    "unknown": "Unknown — do not consume",
+    "risky_lookalikes": "Dangerous lookalikes possible",
+    "dangerous_or_unknown": "Dangerous or unknown",
+    "edible": "Do not consume (orientation only)",
+    "edible-conditionally": "Do not consume (orientation only)",
+    "inedible": "Inedible"
+  },
+  "result": {
+    "safetyLevelLabel": "Safety level",
+    "safetyLevel": {
+      "safe": "Orientation only — do not consume",
+      "caution": "Caution",
+      "warning": "Warning",
+      "danger": "Danger",
+      "critical": "Critical",
+      "unsafe_to_consume": "Unsafe to consume",
+      "unknown_or_risky": "Unknown or risky"
+    },
+    "rejectedTitle": "Not identified with confidence",
+    "rejectedDefault": "No reliable match found.",
+    "rejectedHint": "For safety, treat every unidentified mushroom as potentially dangerous.",
+    "acceptedTitle": "Tentative identification",
+    "maxConfidence": "Max confidence",
+    "confidence": {
+      "low": {
+        "label": "Low confidence",
+        "description": "The model is unsure. The identification may be wrong."
+      },
+      "moderate": {
+        "label": "Moderate confidence",
+        "description": "The model has a reasonable idea, but uncertainty remains significant."
+      },
+      "high": {
+        "label": "High confidence",
+        "description": "The model is fairly sure, but human verification is still essential."
+      }
+    },
+    "humanReviewTitle": "Human review recommended",
+    "humanReviewBody": "This case has low confidence. An expert should review it.",
+    "predictions": "Predictions",
+    "dangerTitle": "POTENTIALLY DANGEROUS SPECIES DETECTED",
+    "dangerBody": "The top match is in category {{category}}. Keep away from children and pets.",
+    "lookalikesTitle": "Dangerous similar species:",
+    "qualityTitle": "Image quality notes:",
+    "missingEvidenceTitle": "To improve identification:",
+    "questionsTitle": "Questions to improve the result:",
+    "feedbackQuestion": "Is this identification correct?",
+    "feedbackYes": "Yes",
+    "feedbackNo": "No",
+    "feedbackThanks": "Thanks for your feedback. It helps improve the model.",
+    "technicalDetails": "Technical details",
+    "time": "Time"
+  },
+  "categories": {
+    "todas": "All",
+    "comestible": "Culinary interest (educational)",
+    "excelente": "High culinary interest (educational)",
+    "toxico": "Toxic",
+    "mortifero": "Deadly",
+    "medicinal": "Medicinal",
+    "premium": "Premium",
+    "cultivable": "Cultivable",
+    "popular": "Popular",
+    "bosque": "Forest",
+    "pinar": "Pine woods",
+    "prado": "Meadows",
+    "caracteristico": "Distinctive",
+    "raro": "Rare",
+    "grande": "Large",
+    "peligroso": "Dangerous",
+    "primavera": "Spring",
+    "verano": "Summer",
+    "otono": "Autumn",
+    "invierno": "Winter"
+  },
+  "api": {
+    "offlineTitle": "API offline",
+    "offlineBody": "Browse encyclopedia without backend. Identify needs API on :8000."
+  },
+  "seasons": {
+    "winter": "Winter",
+    "spring": "Spring",
+    "summer": "Summer",
+    "autumn": "Autumn"
+  },
+  "detail": {
+    "description": "Description",
+    "morphology": "Morphology",
+    "cap": "Cap",
+    "stem": "Stem",
+    "hymenium": "Hymenium",
+    "keyFeatures": "Key features",
+    "deadlySpecies": "DEADLY SPECIES",
+    "toxicSpecies": "Toxic species",
+    "dangerDefault": "Dangerous. Do not consume."
+  },
+  "education": {
+    "title": "Learn mycology",
+    "subtitle": "Safety-first field guides"
+  }
+}

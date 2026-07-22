@@ -49,6 +49,9 @@ PUBLIC_PATHS = {
     "/docs",
     "/openapi.json",
     "/redoc",
+    # Professional Upgrade: public read catalog + media (no user accounts)
+    "/media",
+    "/species",
 }
 
 DEFAULT_ORG = "default"

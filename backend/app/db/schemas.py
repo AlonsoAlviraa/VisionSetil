@@ -226,6 +226,11 @@ class SimpleSpeciesPrediction(BaseModel):
     common_name: str | None = None
     confidence: float
     edibility: str | None = None
+    # PR-11 hydration (additive)
+    slug: str | None = None
+    common_names: list[str] = Field(default_factory=list)
+    risk_level: str | None = None
+    image_card_url: str | None = None
 
 
 class SimpleClassificationResult(BaseModel):
@@ -247,3 +252,6 @@ class SimpleClassificationResult(BaseModel):
     open_set_reason: str | None = None
     recommend_human_review: bool = False
     final_warning: str = ""
+    locale: str | None = None
+    orientation_only: str = "orientation_only"
+    unsafe_to_consume: str = "unsafe_to_consume"

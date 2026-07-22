@@ -1,21 +1,24 @@
-/** App header with brand, premium navigation bar, theme toggle and safety badge. */
+/** App header with brand, nav, theme, language switcher and safety badge. */
 import { useEffect, useState } from 'react'
 import { NavLink, Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import { LanguageSwitcher } from './LanguageSwitcher'
 
 const THEME_KEY = 'visionsetil_theme'
 
-const navItems = [
-  { to: '/', label: 'Inicio', icon: '🏠' },
-  { to: '/identificar', label: 'Identificar', icon: '🔍' },
-  { to: '/enciclopedia', label: 'Enciclopedia', icon: '📚' },
-  { to: '/mapa', label: 'Mapa', icon: '🗺️' },
-  { to: '/educacion', label: 'Aprende', icon: '🎓' },
-]
-
 export function Header() {
+  const { t } = useTranslation()
   const [theme, setTheme] = useState<'light' | 'dark'>('light')
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+
+  const navItems = [
+    { to: '/', label: t('nav.home'), icon: '🏠' },
+    { to: '/identificar', label: t('nav.identify'), icon: '🔍' },
+    { to: '/enciclopedia', label: t('nav.encyclopedia'), icon: '📚' },
+    { to: '/mapa', label: t('nav.map'), icon: '🗺️' },
+    { to: '/educacion', label: t('nav.education'), icon: '🎓' },
+  ]
 
   useEffect(() => {
     const saved = localStorage.getItem(THEME_KEY) as 'light' | 'dark' | null
@@ -46,24 +49,25 @@ export function Header() {
             🍄
           </span>
           <div className="header-brand-text">
-            <h1>VisionSetil</h1>
-            <p className="subtitle">Tu guía inteligente del mundo de las setas</p>
+            <h1>{t('app.name')}</h1>
+            <p className="subtitle">{t('app.tagline')}</p>
           </div>
         </Link>
         <div className="header-actions">
+          <LanguageSwitcher />
           <button
             className="btn-icon"
             onClick={toggleTheme}
-            aria-label={theme === 'light' ? 'Activar modo oscuro' : 'Activar modo claro'}
-            title={theme === 'light' ? 'Modo oscuro' : 'Modo claro'}
+            aria-label={theme === 'light' ? t('actions.darkMode') : t('actions.lightMode')}
+            title={theme === 'light' ? t('actions.darkMode') : t('actions.lightMode')}
           >
             {theme === 'light' ? '🌙' : '☀️'}
           </button>
           <button
             className="btn-icon btn-menu-toggle"
             onClick={() => setMenuOpen((v) => !v)}
-            aria-label="Abrir menú"
-            title="Menú"
+            aria-label={t('actions.menu')}
+            title={t('actions.menu')}
           >
             {menuOpen ? '✕' : '☰'}
           </button>
@@ -88,7 +92,9 @@ export function Header() {
       {!scrolled && (
         <div className="header-badge">
           <span className="badge-icon">🔬</span>
-          <span>Powered by FungiCLEF 2025 · {new Date().getFullYear()}</span>
+          <span>
+            {t('app.poweredBy')} · {new Date().getFullYear()}
+          </span>
         </div>
       )}
     </header>

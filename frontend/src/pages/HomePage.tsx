@@ -1,154 +1,203 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { mushroomDatabase, getFeaturedMushrooms } from '../data/mushroomDatabase'
+import { useTranslation } from 'react-i18next'
 import { FeaturedMushroomCard } from '../components/FeaturedMushroomCard'
-import { getMushroomImage } from '../api/mushroomImages'
+import { SpeciesImage } from '../components/SpeciesImage'
 import { SporeParticles } from '../components/SporeParticles'
+import { useSpeciesCatalog, catalogToMushroomSpecies } from '../hooks/useSpeciesCatalog'
+import { speciesImageUrl } from '../lib/speciesImageUrl'
 
 type SeasonKey = 'winter' | 'spring' | 'summer' | 'autumn'
 
-function getSeasonInfo() {
+function currentSeasonKey(): SeasonKey {
   const month = new Date().getMonth() + 1
-  const seasons: Record<SeasonKey, { label: string; icon: string; color: string }> = {
-    winter: { label: 'Invierno', icon: '❄️', color: '#5b9bd5' },
-    spring: { label: 'Primavera', icon: '🌿', color: '#7cb342' },
-    summer: { label: 'Verano', icon: '☀️', color: '#f5a623' },
-    autumn: { label: 'Otoño', icon: '🍂', color: '#d97706' },
-  }
-  let key: SeasonKey = 'autumn'
-  if (month >= 12 || month <= 2) key = 'winter'
-  else if (month >= 3 && month <= 5) key = 'spring'
-  else if (month >= 6 && month <= 8) key = 'summer'
-  return { ...seasons[key], month }
+  if (month >= 12 || month <= 2) return 'winter'
+  if (month >= 3 && month <= 5) return 'spring'
+  if (month >= 6 && month <= 8) return 'summer'
+  return 'autumn'
+}
+
+function normalizeSeasonText(s: string): string {
+  return s
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[–—-]/g, '-')
+}
+
+const SEASON_META: Record<SeasonKey, { icon: string; color: string; keys: string[] }> = {
+  winter: { icon: '❄️', color: '#5b9bd5', keys: ['invierno', 'winter', 'negu', 'hivern', 'todas', 'totes'] },
+  spring: { icon: '🌿', color: '#7cb342', keys: ['primavera', 'spring', 'udaberri', 'todas', 'totes'] },
+  summer: { icon: '☀️', color: '#f5a623', keys: ['verano', 'summer', 'estiu', 'uda', 'todas', 'totes'] },
+  autumn: {
+    icon: '🍂',
+    color: '#d97706',
+    keys: ['otono', 'otono', 'autumn', 'tardor', 'udazken', 'otono-invierno', 'todas', 'totes'],
+  },
 }
 
 export function HomePage() {
-  const featured = getFeaturedMushrooms()
-  const [heroImage, setHeroImage] = useState<string | null>(null)
-  const seasonInfo = getSeasonInfo()
+  const { t, i18n } = useTranslation()
+  const locale = (i18n.language || 'es').slice(0, 2)
+  const { items, featured: featuredCat } = useSpeciesCatalog(locale)
+  const seasonKey = currentSeasonKey()
+  const seasonMeta = SEASON_META[seasonKey]
+  const seasonLabel = t(`seasons.${seasonKey}`, {
+    defaultValue: seasonKey,
+  })
+
+  const featured = useMemo(
+    () => featuredCat.slice(0, 12).map(catalogToMushroomSpecies),
+    [featuredCat],
+  )
 
   const inSeason = useMemo(() => {
-    const iconToSeason: Record<string, string> = {
-      '❄️': 'winter',
-      '🌿': 'spring',
-      '☀️': 'summer',
-      '🍂': 'autumn',
-    }
-    const seasonKeywords: Record<string, string[]> = {
-      winter: ['invierno', 'todas'],
-      spring: ['primavera', 'todas'],
-      summer: ['verano', 'todas'],
-      autumn: ['otono', 'otoño', 'todas'],
-    }
-    const seasonKey = iconToSeason[seasonInfo.icon] || 'autumn'
-    const keywords = seasonKeywords[seasonKey] || seasonKeywords.autumn
-    return mushroomDatabase.filter((m) => m.season && keywords.some((kw) => m.season.toLowerCase().includes(kw))).slice(0, 4)
-  }, [seasonInfo])
+    const keywords = SEASON_META[seasonKey].keys.map(normalizeSeasonText)
+    return items
+      .filter((m) => {
+        const s = normalizeSeasonText(m.season || '')
+        return s && keywords.some((kw) => s.includes(kw))
+      })
+      .slice(0, 8)
+      .map(catalogToMushroomSpecies)
+  }, [items, seasonKey])
 
-  const deadly = useMemo(() => mushroomDatabase.filter((m) => m.edibility === 'mortifero').slice(0, 3), [])
+  const deadly = useMemo(
+    () =>
+      items
+        .filter((m) => m.edibility_code === 'mortifero' || m.risk_level === 'deadly')
+        .slice(0, 8)
+        .map(catalogToMushroomSpecies),
+    [items],
+  )
 
-  useEffect(() => {
-    getMushroomImage('Cantharellus cibarius').then((url) => url && setHeroImage(url))
-  }, [])
+  const deadlyTotal = useMemo(
+    () =>
+      items.filter((m) => m.edibility_code === 'mortifero' || m.risk_level === 'deadly').length,
+    [items],
+  )
+
+  const heroSlug = useMemo(() => {
+    const pool = featuredCat.length
+      ? featuredCat
+      : items.filter((m) => m.featured).slice(0, 8)
+    if (!pool.length) return 'cantharellus-cibarius'
+    const pick = pool[Math.floor(Date.now() / 86_400_000) % pool.length]
+    return pick.slug || 'cantharellus-cibarius'
+  }, [featuredCat, items])
+
+  const collections = useMemo(() => {
+    const defs = [
+      { id: 'amanitas', labelKey: 'home.collectionAmanitas', icon: '🔴', match: (c: string[]) => c.includes('amanitas') || c.includes('amanita') },
+      { id: 'boletus', labelKey: 'home.collectionBoletales', icon: '🟤', match: (c: string[]) => c.includes('boletus') },
+      { id: 'lactarius', labelKey: 'home.collectionMilkcaps', icon: '🟠', match: (c: string[]) => c.includes('lactarius') },
+      { id: 'cantharellus', labelKey: 'home.collectionChanterelles', icon: '🟡', match: (c: string[]) => c.includes('cantharellus') },
+      { id: 'toxicas', labelKey: 'home.collectionToxic', icon: '☠️', match: (c: string[]) => c.includes('toxicas') },
+      { id: 'trufas', labelKey: 'home.collectionTruffles', icon: '⬛', match: (c: string[]) => c.includes('trufas') },
+    ]
+    return defs
+      .map((d) => ({
+        ...d,
+        count: items.filter((m) => d.match(m.categories || [])).length,
+        href: `/enciclopedia?cat=${d.id}`,
+      }))
+      .filter((d) => d.count > 0)
+  }, [items])
+
+  const heroUrl = speciesImageUrl(heroSlug, 'detail')
 
   return (
     <div className="home-page">
-      {/* ═══ HERO ═══ */}
       <section className="hero-section">
-        {heroImage && (
-          <div className="hero-bg-image" style={{ backgroundImage: `url(${heroImage})` }} />
-        )}
+        <div className="hero-bg-image" style={{ backgroundImage: `url(${heroUrl})` }} />
+        <div
+          data-testid="home-hero-species-image"
+          style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', opacity: 0 }}
+        >
+          <SpeciesImage
+            scientificName={heroSlug.replace(/-/g, ' ')}
+            slug={heroSlug}
+            variant="card"
+            alt={heroSlug}
+            priority
+          />
+        </div>
         <div className="hero-overlay" />
         <SporeParticles count={20} color="rgba(255, 255, 255, 0.3)" />
         <div className="hero-content">
-          <h1 className="hero-title">
-            Guía de setas<br />
-            de <span className="hero-highlight">España</span>
-          </h1>
+          <h1 className="hero-title">{t('home.heroTitle')}</h1>
           <p className="hero-description">
-            Enciclopedia con {mushroomDatabase.length} especies, identificador visual,
-            mapa de zonas y guía de seguridad. Todo lo que necesitas como aficionado a la micología.
+            {t('home.heroBody')} ({items.length} {t('home.species').toLowerCase()})
           </p>
           <div className="hero-cta">
-            <Link to="/identificar" className="btn-hero-primary">🔍 Identificar seta</Link>
-            <Link to="/enciclopedia" className="btn-hero-secondary">📚 Enciclopedia</Link>
+            <Link to="/identificar" className="btn-hero-primary vs-btn vs-btn--primary vs-btn--lg">
+              🔍 {t('home.ctaIdentify')}
+            </Link>
+            <Link to="/enciclopedia" className="btn-hero-secondary vs-btn vs-btn--secondary vs-btn--lg">
+              📚 {t('home.ctaEncyclopedia')}
+            </Link>
           </div>
-          <div className="hero-stats-bar">
+          <div className="hero-stats-bar" data-testid="home-stats">
             <div className="hero-stat-item">
-              <span className="hero-stat-number">{mushroomDatabase.length}</span>
-              <span className="hero-stat-label">Especies</span>
+              <span className="hero-stat-number" data-testid="home-species-count">{items.length}</span>
+              <span className="hero-stat-label">{t('home.species')}</span>
             </div>
             <div className="hero-divider" />
             <div className="hero-stat-item">
-              <span className="hero-stat-number">66</span>
-              <span className="hero-stat-label">Zonas</span>
+              <span className="hero-stat-number">{deadlyTotal}</span>
+              <span className="hero-stat-label">{t('home.deadlyShort')}</span>
             </div>
             <div className="hero-divider" />
             <div className="hero-stat-item">
-              <span className="hero-stat-number">{seasonInfo.icon}</span>
-              <span className="hero-stat-label">{seasonInfo.label}</span>
+              <span className="hero-stat-number">{seasonMeta.icon}</span>
+              <span className="hero-stat-label">{seasonLabel}</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ═══ FEATURES ═══ */}
-      <section className="section">
-        <div className="section-header-center">
-          <h2 className="section-title-lg">Explora</h2>
-          <p className="section-subtitle-lg">Herramientas para el aficionado a las setas</p>
-        </div>
-        <div className="features-grid-v2">
-          <Link to="/identificar" className="feature-tile">
-            <div className="feature-tile-icon" style={{ background: 'linear-gradient(135deg, #3a5a40, #588157)' }}>🔍</div>
-            <h3>Identificador</h3>
-            <p>Sube una foto y obtén el resultado en segundos.</p>
-            <span className="feature-arrow">→</span>
-          </Link>
-          <Link to="/enciclopedia" className="feature-tile">
-            <div className="feature-tile-icon" style={{ background: 'linear-gradient(135deg, #bc6c25, #dda15e)' }}>📖</div>
-            <h3>Enciclopedia</h3>
-            <p>{mushroomDatabase.length} especies con fotos, descripción y hábitat.</p>
-            <span className="feature-arrow">→</span>
-          </Link>
-          <Link to="/mapa" className="feature-tile">
-            <div className="feature-tile-icon" style={{ background: 'linear-gradient(135deg, #3d5a80, #98c1d9)' }}>🗺️</div>
-            <h3>Mapa de zonas</h3>
-            <p>66 zonas con datos de fructificación por época del año.</p>
-            <span className="feature-arrow">→</span>
-          </Link>
-          <Link to="/educacion" className="feature-tile">
-            <div className="feature-tile-icon" style={{ background: 'linear-gradient(135deg, #5c3d2e, #a4633a)' }}>🎓</div>
-            <h3>Aprende</h3>
-            <p>Reglas de oro, anatomía y guía de seguridad.</p>
-            <span className="feature-arrow">→</span>
-          </Link>
-        </div>
-      </section>
+      {collections.length > 0 && (
+        <section className="section">
+          <div className="section-header-center">
+            <span className="section-badge">🗂️ {t('home.collections')}</span>
+            <h2 className="section-title-lg">{t('home.collections')}</h2>
+          </div>
+          <div className="home-collections-row" data-testid="home-collections">
+            {collections.map((c) => (
+              <Link key={c.id} to={`/enciclopedia?cat=${c.id}`} className="home-collection-chip">
+                <span className="home-collection-chip__count">{c.count}</span>
+                <span className="home-collection-chip__label">{t(c.labelKey)}</span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
-      {/* ═══ FEATURED ═══ */}
       <section className="section">
         <div className="section-header-center">
-          <span className="section-badge">⭐ Destacadas</span>
-          <h2 className="section-title-lg">Especies que debes conocer</h2>
-          <p className="section-subtitle-lg">De los reyes del bosque a las más peligrosas</p>
+          <span className="section-badge">⭐ {t('home.featured')}</span>
+          <h2 className="section-title-lg">{t('home.featured')}</h2>
+          <p className="section-subtitle-sm">{t('home.featuredHint')}</p>
         </div>
-        <div className="featured-mushroom-grid">
+        <div className="featured-carousel" data-testid="home-featured-carousel">
           {featured.map((m) => (
-            <FeaturedMushroomCard key={m.scientificName} species={m} />
+            <div key={m.scientificName} className="featured-carousel__item">
+              <FeaturedMushroomCard species={m} />
+            </div>
           ))}
         </div>
       </section>
 
-      {/* ═══ IN SEASON ═══ */}
       {inSeason.length > 0 && (
         <section className="section">
           <div className="section-header-center">
-            <span className="section-badge" style={{ background: seasonInfo.color + '22', color: seasonInfo.color }}>
-              {seasonInfo.icon} Temporada actual
+            <span
+              className="section-badge"
+              style={{ background: seasonMeta.color + '22', color: seasonMeta.color }}
+            >
+              {seasonMeta.icon} {t('home.inSeason')}
             </span>
-            <h2 className="section-title-lg">En temporada este {seasonInfo.label.toLowerCase()}</h2>
-            <p className="section-subtitle-lg">Especies que fructifican ahora</p>
+            <h2 className="section-title-lg">{t('home.inSeason')}</h2>
           </div>
           <div className="featured-mushroom-grid">
             {inSeason.map((m) => (
@@ -158,15 +207,13 @@ export function HomePage() {
         </section>
       )}
 
-      {/* ═══ DEADLY ═══ */}
       {deadly.length > 0 && (
         <section className="section">
           <div className="section-header-center">
             <span className="section-badge" style={{ background: 'rgba(220,38,38,0.1)', color: '#dc2626' }}>
-              ☠️ Mortales
+              ☠️ {t('home.deadly')}
             </span>
-            <h2 className="section-title-lg">Las que pueden matarte</h2>
-            <p className="section-subtitle-lg">Aprende a identificarlas para evitarlas</p>
+            <h2 className="section-title-lg">{t('home.deadly')}</h2>
           </div>
           <div className="featured-mushroom-grid">
             {deadly.map((m) => (
@@ -176,27 +223,13 @@ export function HomePage() {
         </section>
       )}
 
-      {/* ═══ SAFETY ═══ */}
       <section className="section">
-        <div className="safety-banner-v2">
+        <div className="safety-banner-v2" data-testid="safety-banner">
           <div className="safety-banner-icon">⚠️</div>
           <div className="safety-banner-content">
-            <h3>Seguridad ante todo</h3>
-            <p>
-              Esta herramienta es orientativa. <strong>Nunca consumas una seta
-              sin la validación de un experto micólogo.</strong> Ante la duda, desecha.
-            </p>
+            <h3>{t('safety.bannerTitle')}</h3>
+            <p>{t('safety.bannerBody')}</p>
           </div>
-        </div>
-      </section>
-
-      {/* ═══ CTA ═══ */}
-      <section className="section">
-        <div className="cta-card">
-          <div style={{ fontSize: '3rem', marginBottom: '0.75rem' }}>🍄</div>
-          <h2>¿Tienes una seta en mano?</h2>
-          <p>Súbela y te ayudamos a identificarla.</p>
-          <Link to="/identificar" className="btn-hero-primary">🔍 Identificar ahora</Link>
         </div>
       </section>
     </div>

@@ -1,0 +1,230 @@
+{
+  "app": {
+    "name": "VisionSetil",
+    "tagline": "Tu guía inteligente del mundo de las setas",
+    "footerDisclaimer": "Herramienta orientativa y educativa. No sustituye el consejo de un micólogo experto. Una identificación incorrecta puede costar una vida.",
+    "poweredBy": "Powered by FungiCLEF 2025"
+  },
+  "nav": {
+    "home": "Inicio",
+    "identify": "Identificar",
+    "encyclopedia": "Enciclopedia",
+    "map": "Mapa",
+    "education": "Aprende"
+  },
+  "actions": {
+    "search": "Buscar",
+    "clear": "Limpiar",
+    "retry": "Reintentar",
+    "back": "Volver",
+    "share": "Compartir",
+    "favorite": "Favorito",
+    "unfavorite": "Quitar de favoritos",
+    "classify": "Identificar",
+    "skip": "Saltar",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "darkMode": "Modo oscuro",
+    "lightMode": "Modo claro",
+    "menu": "Menú"
+  },
+  "safety": {
+    "bannerTitle": "ADVERTENCIA DE SEGURIDAD",
+    "bannerBody": "Esta identificación es orientativa y puede ser incorrecta. NUNCA consumas una seta basándote solo en este resultado. Consulta siempre con un micólogo experto antes de consumir.",
+    "encyclopediaDisclaimer": "Información educativa. VisionSetil no recomienda el consumo de setas silvestres. La edibilidad mostrada es de referencia micológica, no una autorización de consumo.",
+    "orientationOnly": "Identificación orientativa. No consumir basándose en esta app."
+  },
+  "edibility": {
+    "excelente": "Interés culinario alto (solo referencia educativa)",
+    "buen_comestible": "Interés culinario (referencia educativa)",
+    "comestible_con_cautela": "Tradicionalmente citado con cautela (educativo)",
+    "no_recomendado": "No recomendado (referencia)",
+    "toxico": "Tóxico",
+    "mortifero": "Mortal",
+    "desconocido": "Desconocido"
+  },
+  "api": {
+    "offlineTitle": "API desconectada",
+    "offlineBody": "Puedes explorar la enciclopedia y las fotos. La identificación necesita el backend en el puerto 8000."
+  },
+  "seasons": {
+    "winter": "Invierno",
+    "spring": "Primavera",
+    "summer": "Verano",
+    "autumn": "Otoño"
+  },
+  "detail": {
+    "description": "Descripción",
+    "morphology": "Morfología",
+    "cap": "Sombrero",
+    "stem": "Pie",
+    "hymenium": "Himenio",
+    "keyFeatures": "Características clave",
+    "deadlySpecies": "ESPECIE MORTAL",
+    "toxicSpecies": "Especie tóxica",
+    "dangerDefault": "Esta seta es peligrosa. No consumir bajo ningún concepto."
+  },
+  "home": {
+    "heroTitle": "Guía de setas de España",
+    "heroBody": "Enciclopedia, identificador visual, mapa de zonas y guía de seguridad.",
+    "ctaIdentify": "Identificar seta",
+    "ctaEncyclopedia": "Enciclopedia",
+    "species": "Especies",
+    "featured": "Destacadas",
+    "featuredHint": "Iconos ibéricos y de temporada",
+    "inSeason": "De temporada",
+    "deadly": "Especies mortales",
+    "deadlyShort": "Mortales",
+    "collections": "Colecciones",
+    "collectionAmanitas": "Amanitas",
+    "collectionBoletales": "Boletales",
+    "collectionMilkcaps": "Nízcalos",
+    "collectionChanterelles": "Rebozuelos",
+    "collectionToxic": "Tóxicas",
+    "collectionTruffles": "Trufas"
+  },
+  "encyclopedia": {
+    "title": "Enciclopedia micológica",
+    "subtitle": "Explora especies ibéricas con fotos, descripciones y datos clave",
+    "searchPlaceholder": "Buscar por nombre, familia o descripción…",
+    "edibilityFilter": "Comestibilidad:",
+    "riskFilter": "Riesgo:",
+    "riskHigh": "Alto riesgo / tóxicas",
+    "riskDeadly": "Mortales",
+    "familyFilter": "Familia:",
+    "all": "Todas",
+    "empty": "No se encontraron especies",
+    "notFound": "Especie no encontrada",
+    "backToEncyclopedia": "Volver a la enciclopedia",
+    "imageCredits": "Créditos de imágenes",
+    "showing": "Mostrando {{shown}} de {{total}}",
+    "loadMore": "Cargar más"
+  },
+  "identify": {
+    "title": "Identificar seta",
+    "subtitle": "Sube fotos desde varias vistas para una identificación más fiable",
+    "wizardTitle": "Guía de 4 vistas",
+    "coachTitle": "Cómo hacer buenas fotos",
+    "coachTip1": "Luz natural frontal; evita contraluz fuerte",
+    "coachTip2": "Rellena el encuadre con la seta (no demasiada distancia)",
+    "coachTip3": "Incluye pie y base cuando sea posible",
+    "coachTip4": "Más vistas = mejor orientación (nunca 100% seguro)",
+    "views": {
+      "gills": "Láminas / poros",
+      "front": "Frente / sombrero",
+      "habitat": "Hábitat",
+      "detail": "Detalle (base / corte)"
+    },
+    "viewHint": {
+      "gills": "Foto del himenio (láminas o poros) bien iluminado",
+      "front": "Vista frontal o superior del sombrero",
+      "habitat": "Entorno y sustrato donde crece",
+      "detail": "Base del pie, volva o sección"
+    },
+    "viewIcon": {
+      "gills": "🔻",
+      "front": "🍄",
+      "habitat": "🌲",
+      "detail": "🔍"
+    },
+    "history": "Historial local",
+    "clearHistory": "Vaciar historial",
+    "missingViews": "Vistas recomendadas que faltan"
+  },
+  "empty": {
+    "defaultTitle": "Nada por aquí",
+    "defaultDescription": "Prueba a cambiar los filtros o la búsqueda."
+  },
+  "error": {
+    "defaultTitle": "Algo salió mal",
+    "defaultDescription": "Inténtalo de nuevo en unos momentos."
+  },
+  "share": {
+    "title": "Resultado VisionSetil",
+    "copied": "Enlace copiado",
+    "disclaimer": "Solo orientación — no consumir"
+  },
+  "risk": {
+    "toxic": "Tóxica",
+    "poisonous": "Venenosa",
+    "deadly": "Mortal",
+    "high": "Alto riesgo / tóxica",
+    "critical": "Crítico",
+    "medium": "Riesgo moderado",
+    "low": "Riesgo desconocido — no consumir",
+    "unknown": "Desconocida — no consumir",
+    "risky_lookalikes": "Confusiones peligrosas posibles",
+    "dangerous_or_unknown": "Peligrosa o desconocida",
+    "edible": "No consumir (orientativo)",
+    "edible-conditionally": "No consumir (orientativo)",
+    "inedible": "No comestible"
+  },
+  "result": {
+    "safetyLevelLabel": "Nivel de seguridad",
+    "safetyLevel": {
+      "safe": "Orientativo — no consumir",
+      "caution": "Precaución",
+      "warning": "Advertencia",
+      "danger": "Peligro",
+      "critical": "Crítico",
+      "unsafe_to_consume": "No seguro para consumir",
+      "unknown_or_risky": "Desconocido o arriesgado"
+    },
+    "rejectedTitle": "No identificado con confianza",
+    "rejectedDefault": "No se encontró una coincidencia fiable.",
+    "rejectedHint": "Por seguridad, trata toda seta no identificada como potencialmente peligrosa.",
+    "acceptedTitle": "Identificación tentativa",
+    "maxConfidence": "Confianza máxima",
+    "confidence": {
+      "low": {
+        "label": "Baja confianza",
+        "description": "El modelo no está seguro. La identificación podría ser incorrecta."
+      },
+      "moderate": {
+        "label": "Confianza moderada",
+        "description": "El modelo tiene una idea razonable, pero hay incertidumbre significativa."
+      },
+      "high": {
+        "label": "Alta confianza",
+        "description": "El modelo está bastante seguro, pero la verificación humana sigue siendo esencial."
+      }
+    },
+    "humanReviewTitle": "Recomendada revisión humana",
+    "humanReviewBody": "Este caso presenta baja confianza. Un experto debería revisarlo.",
+    "predictions": "Predicciones",
+    "dangerTitle": "ESPECIE POTENCIALMENTE PELIGROSA DETECTADA",
+    "dangerBody": "La coincidencia más probable pertenece a una categoría {{category}}. Mantenla lejos de niños y mascotas.",
+    "lookalikesTitle": "Especies peligrosas similares:",
+    "qualityTitle": "Avisos de calidad de imagen:",
+    "missingEvidenceTitle": "Para mejorar la identificación:",
+    "questionsTitle": "Preguntas para mejorar el resultado:",
+    "feedbackQuestion": "¿Es correcta esta identificación?",
+    "feedbackYes": "Sí",
+    "feedbackNo": "No",
+    "feedbackThanks": "Gracias por tu feedback. Ayuda a mejorar el modelo.",
+    "technicalDetails": "Detalles técnicos",
+    "time": "Tiempo"
+  },
+  "categories": {
+    "todas": "Todas",
+    "comestible": "Interés culinario (educativo)",
+    "excelente": "Alto interés culinario (educativo)",
+    "toxico": "Tóxicas",
+    "mortifero": "Mortales",
+    "medicinal": "Medicinales",
+    "premium": "Premium",
+    "cultivable": "Cultivables",
+    "popular": "Populares",
+    "bosque": "Bosque",
+    "pinar": "Pinares",
+    "prado": "Prados",
+    "caracteristico": "Únicas",
+    "raro": "Raras",
+    "grande": "Gigantes",
+    "peligroso": "Peligrosas",
+    "primavera": "Primavera",
+    "verano": "Verano",
+    "otono": "Otoño",
+    "invierno": "Invierno"
+  }
+}

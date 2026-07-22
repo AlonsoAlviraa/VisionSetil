@@ -5,6 +5,11 @@ export interface SpeciesPrediction {
   common_name: string | null
   confidence: number
   edibility: string | null
+  /** PR-11 hydration */
+  slug?: string | null
+  common_names?: string[]
+  risk_level?: string | null
+  image_card_url?: string | null
 }
 
 export interface ModelStack {
@@ -31,6 +36,9 @@ export interface ClassificationResult {
   open_set_reason: string | null
   recommend_human_review: boolean
   final_warning: string
+  locale?: string | null
+  orientation_only?: string
+  unsafe_to_consume?: string
 }
 
 export interface ApiError {

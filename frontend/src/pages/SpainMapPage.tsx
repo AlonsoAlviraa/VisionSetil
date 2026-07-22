@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect } from 'react'
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet'
 import L from 'leaflet'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import 'leaflet/dist/leaflet.css'
 
 import {
@@ -10,11 +11,9 @@ import {
   SPAIN_ZOOM,
   type MushroomZone,
 } from '../data/mushroomZones'
-import {
-  getMushroomByScientificName,
-  EDIBILITY_LABELS,
-  EDIBILITY_COLORS,
-} from '../data/mushroomDatabase'
+import { getMushroomByScientificName } from '../data/mushroomDatabase'
+import { EDIBILITY_COLORS_D16 } from '../lib/edibility'
+import { scientificNameToSlug } from '../lib/slug'
 import {
   fetchWeatherData,
   evaluateMushroomConditions,
@@ -199,6 +198,7 @@ function ZoneWeather({ lat, lng }: { lat: number; lng: number }) {
 }
 
 export default function SpainMapPage() {
+  const { t } = useTranslation()
   const [selectedZone, setSelectedZone] = useState<MushroomZone | null>(null)
   const [filterRegion, setFilterRegion] = useState<string>('todas')
   const [filterAbundance, setFilterAbundance] = useState<string>('todas')
@@ -421,10 +421,14 @@ export default function SpainMapPage() {
                         </div>
                       )
                     }
+                    const edColor =
+                      EDIBILITY_COLORS_D16[
+                        species.edibility as keyof typeof EDIBILITY_COLORS_D16
+                      ] || EDIBILITY_COLORS_D16.desconocido
                     return (
                       <Link
                         key={sciName}
-                        to={`/enciclopedia/${encodeURIComponent(species.scientificName)}`}
+                        to={`/enciclopedia/${scientificNameToSlug(species.scientificName)}`}
                         className="zone-species-card"
                       >
                         <span className="species-icon">{species.icon}</span>
@@ -437,11 +441,13 @@ export default function SpainMapPage() {
                         <span
                           className="species-edibility"
                           style={{
-                            background: EDIBILITY_COLORS[species.edibility] + '22',
-                            color: EDIBILITY_COLORS[species.edibility],
+                            background: edColor + '22',
+                            color: edColor,
                           }}
                         >
-                          {EDIBILITY_LABELS[species.edibility]}
+                          {t(`edibility.${species.edibility}`, {
+                            defaultValue: species.edibility,
+                          })}
                         </span>
                       </Link>
                     )

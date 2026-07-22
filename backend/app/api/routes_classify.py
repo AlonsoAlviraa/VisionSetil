@@ -62,20 +62,59 @@ def _build_observation(
     )
 
 
+def _hydrate_prediction(
+    taxon: str, confidence: float, edibility: str | None, locale: str
+) -> SimpleSpeciesPrediction:
+    """PR-11: attach vernaculars, slug, risk, image URL (risk-oriented labels only)."""
+    from app.core.safety_i18n import identify_risk_label
+    from app.services.unified_catalog import (
+        get_by_scientific_name,
+        resolve_vernaculars,
+        scientific_to_slug,
+    )
+
+    rec = get_by_scientific_name(taxon)
+    slug = (rec.get("slug") if rec else None) or scientific_to_slug(taxon)
+    vern = resolve_vernaculars(rec, locale) if rec else []
+    risk = (rec.get("risk_level") if rec else None) or "unknown"
+    # Identify surface: risk-oriented labels only (D16) — never "excelente comestible".
+    risk_label = identify_risk_label(str(risk), locale)
+    # Browser-facing prefix (plan §1.7.1): default /api/media for Vite/nginx proxy.
+    from app.core.config import settings
+
+    prefix = (settings.media_public_prefix or "/api/media").rstrip("/")
+    image_card_url = f"{prefix}/species/{slug}/card.webp" if slug else None
+
+    return SimpleSpeciesPrediction(
+        species=taxon,
+        common_name=vern[0] if vern else None,
+        confidence=confidence,
+        edibility=risk_label or edibility,
+        slug=slug,
+        common_names=vern,
+        risk_level=str(risk),
+        image_card_url=image_card_url,
+    )
+
+
 def _map_to_simple(
     result: ClassificationResponse,
     request_id: str,
     processing_time_ms: int,
+    locale: str = "es",
 ) -> SimpleClassificationResult:
     """Convert the rich ClassificationResponse into the simplified frontend schema."""
+    from app.core.safety_i18n import final_warning as fw_i18n
+    from app.core.safety_i18n import get_safety_bundle
 
     predictions: list[SimpleSpeciesPrediction] = []
     for candidate in result.top_candidates or result.candidates:
         predictions.append(
-            SimpleSpeciesPrediction(
-                species=candidate.taxon,
-                confidence=candidate.confidence,
-                edibility=candidate.edibility_label,
+            _hydrate_prediction(
+                candidate.taxon,
+                candidate.confidence,
+                candidate.edibility_label,
+                locale,
             )
         )
 
@@ -85,6 +124,9 @@ def _map_to_simple(
     if result.open_set and result.open_set.is_unknown_or_uncertain:
         decision = "rejected"
         rejection_reason = result.open_set.reason
+
+    bundle = get_safety_bundle(locale)
+    warning = result.final_warning or bundle["final_warning"] or fw_i18n(locale)
 
     return SimpleClassificationResult(
         request_id=request_id,
@@ -102,7 +144,10 @@ def _map_to_simple(
         model_stack=result.model_stack,
         open_set_reason=rejection_reason,
         recommend_human_review=bool(result.human_review and result.human_review.recommended),
-        final_warning=result.final_warning,
+        final_warning=warning,
+        locale=locale,
+        orientation_only=bundle["status"],
+        unsafe_to_consume=bundle["safety_level"],
     )
 
 
@@ -124,6 +169,10 @@ async def classify_images(
             "auto-classifies each image with the View Classifier service. "
             f"Valid labels: {list(CANONICAL_VIEWS)}."
         ),
+    ),
+    locale: str | None = Form(
+        default=None,
+        description="UI locale for safety strings and vernacular hydration (es|ca|eu|en).",
     ),
     persist: bool = Form(default=True),
     db: Session = Depends(get_db),
@@ -182,7 +231,10 @@ async def classify_images(
         result = classifier.classify(observation, saved_images)
 
     elapsed_ms = int((time.perf_counter() - start) * 1000)
-    simple_result = _map_to_simple(result, request_id, elapsed_ms)
+    from app.core.safety_i18n import normalize_locale
+
+    loc = normalize_locale(locale)
+    simple_result = _map_to_simple(result, request_id, elapsed_ms, locale=loc)
 
     # If not persisting, delete the observation and images
     if not persist:

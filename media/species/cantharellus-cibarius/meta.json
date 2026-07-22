@@ -1,0 +1,25 @@
+{
+  "slug": "cantharellus-cibarius",
+  "scientific_name": "Cantharellus cibarius",
+  "source": "wikipedia_es",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/a/aa/2007-07-14_Cantharellus_cibarius.jpg",
+  "license": "wikipedia-page-image",
+  "license_url": "https://es.wikipedia.org/wiki/Cantharellus_cibarius",
+  "creator": "Wikipedia/es",
+  "attribution_text": "Wikipedia/es — wikipedia-page-image",
+  "gbif_occurrence_id": null,
+  "sha256_source": "166157179124326ef1be06948116028f73bdeed93fe706c575b608c55ab2ad8b",
+  "sha256_derivatives": {
+    "lqip": "8ab63f9006b7fd320dc4136367242af3535067e3f0abaffbe24aef1db2039340",
+    "thumb": "e00577654c1fcd26ec7d4c23a1ee270fce4713fea6285d494c55a309fee90dc5",
+    "card": "88542734992e36e7f0a55c6883ce98f4d76cf36d1279c696e9c237cf1006732d",
+    "detail": "166157179124326ef1be06948116028f73bdeed93fe706c575b608c55ab2ad8b"
+  },
+  "gallery": [
+    {
+      "file": "gallery/01.webp"
+    }
+  ],
+  "fetched_at": "2026-07-22T14:13:44.993554+00:00",
+  "status": "ok"
+}

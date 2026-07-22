@@ -6,6 +6,8 @@ import type { ClassificationResult, ObservationMetadata } from './types'
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api'
 const API_KEY = import.meta.env.VITE_API_KEY || ''
 
+export type CanonicalView = 'gills' | 'front' | 'habitat' | 'detail'
+
 const client = axios.create({
   baseURL: API_BASE_URL,
   timeout: 60000,
@@ -14,15 +16,23 @@ const client = axios.create({
   },
 })
 
+export interface ClassifyOptions {
+  locale?: string
+  viewTypes?: CanonicalView[]
+}
+
 /**
  * Classify one or more images against the VisionSetil backend.
  *
  * Supports optional observation metadata (habitat, substrate, etc.) which
  * improves classification accuracy through multi-modal fusion.
+ * PR-10: view_types as comma-separated CANONICAL_VIEWS.
+ * PR-11: locale for vernacular hydration + safety i18n.
  */
 export async function classifyImages(
   files: File[],
   metadata?: ObservationMetadata,
+  options?: ClassifyOptions,
 ): Promise<ClassificationResult> {
   const formData = new FormData()
 
@@ -38,6 +48,13 @@ export async function classifyImages(
     if (metadata.substrate) formData.append('substrate', metadata.substrate)
     if (metadata.notes) formData.append('notes', metadata.notes)
     if (metadata.smell) formData.append('smell', metadata.smell)
+  }
+
+  if (options?.viewTypes?.length) {
+    formData.append('view_types', options.viewTypes.join(','))
+  }
+  if (options?.locale) {
+    formData.append('locale', options.locale)
   }
 
   const response = await client.post<ClassificationResult>(
@@ -78,4 +95,23 @@ export async function submitFeedback(
     is_correct: isCorrect,
     corrected_species: correctedSpecies ?? null,
   })
+}
+
+export async function listSpecies(params?: {
+  q?: string
+  locale?: string
+  limit?: number
+  offset?: number
+  category?: string
+  edibility_code?: string
+}) {
+  const response = await client.get('/species', { params })
+  return response.data
+}
+
+export async function getSpecies(slug: string, locale?: string) {
+  const response = await client.get(`/species/${slug}`, {
+    params: locale ? { locale } : undefined,
+  })
+  return response.data
 }

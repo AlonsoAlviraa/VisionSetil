@@ -40,6 +40,17 @@ class Settings(BaseSettings):
     metadata_schema_path: Path = Field(
         default=Path(__file__).resolve().parents[1] / "data" / "metadata_schema.json"
     )
+    # Species catalog v2 + media store (Professional Upgrade)
+    # _BASE_DIR is backend/; monorepo root is parent.
+    species_catalog_v2_path: Path = Field(
+        default=_BASE_DIR.parent / "data" / "species_catalog" / "species_catalog_v2.json"
+    )
+    species_media_root: Path = Field(default=_BASE_DIR.parent / "media")
+    species_media_cdn_base: str = Field(default="")
+    species_media_cdn_prefer_redirect: bool = Field(default=False)
+    # Browser-facing media prefix for hydration URLs (plan §1.7.1).
+    # FE Vite/nginx strip /api → FastAPI /media. Default matches VITE_MEDIA_PUBLIC_PREFIX.
+    media_public_prefix: str = Field(default="/api/media")
 
     # --- Uploads ------------------------------------------------------------
     max_upload_size_bytes: int = Field(default=10 * 1024 * 1024, validation_alias="MAX_IMAGE_MB")

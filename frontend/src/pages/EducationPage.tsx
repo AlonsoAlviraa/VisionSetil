@@ -1,5 +1,7 @@
 /** Education page: guides on safety, anatomy, foraging rules, and seasons. */
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 interface AccordionItem {
   q: string
@@ -134,14 +136,26 @@ const foragingTips = [
 ]
 
 export function EducationPage() {
+  const { t } = useTranslation()
   const [openFaq, setOpenFaq] = useState<number | null>(0)
 
   return (
     <div className="page-education">
       <div className="page-header">
-        <h1 className="page-title">🎓 Aprende micología</h1>
+        <h1 className="page-title">🎓 {t('education.title', { defaultValue: 'Aprende micología' })}</h1>
         <p className="page-subtitle">
-          Guías esenciales para disfrutar del mundo de las setas con seguridad y conocimiento
+          {t('education.subtitle', {
+            defaultValue:
+              'Guías esenciales para disfrutar del mundo de las setas con seguridad y conocimiento',
+          })}
+        </p>
+        <p style={{ marginTop: '0.75rem' }}>
+          <Link to="/enciclopedia?cat=mortifero" className="vs-btn vs-btn--secondary vs-btn--sm">
+            ☠️ {t('home.deadly')}
+          </Link>{' '}
+          <Link to="/identificar" className="vs-btn vs-btn--primary vs-btn--sm">
+            🔍 {t('home.ctaIdentify')}
+          </Link>
         </p>
       </div>
 

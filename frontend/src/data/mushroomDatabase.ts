@@ -48,21 +48,30 @@ export interface MushroomSpecies {
   icon: string
   /** Whether this species is featured on the home page */
   featured?: boolean
+  /** Catalog risk_level when known (for optimistic placeholders) */
+  riskLevel?: string
+  /** Canonical kebab slug when known */
+  slug?: string
 }
 
+/** @deprecated Prefer i18n `edibility.*` + educational wording (D16). */
 export const EDIBILITY_LABELS: Record<EdibilityLevel, string> = {
-  excelente: 'Excelente comestible',
-  buen_comestible: 'Buen comestible',
-  comestible_con_cautela: 'Comestible con cautela',
-  no_recomendado: 'No recomendado',
+  excelente: 'Interés culinario alto (solo referencia educativa)',
+  buen_comestible: 'Interés culinario (referencia educativa)',
+  comestible_con_cautela: 'Tradicionalmente citado con cautela (educativo)',
+  no_recomendado: 'No recomendado (referencia)',
   toxico: 'Tóxico',
   mortifero: 'Mortal',
   desconocido: 'Desconocido',
 }
 
+/**
+ * D16 colors — no food-safe green for excelente.
+ * @deprecated Prefer `EDIBILITY_COLORS_D16` from `lib/edibility`.
+ */
 export const EDIBILITY_COLORS: Record<EdibilityLevel, string> = {
-  excelente: '#16a34a',
-  buen_comestible: '#22c55e',
+  excelente: '#0e7490', // teal/info — NOT food-safe green
+  buen_comestible: '#0284c7',
   comestible_con_cautela: '#f59e0b',
   no_recomendado: '#d97706',
   toxico: '#dc2626',
@@ -1527,11 +1536,20 @@ export function filterByEdibility(
 
 export const ALL_CATEGORIES = [
   { id: 'todas', label: 'Todas', icon: '🍄' },
+  { id: 'amanitas', label: 'Amanitas', icon: '🔴' },
+  { id: 'boletus', label: 'Boletales', icon: '🟤' },
+  { id: 'lactarius', label: 'Nízcalos', icon: '🟠' },
+  { id: 'cantharellus', label: 'Rebozuelos', icon: '🟡' },
+  { id: 'russulas', label: 'Rúsulas', icon: '🟣' },
+  { id: 'agaricus', label: 'Champiñones', icon: '⚪' },
+  { id: 'trufas', label: 'Trufas', icon: '⬛' },
+  { id: 'toxicas', label: 'Tóxicas (cat.)', icon: '⚠️' },
   { id: 'comestible', label: 'Comestibles', icon: '🍽️' },
   { id: 'excelente', label: 'Excelentes', icon: '⭐' },
   { id: 'toxico', label: 'Tóxicas', icon: '⚠️' },
   { id: 'mortifero', label: 'Mortales', icon: '☠️' },
   { id: 'medicinal', label: 'Medicinales', icon: '💊' },
+  { id: 'medicinales', label: 'Medicinales', icon: '💊' },
   { id: 'premium', label: 'Premium', icon: '💎' },
   { id: 'cultivable', label: 'Cultivables', icon: '🌱' },
   { id: 'popular', label: 'Populares', icon: '👍' },
@@ -1546,4 +1564,8 @@ export const ALL_CATEGORIES = [
   { id: 'verano', label: 'Verano', icon: '☀️' },
   { id: 'otono', label: 'Otoño', icon: '🍂' },
   { id: 'invierno', label: 'Invierno', icon: '❄️' },
+  { id: 'otras', label: 'Otras', icon: '🍄' },
+  { id: 'macrolepiotas', label: 'Apagadores', icon: '☂️' },
+  { id: 'tricholomas', label: 'Tricolomas', icon: '🟫' },
+  { id: 'morchellas', label: 'Colmenillas', icon: '🕸️' },
 ]
