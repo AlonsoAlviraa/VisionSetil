@@ -232,5 +232,34 @@
   "education": {
     "title": "Mikologia ikasi",
     "subtitle": "Guies de camp amb seguretat"
+  },
+  "honesty": {
+    "mode": {
+      "blocked": "Identifikazioa blokeatuta: modeloa atalasearen azpitik",
+      "mock": "Demo modua — landa-pisuik gabe",
+      "real": "Zuzeneko modeloa — orientazioa soilik"
+    },
+    "gate": {
+      "no_metrics": "Ez dago modeloaren metrikrik diskoan",
+      "map_below": "MAP@3 gutxieneko atalasearen azpitik",
+      "deadly_below": "Espezie hilgarrien recall-a atalasearen azpitik",
+      "gates_passed": "Kalitate-atalaseak gainditu dira",
+      "gate_disabled": "Kalitate-gate desgaituta (garapenerako soilik)"
+    },
+    "preflight": {
+      "offline": "API ez dago erabilgarri. Ezin da orain identifikatu.",
+      "blocked": "Espezie-identifikazioa ez dago baimenduta: modeloak ez du kalitate-atalasea gainditzen.",
+      "mock": "Demo modua: demostrazio-iragarpenak, ez landa-identifikazioa.",
+      "real": "Zuzeneko modeloa. Identifikazioa orientagarria soilik.",
+      "metrics_warning": "Modeloaren metrikak atalasearen azpitik (gate desgaituta). Konfiantza ezkutatuta dago.",
+      "submit_offline": "Konektatu APIa argazkiak bidaltzeko. Identifikazioa desgaituta dago backend gabe."
+    },
+    "decision": {
+      "rejected_open_set": "Modeloak abstenitu egiten da (ziurgabetasuna / open-set)",
+      "rejected_gate": "Identifikazioa modeloaren kalitate-atalaseak blokeatu du"
+    },
+    "confidence_hidden": "Konfiantza ez dago erabilgarri modu honetan",
+    "educational_blocked_title": "Identifikazioa ez dago erabilgarri",
+    "educational_blocked_body": "Uneko modeloak ez du espezieak identifikatzeko kalitate-atalasea gainditzen. Erabili entziklopedia eta kontsultatu mikologo aditu bati. App hau orientagarria eta hezigarria da soilik."
   }
 }
