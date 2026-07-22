@@ -1,8 +1,8 @@
 from datetime import date, datetime
 from enum import Enum
-from typing import Literal
+from typing import Literal, Self
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 class ObservationCreate(BaseModel):
@@ -242,7 +242,12 @@ class QualityGatePayload(BaseModel):
     metrics_acceptable: bool
     block_enabled: bool
     reason: str
-    reason_code: str
+    reason_code: str = Field(
+        description=(
+            "Stable machine code: no_metrics | map_below | deadly_below | "
+            "gates_passed | gate_disabled | unset"
+        ),
+    )
     test_map_at_3: float | None = None
     safety_recall_deadly: float | None = None
     min_map_at_3: float = 0.20
@@ -250,6 +255,16 @@ class QualityGatePayload(BaseModel):
     metrics_path: str | None = None  # full path always (D-B23)
     version: str | None = None
     verdict: Literal["ACCEPTABLE", "UNACCEPTABLE"]
+
+    @model_validator(mode="after")
+    def _verdict_tracks_metrics_acceptable(self) -> Self:
+        """D-B15: verdict is metrics-only; never forced ACCEPTABLE by policy/disable."""
+        expected: Literal["ACCEPTABLE", "UNACCEPTABLE"] = (
+            "ACCEPTABLE" if self.metrics_acceptable else "UNACCEPTABLE"
+        )
+        if self.verdict != expected:
+            self.verdict = expected
+        return self
 
 
 def _fail_closed_quality_gate() -> QualityGatePayload:
@@ -309,6 +324,9 @@ class SimpleClassificationResult(BaseModel):
     ml_notes: list[str] = Field(default_factory=list)
     # Phase B honesty (D-B1, D-B2, D-B5, D-B22). Fail-closed defaults until B-03 mapper
     # always sets these explicitly — do not treat defaults as product truth.
+    # Interim (B-01 only): /classify strip path drops the real gate dict, so live
+    # responses re-apply mode=blocked + fail-closed quality_gate even when predictions
+    # are non-empty (gate pass). FE must not consume mode/quality_gate until B-03.
     mode: ClassifyMode = ClassifyMode.blocked
     quality_gate: QualityGatePayload = Field(default_factory=_fail_closed_quality_gate)
     locale: str = "es"
