@@ -187,4 +187,73 @@ describe('expert handoff', () => {
     expect(loaded?.quality_gate).toBeUndefined()
     expect(loaded?.top_species).toBe('Boletus edulis')
   })
+
+  it('stores quality_gate as null when payload is malformed (B-37)', () => {
+    const result = {
+      request_id: 'bad-gate',
+      decision: 'accepted',
+      predictions: [
+        { species: 'Boletus edulis', confidence: 0.9, common_name: null, edibility: 'edible' },
+      ],
+      rejection_reason: null,
+      processing_time_ms: 5,
+      observation_id: null,
+      safety_level: 'caution',
+      missing_evidence: [],
+      warnings: [],
+      quality_warnings: [],
+      dangerous_lookalikes: [],
+      questions_for_user: [],
+      model_stack: null,
+      open_set_reason: null,
+      recommend_human_review: false,
+      final_warning: '',
+      mode: 'real' as const,
+      is_mock_stack: false,
+      // incomplete — missing dual signals / verdict
+      quality_gate: { reason: 'oops', reason_code: 'unset' } as ClassificationResult['quality_gate'],
+    } satisfies ClassificationResult
+
+    const draft = buildExpertHandoff({ result })
+    expect(draft.mode).toBe('real')
+    expect(draft.quality_gate).toBeNull()
+  })
+
+  it('snapshots dual-signal disagreement (metrics OK, ID blocked)', () => {
+    const result = {
+      request_id: 'disagree',
+      decision: 'rejected',
+      predictions: [],
+      rejection_reason: 'model_quality_gate_failed: policy',
+      processing_time_ms: 8,
+      observation_id: null,
+      safety_level: 'unsafe_to_consume',
+      missing_evidence: [],
+      warnings: [],
+      quality_warnings: [],
+      dangerous_lookalikes: [],
+      questions_for_user: [],
+      model_stack: null,
+      open_set_reason: null,
+      recommend_human_review: true,
+      final_warning: '',
+      mode: 'blocked' as const,
+      is_mock_stack: false,
+      quality_gate: {
+        // Dual honesty: metrics can pass while serve policy blocks ID
+        metrics_acceptable: true,
+        species_id_allowed: false,
+        block_enabled: true,
+        reason: 'policy block despite metrics',
+        reason_code: 'unset' as const,
+        verdict: 'ACCEPTABLE' as const,
+      },
+    } satisfies ClassificationResult
+
+    const draft = buildExpertHandoff({ result })
+    expect(draft.mode).toBe('blocked')
+    expect(draft.quality_gate?.metrics_acceptable).toBe(true)
+    expect(draft.quality_gate?.species_id_allowed).toBe(false)
+    expect(draft.quality_gate?.verdict).toBe('ACCEPTABLE')
+  })
 })

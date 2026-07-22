@@ -56,6 +56,15 @@ export function handoffModeLabelEs(mode: ClassifyMode | null | undefined): strin
   return '—'
 }
 
+/** Spanish labels for quality_gate.verdict (metrics-only ACCEPTABLE/UNACCEPTABLE). */
+export function handoffGateVerdictLabelEs(
+  verdict: QualityGatePayload['verdict'] | null | undefined,
+): string {
+  if (verdict === 'ACCEPTABLE') return 'Aceptable'
+  if (verdict === 'UNACCEPTABLE') return 'Inaceptable'
+  return '—'
+}
+
 export function buildExpertHandoff(input: {
   result: ClassificationResult
   viewTypes?: string[]

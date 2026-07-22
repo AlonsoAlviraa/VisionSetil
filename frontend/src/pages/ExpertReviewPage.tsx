@@ -7,6 +7,7 @@ import axios from 'axios'
 import { entriesNeedingReview, loadHistory } from '../lib/observationHistory'
 import { decisionLabelEs } from '../lib/decisionLabels'
 import {
+  handoffGateVerdictLabelEs,
   handoffModeLabelEs,
   loadHandoffDraft,
   loadHandoffQueue,
@@ -210,12 +211,12 @@ export function ExpertReviewPage() {
               <div
                 className="expert-dual-gate"
                 data-testid="handoff-dual-gate"
-                aria-label="Quality gate dual"
+                aria-label="Umbral de calidad dual"
               >
                 <p className="expert-card__note" style={{ marginBottom: '0.35rem' }}>
-                  <strong>Quality gate</strong>
+                  <strong>Umbral de calidad</strong>
                   {activeDraft.quality_gate.verdict
-                    ? ` · ${activeDraft.quality_gate.verdict}`
+                    ? ` · ${handoffGateVerdictLabelEs(activeDraft.quality_gate.verdict)}`
                     : ''}
                 </p>
                 <ul className="expert-meta-list">
