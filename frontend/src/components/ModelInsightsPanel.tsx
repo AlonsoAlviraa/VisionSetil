@@ -5,8 +5,10 @@
 import { useTranslation } from 'react-i18next'
 import type { ClassificationResult } from '../api/types'
 import {
-  resolveMode,
+  isOpenSetRejected,
+  resolveDisplayMode,
   shouldShowConfidence,
+  shouldShowEducationalShell,
 } from '../lib/classifyMode'
 import { stackBadgeEs } from '../lib/modelStackLabel'
 import { IconMicroscope, IconInfo, IconAlert } from './icons'
@@ -19,8 +21,11 @@ type Props = {
 
 export function ModelInsightsPanel({ result, viewTypes = [], className = '' }: Props) {
   const { t } = useTranslation()
-  const mode = resolveMode(result)
+  const mode = resolveDisplayMode(result)
   const showConfidence = shouldShowConfidence(result)
+  const gateOrShell =
+    shouldShowEducationalShell(result) || mode === 'blocked'
+  const openSet = isOpenSetRejected(result)
   const badge = stackBadgeEs(result.model_stack)
   const isMock =
     result.is_mock_stack !== false &&
@@ -46,7 +51,7 @@ export function ModelInsightsPanel({ result, viewTypes = [], className = '' }: P
   const notes = result.ml_notes?.length
     ? result.ml_notes
     : [
-        mode === 'blocked'
+        gateOrShell
           ? t('honesty.decision.rejected_gate')
           : isMock || mode === 'mock'
             ? 'Modo demo: sin pesos reales de campo en este entorno.'
@@ -55,6 +60,14 @@ export function ModelInsightsPanel({ result, viewTypes = [], className = '' }: P
           ? `Margen entre pistas: ${(margin * 100).toFixed(1)} puntos.`
           : t('honesty.confidence_hidden'),
       ]
+
+  // Rejected + not open-set → gate/shell copy (mirrors ResultCard)
+  const decisionLabel =
+    result.decision === 'rejected'
+      ? openSet
+        ? t('honesty.decision.rejected_open_set')
+        : t('honesty.decision.rejected_gate')
+      : 'Pista tentativa'
 
   return (
     <section
@@ -99,12 +112,8 @@ export function ModelInsightsPanel({ result, viewTypes = [], className = '' }: P
         </div>
         <div className="model-insights__card">
           <span className="model-insights__label">Decisión</span>
-          <strong>
-            {result.decision === 'rejected'
-              ? mode === 'blocked'
-                ? t('honesty.decision.rejected_gate')
-                : t('honesty.decision.rejected_open_set')
-              : 'Pista tentativa'}
+          <strong data-testid="model-insights-decision">
+            {decisionLabel}
           </strong>
         </div>
         <div className="model-insights__card">

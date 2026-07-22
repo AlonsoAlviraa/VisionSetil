@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { ClassificationResult, QualityGateReasonCode } from '../api/types'
 import {
-  resolveMode,
+  resolveDisplayMode,
   shouldShowEducationalShell,
   type ClassifyMode,
 } from '../lib/classifyMode'
@@ -38,7 +38,8 @@ type BannerProps = {
 
 export function ResultModeBanner({ result, className = '' }: BannerProps) {
   const { t } = useTranslation()
-  const mode: ClassifyMode = resolveMode(result)
+  // Display mode fail-closes on species_id_allowed === false (banner ≡ shell)
+  const mode: ClassifyMode = resolveDisplayMode(result)
   const gate = result.quality_gate
   const reasonKey = gateReasonI18nKey(gate?.reason_code)
   const showMetricsWarning =
@@ -148,14 +149,14 @@ export function EducationalBlockedShell({
           data-testid="cta-encyclopedia"
         >
           <IconSearch size={16} />
-          {t('nav.encyclopedia', { defaultValue: 'Enciclopedia' })}
+          {t('honesty.cta.encyclopedia')}
         </Link>
         <Link
           to="/educacion"
           className="btn-atelier btn-atelier--ghost"
           data-testid="cta-education"
         >
-          {t('nav.education', { defaultValue: 'Aprende' })}
+          {t('honesty.cta.education')}
         </Link>
         <Link
           to="/revision-experta"
@@ -163,7 +164,7 @@ export function EducationalBlockedShell({
           data-testid="cta-expert"
         >
           <IconExpert size={16} />
-          {t('nav.expert', { defaultValue: 'Experto' })}
+          {t('honesty.cta.expert')}
         </Link>
       </div>
     </section>

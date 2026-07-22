@@ -261,6 +261,11 @@
     },
     "confidence_hidden": "Confiança no disponible en aquest mode",
     "educational_blocked_title": "Identificació no disponible",
-    "educational_blocked_body": "El model actual no supera el llindar de qualitat per identificar espècies. Usa l'enciclopèdia i consulta un micòleg expert. Aquesta app és només orientativa i educativa."
+    "educational_blocked_body": "El model actual no supera el llindar de qualitat per identificar espècies. Usa l'enciclopèdia i consulta un micòleg expert. Aquesta app és només orientativa i educativa.",
+    "cta": {
+      "encyclopedia": "Enciclopèdia",
+      "education": "Aprèn",
+      "expert": "Expert"
+    }
   }
 }

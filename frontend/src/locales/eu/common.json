@@ -261,6 +261,11 @@
     },
     "confidence_hidden": "Konfiantza ez dago erabilgarri modu honetan",
     "educational_blocked_title": "Identifikazioa ez dago erabilgarri",
-    "educational_blocked_body": "Uneko modeloak ez du espezieak identifikatzeko kalitate-atalasea gainditzen. Erabili entziklopedia eta kontsultatu mikologo aditu bati. App hau orientagarria eta hezigarria da soilik."
+    "educational_blocked_body": "Uneko modeloak ez du espezieak identifikatzeko kalitate-atalasea gainditzen. Erabili entziklopedia eta kontsultatu mikologo aditu bati. App hau orientagarria eta hezigarria da soilik.",
+    "cta": {
+      "encyclopedia": "Entziklopedia",
+      "education": "Ikasi",
+      "expert": "Aditua"
+    }
   }
 }
