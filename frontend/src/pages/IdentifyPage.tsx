@@ -1,14 +1,21 @@
 /**
- * Identify page: honesty flow layout (B-24) + preflight (B-11) + result modes (B-08).
+ * Identify page: honesty flow layout (B-24) + preflight (B-11) + result modes (B-08)
+ * + honest loading stages (B-28, no fake ML %).
  *
  * Visual order (capture): preflight → wizard → (history)
+ * Visual order (loading): stages upload → analyze → apply policy + skeleton
  * Visual order (result):  result mode chrome → card / images
  * Preflight is always advisory; only offline disables submit.
  */
 import { useState, useCallback, useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useDropzone } from 'react-dropzone'
-import { classifyImages, submitFeedback } from '../api/client'
+import { useTranslation } from 'react-i18next'
+import {
+  classifyImages,
+  submitFeedback,
+  type ClassifyClientStage,
+} from '../api/client'
 import type { ClassificationResult, ObservationMetadata } from '../api/types'
 import { ResultCard } from '../components/ResultCard'
 import { PreflightBanner } from '../components/PreflightBanner'
@@ -17,6 +24,7 @@ import { CameraCapture } from '../components/CameraCapture'
 import { MetadataForm } from '../components/MetadataForm'
 import { BatchCompare } from '../components/BatchCompare'
 import { MultiViewWizard } from '../components/MultiViewWizard'
+import { IdentifyResultSkeleton } from '../components/ui/Skeleton'
 import { IconClose, IconExpert, IconHistory, IconSearch } from '../components/icons'
 import { MEDIA } from '../data/media'
 import { featureFlags } from '../lib/featureFlags'
@@ -52,12 +60,26 @@ interface SelectedImage {
 /** Honesty-flow phase for layout chrome (B-24). */
 type IdentifyPhase = 'capture' | 'loading' | 'result'
 
+/** Ordered honest pipeline stages (B-28). Never mapped to a fake ML %. */
+const LOADING_STAGES: readonly ClassifyClientStage[] = [
+  'upload',
+  'analyze',
+  'apply_policy',
+] as const
+
+function stageIndex(stage: ClassifyClientStage): number {
+  return LOADING_STAGES.indexOf(stage)
+}
+
 export function IdentifyPage() {
+  const { t } = useTranslation()
   const [selectedImages, setSelectedImages] = useState<SelectedImage[]>([])
   const [assignments, setAssignments] = useState<SlotAssignment>({})
   const [useWizard, setUseWizard] = useState(true)
   const [result, setResult] = useState<ClassificationResult | null>(null)
   const [loading, setLoading] = useState(false)
+  /** Honest client pipeline stage while loading (B-28). */
+  const [loadingStage, setLoadingStage] = useState<ClassifyClientStage>('upload')
   const [error, setError] = useState<string | null>(null)
   const [showCamera, setShowCamera] = useState(false)
   const [metadata, setMetadata] = useState<ObservationMetadata>({})
@@ -190,11 +212,19 @@ export function IdentifyPage() {
     }
 
     setLoading(true)
+    setLoadingStage('upload')
     setError(null)
     setResult(null)
 
     try {
-      const data = await classifyImages(files, metadata, viewTypes)
+      const data = await classifyImages(files, metadata, viewTypes, {
+        onStage: (stage) => setLoadingStage(stage),
+      })
+      // Stage already advanced to apply_policy inside client; keep it visible briefly.
+      setLoadingStage('apply_policy')
+      await new Promise<void>((resolve) => {
+        window.setTimeout(resolve, 280)
+      })
       setResult(data)
 
       const entry: HistoryEntry = {
@@ -209,6 +239,7 @@ export function IdentifyPage() {
       setError(err instanceof Error ? err.message : 'Error desconocido')
     } finally {
       setLoading(false)
+      setLoadingStage('upload')
     }
   }, [useWizard, collectWizardFiles, selectedImages, metadata, preflight, preflightEnabled])
 
@@ -521,17 +552,61 @@ export function IdentifyPage() {
           </section>
         )}
 
-        {/* ── Loading (between wizard and result) ── */}
+        {/* ── Loading (B-28): honest stages + skeleton, no fake ML % ── */}
         {phase === 'loading' && (
           <section
             className="identify-region identify-region--loading"
             data-testid="identify-region-loading"
+            data-loading-stage={loadingStage}
             aria-busy="true"
             aria-live="polite"
+            aria-label={t('honesty.loading.aria_label')}
           >
-            <div className="loading">
-              <div className="spinner" />
-              <p>Analizando con multi-vista…</p>
+            <div
+              className="identify-loading"
+              data-testid="identify-loading"
+              data-stage={loadingStage}
+            >
+              <p className="identify-loading__title" data-testid="identify-loading-title">
+                {t(`honesty.loading.${loadingStage}`)}
+              </p>
+              <p className="identify-loading__hint muted">
+                {t('honesty.loading.hint')}
+              </p>
+
+              <ol
+                className="identify-loading-stages"
+                data-testid="identify-loading-stages"
+                aria-label={t('honesty.loading.stages_label')}
+              >
+                {LOADING_STAGES.map((stage) => {
+                  const idx = stageIndex(stage)
+                  const current = stageIndex(loadingStage)
+                  const status =
+                    idx < current ? 'done' : idx === current ? 'active' : 'pending'
+                  return (
+                    <li
+                      key={stage}
+                      className={`identify-loading-stages__item is-${status}`}
+                      data-stage={stage}
+                      data-status={status}
+                      data-testid={`identify-loading-stage-${stage}`}
+                      aria-current={status === 'active' ? 'step' : undefined}
+                    >
+                      <span
+                        className="identify-loading-stages__marker"
+                        aria-hidden="true"
+                      />
+                      <span className="identify-loading-stages__label">
+                        {t(`honesty.loading.${stage}`)}
+                      </span>
+                    </li>
+                  )
+                })}
+              </ol>
+
+              {/* No percent bar / no fake model confidence — skeleton only */}
+              <IdentifyResultSkeleton />
             </div>
           </section>
         )}

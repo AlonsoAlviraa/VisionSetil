@@ -260,6 +260,14 @@
       "encyclopedia": "Enciclopedia",
       "education": "Aprende",
       "expert": "Experto"
+    },
+    "loading": {
+      "upload": "Subiendo fotos",
+      "analyze": "Analizando",
+      "apply_policy": "Aplicando política de calidad",
+      "hint": "Etapas reales del envío — sin porcentaje de modelo inventado.",
+      "stages_label": "Etapas de identificación",
+      "aria_label": "Identificación en curso"
     }
   }
 }

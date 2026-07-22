@@ -1,4 +1,4 @@
-export { Skeleton } from './Skeleton'
+export { Skeleton, IdentifyResultSkeleton } from './Skeleton'
 export { EmptyState } from './EmptyState'
 export { ErrorState } from './ErrorState'
 export { ImageAttribution } from './ImageAttribution'

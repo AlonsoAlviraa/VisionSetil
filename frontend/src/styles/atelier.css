@@ -4993,13 +4993,136 @@ label,
 
 .identify-region--loading {
   order: 2;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
-  min-height: 10rem;
-  padding: 1.5rem 1rem;
+  min-height: 12rem;
+  padding: 1.25rem 1rem 1.5rem;
   border-radius: 16px;
   border: 1px dashed var(--line, #e2e8f0);
   background: var(--surface-alt, #f8fafc);
+}
+
+/* ── B-28 honest loading stages (no fake ML %) ───────────────────────────── */
+.identify-loading {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  width: 100%;
+  max-width: 28rem;
+  margin: 0 auto;
+}
+
+.identify-loading__title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text, #0f172a);
+  text-align: center;
+}
+
+.identify-loading__hint {
+  margin: 0;
+  font-size: 0.85rem;
+  text-align: center;
+  color: var(--text-muted, #64748b);
+}
+
+.identify-loading-stages {
+  list-style: none;
+  margin: 0;
+  padding: 0.35rem 0 0.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.identify-loading-stages__item {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.4rem 0.55rem;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  color: var(--text-muted, #64748b);
+  font-size: 0.9rem;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.identify-loading-stages__item.is-pending {
+  opacity: 0.55;
+}
+
+.identify-loading-stages__item.is-active {
+  color: var(--text, #0f172a);
+  background: color-mix(in srgb, #0c4a6e 10%, var(--surface, #fff));
+  border-color: color-mix(in srgb, #0c4a6e 28%, var(--line, #e2e8f0));
+  font-weight: 600;
+}
+
+.identify-loading-stages__item.is-done {
+  color: var(--text, #0f172a);
+  opacity: 0.85;
+}
+
+.identify-loading-stages__marker {
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 999px;
+  flex-shrink: 0;
+  background: var(--line, #cbd5e1);
+  border: 2px solid var(--line, #cbd5e1);
+}
+
+.identify-loading-stages__item.is-active .identify-loading-stages__marker {
+  background: #0c4a6e;
+  border-color: #0c4a6e;
+  box-shadow: 0 0 0 3px color-mix(in srgb, #0c4a6e 22%, transparent);
+}
+
+.identify-loading-stages__item.is-done .identify-loading-stages__marker {
+  background: color-mix(in srgb, #0c4a6e 70%, #94a3b8);
+  border-color: transparent;
+}
+
+.identify-loading-stages__label {
+  line-height: 1.3;
+}
+
+/* Result-shaped decorative skeleton (B-28) — not a progress meter */
+.identify-loading-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  width: 100%;
+  margin-top: 0.35rem;
+  padding: 0.85rem 0.9rem;
+  border-radius: 14px;
+  border: 1px solid var(--line, #e2e8f0);
+  background: var(--surface, #fff);
+}
+
+.identify-loading-skeleton .ui-skeleton--card {
+  margin: 0.15rem 0 0.25rem;
+}
+
+[data-theme='dark'] .identify-loading__title {
+  color: var(--text, #e2e8f0);
+}
+
+[data-theme='dark'] .identify-loading-stages__item.is-active {
+  background: color-mix(in srgb, #0c4a6e 28%, var(--surface, #1a2420));
+  border-color: color-mix(in srgb, #38bdf8 25%, var(--line, #2d3b34));
+}
+
+[data-theme='dark'] .identify-loading-skeleton {
+  background: var(--surface, #1a2420);
+  border-color: var(--line, #2d3b34);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .identify-loading-stages__item {
+    transition: none;
+  }
 }
 
 .identify-region--result {

@@ -266,6 +266,14 @@
       "encyclopedia": "Enciclopèdia",
       "education": "Aprèn",
       "expert": "Expert"
+    },
+    "loading": {
+      "upload": "Pujant fotos",
+      "analyze": "Analitzant",
+      "apply_policy": "Aplicant política de qualitat",
+      "hint": "Etapes reals de l'enviament — sense percentatge de model inventat.",
+      "stages_label": "Etapes d'identificació",
+      "aria_label": "Identificació en curs"
     }
   }
 }
