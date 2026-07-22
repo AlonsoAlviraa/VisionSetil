@@ -68,6 +68,9 @@ from app.services.classify_simple import classify_to_simple
 from app.services.classify_simple import map_to_simple as _map_to_simple  # noqa: F401 — tests
 from app.services.image_storage import store_observation_images
 from app.services.multi_view_classifier import get_multi_view_classifier
+from app.services.prediction_hydrate import (
+    hydrate_prediction as _hydrate_prediction,  # noqa: F401 — orphan test import path
+)
 from app.services.view_classifier import CANONICAL_VIEWS
 
 router = APIRouter()

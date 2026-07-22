@@ -11,7 +11,6 @@ from fastapi.testclient import TestClient
 
 from app.core.config import settings
 from app.core.safety_i18n import contains_consumption_language, get_safety_bundle
-from app.services.image_storage import strip_exif
 from app.services.unified_catalog import get_by_slug, load_catalog, resolve_vernaculars
 
 
@@ -189,6 +188,9 @@ def test_species_poisonous_compat(client: TestClient):
 
 
 def test_exif_strip_removes_maker_tag():
+    # Lazy import: strip_exif may be absent on branches that lost PR-03b wiring.
+    from app.services.image_storage import strip_exif
+
     im = Image.new("RGB", (32, 32), color=(10, 20, 30))
     buf = io.BytesIO()
     exif = im.getexif()
