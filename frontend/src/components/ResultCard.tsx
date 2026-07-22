@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next'
 import type { ClassificationResult, SpeciesPrediction } from '../api/types'
 import {
   isOpenSetRejected,
-  resolveMode,
+  resolveDisplayMode,
   shouldShowConfidence,
   shouldShowEducationalShell,
 } from '../lib/classifyMode'
@@ -97,7 +97,7 @@ export function ResultCard({ result, onFeedback, viewTypes = [], previews = [] }
   const [layer3Open, setLayer3Open] = useState(false)
   const [handoffSaved, setHandoffSaved] = useState(false)
 
-  const mode = resolveMode(result)
+  const mode = resolveDisplayMode(result)
   const showConfidence = shouldShowConfidence(result)
   const showBlockedShell = shouldShowEducationalShell(result)
   const openSetRejected = isOpenSetRejected(result)

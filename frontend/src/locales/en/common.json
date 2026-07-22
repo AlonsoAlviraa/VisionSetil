@@ -261,6 +261,11 @@
     },
     "confidence_hidden": "Confidence is not available in this mode",
     "educational_blocked_title": "Identification unavailable",
-    "educational_blocked_body": "The current model does not meet the quality threshold for species identification. Use the encyclopedia and consult an expert mycologist. This app is orientation and educational only."
+    "educational_blocked_body": "The current model does not meet the quality threshold for species identification. Use the encyclopedia and consult an expert mycologist. This app is orientation and educational only.",
+    "cta": {
+      "encyclopedia": "Encyclopedia",
+      "education": "Learn",
+      "expert": "Expert"
+    }
   }
 }

@@ -4,6 +4,7 @@ import {
   isClassifyMode,
   isOpenSetRejected,
   isQualityGatePayload,
+  resolveDisplayMode,
   resolveMode,
   shouldShowConfidence,
   shouldShowEducationalShell,
@@ -266,5 +267,90 @@ describe('shouldShowEducationalShell / isOpenSetRejected', () => {
     })
     expect(shouldShowEducationalShell(r)).toBe(false)
     expect(isOpenSetRejected(r)).toBe(true)
+  })
+
+  it('second branch: empty preds + species_id_allowed false → shell + display blocked', () => {
+    // Split-brain fix: server mode=real but gate denies species ID
+    const r = baseResult({
+      mode: 'real',
+      decision: 'rejected',
+      predictions: [],
+      is_mock_stack: false,
+      quality_gate: {
+        species_id_allowed: false,
+        metrics_acceptable: false,
+        block_enabled: true,
+        reason: 'map_below',
+        reason_code: 'map_below',
+        verdict: 'UNACCEPTABLE',
+      },
+    })
+    // Raw resolveMode still trusts server mode field (D-B20)
+    expect(resolveMode(r)).toBe('real')
+    // UI display fail-closes on dual-signal policy
+    expect(resolveDisplayMode(r)).toBe('blocked')
+    expect(shouldShowEducationalShell(r)).toBe(true)
+    expect(isOpenSetRejected(r)).toBe(false)
+    expect(shouldShowConfidence(r)).toBe(false)
+  })
+
+  it('legacy: no mode, empty preds, species_id_allowed false → display blocked', () => {
+    const r = baseResult({
+      decision: 'rejected',
+      predictions: [],
+      is_mock_stack: false,
+      // mode intentionally omitted
+      quality_gate: {
+        species_id_allowed: false,
+        metrics_acceptable: false,
+        block_enabled: true,
+        reason: 'no_metrics',
+        reason_code: 'no_metrics',
+        verdict: 'UNACCEPTABLE',
+      },
+    })
+    // Without gate text heuristics, resolveMode → real (is_mock_stack false)
+    expect(resolveMode(r)).toBe('real')
+    expect(resolveDisplayMode(r)).toBe('blocked')
+    expect(shouldShowEducationalShell(r)).toBe(true)
+    expect(isOpenSetRejected(r)).toBe(false)
+  })
+})
+
+describe('resolveDisplayMode', () => {
+  it('species_id_allowed false always yields blocked regardless of mode field', () => {
+    expect(
+      resolveDisplayMode(
+        baseResult({
+          mode: 'mock',
+          quality_gate: {
+            species_id_allowed: false,
+            metrics_acceptable: false,
+            block_enabled: true,
+            reason: 'deadly_below',
+            reason_code: 'deadly_below',
+            verdict: 'UNACCEPTABLE',
+          },
+        }),
+      ),
+    ).toBe('blocked')
+  })
+
+  it('species_id_allowed true defers to resolveMode', () => {
+    expect(
+      resolveDisplayMode(
+        baseResult({
+          mode: 'mock',
+          quality_gate: {
+            species_id_allowed: true,
+            metrics_acceptable: true,
+            block_enabled: true,
+            reason: 'ok',
+            reason_code: 'gates_passed',
+            verdict: 'ACCEPTABLE',
+          },
+        }),
+      ),
+    ).toBe('mock')
   })
 })

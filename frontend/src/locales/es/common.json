@@ -255,6 +255,11 @@
     },
     "confidence_hidden": "Confianza no disponible en este modo",
     "educational_blocked_title": "Identificación no disponible",
-    "educational_blocked_body": "El modelo actual no supera el umbral de calidad para identificar especies. Usa la enciclopedia y consulta a un micólogo experto. Esta app es solo orientativa y educativa."
+    "educational_blocked_body": "El modelo actual no supera el umbral de calidad para identificar especies. Usa la enciclopedia y consulta a un micólogo experto. Esta app es solo orientativa y educativa.",
+    "cta": {
+      "encyclopedia": "Enciclopedia",
+      "education": "Aprende",
+      "expert": "Experto"
+    }
   }
 }

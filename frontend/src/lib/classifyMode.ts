@@ -57,6 +57,9 @@ export function isQualityGatePayload(
  *
  * Open-set abstention (rejected + empty, no gate signals) is NOT blocked —
  * mode is stack-derived; decision carries the abstention.
+ *
+ * Prefer {@link resolveDisplayMode} for UI (banner / shell / confidence): it
+ * fail-closes on dual-signal `species_id_allowed === false` (D-B4).
  */
 export function resolveMode(result: ClassificationResult): ClassifyMode {
   if (isClassifyMode(result.mode)) {
@@ -78,24 +81,35 @@ export function resolveMode(result: ClassificationResult): ClassifyMode {
 }
 
 /**
- * Confidence UI gate (D-B9): only when mode is real AND metrics_acceptable.
+ * UI honesty mode: dual-signal policy overrides stack/legacy mode (D-B4).
+ * If quality_gate.species_id_allowed === false → blocked (banner + shell align).
+ * Does not mutate server `mode`; use for chrome only.
+ */
+export function resolveDisplayMode(result: ClassificationResult): ClassifyMode {
+  if (result.quality_gate?.species_id_allowed === false) return 'blocked'
+  return resolveMode(result)
+}
+
+/**
+ * Confidence UI gate (D-B9): only when display mode is real AND metrics_acceptable.
  * Missing quality_gate → hide (fail-closed; never invent metrics truth).
  */
 export function shouldShowConfidence(result: ClassificationResult): boolean {
-  if (resolveMode(result) !== 'real') return false
+  if (resolveDisplayMode(result) !== 'real') return false
   return result.quality_gate?.metrics_acceptable === true
 }
 
 /**
- * Educational blocked shell: mode=blocked, or empty preds with species ID
- * disallowed by gate policy (gate fail path).
+ * Educational blocked shell: display mode blocked, or empty preds with species
+ * ID disallowed by gate policy (second branch covers inconsistent payloads
+ * even if display mode path already forces blocked).
  * Open-set real+rejected with empty preds is NOT educational-blocked.
  */
 export function shouldShowEducationalShell(
   result: ClassificationResult,
 ): boolean {
-  const mode = resolveMode(result)
-  if (mode === 'blocked') return true
+  if (resolveDisplayMode(result) === 'blocked') return true
+  // Second branch: empty preds + gate policy deny (explicit for split-brain tests)
   const empty = (result.predictions?.length ?? 0) === 0
   if (empty && result.quality_gate?.species_id_allowed === false) return true
   return false
@@ -105,7 +119,7 @@ export function shouldShowEducationalShell(
 export function isOpenSetRejected(result: ClassificationResult): boolean {
   return (
     result.decision === 'rejected' &&
-    resolveMode(result) !== 'blocked' &&
+    resolveDisplayMode(result) !== 'blocked' &&
     !shouldShowEducationalShell(result)
   )
 }
