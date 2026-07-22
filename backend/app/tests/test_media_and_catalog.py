@@ -222,6 +222,61 @@ def test_hydrate_image_card_url_uses_public_prefix():
     assert pred.risk_level in ("deadly", "high", "critical")
 
 
+def test_hydrate_synonym_normalizes_to_preferred_scientific_name():
+    """B-41: historical/ML synonyms resolve to preferred catalog scientific name."""
+    from app.services.prediction_hydrate import (
+        hydrate_prediction,
+        normalize_to_preferred_scientific_name,
+        reload_synonyms,
+    )
+
+    reload_synonyms()
+
+    assert (
+        normalize_to_preferred_scientific_name("Galerina autumnalis")
+        == "Galerina marginata"
+    )
+    assert (
+        normalize_to_preferred_scientific_name("  agaricus   PHALLOIDES ")
+        == "Amanita phalloides"
+    )
+    assert (
+        normalize_to_preferred_scientific_name("Pholiota marginata")
+        == "Galerina marginata"
+    )
+    # Unknown taxa pass through cleaned, not invented
+    assert (
+        normalize_to_preferred_scientific_name("  Fakeus  inventus  ")
+        == "Fakeus inventus"
+    )
+
+    pred = hydrate_prediction("Galerina autumnalis", 0.88, "poisonous", "es")
+    assert pred.species == "Galerina marginata"
+    assert pred.in_catalog is True
+    assert pred.slug == "galerina-marginata"
+    assert pred.risk_level in ("deadly", "high", "critical")
+    assert pred.image_card_url is not None
+    assert pred.image_card_url.endswith("/species/galerina-marginata/card.webp")
+
+    pred2 = hydrate_prediction("Agaricus phalloides", 0.91, "deadly", "es")
+    assert pred2.species == "Amanita phalloides"
+    assert pred2.in_catalog is True
+    assert pred2.slug == "amanita-phalloides"
+    assert pred2.risk_level in ("deadly", "high", "critical")
+    assert pred2.common_name  # vernacular from preferred catalog row
+
+
+def test_hydrate_unknown_taxon_not_forced_into_catalog():
+    from app.services.prediction_hydrate import hydrate_prediction
+
+    pred = hydrate_prediction("Completely Unknown Fungus", 0.5, "unknown", "es")
+    assert pred.species == "Completely Unknown Fungus"
+    assert pred.in_catalog is False
+    assert pred.common_name is None
+    assert pred.risk_level is None
+    assert pred.slug == "completely-unknown-fungus"
+
+
 def test_safety_i18n_all_locales():
     for loc in ("es", "ca", "eu", "en"):
         b = get_safety_bundle(loc)
