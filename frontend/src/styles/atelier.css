@@ -5155,6 +5155,56 @@ label,
   background: color-mix(in srgb, #ef4444 8%, var(--surface));
 }
 
+/* B-22: dual-signal gate metrics block inside ModelInsightsPanel */
+.model-insights__gate {
+  margin: 0.65rem 0 0.35rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.model-insights__gate-title {
+  margin: 0 0 0.45rem;
+  font-size: 0.78rem;
+  font-weight: 750;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-mute);
+}
+
+.model-insights__grid--gate {
+  margin-bottom: 0.35rem;
+}
+
+.model-insights__thresh {
+  font-weight: 550;
+  font-size: 0.8rem;
+  color: var(--ink-mute);
+}
+
+.model-insights__gate-reason,
+.model-insights__metrics-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.35rem;
+  margin: 0.4rem 0 0;
+  font-size: 0.86rem;
+  color: var(--ink-soft);
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.model-insights__code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.8em;
+  color: var(--ink-mute);
+}
+
+.model-insights__metrics-warning {
+  color: color-mix(in srgb, #b45309 70%, var(--ink));
+}
+
 .model-insights__head {
   display: flex;
   flex-wrap: wrap;
