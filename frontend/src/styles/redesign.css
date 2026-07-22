@@ -383,6 +383,49 @@
   color: #dc2626;
 }
 
+/* B-42: boosted deadly/poisonous join visibility on real Identify results */
+.risk-chip--boost {
+  font-size: 0.82rem;
+  padding: 0.34rem 0.8rem 0.34rem 0.5rem;
+  box-shadow: 0 0 0 1px color-mix(in srgb, currentColor 28%, transparent);
+}
+.risk-chip--boost.risk-deadly {
+  background: #fee2e2;
+  border-color: #f87171;
+  color: #7f1d1d;
+}
+.risk-chip--boost.risk-poisonous,
+.risk-chip--boost.risk-toxic {
+  background: #ffedd5;
+  border-color: #fb923c;
+  color: #9a3412;
+}
+.risk-chip--boost .risk-chip__dot {
+  width: 0.62rem;
+  height: 0.62rem;
+  box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 30%, transparent);
+}
+
+.prediction-item--join-severe {
+  border-color: color-mix(in srgb, #b91c1c 40%, var(--border, #e2e8f0));
+  background: color-mix(in srgb, #b91c1c 6%, var(--surface, #fff));
+}
+[data-theme='dark'] .prediction-item--join-severe {
+  border-color: color-mix(in srgb, #f87171 35%, var(--border, #334155));
+  background: color-mix(in srgb, #7f1d1d 22%, var(--surface, #0f172a));
+}
+[data-theme='dark'] .risk-chip--boost.risk-deadly {
+  background: #450a0a;
+  border-color: #dc2626;
+  color: #fecaca;
+}
+[data-theme='dark'] .risk-chip--boost.risk-poisonous,
+[data-theme='dark'] .risk-chip--boost.risk-toxic {
+  background: #431407;
+  border-color: #ea580c;
+  color: #fdba74;
+}
+
 /* Tóxica — warm coral, not muddy brown */
 .risk-poisonous,
 .risk-toxic {

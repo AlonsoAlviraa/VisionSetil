@@ -1,10 +1,12 @@
-"""Server-side prediction hydration from catalog_v2 + media URLs (Phase B / B-32 + B-41).
+"""Server-side prediction hydration from catalog_v2 + media URLs (Phase B / B-32 + B-42).
 
 Fills vernacular common_name, slug, risk_level, and public media URLs so Identify
 result cards are not empty shells after map+gate.
 
-B-41: normalize ML / historical scientific synonyms to the preferred catalog name
-via ``data/species_catalog/synonyms.yaml`` before catalog lookup.
+B-42: when catalog join yields deadly / poisonous (high) risk, surface that risk on
+the prediction so Identify RiskChip + danger callouts are not blind to model
+``edibility=unknown``. Hydrate only runs when species ID is allowed (blocked stays
+empty — see ``classify_simple._hydrate_simple_result``).
 """
 
 from __future__ import annotations
@@ -23,8 +25,35 @@ from app.services.unified_catalog import (
     scientific_to_slug,
 )
 
-_COMMENT_RE = re.compile(r"\s+#.*$")
-_KEY_RE = re.compile(r"^[A-Za-z]")
+# Severity ranks for max(model edibility, catalog risk) join (higher = more severe).
+# Catalog SSOT uses deadly / high / medium / low / unknown / risky_lookalikes.
+_RISK_SEVERITY: dict[str, int] = {
+    "deadly": 100,
+    "critical": 100,
+    "mortifero": 100,
+    "poisonous": 80,
+    "high": 80,
+    "toxic": 80,
+    "toxico": 80,
+    "risky_lookalikes": 50,
+    "medium": 40,
+    "caution": 40,
+    "dangerous_or_unknown": 30,
+    "unknown_or_risky": 25,
+    "unknown": 10,
+    "low": 5,
+    "edible": 1,
+    "safe": 1,
+}
+
+# Catalog risk_level → display risk for RiskChip / edibility field.
+_CATALOG_RISK_TO_DISPLAY: dict[str, str] = {
+    "deadly": "deadly",
+    "critical": "deadly",
+    "high": "poisonous",
+    "poisonous": "poisonous",
+    "toxic": "toxic",
+}
 
 
 def _media_prefix() -> str:
@@ -38,139 +67,50 @@ def _normalize_locale(locale: str | None) -> str:
     return loc or DEFAULT_LOCALE
 
 
-def _clean_taxon(name: str | None) -> str:
-    """Collapse whitespace; strip; keep original letter case for display fallback."""
-    if not name:
+def _norm_key(raw: str | None) -> str:
+    if not raw:
         return ""
-    return " ".join(str(name).strip().split())
+    return str(raw).strip().lower().replace(" ", "_")
 
 
-def _taxon_key(name: str) -> str:
-    return _clean_taxon(name).casefold()
+def risk_severity(raw: str | None) -> int:
+    """Numeric severity for comparing model edibility vs catalog risk_level."""
+    k = _norm_key(raw)
+    if not k:
+        return 0
+    if k in _RISK_SEVERITY:
+        return _RISK_SEVERITY[k]
+    # Unknown tokens treated as mild caution, not edible.
+    return 15
 
 
-def _synonyms_path_candidates() -> list[Path]:
-    """Resolve synonyms.yaml relative to settings / repo layout (same style as catalog)."""
-    repo = getattr(settings, "repo_root", None)
-    base = settings.base_dir
-    candidates: list[Path] = []
-    if repo is not None:
-        candidates.append(Path(repo) / "data" / "species_catalog" / "synonyms.yaml")
-    candidates.extend(
-        [
-            base.parent / "data" / "species_catalog" / "synonyms.yaml"
-            if base.name == "backend"
-            else base / "data" / "species_catalog" / "synonyms.yaml",
-            base / "data" / "species_catalog" / "synonyms.yaml",
-            Path(__file__).resolve().parents[3]
-            / "data"
-            / "species_catalog"
-            / "synonyms.yaml",
-            Path(__file__).resolve().parents[4]
-            / "data"
-            / "species_catalog"
-            / "synonyms.yaml",
-        ]
-    )
-    # Deduplicate while preserving order
-    seen: set[str] = set()
-    out: list[Path] = []
-    for p in candidates:
-        key = str(p.resolve()) if p.exists() else str(p)
-        if key not in seen:
-            seen.add(key)
-            out.append(p)
-    return out
+def is_severe_catalog_risk(risk_level: str | None) -> bool:
+    """True for deadly / poisonous join hits that must be visually boosted."""
+    k = _norm_key(risk_level)
+    return k in ("deadly", "critical", "high", "poisonous", "toxic")
 
 
-def _strip_inline_comment(s: str) -> str:
-    return _COMMENT_RE.sub("", s).strip()
+def catalog_risk_to_display(risk_level: str | None) -> str | None:
+    """Map catalog risk_level to FE RiskChip-friendly label."""
+    k = _norm_key(risk_level)
+    return _CATALOG_RISK_TO_DISPLAY.get(k)
 
 
-def _parse_synonyms_yaml(text: str) -> dict[str, list[str]]:
-    """Minimal YAML subset parser for preferred → [alts] (no PyYAML dependency)."""
-    mapping: dict[str, list[str]] = {}
-    current: str | None = None
-    for raw in text.splitlines():
-        line = raw.rstrip()
-        if not line.strip() or line.lstrip().startswith("#"):
-            continue
-        stripped = line.strip()
-        # Preferred key line: "Amanita phalloides:"
-        if _KEY_RE.match(stripped) and stripped.endswith(":") and not stripped.startswith("-"):
-            key = _strip_inline_comment(stripped[:-1].strip())
-            if key:
-                current = key
-                mapping[current] = []
-            continue
-        if current is not None and stripped.startswith("-"):
-            alt = _strip_inline_comment(stripped[1:].strip())
-            if alt:
-                mapping[current].append(alt)
-    return mapping
+def prefer_join_risk_for_edibility(
+    model_edibility: str | None,
+    catalog_risk_level: str | None,
+) -> str | None:
+    """Prefer catalog deadly/poisonous over weaker model edibility (B-42).
 
-
-@lru_cache(maxsize=1)
-def load_synonym_reverse_map() -> dict[str, str]:
-    """Map casefolded scientific name (preferred or alt) → preferred scientific name.
-
-    Safety (join-parity): never rewrite an alias that is already a first-class
-    catalog scientific name (e.g. *Lactarius sanguifluus* must not collapse into
-    *L. deliciosus* even if listed under it in ``synonyms.yaml``).
+    Keeps model edibility when it is already at least as severe. Never invents
+    edible from catalog low/unknown — only elevates severe join risk.
     """
-    reverse: dict[str, str] = {}
-    catalog_keys = {
-        str(k).casefold() for k in (load_catalog().get("_by_name") or {})
-    }
-    for path in _synonyms_path_candidates():
-        try:
-            if not path.exists():
-                continue
-            groups = _parse_synonyms_yaml(path.read_text(encoding="utf-8"))
-            for preferred, alts in groups.items():
-                pref_key = _taxon_key(preferred)
-                reverse[pref_key] = preferred
-                for alt in alts:
-                    alt_key = _taxon_key(alt)
-                    if not alt_key or alt_key == pref_key:
-                        continue
-                    # Distinct catalog taxon → keep its own identity
-                    if alt_key in catalog_keys:
-                        continue
-                    reverse[alt_key] = preferred
-            return reverse
-        except OSError:
-            continue
-    return reverse
-
-
-def reload_synonyms() -> dict[str, str]:
-    """Clear synonym cache (tests / hot-reload)."""
-    load_synonym_reverse_map.cache_clear()
-    return load_synonym_reverse_map()
-
-
-def normalize_to_preferred_scientific_name(name: str | None) -> str:
-    """Resolve historical/ML synonym to preferred scientific name when known.
-
-    Order:
-    1. clean whitespace
-    2. if already a catalog scientific name → keep that catalog name (no collapse)
-    3. synonym reverse map (alts not present in catalog)
-    4. original cleaned name
-
-    Does not invent names; unknown taxa pass through cleaned.
-    """
-    cleaned = _clean_taxon(name)
-    if not cleaned:
-        return ""
-    # First-class catalog taxa must not be synonym-collapsed into another preferred.
-    hit = get_by_scientific_name(cleaned)
-    if hit:
-        sci = str(hit.get("scientific_name") or cleaned).strip()
-        return sci or cleaned
-    preferred = load_synonym_reverse_map().get(_taxon_key(cleaned))
-    return preferred if preferred else cleaned
+    display = catalog_risk_to_display(catalog_risk_level)
+    if not display:
+        return model_edibility
+    if risk_severity(display) > risk_severity(model_edibility):
+        return display
+    return model_edibility
 
 
 def hydrate_prediction(
@@ -187,8 +127,9 @@ def hydrate_prediction(
     - ``risk_level`` from catalog when known
     - ``in_catalog`` is True only when catalog lookup hits
 
-    B-41: synonym-normalize to preferred scientific name before lookup so ML
-    labels like ``Galerina autumnalis`` hydrate as ``Galerina marginata``.
+    B-42: when join risk is deadly/poisonous (catalog high), also elevate
+    ``edibility`` if the model left a weaker label (e.g. ``unknown``), so
+    Identify RiskChip / danger callouts see the join without FE-only coupling.
     """
     raw = _clean_taxon(species) or (species or "")
     preferred = normalize_to_preferred_scientific_name(raw) if raw else ""
@@ -214,6 +155,9 @@ def hydrate_prediction(
         risk_level = None
         in_catalog = False
 
+    # B-42: surface severe catalog join on edibility for RiskChip consumers.
+    out_edibility = prefer_join_risk_for_edibility(edibility, risk_level)
+
     prefix = _media_prefix()
     image_card_url: str | None = None
     image_thumb_url: str | None = None
@@ -225,7 +169,7 @@ def hydrate_prediction(
         species=taxon or species,
         common_name=common_name,
         confidence=float(confidence),
-        edibility=edibility,
+        edibility=out_edibility,
         slug=slug,
         risk_level=risk_level,
         image_card_url=image_card_url,

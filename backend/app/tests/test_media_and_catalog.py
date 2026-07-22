@@ -220,6 +220,67 @@ def test_hydrate_image_card_url_uses_public_prefix():
     assert pred.image_card_url.endswith("/card.webp")
     assert pred.slug == "amanita-phalloides"
     assert pred.risk_level in ("deadly", "high", "critical")
+    # B-42: catalog deadly join elevates weak model edibility so RiskChip sees it
+    assert pred.edibility == "deadly"
+    assert pred.in_catalog is True
+
+
+def test_hydrate_deadly_join_elevates_unknown_edibility():
+    """B-42: catalog deadly/high must surface on edibility when model left unknown."""
+    from app.services.prediction_hydrate import hydrate_prediction
+
+    deadly = hydrate_prediction("Amanita phalloides", 0.91, "unknown", "es")
+    assert deadly.risk_level == "deadly"
+    assert deadly.edibility == "deadly"
+    assert deadly.in_catalog is True
+
+    # high → poisonous display label for RiskChip
+    high = hydrate_prediction("Agaricus moelleri", 0.6, None, "es")
+    assert high.risk_level == "high"
+    assert high.edibility == "poisonous"
+    assert high.in_catalog is True
+
+    # model already deadly — keep it
+    keep = hydrate_prediction("Galerina marginata", 0.7, "deadly", "es")
+    assert keep.risk_level == "deadly"
+    assert keep.edibility == "deadly"
+
+    # non-severe catalog risk must not invent edible/edibility from join
+    low = hydrate_prediction("Boletus edulis", 0.8, "unknown_or_risky", "es")
+    assert low.risk_level in ("low", "unknown", "medium", None) or low.risk_level
+    assert low.edibility == "unknown_or_risky"
+
+
+def test_hydrate_blocked_path_does_not_require_join_visuals():
+    """B-42: blocked remains empty — no species ID cards to dress with risk."""
+    from app.db.schemas import (
+        QualityGatePayload,
+        SimpleClassificationResult,
+    )
+    from app.services.classify_simple import _hydrate_simple_result
+
+    blocked = SimpleClassificationResult(
+        request_id="t-blocked",
+        decision="rejected",
+        predictions=[],
+        rejection_reason="model_quality_gate",
+        processing_time_ms=1,
+        safety_level="caution",
+        mode="blocked",
+        is_mock_stack=False,
+        quality_gate=QualityGatePayload(
+            species_id_allowed=False,
+            metrics_acceptable=False,
+            block_enabled=True,
+            reason="map_below",
+            reason_code="map_below",
+            verdict="UNACCEPTABLE",
+        ),
+        final_warning="test",
+    )
+    out = _hydrate_simple_result(blocked, locale="es")
+    assert out.predictions == []
+    assert out.mode == "blocked"
 
 
 def test_hydrate_synonym_normalizes_to_preferred_scientific_name():

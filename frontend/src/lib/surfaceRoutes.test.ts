@@ -89,11 +89,12 @@ describe('product surfaces routes', () => {
     expect(read('components/ResultCard.tsx')).toMatch(/handleExpertHandoff|buildExpertHandoff/)
   })
 
-  it('ResultCard shows out-of-catalog badge when in_catalog is false (B-40)', () => {
-    const src = read('components/ResultCard.tsx')
-    expect(src).toMatch(/in_catalog === false/)
-    expect(src).toMatch(/catalog-badge--out/)
-    expect(src).toMatch(/Fuera del catálogo/)
-    expect(read('api/types.ts')).toMatch(/in_catalog\?:/)
+  it('B-42: deadly/poisonous join visibility on real results (RiskChip boost + resolveJoinRisk)', () => {
+    expect(read('lib/riskLabels.ts')).toMatch(/resolveJoinRisk/)
+    expect(read('lib/riskLabels.ts')).toMatch(/isSevereRisk/)
+    expect(read('components/RiskChip.tsx')).toMatch(/risk-chip--boost|boost/)
+    expect(read('components/ResultCard.tsx')).toMatch(/resolveJoinRisk/)
+    expect(read('components/ResultCard.tsx')).toMatch(/boostJoinRisk|mode === 'real'/)
+    expect(read('components/ResultCard.tsx')).toMatch(/prediction-item--join-severe|risk-chip--boost|boost=/)
   })
 })

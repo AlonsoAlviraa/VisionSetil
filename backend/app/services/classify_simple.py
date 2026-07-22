@@ -162,14 +162,18 @@ def _hydrate_simple_result(
     *,
     locale: str,
 ) -> SimpleClassificationResult:
-    """Hydrate prediction cards from catalog_v2 + media (B-32).
+    """Hydrate prediction cards from catalog_v2 + media (B-32 + B-42).
 
     Only when ``species_id_allowed`` and there are predictions left after the gate
     (sequence: map → gate → mode → hydrate). Skips when blocked/empty so Identify
-    does not dress empty shells.
+    does not dress empty shells (**blocked remains empty** — B-42).
+
+    B-42: hydrate elevates deadly/poisonous catalog join risk onto prediction
+    fields used by RiskChip; FE boosts visual chrome in real mode only.
     """
     gate = result.quality_gate
     if gate is not None and not bool(getattr(gate, "species_id_allowed", False)):
+        # mode=blocked: keep predictions empty/unhydrated shells out of Identify.
         return result
     if not result.predictions:
         return result

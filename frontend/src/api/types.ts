@@ -44,15 +44,14 @@ export interface SpeciesPrediction {
   edibility: string | null
   /** Catalog slug when hydrate finds a hit (Phase B). */
   slug?: string | null
-  /** Risk level from catalog hydrate (Phase B). */
+  /**
+   * Risk level from catalog hydrate (Phase B / B-42).
+   * Prefer with edibility via resolveJoinRisk for RiskChip visibility.
+   */
   risk_level?: string | null
   image_card_url?: string | null
   image_thumb_url?: string | null
-  /**
-   * True only when server hydrate joined this taxon to catalog_v2 (D-B21).
-   * Default / omit / false → treat as out-of-catalog for honest UI.
-   * Badge shows when explicitly `false` (legacy responses omit the field).
-   */
+  /** True only when server hydrate joined this taxon to catalog_v2. */
   in_catalog?: boolean
 }
 
@@ -62,6 +61,9 @@ export interface ModelStack {
   image_text_embedder: string
   metadata_encoder: string
 }
+
+/** Product honesty mode (Phase B). Optional for legacy responses. */
+export type ClassifyMode = 'real' | 'mock' | 'blocked'
 
 export interface ClassificationResult {
   request_id: string
@@ -87,17 +89,10 @@ export interface ClassificationResult {
   is_mock_stack?: boolean
   ml_notes?: string[]
   /**
-   * Product honesty mode (D-B1 / D-B22). Required on new BE; optional for legacy
-   * partial-deploy responses — use resolveMode() (D-B20), never invent defaults.
+   * Phase B honesty mode. B-42 boosts deadly/poisonous join chrome only when
+   * `real` (or mode absent / legacy). Blocked keeps predictions empty.
    */
   mode?: ClassifyMode
-  /**
-   * Dual-signal gate payload (D-B2 / D-B15). Required on new BE; optional for
-   * legacy responses that still strip quality_gate.
-   */
-  quality_gate?: QualityGatePayload
-  /** Echo of request locale (D-B5); default BE "es". */
-  locale?: string
 }
 
 export interface ApiError {
