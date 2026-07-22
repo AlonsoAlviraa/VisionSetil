@@ -4,7 +4,7 @@
 import { useState, useCallback, useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useDropzone } from 'react-dropzone'
-import { classifyImages, submitFeedback } from '../api/client'
+import { classifyImagesMaybeAsync, submitFeedback } from '../api/client'
 import type { ClassificationResult, ObservationMetadata } from '../api/types'
 import { ResultCard } from '../components/ResultCard'
 import { UploadZone } from '../components/UploadZone'
@@ -14,6 +14,8 @@ import { BatchCompare } from '../components/BatchCompare'
 import { MultiViewWizard } from '../components/MultiViewWizard'
 import { IconClose, IconExpert, IconHistory, IconSearch } from '../components/icons'
 import { MEDIA } from '../data/media'
+import i18n from '../i18n'
+import { featureFlags } from '../lib/featureFlags'
 import {
   assessMultiViewReadiness,
   buildViewTypesOrder,
@@ -130,7 +132,17 @@ export function IdentifyPage() {
     setResult(null)
 
     try {
-      const data = await classifyImages(files, metadata, viewTypes)
+      // Current UI language (es|ca|eu|en); backend defaults to es if omitted.
+      const locale = (i18n.language || 'es').slice(0, 2)
+      // B-46: optional async path behind VITE_FEATURE_ASYNC_CLASSIFY (default off).
+      // Async returns envelope.simple — same ClassificationResult → same banners.
+      const data = await classifyImagesMaybeAsync(
+        files,
+        metadata,
+        viewTypes,
+        locale,
+        featureFlags.ASYNC_CLASSIFY,
+      )
       setResult(data)
 
       const entry: HistoryEntry = {
@@ -329,9 +341,13 @@ export function IdentifyPage() {
       )}
 
       {loading && (
-        <div className="loading">
+        <div className="loading" data-testid="identify-loading">
           <div className="spinner" />
-          <p>Analizando con multi-vista…</p>
+          <p>
+            {featureFlags.ASYNC_CLASSIFY
+              ? 'Clasificando en segundo plano…'
+              : 'Analizando con multi-vista…'}
+          </p>
         </div>
       )}
 
