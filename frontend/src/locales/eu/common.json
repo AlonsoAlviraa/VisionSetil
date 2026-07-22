@@ -311,6 +311,14 @@
       "encyclopedia": "Entziklopedia",
       "education": "Ikasi",
       "expert": "Aditua"
+    },
+    "loading": {
+      "upload": "Argazkiak igotzen",
+      "analyze": "Analizatzen",
+      "apply_policy": "Kalitate-politika aplikatzen",
+      "hint": "Eskaeraren benetako etapak — asmatutako modelo-ehunekorik gabe.",
+      "stages_label": "Identifikazio-etapak",
+      "aria_label": "Identifikazioa abian"
     }
   }
 }

@@ -102,6 +102,19 @@
   border-radius: var(--radius-md);
 }
 
+.ui-skeleton--title {
+  border-radius: var(--radius-sm, 6px);
+}
+
+.ui-skeleton--block {
+  border-radius: var(--radius-md);
+}
+
+.ui-skeleton--card {
+  border-radius: 12px;
+  min-height: 5.5rem;
+}
+
 @keyframes ui-skeleton-shimmer {
   0% {
     background-position: 200% 0;

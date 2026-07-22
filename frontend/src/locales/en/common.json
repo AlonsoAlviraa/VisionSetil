@@ -311,6 +311,14 @@
       "encyclopedia": "Encyclopedia",
       "education": "Learn",
       "expert": "Expert"
+    },
+    "loading": {
+      "upload": "Uploading photos",
+      "analyze": "Analyzing",
+      "apply_policy": "Applying quality policy",
+      "hint": "Real request stages — no invented model percentage.",
+      "stages_label": "Identification stages",
+      "aria_label": "Identification in progress"
     }
   }
 }
