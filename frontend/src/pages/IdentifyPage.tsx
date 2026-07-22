@@ -478,7 +478,8 @@ export function IdentifyPage() {
             viewTypes={
               useWizard
                 ? orderedSlotKeys(assignments)
-                : selectedImages.map((_, i) => `free_${i + 1}`)
+                : // Free upload: omit fake free_N labels; BE/result.view_coverage auto-labels.
+                  undefined
             }
             previews={
               useWizard
