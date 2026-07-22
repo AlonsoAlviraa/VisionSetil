@@ -1,7 +1,6 @@
 /**
- * Unified mycology image resolver.
- * Order: verified speciesPhotos.json → (optional) live Wiki/iNat → SVG placeholder.
- * Photo tiers gate network upgrades and grid catalog usage (Week 1).
+ * Unified mycology image resolver (Phase A).
+ * Order: local /media WebP → speciesPhotos.json → (optional) live Wiki/iNat → SVG placeholder.
  */
 import photosDb from '../data/speciesPhotos.json'
 import { mycologyPlaceholderDataUri } from '../data/mycologyPlaceholder'
@@ -12,8 +11,15 @@ import {
   type ImageLoadContext,
   type PhotoTier,
 } from '../data/photoTiers'
+import { speciesImageUrl } from './speciesImageUrl'
+import { scientificNameToSlug } from './slug'
 
-export type PhotoProvider = 'catalog' | 'wikipedia' | 'inaturalist' | 'placeholder'
+export type PhotoProvider =
+  | 'local_media'
+  | 'catalog'
+  | 'wikipedia'
+  | 'inaturalist'
+  | 'placeholder'
 
 export type ResolvedSpeciesImage = {
   url: string
@@ -87,9 +93,25 @@ export function resolveSpeciesImageSync(
   const tier = resolveTier(name, opts)
   const key = cacheKey(name, context, tier)
 
-  // Only reuse cache for non-placeholder catalog hits (safe across contexts)
+  // Only reuse cache for non-placeholder hits (safe across contexts)
   const cached = runtimeCache.get(key)
-  if (cached && cached.provider === 'catalog') return cached
+  if (cached && (cached.provider === 'catalog' || cached.provider === 'local_media')) {
+    return cached
+  }
+
+  // 1) Preferred: monorepo media store (Vite /media or FastAPI)
+  const slug = scientificNameToSlug(name)
+  if (slug) {
+    const localUrl = speciesImageUrl(slug, context === 'grid' ? 'card' : 'detail')
+    const rLocal: ResolvedSpeciesImage = {
+      url: localUrl,
+      provider: 'local_media',
+      taxon: name,
+      tier,
+    }
+    runtimeCache.set(key, rLocal)
+    return rLocal
+  }
 
   const catalog = getCatalogPhotoUrl(name)
   const allowCatalog =
@@ -211,7 +233,8 @@ export async function resolveSpeciesImageAsync(
   const tier = resolveTier(name, { ...opts, tier: opts.tier })
   const sync = resolveSpeciesImageSync(name, { ...opts, context, tier })
 
-  if (sync.provider === 'catalog') return sync
+  // Local media or verified catalog — do not upgrade to flaky wiki/iNat
+  if (sync.provider === 'catalog' || sync.provider === 'local_media') return sync
 
   const allow = canAsyncRemoteResolve({
     tier,

@@ -117,18 +117,118 @@ export let speciesCatalogMeta: SpeciesCatalogMeta = {
 
 let loadPromise: Promise<CatalogSpecies[]> | null = null
 
+/** Map local v2 SSOT → atelier CatalogSpecies shape (unification Phase A). */
+function riskFromV2(risk: string, edib: string): string {
+  const r = (risk || '').toLowerCase()
+  const e = (edib || '').toLowerCase()
+  if (r === 'deadly' || e === 'mortifero') return 'deadly'
+  if (r === 'high' || e === 'toxico') return 'toxic'
+  if (r === 'risky_lookalikes' || e === 'comestible_con_cautela') return 'risky_lookalikes'
+  if (r === 'medium' || e === 'no_recomendado') return 'caution'
+  if (r === 'low' || e === 'excelente' || e === 'buen_comestible') return 'low'
+  return 'unknown'
+}
+
+function fromV2Record(rec: Record<string, unknown>): CatalogSpecies {
+  const taxon = String(rec.scientific_name || rec.taxon || '').trim()
+  const slug =
+    String(rec.slug || '') ||
+    taxon
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '')
+  const vern = (rec.vernacular_names || {}) as Record<string, string[]>
+  const common_names = [
+    ...(vern.es || []),
+    ...(vern.en || []),
+    ...(vern.ca || []),
+    ...(vern.eu || []),
+  ].filter(Boolean)
+  const unique = Array.from(new Set(common_names))
+  const risk_level = String(rec.risk_level || 'unknown')
+  const edibility_code = String(rec.edibility_code || 'desconocido')
+  const risk_label = riskFromV2(risk_level, edibility_code)
+  const family = rec.family ? String(rec.family) : null
+  const descMap = (rec.description || {}) as Record<string, string>
+  const description = descMap.es || descMap.en || ''
+  const photo_tier = getPhotoTier(taxon, risk_label)
+  return {
+    taxon,
+    slug,
+    rank: 'species',
+    common_names: unique.length ? unique : [taxon],
+    risk_label,
+    family,
+    family_es: family ? familyNameEs(family) : familyNameEs(null),
+    description,
+    source: String(rec.source || 'species_catalog_v2'),
+    display_name: unique[0] || taxon,
+    photo_hint: undefined,
+    photo_tier,
+    food_class: edibility_code,
+    food_label: edibility_code,
+    food_sources: null,
+  }
+}
+
 /**
  * Dynamically import heavy catalog JSON (separate Vite chunk) and hydrate once.
+ * Prefer SSOT v2 snapshot (520+) when present; fall back to colleague expanded JSON.
  */
 export async function loadSpeciesCatalog(): Promise<CatalogSpecies[]> {
   if (speciesCatalog.length > 0) return speciesCatalog
   if (!loadPromise) {
-    loadPromise = import('./speciesCatalog.json').then((mod) => {
+    loadPromise = (async () => {
+      // 1) Local SSOT v2 (unified catalog)
+      try {
+        const v2mod = await import('./generated/species_catalog_snapshot.json')
+        const v2 = v2mod.default as {
+          catalog_version?: string
+          count?: number
+          species?: Record<string, unknown>[]
+        }
+        if (v2.species?.length) {
+          const list = v2.species.map(fromV2Record)
+          // Merge any colleague-only taxa not in v2
+          try {
+            const leg = await import('./speciesCatalog.json')
+            const data = leg.default as SpeciesCatalogFile
+            const hydrated = hydrateSpecies(data)
+            const have = new Set(list.map((s) => s.taxon.toLowerCase()))
+            for (const s of hydrated) {
+              if (!have.has(s.taxon.toLowerCase())) list.push(s)
+            }
+          } catch {
+            /* optional */
+          }
+          speciesCatalog = list
+          speciesCatalogMeta = {
+            version: v2.catalog_version || 'v2',
+            count: list.length,
+            policy: 'orientation_only; unsafe_to_consume; ssot_v2',
+            sources: ['species_catalog_v2', 'speciesCatalog.json'],
+            with_family: list.filter((s) => Boolean(s.family)).length,
+            with_family_es: list.filter(
+              (s) => Boolean(s.family_es && s.family_es !== 'Sin familia'),
+            ).length,
+            photo_t0: list.filter((s) => s.photo_tier === 'T0').length,
+            photo_t1: list.filter((s) => s.photo_tier === 'T1').length,
+            photo_t2: list.filter((s) => s.photo_tier === 'T2').length,
+            loaded: true,
+          }
+          return speciesCatalog
+        }
+      } catch {
+        /* fall through */
+      }
+
+      // 2) Colleague expanded catalog only
+      const mod = await import('./speciesCatalog.json')
       const data = mod.default as SpeciesCatalogFile
       speciesCatalog = hydrateSpecies(data)
       speciesCatalogMeta = buildMeta(data, speciesCatalog)
       return speciesCatalog
-    })
+    })()
   }
   return loadPromise
 }
