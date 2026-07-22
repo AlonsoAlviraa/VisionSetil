@@ -1,8 +1,9 @@
 /**
  * Guided multi-view capture — 4-step ritual (Wave C/D).
  * Field-ready icons, camera per slot, no dev jargon.
+ * B-36: optional focusView deep-link highlight + scroll-into-view.
  */
-import { useCallback, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import {
   VIEW_SLOTS,
   type CanonicalView,
@@ -16,11 +17,20 @@ type Props = {
   onAssign: (view: CanonicalView, file: File, previewUrl: string) => void
   onClear: (view: CanonicalView) => void
   onOpenCamera?: () => void
+  /** B-36 deep-link: highlight + scroll this wizard slot. */
+  focusView?: CanonicalView | null
 }
 
-export function MultiViewWizard({ assignments, onAssign, onClear, onOpenCamera }: Props) {
+export function MultiViewWizard({
+  assignments,
+  onAssign,
+  onClear,
+  onOpenCamera,
+  focusView = null,
+}: Props) {
   const readiness = assessMultiViewReadiness(assignments)
   const inputRefs = useRef<Partial<Record<CanonicalView, HTMLInputElement | null>>>({})
+  const slotElRefs = useRef<Partial<Record<CanonicalView, HTMLDivElement | null>>>({})
 
   const onFile = useCallback(
     (view: CanonicalView, fileList: FileList | null) => {
@@ -32,8 +42,23 @@ export function MultiViewWizard({ assignments, onAssign, onClear, onOpenCamera }
     [onAssign],
   )
 
+  useEffect(() => {
+    if (!focusView) return
+    const el = slotElRefs.current[focusView]
+    if (!el) return
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    // Prefer focusing the gallery add control when empty
+    const addBtn = el.querySelector<HTMLButtonElement>('.mv-add, .mv-camera-btn, .mv-clear')
+    addBtn?.focus({ preventScroll: true })
+  }, [focusView])
+
   return (
-    <section className="multi-view-wizard" aria-label="Captura multi-vista guiada">
+    <section
+      className="multi-view-wizard"
+      aria-label="Captura multi-vista guiada"
+      data-testid="identify-wizard"
+      data-focus-view={focusView ?? undefined}
+    >
       <div className="mv-header">
         <h2>Cuatro vistas de campo</h2>
         <p>Láminas, perfil, hábitat y detalle. Completa las críticas antes de analizar.</p>
@@ -73,10 +98,17 @@ export function MultiViewWizard({ assignments, onAssign, onClear, onOpenCamera }
       <div className="mv-grid">
         {VIEW_SLOTS.map((slot) => {
           const filled = assignments[slot.view]
+          const isFocused = focusView === slot.view
           return (
             <div
               key={slot.view}
-              className={`mv-slot ${filled ? 'mv-slot--filled' : ''} ${slot.required ? 'mv-slot--required' : ''}`}
+              ref={(el) => {
+                slotElRefs.current[slot.view] = el
+              }}
+              id={`mv-slot-${slot.view}`}
+              data-view={slot.view}
+              data-focused={isFocused ? 'true' : 'false'}
+              className={`mv-slot ${filled ? 'mv-slot--filled' : ''} ${slot.required ? 'mv-slot--required' : ''} ${isFocused ? 'mv-slot--focused' : ''}`}
             >
               <div className="mv-slot-title">
                 <span className="mv-slot-icon" aria-hidden="true">

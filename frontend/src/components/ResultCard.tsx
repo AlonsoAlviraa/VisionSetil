@@ -3,7 +3,8 @@
  * 0) ResultModeBanner + educational blocked shell
  * 1) Safety + decision + top predictions (no FoodQualityChip — D-B16)
  * 2) Confidence (gated D-B9) + lookalikes
- * 3) Accordion: quality, evidence, questions, feedback, technical
+ * 2.5) B-36: missing evidence + questions_for_user panel (deep-link wizard slots)
+ * 3) Accordion: quality, feedback, technical
  */
 import { useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
@@ -15,6 +16,8 @@ import {
   shouldShowConfidence,
   shouldShowEducationalShell,
 } from '../lib/classifyMode'
+import { linkEvidenceItems } from '../lib/evidenceSlotMap'
+import type { CanonicalView } from '../lib/multiViewSlots'
 import { getRiskMeta } from '../lib/riskLabels'
 import { lookalikeSummary, rankLookalikes } from '../lib/lookalikeRisk'
 import { SpeciesThumb } from './SpeciesThumb'
@@ -47,6 +50,8 @@ interface ResultCardProps {
   onFeedback?: (isCorrect: boolean, species?: string) => void
   viewTypes?: string[]
   previews?: string[]
+  /** B-36: deep-link a missing photo cue to the multi-view wizard slot. */
+  onFocusWizardSlot?: (view: CanonicalView) => void
 }
 
 function getEdibilityMeta(edibility: string | null): { label: string; class: string } {
@@ -89,7 +94,13 @@ const SAFETY_LEVEL_META: Record<string, { label: string; class: string }> = {
   critical: { label: 'Crítico', class: 'sl-critical' },
 }
 
-export function ResultCard({ result, onFeedback, viewTypes = [], previews = [] }: ResultCardProps) {
+export function ResultCard({
+  result,
+  onFeedback,
+  viewTypes = [],
+  previews = [],
+  onFocusWizardSlot,
+}: ResultCardProps) {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const [feedbackSent, setFeedbackSent] = useState(false)
@@ -123,6 +134,16 @@ export function ResultCard({ result, onFeedback, viewTypes = [], previews = [] }
     () => lookalikeSummary(result.dangerous_lookalikes || []),
     [result.dangerous_lookalikes],
   )
+
+  const evidenceItems = useMemo(
+    () => linkEvidenceItems(result.missing_evidence || []),
+    [result.missing_evidence],
+  )
+  const questionItems = useMemo(
+    () => linkEvidenceItems(result.questions_for_user || []),
+    [result.questions_for_user],
+  )
+  const hasEvidencePanel = evidenceItems.length > 0 || questionItems.length > 0
 
   const needsExpert = result.recommend_human_review || isRejected || isDangerous || showBlockedShell
   const hasLayer2 =
@@ -425,6 +446,79 @@ export function ResultCard({ result, onFeedback, viewTypes = [], previews = [] }
         </section>
       )}
 
+      {/* ── B-36: Missing evidence + questions panel (promoted, always open) ── */}
+      {hasEvidencePanel && (
+        <section
+          className="result-layer result-layer--evidence result-evidence-panel"
+          aria-label={t('result.evidencePanelTitle')}
+          data-testid="evidence-questions-panel"
+        >
+          <header className="result-evidence-panel__header">
+            <IconMicroscope size={18} />
+            <strong>{t('result.evidencePanelTitle')}</strong>
+          </header>
+          <div className="result-evidence-panel__body">
+            {evidenceItems.length > 0 && (
+              <div className="missing-evidence" data-testid="missing-evidence-list">
+                <strong className="inline-icon-label">
+                  <IconMicroscope size={16} />
+                  {t('result.missingEvidenceTitle')}
+                </strong>
+                <ul>
+                  {evidenceItems.map((item, i) => (
+                    <li key={`ev-${i}`} className="evidence-item">
+                      <span className="evidence-item__text">{item.text}</span>
+                      {item.slot && onFocusWizardSlot && (
+                        <button
+                          type="button"
+                          className="btn-atelier btn-atelier--ghost evidence-item__cta"
+                          data-testid={`evidence-slot-cta-${item.slot}`}
+                          data-slot={item.slot}
+                          title={t('result.addViewCtaHint')}
+                          onClick={() => onFocusWizardSlot(item.slot!)}
+                        >
+                          {t('result.addViewCta')}
+                          <span className="evidence-item__slot-tag">{item.slot}</span>
+                        </button>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {questionItems.length > 0 && (
+              <div className="questions-section" data-testid="questions-for-user-list">
+                <strong className="inline-icon-label">
+                  <IconInfo size={16} />
+                  {t('result.questionsTitle')}
+                </strong>
+                <ul>
+                  {questionItems.map((item, i) => (
+                    <li key={`q-${i}`} className="evidence-item">
+                      <span className="evidence-item__text">{item.text}</span>
+                      {item.slot && onFocusWizardSlot && (
+                        <button
+                          type="button"
+                          className="btn-atelier btn-atelier--ghost evidence-item__cta"
+                          data-testid={`question-slot-cta-${item.slot}`}
+                          data-slot={item.slot}
+                          title={t('result.addViewCtaHint')}
+                          onClick={() => onFocusWizardSlot(item.slot!)}
+                        >
+                          {t('result.addViewCta')}
+                          <span className="evidence-item__slot-tag">{item.slot}</span>
+                        </button>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
       {/* ── Layer 3: details accordion ── */}
       {hasLayer3 && (
         <section className="result-layer result-layer--3">
@@ -448,34 +542,6 @@ export function ResultCard({ result, onFeedback, viewTypes = [], previews = [] }
                   <ul>
                     {result.quality_warnings.map((w, i) => (
                       <li key={i}>{w}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {result.missing_evidence.length > 0 && (
-                <div className="missing-evidence">
-                  <strong className="inline-icon-label">
-                    <IconMicroscope size={16} />
-                    Para mejorar
-                  </strong>
-                  <ul>
-                    {result.missing_evidence.map((e, i) => (
-                      <li key={i}>{e}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {result.questions_for_user.length > 0 && (
-                <div className="questions-section">
-                  <strong className="inline-icon-label">
-                    <IconInfo size={16} />
-                    Preguntas
-                  </strong>
-                  <ul>
-                    {result.questions_for_user.map((q, i) => (
-                      <li key={i}>{q}</li>
                     ))}
                   </ul>
                 </div>

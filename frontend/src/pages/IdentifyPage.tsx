@@ -47,6 +47,8 @@ export function IdentifyPage() {
   const [history, setHistory] = useState<HistoryEntry[]>([])
   const [lightbox, setLightbox] = useState<string | null>(null)
   const [showCompare, setShowCompare] = useState(false)
+  /** B-36: wizard slot deep-linked from result evidence panel. */
+  const [focusWizardSlot, setFocusWizardSlot] = useState<CanonicalView | null>(null)
 
   useEffect(() => {
     setHistory(loadHistory())
@@ -128,6 +130,7 @@ export function IdentifyPage() {
     setLoading(true)
     setError(null)
     setResult(null)
+    setFocusWizardSlot(null)
 
     try {
       const data = await classifyImages(files, metadata, viewTypes)
@@ -176,7 +179,19 @@ export function IdentifyPage() {
     setResult(null)
     setError(null)
     setMetadata({})
+    setFocusWizardSlot(null)
   }, [selectedImages, assignments])
+
+  /**
+   * B-36 deep-link: leave result view, keep current captures, open wizard on target slot.
+   * Does not wipe assignments — user can fill the missing view and re-analyze.
+   */
+  const handleFocusWizardSlot = useCallback((view: CanonicalView) => {
+    setResult(null)
+    setError(null)
+    setUseWizard(true)
+    setFocusWizardSlot(view)
+  }, [])
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: addFiles,
@@ -238,9 +253,13 @@ export function IdentifyPage() {
         <>
           <MultiViewWizard
             assignments={assignments}
-            onAssign={onAssignSlot}
+            onAssign={(view, file, previewUrl) => {
+              onAssignSlot(view, file, previewUrl)
+              setFocusWizardSlot(null)
+            }}
             onClear={onClearSlot}
             onOpenCamera={() => setShowCamera(true)}
+            focusView={focusWizardSlot}
           />
           {hasImages && (
             <div className="image-review-section">
@@ -388,6 +407,7 @@ export function IdentifyPage() {
                 ? orderedSlotKeys(assignments).map((k) => assignments[k]!.previewUrl)
                 : selectedImages.map((i) => i.preview)
             }
+            onFocusWizardSlot={handleFocusWizardSlot}
           />
         </div>
       )}

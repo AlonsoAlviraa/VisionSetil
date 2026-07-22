@@ -3472,6 +3472,73 @@ body {
   background: var(--surface);
 }
 
+/* B-36 — Missing evidence + questions_for_user panel (always open) */
+.result-evidence-panel {
+  border: 1px solid color-mix(in srgb, var(--moss, #2f5d50) 28%, var(--line, #ddd));
+  background: color-mix(in srgb, var(--moss, #2f5d50) 6%, var(--surface, #fff));
+  padding: 0.85rem 1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.result-evidence-panel__header {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.95rem;
+  letter-spacing: -0.01em;
+}
+
+.result-evidence-panel__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.result-evidence-panel .missing-evidence,
+.result-evidence-panel .questions-section {
+  margin-top: 0;
+}
+
+.evidence-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.45rem 0.75rem;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--line, #ddd) 70%, transparent);
+}
+
+.evidence-item:last-child {
+  border-bottom: none;
+}
+
+.evidence-item__text {
+  flex: 1 1 12rem;
+  min-width: 0;
+  line-height: 1.35;
+}
+
+.evidence-item__cta {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem !important;
+  padding: 0.35rem 0.65rem !important;
+  min-height: 2rem;
+}
+
+.evidence-item__slot-tag {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.75;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
 .danger-callout--compact {
   display: flex;
   flex-wrap: wrap;
