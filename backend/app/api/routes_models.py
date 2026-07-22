@@ -100,6 +100,11 @@ def models_quality_gate() -> QualityGatePayload:
 
     No GPU / weight load — metrics read is cached. Safe for Identify preflight
     polling.
+
+    B-17 rate limits: this path is **rate-limit exempt** (cheap status). The
+    Identify client polls on mount and every **60s** (``PREFLIGHT_POLL_MS``);
+    multi-tab traffic must not compete with the general 60/min bucket. Other
+    ``/models/*`` routes remain rate-limited.
     """
     from app.ml.quality_gate import quality_gate_payload
 

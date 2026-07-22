@@ -8,6 +8,10 @@ B-10: ``/readyz`` also exposes nested dual-signal ``quality_gate`` and
 ``weights_present`` for Identify preflight. Gate fail does **not** force
 ``ready=false`` — only DB/models (and optional ``readyz_fail_on_mock_models``)
 affect readiness HTTP status.
+
+B-17 rate limits: ``/health`` and ``/readyz`` are **rate-limit exempt**
+(cheap path). Identify preflight polls ``/readyz`` on mount and every **60s**;
+do not put these under the general 60/min bucket (multi-tab 429 risk).
 """
 
 from __future__ import annotations

@@ -77,8 +77,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Rate limiting (Sprint N+2)
-# Exempt public media/species GETs so encyclopedia grids (N cards × variants) don't trip 60/min.
+# Rate limiting (Sprint N+2 + B-17 preflight)
+# Exempt:
+#   - public media/species GETs so encyclopedia grids (N cards × variants) don't trip 60/min
+#   - Identify preflight cheap paths (/readyz, /models/quality-gate): FE polls on mount + every 60s;
+#     multi-tab (≈5) must not 429 status probes. Prefer full exempt over a high bucket (≥120/min).
 _rate_limit_requests = int(os.getenv("RATE_LIMIT_REQUESTS", "60"))
 _rate_limit_window = int(os.getenv("RATE_LIMIT_WINDOW_SECONDS", "60"))
 app.add_middleware(
@@ -87,12 +90,15 @@ app.add_middleware(
     window_seconds=_rate_limit_window,
     exempt_paths={
         "/health",
+        "/healthz",
         "/readyz",
         "/docs",
         "/openapi.json",
         "/redoc",
         "/media",
         "/species",
+        # B-17: Identify preflight (mount + 60s poll); cached metrics, no GPU
+        "/models/quality-gate",
     },
 )
 

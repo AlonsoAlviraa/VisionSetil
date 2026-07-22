@@ -81,6 +81,23 @@ cp .env.example .env
 | `REQUEST_ID_HEADER` | `X-Request-ID` | Header name used for correlation ids. |
 | `READYZ_FAIL_ON_MOCK_MODELS` | `False` | If `True`, `/readyz` returns 503 when all models are mock. |
 
+### Rate limiting
+
+| Variable | Default | Description |
+|---|---|---|
+| `RATE_LIMIT_REQUESTS` | `60` | Max requests per IP per window for the **general** bucket. |
+| `RATE_LIMIT_WINDOW_SECONDS` | `60` | Sliding window size in seconds. |
+| `RATE_LIMIT_CLASSIFY_REQUESTS` | `20` | Stricter budget for `/classify*` only. |
+| `REDIS_URL` | *(empty)* | Optional shared store for multi-instance limits. |
+
+**Exempt paths (no budget):** `/health`, `/healthz`, `/readyz`, `/docs`,
+`/openapi.json`, `/redoc`, `/media`, `/species`, and **`/models/quality-gate`**.
+
+**Identify preflight (B-17):** the FE polls `/readyz` + `/models/quality-gate`
+on mount and every **60s**. Those routes stay exempt so multi-tab use does not
+return 429. Alternative policy if exemption is undesirable: dedicated high
+limit **≥120 req/min/IP** (never the classify bucket).
+
 ## Overriding in tests
 
 `Settings` is constructed via `get_settings()` which is `lru_cache`-d. To

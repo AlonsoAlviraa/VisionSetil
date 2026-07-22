@@ -1,10 +1,21 @@
-"""Rate limiting middleware with path-aware limits (S4).
+"""Rate limiting middleware with path-aware limits (S4 + B-17).
 
 Env:
     RATE_LIMIT_REQUESTS — default max requests per window (60)
     RATE_LIMIT_WINDOW_SECONDS — window size (60)
     RATE_LIMIT_CLASSIFY_REQUESTS — stricter limit for /classify* (default 20)
     REDIS_URL — optional distributed store
+
+Preflight (B-17 / Phase B Honest Identify)
+------------------------------------------
+Identify polls ``/readyz`` and ``/models/quality-gate`` on mount and every
+**60s** (``PREFLIGHT_POLL_MS = 60_000`` on the FE). With several open tabs that
+traffic would share the general bucket and risk 429s; both endpoints are
+cheap (cached metrics / readiness checks, no GPU) and are **rate-limit
+exempt** by default (same policy as public media/species GETs).
+
+If a deployment must rate-limit them instead of exempting, use a dedicated
+high limit of **≥120 req/min/IP** — never the classify bucket.
 """
 
 from __future__ import annotations
@@ -24,6 +35,21 @@ logger = logging.getLogger(__name__)
 
 # Paths that use the stricter classify budget
 CLASSIFY_PATH_PREFIXES = ("/classify",)
+
+# Cheap ops / preflight status paths — never share the general or classify budget.
+# Keep in sync with ``app.main`` middleware wiring.
+DEFAULT_EXEMPT_PATHS: frozenset[str] = frozenset(
+    {
+        "/health",
+        "/healthz",
+        "/readyz",
+        "/docs",
+        "/openapi.json",
+        "/redoc",
+        # Identify preflight (B-17): mount + 60s poll; multi-tab safe
+        "/models/quality-gate",
+    }
+)
 
 
 def _is_classify_path(path: str) -> bool:
@@ -48,13 +74,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         self.classify_max_requests = classify_max_requests or int(
             os.getenv("RATE_LIMIT_CLASSIFY_REQUESTS", "20")
         )
-        self.exempt_paths = exempt_paths or {
-            "/health",
-            "/readyz",
-            "/docs",
-            "/openapi.json",
-            "/redoc",
-        }
+        self.exempt_paths = set(exempt_paths) if exempt_paths is not None else set(DEFAULT_EXEMPT_PATHS)
         self._requests: dict[str, list[float]] = defaultdict(list)
         self._redis = None
 
