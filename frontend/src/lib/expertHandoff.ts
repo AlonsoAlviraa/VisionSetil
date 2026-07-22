@@ -1,8 +1,14 @@
 /**
  * Expert handoff payload — packages multi-view evidence for human review (S7).
  * Local draft + deep-link fields; does not authorize consumption.
+ * B-37: snapshots product honesty mode + dual-signal quality_gate when present.
  */
-import type { ClassificationResult } from '../api/types'
+import type {
+  ClassificationResult,
+  ClassifyMode,
+  QualityGatePayload,
+} from '../api/types'
+import { isQualityGatePayload, resolveMode } from './classifyMode'
 import type { HistoryEntry } from './observationHistory'
 
 export const EXPERT_HANDOFF_KEY = 'visionsetil_expert_handoff_draft'
@@ -27,10 +33,28 @@ export type ExpertHandoffDraft = {
   recommend_human_review: boolean
   notes: string
   safety_disclaimer: string
+  /**
+   * Product honesty mode snapshot (B-37). Optional for soft-compat with old drafts
+   * that predate mode/quality_gate. New drafts always set via resolveMode().
+   */
+  mode?: ClassifyMode | null
+  /**
+   * Dual-signal quality gate snapshot at handoff time (B-37).
+   * metrics_acceptable vs species_id_allowed. Null/absent on legacy drafts.
+   */
+  quality_gate?: QualityGatePayload | null
 }
 
 export const HAND_OFF_DISCLAIMER =
   'Borrador de revisión experta. Orientación solamente — no es permiso de consumo. Un micólogo humano debe validar en el campo.'
+
+/** Spanish labels for honesty mode (expert review surface). */
+export function handoffModeLabelEs(mode: ClassifyMode | null | undefined): string {
+  if (mode === 'real') return 'Modelo en vivo'
+  if (mode === 'mock') return 'Modo demo'
+  if (mode === 'blocked') return 'Bloqueado (gate)'
+  return '—'
+}
 
 export function buildExpertHandoff(input: {
   result: ClassificationResult
@@ -40,6 +64,10 @@ export function buildExpertHandoff(input: {
 }): ExpertHandoffDraft {
   const { result, viewTypes = [], previews = [], notes = '' } = input
   const top = result.predictions?.[0]
+  const gate =
+    result.quality_gate != null && isQualityGatePayload(result.quality_gate)
+      ? result.quality_gate
+      : null
   return {
     id: `handoff_${result.request_id || Date.now()}`,
     created_at: Date.now(),
@@ -58,6 +86,9 @@ export function buildExpertHandoff(input: {
     recommend_human_review: Boolean(result.recommend_human_review),
     notes: notes.trim(),
     safety_disclaimer: HAND_OFF_DISCLAIMER,
+    // B-37 dual signals: always resolve mode; snapshot gate when payload is valid
+    mode: resolveMode(result),
+    quality_gate: gate,
   }
 }
 

@@ -7,10 +7,12 @@ import axios from 'axios'
 import { entriesNeedingReview, loadHistory } from '../lib/observationHistory'
 import { decisionLabelEs } from '../lib/decisionLabels'
 import {
+  handoffModeLabelEs,
   loadHandoffDraft,
   loadHandoffQueue,
   type ExpertHandoffDraft,
 } from '../lib/expertHandoff'
+import { isQualityGatePayload } from '../lib/classifyMode'
 import { SpeciesNameBlock } from '../components/SpeciesNameBlock'
 import { EmptyState } from '../components/EmptyState'
 import { RiskChip } from '../components/RiskChip'
@@ -175,10 +177,18 @@ export function ExpertReviewPage() {
               <span>Decisión</span>
               <strong>{decisionLabelEs(activeDraft.decision)}</strong>
             </li>
+            {activeDraft.mode != null && (
+              <li>
+                <span>Modo</span>
+                <strong data-testid="handoff-mode">
+                  {handoffModeLabelEs(activeDraft.mode)}
+                </strong>
+              </li>
+            )}
             <li>
               <span>Vistas</span>
               <strong>
-                {activeDraft.view_types.length
+                {activeDraft.view_types?.length
                   ? activeDraft.view_types.join(', ')
                   : 'Sin etiquetas'}
               </strong>
@@ -194,12 +204,50 @@ export function ExpertReviewPage() {
               </li>
             )}
           </ul>
-          {activeDraft.dangerous_lookalikes.length > 0 && (
+          {/* B-37: dual-signal gate snapshot — only when present (legacy drafts omit) */}
+          {activeDraft.quality_gate != null &&
+            isQualityGatePayload(activeDraft.quality_gate) && (
+              <div
+                className="expert-dual-gate"
+                data-testid="handoff-dual-gate"
+                aria-label="Quality gate dual"
+              >
+                <p className="expert-card__note" style={{ marginBottom: '0.35rem' }}>
+                  <strong>Quality gate</strong>
+                  {activeDraft.quality_gate.verdict
+                    ? ` · ${activeDraft.quality_gate.verdict}`
+                    : ''}
+                </p>
+                <ul className="expert-meta-list">
+                  <li>
+                    <span>Métricas OK</span>
+                    <strong>
+                      {activeDraft.quality_gate.metrics_acceptable ? 'Sí' : 'No'}
+                    </strong>
+                  </li>
+                  <li>
+                    <span>ID de especie</span>
+                    <strong>
+                      {activeDraft.quality_gate.species_id_allowed
+                        ? 'Permitida'
+                        : 'Bloqueada'}
+                    </strong>
+                  </li>
+                  {activeDraft.quality_gate.reason && (
+                    <li>
+                      <span>Motivo</span>
+                      <strong>{activeDraft.quality_gate.reason}</strong>
+                    </li>
+                  )}
+                </ul>
+              </div>
+            )}
+          {(activeDraft.dangerous_lookalikes?.length ?? 0) > 0 && (
             <p className="expert-card__note">
               Lookalikes: {activeDraft.dangerous_lookalikes.slice(0, 4).join(', ')}
             </p>
           )}
-          {activeDraft.preview_urls[0] && (
+          {activeDraft.preview_urls?.[0] && (
             <div className="handoff-previews">
               {activeDraft.preview_urls.slice(0, 4).map((src, i) => (
                 <img key={i} src={src} alt={`Evidencia ${i + 1}`} className="handoff-preview-img" />
