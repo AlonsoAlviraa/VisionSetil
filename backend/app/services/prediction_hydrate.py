@@ -1,7 +1,11 @@
-"""Server-side prediction hydration from catalog_v2 + media URLs (Phase B / B-32 + B-42).
+"""Server-side prediction hydration from catalog_v2 + media URLs (Phase B / B-32 + B-41 + B-42).
 
 Fills vernacular common_name, slug, risk_level, and public media URLs so Identify
 result cards are not empty shells after map+gate.
+
+B-41: normalize ML / historical scientific synonyms to the preferred catalog name
+via ``data/species_catalog/synonyms.yaml`` before catalog lookup (never collapse
+first-class catalog taxa).
 
 B-42: when catalog join yields deadly / poisonous (high) risk, surface that risk on
 the prediction so Identify RiskChip + danger callouts are not blind to model
@@ -24,6 +28,9 @@ from app.services.unified_catalog import (
     resolve_vernaculars,
     scientific_to_slug,
 )
+
+_COMMENT_RE = re.compile(r"\s+#.*$")
+_KEY_RE = re.compile(r"^[A-Za-z]")
 
 # Severity ranks for max(model edibility, catalog risk) join (higher = more severe).
 # Catalog SSOT uses deadly / high / medium / low / unknown / risky_lookalikes.
@@ -65,6 +72,118 @@ def _normalize_locale(locale: str | None) -> str:
         return DEFAULT_LOCALE
     loc = str(locale).strip().lower().split("-")[0]
     return loc or DEFAULT_LOCALE
+
+
+def _clean_taxon(name: str | None) -> str:
+    """Collapse whitespace; strip; keep original letter case for display fallback."""
+    if not name:
+        return ""
+    return " ".join(str(name).strip().split())
+
+
+def _taxon_key(name: str) -> str:
+    return _clean_taxon(name).casefold()
+
+
+def _synonyms_path_candidates() -> list[Path]:
+    """Resolve synonyms.yaml relative to settings / repo layout."""
+    repo = getattr(settings, "repo_root", None)
+    base = settings.base_dir
+    candidates: list[Path] = []
+    if repo is not None:
+        candidates.append(Path(repo) / "data" / "species_catalog" / "synonyms.yaml")
+    candidates.extend(
+        [
+            base.parent / "data" / "species_catalog" / "synonyms.yaml"
+            if base.name == "backend"
+            else base / "data" / "species_catalog" / "synonyms.yaml",
+            base / "data" / "species_catalog" / "synonyms.yaml",
+            Path(__file__).resolve().parents[3] / "data" / "species_catalog" / "synonyms.yaml",
+            Path(__file__).resolve().parents[4] / "data" / "species_catalog" / "synonyms.yaml",
+        ]
+    )
+    seen: set[str] = set()
+    out: list[Path] = []
+    for p in candidates:
+        key = str(p.resolve()) if p.exists() else str(p)
+        if key not in seen:
+            seen.add(key)
+            out.append(p)
+    return out
+
+
+def _strip_inline_comment(s: str) -> str:
+    return _COMMENT_RE.sub("", s).strip()
+
+
+def _parse_synonyms_yaml(text: str) -> dict[str, list[str]]:
+    """Minimal YAML subset parser for preferred → [alts] (no PyYAML dependency)."""
+    mapping: dict[str, list[str]] = {}
+    current: str | None = None
+    for raw in text.splitlines():
+        line = raw.rstrip()
+        if not line.strip() or line.lstrip().startswith("#"):
+            continue
+        stripped = line.strip()
+        if _KEY_RE.match(stripped) and stripped.endswith(":") and not stripped.startswith("-"):
+            key = _strip_inline_comment(stripped[:-1].strip())
+            if key:
+                current = key
+                mapping[current] = []
+            continue
+        if current is not None and stripped.startswith("-"):
+            alt = _strip_inline_comment(stripped[1:].strip())
+            if alt:
+                mapping[current].append(alt)
+    return mapping
+
+
+@lru_cache(maxsize=1)
+def load_synonym_reverse_map() -> dict[str, str]:
+    """Map casefolded scientific name (preferred or alt) → preferred scientific name.
+
+    Never rewrite an alias that is already a first-class catalog scientific name.
+    """
+    reverse: dict[str, str] = {}
+    catalog_keys = {str(k).casefold() for k in (load_catalog().get("_by_name") or {})}
+    for path in _synonyms_path_candidates():
+        try:
+            if not path.exists():
+                continue
+            groups = _parse_synonyms_yaml(path.read_text(encoding="utf-8"))
+            for preferred, alts in groups.items():
+                pref_key = _taxon_key(preferred)
+                reverse[pref_key] = preferred
+                for alt in alts:
+                    alt_key = _taxon_key(alt)
+                    if not alt_key or alt_key == pref_key:
+                        continue
+                    if alt_key in catalog_keys:
+                        continue
+                    reverse[alt_key] = preferred
+            return reverse
+        except OSError:
+            continue
+    return reverse
+
+
+def reload_synonyms() -> dict[str, str]:
+    """Clear synonym cache (tests / hot-reload)."""
+    load_synonym_reverse_map.cache_clear()
+    return load_synonym_reverse_map()
+
+
+def normalize_to_preferred_scientific_name(name: str | None) -> str:
+    """Resolve historical/ML synonym to preferred scientific name when known."""
+    cleaned = _clean_taxon(name)
+    if not cleaned:
+        return ""
+    hit = get_by_scientific_name(cleaned)
+    if hit:
+        sci = str(hit.get("scientific_name") or cleaned).strip()
+        return sci or cleaned
+    preferred = load_synonym_reverse_map().get(_taxon_key(cleaned))
+    return preferred if preferred else cleaned
 
 
 def _norm_key(raw: str | None) -> str:
