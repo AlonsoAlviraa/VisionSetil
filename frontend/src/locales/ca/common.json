@@ -232,5 +232,40 @@
   "education": {
     "title": "Apren micologia",
     "subtitle": "Guies de camp amb seguretat"
+  },
+  "honesty": {
+    "mode": {
+      "blocked": "Identificació bloquejada: model per sota del llindar",
+      "mock": "Mode demo — sense pesos de camp",
+      "real": "Model en viu — només orientació"
+    },
+    "gate": {
+      "no_metrics": "Sense mètriques del model al disc",
+      "map_below": "MAP@3 per sota del llindar mínim",
+      "deadly_below": "Recall d'espècies mortals per sota del llindar",
+      "gates_passed": "Llindars de qualitat superats",
+      "gate_disabled": "Gate de qualitat deshabilitat (només desenvolupament)"
+    },
+    "preflight": {
+      "offline": "API no disponible. No es pot identificar ara.",
+      "blocked": "Identificació d'espècie no permesa: el model no supera el llindar de qualitat.",
+      "mock": "Mode demo: prediccions de demostració, no identificació de camp.",
+      "real": "Model en viu. Identificació només orientativa.",
+      "metrics_warning": "Mètriques del model per sota del llindar (gate deshabilitat). No es mostra confiança.",
+      "submit_offline": "Connecta l'API per enviar fotos. Identificació deshabilitada sense backend.",
+      "unknown": "Estat del model desconegut. Identificació només orientativa."
+    },
+    "decision": {
+      "rejected_open_set": "El model s'absté (incertesa / open-set)",
+      "rejected_gate": "Identificació bloquejada pel llindar de qualitat del model"
+    },
+    "confidence_hidden": "Confiança no disponible en aquest mode",
+    "educational_blocked_title": "Identificació no disponible",
+    "educational_blocked_body": "El model actual no supera el llindar de qualitat per identificar espècies. Usa l'enciclopèdia i consulta un micòleg expert. Aquesta app és només orientativa i educativa.",
+    "cta": {
+      "encyclopedia": "Enciclopèdia",
+      "education": "Aprèn",
+      "expert": "Expert"
+    }
   }
 }
