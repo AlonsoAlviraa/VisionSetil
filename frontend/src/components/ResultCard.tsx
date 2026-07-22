@@ -10,8 +10,10 @@ import type { ClassificationResult, SpeciesPrediction } from '../api/types'
 import { getRiskMeta } from '../lib/riskLabels'
 import { lookalikeSummary, rankLookalikes } from '../lib/lookalikeRisk'
 import { SpeciesThumb } from './SpeciesThumb'
+import { SpeciesImage } from './SpeciesImage'
 import { SpeciesNameBlock } from './SpeciesNameBlock'
 import { RiskChip } from './RiskChip'
+import { riskToPlaceholder } from '../lib/edibility'
 import {
   buildExpertHandoff,
   expertReviewPath,
@@ -221,17 +223,31 @@ export function ResultCard({ result, onFeedback, viewTypes = [], previews = [] }
               {result.predictions.slice(0, 3).map((pred: SpeciesPrediction, idx: number) => {
                 const meta = getEdibilityMeta(pred.edibility)
                 const fq = getFoodQuality(pred.species)
+                const size = idx === 0 ? 56 : 44
+                const scientificName = pred.species
+                const slug = pred.slug || undefined
+                const alt = pred.common_name
+                  ? `${pred.common_name} (${scientificName})`
+                  : scientificName
                 return (
                   <li
                     key={`${pred.species}-${idx}`}
                     className={`prediction-item ${meta.class} ${idx === 0 ? 'top-match' : ''}`}
                   >
-                    <SpeciesThumb
-                      taxon={pred.species}
-                      riskLabel={pred.edibility}
-                      size={idx === 0 ? 56 : 44}
+                    <div
                       className="prediction-thumb"
-                    />
+                      style={{ width: size, height: size }}
+                      data-in-catalog={pred.in_catalog ? 'true' : 'false'}
+                    >
+                      <SpeciesImage
+                        scientificName={scientificName}
+                        slug={slug}
+                        variant={idx === 0 ? 'card' : 'thumb'}
+                        riskLevel={riskToPlaceholder(pred.risk_level, pred.edibility)}
+                        alt={alt}
+                        priority={idx === 0}
+                      />
+                    </div>
                     <div className="prediction-info">
                       <span className="rank-badge">#{idx + 1}</span>
                       <SpeciesNameBlock

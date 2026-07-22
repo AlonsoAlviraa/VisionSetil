@@ -5,6 +5,14 @@ export interface SpeciesPrediction {
   common_name: string | null
   confidence: number
   edibility: string | null
+  /** Catalog slug when hydrated (B-32+) — drives SpeciesImage media path */
+  slug?: string | null
+  /** Risk label from catalog hydrate (deadly/high/…); preferred over edibility for placeholders */
+  risk_level?: string | null
+  image_card_url?: string | null
+  image_thumb_url?: string | null
+  /** True when prediction matched catalog_v2 on the server */
+  in_catalog?: boolean
 }
 
 export interface ModelStack {
