@@ -507,3 +507,148 @@ def test_models_quality_gate_endpoint_no_gpu_keys(client):
     ):
         assert forbidden not in body
     assert set(body.keys()) == _QUALITY_GATE_REQUIRED_KEYS
+
+
+# ─── B-10: GET /readyz nested quality_gate + weights_present ──────────────────
+
+
+def test_readyz_includes_nested_quality_gate_dual_and_weights_present(client):
+    """/readyz exposes nested dual-signal quality_gate + weights_present (B-10)."""
+    from app.db.schemas import QualityGatePayload
+    from app.ml.quality_gate import REASON_CODES
+
+    resp = client.get("/readyz")
+    assert resp.status_code in (200, 503)
+    body = resp.json()
+
+    assert "ready" in body
+    assert "weights_present" in body
+    assert isinstance(body["weights_present"], bool)
+
+    assert "quality_gate" in body
+    gate = body["quality_gate"]
+    assert isinstance(gate, dict)
+    assert set(gate.keys()) == _QUALITY_GATE_REQUIRED_KEYS
+
+    assert isinstance(gate["species_id_allowed"], bool)
+    assert isinstance(gate["metrics_acceptable"], bool)
+    assert isinstance(gate["block_enabled"], bool)
+    assert gate["reason_code"] in REASON_CODES
+    assert gate["reason_code"] != "unset"
+    assert gate["verdict"] in {"ACCEPTABLE", "UNACCEPTABLE"}
+    assert gate["verdict"] == (
+        "ACCEPTABLE" if gate["metrics_acceptable"] else "UNACCEPTABLE"
+    )
+    # Nested payload validates as QualityGatePayload
+    QualityGatePayload(**gate)
+
+
+def test_readyz_quality_gate_matches_models_quality_gate_endpoint(client):
+    """Nested /readyz quality_gate matches GET /models/quality-gate dual payload."""
+    from app.ml.quality_gate import clear_metrics_cache
+
+    clear_metrics_cache()
+    r_ready = client.get("/readyz")
+    r_gate = client.get("/models/quality-gate")
+    assert r_ready.status_code in (200, 503)
+    assert r_gate.status_code == 200
+
+    nested = r_ready.json()["quality_gate"]
+    endpoint = r_gate.json()
+    for key in _QUALITY_GATE_REQUIRED_KEYS:
+        assert nested[key] == endpoint[key], f"mismatch on {key}"
+
+
+def test_readyz_gate_fail_does_not_force_unready(client, monkeypatch, tmp_path):
+    """B-10: quality gate UNACCEPTABLE must not flip ready→false / HTTP 503.
+
+    Only DB/models (and optional readyz_fail_on_mock_models) affect readiness.
+    """
+    # Force a failing gate via low sibling metrics under explicit weights
+    models = tmp_path / "models"
+    models.mkdir()
+    weights = models / "best.pt"
+    weights.write_bytes(b"low")
+    (models / "metrics.json").write_text(
+        json.dumps(
+            {
+                "test_map_at_3": 0.01,
+                "safety_recall_deadly": 0.0,
+                "version": "readyz-low",
+            }
+        ),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(settings, "multi_view_weights_path", weights)
+    monkeypatch.setattr(settings, "model_block_species_id_when_below_gate", True)
+    # Do NOT fail readiness on mock models for this assertion
+    monkeypatch.setattr(settings, "readyz_fail_on_mock_models", False)
+    clear_metrics_cache()
+
+    # Patch serve resolution so gate sees the low metrics
+    monkeypatch.setattr(
+        "app.ml.quality_gate._resolve_serve_weights_path",
+        lambda loaded_weights_path=None: weights,
+    )
+    # weights_present can still use real discovery; force True for this fixture
+    monkeypatch.setattr(
+        "app.api.routes_health._weights_present",
+        lambda: True,
+    )
+
+    resp = client.get("/readyz")
+    body = resp.json()
+    gate = body["quality_gate"]
+
+    assert gate["metrics_acceptable"] is False
+    assert gate["species_id_allowed"] is False
+    assert gate["verdict"] == "UNACCEPTABLE"
+    assert gate["reason_code"] in {"map_below", "deadly_below", "no_metrics"}
+
+    # Gate fail must not be the reason for 503 when DB is ok
+    assert body["ready"] is True
+    assert resp.status_code == 200
+    assert body["weights_present"] is True
+
+
+def test_readyz_weights_present_false_when_no_checkpoint(client, monkeypatch, tmp_path):
+    """weights_present is False when no multi-view checkpoint is on disk."""
+    monkeypatch.setattr(
+        settings, "multi_view_weights_path", tmp_path / "missing" / "best.pt"
+    )
+    monkeypatch.setattr(
+        "app.ml.weight_discovery.resolve_multiview_weights_path",
+        lambda **kwargs: None,
+    )
+    clear_metrics_cache()
+
+    resp = client.get("/readyz")
+    assert resp.status_code in (200, 503)
+    body = resp.json()
+    assert body["weights_present"] is False
+    # Still always has nested dual gate
+    assert set(body["quality_gate"].keys()) == _QUALITY_GATE_REQUIRED_KEYS
+
+
+def test_readyz_fail_on_mock_still_controls_ready(client, monkeypatch):
+    """readyz_fail_on_mock_models remains the only mock-related ready flip (not gate)."""
+    monkeypatch.setattr(settings, "readyz_fail_on_mock_models", True)
+    clear_metrics_cache()
+
+    # Force mock stack reporting
+    monkeypatch.setattr(
+        "app.ml.model_registry.get_model_status",
+        lambda: {"multi_view_classifier": {"backend": "mock", "loaded": True}},
+    )
+
+    resp = client.get("/readyz")
+    body = resp.json()
+    # When all mock + fail_on_mock: models degraded → unready
+    assert body.get("classifier_mode") == "mock" or "mock" in str(
+        body.get("checks", {})
+    )
+    assert body["ready"] is False
+    assert resp.status_code == 503
+    # Gate still nested even when unready
+    assert "quality_gate" in body
+    assert "weights_present" in body
