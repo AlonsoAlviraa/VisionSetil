@@ -758,6 +758,29 @@
   box-shadow: inset 0 0 0 1px rgba(196, 69, 26, 0.15);
 }
 
+/* B-36 deep-link focus from result evidence panel */
+.mv-slot--focused {
+  border-style: solid;
+  border-color: color-mix(in srgb, var(--accent, #c4451a) 70%, var(--border));
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--accent, #c4451a) 22%, transparent),
+    inset 0 0 0 1px color-mix(in srgb, var(--accent, #c4451a) 25%, transparent);
+  animation: mv-slot-focus-pulse 1.4s ease-out 1;
+}
+
+@keyframes mv-slot-focus-pulse {
+  0% {
+    box-shadow:
+      0 0 0 0 color-mix(in srgb, var(--accent, #c4451a) 40%, transparent),
+      inset 0 0 0 1px color-mix(in srgb, var(--accent, #c4451a) 25%, transparent);
+  }
+  100% {
+    box-shadow:
+      0 0 0 3px color-mix(in srgb, var(--accent, #c4451a) 22%, transparent),
+      inset 0 0 0 1px color-mix(in srgb, var(--accent, #c4451a) 25%, transparent);
+  }
+}
+
 .mv-slot-title {
   display: flex;
   justify-content: space-between;
