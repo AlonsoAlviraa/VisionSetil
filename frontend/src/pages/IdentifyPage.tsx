@@ -1,5 +1,6 @@
 /**
  * Identify page: honesty flow layout (B-24) + preflight (B-11) + result modes (B-08).
+ * Mobile-first polish (B-31): sticky CTA, ≥44px touch targets, banners below submit z-index.
  *
  * Visual order (capture): preflight → wizard → (history)
  * Visual order (result):  result mode chrome → card / images
@@ -404,10 +405,13 @@ export function IdentifyPage() {
                 {hasImages && (
                   <div className="image-review-section">
                     <MetadataForm metadata={metadata} onChange={setMetadata} />
-                    <div className="analyze-actions">
+                    <div
+                      className="analyze-actions identify-sticky-cta"
+                      data-testid="identify-sticky-cta"
+                    >
                       <button
                         type="button"
-                        className="btn-atelier btn-atelier--primary"
+                        className="btn-atelier btn-atelier--primary identify-submit-btn"
                         onClick={handleClassify}
                         disabled={loading || !readiness.canSubmit || !submitAllowed}
                         data-testid="identify-submit"
@@ -476,10 +480,13 @@ export function IdentifyPage() {
                   ))}
                 </div>
                 <MetadataForm metadata={metadata} onChange={setMetadata} />
-                <div className="analyze-actions">
+                <div
+                  className="analyze-actions identify-sticky-cta"
+                  data-testid="identify-sticky-cta"
+                >
                   <button
                     type="button"
-                    className="btn-atelier btn-atelier--primary"
+                    className="btn-atelier btn-atelier--primary identify-submit-btn"
                     onClick={handleClassify}
                     disabled={loading || !submitAllowed}
                     data-testid="identify-submit"
@@ -584,10 +591,13 @@ export function IdentifyPage() {
                     />
                   ))}
                 </div>
-                <div className="result-actions-bar">
+                <div
+                  className="result-actions-bar identify-sticky-cta identify-sticky-cta--result"
+                  data-testid="identify-result-cta"
+                >
                   <button
                     type="button"
-                    className="btn-atelier btn-atelier--primary"
+                    className="btn-atelier btn-atelier--primary identify-submit-btn"
                     onClick={reset}
                   >
                     Nuevo análisis
