@@ -141,6 +141,10 @@ def _map_to_simple(
     from app.ml.quality_gate import apply_quality_gate_to_simple_result
 
     gated = apply_quality_gate_to_simple_result(simple.model_dump())
+    # B-01 interim: strip quality_gate so rebuild uses fail-closed schema defaults
+    # (mode=blocked, species_id_allowed=False). B-03 must stop stripping, attach the
+    # dual-signal gate, and set mode via derive_classify_mode — until then FE must
+    # not treat result.mode / result.quality_gate as product truth.
     return SimpleClassificationResult(**{k: v for k, v in gated.items() if k != "quality_gate"})
 
 
