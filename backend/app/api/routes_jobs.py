@@ -35,7 +35,6 @@ from app.core.config import settings
 from app.db.database import get_db
 from app.db.models import Observation
 from app.db.schemas import ClassificationJobRead, JobResultEnvelope
-from app.services import unified_catalog as catalog
 from app.services.image_storage import store_observation_images
 from app.services.task_queue import create_job, get_job, get_queue_stats, run_classification_job
 from app.services.view_classifier import CANONICAL_VIEWS

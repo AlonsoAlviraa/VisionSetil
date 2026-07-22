@@ -14,8 +14,6 @@ Design goals
 * **Safety parity (B-14)** – worker uses the same ``classify_to_simple`` gate
   as sync ``POST /classify``; job.result is dual-write envelope
   ``{schema_version:2, simple, raw}`` (raw permanent per D-B18/D-B24).
-* **Form parity (B-44)** – ``view_types`` + ``locale`` from async form are
-  forwarded into ``classify_to_simple`` (same contract as sync).
 """
 
 from __future__ import annotations
@@ -73,10 +71,8 @@ def run_classification_job(
     ``classify_to_simple`` (gate + mode + locale), and dual-writes the job
     result envelope ``{schema_version: 2, simple, raw}``.
 
-    ``view_types`` / ``locale`` come from the async form (B-44). When omitted
-    (direct worker calls / legacy), ``view_types=None`` auto-labels and
-    ``locale`` defaults to ``es``. Product FE must read ``simple`` only —
-    never ungated ``raw`` predictions.
+    ``view_types`` may remain ``None`` temporarily (auto-label); product FE
+    must read ``simple`` only — never ungated ``raw`` predictions.
     """
     db = SessionLocal()
     try:
@@ -103,12 +99,12 @@ def run_classification_job(
             classifier = get_multi_view_classifier()
             request_id = f"job-{job_id[:12]}"
 
-            # B-14 + B-44: same classify_to_simple path as sync (gate+mode+locale+views)
+            # B-14: same classify_to_simple path as sync (gate+mode). view_types=None OK for now.
             simple, raw = classify_to_simple_with_raw(
                 observation=observation,
                 images=images,
-                view_types=view_types,
-                locale=locale,
+                view_types=None,
+                locale="es",
                 request_id=request_id,
                 classifier=classifier,
                 loaded_weights_path=getattr(classifier, "resolved_weights_path", None),
@@ -127,10 +123,9 @@ def run_classification_job(
             db.commit()
 
             logger.info(
-                "Job %s completed (mode=%s, locale=%s, species_id_allowed=%s)",
+                "Job %s completed (mode=%s, species_id_allowed=%s)",
                 job_id,
                 getattr(simple.mode, "value", simple.mode),
-                locale,
                 bool(simple.quality_gate and simple.quality_gate.species_id_allowed),
             )
 

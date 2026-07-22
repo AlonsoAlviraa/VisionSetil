@@ -26,15 +26,11 @@ export const featureFlags = {
   /** Favorites UI (PR-12) */
   FAVORITES: envBool('VITE_FEATURE_FAVORITES', true),
   /**
-   * Identify PreflightBanner + offline submit disable (B-11).
-   * Kill-switch hides banner; offline submit disable stays active when true (default).
+   * Optional async classify + job polling (B-46).
+   * Default OFF — only enable after job envelope contract is green (B-45).
+   * Product path still uses envelope.simple only (same ResultModeBanner as sync).
    */
-  IDENTIFY_PREFLIGHT: envBool('VITE_FEATURE_IDENTIFY_PREFLIGHT', true),
-  /**
-   * D-B14 / B-25: hard minimum views (gills+front required to submit).
-   * Default **false** = soft readiness (warnings only; submit with ≥1 view).
-   */
-  HARD_VIEW_MIN: envBool('VITE_FEATURE_HARD_VIEW_MIN', false),
+  ASYNC_CLASSIFY: envBool('VITE_FEATURE_ASYNC_CLASSIFY', false),
 } as const
 
 export type FeatureFlagKey = keyof typeof featureFlags

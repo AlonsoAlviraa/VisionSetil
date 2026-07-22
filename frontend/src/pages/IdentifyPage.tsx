@@ -10,12 +10,7 @@
 import { useState, useCallback, useEffect, useMemo, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useDropzone } from 'react-dropzone'
-import { useTranslation } from 'react-i18next'
-import {
-  classifyImages,
-  submitFeedback,
-  type ClassifyClientStage,
-} from '../api/client'
+import { classifyImagesMaybeAsync, submitFeedback } from '../api/client'
 import type { ClassificationResult, ObservationMetadata } from '../api/types'
 import i18n from '../i18n'
 import { ResultCard } from '../components/ResultCard'
@@ -28,6 +23,7 @@ import { MultiViewWizard } from '../components/MultiViewWizard'
 import { IdentifyResultSkeleton } from '../components/ui/Skeleton'
 import { IconClose, IconExpert, IconHistory, IconSearch } from '../components/icons'
 import { MEDIA } from '../data/media'
+import i18n from '../i18n'
 import { featureFlags } from '../lib/featureFlags'
 import {
   assessMultiViewReadiness,
@@ -291,14 +287,17 @@ export function IdentifyPage() {
     setFocusWizardSlot(null)
 
     try {
-      const data = await classifyImages(files, metadata, viewTypes, {
-        onStage: (stage) => setLoadingStage(stage),
-      })
-      // Stage already advanced to apply_policy inside client; keep it visible briefly.
-      setLoadingStage('apply_policy')
-      await new Promise<void>((resolve) => {
-        window.setTimeout(resolve, 280)
-      })
+      // Current UI language (es|ca|eu|en); backend defaults to es if omitted.
+      const locale = (i18n.language || 'es').slice(0, 2)
+      // B-46: optional async path behind VITE_FEATURE_ASYNC_CLASSIFY (default off).
+      // Async returns envelope.simple — same ClassificationResult → same banners.
+      const data = await classifyImagesMaybeAsync(
+        files,
+        metadata,
+        viewTypes,
+        locale,
+        featureFlags.ASYNC_CLASSIFY,
+      )
       setResult(data)
 
       // B-38: stamp mode / gate_summary / locale on history entry
@@ -516,13 +515,40 @@ export function IdentifyPage() {
               </div>
             </div>
 
-            {useWizard && (
-              <>
-                <MultiViewWizard
-                  assignments={assignments}
-                  onAssign={onAssignSlot}
-                  onClear={onClearSlot}
-                  onOpenCamera={openCamera}
+      {loading && (
+        <div className="loading" data-testid="identify-loading">
+          <div className="spinner" />
+          <p>
+            {featureFlags.ASYNC_CLASSIFY
+              ? 'Clasificando en segundo plano…'
+              : 'Analizando con multi-vista…'}
+          </p>
+        </div>
+      )}
+
+      {error && (
+        <div className="error-banner">
+          <strong>Error:</strong> {error}
+          <button className="btn-retry" onClick={reset}>
+            Reintentar
+          </button>
+        </div>
+      )}
+
+      {showResult && result && (
+        <div className="result-layout" data-testid="identify-result">
+          <div className="result-image-section">
+            <div className="result-image-grid">
+              {(useWizard
+                ? orderedSlotKeys(assignments).map((k) => assignments[k]!.previewUrl)
+                : selectedImages.map((i) => i.preview)
+              ).map((src, idx) => (
+                <img
+                  key={idx}
+                  src={src}
+                  alt={`Resultado ${idx + 1}`}
+                  className="preview-image"
+                  onClick={() => setLightbox(src)}
                 />
                 {hasImages && (
                   <div className="image-review-section">

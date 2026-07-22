@@ -10,9 +10,8 @@ interface ImportMetaEnv {
   readonly VITE_FEATURE_GUIDED_IDENTIFY?: string
   readonly VITE_FEATURE_OFFLINE_PACK?: string
   readonly VITE_FEATURE_FAVORITES?: string
-  readonly VITE_FEATURE_IDENTIFY_PREFLIGHT?: string
-  /** D-B14: hard min views (gills+front). Default off (soft readiness). */
-  readonly VITE_FEATURE_HARD_VIEW_MIN?: string
+  /** B-46: optional async classify + polling (default off). */
+  readonly VITE_FEATURE_ASYNC_CLASSIFY?: string
 }
 
 interface ImportMeta {

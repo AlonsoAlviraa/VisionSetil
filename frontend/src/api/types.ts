@@ -113,3 +113,37 @@ export interface ObservationMetadata {
   notes?: string
   smell?: string
 }
+
+/** Job status from POST /classify/async and GET /jobs/{id}. */
+export type ClassificationJobStatus =
+  | 'queued'
+  | 'running'
+  | 'completed'
+  | 'failed'
+  | (string & {})
+
+/**
+ * Async classification job status (ClassificationJobRead).
+ * When completed, prefer GET /jobs/{id}/result for the dual-write envelope.
+ */
+export interface ClassificationJob {
+  id: string
+  observation_id: number
+  status: ClassificationJobStatus
+  /** May hold envelope when completed; product clients should still use /result. */
+  result?: JobResultEnvelope | Record<string, unknown> | null
+  error?: string | null
+  created_at: string
+  started_at?: string | null
+  completed_at?: string | null
+}
+
+/**
+ * Dual-write job result envelope (B-14 / D-B18 / D-B24).
+ * Product clients must read `simple` only. `raw` is permanent admin/debug.
+ */
+export interface JobResultEnvelope {
+  schema_version: 2
+  simple: ClassificationResult
+  raw?: Record<string, unknown> | null
+}
