@@ -17,7 +17,8 @@ recompute. This document wires the **process** without claiming new MAP@3 number
 
 ## Procedure (when GPU/eval data available)
 
-1. Build/join species index with catalog synonyms (`scripts/build_species_index_join.py`).
+1. Build/join model labels with catalog_v2 (`scripts/build_species_index_join.py`;
+   B-39 / D-B25: nightly + on-demand, not per-PR CI).
 2. Run open-set calibration script on held-out observations.
 3. Write `open_set_thresholds.json` with:
    - `calibrated_threshold`
