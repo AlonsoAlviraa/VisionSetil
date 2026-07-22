@@ -1,10 +1,13 @@
 /**
- * Result card — 3-layer hierarchy (Wave A) + Phase B honesty (B-08 / B-30):
+ * Result card — 3-layer hierarchy (Wave A) + Phase B honesty (B-08 / B-35):
  * 0) ResultModeBanner + educational blocked shell
  * 1) Safety + decision + top predictions (no FoodQualityChip — D-B16)
  * 2) Confidence (gated D-B9) + lookalikes
  * 3) Accordion: quality, evidence, questions, feedback, technical
- * B-30: focus mode banner when a new result arrives (a11y).
+ *
+ * Safety-by-surface: Identify only — risk chips + orientation copy.
+ * See docs/SAFETY_POLICY.md § Safety-by-surface (D16 / D-B16).
+ * Encyclopedia may use FoodQualityChip; this surface must not.
  */
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
@@ -40,7 +43,6 @@ import { stackBadgeEs } from '../lib/modelStackLabel'
 import { ModelInsightsPanel } from './ModelInsightsPanel'
 import {
   EducationalBlockedShell,
-  RESULT_MODE_BANNER_TITLE_ID,
   ResultModeBanner,
 } from './ResultModeBanner'
 
@@ -134,17 +136,6 @@ export function ResultCard({ result, onFeedback, viewTypes = [], previews = [] }
     (isDangerous && !showBlockedShell)
   const hasLayer3 = true /* always show ML insights accordion */
 
-  // B-30: move keyboard/AT focus to the mode banner when a new result arrives
-  useEffect(() => {
-    const el = modeBannerRef.current
-    if (!el) return
-    // Defer one frame so layout/scroll from IdentifyPage can settle first
-    const raf = requestAnimationFrame(() => {
-      el.focus({ preventScroll: true })
-    })
-    return () => cancelAnimationFrame(raf)
-  }, [result.request_id])
-
   const handleFeedback = (correct: boolean) => {
     onFeedback?.(correct, topPrediction?.species)
     setFeedbackSent(true)
@@ -162,13 +153,11 @@ export function ResultCard({ result, onFeedback, viewTypes = [], previews = [] }
   return (
     <div
       className={`result-card result-card--layered result-card--mode-${mode} ${isDeadly && !isRejected && !showBlockedShell ? 'result-card--deadly' : ''}`}
-      role="region"
-      aria-labelledby={RESULT_MODE_BANNER_TITLE_ID}
       data-testid="result-card"
       data-mode={mode}
       data-show-confidence={showConfidence ? 'true' : 'false'}
     >
-      <ResultModeBanner ref={modeBannerRef} result={result} />
+      <ResultModeBanner result={result} />
 
       {/* ── Layer 1: safety + decision + top predictions ── */}
       <section className="result-layer result-layer--1" aria-label="Resultado principal">

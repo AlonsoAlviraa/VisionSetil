@@ -361,13 +361,7 @@ export function IdentifyPage() {
       )}
 
       {showResult && result && (
-        <div
-          ref={resultRegionRef}
-          className="result-layout"
-          role="region"
-          aria-label="Resultado de identificación"
-          data-testid="identify-result"
-        >
+        <div className="result-layout" data-testid="identify-result">
           <div className="result-image-section">
             <div className="result-image-grid">
               {(useWizard

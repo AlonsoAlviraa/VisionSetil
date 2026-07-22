@@ -4916,19 +4916,8 @@ label,
   pointer-events: none;
 }
 
-.result-food-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.55rem 0.75rem;
-  margin: 0.35rem 0 0.75rem;
-}
-
-.result-food-row__note {
-  font-size: 0.82rem;
-  font-weight: 500;
-  color: var(--ink-soft);
-}
+/* .result-food-row removed — Identify must not show food-quality chrome (B-35 / D-B16).
+   Encyclopedia food badges/chips keep .food-badge / .food-q-chip styles above. */
 
 .atelier-hero__fine {
   margin: 0.35rem 0 0;
@@ -4980,17 +4969,6 @@ label,
   border: 1px solid var(--line);
   background: var(--surface-alt, var(--surface));
   color: var(--ink);
-}
-
-/* B-30: programmatic focus ring (tabIndex=-1 handoff when result arrives) */
-.result-mode-banner:focus {
-  outline: 3px solid var(--primary);
-  outline-offset: 2px;
-}
-
-.result-mode-banner:focus:not(:focus-visible) {
-  outline: 2px solid color-mix(in srgb, var(--primary) 60%, transparent);
-  outline-offset: 2px;
 }
 
 .result-mode-banner__row {
@@ -5164,56 +5142,6 @@ label,
 .model-insights--blocked {
   border-color: color-mix(in srgb, #b91c1c 35%, var(--line));
   background: color-mix(in srgb, #ef4444 8%, var(--surface));
-}
-
-/* B-22: dual-signal gate metrics block inside ModelInsightsPanel */
-.model-insights__gate {
-  margin: 0.65rem 0 0.35rem;
-  padding: 0.65rem 0.75rem;
-  border-radius: 14px;
-  border: 1px solid var(--line);
-  background: var(--surface);
-}
-
-.model-insights__gate-title {
-  margin: 0 0 0.45rem;
-  font-size: 0.78rem;
-  font-weight: 750;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--ink-mute);
-}
-
-.model-insights__grid--gate {
-  margin-bottom: 0.35rem;
-}
-
-.model-insights__thresh {
-  font-weight: 550;
-  font-size: 0.8rem;
-  color: var(--ink-mute);
-}
-
-.model-insights__gate-reason,
-.model-insights__metrics-warning {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.35rem;
-  margin: 0.4rem 0 0;
-  font-size: 0.86rem;
-  color: var(--ink-soft);
-  font-weight: 500;
-  line-height: 1.4;
-}
-
-.model-insights__code {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 0.8em;
-  color: var(--ink-mute);
-}
-
-.model-insights__metrics-warning {
-  color: color-mix(in srgb, #b45309 70%, var(--ink));
 }
 
 .model-insights__head {
