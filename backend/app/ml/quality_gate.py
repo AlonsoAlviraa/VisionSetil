@@ -9,11 +9,14 @@ is policy (respects block_enabled); verdict tracks metrics only.
 from __future__ import annotations
 
 import json
+import logging
 from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
 from app.core.config import settings
+
+logger = logging.getLogger(__name__)
 
 
 def _repo_root() -> Path:
@@ -201,6 +204,20 @@ def quality_gate_status(
     # verdict tracks metrics only — not disable bypass
     verdict = "ACCEPTABLE" if metrics_acceptable else "UNACCEPTABLE"
 
+    # D-B23 / B-20: always log full metrics_path (never basename-only) on evaluate
+    logger.info(
+        "quality_gate evaluate reason_code=%s verdict=%s test_map_at_3=%s "
+        "safety_recall_deadly=%s metrics_path=%s metrics_acceptable=%s "
+        "species_id_allowed=%s",
+        reason_code,
+        verdict,
+        map3_f,
+        deadly_f,
+        path,
+        metrics_acceptable,
+        species_id_allowed,
+    )
+
     return {
         "species_id_allowed": species_id_allowed,
         "metrics_acceptable": metrics_acceptable,
@@ -211,7 +228,7 @@ def quality_gate_status(
         "safety_recall_deadly": deadly_f,
         "min_map_at_3": min_map,
         "min_deadly_recall": min_deadly,
-        "metrics_path": path,
+        "metrics_path": path,  # full path always (D-B23); never basename-only
         "version": version,
         "verdict": verdict,
     }
