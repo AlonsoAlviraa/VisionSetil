@@ -252,7 +252,8 @@
       "mock": "Demo mode: demonstration predictions, not field identification.",
       "real": "Live model. Identification is orientation-only.",
       "metrics_warning": "Model metrics below threshold (gate disabled). Confidence is hidden.",
-      "submit_offline": "Connect the API to submit photos. Identification is disabled without the backend."
+      "submit_offline": "Connect the API to submit photos. Identification is disabled without the backend.",
+      "unknown": "Model status unknown. Identification is orientation-only."
     },
     "decision": {
       "rejected_open_set": "The model abstains (uncertainty / open-set)",

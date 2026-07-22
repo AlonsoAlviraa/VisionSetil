@@ -236,11 +236,11 @@
   "honesty": {
     "mode": {
       "blocked": "Identifikazioa blokeatuta: modeloa atalasearen azpitik",
-      "mock": "Demo modua — landa-pisuik gabe",
+      "mock": "Demo modua — landa-pisurik gabe",
       "real": "Zuzeneko modeloa — orientazioa soilik"
     },
     "gate": {
-      "no_metrics": "Ez dago modeloaren metrikrik diskoan",
+      "no_metrics": "Ez dago modeloaren metrikarik diskoan",
       "map_below": "MAP@3 gutxieneko atalasearen azpitik",
       "deadly_below": "Espezie hilgarrien recall-a atalasearen azpitik",
       "gates_passed": "Kalitate-atalaseak gainditu dira",
@@ -252,7 +252,8 @@
       "mock": "Demo modua: demostrazio-iragarpenak, ez landa-identifikazioa.",
       "real": "Zuzeneko modeloa. Identifikazioa orientagarria soilik.",
       "metrics_warning": "Modeloaren metrikak atalasearen azpitik (gate desgaituta). Konfiantza ezkutatuta dago.",
-      "submit_offline": "Konektatu APIa argazkiak bidaltzeko. Identifikazioa desgaituta dago backend gabe."
+      "submit_offline": "Konektatu APIa argazkiak bidaltzeko. Identifikazioa desgaituta dago backend gabe.",
+      "unknown": "Modeloaren egoera ezezaguna. Identifikazioa orientagarria soilik."
     },
     "decision": {
       "rejected_open_set": "Modeloak abstenitu egiten da (ziurgabetasuna / open-set)",
