@@ -22,6 +22,7 @@ import uuid
 from typing import Any
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
@@ -32,12 +33,20 @@ from app.db.schemas import (
     SimpleClassificationResult,
     SimpleSpeciesPrediction,
 )
+from app.services import unified_catalog as catalog
 from app.services.classifier import MockMushroomClassifier
 from app.services.image_storage import store_observation_images
 from app.services.multi_view_classifier import get_multi_view_classifier
 from app.services.view_classifier import CANONICAL_VIEWS
 
 router = APIRouter()
+
+
+def _locale_from_form(locale: str | None) -> str:
+    """Optional form locale; omit/blank → es; invalid raises ValueError (caller → 400)."""
+    if locale is None or not str(locale).strip():
+        return catalog.DEFAULT_LOCALE
+    return catalog.normalize_locale(locale)
 
 
 def _build_observation(
@@ -69,12 +78,15 @@ def _map_to_simple(
     *,
     classifier: object | None = None,
     loaded_weights_path: str | None = None,
+    locale: str = "es",
 ) -> SimpleClassificationResult:
     """Convert the rich ClassificationResponse into the simplified frontend schema.
 
     ``loaded_weights_path`` is the multi-view checkpoint actually resolved for
     serve (D-B12). Prefer the outer MultiView classifier path even when
     ``classifier`` is a mock fallback used for diagnostics.
+
+    ``locale`` is the resolved form locale (D-B5); default ``es`` when omitted.
     """
 
     predictions: list[SimpleSpeciesPrediction] = []
@@ -142,7 +154,7 @@ def _map_to_simple(
         view_coverage=view_coverage,
         is_mock_stack=is_mock,
         ml_notes=ml_notes,
-        locale="es",  # B-04 will add form field; default echo "es"
+        locale=locale,
     )
     # Hard quality gate: always attach dual-signal quality_gate (D-B2 / D-B15)
     from app.ml.classify_mode import derive_classify_mode
@@ -165,7 +177,7 @@ def _map_to_simple(
         is_mock_stack=is_mock_stack,
         species_id_allowed=bool(gate.get("species_id_allowed", False)),
     )
-    gated["locale"] = gated.get("locale") or "es"
+    gated["locale"] = locale or gated.get("locale") or catalog.DEFAULT_LOCALE
     # quality_gate always present from apply_* (pass and fail) — do not strip
     return SimpleClassificationResult(**gated)
 
@@ -189,9 +201,16 @@ async def classify_images(
             f"Valid labels: {list(CANONICAL_VIEWS)}."
         ),
     ),
+    locale: str | None = Form(
+        default=None,
+        description=(
+            "Optional UI locale for localized safety/copy (es|ca|eu|en). "
+            "Invalid values return HTTP 400 with supported list. Default: es."
+        ),
+    ),
     persist: bool = Form(default=True),
     db: Session = Depends(get_db),
-) -> SimpleClassificationResult:
+) -> SimpleClassificationResult | JSONResponse:
     """Quick-classify endpoint: upload images, get predictions immediately.
 
     Creates a transient (or persisted) observation, stores images, and runs
@@ -201,9 +220,23 @@ async def classify_images(
         The optional ``view_types`` form field lets the client label each image
         with its canonical view (gills/front/habitat/detail). If omitted or
         shorter than the image list, the View Classifier auto-labels the rest.
+
+    Locale (D-B5 / B-04): optional form ``locale``; omit → ``es``; invalid → 400
+    with ``{error, supported}`` parity to species API; echoed on ``result.locale``.
     """
     request_id = uuid.uuid4().hex[:12]
     start = time.perf_counter()
+
+    try:
+        resolved_locale = _locale_from_form(locale)
+    except ValueError:
+        return JSONResponse(
+            status_code=400,
+            content={
+                "error": "invalid_locale",
+                "supported": list(catalog.SUPPORTED_LOCALES),
+            },
+        )
 
     if not images:
         raise HTTPException(status_code=400, detail="At least one image is required")
@@ -255,6 +288,7 @@ async def classify_images(
         elapsed_ms,
         classifier=diag,
         loaded_weights_path=getattr(classifier, "resolved_weights_path", None),
+        locale=resolved_locale,
     )
 
     # If not persisting, delete the observation and images
