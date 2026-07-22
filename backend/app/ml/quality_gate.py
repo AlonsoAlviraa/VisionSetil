@@ -279,6 +279,11 @@ def apply_quality_gate_to_simple_result(
 
     When ``loaded_weights_path`` is provided (serve path), metrics SSOT uses the
     sibling of that checkpoint (D-B12 — actually loaded weights).
+
+    Blocked path (D-B11 / B-21): prefer stable ``reason_code`` for machine clients.
+    FE owns mode/gate banner copy via i18n — do **not** dump long ES prose into
+    ``warnings``. Backend keeps short codes + one localized safety sentence in
+    ``final_warning`` (via ``locale`` + ``get_safety_bundle``) for non-FE clients.
     """
     gate = quality_gate_status(loaded_weights_path=loaded_weights_path)
     simple["quality_gate"] = gate
@@ -286,31 +291,34 @@ def apply_quality_gate_to_simple_result(
     if gate["species_id_allowed"]:
         return simple
 
-    # Hard block species identification
+    code = str(gate.get("reason_code") or "unknown")
+
+    # Hard block species identification — short machine reasons (reason_code primary)
     simple["decision"] = "rejected"
-    simple["rejection_reason"] = (
-        "model_quality_gate_failed: "
-        f"MAP@3={gate.get('test_map_at_3')} deadly_recall={gate.get('safety_recall_deadly')} "
-        f"— identificación de especie BLOQUEADA"
-    )
+    simple["rejection_reason"] = f"model_quality_gate_failed: {code}"
     simple["open_set_reason"] = simple["rejection_reason"]
     simple["recommend_human_review"] = True
     simple["safety_level"] = "unsafe_to_consume"
     # Do not return species predictions as valid IDs
     simple["predictions"] = []
+
+    # Short machine warning only — FE banners are primary (no long ES dump)
     warnings = list(simple.get("warnings") or [])
-    warnings.insert(
-        0,
-        "GATE DE CALIDAD: el modelo actual NO es aceptable para identificar especies "
-        f"(MAP@3={gate.get('test_map_at_3')}, recall mortales={gate.get('safety_recall_deadly')}). "
-        "Solo modo educativo / abstención. Consulta a un micólogo.",
-    )
+    short_warn = f"quality_gate_blocked: {code}"
+    if short_warn not in warnings:
+        warnings.insert(0, short_warn)
     simple["warnings"] = warnings
+
     notes = list(simple.get("ml_notes") or [])
-    notes.insert(0, f"quality_gate={gate['verdict']}: {gate['reason']}")
+    short_note = f"quality_gate={gate['verdict']}: {code}"
+    if short_note not in notes:
+        notes.insert(0, short_note)
     simple["ml_notes"] = notes
-    simple["final_warning"] = (
-        "NO IDENTIFICACIÓN. El modelo no supera el umbral de calidad. "
-        "Nunca consumas setas basándote en esta aplicación."
-    )
+
+    # One safety sentence by locale for non-FE clients (D-B11)
+    locale = simple.get("locale")
+    loc = locale if isinstance(locale, str) else None
+    from app.core.safety_i18n import final_warning as localized_final_warning
+
+    simple["final_warning"] = localized_final_warning(loc)
     return simple

@@ -76,6 +76,7 @@ def test_apply_gate_clears_predictions():
         "ml_notes": [],
         "final_warning": "",
         "recommend_human_review": False,
+        "locale": "es",
     }
     out = apply_quality_gate_to_simple_result(simple)
     gate = out.get("quality_gate") or {}
@@ -84,10 +85,68 @@ def test_apply_gate_clears_predictions():
     assert "metrics_acceptable" in gate
     assert "reason_code" in gate
     if not gate.get("species_id_allowed", True):
+        code = gate["reason_code"]
         assert out["decision"] == "rejected"
         assert out["predictions"] == []
         assert out["recommend_human_review"] is True
-        assert "GATE" in (out["warnings"][0] if out["warnings"] else "")
+        # B-21 / D-B11: short reason_code primary — no long ES "GATE DE CALIDAD" dump
+        assert out["rejection_reason"] == f"model_quality_gate_failed: {code}"
+        assert out["warnings"] and out["warnings"][0] == f"quality_gate_blocked: {code}"
+        assert "GATE DE CALIDAD" not in " ".join(out["warnings"])
+        assert "BLOQUEADA" not in (out["rejection_reason"] or "")
+        # One localized safety sentence for non-FE clients
+        from app.core.safety_i18n import final_warning as fw
+
+        assert out["final_warning"] == fw("es")
+
+
+def test_apply_gate_blocked_uses_reason_code_and_locale_safety(tmp_path, monkeypatch):
+    """B-21 / D-B11: short reason_code; one safety sentence by locale; no ES dump."""
+    from app.core.safety_i18n import final_warning as fw
+
+    models = tmp_path / "models"
+    models.mkdir()
+    weights = models / "best.pt"
+    weights.write_bytes(b"fake")
+    (models / "metrics.json").write_text(
+        json.dumps(
+            {
+                "test_map_at_3": 0.05,
+                "safety_recall_deadly": 0.0,
+                "version": "b21-low",
+            }
+        ),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(settings, "model_block_species_id_when_below_gate", True)
+    clear_metrics_cache()
+
+    for loc in ("es", "ca", "eu", "en"):
+        simple = {
+            "decision": "accepted",
+            "predictions": [{"species": "Amanita muscaria", "confidence": 0.4}],
+            "warnings": [],
+            "ml_notes": [],
+            "final_warning": "",
+            "recommend_human_review": False,
+            "locale": loc,
+        }
+        out = apply_quality_gate_to_simple_result(
+            simple, loaded_weights_path=weights
+        )
+        gate = out["quality_gate"]
+        assert gate["species_id_allowed"] is False
+        code = gate["reason_code"]
+        assert code in {"map_below", "deadly_below"}
+        assert out["rejection_reason"] == f"model_quality_gate_failed: {code}"
+        assert out["warnings"] == [f"quality_gate_blocked: {code}"]
+        assert out["ml_notes"][0] == f"quality_gate={gate['verdict']}: {code}"
+        assert out["final_warning"] == fw(loc)
+        # No long Spanish product-copy dump (FE banners own that copy)
+        joined = " ".join(out["warnings"] + [out["rejection_reason"], out["final_warning"]])
+        assert "GATE DE CALIDAD" not in joined
+        assert "identificación de especie BLOQUEADA" not in joined
+        assert "NO IDENTIFICACIÓN" not in joined
 
 
 def test_apply_gate_always_sets_quality_gate_on_pass(monkeypatch):
