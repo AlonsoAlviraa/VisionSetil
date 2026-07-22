@@ -2238,7 +2238,8 @@ body {
 
 .history-card-atelier__time,
 .history-card-atelier__views,
-.history-card-atelier__conf {
+.history-card-atelier__conf,
+.history-card-atelier__gate {
   margin: 0;
   font-size: 0.78rem;
   color: var(--ink-mute);
@@ -2247,6 +2248,88 @@ body {
 .history-card-atelier__decision {
   margin: 0;
   font-size: 0.85rem;
+}
+
+.history-card-atelier__meta {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.history-card-atelier__locale {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--ink-mute);
+}
+
+/* B-38: mode filter chips */
+.history-mode-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 0.75rem 0 1rem;
+}
+
+.history-mode-filter__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink-soft, var(--ink));
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.history-mode-filter__btn:hover {
+  border-color: color-mix(in srgb, var(--moss) 45%, var(--line));
+}
+
+.history-mode-filter__btn.is-active {
+  background: color-mix(in srgb, var(--moss) 18%, var(--surface));
+  border-color: color-mix(in srgb, var(--moss) 55%, var(--line));
+  color: var(--ink);
+}
+
+.history-mode-filter__count {
+  font-size: 0.72rem;
+  font-weight: 700;
+  min-width: 1.25rem;
+  text-align: center;
+  padding: 0.05rem 0.35rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+}
+
+.history-mode-chip {
+  display: inline-block;
+  padding: 0.12rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  background: color-mix(in srgb, var(--ink) 10%, transparent);
+  color: var(--ink);
+}
+
+.history-mode-chip--real {
+  background: color-mix(in srgb, var(--moss) 22%, transparent);
+}
+
+.history-mode-chip--mock {
+  background: color-mix(in srgb, #c9a227 28%, transparent);
+}
+
+.history-mode-chip--blocked {
+  background: color-mix(in srgb, #b54a3c 26%, transparent);
 }
 
 .auth-atelier {

@@ -1,20 +1,28 @@
 import { describe, expect, it } from 'vitest'
 import {
+  appendHistory,
+  buildHistoryEntry,
+  entryMode,
   exportHistoryJson,
+  filterHistoryByMode,
+  loadHistory,
   parseTagsInput,
+  summarizeHistory,
+  toGateSummary,
   updateHistoryNotebook,
   type HistoryEntry,
+  type StorageLike,
 } from './observationHistory'
 import {
   buildExpertHandoff,
   expertReviewPath,
   saveHandoffDraft,
   loadHandoffDraft,
-  type StorageLike,
+  type StorageLike as HandoffStorage,
 } from './expertHandoff'
 import type { ClassificationResult } from '../api/types'
 
-function memStorage(): StorageLike & { store: Record<string, string> } {
+function memStorage(): StorageLike & HandoffStorage & { store: Record<string, string> } {
   const store: Record<string, string> = {}
   return {
     store,
@@ -65,6 +73,164 @@ describe('field notebook', () => {
     expect(parsed.entries[0].notes).toBe('Notas de campo')
     expect(parsed.entries[0].tags).toContain('campo')
     expect(parsed.entries[0].view_types).toEqual(['gills', 'front'])
+    // B-38: export includes honesty fields (soft-migrated)
+    expect(parsed.entries[0].mode).toBeTruthy()
+    expect('gate_summary' in parsed.entries[0]).toBe(true)
+  })
+})
+
+describe('history mode/gate/locale (B-38)', () => {
+  it('buildHistoryEntry stamps mode, gate_summary, locale', () => {
+    const result = {
+      request_id: 'r-real',
+      decision: 'accepted',
+      predictions: [{ species: 'Boletus edulis', confidence: 0.9, common_name: null, edibility: null }],
+      rejection_reason: null,
+      processing_time_ms: 12,
+      observation_id: null,
+      safety_level: 'unsafe_to_consume',
+      missing_evidence: [],
+      warnings: [],
+      quality_warnings: [],
+      dangerous_lookalikes: [],
+      questions_for_user: [],
+      model_stack: null,
+      open_set_reason: null,
+      recommend_human_review: false,
+      final_warning: 'No consumas',
+      mode: 'real',
+      is_mock_stack: false,
+      locale: 'es',
+      quality_gate: {
+        species_id_allowed: true,
+        metrics_acceptable: true,
+        block_enabled: true,
+        reason: 'ok',
+        reason_code: 'gates_passed',
+        verdict: 'ACCEPTABLE',
+      },
+    } satisfies ClassificationResult
+
+    const entry = buildHistoryEntry({
+      result,
+      previews: ['blob:x'],
+      view_types: ['gills'],
+    })
+    expect(entry.mode).toBe('real')
+    expect(entry.locale).toBe('es')
+    expect(entry.gate_summary?.species_id_allowed).toBe(true)
+    expect(entry.gate_summary?.metrics_acceptable).toBe(true)
+    expect(entry.gate_summary?.reason_code).toBe('gates_passed')
+  })
+
+  it('soft-migrates legacy entries without top-level mode', () => {
+    const storage = memStorage()
+    const legacy: HistoryEntry = {
+      id: 'legacy-1',
+      timestamp: 1,
+      previews: [],
+      result: {
+        request_id: 'legacy-1',
+        decision: 'rejected',
+        predictions: [],
+        is_mock_stack: true,
+      },
+    }
+    storage.setItem('visionsetil_history', JSON.stringify([legacy]))
+    const loaded = loadHistory(storage)
+    expect(loaded).toHaveLength(1)
+    expect(loaded[0].mode).toBe('mock')
+    expect(entryMode(loaded[0])).toBe('mock')
+    // write-back persists migrated shape
+    const reloaded = JSON.parse(storage.store['visionsetil_history']) as HistoryEntry[]
+    expect(reloaded[0].mode).toBe('mock')
+  })
+
+  it('filters by mode and summarizes by_mode', () => {
+    const a = buildHistoryEntry({
+      result: {
+        request_id: 'a',
+        decision: 'accepted',
+        predictions: [],
+        mode: 'real',
+        is_mock_stack: false,
+      } as unknown as ClassificationResult,
+      previews: [],
+    })
+    const b = buildHistoryEntry({
+      result: {
+        request_id: 'b',
+        decision: 'rejected',
+        predictions: [],
+        mode: 'blocked',
+        is_mock_stack: false,
+      } as unknown as ClassificationResult,
+      previews: [],
+    })
+    const c = buildHistoryEntry({
+      result: {
+        request_id: 'c',
+        decision: 'accepted',
+        predictions: [],
+        mode: 'mock',
+        is_mock_stack: true,
+      } as unknown as ClassificationResult,
+      previews: [],
+    })
+    const all = [a, b, c]
+    expect(filterHistoryByMode(all, 'all')).toHaveLength(3)
+    expect(filterHistoryByMode(all, 'real').map((e) => e.id)).toEqual(['a'])
+    expect(filterHistoryByMode(all, 'blocked').map((e) => e.id)).toEqual(['b'])
+    expect(filterHistoryByMode(all, 'mock').map((e) => e.id)).toEqual(['c'])
+    const s = summarizeHistory(all)
+    expect(s.by_mode).toEqual({ real: 1, mock: 1, blocked: 1 })
+  })
+
+  it('toGateSummary returns null for invalid payloads', () => {
+    expect(toGateSummary(null)).toBeNull()
+    expect(toGateSummary({})).toBeNull()
+    expect(
+      toGateSummary({
+        species_id_allowed: false,
+        metrics_acceptable: false,
+      }),
+    ).toEqual({
+      species_id_allowed: false,
+      metrics_acceptable: false,
+      block_enabled: undefined,
+      reason_code: undefined,
+      verdict: undefined,
+    })
+  })
+
+  it('appendHistory stamps honesty fields', () => {
+    const storage = memStorage()
+    const next = appendHistory(
+      {
+        id: 'x',
+        timestamp: Date.now(),
+        previews: [],
+        result: {
+          request_id: 'x',
+          decision: 'accepted',
+          predictions: [],
+          mode: 'blocked',
+          locale: 'ca',
+          quality_gate: {
+            species_id_allowed: false,
+            metrics_acceptable: false,
+            block_enabled: true,
+            reason: 'map',
+            reason_code: 'map_below',
+            verdict: 'UNACCEPTABLE',
+          },
+        },
+      },
+      storage,
+    )
+    expect(next[0].mode).toBe('blocked')
+    expect(next[0].locale).toBe('ca')
+    expect(next[0].gate_summary?.reason_code).toBe('map_below')
   })
 })
 

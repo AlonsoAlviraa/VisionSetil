@@ -23,6 +23,7 @@ import {
 } from '../lib/multiViewSlots'
 import {
   appendHistory,
+  buildHistoryEntry,
   clearHistoryStore,
   loadHistory,
   summarizeHistory,
@@ -133,13 +134,12 @@ export function IdentifyPage() {
       const data = await classifyImages(files, metadata, viewTypes)
       setResult(data)
 
-      const entry: HistoryEntry = {
-        id: data.request_id,
-        timestamp: Date.now(),
-        previews,
+      // B-38: stamp mode / gate_summary / locale on history entry
+      const entry = buildHistoryEntry({
         result: data,
+        previews,
         view_types: viewTypes,
-      }
+      })
       setHistory(appendHistory(entry))
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error desconocido')
