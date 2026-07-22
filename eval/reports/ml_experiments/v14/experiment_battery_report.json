@@ -1,0 +1,625 @@
+{
+  "generated_at": "2026-07-17T15:23:31.756200+00:00",
+  "artifacts": {
+    "predictions": "kaggle\\kernel_output_v14\\models\\test_predictions.npz",
+    "label2idx": "kaggle\\kernel_output_v14\\models\\label2idx.json",
+    "disk_metrics": {
+      "test_accuracy": 0.06321839080459771,
+      "test_map_at_3": 0.09267241379310347,
+      "test_map_at_3_ci_low": 0.07375478927203066,
+      "test_map_at_3_ci_high": 0.11206896551724138,
+      "test_f1_macro": 0.03672534566437689,
+      "test_balanced_accuracy": 0.061624649859943974,
+      "test_ece": 0.14241398057375831,
+      "safety_recall_deadly": 0.020833333333333332,
+      "n_deadly_in_test": 48,
+      "best_val_map3": 0.11446360153256703,
+      "best_epoch": 10,
+      "num_classes": 119,
+      "num_train_obs": 3245,
+      "num_val_obs": 696,
+      "num_test_obs": 696,
+      "temperature": 1.05335533618927,
+      "model_params_M": 30.678592,
+      "databases_used": [
+        "fungitastic",
+        "fungiclef"
+      ],
+      "subsample_config": {
+        "max_species": 120,
+        "max_obs": 40,
+        "experiment": "E14-focused"
+      },
+      "deadly_species_known": 26,
+      "deadly_species_in_dataset": 11,
+      "version": "v14-E14-focused"
+    }
+  },
+  "deadly_class_indices": [
+    3,
+    5,
+    7,
+    40,
+    45
+  ],
+  "deadly_class_names": [
+    "Amanita muscaria",
+    "Amanita phalloides",
+    "Amanita virosa",
+    "Galerina marginata",
+    "Gyromitra esculenta"
+  ],
+  "experiments": {
+    "baseline": {
+      "name": "baseline_v9_test",
+      "top1": 0.06321839080459771,
+      "top3": 0.1307471264367816,
+      "top5": 0.20402298850574713,
+      "map_at_3": 0.09267241379310345,
+      "ece": 0.06665824940388511,
+      "genus_top1": 0.10632183908045977,
+      "margins": {
+        "mean_margin": 0.05833446409507612,
+        "median_margin": 0.01744696961239571,
+        "p10_margin": 0.004101309985179026,
+        "p90_margin": 0.11390950352320639
+      },
+      "deadly": {
+        "n_deadly_in_test": 25,
+        "species_top1_accuracy_on_deadly": 0.0,
+        "any_deadly_in_top1": 0.04,
+        "any_deadly_in_topk": 0.08,
+        "k": 3,
+        "note": "Safety: prefer high any_deadly_in_topk even if species wrong"
+      },
+      "n": 696,
+      "n_classes_in_test": 119
+    },
+    "temperature": {
+      "grid": [
+        {
+          "T": 0.5,
+          "top1": 0.06321839080459771,
+          "map_at_3": 0.09267241379310345,
+          "ece": 0.2578953396743059,
+          "mean_max_conf": 0.3211137304789037
+        },
+        {
+          "T": 0.75,
+          "top1": 0.06321839080459771,
+          "map_at_3": 0.09267241379310345,
+          "ece": 0.13028013805315503,
+          "mean_max_conf": 0.19209482338928696
+        },
+        {
+          "T": 1.0,
+          "top1": 0.06321839080459771,
+          "map_at_3": 0.09267241379310345,
+          "ece": 0.06665824940388511,
+          "mean_max_conf": 0.12782759458444312
+        },
+        {
+          "T": 1.12,
+          "top1": 0.06321839080459771,
+          "map_at_3": 0.09267241379310345,
+          "ece": 0.04926382934125135,
+          "mean_max_conf": 0.10848868869483946
+        },
+        {
+          "T": 1.25,
+          "top1": 0.06321839080459771,
+          "map_at_3": 0.09267241379310345,
+          "ece": 0.035218706281668545,
+          "mean_max_conf": 0.0925877285074908
+        },
+        {
+          "T": 1.5,
+          "top1": 0.06321839080459771,
+          "map_at_3": 0.09267241379310345,
+          "ece": 0.01812012954131135,
+          "mean_max_conf": 0.0715672885998126
+        },
+        {
+          "T": 2.0,
+          "top1": 0.06321839080459771,
+          "map_at_3": 0.09267241379310345,
+          "ece": 0.015995629998356475,
+          "mean_max_conf": 0.04910990842231807
+        },
+        {
+          "T": 3.0,
+          "top1": 0.06321839080459771,
+          "map_at_3": 0.09267241379310345,
+          "ece": 0.03401435934028685,
+          "mean_max_conf": 0.029912862658319408
+        },
+        {
+          "T": 5.0,
+          "top1": 0.06321839080459771,
+          "map_at_3": 0.09267241379310345,
+          "ece": 0.04581064212925531,
+          "mean_max_conf": 0.01761420696743059
+        }
+      ],
+      "best_by_ece": {
+        "T": 2.0,
+        "top1": 0.06321839080459771,
+        "map_at_3": 0.09267241379310345,
+        "ece": 0.015995629998356475,
+        "mean_max_conf": 0.04910990842231807
+      }
+    },
+    "open_set": {
+      "n_configs": 42,
+      "best_utility_accept_ge_0.2": {
+        "accept_rate": 0.20114942528735633,
+        "abstain_rate": 0.7988505747126436,
+        "accuracy_when_accept": 0.16428571428571428,
+        "coverage_correct": 0.033045977011494254,
+        "n_accept": 140,
+        "n_total": 696,
+        "conf_thr": 0.15,
+        "margin_thr": 0.0,
+        "utility": 0.07368162550868858
+      },
+      "best_accuracy_accept_ge_0.2": {
+        "accept_rate": 0.20114942528735633,
+        "abstain_rate": 0.7988505747126436,
+        "accuracy_when_accept": 0.16428571428571428,
+        "coverage_correct": 0.033045977011494254,
+        "n_accept": 140,
+        "n_total": 696,
+        "conf_thr": 0.15,
+        "margin_thr": 0.0,
+        "utility": 0.07368162550868858
+      },
+      "pareto_sample": [
+        {
+          "accept_rate": 0.16522988505747127,
+          "abstain_rate": 0.8347701149425287,
+          "accuracy_when_accept": 0.1826086956521739,
+          "coverage_correct": 0.03017241379310345,
+          "n_accept": 115,
+          "n_total": 696,
+          "conf_thr": 0.15,
+          "margin_thr": 0.05,
+          "utility": 0.07422765742926475
+        },
+        {
+          "accept_rate": 0.19827586206896552,
+          "abstain_rate": 0.8017241379310345,
+          "accuracy_when_accept": 0.16666666666666666,
+          "coverage_correct": 0.033045977011494254,
+          "n_accept": 138,
+          "n_total": 696,
+          "conf_thr": 0.15,
+          "margin_thr": 0.02,
+          "utility": 0.07421362971347677
+        },
+        {
+          "accept_rate": 0.20114942528735633,
+          "abstain_rate": 0.7988505747126436,
+          "accuracy_when_accept": 0.16428571428571428,
+          "coverage_correct": 0.033045977011494254,
+          "n_accept": 140,
+          "n_total": 696,
+          "conf_thr": 0.15,
+          "margin_thr": 0.0,
+          "utility": 0.07368162550868858
+        },
+        {
+          "accept_rate": 0.21839080459770116,
+          "abstain_rate": 0.7816091954022988,
+          "accuracy_when_accept": 0.1513157894736842,
+          "coverage_correct": 0.033045977011494254,
+          "n_accept": 152,
+          "n_total": 696,
+          "conf_thr": 0.1,
+          "margin_thr": 0.05,
+          "utility": 0.07071335164184676
+        },
+        {
+          "accept_rate": 0.22413793103448276,
+          "abstain_rate": 0.7758620689655172,
+          "accuracy_when_accept": 0.14743589743589744,
+          "coverage_correct": 0.033045977011494254,
+          "n_accept": 156,
+          "n_total": 696,
+          "conf_thr": 0.05,
+          "margin_thr": 0.05,
+          "utility": 0.06980088306988452
+        },
+        {
+          "accept_rate": 0.34626436781609193,
+          "abstain_rate": 0.6537356321839081,
+          "accuracy_when_accept": 0.12448132780082988,
+          "coverage_correct": 0.04310344827586207,
+          "n_accept": 241,
+          "n_total": 696,
+          "conf_thr": 0.1,
+          "margin_thr": 0.02,
+          "utility": 0.07325008173492846
+        },
+        {
+          "accept_rate": 0.3764367816091954,
+          "abstain_rate": 0.6235632183908046,
+          "accuracy_when_accept": 0.11450381679389313,
+          "coverage_correct": 0.04310344827586207,
+          "n_accept": 262,
+          "n_total": 696,
+          "conf_thr": 0.1,
+          "margin_thr": 0.0,
+          "utility": 0.07025318031636972
+        },
+        {
+          "accept_rate": 0.47126436781609193,
+          "abstain_rate": 0.5287356321839081,
+          "accuracy_when_accept": 0.09451219512195122,
+          "coverage_correct": 0.04454022988505747,
+          "n_accept": 328,
+          "n_total": 696,
+          "conf_thr": 0.05,
+          "margin_thr": 0.02,
+          "utility": 0.06488139099674971
+        }
+      ]
+    },
+    "confidence_bins": {
+      "bins": [
+        {
+          "bin": "[0, 0.05)",
+          "n": 9,
+          "acc": 0.1111111111111111,
+          "mean_conf": 0.046616654729228206
+        },
+        {
+          "bin": "[0.05, 0.1)",
+          "n": 425,
+          "acc": 0.03058823529411765,
+          "mean_conf": 0.07255735351456917
+        },
+        {
+          "bin": "[0.1, 0.15)",
+          "n": 122,
+          "acc": 0.05737704918032787,
+          "mean_conf": 0.11830666473601457
+        },
+        {
+          "bin": "[0.15, 0.2)",
+          "n": 50,
+          "acc": 0.08,
+          "mean_conf": 0.17132253927892002
+        },
+        {
+          "bin": "[0.2, 0.3)",
+          "n": 59,
+          "acc": 0.05084745762711865,
+          "mean_conf": 0.227384319149517
+        },
+        {
+          "bin": "[0.3, 0.5)",
+          "n": 10,
+          "acc": 0.1,
+          "mean_conf": 0.3631740490264475
+        },
+        {
+          "bin": "[0.5, 1.01)",
+          "n": 21,
+          "acc": 0.7142857142857143,
+          "mean_conf": 0.8411726339376999
+        }
+      ]
+    },
+    "long_tail": {
+      "n_classes_seen": 119,
+      "head50_mean_acc": 0.14666666666666667,
+      "tail_mean_acc": 0.0,
+      "zero_acc_classes": 98,
+      "worst10": [
+        {
+          "class_idx": 0,
+          "name": "Agaricus campestris",
+          "n": 6,
+          "acc": 0.0
+        },
+        {
+          "class_idx": 2,
+          "name": "Amanita fulva",
+          "n": 6,
+          "acc": 0.0
+        },
+        {
+          "class_idx": 3,
+          "name": "Amanita muscaria",
+          "n": 6,
+          "acc": 0.0
+        },
+        {
+          "class_idx": 5,
+          "name": "Amanita phalloides",
+          "n": 6,
+          "acc": 0.0
+        },
+        {
+          "class_idx": 8,
+          "name": "Apioperdon pyriforme",
+          "n": 6,
+          "acc": 0.0
+        },
+        {
+          "class_idx": 9,
+          "name": "Armillaria lutea",
+          "n": 6,
+          "acc": 0.0
+        },
+        {
+          "class_idx": 10,
+          "name": "Ascocoryne sarcoides",
+          "n": 6,
+          "acc": 0.0
+        },
+        {
+          "class_idx": 11,
+          "name": "Auricularia auricula-judae",
+          "n": 6,
+          "acc": 0.0
+        },
+        {
+          "class_idx": 12,
+          "name": "Bjerkandera adusta",
+          "n": 6,
+          "acc": 0.0
+        },
+        {
+          "class_idx": 13,
+          "name": "Bolbitius titubans",
+          "n": 6,
+          "acc": 0.0
+        }
+      ],
+      "best10": [
+        {
+          "class_idx": 74,
+          "name": "Micarea lignaria",
+          "n": 6,
+          "acc": 1.0
+        },
+        {
+          "class_idx": 97,
+          "name": "Rhytisma acerinum",
+          "n": 6,
+          "acc": 1.0
+        },
+        {
+          "class_idx": 36,
+          "name": "Exidia nigricans",
+          "n": 6,
+          "acc": 0.6666666666666666
+        },
+        {
+          "class_idx": 34,
+          "name": "Daedaleopsis confragosa",
+          "n": 6,
+          "acc": 0.5
+        },
+        {
+          "class_idx": 50,
+          "name": "Hygrocybe miniata",
+          "n": 6,
+          "acc": 0.5
+        },
+        {
+          "class_idx": 115,
+          "name": "Volvopluteus gloiocephalus",
+          "n": 6,
+          "acc": 0.5
+        },
+        {
+          "class_idx": 26,
+          "name": "Coprinopsis picacea",
+          "n": 6,
+          "acc": 0.3333333333333333
+        },
+        {
+          "class_idx": 75,
+          "name": "Mucidula mucida",
+          "n": 6,
+          "acc": 0.3333333333333333
+        },
+        {
+          "class_idx": 111,
+          "name": "Tremella mesenterica",
+          "n": 6,
+          "acc": 0.3333333333333333
+        },
+        {
+          "class_idx": 113,
+          "name": "Tricholomopsis rutilans",
+          "n": 6,
+          "acc": 0.3333333333333333
+        }
+      ]
+    },
+    "topk_curve": [
+      {
+        "k": 1,
+        "acc": 0.06321839080459771,
+        "map": 0.06321839080459771
+      },
+      {
+        "k": 2,
+        "acc": 0.10488505747126436,
+        "map": 0.08405172413793104
+      },
+      {
+        "k": 3,
+        "acc": 0.1307471264367816,
+        "map": 0.09267241379310345
+      },
+      {
+        "k": 4,
+        "acc": 0.16091954022988506,
+        "map": 0.10021551724137931
+      },
+      {
+        "k": 5,
+        "acc": 0.20402298850574713,
+        "map": 0.10883620689655173
+      },
+      {
+        "k": 6,
+        "acc": 0.23850574712643677,
+        "map": 0.11458333333333333
+      },
+      {
+        "k": 7,
+        "acc": 0.27586206896551724,
+        "map": 0.11991995073891625
+      },
+      {
+        "k": 8,
+        "acc": 0.30028735632183906,
+        "map": 0.12297311165845648
+      },
+      {
+        "k": 9,
+        "acc": 0.32471264367816094,
+        "map": 0.12568703247582558
+      },
+      {
+        "k": 10,
+        "acc": 0.34195402298850575,
+        "map": 0.12741117040686006
+      }
+    ],
+    "chance_baselines": {
+      "uniform_top1": 0.008620689655172414,
+      "uniform_map3": 0.015804597701149427,
+      "frequency_prior_top1": 0.008620689655172414,
+      "frequency_prior_map3": 0.015804597701149427,
+      "random_top1": 0.004310344827586207,
+      "chance_1_over_C": 0.008403361344537815,
+      "model_lift_over_chance_top1": 7.5229885057471275
+    },
+    "multiview_proxy": {
+      "mix_uniform_grid": [
+        {
+          "signal_alpha": 1.0,
+          "top1": 0.06321839080459771,
+          "map_at_3": 0.09267241379310345,
+          "interpretation": "alpha~ fraction of multi-view evidence kept"
+        },
+        {
+          "signal_alpha": 0.75,
+          "top1": 0.06321839080459771,
+          "map_at_3": 0.09267241379310345,
+          "interpretation": "alpha~ fraction of multi-view evidence kept"
+        },
+        {
+          "signal_alpha": 0.5,
+          "top1": 0.06321839080459771,
+          "map_at_3": 0.09267241379310345,
+          "interpretation": "alpha~ fraction of multi-view evidence kept"
+        },
+        {
+          "signal_alpha": 0.25,
+          "top1": 0.06321839080459771,
+          "map_at_3": 0.09267241379310345,
+          "interpretation": "alpha~ fraction of multi-view evidence kept"
+        },
+        {
+          "signal_alpha": 0.0,
+          "top1": 0.008620689655172414,
+          "map_at_3": 0.015804597701149427,
+          "interpretation": "alpha~ fraction of multi-view evidence kept"
+        }
+      ]
+    },
+    "recommended_gpu_matrix": {
+      "gpu_quota_note": "Check kaggle get_accelerator_quota; design fits remaining hours",
+      "priority_order": [
+        {
+          "id": "E-data-scale",
+          "name": "More data per class",
+          "change": "max_species=1000, max_obs_per_species=20, epochs=15",
+          "hypothesis": "MAP@3 lifts mainly from data not architecture at few-shot regime",
+          "primary_metric": "test_map_at_3",
+          "safety_metric": "safety_recall_deadly"
+        },
+        {
+          "id": "E-deadly-oversample",
+          "name": "Oversample critical taxa",
+          "change": "weighted sampler 5x for deadly label indices + focal loss",
+          "hypothesis": "Raises safety_recall_deadly without collapsing MAP@3",
+          "primary_metric": "safety_recall_deadly"
+        },
+        {
+          "id": "E-views",
+          "name": "Multi-view vs single-view",
+          "change": "train with 1 vs 2–4 views per obs",
+          "hypothesis": "MAP@3 gap quantifies multi-view value",
+          "primary_metric": "test_map_at_3"
+        },
+        {
+          "id": "E-backbone",
+          "name": "tiny vs base",
+          "change": "convnextv2_tiny (current) vs base if GPU allows",
+          "hypothesis": "base helps head classes; tiny better for few-shot speed",
+          "primary_metric": "test_map_at_3"
+        },
+        {
+          "id": "E-open-set",
+          "name": "Open-set threshold from val",
+          "change": "sweep conf/margin on val; freeze on test",
+          "hypothesis": "Accept@20% can double conditional accuracy",
+          "primary_metric": "accuracy_when_accept"
+        },
+        {
+          "id": "E-region-cyl",
+          "name": "Hold-out Spain/Soria GBIF",
+          "change": "eval-only set from GBIF ES media",
+          "hypothesis": "Domain shift estimate for production Spain",
+          "primary_metric": "map_at_3_region"
+        }
+      ],
+      "baseline_to_beat": {
+        "run": "kernel_output_v9",
+        "test_map_at_3": 0.0758,
+        "test_accuracy": 0.05,
+        "safety_recall_deadly": 0.0
+      }
+    }
+  },
+  "elapsed_seconds": 0.340268300002208,
+  "executive_summary": {
+    "headline": "v9 offline: MAP@3=0.0927, top1=0.0632, genus=0.1063, ECE=0.0667. Lift over chance x7.5.",
+    "safety": {
+      "n_deadly_in_test": 25,
+      "species_top1_accuracy_on_deadly": 0.0,
+      "any_deadly_in_top1": 0.04,
+      "any_deadly_in_topk": 0.08,
+      "k": 3,
+      "note": "Safety: prefer high any_deadly_in_topk even if species wrong"
+    },
+    "best_temperature_by_ece": {
+      "T": 2.0,
+      "top1": 0.06321839080459771,
+      "map_at_3": 0.09267241379310345,
+      "ece": 0.015995629998356475,
+      "mean_max_conf": 0.04910990842231807
+    },
+    "best_open_set": {
+      "conf_thr": 0.15,
+      "margin_thr": 0.0,
+      "accept_rate": 0.20114942528735633,
+      "accuracy_when_accept": 0.16428571428571428
+    },
+    "next_actions": [
+      "Run E-data-scale on Kaggle GPU (more obs/class)",
+      "Oversample deadly + re-measure safety_recall_deadly",
+      "Ship open-set thresholds from best_open_set into settings",
+      "Build Spain/Soria GBIF hold-out eval set"
+    ],
+    "policy": "orientation_only — never consumption permission"
+  }
+}

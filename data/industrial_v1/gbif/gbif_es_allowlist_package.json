@@ -1,0 +1,324 @@
+{
+  "generated_at": "2026-07-17T15:35:08.725441+00:00",
+  "purpose": "Week-2 GBIF ES media for industrial allowlist",
+  "license_note": "Prefer CC0/CC-BY for commercial; filter NC if product is commercial",
+  "allowlist_species": [
+    "Amanita phalloides",
+    "Amanita virosa",
+    "Amanita muscaria",
+    "Amanita pantherina",
+    "Amanita citrina",
+    "Amanita rubescens",
+    "Galerina marginata",
+    "Kuehneromyces mutabilis",
+    "Gyromitra esculenta",
+    "Cortinarius rubellus",
+    "Hypholoma fasciculare",
+    "Lepiota castanea",
+    "Lepiota subincarnata",
+    "Lepiota cristata",
+    "Paxillus involutus",
+    "Agaricus campestris",
+    "Boletus edulis",
+    "Imleria badia",
+    "Suillus luteus",
+    "Suillus grevillei",
+    "Leccinum scabrum",
+    "Craterellus tubaeformis",
+    "Lactarius deterrimus",
+    "Lepista nuda",
+    "Marasmius oreades",
+    "Coprinus comatus",
+    "Pleurotus ostreatus",
+    "Chlorophyllum olivieri",
+    "Armillaria lutea",
+    "Laccaria laccata",
+    "Laccaria amethystina",
+    "Russula ochroleuca",
+    "Hygrophoropsis aurantiaca",
+    "Clitocybe nebularis",
+    "Pluteus cervinus",
+    "Trametes versicolor",
+    "Fomitopsis pinicola",
+    "Laetiporus sulphureus",
+    "Phallus impudicus",
+    "Scleroderma citrinum"
+  ],
+  "species_rows": [
+    {
+      "latin_name": "Amanita phalloides",
+      "gbif_usage_key": 5240325,
+      "es_still_image_count": 874
+    },
+    {
+      "latin_name": "Amanita virosa",
+      "gbif_usage_key": 5240323,
+      "es_still_image_count": 7
+    },
+    {
+      "latin_name": "Amanita muscaria",
+      "gbif_usage_key": 8168319,
+      "es_still_image_count": 2406
+    },
+    {
+      "latin_name": "Amanita pantherina",
+      "gbif_usage_key": 8961574,
+      "es_still_image_count": 887
+    },
+    {
+      "latin_name": "Amanita citrina",
+      "gbif_usage_key": 3328320,
+      "es_still_image_count": 974
+    },
+    {
+      "latin_name": "Amanita rubescens",
+      "gbif_usage_key": 7496350,
+      "es_still_image_count": 2126
+    },
+    {
+      "latin_name": "Galerina marginata",
+      "gbif_usage_key": 8118872,
+      "es_still_image_count": 339
+    },
+    {
+      "latin_name": "Kuehneromyces mutabilis",
+      "gbif_usage_key": 2533962,
+      "es_still_image_count": 74
+    },
+    {
+      "latin_name": "Gyromitra esculenta",
+      "gbif_usage_key": 5258510,
+      "es_still_image_count": 127
+    },
+    {
+      "latin_name": "Cortinarius rubellus",
+      "gbif_usage_key": 2528663,
+      "es_still_image_count": 1
+    },
+    {
+      "latin_name": "Hypholoma fasciculare",
+      "gbif_usage_key": 3293632,
+      "es_still_image_count": 1829
+    },
+    {
+      "latin_name": "Lepiota castanea",
+      "gbif_usage_key": 2535310,
+      "es_still_image_count": 82
+    },
+    {
+      "latin_name": "Lepiota subincarnata",
+      "gbif_usage_key": 2535445,
+      "es_still_image_count": 57
+    },
+    {
+      "latin_name": "Lepiota cristata",
+      "gbif_usage_key": 2535471,
+      "es_still_image_count": 179
+    },
+    {
+      "latin_name": "Paxillus involutus",
+      "gbif_usage_key": 5240002,
+      "es_still_image_count": 370
+    },
+    {
+      "latin_name": "Agaricus campestris",
+      "gbif_usage_key": 5243458,
+      "es_still_image_count": 349
+    },
+    {
+      "latin_name": "Boletus edulis",
+      "gbif_usage_key": 5954958,
+      "es_still_image_count": 726
+    },
+    {
+      "latin_name": "Imleria badia",
+      "gbif_usage_key": 7832732,
+      "es_still_image_count": 338
+    },
+    {
+      "latin_name": "Suillus luteus",
+      "gbif_usage_key": 7777157,
+      "es_still_image_count": 597
+    },
+    {
+      "latin_name": "Suillus grevillei",
+      "gbif_usage_key": 5239864,
+      "es_still_image_count": 120
+    },
+    {
+      "latin_name": "Leccinum scabrum",
+      "gbif_usage_key": 9141390,
+      "es_still_image_count": 132
+    },
+    {
+      "latin_name": "Craterellus tubaeformis",
+      "gbif_usage_key": 2554536,
+      "es_still_image_count": 112
+    },
+    {
+      "latin_name": "Lactarius deterrimus",
+      "gbif_usage_key": 7925734,
+      "es_still_image_count": 4
+    },
+    {
+      "latin_name": "Lepista nuda",
+      "gbif_usage_key": 5242048,
+      "es_still_image_count": 947
+    },
+    {
+      "latin_name": "Marasmius oreades",
+      "gbif_usage_key": 2537250,
+      "es_still_image_count": 830
+    },
+    {
+      "latin_name": "Coprinus comatus",
+      "gbif_usage_key": 7987658,
+      "es_still_image_count": 1450
+    },
+    {
+      "latin_name": "Pleurotus ostreatus",
+      "gbif_usage_key": 2526530,
+      "es_still_image_count": 592
+    },
+    {
+      "latin_name": "Chlorophyllum olivieri",
+      "gbif_usage_key": 5955386,
+      "es_still_image_count": 8
+    },
+    {
+      "latin_name": "Armillaria lutea",
+      "gbif_usage_key": 2536849,
+      "es_still_image_count": 35
+    },
+    {
+      "latin_name": "Laccaria laccata",
+      "gbif_usage_key": 2530926,
+      "es_still_image_count": 246
+    },
+    {
+      "latin_name": "Laccaria amethystina",
+      "gbif_usage_key": 2530983,
+      "es_still_image_count": 537
+    },
+    {
+      "latin_name": "Russula ochroleuca",
+      "gbif_usage_key": 2551419,
+      "es_still_image_count": 144
+    },
+    {
+      "latin_name": "Hygrophoropsis aurantiaca",
+      "gbif_usage_key": 2525710,
+      "es_still_image_count": 594
+    },
+    {
+      "latin_name": "Clitocybe nebularis",
+      "gbif_usage_key": 2531072,
+      "es_still_image_count": 1029
+    },
+    {
+      "latin_name": "Pluteus cervinus",
+      "gbif_usage_key": 7446067,
+      "es_still_image_count": 295
+    },
+    {
+      "latin_name": "Trametes versicolor",
+      "gbif_usage_key": 2548311,
+      "es_still_image_count": 1832
+    },
+    {
+      "latin_name": "Fomitopsis pinicola",
+      "gbif_usage_key": 2542395,
+      "es_still_image_count": 1417
+    },
+    {
+      "latin_name": "Laetiporus sulphureus",
+      "gbif_usage_key": 9072021,
+      "es_still_image_count": 827
+    },
+    {
+      "latin_name": "Phallus impudicus",
+      "gbif_usage_key": 3314876,
+      "es_still_image_count": 635
+    },
+    {
+      "latin_name": "Scleroderma citrinum",
+      "gbif_usage_key": 5239982,
+      "es_still_image_count": 624
+    }
+  ],
+  "es_still_image_total_if_probed": 24752,
+  "download_api": "https://api.gbif.org/v1/occurrence/download/request",
+  "docs": "https://techdocs.gbif.org/en/data-use/api-downloads",
+  "predicate": {
+    "type": "and",
+    "predicates": [
+      {
+        "type": "equals",
+        "key": "COUNTRY",
+        "value": "ES"
+      },
+      {
+        "type": "equals",
+        "key": "MEDIA_TYPE",
+        "value": "StillImage"
+      },
+      {
+        "type": "in",
+        "key": "TAXON_KEY",
+        "values": [
+          "5240325",
+          "5240323",
+          "8168319",
+          "8961574",
+          "3328320",
+          "7496350",
+          "8118872",
+          "2533962",
+          "5258510",
+          "2528663",
+          "3293632",
+          "2535310",
+          "2535445",
+          "2535471",
+          "5240002",
+          "5243458",
+          "5954958",
+          "7832732",
+          "7777157",
+          "5239864",
+          "9141390",
+          "2554536",
+          "7925734",
+          "5242048",
+          "2537250",
+          "7987658",
+          "2526530",
+          "5955386",
+          "2536849",
+          "2530926",
+          "2530983",
+          "2551419",
+          "2525710",
+          "2531072",
+          "7446067",
+          "2548311",
+          "2542395",
+          "9072021",
+          "3314876",
+          "5239982"
+        ]
+      }
+    ]
+  },
+  "manual_ui": "https://www.gbif.org/occurrence/search?country=ES&media_type=StillImage",
+  "next_steps": [
+    "Create free GBIF account",
+    "POST predicate with basic auth to download API",
+    "Filter licenses; map to observation_id multi-view JSONL",
+    "Merge into industrial_v1 for E16"
+  ],
+  "external_blockers": [
+    "GBIF bulk download requires user account (not automated without credentials)",
+    "Micocyl/Montes de Soria/MA-Fungi collaboration still pending human contact"
+  ]
+}

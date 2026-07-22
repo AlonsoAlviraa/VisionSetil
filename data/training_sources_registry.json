@@ -1,0 +1,126 @@
+{
+  "schema_version": "1.0",
+  "updated": "2026-07-17",
+  "purpose": "Inventario de fuentes para entrenar/evaluar VisionSetil. No inventa filas de datos.",
+  "current_checkpoint": {
+    "path": "kaggle/kernel_output_v9/models/best.pt",
+    "metrics_path": "kaggle/kernel_output_v9/models/metrics.json",
+    "history_path": "kaggle/kernel_output_v9/models/training_history.json",
+    "databases_used": ["fungitastic", "fungiclef"],
+    "subsample": { "max_species": 500, "max_obs_per_species": 8 },
+    "honest_quality_note": "MAP@3 test ~0.076; pocas obs/clase — necesita más datos y más training, no solo load de pesos."
+  },
+  "ml_ready_public": [
+    {
+      "id": "fungiclef",
+      "name": "FungiCLEF / Danish Fungi lineage",
+      "type": "challenge_dataset",
+      "images": true,
+      "labels": true,
+      "multi_view": true,
+      "urls": [
+        "https://www.imageclef.org/FungiCLEF2025",
+        "https://sites.google.com/view/danish-fungi-dataset",
+        "https://www.kaggle.com/competitions/fungi-clef-2025"
+      ],
+      "repo_hooks": [
+        "kaggle/converters/fungiclef_to_visionsetil.py",
+        "kaggle/configs/fungiclef2025_config.example.json"
+      ],
+      "action": "Descargar challenge + convertir; re-entrenar sin subsample agresivo."
+    },
+    {
+      "id": "fungitastic",
+      "name": "FungiTastic",
+      "type": "research_dataset",
+      "images": true,
+      "labels": true,
+      "multi_view": true,
+      "urls": ["https://openreview.net/forum?id=lnnNPiZtzR"],
+      "repo_hooks": ["kaggle/converters/fungitastic_to_visionsetil.py"],
+      "action": "Usar como base multi-modal cuando el dump esté local."
+    },
+    {
+      "id": "gbif_es_fungi_media",
+      "name": "GBIF Fungi Spain with StillImage",
+      "type": "occurrence_api",
+      "images": true,
+      "labels": "community/scientificName (variable quality)",
+      "region": "Spain",
+      "probe_script": "scripts/probe_gbif_spain_fungi.py",
+      "urls": [
+        "https://www.gbif.org/occurrence/search?country=ES&taxon_key=5&media_type=StillImage",
+        "https://techdocs.gbif.org/en/data-use/api-downloads",
+        "https://gbif.es/en/portal-nacional-de-datos/"
+      ],
+      "license_note": "Filtrar CC0/CC-BY para uso comercial; iNat a menudo CC-BY-NC.",
+      "action": "Cuenta GBIF → download request → filtrar licencias → empaquetar observations."
+    },
+    {
+      "id": "gbif_soria_bbox_fungi_media",
+      "name": "GBIF Fungi images near Soria (bbox)",
+      "type": "occurrence_api",
+      "region": "Soria-ish bbox 41.4-42.2N, 3.2-1.8W",
+      "probe_script": "scripts/probe_gbif_spain_fungi.py",
+      "action": "Hold-out regional o fine-tune local; conteo de sondeo en snapshot."
+    }
+  ],
+  "request_collaboration": [
+    {
+      "id": "micodata_micocyl_cyl",
+      "name": "Micodata / Micocyl / programa micológico Castilla y León",
+      "region": "Castilla y León (piloto Soria)",
+      "orgs": ["Junta de Castilla y León", "CESEFOR", "CIF Valonsadero (histórico)"],
+      "urls": [
+        "https://www.micocyl.es/",
+        "https://cesefor.com/",
+        "https://medioambiente.jcyl.es/web/es/medio-natural/aprovechamiento-micologico-setas-trufas.html",
+        "https://pfcyl.es/sites/default/files/biblioteca/documentos/FICHA_MICODATA_0.pdf"
+      ],
+      "ask_for": [
+        "Inventarios con especie validada",
+        "Fotos de campo con permiso ML",
+        "Metadatos hábitat/fecha/municipio",
+        "Evaluación regional conjunta"
+      ],
+      "letter_template": "docs/DATA_SOURCES_SPAIN_SORIA.md#5-plantilla-de-solicitud-correo"
+    },
+    {
+      "id": "montes_de_soria",
+      "name": "Asociación Montes de Soria",
+      "region": "Soria",
+      "urls": ["https://asociacionmontesdesoria.com/"],
+      "ask_for": [
+        "Fotos etiquetadas de acotados",
+        "Listados de especies por zona",
+        "Validadores humanos locales"
+      ]
+    },
+    {
+      "id": "ma_fungi_rjb_csic",
+      "name": "MA-Fungi Real Jardín Botánico CSIC",
+      "region": "España (colección nacional)",
+      "urls": [
+        "https://ipt.gbif.es/resource?r=ma-fungi",
+        "https://www.gbif.org/es/dataset/835e62e2-f762-11e1-a439-00145eb45e9a",
+        "https://digital.csic.es/handle/10261/256896"
+      ],
+      "ask_for": [
+        "Darwin Core público vía GBIF",
+        "Permiso imágenes de ejemplar",
+        "Subset basidiomicetos carnosos ibéricos"
+      ]
+    }
+  ],
+  "gbif_probe_snapshot": {
+    "date": "2026-07-17",
+    "source": "https://api.gbif.org/v1/occurrence/search",
+    "counts": {
+      "ES_fungi_any": 1149714,
+      "ES_fungi_with_still_image": 244010,
+      "ES_fungi_human_obs_with_image": 235225,
+      "soria_bbox_fungi_with_image": 4337
+    },
+    "note": "Conteos live varían; re-ejecutar probe_script."
+  }
+}

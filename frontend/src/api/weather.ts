@@ -88,23 +88,23 @@ export function evaluateMushroomConditions(w: WeatherData): MushroomConditions {
   if (!hasSoilData && w.relativeHumidity >= 0) {
     // Estimate soil moisture from humidity as fallback
     score += 10
-    details.push(`📊 Estimación por humedad del aire (${w.relativeHumidity.toFixed(0)}%)`)
+    details.push(`Estimación por humedad del aire (${w.relativeHumidity.toFixed(0)}%)`)
   }
 
   // Soil moisture 0-7cm (most important, weight: 30)
   if (w.soilMoisture07 >= 0) {
     if (w.soilMoisture07 >= 25 && w.soilMoisture07 <= 45) {
       score += 30
-      details.push(`✅ Humedad del suelo (${w.soilMoisture07.toFixed(0)}%): ÓPTIMA`)
+      details.push(`Humedad del suelo (${w.soilMoisture07.toFixed(0)}%): óptima`)
     } else if (w.soilMoisture07 >= 18 && w.soilMoisture07 <= 55) {
       score += 18
-      details.push(`⚠️ Humedad del suelo (${w.soilMoisture07.toFixed(0)}%): Aceptable`)
+      details.push(`Humedad del suelo (${w.soilMoisture07.toFixed(0)}%): aceptable`)
     } else if (w.soilMoisture07 < 18) {
       score += 5
-      details.push(`🔴 Humedad del suelo (${w.soilMoisture07.toFixed(0)}%): Muy seca`)
+      details.push(`Humedad del suelo (${w.soilMoisture07.toFixed(0)}%): muy seca`)
     } else {
       score += 8
-      details.push(`🟡 Humedad del suelo (${w.soilMoisture07.toFixed(0)}%): Excesiva`)
+      details.push(`Humedad del suelo (${w.soilMoisture07.toFixed(0)}%): excesiva`)
     }
   }
 
@@ -112,42 +112,42 @@ export function evaluateMushroomConditions(w: WeatherData): MushroomConditions {
   if (w.soilMoisture728 >= 0) {
     if (w.soilMoisture728 >= 30 && w.soilMoisture728 <= 50) {
       score += 20
-      details.push(`✅ Humedad profunda (${w.soilMoisture728.toFixed(0)}%): ÓPTIMA`)
+      details.push(`Humedad profunda (${w.soilMoisture728.toFixed(0)}%): óptima`)
     } else if (w.soilMoisture728 >= 22 && w.soilMoisture728 <= 60) {
       score += 12
-      details.push(`⚠️ Humedad profunda (${w.soilMoisture728.toFixed(0)}%): Aceptable`)
+      details.push(`Humedad profunda (${w.soilMoisture728.toFixed(0)}%): aceptable`)
     } else {
       score += 5
-      details.push(`🔴 Humedad profunda (${w.soilMoisture728.toFixed(0)}%): Pobre`)
+      details.push(`Humedad profunda (${w.soilMoisture728.toFixed(0)}%): pobre`)
     }
   }
 
   // Recent precipitation (weight: 20)
   if (w.precipitation >= 10 && w.precipitation <= 50) {
     score += 20
-    details.push(`✅ Precipitación reciente (${w.precipitation.toFixed(1)}mm): Ideal`)
+    details.push(`Precipitación reciente (${w.precipitation.toFixed(1)}mm): ideal`)
   } else if (w.precipitation > 0) {
     score += 10
-    details.push(`⚠️ Precipitación reciente (${w.precipitation.toFixed(1)}mm): Escasa`)
+    details.push(`Precipitación reciente (${w.precipitation.toFixed(1)}mm): escasa`)
   } else {
     score += 0
-    details.push(`🔴 Sin precipitación reciente (0mm): Seco`)
+    details.push('Sin precipitación reciente (0mm): seco')
   }
 
   // Soil temperature (weight: 15)
   if (w.soilTemperature > -50) {
     if (w.soilTemperature >= 10 && w.soilTemperature <= 18) {
       score += 15
-      details.push(`✅ Temperatura del suelo (${w.soilTemperature.toFixed(1)}°C): Perfecta`)
+      details.push(`Temperatura del suelo (${w.soilTemperature.toFixed(1)}°C): perfecta`)
     } else if (w.soilTemperature >= 6 && w.soilTemperature <= 22) {
       score += 8
-      details.push(`⚠️ Temperatura del suelo (${w.soilTemperature.toFixed(1)}°C): Aceptable`)
+      details.push(`Temperatura del suelo (${w.soilTemperature.toFixed(1)}°C): aceptable`)
     } else if (w.soilTemperature < 6) {
       score += 2
-      details.push(`🔴 Temperatura del suelo (${w.soilTemperature.toFixed(1)}°C): Muy fría`)
+      details.push(`Temperatura del suelo (${w.soilTemperature.toFixed(1)}°C): muy fría`)
     } else {
       score += 3
-      details.push(`🟡 Temperatura del suelo (${w.soilTemperature.toFixed(1)}°C): Muy cálida`)
+      details.push(`Temperatura del suelo (${w.soilTemperature.toFixed(1)}°C): muy cálida`)
     }
   }
 
@@ -155,30 +155,30 @@ export function evaluateMushroomConditions(w: WeatherData): MushroomConditions {
   if (w.relativeHumidity >= 0) {
     if (w.relativeHumidity >= 70) {
       score += 15
-      details.push(`✅ Humedad del aire (${w.relativeHumidity.toFixed(0)}%): Alta`)
+      details.push(`Humedad del aire (${w.relativeHumidity.toFixed(0)}%): alta`)
     } else if (w.relativeHumidity >= 55) {
       score += 8
-      details.push(`⚠️ Humedad del aire (${w.relativeHumidity.toFixed(0)}%): Media`)
+      details.push(`Humedad del aire (${w.relativeHumidity.toFixed(0)}%): media`)
     } else {
       score += 2
-      details.push(`🔴 Humedad del aire (${w.relativeHumidity.toFixed(0)}%): Baja`)
+      details.push(`Humedad del aire (${w.relativeHumidity.toFixed(0)}%): baja`)
     }
   }
 
   let label: MushroomConditions['label'] = 'unknown'
-  let icon = '❓'
+  let icon = 'unknown'
   if (score >= 75) {
     label = 'perfecto'
-    icon = '🍄'
+    icon = 'perfecto'
   } else if (score >= 55) {
     label = 'bueno'
-    icon = '👍'
+    icon = 'bueno'
   } else if (score >= 35) {
     label = 'regular'
-    icon = '🤔'
+    icon = 'regular'
   } else {
     label = 'seco'
-    icon = '🏜️'
+    icon = 'seco'
   }
 
   return { score, label, icon, details }

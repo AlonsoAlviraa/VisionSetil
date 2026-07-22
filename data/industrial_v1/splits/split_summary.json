@@ -1,0 +1,9 @@
+{
+  "input_lines": 12,
+  "species_kept": 2,
+  "species_skipped": [],
+  "train": 8,
+  "val": 2,
+  "test": 2,
+  "policy": "split_by_observation_id_anti_leak"
+}

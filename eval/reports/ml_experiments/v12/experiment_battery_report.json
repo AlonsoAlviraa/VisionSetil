@@ -1,0 +1,682 @@
+{
+  "generated_at": "2026-07-17T12:21:40.820626+00:00",
+  "artifacts": {
+    "predictions": "C:\\AlonsoAlviraa\\VisionSetil\\kaggle\\kernel_output_v12\\models\\test_predictions.npz",
+    "label2idx": "C:\\AlonsoAlviraa\\VisionSetil\\kaggle\\kernel_output_v12\\models\\label2idx.json",
+    "disk_metrics": {
+      "test_accuracy": 0.04819277108433735,
+      "test_map_at_3": 0.06997219647822057,
+      "test_map_at_3_ci_low": 0.05993010503552669,
+      "test_map_at_3_ci_high": 0.07978259190608591,
+      "test_f1_macro": 0.028847670949842787,
+      "test_balanced_accuracy": 0.04733333333333333,
+      "test_ece": 0.12225766329438295,
+      "safety_recall_deadly": 0.0,
+      "n_deadly_in_test": 12,
+      "best_val_map3": 0.06479765214704973,
+      "best_epoch": 6,
+      "num_classes": 1000,
+      "num_train_obs": 10070,
+      "num_val_obs": 2158,
+      "num_test_obs": 2158,
+      "temperature": 0.9267217516899109,
+      "model_params_M": 31.693504,
+      "databases_used": [
+        "fungitastic",
+        "fungiclef"
+      ],
+      "subsample_config": {
+        "max_species": 1000,
+        "max_obs_per_species": 16,
+        "experiment": "E12-data-scale"
+      },
+      "deadly_species_known": 26,
+      "deadly_species_in_dataset": 5,
+      "version": "v12-E12-data-scale"
+    }
+  },
+  "deadly_class_indices": [
+    26,
+    28,
+    32,
+    308,
+    348
+  ],
+  "deadly_class_names": [
+    "Amanita muscaria",
+    "Amanita phalloides",
+    "Amanita virosa",
+    "Galerina marginata",
+    "Gyromitra esculenta"
+  ],
+  "experiments": {
+    "baseline": {
+      "name": "baseline_v9_test",
+      "top1": 0.04819277108433735,
+      "top3": 0.09916589434661724,
+      "top5": 0.14365152919369786,
+      "map_at_3": 0.06997219647822057,
+      "ece": 0.05634323664566569,
+      "genus_top1": 0.07599629286376275,
+      "margins": {
+        "mean_margin": 0.0518663111877556,
+        "median_margin": 0.014427496696829523,
+        "p10_margin": 0.0008950406151995799,
+        "p90_margin": 0.11778815763151355
+      },
+      "deadly": {
+        "n_deadly_in_test": 12,
+        "species_top1_accuracy_on_deadly": 0.0,
+        "any_deadly_in_top1": 0.0,
+        "any_deadly_in_topk": 0.0,
+        "k": 3,
+        "note": "Safety: prefer high any_deadly_in_topk even if species wrong"
+      },
+      "n": 2158,
+      "n_classes_in_test": 1000
+    },
+    "temperature": {
+      "grid": [
+        {
+          "T": 0.5,
+          "top1": 0.04819277108433735,
+          "map_at_3": 0.06997219647822057,
+          "ece": 0.27369538726457693,
+          "mean_max_conf": 0.3218881583489142
+        },
+        {
+          "T": 0.75,
+          "top1": 0.04819277108433735,
+          "map_at_3": 0.06997219647822057,
+          "ece": 0.13054479573084765,
+          "mean_max_conf": 0.178737566815185
+        },
+        {
+          "T": 1.0,
+          "top1": 0.04819277108433735,
+          "map_at_3": 0.06997219647822057,
+          "ece": 0.05634323664566569,
+          "mean_max_conf": 0.10453600773000303
+        },
+        {
+          "T": 1.12,
+          "top1": 0.04819277108433735,
+          "map_at_3": 0.06997219647822057,
+          "ece": 0.033444408817458963,
+          "mean_max_conf": 0.08157835443096426
+        },
+        {
+          "T": 1.25,
+          "top1": 0.04819277108433735,
+          "map_at_3": 0.06997219647822057,
+          "ece": 0.01823646337360085,
+          "mean_max_conf": 0.06279091252688725
+        },
+        {
+          "T": 1.5,
+          "top1": 0.04819277108433735,
+          "map_at_3": 0.06997219647822057,
+          "ece": 0.009488211533060264,
+          "mean_max_conf": 0.03902691479091046
+        },
+        {
+          "T": 2.0,
+          "top1": 0.04819277108433735,
+          "map_at_3": 0.06997219647822057,
+          "ece": 0.030434752899407305,
+          "mean_max_conf": 0.017758018184930044
+        },
+        {
+          "T": 3.0,
+          "top1": 0.04819277108433735,
+          "map_at_3": 0.06997219647822057,
+          "ece": 0.04120042341934486,
+          "mean_max_conf": 0.006992347664992497
+        },
+        {
+          "T": 5.0,
+          "top1": 0.04819277108433735,
+          "map_at_3": 0.06997219647822057,
+          "ece": 0.04496874699795582,
+          "mean_max_conf": 0.00322402408638153
+        }
+      ],
+      "best_by_ece": {
+        "T": 1.5,
+        "top1": 0.04819277108433735,
+        "map_at_3": 0.06997219647822057,
+        "ece": 0.009488211533060264,
+        "mean_max_conf": 0.03902691479091046
+      }
+    },
+    "open_set": {
+      "n_configs": 42,
+      "best_utility_accept_ge_0.2": {
+        "accept_rate": 0.2432808155699722,
+        "abstain_rate": 0.7567191844300278,
+        "accuracy_when_accept": 0.14666666666666667,
+        "coverage_correct": 0.03568118628359592,
+        "n_accept": 525,
+        "n_total": 2158,
+        "conf_thr": 0.1,
+        "margin_thr": 0.02,
+        "utility": 0.07234114081853701
+      },
+      "best_accuracy_accept_ge_0.2": {
+        "accept_rate": 0.2432808155699722,
+        "abstain_rate": 0.7567191844300278,
+        "accuracy_when_accept": 0.14666666666666667,
+        "coverage_correct": 0.03568118628359592,
+        "n_accept": 525,
+        "n_total": 2158,
+        "conf_thr": 0.1,
+        "margin_thr": 0.02,
+        "utility": 0.07234114081853701
+      },
+      "pareto_sample": [
+        {
+          "accept_rate": 0.17701575532900835,
+          "abstain_rate": 0.8229842446709916,
+          "accuracy_when_accept": 0.17277486910994763,
+          "coverage_correct": 0.030583873957367932,
+          "n_accept": 382,
+          "n_total": 2158,
+          "conf_thr": 0.15,
+          "margin_thr": 0.02,
+          "utility": 0.07269198593971264
+        },
+        {
+          "accept_rate": 0.15987025023169602,
+          "abstain_rate": 0.840129749768304,
+          "accuracy_when_accept": 0.1681159420289855,
+          "coverage_correct": 0.026876737720111215,
+          "n_accept": 345,
+          "n_total": 2158,
+          "conf_thr": 0.15,
+          "margin_thr": 0.05,
+          "utility": 0.0672191050258962
+        },
+        {
+          "accept_rate": 0.1830398517145505,
+          "abstain_rate": 0.8169601482854495,
+          "accuracy_when_accept": 0.1670886075949367,
+          "coverage_correct": 0.030583873957367932,
+          "n_accept": 395,
+          "n_total": 2158,
+          "conf_thr": 0.15,
+          "margin_thr": 0.0,
+          "utility": 0.07148578120434619
+        },
+        {
+          "accept_rate": 0.1876737720111214,
+          "abstain_rate": 0.8123262279888785,
+          "accuracy_when_accept": 0.15555555555555556,
+          "coverage_correct": 0.029193697868396665,
+          "n_accept": 405,
+          "n_total": 2158,
+          "conf_thr": 0.1,
+          "margin_thr": 0.05,
+          "utility": 0.06738873712008173
+        },
+        {
+          "accept_rate": 0.2432808155699722,
+          "abstain_rate": 0.7567191844300278,
+          "accuracy_when_accept": 0.14666666666666667,
+          "coverage_correct": 0.03568118628359592,
+          "n_accept": 525,
+          "n_total": 2158,
+          "conf_thr": 0.1,
+          "margin_thr": 0.02,
+          "utility": 0.07234114081853701
+        },
+        {
+          "accept_rate": 0.20481927710843373,
+          "abstain_rate": 0.7951807228915663,
+          "accuracy_when_accept": 0.1425339366515837,
+          "coverage_correct": 0.029193697868396665,
+          "n_accept": 442,
+          "n_total": 2158,
+          "conf_thr": 0.05,
+          "margin_thr": 0.05,
+          "utility": 0.06450653209249063
+        },
+        {
+          "accept_rate": 0.28174235403151066,
+          "abstain_rate": 0.7182576459684893,
+          "accuracy_when_accept": 0.13486842105263158,
+          "coverage_correct": 0.037998146431881374,
+          "n_accept": 608,
+          "n_total": 2158,
+          "conf_thr": 0.1,
+          "margin_thr": 0.0,
+          "utility": 0.07158735930452056
+        },
+        {
+          "accept_rate": 0.366079703429101,
+          "abstain_rate": 0.633920296570899,
+          "accuracy_when_accept": 0.10253164556962026,
+          "coverage_correct": 0.037534754402224285,
+          "n_accept": 790,
+          "n_total": 2158,
+          "conf_thr": 0.05,
+          "margin_thr": 0.02,
+          "utility": 0.06203628079528626
+        }
+      ]
+    },
+    "confidence_bins": {
+      "bins": [
+        {
+          "bin": "[0, 0.05)",
+          "n": 899,
+          "acc": 0.008898776418242492,
+          "mean_conf": 0.031450921813310335
+        },
+        {
+          "bin": "[0.05, 0.1)",
+          "n": 651,
+          "acc": 0.021505376344086023,
+          "mean_conf": 0.06357207484772374
+        },
+        {
+          "bin": "[0.1, 0.15)",
+          "n": 213,
+          "acc": 0.07511737089201878,
+          "mean_conf": 0.12212631683463429
+        },
+        {
+          "bin": "[0.15, 0.2)",
+          "n": 137,
+          "acc": 0.12408759124087591,
+          "mean_conf": 0.17388369851201346
+        },
+        {
+          "bin": "[0.2, 0.3)",
+          "n": 102,
+          "acc": 0.10784313725490197,
+          "mean_conf": 0.24586979039717868
+        },
+        {
+          "bin": "[0.3, 0.5)",
+          "n": 90,
+          "acc": 0.16666666666666666,
+          "mean_conf": 0.39399431034905236
+        },
+        {
+          "bin": "[0.5, 1.01)",
+          "n": 66,
+          "acc": 0.3484848484848485,
+          "mean_conf": 0.6902382804767049
+        }
+      ]
+    },
+    "long_tail": {
+      "n_classes_seen": 1000,
+      "head50_mean_acc": 0.26666666666666666,
+      "tail_mean_acc": 0.035789473684210524,
+      "zero_acc_classes": 917,
+      "worst10": [
+        {
+          "class_idx": 4,
+          "name": "Agaricus augustus",
+          "n": 3,
+          "acc": 0.0
+        },
+        {
+          "class_idx": 5,
+          "name": "Agaricus bernardii",
+          "n": 3,
+          "acc": 0.0
+        },
+        {
+          "class_idx": 11,
+          "name": "Agaricus impudicus",
+          "n": 3,
+          "acc": 0.0
+        },
+        {
+          "class_idx": 18,
+          "name": "Agrocybe pediades",
+          "n": 3,
+          "acc": 0.0
+        },
+        {
+          "class_idx": 19,
+          "name": "Agrocybe praecox",
+          "n": 3,
+          "acc": 0.0
+        },
+        {
+          "class_idx": 21,
+          "name": "Aleuria aurantia",
+          "n": 3,
+          "acc": 0.0
+        },
+        {
+          "class_idx": 24,
+          "name": "Amanita fulva",
+          "n": 3,
+          "acc": 0.0
+        },
+        {
+          "class_idx": 25,
+          "name": "Amanita gemmata",
+          "n": 3,
+          "acc": 0.0
+        },
+        {
+          "class_idx": 27,
+          "name": "Amanita pantherina",
+          "n": 3,
+          "acc": 0.0
+        },
+        {
+          "class_idx": 28,
+          "name": "Amanita phalloides",
+          "n": 3,
+          "acc": 0.0
+        }
+      ],
+      "best10": [
+        {
+          "class_idx": 120,
+          "name": "Ciboria amentacea",
+          "n": 3,
+          "acc": 1.0
+        },
+        {
+          "class_idx": 54,
+          "name": "Auriscalpium vulgare",
+          "n": 2,
+          "acc": 1.0
+        },
+        {
+          "class_idx": 244,
+          "name": "Dialonectria diatrypicola",
+          "n": 2,
+          "acc": 1.0
+        },
+        {
+          "class_idx": 268,
+          "name": "Entoloma prunuloides",
+          "n": 2,
+          "acc": 1.0
+        },
+        {
+          "class_idx": 563,
+          "name": "Micarea lignaria",
+          "n": 2,
+          "acc": 1.0
+        },
+        {
+          "class_idx": 564,
+          "name": "Microbotryum stellariae",
+          "n": 2,
+          "acc": 1.0
+        },
+        {
+          "class_idx": 619,
+          "name": "Nephromopsis chlorophylla",
+          "n": 2,
+          "acc": 1.0
+        },
+        {
+          "class_idx": 621,
+          "name": "Ochrolechia frigida",
+          "n": 2,
+          "acc": 1.0
+        },
+        {
+          "class_idx": 747,
+          "name": "Psathyrella ammophila",
+          "n": 2,
+          "acc": 1.0
+        },
+        {
+          "class_idx": 852,
+          "name": "Sarea resinae",
+          "n": 2,
+          "acc": 1.0
+        }
+      ]
+    },
+    "topk_curve": [
+      {
+        "k": 1,
+        "acc": 0.04819277108433735,
+        "map": 0.04819277108433735
+      },
+      {
+        "k": 2,
+        "acc": 0.07692307692307693,
+        "map": 0.06255792400370713
+      },
+      {
+        "k": 3,
+        "acc": 0.09916589434661724,
+        "map": 0.06997219647822057
+      },
+      {
+        "k": 4,
+        "acc": 0.1283595922150139,
+        "map": 0.07727062094531974
+      },
+      {
+        "k": 5,
+        "acc": 0.14365152919369786,
+        "map": 0.08032900834105654
+      },
+      {
+        "k": 6,
+        "acc": 0.1607970342910102,
+        "map": 0.08318659252394192
+      },
+      {
+        "k": 7,
+        "acc": 0.1705282669138091,
+        "map": 0.08457676861291319
+      },
+      {
+        "k": 8,
+        "acc": 0.18443002780352177,
+        "map": 0.08631448872412727
+      },
+      {
+        "k": 9,
+        "acc": 0.19647822057460612,
+        "map": 0.08765317680980332
+      },
+      {
+        "k": 10,
+        "acc": 0.20713623725671917,
+        "map": 0.08871897847801462
+      }
+    ],
+    "chance_baselines": {
+      "uniform_top1": 0.0013901760889712697,
+      "uniform_map3": 0.0023169601482854493,
+      "frequency_prior_top1": 0.0013901760889712697,
+      "frequency_prior_map3": 0.0025486561631139944,
+      "random_top1": 0.0004633920296570899,
+      "chance_1_over_C": 0.001,
+      "model_lift_over_chance_top1": 48.19277108433735
+    },
+    "multiview_proxy": {
+      "mix_uniform_grid": [
+        {
+          "signal_alpha": 1.0,
+          "top1": 0.04819277108433735,
+          "map_at_3": 0.06997219647822057,
+          "interpretation": "alpha~ fraction of multi-view evidence kept"
+        },
+        {
+          "signal_alpha": 0.75,
+          "top1": 0.04819277108433735,
+          "map_at_3": 0.06997219647822057,
+          "interpretation": "alpha~ fraction of multi-view evidence kept"
+        },
+        {
+          "signal_alpha": 0.5,
+          "top1": 0.04819277108433735,
+          "map_at_3": 0.06997219647822057,
+          "interpretation": "alpha~ fraction of multi-view evidence kept"
+        },
+        {
+          "signal_alpha": 0.25,
+          "top1": 0.04819277108433735,
+          "map_at_3": 0.06997219647822057,
+          "interpretation": "alpha~ fraction of multi-view evidence kept"
+        },
+        {
+          "signal_alpha": 0.0,
+          "top1": 0.0013901760889712697,
+          "map_at_3": 0.0023169601482854493,
+          "interpretation": "alpha~ fraction of multi-view evidence kept"
+        }
+      ]
+    },
+    "recommended_gpu_matrix": {
+      "gpu_quota_note": "Check kaggle get_accelerator_quota; design fits remaining hours",
+      "priority_order": [
+        {
+          "id": "E-data-scale",
+          "name": "More data per class",
+          "change": "max_species=1000, max_obs_per_species=20, epochs=15",
+          "hypothesis": "MAP@3 lifts mainly from data not architecture at few-shot regime",
+          "primary_metric": "test_map_at_3",
+          "safety_metric": "safety_recall_deadly"
+        },
+        {
+          "id": "E-deadly-oversample",
+          "name": "Oversample critical taxa",
+          "change": "weighted sampler 5x for deadly label indices + focal loss",
+          "hypothesis": "Raises safety_recall_deadly without collapsing MAP@3",
+          "primary_metric": "safety_recall_deadly"
+        },
+        {
+          "id": "E-views",
+          "name": "Multi-view vs single-view",
+          "change": "train with 1 vs 2–4 views per obs",
+          "hypothesis": "MAP@3 gap quantifies multi-view value",
+          "primary_metric": "test_map_at_3"
+        },
+        {
+          "id": "E-backbone",
+          "name": "tiny vs base",
+          "change": "convnextv2_tiny (current) vs base if GPU allows",
+          "hypothesis": "base helps head classes; tiny better for few-shot speed",
+          "primary_metric": "test_map_at_3"
+        },
+        {
+          "id": "E-open-set",
+          "name": "Open-set threshold from val",
+          "change": "sweep conf/margin on val; freeze on test",
+          "hypothesis": "Accept@20% can double conditional accuracy",
+          "primary_metric": "accuracy_when_accept"
+        },
+        {
+          "id": "E-region-cyl",
+          "name": "Hold-out Spain/Soria GBIF",
+          "change": "eval-only set from GBIF ES media",
+          "hypothesis": "Domain shift estimate for production Spain",
+          "primary_metric": "map_at_3_region"
+        }
+      ],
+      "baseline_to_beat": {
+        "run": "kernel_output_v9",
+        "test_map_at_3": 0.0758,
+        "test_accuracy": 0.05,
+        "safety_recall_deadly": 0.0
+      }
+    },
+    "cpu_forward_smoke": {
+      "ok": true,
+      "load_seconds": 3.537500499998714,
+      "arch": "multiview_v8",
+      "hparams": {
+        "d_model": 512,
+        "metadata_dim": 64,
+        "num_classes": 500,
+        "lora_rank": 16,
+        "backbone_name": "convnextv2_tiny.fcmae_ft_in22k_in1k",
+        "vocab_sizes": {
+          "habitat": 100,
+          "substrate": 50,
+          "smell": 30,
+          "country": 200
+        }
+      },
+      "forwards": [
+        {
+          "n_views": 1,
+          "ms": 237.6235000010638,
+          "logits_shape": [
+            1,
+            500
+          ],
+          "emb_shape": [
+            1,
+            576
+          ]
+        },
+        {
+          "n_views": 2,
+          "ms": 201.66579999931855,
+          "logits_shape": [
+            1,
+            500
+          ],
+          "emb_shape": [
+            1,
+            576
+          ]
+        },
+        {
+          "n_views": 4,
+          "ms": 310.8964000020933,
+          "logits_shape": [
+            1,
+            500
+          ],
+          "emb_shape": [
+            1,
+            576
+          ]
+        }
+      ],
+      "device": "cpu"
+    }
+  },
+  "elapsed_seconds": 11.906737300003442,
+  "executive_summary": {
+    "headline": "v9 offline: MAP@3=0.0700, top1=0.0482, genus=0.0760, ECE=0.0563. Lift over chance x48.2.",
+    "safety": {
+      "n_deadly_in_test": 12,
+      "species_top1_accuracy_on_deadly": 0.0,
+      "any_deadly_in_top1": 0.0,
+      "any_deadly_in_topk": 0.0,
+      "k": 3,
+      "note": "Safety: prefer high any_deadly_in_topk even if species wrong"
+    },
+    "best_temperature_by_ece": {
+      "T": 1.5,
+      "top1": 0.04819277108433735,
+      "map_at_3": 0.06997219647822057,
+      "ece": 0.009488211533060264,
+      "mean_max_conf": 0.03902691479091046
+    },
+    "best_open_set": {
+      "conf_thr": 0.1,
+      "margin_thr": 0.02,
+      "accept_rate": 0.2432808155699722,
+      "accuracy_when_accept": 0.14666666666666667
+    },
+    "next_actions": [
+      "Run E-data-scale on Kaggle GPU (more obs/class)",
+      "Oversample deadly + re-measure safety_recall_deadly",
+      "Ship open-set thresholds from best_open_set into settings",
+      "Build Spain/Soria GBIF hold-out eval set"
+    ],
+    "policy": "orientation_only — never consumption permission"
+  }
+}

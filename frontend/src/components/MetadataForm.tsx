@@ -51,7 +51,7 @@ export function MetadataForm({ metadata, onChange }: MetadataFormProps) {
         onClick={() => setExpanded(!expanded)}
         aria-expanded={expanded}
       >
-        <span>🗺️ Información del entorno (opcional)</span>
+        <span>Información del entorno (opcional)</span>
         <span className={`chevron ${expanded ? 'open' : ''}`}>▸</span>
       </button>
 

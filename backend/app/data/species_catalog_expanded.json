@@ -1,0 +1,4869 @@
+{
+  "version": "1.0.0",
+  "generated": "2026-07-16",
+  "policy": "orientation_only; unsafe_to_consume; risk_label only — never consumption permission",
+  "count": 347,
+  "sources": [
+    "fe_ts",
+    "poisonous_species.json",
+    "mock_species_catalog.json",
+    "expanded_public_taxa_fungiclef_style"
+  ],
+  "species": [
+    {
+      "taxon": "Agaricus arvensis",
+      "slug": "agaricus-arvensis",
+      "rank": "species",
+      "common_names": [
+        "Champiñón gigante",
+        "Bola de nieve",
+        "Champiñón de prado",
+        "Bola de nieve gigante",
+        "Champiñón silvestre grande"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Agaricaceae",
+      "description": "Agaricus arvensis. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Agaricus augustus",
+      "slug": "agaricus-augustus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Agaricus augustus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Agaricus bisporus",
+      "slug": "agaricus-bisporus",
+      "rank": "species",
+      "common_names": [
+        "Champiñón común",
+        "Champiñón de París",
+        "Champiñón cultivado"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Agaricaceae",
+      "description": "Agaricus bisporus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:mushroomDatabase.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Agaricus bitorquis",
+      "slug": "agaricus-bitorquis",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Agaricus bitorquis. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Agaricus campestris",
+      "slug": "agaricus-campestris",
+      "rank": "species",
+      "common_names": [
+        "Champiñón silvestre",
+        "Champiñón de prado",
+        "Bola de nieve"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Agaricaceae",
+      "description": "Agaricus campestris. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Agaricus langei",
+      "slug": "agaricus-langei",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Agaricus langei. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Agaricus moelleri",
+      "slug": "agaricus-moelleri",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Agaricus moelleri. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Agaricus silvicola",
+      "slug": "agaricus-silvicola",
+      "rank": "species",
+      "common_names": [
+        "Champiñón de bosque"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Agaricaceae",
+      "description": "Agaricus silvicola. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "buen_comestible"
+    },
+    {
+      "taxon": "Agaricus sylvaticus",
+      "slug": "agaricus-sylvaticus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Agaricus sylvaticus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Agaricus sylvicola",
+      "slug": "agaricus-sylvicola",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Agaricus sylvicola. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Agaricus xanthoderma",
+      "slug": "agaricus-xanthoderma",
+      "rank": "species",
+      "common_names": [
+        "Champiñón amarilleante tóxico"
+      ],
+      "risk_label": "toxic",
+      "family": "Agaricaceae",
+      "description": "Agaricus xanthoderma. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "toxico"
+    },
+    {
+      "taxon": "Agaricus xanthodermus",
+      "slug": "agaricus-xanthodermus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "deadly",
+      "family": null,
+      "description": "Agaricus xanthodermus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Agrocybe pediades",
+      "slug": "agrocybe-pediades",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Agrocybe pediades. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Agrocybe praecox",
+      "slug": "agrocybe-praecox",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Agrocybe praecox. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Aleuria aurantia",
+      "slug": "aleuria-aurantia",
+      "rank": "species",
+      "common_names": [
+        "Copa naranja",
+        "Peziza naranja"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Pyronemataceae",
+      "description": "Aleuria aurantia. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "comestible_con_cautela"
+    },
+    {
+      "taxon": "Amanita battarrae",
+      "slug": "amanita-battarrae",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Amanita battarrae. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Amanita caesarea",
+      "slug": "amanita-caesarea",
+      "rank": "species",
+      "common_names": [
+        "Oronja",
+        "Huevo de rey",
+        "Amanita de los Césares"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Amanitaceae",
+      "description": "Amanita caesarea. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Amanita citrina",
+      "slug": "amanita-citrina",
+      "rank": "species",
+      "common_names": [
+        "Falsa oronja verde",
+        "False Death Cap"
+      ],
+      "risk_label": "poisonous",
+      "family": "Amanitaceae",
+      "description": "Amanita citrina. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "toxico"
+    },
+    {
+      "taxon": "Amanita crocea",
+      "slug": "amanita-crocea",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Amanita crocea. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Amanita echinocephala",
+      "slug": "amanita-echinocephala",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Amanita echinocephala. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Amanita excelsa",
+      "slug": "amanita-excelsa",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Amanita excelsa. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Amanita franchetii",
+      "slug": "amanita-franchetii",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Amanita franchetii. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Amanita fulva",
+      "slug": "amanita-fulva",
+      "rank": "species",
+      "common_names": [
+        "Amanita fulva",
+        "Tawny Grisette"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Amanitaceae",
+      "description": "Amanita fulva. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "buen_comestible"
+    },
+    {
+      "taxon": "Amanita gemmata",
+      "slug": "amanita-gemmata",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Amanita gemmata. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Amanita junquillea",
+      "slug": "amanita-junquillea",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Amanita junquillea. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Amanita muscaria",
+      "slug": "amanita-muscaria",
+      "rank": "species",
+      "common_names": [
+        "Matamoscas",
+        "Falsa oronja",
+        "Seta de los enanitos"
+      ],
+      "risk_label": "poisonous",
+      "family": "Amanitaceae",
+      "description": "Amanita muscaria. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:mushroomDatabase.ts",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)",
+        "poisonous_species.json"
+      ],
+      "documented_edibility": "toxico"
+    },
+    {
+      "taxon": "Amanita ovoidea",
+      "slug": "amanita-ovoidea",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Amanita ovoidea. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Amanita pantherina",
+      "slug": "amanita-pantherina",
+      "rank": "species",
+      "common_names": [
+        "Matamoscas pantera"
+      ],
+      "risk_label": "deadly",
+      "family": "Amanitaceae",
+      "description": "Amanita pantherina. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "toxico"
+    },
+    {
+      "taxon": "Amanita phalloides",
+      "slug": "amanita-phalloides",
+      "rank": "species",
+      "common_names": [
+        "Oronja verde",
+        "Hongo de la muerte",
+        "Cicuta verde",
+        "death cap",
+        "oronja verde"
+      ],
+      "risk_label": "deadly",
+      "family": "Amanitaceae",
+      "description": "Amanita phalloides. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:mushroomDatabase.ts",
+      "food_class": "mortal",
+      "food_label": "Mortal",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)",
+        "poisonous_species.json"
+      ],
+      "documented_edibility": "mortifero"
+    },
+    {
+      "taxon": "Amanita porphyria",
+      "slug": "amanita-porphyria",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Amanita porphyria. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Amanita rubescens",
+      "slug": "amanita-rubescens",
+      "rank": "species",
+      "common_names": [
+        "Amanita rubescente",
+        "Vinosa"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Amanitaceae",
+      "description": "Amanita rubescens. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "comestible_con_cautela"
+    },
+    {
+      "taxon": "Amanita spissa",
+      "slug": "amanita-spissa",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Amanita spissa. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Amanita strobiliformis",
+      "slug": "amanita-strobiliformis",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Amanita strobiliformis. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Amanita vaginata",
+      "slug": "amanita-vaginata",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Amanita vaginata. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Amanita verna",
+      "slug": "amanita-verna",
+      "rank": "species",
+      "common_names": [
+        "Cicuta blanca primaveral",
+        "Oronja blanca de primavera",
+        "Cicuta blanca"
+      ],
+      "risk_label": "deadly",
+      "family": "Amanitaceae",
+      "description": "Amanita verna. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "mortal",
+      "food_label": "Mortal",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "mortifero"
+    },
+    {
+      "taxon": "Amanita virosa",
+      "slug": "amanita-virosa",
+      "rank": "species",
+      "common_names": [
+        "Oronja blanca mortal",
+        "Oronja blanca",
+        "Amanita de la muerte blanca",
+        "Huevo del diablo",
+        "Angel destructor",
+        "destroying angel"
+      ],
+      "risk_label": "deadly",
+      "family": "Amanitaceae",
+      "description": "Amanita virosa. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "mortal",
+      "food_label": "Mortal",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)",
+        "poisonous_species.json"
+      ],
+      "documented_edibility": "mortifero"
+    },
+    {
+      "taxon": "Armillaria gallica",
+      "slug": "armillaria-gallica",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Armillaria gallica. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Armillaria mellea",
+      "slug": "armillaria-mellea",
+      "rank": "species",
+      "common_names": [
+        "Armillaria",
+        "Pies azules",
+        "Senderuela de otoño"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Physalacriaceae",
+      "description": "Armillaria mellea. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "comestible_con_cautela"
+    },
+    {
+      "taxon": "Armillaria ostoyae",
+      "slug": "armillaria-ostoyae",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Armillaria ostoyae. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Armillaria tabescens",
+      "slug": "armillaria-tabescens",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Armillaria tabescens. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Astraeus hygrometricus",
+      "slug": "astraeus-hygrometricus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Astraeus hygrometricus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Astraeus pteridis",
+      "slug": "astraeus-pteridis",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Astraeus pteridis. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Aureoboletus projectellus",
+      "slug": "aureoboletus-projectellus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Aureoboletus projectellus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Auricularia auricula-judae",
+      "slug": "auricularia-auricula-judae",
+      "rank": "species",
+      "common_names": [
+        "Oreja de Judas",
+        "Oreja de madera",
+        "Seta china negra"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Auriculariaceae",
+      "description": "Auricularia auricula-judae. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "buen_comestible"
+    },
+    {
+      "taxon": "Bankera fuligineoalba",
+      "slug": "bankera-fuligineoalba",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Bankera fuligineoalba. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Bjerkandera adusta",
+      "slug": "bjerkandera-adusta",
+      "rank": "species",
+      "common_names": [
+        "Pólipo ahumado",
+        "Smoky Bracket"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Meruliaceae",
+      "description": "Bjerkandera adusta. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "no_recomendado"
+    },
+    {
+      "taxon": "Boletus aereus",
+      "slug": "boletus-aereus",
+      "rank": "species",
+      "common_names": [
+        "Hongo negro",
+        "Bolu",
+        "Porcini negro"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Boletaceae",
+      "description": "Boletus aereus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Boletus appendiculatus",
+      "slug": "boletus-appendiculatus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Boletus appendiculatus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Boletus badius",
+      "slug": "boletus-badius",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Boletus badius. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Boletus calopus",
+      "slug": "boletus-calopus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Boletus calopus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Boletus edulis",
+      "slug": "boletus-edulis",
+      "rank": "species",
+      "common_names": [
+        "Hongo blanco",
+        "Seta de calabaza",
+        "Porcini",
+        "Cep"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Boletaceae",
+      "description": "Boletus edulis. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:mushroomDatabase.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Boletus erythropus",
+      "slug": "boletus-erythropus",
+      "rank": "species",
+      "common_names": [
+        "Pie rojo",
+        "Hongo pie rojo"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Boletaceae",
+      "description": "Boletus erythropus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "comestible_con_cautela"
+    },
+    {
+      "taxon": "Boletus impolitus",
+      "slug": "boletus-impolitus",
+      "rank": "species",
+      "common_names": [
+        "Boletus impoluto"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Boletaceae",
+      "description": "Boletus impolitus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "buen_comestible"
+    },
+    {
+      "taxon": "Boletus legaliae",
+      "slug": "boletus-legaliae",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Boletus legaliae. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Boletus luridiformis",
+      "slug": "boletus-luridiformis",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Boletus luridiformis. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Boletus pinophilus",
+      "slug": "boletus-pinophilus",
+      "rank": "species",
+      "common_names": [
+        "Boletus de pino",
+        "Pinate",
+        "Hondo pinícola"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Boletaceae",
+      "description": "Boletus pinophilus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Boletus reticulatus",
+      "slug": "boletus-reticulatus",
+      "rank": "species",
+      "common_names": [
+        "Hongo reticulado",
+        "Hongo negro",
+        "Boletus reticulado",
+        "Porcini de verano"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Boletaceae",
+      "description": "Boletus reticulatus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Boletus rhodoxanthus",
+      "slug": "boletus-rhodoxanthus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Boletus rhodoxanthus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Boletus satanas",
+      "slug": "boletus-satanas",
+      "rank": "species",
+      "common_names": [
+        "Boletus de Satán",
+        "Bola de Satán"
+      ],
+      "risk_label": "deadly",
+      "family": "Boletaceae",
+      "description": "Boletus satanas. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "toxico"
+    },
+    {
+      "taxon": "Boletus subtomentosus",
+      "slug": "boletus-subtomentosus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Boletus subtomentosus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Bovista plumbea",
+      "slug": "bovista-plumbea",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Bovista plumbea. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Butyriboletus appendiculatus",
+      "slug": "butyriboletus-appendiculatus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Butyriboletus appendiculatus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Caloboletus calopus",
+      "slug": "caloboletus-calopus",
+      "rank": "species",
+      "common_names": [
+        "Boleto amargo",
+        "Bitter Bolete"
+      ],
+      "risk_label": "toxic",
+      "family": "Boletaceae",
+      "description": "Caloboletus calopus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "toxico"
+    },
+    {
+      "taxon": "Calocera viscosa",
+      "slug": "calocera-viscosa",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Calocera viscosa. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Calocybe gambosa",
+      "slug": "calocybe-gambosa",
+      "rank": "species",
+      "common_names": [
+        "Seta de San Juan",
+        "Perrochico",
+        "Mojardín"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Lyophyllaceae",
+      "description": "Calocybe gambosa. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Calvatia gigantea",
+      "slug": "calvatia-gigantea",
+      "rank": "species",
+      "common_names": [
+        "Bola de nieve gigante",
+        "Cuesco de lobo gigante"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Agaricaceae",
+      "description": "Calvatia gigantea. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "comestible_con_cautela"
+    },
+    {
+      "taxon": "Cantharellus amethysteus",
+      "slug": "cantharellus-amethysteus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Cantharellus amethysteus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Cantharellus cibarius",
+      "slug": "cantharellus-cibarius",
+      "rank": "species",
+      "common_names": [
+        "Rebollón",
+        "Angula de monte",
+        "Girola",
+        "Chantarela"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Cantharellaceae",
+      "description": "Cantharellus cibarius. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Cantharellus friesii",
+      "slug": "cantharellus-friesii",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Cantharellus friesii. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Cantharellus lutescens",
+      "slug": "cantharellus-lutescens",
+      "rank": "species",
+      "common_names": [
+        "Chantarela amarilla",
+        "Rebollón fino"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Cantharellaceae",
+      "description": "Cantharellus lutescens. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Cantharellus pallens",
+      "slug": "cantharellus-pallens",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Cantharellus pallens. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Chalciporus piperatus",
+      "slug": "chalciporus-piperatus",
+      "rank": "species",
+      "common_names": [
+        "Boleto picante",
+        "Peppery Bolete"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Boletaceae",
+      "description": "Chalciporus piperatus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "comestible_con_cautela"
+    },
+    {
+      "taxon": "Chlorophyllum brunneum",
+      "slug": "chlorophyllum-brunneum",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Chlorophyllum brunneum. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Chlorophyllum molybdites",
+      "slug": "chlorophyllum-molybdites",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "poisonous",
+      "family": null,
+      "description": "Chlorophyllum molybdites. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Chlorophyllum rhacodes",
+      "slug": "chlorophyllum-rhacodes",
+      "rank": "species",
+      "common_names": [
+        "Parasol escamoso",
+        "Shaggy Parasol"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Agaricaceae",
+      "description": "Chlorophyllum rhacodes. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "comestible_con_cautela"
+    },
+    {
+      "taxon": "Chroogomphus rutilus",
+      "slug": "chroogomphus-rutilus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Chroogomphus rutilus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Clathrus ruber",
+      "slug": "clathrus-ruber",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Clathrus ruber. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Clavaria fragilis",
+      "slug": "clavaria-fragilis",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Clavaria fragilis. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Clavaria zollingeri",
+      "slug": "clavaria-zollingeri",
+      "rank": "species",
+      "common_names": [
+        "Coral violeta",
+        "Coral púrpura",
+        "Dedos violetas",
+        "Clavaria violeta"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Clavariaceae",
+      "description": "Clavaria zollingeri. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "comestible_con_cautela"
+    },
+    {
+      "taxon": "Clavariadelphus pistillaris",
+      "slug": "clavariadelphus-pistillaris",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Clavariadelphus pistillaris. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Clavulina cinerea",
+      "slug": "clavulina-cinerea",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Clavulina cinerea. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Clavulina coralloides",
+      "slug": "clavulina-coralloides",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Clavulina coralloides. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Clitocybe dealbata",
+      "slug": "clitocybe-dealbata",
+      "rank": "species",
+      "common_names": [
+        "Clitocibe blanco tóxico",
+        "Clitocibe blanco",
+        "Seta de marfil tóxica"
+      ],
+      "risk_label": "deadly",
+      "family": "Tricholomataceae",
+      "description": "Clitocybe dealbata. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "toxico"
+    },
+    {
+      "taxon": "Clitocybe geotropa",
+      "slug": "clitocybe-geotropa",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Clitocybe geotropa. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Clitocybe nebularis",
+      "slug": "clitocybe-nebularis",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Clitocybe nebularis. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Clitocybe odora",
+      "slug": "clitocybe-odora",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Clitocybe odora. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Clitocybe rivulosa",
+      "slug": "clitocybe-rivulosa",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "deadly",
+      "family": null,
+      "description": "Clitocybe rivulosa. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Clitopilus prunulus",
+      "slug": "clitopilus-prunulus",
+      "rank": "species",
+      "common_names": [
+        "Harinero",
+        "The Miller",
+        "Plum Mushroom"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Entolomataceae",
+      "description": "Clitopilus prunulus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Collybia butyracea",
+      "slug": "collybia-butyracea",
+      "rank": "species",
+      "common_names": [
+        "Colibia mantecosa"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Omphalotaceae",
+      "description": "Collybia butyracea. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "comestible_con_cautela"
+    },
+    {
+      "taxon": "Collybia dryophila",
+      "slug": "collybia-dryophila",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Collybia dryophila. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Coprinellus disseminatus",
+      "slug": "coprinellus-disseminatus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Coprinellus disseminatus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Coprinellus micaceus",
+      "slug": "coprinellus-micaceus",
+      "rank": "species",
+      "common_names": [
+        "Coprina micácea",
+        "Mica Cap",
+        "Glistening Inkcap"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Psathyrellaceae",
+      "description": "Coprinellus micaceus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "comestible_con_cautela"
+    },
+    {
+      "taxon": "Coprinopsis atramentaria",
+      "slug": "coprinopsis-atramentaria",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Coprinopsis atramentaria. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Coprinopsis picacea",
+      "slug": "coprinopsis-picacea",
+      "rank": "species",
+      "common_names": [
+        "Coprina urraca",
+        "Magpie Inkcap"
+      ],
+      "risk_label": "toxic",
+      "family": "Psathyrellaceae",
+      "description": "Coprinopsis picacea. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "toxico"
+    },
+    {
+      "taxon": "Coprinus atramentarius",
+      "slug": "coprinus-atramentarius",
+      "rank": "species",
+      "common_names": [
+        "Seta de tinta",
+        "Coprina",
+        "Matacandil tóxico"
+      ],
+      "risk_label": "toxic",
+      "family": "Psathyrellaceae",
+      "description": "Coprinus atramentarius. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "toxico"
+    },
+    {
+      "taxon": "Coprinus comatus",
+      "slug": "coprinus-comatus",
+      "rank": "species",
+      "common_names": [
+        "Barbuda",
+        "Matacandil",
+        "Capa de abogado"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Agaricaceae",
+      "description": "Coprinus comatus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Cordyceps militaris",
+      "slug": "cordyceps-militaris",
+      "rank": "species",
+      "common_names": [
+        "Cordyceps",
+        "Hongo oruga",
+        "Cordyceps militar"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Cordycipitaceae",
+      "description": "Cordyceps militaris. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "no_recomendado"
+    },
+    {
+      "taxon": "Cortinarius alboviolaceus",
+      "slug": "cortinarius-alboviolaceus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Cortinarius alboviolaceus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Cortinarius armillatus",
+      "slug": "cortinarius-armillatus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Cortinarius armillatus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Cortinarius caerulescens",
+      "slug": "cortinarius-caerulescens",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Cortinarius caerulescens. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Cortinarius caperatus",
+      "slug": "cortinarius-caperatus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Cortinarius caperatus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Cortinarius cinnamomeus",
+      "slug": "cortinarius-cinnamomeus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Cortinarius cinnamomeus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Cortinarius collinitus",
+      "slug": "cortinarius-collinitus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Cortinarius collinitus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Cortinarius elegantior",
+      "slug": "cortinarius-elegantior",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Cortinarius elegantior. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Cortinarius glaucopus",
+      "slug": "cortinarius-glaucopus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Cortinarius glaucopus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Cortinarius largus",
+      "slug": "cortinarius-largus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Cortinarius largus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Cortinarius mucosus",
+      "slug": "cortinarius-mucosus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Cortinarius mucosus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Cortinarius orellanus",
+      "slug": "cortinarius-orellanus",
+      "rank": "species",
+      "common_names": [
+        "Cortinario mortal",
+        "Cortinario de Orellanus",
+        "Cortinario de montana",
+        "deadly webcap"
+      ],
+      "risk_label": "deadly",
+      "family": "Cortinariaceae",
+      "description": "Cortinarius orellanus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "mortal",
+      "food_label": "Mortal",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)",
+        "poisonous_species.json"
+      ],
+      "documented_edibility": "mortifero"
+    },
+    {
+      "taxon": "Cortinarius purpurascens",
+      "slug": "cortinarius-purpurascens",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Cortinarius purpurascens. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Cortinarius rubellus",
+      "slug": "cortinarius-rubellus",
+      "rank": "species",
+      "common_names": [
+        "Cortinario mortal rojo",
+        "Deadly Webcap"
+      ],
+      "risk_label": "deadly",
+      "family": "Cortinariaceae",
+      "description": "Cortinarius rubellus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "mortal",
+      "food_label": "Mortal",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "mortifero"
+    },
+    {
+      "taxon": "Cortinarius sanguineus",
+      "slug": "cortinarius-sanguineus",
+      "rank": "species",
+      "common_names": [
+        "Cortinario sanguíneo",
+        "Blood-red Webcap"
+      ],
+      "risk_label": "toxic",
+      "family": "Cortinariaceae",
+      "description": "Cortinarius sanguineus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "toxico"
+    },
+    {
+      "taxon": "Cortinarius semisanguineus",
+      "slug": "cortinarius-semisanguineus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Cortinarius semisanguineus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Cortinarius speciosissimus",
+      "slug": "cortinarius-speciosissimus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "deadly",
+      "family": null,
+      "description": "Cortinarius speciosissimus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Cortinarius traganus",
+      "slug": "cortinarius-traganus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Cortinarius traganus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Cortinarius triumphans",
+      "slug": "cortinarius-triumphans",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Cortinarius triumphans. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Cortinarius violaceus",
+      "slug": "cortinarius-violaceus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Cortinarius violaceus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Craterellus cornucopioides",
+      "slug": "craterellus-cornucopioides",
+      "rank": "species",
+      "common_names": [
+        "Trompeta de los muertos",
+        "Cuerno de la abundancia",
+        "Horn of Plenty"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Cantharellaceae",
+      "description": "Craterellus cornucopioides. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Craterellus lutescens",
+      "slug": "craterellus-lutescens",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Craterellus lutescens. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Craterellus tubaeformis",
+      "slug": "craterellus-tubaeformis",
+      "rank": "species",
+      "common_names": [
+        "Cantharela de invierno",
+        "Trompeta amarilla",
+        "Winter Chanterelle"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Cantharellaceae",
+      "description": "Craterellus tubaeformis. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Crepidotus mollis",
+      "slug": "crepidotus-mollis",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Crepidotus mollis. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Crepidotus variabilis",
+      "slug": "crepidotus-variabilis",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Crepidotus variabilis. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Cyanoboletus pulverulentus",
+      "slug": "cyanoboletus-pulverulentus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Cyanoboletus pulverulentus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Cyclocybe aegerita",
+      "slug": "cyclocybe-aegerita",
+      "rank": "species",
+      "common_names": [
+        "Seta de chopo",
+        "Pioppino",
+        "Agrocybe aegerita"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Tubariaceae",
+      "description": "Cyclocybe aegerita. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Cyclocybe cylindracea",
+      "slug": "cyclocybe-cylindracea",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Cyclocybe cylindracea. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Dacrymyces stillatus",
+      "slug": "dacrymyces-stillatus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Dacrymyces stillatus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Daedalea quercina",
+      "slug": "daedalea-quercina",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Daedalea quercina. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Daedaleopsis confragosa",
+      "slug": "daedaleopsis-confragosa",
+      "rank": "species",
+      "common_names": [
+        "Pólipo sonrosado",
+        "Blushing Bracket"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Polyporaceae",
+      "description": "Daedaleopsis confragosa. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "no_recomendado"
+    },
+    {
+      "taxon": "Disciotis venosa",
+      "slug": "disciotis-venosa",
+      "rank": "species",
+      "common_names": [
+        "Oreja de elefante",
+        "Veined Cup Fungus"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Morchellaceae",
+      "description": "Disciotis venosa. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "comestible_con_cautela"
+    },
+    {
+      "taxon": "Entoloma clypeatum",
+      "slug": "entoloma-clypeatum",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Entoloma clypeatum. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Entoloma rhodopolium",
+      "slug": "entoloma-rhodopolium",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Entoloma rhodopolium. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Entoloma sericeum",
+      "slug": "entoloma-sericeum",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Entoloma sericeum. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Entoloma sinuatum",
+      "slug": "entoloma-sinuatum",
+      "rank": "species",
+      "common_names": [
+        "Entoloma tóxico",
+        "Falso perrochico"
+      ],
+      "risk_label": "deadly",
+      "family": "Entolomataceae",
+      "description": "Entoloma sinuatum. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "toxico"
+    },
+    {
+      "taxon": "Fistulina hepatica",
+      "slug": "fistulina-hepatica",
+      "rank": "species",
+      "common_names": [
+        "Lengua de buey",
+        "Hígado de buey",
+        "Hongo bistec"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Fistulinaceae",
+      "description": "Fistulina hepatica. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "buen_comestible"
+    },
+    {
+      "taxon": "Flammulina velutipes",
+      "slug": "flammulina-velutipes",
+      "rank": "species",
+      "common_names": [
+        "Cola de faisán",
+        "Enoki",
+        "Cola de faiso",
+        "Seta de invierno"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Physalacriaceae",
+      "description": "Flammulina velutipes. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "buen_comestible"
+    },
+    {
+      "taxon": "Fomes fomentarius",
+      "slug": "fomes-fomentarius",
+      "rank": "species",
+      "common_names": [
+        "Yesquero",
+        "Casco de caballo",
+        "Hongo de las yesca"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Polyporaceae",
+      "description": "Fomes fomentarius. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "no_recomendado"
+    },
+    {
+      "taxon": "Galerina hypnorum",
+      "slug": "galerina-hypnorum",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Galerina hypnorum. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Galerina marginata",
+      "slug": "galerina-marginata",
+      "rank": "species",
+      "common_names": [
+        "Galerina mortal",
+        "Funeral Bell",
+        "funeral bell"
+      ],
+      "risk_label": "deadly",
+      "family": "Hymenogastraceae",
+      "description": "Galerina marginata. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "mortal",
+      "food_label": "Mortal",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)",
+        "poisonous_species.json"
+      ],
+      "documented_edibility": "mortifero"
+    },
+    {
+      "taxon": "Galerina unicolor",
+      "slug": "galerina-unicolor",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Galerina unicolor. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Ganoderma applanatum",
+      "slug": "ganoderma-applanatum",
+      "rank": "species",
+      "common_names": [
+        "Hongo del artista"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Ganodermataceae",
+      "description": "Ganoderma applanatum. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "no_recomendado"
+    },
+    {
+      "taxon": "Ganoderma lucidum",
+      "slug": "ganoderma-lucidum",
+      "rank": "species",
+      "common_names": [
+        "Reishi",
+        "Lingzhi",
+        "Hongo de la inmortalidad"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Ganodermataceae",
+      "description": "Ganoderma lucidum. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "no_recomendado"
+    },
+    {
+      "taxon": "Geastrum saccatum",
+      "slug": "geastrum-saccatum",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Geastrum saccatum. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Geastrum triplex",
+      "slug": "geastrum-triplex",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Geastrum triplex. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Gomphidius glutinosus",
+      "slug": "gomphidius-glutinosus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Gomphidius glutinosus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Grifola frondosa",
+      "slug": "grifola-frondosa",
+      "rank": "species",
+      "common_names": [
+        "Maitake",
+        "Coliflor",
+        "Rampa de los robles",
+        "Pollo del roble"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Meripilaceae",
+      "description": "Grifola frondosa. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Gymnopilus junonius",
+      "slug": "gymnopilus-junonius",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Gymnopilus junonius. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Gymnopilus penetrans",
+      "slug": "gymnopilus-penetrans",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Gymnopilus penetrans. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Gymnopus dryophilus",
+      "slug": "gymnopus-dryophilus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Gymnopus dryophilus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Gyromitra esculenta",
+      "slug": "gyromitra-esculenta",
+      "rank": "species",
+      "common_names": [
+        "Colmenilla falsa",
+        "Bonete",
+        "Bordea",
+        "Falsa colmenilla",
+        "false morel"
+      ],
+      "risk_label": "deadly",
+      "family": "Discinaceae",
+      "description": "Gyromitra esculenta. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)",
+        "poisonous_species.json"
+      ],
+      "documented_edibility": "toxico"
+    },
+    {
+      "taxon": "Gyromitra infula",
+      "slug": "gyromitra-infula",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Gyromitra infula. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Gyroporus castaneus",
+      "slug": "gyroporus-castaneus",
+      "rank": "species",
+      "common_names": [
+        "Boleto castaño",
+        "Hongo castaño",
+        "Chestnut Bolete"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Gyroporaceae",
+      "description": "Gyroporus castaneus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Gyroporus cyanescens",
+      "slug": "gyroporus-cyanescens",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Gyroporus cyanescens. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Hebeloma crustuliniforme",
+      "slug": "hebeloma-crustuliniforme",
+      "rank": "species",
+      "common_names": [
+        "Hebeloma venenoso",
+        "Poison Pie"
+      ],
+      "risk_label": "poisonous",
+      "family": "Hymenogastraceae",
+      "description": "Hebeloma crustuliniforme. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "toxico"
+    },
+    {
+      "taxon": "Hebeloma sinapizans",
+      "slug": "hebeloma-sinapizans",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Hebeloma sinapizans. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Helvella crispa",
+      "slug": "helvella-crispa",
+      "rank": "species",
+      "common_names": [
+        "Oreja de gato",
+        "Helvela blanca",
+        "Cascabel"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Helvellaceae",
+      "description": "Helvella crispa. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "comestible_con_cautela"
+    },
+    {
+      "taxon": "Helvella lacunosa",
+      "slug": "helvella-lacunosa",
+      "rank": "species",
+      "common_names": [
+        "Helvela negra",
+        "Oreja de gato negra"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Helvellaceae",
+      "description": "Helvella lacunosa. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "comestible_con_cautela"
+    },
+    {
+      "taxon": "Hemileccinum impolitum",
+      "slug": "hemileccinum-impolitum",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Hemileccinum impolitum. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Hericium coralloides",
+      "slug": "hericium-coralloides",
+      "rank": "species",
+      "common_names": [
+        "Coral blanco",
+        "Melena de coral",
+        "Dedos espinosos"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Hericiaceae",
+      "description": "Hericium coralloides. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Hericium erinaceus",
+      "slug": "hericium-erinaceus",
+      "rank": "species",
+      "common_names": [
+        "Barba de león",
+        "Pom-pom",
+        "Melena de león"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Hericiaceae",
+      "description": "Hericium erinaceus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Hortiboletus rubellus",
+      "slug": "hortiboletus-rubellus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Hortiboletus rubellus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Hydnellum peckii",
+      "slug": "hydnellum-peckii",
+      "rank": "species",
+      "common_names": [
+        "Hongo sangrante",
+        "Bleeding Tooth Fungus"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Bankeraceae",
+      "description": "Hydnellum peckii. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "no_recomendado"
+    },
+    {
+      "taxon": "Hydnum albidum",
+      "slug": "hydnum-albidum",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Hydnum albidum. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Hydnum repandum",
+      "slug": "hydnum-repandum",
+      "rank": "species",
+      "common_names": [
+        "Lengua de gato",
+        "Picornia",
+        "Hidnum"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Hydnaceae",
+      "description": "Hydnum repandum. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Hydnum rufescens",
+      "slug": "hydnum-rufescens",
+      "rank": "species",
+      "common_names": [
+        "Lengua de gato parda"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Hydnaceae",
+      "description": "Hydnum rufescens. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Hygrophoropsis aurantiaca",
+      "slug": "hygrophoropsis-aurantiaca",
+      "rank": "species",
+      "common_names": [
+        "Falso chantarela"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Hygrophoropsidaceae",
+      "description": "Hygrophoropsis aurantiaca. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "no_recomendado"
+    },
+    {
+      "taxon": "Hymenopellis radicata",
+      "slug": "hymenopellis-radicata",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Hymenopellis radicata. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Hypholoma capnoides",
+      "slug": "hypholoma-capnoides",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Hypholoma capnoides. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Hypholoma fasciculare",
+      "slug": "hypholoma-fasciculare",
+      "rank": "species",
+      "common_names": [
+        "Galerina amarilla",
+        "Sulphur Tuft",
+        "Naematoloma"
+      ],
+      "risk_label": "deadly",
+      "family": "Hymenogastraceae",
+      "description": "Hypholoma fasciculare. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "toxico"
+    },
+    {
+      "taxon": "Hypholoma lateritium",
+      "slug": "hypholoma-lateritium",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Hypholoma lateritium. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Imleria badia",
+      "slug": "imleria-badia",
+      "rank": "species",
+      "common_names": [
+        "Boleto bayo",
+        "Hongo bayo",
+        "Bay Bolete"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Boletaceae",
+      "description": "Imleria badia. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Inocybe asterospora",
+      "slug": "inocybe-asterospora",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Inocybe asterospora. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Inocybe dulcamara",
+      "slug": "inocybe-dulcamara",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Inocybe dulcamara. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Inocybe erubescens",
+      "slug": "inocybe-erubescens",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "deadly",
+      "family": null,
+      "description": "Inocybe erubescens. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Inocybe geophylla",
+      "slug": "inocybe-geophylla",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Inocybe geophylla. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Inocybe lacera",
+      "slug": "inocybe-lacera",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Inocybe lacera. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Inocybe rimosa",
+      "slug": "inocybe-rimosa",
+      "rank": "species",
+      "common_names": [
+        "Inocibe fibroso",
+        "Muscarina"
+      ],
+      "risk_label": "toxic",
+      "family": "Inocybaceae",
+      "description": "Inocybe rimosa. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "toxico"
+    },
+    {
+      "taxon": "Inonotus obliquus",
+      "slug": "inonotus-obliquus",
+      "rank": "species",
+      "common_names": [
+        "Chaga",
+        "Hongo del abedul negro",
+        "Clinker Polypore"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Hymenochaetaceae",
+      "description": "Inonotus obliquus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "no_recomendado"
+    },
+    {
+      "taxon": "Kuehneromyces mutabilis",
+      "slug": "kuehneromyces-mutabilis",
+      "rank": "species",
+      "common_names": [
+        "Seta de tocón variable",
+        "Sheathed Woodtuft"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Hymenogastraceae",
+      "description": "Kuehneromyces mutabilis. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Laccaria laccata",
+      "slug": "laccaria-laccata",
+      "rank": "species",
+      "common_names": [
+        "Lacaria",
+        "Seta encerada",
+        "Lacaria anaranjada"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Hydnangiaceae",
+      "description": "Laccaria laccata. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "buen_comestible"
+    },
+    {
+      "taxon": "Lacrymaria lacrymabunda",
+      "slug": "lacrymaria-lacrymabunda",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Lacrymaria lacrymabunda. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Lactarius blennius",
+      "slug": "lactarius-blennius",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Lactarius blennius. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Lactarius chrysorrheus",
+      "slug": "lactarius-chrysorrheus",
+      "rank": "species",
+      "common_names": [
+        "Lactarius de látex amarillo"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Russulaceae",
+      "description": "Lactarius chrysorrheus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "no_recomendado"
+    },
+    {
+      "taxon": "Lactarius controversus",
+      "slug": "lactarius-controversus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Lactarius controversus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Lactarius deliciosus",
+      "slug": "lactarius-deliciosus",
+      "rank": "species",
+      "common_names": [
+        "Nízcalo",
+        "Robellón",
+        "Seta de pino",
+        "Esclata-sang"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Russulaceae",
+      "description": "Lactarius deliciosus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:mushroomDatabase.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "buen_comestible"
+    },
+    {
+      "taxon": "Lactarius deterrimus",
+      "slug": "lactarius-deterrimus",
+      "rank": "species",
+      "common_names": [
+        "Falso nízcalo",
+        "Nízcalo de abeto",
+        "False Saffron Milkcap"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Russulaceae",
+      "description": "Lactarius deterrimus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "buen_comestible"
+    },
+    {
+      "taxon": "Lactarius pergamenus",
+      "slug": "lactarius-pergamenus",
+      "rank": "species",
+      "common_names": [
+        "Lactarius pálido"
+      ],
+      "risk_label": "toxic",
+      "family": "Russulaceae",
+      "description": "Lactarius pergamenus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "toxico"
+    },
+    {
+      "taxon": "Lactarius piperatus",
+      "slug": "lactarius-piperatus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Lactarius piperatus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Lactarius quietus",
+      "slug": "lactarius-quietus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Lactarius quietus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Lactarius rufus",
+      "slug": "lactarius-rufus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Lactarius rufus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Lactarius salmonicolor",
+      "slug": "lactarius-salmonicolor",
+      "rank": "species",
+      "common_names": [
+        "Nízcalo de abeto salmonado"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Russulaceae",
+      "description": "Lactarius salmonicolor. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "comestible_con_cautela"
+    },
+    {
+      "taxon": "Lactarius sanguifluus",
+      "slug": "lactarius-sanguifluus",
+      "rank": "species",
+      "common_names": [
+        "Nízcalo de sangre",
+        "Esclata-sang",
+        "Esclata-sang verdadero",
+        "Robellón vinoso"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Russulaceae",
+      "description": "Lactarius sanguifluus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Lactarius semisanguifluus",
+      "slug": "lactarius-semisanguifluus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Lactarius semisanguifluus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Lactarius torminosus",
+      "slug": "lactarius-torminosus",
+      "rank": "species",
+      "common_names": [
+        "Falso nízcalo",
+        "Nízcalo tóxico"
+      ],
+      "risk_label": "poisonous",
+      "family": "Russulaceae",
+      "description": "Lactarius torminosus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "toxico"
+    },
+    {
+      "taxon": "Lactarius vellereus",
+      "slug": "lactarius-vellereus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Lactarius vellereus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Lactarius volemus",
+      "slug": "lactarius-volemus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Lactarius volemus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Laetiporus sulphureus",
+      "slug": "laetiporus-sulphureus",
+      "rank": "species",
+      "common_names": [
+        "Pollo del bosque",
+        "Sulfúrea",
+        "Meripilus amarillo"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Fomitopsidaceae",
+      "description": "Laetiporus sulphureus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:mushroomDatabase.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "buen_comestible"
+    },
+    {
+      "taxon": "Langermannia gigantea",
+      "slug": "langermannia-gigantea",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Langermannia gigantea. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Leccinum aurantiacum",
+      "slug": "leccinum-aurantiacum",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Leccinum aurantiacum. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Leccinum quercinum",
+      "slug": "leccinum-quercinum",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Leccinum quercinum. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Leccinum scabrum",
+      "slug": "leccinum-scabrum",
+      "rank": "species",
+      "common_names": [
+        "Bipi",
+        "Leccinum",
+        "Hongo abedul"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Boletaceae",
+      "description": "Leccinum scabrum. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "buen_comestible"
+    },
+    {
+      "taxon": "Leccinum versipelle",
+      "slug": "leccinum-versipelle",
+      "rank": "species",
+      "common_names": [
+        "Leccinum anaranjado",
+        "Bipi naranja"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Boletaceae",
+      "description": "Leccinum versipelle. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Lentinula edodes",
+      "slug": "lentinula-edodes",
+      "rank": "species",
+      "common_names": [
+        "Shiitake",
+        "Seta china",
+        "Oakwood Mushroom"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Marasmiaceae",
+      "description": "Lentinula edodes. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Lentinus tigrinus",
+      "slug": "lentinus-tigrinus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Lentinus tigrinus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Lepiota aspera",
+      "slug": "lepiota-aspera",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Lepiota aspera. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Lepiota brunneoincarnata",
+      "slug": "lepiota-brunneoincarnata",
+      "rank": "species",
+      "common_names": [
+        "Lepiota mortal",
+        "Parasol mortal"
+      ],
+      "risk_label": "deadly",
+      "family": "Agaricaceae",
+      "description": "Lepiota brunneoincarnata. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "mortal",
+      "food_label": "Mortal",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)",
+        "poisonous_species.json"
+      ],
+      "documented_edibility": "mortifero"
+    },
+    {
+      "taxon": "Lepiota clypeolaria",
+      "slug": "lepiota-clypeolaria",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Lepiota clypeolaria. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Lepiota cristata",
+      "slug": "lepiota-cristata",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Lepiota cristata. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Lepiota helveola",
+      "slug": "lepiota-helveola",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "deadly",
+      "family": null,
+      "description": "Lepiota helveola. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Lepiota josserandii",
+      "slug": "lepiota-josserandii",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "deadly",
+      "family": null,
+      "description": "Lepiota josserandii. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Lepiota subincarnata",
+      "slug": "lepiota-subincarnata",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "deadly",
+      "family": null,
+      "description": "Lepiota subincarnata. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Lepista inversa",
+      "slug": "lepista-inversa",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Lepista inversa. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Lepista nuda",
+      "slug": "lepista-nuda",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Lepista nuda. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Lepista personata",
+      "slug": "lepista-personata",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Lepista personata. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Lepista saeva",
+      "slug": "lepista-saeva",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Lepista saeva. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Lycoperdon perlatum",
+      "slug": "lycoperdon-perlatum",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Lycoperdon perlatum. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Lycoperdon pyriforme",
+      "slug": "lycoperdon-pyriforme",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Lycoperdon pyriforme. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Macrolepiota excoriata",
+      "slug": "macrolepiota-excoriata",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Macrolepiota excoriata. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Macrolepiota konradii",
+      "slug": "macrolepiota-konradii",
+      "rank": "species",
+      "common_names": [
+        "Parasol de Konrad",
+        "Konrad\\"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Agaricaceae",
+      "description": "Macrolepiota konradii. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Macrolepiota mastoidea",
+      "slug": "macrolepiota-mastoidea",
+      "rank": "species",
+      "common_names": [
+        "Apagador menor",
+        "Parasol menor"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Agaricaceae",
+      "description": "Macrolepiota mastoidea. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "buen_comestible"
+    },
+    {
+      "taxon": "Macrolepiota procera",
+      "slug": "macrolepiota-procera",
+      "rank": "species",
+      "common_names": [
+        "Apagador",
+        "Parasol",
+        "Galamperna",
+        "Bola",
+        "parasol mushroom",
+        "apagador"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Agaricaceae",
+      "description": "Macrolepiota procera. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "buen_comestible"
+    },
+    {
+      "taxon": "Marasmius oreades",
+      "slug": "marasmius-oreades",
+      "rank": "species",
+      "common_names": [
+        "Senderuela",
+        "Corro de brujas",
+        "Carrerilla"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Marasmiaceae",
+      "description": "Marasmius oreades. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Marasmius rotula",
+      "slug": "marasmius-rotula",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Marasmius rotula. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Marasmius wynnei",
+      "slug": "marasmius-wynnei",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Marasmius wynnei. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Megacollybia marginata",
+      "slug": "megacollybia-marginata",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Megacollybia marginata. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Megacollybia platyphylla",
+      "slug": "megacollybia-platyphylla",
+      "rank": "species",
+      "common_names": [
+        "Colibia ancha",
+        "Whitelaced Shank"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Marasmiaceae",
+      "description": "Megacollybia platyphylla. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "buen_comestible"
+    },
+    {
+      "taxon": "Megacollybia rimosa",
+      "slug": "megacollybia-rimosa",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Megacollybia rimosa. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Morchella conica",
+      "slug": "morchella-conica",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Morchella conica. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Morchella elata",
+      "slug": "morchella-elata",
+      "rank": "species",
+      "common_names": [
+        "Colmena negra",
+        "Morchella oscura",
+        "Morreruela"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Morchellaceae",
+      "description": "Morchella elata. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "buen_comestible"
+    },
+    {
+      "taxon": "Morchella esculenta",
+      "slug": "morchella-esculenta",
+      "rank": "species",
+      "common_names": [
+        "Colmena",
+        "Caperuza",
+        "Caperuza de obispo",
+        "Morchela"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Morchellaceae",
+      "description": "Morchella esculenta. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "buen_comestible"
+    },
+    {
+      "taxon": "Morchella importuna",
+      "slug": "morchella-importuna",
+      "rank": "species",
+      "common_names": [
+        "Colmena de jardín",
+        "Black-foot Morel"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Morchellaceae",
+      "description": "Morchella importuna. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "buen_comestible"
+    },
+    {
+      "taxon": "Morchella semilibera",
+      "slug": "morchella-semilibera",
+      "rank": "species",
+      "common_names": [
+        "Medio libre",
+        "Half-free Morel",
+        "Cow\\"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Morchellaceae",
+      "description": "Morchella semilibera. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "buen_comestible"
+    },
+    {
+      "taxon": "Morchella vulgaris",
+      "slug": "morchella-vulgaris",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Morchella vulgaris. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Mutinus caninus",
+      "slug": "mutinus-caninus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Mutinus caninus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Mycena galericulata",
+      "slug": "mycena-galericulata",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Mycena galericulata. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Mycena haematopus",
+      "slug": "mycena-haematopus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Mycena haematopus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Mycena inclinata",
+      "slug": "mycena-inclinata",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Mycena inclinata. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Mycena polygramma",
+      "slug": "mycena-polygramma",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Mycena polygramma. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Mycena pura",
+      "slug": "mycena-pura",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "poisonous",
+      "family": null,
+      "description": "Mycena pura. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Mycena rosea",
+      "slug": "mycena-rosea",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Mycena rosea. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Neoboletus luridiformis",
+      "slug": "neoboletus-luridiformis",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Neoboletus luridiformis. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Neolentinus lepideus",
+      "slug": "neolentinus-lepideus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Neolentinus lepideus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Omphalotus illudens",
+      "slug": "omphalotus-illudens",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Omphalotus illudens. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Omphalotus olearius",
+      "slug": "omphalotus-olearius",
+      "rank": "species",
+      "common_names": [
+        "Oreja de pau",
+        "Falso chantarela",
+        "Seta de olivo"
+      ],
+      "risk_label": "deadly",
+      "family": "Marasmiaceae",
+      "description": "Omphalotus olearius. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "toxico"
+    },
+    {
+      "taxon": "Oudemansiella mucida",
+      "slug": "oudemansiella-mucida",
+      "rank": "species",
+      "common_names": [
+        "Porcelana",
+        "Porcelain Fungus",
+        "Beech Tuft"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Physalacriaceae",
+      "description": "Oudemansiella mucida. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "buen_comestible"
+    },
+    {
+      "taxon": "Panaeolus cinctulus",
+      "slug": "panaeolus-cinctulus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Panaeolus cinctulus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Panaeolus foenisecii",
+      "slug": "panaeolus-foenisecii",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Panaeolus foenisecii. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Panellus stipticus",
+      "slug": "panellus-stipticus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Panellus stipticus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Panus conchatus",
+      "slug": "panus-conchatus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Panus conchatus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Paxillus involutus",
+      "slug": "paxillus-involutus",
+      "rank": "species",
+      "common_names": [
+        "Enrollado",
+        "Lengua de vaca",
+        "Paxillus"
+      ],
+      "risk_label": "deadly",
+      "family": "Paxillaceae",
+      "description": "Paxillus involutus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "toxico"
+    },
+    {
+      "taxon": "Paxillus rubicundulus",
+      "slug": "paxillus-rubicundulus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Paxillus rubicundulus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Peziza badia",
+      "slug": "peziza-badia",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Peziza badia. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Peziza vesiculosa",
+      "slug": "peziza-vesiculosa",
+      "rank": "species",
+      "common_names": [
+        "Peziza común",
+        "Copa del estiércol"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Pezizaceae",
+      "description": "Peziza vesiculosa. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "no_recomendado"
+    },
+    {
+      "taxon": "Phaeolus schweinitzii",
+      "slug": "phaeolus-schweinitzii",
+      "rank": "species",
+      "common_names": [
+        "Pólipo teñidor"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Fomitopsidaceae",
+      "description": "Phaeolus schweinitzii. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "no_recomendado"
+    },
+    {
+      "taxon": "Phallus impudicus",
+      "slug": "phallus-impudicus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Phallus impudicus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Phellodon niger",
+      "slug": "phellodon-niger",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Phellodon niger. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Pholiota adiposa",
+      "slug": "pholiota-adiposa",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Pholiota adiposa. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Pholiota squarrosa",
+      "slug": "pholiota-squarrosa",
+      "rank": "species",
+      "common_names": [
+        "Foliota escamosa"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Strophariaceae",
+      "description": "Pholiota squarrosa. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "no_recomendado"
+    },
+    {
+      "taxon": "Picosphaera cistidiolens",
+      "slug": "picosphaera-cistidiolens",
+      "rank": "species",
+      "common_names": [
+        "Seta de las jaras",
+        "Cistus Inkcap"
+      ],
+      "risk_label": "dangerous_or_unknown",
+      "family": "Psathyrellaceae",
+      "description": "Picosphaera cistidiolens. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts"
+    },
+    {
+      "taxon": "Piptoporus betulinus",
+      "slug": "piptoporus-betulinus",
+      "rank": "species",
+      "common_names": [
+        "Pólipo del abedul",
+        "Birch Polypore",
+        "Razor Strop"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Fomitopsidaceae",
+      "description": "Piptoporus betulinus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "no_recomendado"
+    },
+    {
+      "taxon": "Pisolithus arhizus",
+      "slug": "pisolithus-arhizus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Pisolithus arhizus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Pleurotus cornucopiae",
+      "slug": "pleurotus-cornucopiae",
+      "rank": "species",
+      "common_names": [
+        "Seta de ostra dorada",
+        "Branched Oyster Mushroom"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Pleurotaceae",
+      "description": "Pleurotus cornucopiae. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Pleurotus eryngii",
+      "slug": "pleurotus-eryngii",
+      "rank": "species",
+      "common_names": [
+        "Seta de cardo",
+        "Cardo",
+        "Gírgola de cardo"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Pleurotaceae",
+      "description": "Pleurotus eryngii. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Pleurotus ostreatus",
+      "slug": "pleurotus-ostreatus",
+      "rank": "species",
+      "common_names": [
+        "Seta de ostra",
+        "Ostreón",
+        "Seta de chopo"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Pleurotaceae",
+      "description": "Pleurotus ostreatus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "buen_comestible"
+    },
+    {
+      "taxon": "Pleurotus pulmonarius",
+      "slug": "pleurotus-pulmonarius",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Pleurotus pulmonarius. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Pluteus cervinus",
+      "slug": "pluteus-cervinus",
+      "rank": "species",
+      "common_names": [
+        "Pluteo cervino",
+        "Deer Shield",
+        "Fawn Mushroom"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Pluteaceae",
+      "description": "Pluteus cervinus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "buen_comestible"
+    },
+    {
+      "taxon": "Pluteus salicinus",
+      "slug": "pluteus-salicinus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Pluteus salicinus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Polyozellus multiplex",
+      "slug": "polyozellus-multiplex",
+      "rank": "species",
+      "common_names": [
+        "Chantarela azul",
+        "Blue Chanterelle"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Thelephoraceae",
+      "description": "Polyozellus multiplex. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Polyporus squamosus",
+      "slug": "polyporus-squamosus",
+      "rank": "species",
+      "common_names": [
+        "Poliporo escamoso",
+        "Sombrilla"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Polyporaceae",
+      "description": "Polyporus squamosus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "comestible_con_cautela"
+    },
+    {
+      "taxon": "Porphyrellus porphyrosporus",
+      "slug": "porphyrellus-porphyrosporus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Porphyrellus porphyrosporus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Psathyrella candolleana",
+      "slug": "psathyrella-candolleana",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Psathyrella candolleana. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Psathyrella multipedata",
+      "slug": "psathyrella-multipedata",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Psathyrella multipedata. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Psilocybe cubensis",
+      "slug": "psilocybe-cubensis",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Psilocybe cubensis. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Psilocybe semilanceata",
+      "slug": "psilocybe-semilanceata",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Psilocybe semilanceata. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Ramaria botrytis",
+      "slug": "ramaria-botrytis",
+      "rank": "species",
+      "common_names": [
+        "Coral de roble",
+        "Pata de cabra",
+        "Coliflor rosada"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Gomphaceae",
+      "description": "Ramaria botrytis. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "buen_comestible"
+    },
+    {
+      "taxon": "Ramaria formosa",
+      "slug": "ramaria-formosa",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Ramaria formosa. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Ramaria stricta",
+      "slug": "ramaria-stricta",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Ramaria stricta. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Rheubarbariboletus armeniacus",
+      "slug": "rheubarbariboletus-armeniacus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Rheubarbariboletus armeniacus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Rhizopogon luteolus",
+      "slug": "rhizopogon-luteolus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Rhizopogon luteolus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Rhizopogon roseolus",
+      "slug": "rhizopogon-roseolus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Rhizopogon roseolus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Rhodocollybia butyracea",
+      "slug": "rhodocollybia-butyracea",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Rhodocollybia butyracea. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Rubroboletus luridus",
+      "slug": "rubroboletus-luridus",
+      "rank": "species",
+      "common_names": [
+        "Hongo brujas",
+        "Boletus lurido",
+        "Pie rojo"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Boletaceae",
+      "description": "Rubroboletus luridus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:mushroomDatabase.ts",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "comestible_con_cautela"
+    },
+    {
+      "taxon": "Rubroboletus satanas",
+      "slug": "rubroboletus-satanas",
+      "rank": "species",
+      "common_names": [
+        "Boletus de Satán (moderno)"
+      ],
+      "risk_label": "deadly",
+      "family": "Boletaceae",
+      "description": "Rubroboletus satanas. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "toxico"
+    },
+    {
+      "taxon": "Russula aeruginea",
+      "slug": "russula-aeruginea",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Russula aeruginea. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Russula atropurpurea",
+      "slug": "russula-atropurpurea",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Russula atropurpurea. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Russula caerulea",
+      "slug": "russula-caerulea",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Russula caerulea. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Russula cyanoxantha",
+      "slug": "russula-cyanoxantha",
+      "rank": "species",
+      "common_names": [
+        "Rúsula variable",
+        "Rúsula de los curas",
+        "Hongo de los curas"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Russulaceae",
+      "description": "Russula cyanoxantha. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Russula delica",
+      "slug": "russula-delica",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Russula delica. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Russula emetica",
+      "slug": "russula-emetica",
+      "rank": "species",
+      "common_names": [
+        "Rúsula emética",
+        "Rúsula roja tóxica"
+      ],
+      "risk_label": "poisonous",
+      "family": "Russulaceae",
+      "description": "Russula emetica. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "toxico"
+    },
+    {
+      "taxon": "Russula foetens",
+      "slug": "russula-foetens",
+      "rank": "species",
+      "common_names": [
+        "Rúsula fétida",
+        "Stinking Brittlegill"
+      ],
+      "risk_label": "toxic",
+      "family": "Russulaceae",
+      "description": "Russula foetens. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "toxico"
+    },
+    {
+      "taxon": "Russula fragilis",
+      "slug": "russula-fragilis",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Russula fragilis. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Russula heterophylla",
+      "slug": "russula-heterophylla",
+      "rank": "species",
+      "common_names": [
+        "Rúsula de láminas desiguales",
+        "Greasy Green Brittlegill"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Russulaceae",
+      "description": "Russula heterophylla. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Russula integra",
+      "slug": "russula-integra",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Russula integra. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Russula mairei",
+      "slug": "russula-mairei",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Russula mairei. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Russula nigricans",
+      "slug": "russula-nigricans",
+      "rank": "species",
+      "common_names": [
+        "Rúsula negra",
+        "Blackening Brittlegill"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Russulaceae",
+      "description": "Russula nigricans. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "comestible_con_cautela"
+    },
+    {
+      "taxon": "Russula ochroleuca",
+      "slug": "russula-ochroleuca",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Russula ochroleuca. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Russula sardonia",
+      "slug": "russula-sardonia",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Russula sardonia. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Russula vesca",
+      "slug": "russula-vesca",
+      "rank": "species",
+      "common_names": [
+        "Rúsula de los cerdos"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Russulaceae",
+      "description": "Russula vesca. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Russula virescens",
+      "slug": "russula-virescens",
+      "rank": "species",
+      "common_names": [
+        "Verderuela",
+        "Rúsula verde",
+        "Hongo verde",
+        "Seta de los cristales"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Russulaceae",
+      "description": "Russula virescens. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Russula xerampelina",
+      "slug": "russula-xerampelina",
+      "rank": "species",
+      "common_names": [
+        "Rúsula gamba",
+        "Shrimp Russula",
+        "Crab Brittlegill"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Russulaceae",
+      "description": "Russula xerampelina. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Sarcodon imbricatus",
+      "slug": "sarcodon-imbricatus",
+      "rank": "species",
+      "common_names": [
+        "Hidno escamoso",
+        "Scaly Tooth",
+        "Hawkwing"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Bankeraceae",
+      "description": "Sarcodon imbricatus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "comestible_con_cautela"
+    },
+    {
+      "taxon": "Sarcoscypha coccinea",
+      "slug": "sarcoscypha-coccinea",
+      "rank": "species",
+      "common_names": [
+        "Copa escarlata",
+        "Oreja de Asno"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Sarcoscyphaceae",
+      "description": "Sarcoscypha coccinea. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "comestible_con_cautela"
+    },
+    {
+      "taxon": "Schizophyllum commune",
+      "slug": "schizophyllum-commune",
+      "rank": "species",
+      "common_names": [
+        "Cola de gallo",
+        "Esquizofilo",
+        "Seta almenada"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Schizophyllaceae",
+      "description": "Schizophyllum commune. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "buen_comestible"
+    },
+    {
+      "taxon": "Scleroderma citrinum",
+      "slug": "scleroderma-citrinum",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "poisonous",
+      "family": null,
+      "description": "Scleroderma citrinum. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Scleroderma verrucosum",
+      "slug": "scleroderma-verrucosum",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Scleroderma verrucosum. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Sparassis crispa",
+      "slug": "sparassis-crispa",
+      "rank": "species",
+      "common_names": [
+        "Coliflor del bosque",
+        "Coliflor",
+        "Seta coliflor",
+        "Nido de pato"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Sparassidaceae",
+      "description": "Sparassis crispa. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Sparassis laminosa",
+      "slug": "sparassis-laminosa",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Sparassis laminosa. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Stereum hirsutum",
+      "slug": "stereum-hirsutum",
+      "rank": "species",
+      "common_names": [
+        "Cortina peluda",
+        "Hairy Curtain Crust",
+        "False Turkey Tail"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Stereaceae",
+      "description": "Stereum hirsutum. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "no_recomendado"
+    },
+    {
+      "taxon": "Strobilomyces strobilaceus",
+      "slug": "strobilomyces-strobilaceus",
+      "rank": "species",
+      "common_names": [
+        "Boletus piña",
+        "Seta piña"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Boletaceae",
+      "description": "Strobilomyces strobilaceus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "comestible_con_cautela"
+    },
+    {
+      "taxon": "Stropharia aeruginosa",
+      "slug": "stropharia-aeruginosa",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Stropharia aeruginosa. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Stropharia coronilla",
+      "slug": "stropharia-coronilla",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Stropharia coronilla. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Stropharia rugosoannulata",
+      "slug": "stropharia-rugosoannulata",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Stropharia rugosoannulata. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Suillellus luridus",
+      "slug": "suillellus-luridus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Suillellus luridus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Suillus bovinus",
+      "slug": "suillus-bovinus",
+      "rank": "species",
+      "common_names": [
+        "Bocaldo",
+        "Bovino",
+        "Bovine Bolete"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Suillaceae",
+      "description": "Suillus bovinus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "buen_comestible"
+    },
+    {
+      "taxon": "Suillus granulatus",
+      "slug": "suillus-granulatus",
+      "rank": "species",
+      "common_names": [
+        "Bocalbo anillado"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Suillaceae",
+      "description": "Suillus granulatus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "buen_comestible"
+    },
+    {
+      "taxon": "Suillus grevillei",
+      "slug": "suillus-grevillei",
+      "rank": "species",
+      "common_names": [
+        "Boleto del alerce",
+        "Larch Bolete"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Suillaceae",
+      "description": "Suillus grevillei. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "buen_comestible"
+    },
+    {
+      "taxon": "Suillus luteus",
+      "slug": "suillus-luteus",
+      "rank": "species",
+      "common_names": [
+        "Mocosa",
+        "Bocalbo",
+        "Enrinado"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Suillaceae",
+      "description": "Suillus luteus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "buen_comestible"
+    },
+    {
+      "taxon": "Suillus variegatus",
+      "slug": "suillus-variegatus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Suillus variegatus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Tapinella atrotomentosa",
+      "slug": "tapinella-atrotomentosa",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Tapinella atrotomentosa. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Terfezia claveryi",
+      "slug": "terfezia-claveryi",
+      "rank": "species",
+      "common_names": [
+        "Trufa del desierto",
+        "Terfezia",
+        "Criadilla de tierra"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Terfeziaceae",
+      "description": "Terfezia claveryi. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Thelephora terrestris",
+      "slug": "thelephora-terrestris",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Thelephora terrestris. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Trametes gibbosa",
+      "slug": "trametes-gibbosa",
+      "rank": "species",
+      "common_names": [
+        "Pólipo abultado",
+        "Lumpy Bracket"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Polyporaceae",
+      "description": "Trametes gibbosa. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "no_recomendado"
+    },
+    {
+      "taxon": "Trametes versicolor",
+      "slug": "trametes-versicolor",
+      "rank": "species",
+      "common_names": [
+        "Cola de pavo",
+        "Yunzhi",
+        "Coriolus"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Polyporaceae",
+      "description": "Trametes versicolor. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "no_recomendado"
+    },
+    {
+      "taxon": "Tremella mesenterica",
+      "slug": "tremella-mesenterica",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Tremella mesenterica. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Tricholoma columbetta",
+      "slug": "tricholoma-columbetta",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Tricholoma columbetta. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Tricholoma equestre",
+      "slug": "tricholoma-equestre",
+      "rank": "species",
+      "common_names": [
+        "Canario",
+        "Seta de los caballeros",
+        "Bujarrón"
+      ],
+      "risk_label": "poisonous",
+      "family": "Tricholomataceae",
+      "description": "Tricholoma equestre. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "comestible_con_cautela"
+    },
+    {
+      "taxon": "Tricholoma focale",
+      "slug": "tricholoma-focale",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Tricholoma focale. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Tricholoma matsutake",
+      "slug": "tricholoma-matsutake",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Tricholoma matsutake. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Tricholoma populinum",
+      "slug": "tricholoma-populinum",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Tricholoma populinum. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Tricholoma portentosum",
+      "slug": "tricholoma-portentosum",
+      "rank": "species",
+      "common_names": [
+        "Seta de los pinos negra",
+        "Tricholoma negro"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Tricholomataceae",
+      "description": "Tricholoma portentosum. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Tricholoma saponaceum",
+      "slug": "tricholoma-saponaceum",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Tricholoma saponaceum. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Tricholoma scalpturatum",
+      "slug": "tricholoma-scalpturatum",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Tricholoma scalpturatum. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Tricholoma sejunctum",
+      "slug": "tricholoma-sejunctum",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Tricholoma sejunctum. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Tricholoma sulphureum",
+      "slug": "tricholoma-sulphureum",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Tricholoma sulphureum. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Tricholoma terreum",
+      "slug": "tricholoma-terreum",
+      "rank": "species",
+      "common_names": [
+        "Seta de los caballeros menor",
+        "Tricholoma pardo"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Tricholomataceae",
+      "description": "Tricholoma terreum. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "buen_comestible"
+    },
+    {
+      "taxon": "Tricholomopsis rutilans",
+      "slug": "tricholomopsis-rutilans",
+      "rank": "species",
+      "common_names": [
+        "Tricholomopsis roja"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Tricholomataceae",
+      "description": "Tricholomopsis rutilans. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "no_recomendado"
+    },
+    {
+      "taxon": "Tuber aestivum",
+      "slug": "tuber-aestivum",
+      "rank": "species",
+      "common_names": [
+        "Trufa de verano",
+        "Trufa negra de verano",
+        "Mayuca"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Tuberaceae",
+      "description": "Tuber aestivum. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Tuber brumale",
+      "slug": "tuber-brumale",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Tuber brumale. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Tuber magnatum",
+      "slug": "tuber-magnatum",
+      "rank": "species",
+      "common_names": [
+        "Trufa blanca de Alba",
+        "Trufa blanca",
+        "Trufa de Alba",
+        "Tartufo bianco"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Tuberaceae",
+      "description": "Tuber magnatum. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Tuber melanosporum",
+      "slug": "tuber-melanosporum",
+      "rank": "species",
+      "common_names": [
+        "Trufa negra",
+        "Trufa de invierno",
+        "Trufa de Périgord"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Tuberaceae",
+      "description": "Tuber melanosporum. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "excelente"
+    },
+    {
+      "taxon": "Tylopilus felleus",
+      "slug": "tylopilus-felleus",
+      "rank": "species",
+      "common_names": [
+        "Boletus de la hiel",
+        "Boletus amargo"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Boletaceae",
+      "description": "Tylopilus felleus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "no_recomendado"
+    },
+    {
+      "taxon": "Verpa bohemica",
+      "slug": "verpa-bohemica",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Verpa bohemica. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Verpa conica",
+      "slug": "verpa-conica",
+      "rank": "species",
+      "common_names": [
+        "Verpa",
+        "Falsa colmena",
+        "Falsa morchella",
+        "Caperuza cónica"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Morchellaceae",
+      "description": "Verpa conica. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:additionalSpecies.ts",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "comestible_con_cautela"
+    },
+    {
+      "taxon": "Volvariella gloiocephala",
+      "slug": "volvariella-gloiocephala",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Volvariella gloiocephala. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Volvariella volvacea",
+      "slug": "volvariella-volvacea",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Volvariella volvacea. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Xerocomellus chrysenteron",
+      "slug": "xerocomellus-chrysenteron",
+      "rank": "species",
+      "common_names": [
+        "Boleto quebradizo",
+        "Red Cracking Bolete"
+      ],
+      "risk_label": "unknown_or_risky",
+      "family": "Boletaceae",
+      "description": "Xerocomellus chrysenteron. Orientative mycological entry. Never for consumption guidance.",
+      "source": "fe:extendedSpecies.ts",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ],
+      "documented_edibility": "buen_comestible"
+    },
+    {
+      "taxon": "Xerocomellus cisalpinus",
+      "slug": "xerocomellus-cisalpinus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Xerocomellus cisalpinus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Xerocomus subtomentosus",
+      "slug": "xerocomus-subtomentosus",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Xerocomus subtomentosus. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    },
+    {
+      "taxon": "Xerula radicata",
+      "slug": "xerula-radicata",
+      "rank": "species",
+      "common_names": [],
+      "risk_label": "dangerous_or_unknown",
+      "family": null,
+      "description": "Xerula radicata. Orientative mycological entry. Never for consumption guidance.",
+      "source": "expanded_public_taxa"
+    }
+  ],
+  "food_quality_sync": {
+    "documented_in_index": 142,
+    "species_with_food_class": 142,
+    "sources": [
+      "food_quality_curated.json",
+      "poisonous_species.json"
+    ],
+    "policy": "orientation_only; never invent comestible for undocumented taxa"
+  }
+}

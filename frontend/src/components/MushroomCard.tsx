@@ -1,54 +1,33 @@
-/** Reusable card for displaying a mushroom species with robust multi-source photo. */
-import { useEffect, useState } from 'react'
+/** Species card with verified mycology photo (never emoji placeholders). */
 import { Link } from 'react-router-dom'
 import type { MushroomSpecies } from '../data/mushroomDatabase'
 import { EDIBILITY_COLORS, EDIBILITY_LABELS } from '../data/mushroomDatabase'
-import { getMushroomImage } from '../api/mushroomImages'
+import { useSpeciesImage } from '../hooks/useSpeciesImage'
+import { speciesPhotoErrorFallback } from '../lib/speciesPhotoFallback'
 
 interface MushroomCardProps {
   species: MushroomSpecies
 }
 
 export function MushroomCard({ species }: MushroomCardProps) {
-  const [imageUrl, setImageUrl] = useState<string | null>(null)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    let cancelled = false
-    setLoading(true)
-    getMushroomImage(species.scientificName).then((url) => {
-      if (cancelled) return
-      setImageUrl(url)
-      setLoading(false)
-    })
-    return () => {
-      cancelled = true
-    }
-  }, [species.scientificName])
-
+  const { url, loading } = useSpeciesImage(species.scientificName, species.edibility)
   const slug = encodeURIComponent(species.scientificName)
+  const placeholder = speciesPhotoErrorFallback(species.scientificName, species.edibility)
 
   return (
     <Link to={`/enciclopedia/${slug}`} className="mushroom-card card-3d-tilt card-glow">
       <div className="mushroom-card-image">
-        {loading ? (
-          <div className="mushroom-card-placeholder shimmer">
-            <span className="mushroom-card-icon">{species.icon}</span>
-          </div>
-        ) : imageUrl ? (
-          <img
-            src={imageUrl}
-            alt={species.commonNames[0]}
-            loading="lazy"
-            onError={() => {
-              setImageUrl(null)
-            }}
-          />
-        ) : (
-          <div className="mushroom-card-placeholder">
-            <span className="mushroom-card-icon mushroom-float-rotate">{species.icon}</span>
-          </div>
-        )}
+        <img
+          src={url}
+          alt={species.commonNames[0] || species.scientificName}
+          loading="lazy"
+          decoding="async"
+          className={loading ? 'is-loading' : ''}
+          onError={(e) => {
+            const img = e.currentTarget
+            if (img.src !== placeholder) img.src = placeholder
+          }}
+        />
         <span
           className="mushroom-card-badge"
           style={{ backgroundColor: EDIBILITY_COLORS[species.edibility] }}
@@ -63,8 +42,8 @@ export function MushroomCard({ species }: MushroomCardProps) {
         </p>
         <p className="mushroom-card-tagline">{species.tagline}</p>
         <div className="mushroom-card-meta">
-          <span className="meta-chip">📅 {species.season}</span>
-          <span className="meta-chip">🌳 {species.family}</span>
+          <span className="meta-chip">{species.season}</span>
+          <span className="meta-chip">{species.family}</span>
         </div>
       </div>
     </Link>

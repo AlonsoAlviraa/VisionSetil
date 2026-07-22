@@ -1,156 +1,202 @@
-/** Education page: guides on safety, anatomy, foraging rules, and seasons. */
-import { useState } from 'react'
+/**
+ * Education — safety, anatomy, seasons, emergency.
+ * Wave A: no cooking/dosing/consumption-permission language.
+ */
+import { useState, type ReactNode } from 'react'
+import {
+  IconAlert,
+  IconBan,
+  IconBook,
+  IconCalendar,
+  IconCap,
+  IconDetail,
+  IconExpert,
+  IconGills,
+  IconInfo,
+  IconLeaf,
+  IconMicroscope,
+  IconNote,
+  IconSearch,
+  IconSnowflake,
+  IconStem,
+  IconSun,
+} from '../components/icons'
 
 interface AccordionItem {
   q: string
   a: string
 }
 
-const safetyRules = [
+const safetyRules: Array<{ icon: ReactNode; title: string; desc: string }> = [
   {
-    icon: '🚫',
-    title: 'Nunca comas una seta que no identifies con 100% de seguridad',
-    desc: 'Es la regla de oro. Ante la mínima duda, no la consumas. Una sola seta mortal puede ser letal.',
+    icon: <IconBan size={22} />,
+    title: 'Sin certeza, no hay decisión de campo',
+    desc: 'Ante la mínima duda, déjala. Una sola confusión mortal puede ser irreversible.',
   },
   {
-    icon: '📚',
-    title: 'Aprende de un experto',
-    desc: 'Antes de salir solo, sal con micólogos experimentados o asiste a jornadas micológicas locales.',
+    icon: <IconExpert size={22} />,
+    title: 'Aprende con gente que sepa',
+    desc: 'Sal con micólogos o grupos locales antes de fiarte de una app o una guía sola.',
   },
   {
-    icon: '📖',
-    title: 'Usa varias fuentes para identificar',
-    desc: 'Una app no es suficiente. Combina observación visual, guías, esporadas y opinión experta.',
+    icon: <IconBook size={22} />,
+    title: 'Cruza varias pistas',
+    desc: 'Fotos multi-vista, caracteres, hábitat, esporada y opinión experta. Una app no basta.',
   },
   {
-    icon: '🗑️',
-    title: 'Rechaza las setas viejas o en mal estado',
-    desc: 'Las setas pasadas pueden acumular toxinas o causar problemas digestivos incluso siendo comestibles.',
+    icon: <IconAlert size={22} />,
+    title: 'Lo no identificado = riesgo',
+    desc: 'Si no sabes qué es, trátala como potencialmente peligrosa. No hay atajos.',
   },
   {
-    icon: '🔥',
-    title: 'Cocina siempre bien las setas',
-    desc: 'Muchas setas comestibles son tóxicas en crudo. La cocción destruye toxinas termolábiles.',
+    icon: <IconSearch size={22} />,
+    title: 'Mira láminas, pie y base',
+    desc: 'Muchas confusiones se resuelven (o se agravan) por no mirar la parte de abajo o la volva.',
   },
   {
-    icon: '⚠️',
-    title: 'Consume poca cantidad la primera vez',
-    desc: 'Incluso las setas comestibles pueden causar alergias o intolerancias individuales.',
+    icon: <IconMicroscope size={22} />,
+    title: 'La app orienta, no certifica',
+    desc: 'VisionSetil puede abstenerse. Eso es una feature de seguridad, no un fallo.',
   },
 ]
 
 const anatomyParts = [
   {
-    icon: '🎩',
+    icon: <IconCap size={22} />,
     name: 'Sombrero (Píleo)',
-    desc: 'La parte superior, con formas, colores y texturas muy variables. Clave para la identificación.',
-    features: ['Forma: convexo, plano, deprimido, cónico', 'Superficie: lisa, escamosa, viscosa', 'Color y cambios de color'],
+    desc: 'Forma, color y textura de la parte superior. Primer plano de casi cualquier ficha.',
+    features: [
+      'Forma: convexo, plano, deprimido, cónico',
+      'Superficie: lisa, escamosa, viscosa',
+      'Color y cambios de color',
+    ],
   },
   {
-    icon: '🔻',
+    icon: <IconGills size={22} />,
     name: 'Himenio',
-    desc: 'La parte fértil bajo el sombrero donde se producen las esporas. Fundamental para clasificar.',
+    desc: 'Parte inferior: láminas, poros, pliegues o aguijones. Crítico para no confundir géneros.',
     features: ['Láminas', 'Poros (tubos)', 'Pliegues', 'Aguijones'],
   },
   {
-    icon: '🦵',
+    icon: <IconStem size={22} />,
     name: 'Pie (Estípite)',
-    desc: 'El soporte del sombrero. Su forma, anillo y volva son caracteres diagnósticos esenciales.',
-    features: ['Anillo: presente o ausente', 'Volva: saco en la base (¡cuidado con Amanita!)', 'Consistencia y altura'],
+    desc: 'Anillo, grosor y textura del tallo. En Amanita, la base y la volva son decisivas.',
+    features: [
+      'Anillo: presente o ausente',
+      'Volva: saco en la base (clave en Amanita)',
+      'Altura y consistencia',
+    ],
   },
   {
-    icon: '✂️',
-    name: 'Carne',
-    desc: 'El interior de la seta. Su color, olor, sabor y cambios al corte son pistas valiosas.',
-    features: ['Cambio de color al corte', 'Olor (harina, anís, frutas)', 'Sabor (probar y escupir)'],
+    icon: <IconDetail size={22} />,
+    name: 'Carne y olor',
+    desc: 'Color al corte y olor ayudan a separar lookalikes. Nunca “pruebes” una seta dudosa.',
+    features: [
+      'Cambio de color al corte',
+      'Olor (harina, anís, desagradable…)',
+      'Contexto: árbol, sustrato, época',
+    ],
   },
 ]
 
 const seasons = [
   {
-    icon: '🌸',
+    icon: <IconLeaf size={22} />,
     name: 'Primavera',
-    months: 'Marzo - Mayo',
-    species: ['Morchella esculenta', 'Agaricus campestris', 'Calocybe gambosa'],
-    note: 'Temporada corta pero con especies muy cotizadas como las colmenas (Morchella).',
+    months: 'Marzo – Mayo',
+    species: ['Morchella esculenta', 'Calocybe gambosa', 'Agaricus campestris'],
+    note: 'Temporada corta. Ideal para estudiar caracteres, no para improvisar.',
   },
   {
-    icon: '☀️',
+    icon: <IconSun size={22} />,
     name: 'Verano',
-    months: 'Junio - Agosto',
-    species: ['Cantharellus cibarius', 'Amanita caesarea', 'Russula virescens'],
-    note: 'Requiere lluvias de verano. Buen momento para chantarelas y oronjas en zonas cálidas.',
+    months: 'Junio – Agosto',
+    species: ['Cantharellus cibarius', 'Amanita caesarea', 'Amanita phalloides'],
+    note: 'Tras tormentas puede haber diversidad… y confusiones graves.',
   },
   {
-    icon: '🍂',
+    icon: <IconLeaf size={22} />,
     name: 'Otoño',
-    months: 'Septiembre - Noviembre',
-    species: ['Boletus edulis', 'Lactarius deliciosus', 'Amanita phalloides', 'Hydnum repandum'],
-    note: 'LA temporada micológica por excelencia. Mayor diversidad y abundancia de especies.',
+    months: 'Septiembre – Noviembre',
+    species: ['Boletus edulis', 'Lactarius deliciosus', 'Amanita phalloides', 'Galerina marginata'],
+    note: 'Pico de temporada. Más setas = más lookalikes. Prioriza el riesgo.',
   },
   {
-    icon: '❄️',
+    icon: <IconSnowflake size={22} />,
     name: 'Invierno',
-    months: 'Diciembre - Febrero',
+    months: 'Diciembre – Febrero',
     species: ['Tuber melanosporum', 'Pleurotus ostreatus', 'Flammulina velutipes'],
-    note: 'Pocas especies pero muy valiosas: la trufa negra y la seta de ostra.',
+    note: 'Menos especies, pero el mismo criterio: si no sabes, no decidas.',
+  },
+]
+
+const fieldTips: Array<{ icon: ReactNode; text: string }> = [
+  {
+    icon: <IconNote size={18} />,
+    text: 'Anota fecha, hábitat y árboles cercanos — son pistas tan útiles como la foto.',
+  },
+  {
+    icon: <IconSearch size={18} />,
+    text: 'Fotografía láminas, perfil, base y entorno antes de tocar nada.',
+  },
+  {
+    icon: <IconBook size={18} />,
+    text: 'No mezcles especies en la misma cesta o bandeja de fotos.',
+  },
+  {
+    icon: <IconExpert size={18} />,
+    text: 'Si dudas, guarda una muestra y consulta a un experto o sociedad micológica.',
   },
 ]
 
 const faqItems: AccordionItem[] = [
   {
     q: '¿Es segura la identificación por IA?',
-    a: 'La IA es una herramienta orientativa, NO definitiva. VisionSetil indica un nivel de confianza y puede rechazar una identificación si no está seguro. Siempre debes confirmar con un experto antes de consumir.',
+    a: 'No como decisión final. Es orientación: puede equivocarse o abstenerse. Un micólogo humano debe validar cualquier caso serio.',
   },
   {
-    q: '¿Qué hago si creo que he comido una seta tóxica?',
-    a: 'Llama inmediatamente al 112 o al Instituto Nacional de Toxicología (915 620 420). Conserva una muestra de la seta y de los restos de comida. No provoques el vómito salvo indicación médica.',
+    q: '¿Qué hago si sospecho intoxicación?',
+    a: 'Llama al 112 o al Instituto Nacional de Toxicología (915 620 420), 24 h. Conserva una muestra de la seta. No te automediques.',
   },
   {
-    q: '¿Cuál es la seta más peligrosa?',
-    a: 'Amanita phalloides (oronja verde) es responsable del 90% de muertes por setas en el mundo. Sus toxinas (amatoxinas) destruyen el hígado y los síntomas aparecen cuando ya es tarde.',
+    q: '¿Cuál es la seta más peligrosa aquí?',
+    a: 'Amanita phalloides (oronja verde) causa la mayoría de muertes por setas. Las amatoxinas dañan el hígado; los síntomas tardan en aparecer.',
   },
   {
-    q: '¿Puedo fiarme de las setas que venden en mercados?',
-    a: 'Sí, las setas de comercios autorizados pasan controles sanitarios. El riesgo está en el consumo de setas recolectadas personalmente sin conocimiento suficiente.',
+    q: '¿La app me dice si es “buena”?',
+    a: 'No. VisionSetil habla de riesgo y orientación, nunca de permiso de consumo ni de “seta buena para la sartén”.',
   },
   {
-    q: '¿Es legal recolectar setas silvestres?',
-    a: 'Depende de la normativa de cada comunidad autónoma. Generalmente se requiere permiso y hay límites de cantidad. Infórmate siempre en tu región antes de salir al campo.',
+    q: '¿Cómo ayudo al modelo?',
+    a: 'Multi-vista (láminas, perfil, base, hábitat), buena luz y metadatos de campo. Si el modelo se abstiene, hazle caso.',
   },
-  {
-    q: '¿Cómo hago una esporada?',
-    a: 'Corta el sombrero maduro, colócalo boca abajo sobre papel blanco y oscuro, cubre con un vaso y espera 12-24h. El color de las esporas (blanco, rosa, marrón, negro) es clave para la identificación.',
-  },
-]
-
-const foragingTips = [
-  '🧺 Usa cestas de mimbre, nunca bolsas de plástico (las setas se pudren)',
-  '✂️ Corta con navaja, no arranques (conserva la micelio)',
-  '📝 Anota la fecha, hábitat y árboles cercanos',
-  '🧹 Limpia las setas en el campo con un cepillo pequeño',
-  '🔍 Identifica en el campo; no mezcles especies en la cesta',
-  '🚗 Transporta las setas refrigeradas y consúmelas pronto',
 ]
 
 export function EducationPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(0)
 
   return (
-    <div className="page-education">
+    <div className="page-education page-atelier-shell">
       <div className="page-header">
-        <h1 className="page-title">🎓 Aprende micología</h1>
+        <h1 className="page-title">Aprende micología</h1>
         <p className="page-subtitle">
-          Guías esenciales para disfrutar del mundo de las setas con seguridad y conocimiento
+          Caracteres, riesgo y cabeza fría. Educación de campo — no recetario.
         </p>
       </div>
 
-      {/* Golden rules */}
+      <div className="safety-disclaimer" role="note">
+        <strong>Solo orientación</strong>
+        <p>Aquí aprendes a observar y a dudar. Ningún texto de esta app autoriza consumo.</p>
+      </div>
+
       <section className="edu-section">
-        <h2 className="edu-section-title">⚠️ Las 6 reglas de oro de la seguridad</h2>
+        <h2 className="edu-section-title">
+          <IconAlert size={22} />
+          Seis reglas de oro
+        </h2>
         <div className="rules-grid">
-          {safetyRules.map((rule, i) => (
-            <div key={i} className="rule-card">
+          {safetyRules.map((rule) => (
+            <div key={rule.title} className="rule-card">
               <span className="rule-icon">{rule.icon}</span>
               <h3>{rule.title}</h3>
               <p>{rule.desc}</p>
@@ -159,12 +205,13 @@ export function EducationPage() {
         </div>
       </section>
 
-      {/* Anatomy */}
       <section className="edu-section">
-        <h2 className="edu-section-title">🔬 Anatomía de una seta</h2>
+        <h2 className="edu-section-title">
+          <IconMicroscope size={22} />
+          Anatomía útil
+        </h2>
         <p className="edu-intro">
-          Conocer las partes de una seta es esencial para identificarla correctamente. Cada parte
-          aporta pistas fundamentales.
+          Identificar es mirar piezas: sombrero, himenio, pie y base. Cada una desmonta confusiones.
         </p>
         <div className="anatomy-grid">
           {anatomyParts.map((part) => (
@@ -184,9 +231,11 @@ export function EducationPage() {
         </div>
       </section>
 
-      {/* Seasons */}
       <section className="edu-section">
-        <h2 className="edu-section-title">📅 El calendario de las setas</h2>
+        <h2 className="edu-section-title">
+          <IconCalendar size={22} />
+          Calendario (educativo)
+        </h2>
         <div className="seasons-grid">
           {seasons.map((s) => (
             <div key={s.name} className="season-card">
@@ -210,25 +259,36 @@ export function EducationPage() {
         </div>
       </section>
 
-      {/* Foraging tips */}
       <section className="edu-section">
-        <h2 className="edu-section-title">🧺 Consejos de recolección</h2>
+        <h2 className="edu-section-title">
+          <IconNote size={22} />
+          En el campo
+        </h2>
         <div className="tips-grid">
-          {foragingTips.map((tip, i) => (
-            <div key={i} className="tip-item">
-              {tip}
+          {fieldTips.map((tip) => (
+            <div key={tip.text} className="tip-item tip-item--icon">
+              <span className="tip-item__icon" aria-hidden="true">
+                {tip.icon}
+              </span>
+              <span>{tip.text}</span>
             </div>
           ))}
         </div>
       </section>
 
-      {/* FAQ */}
       <section className="edu-section">
-        <h2 className="edu-section-title">❓ Preguntas frecuentes</h2>
+        <h2 className="edu-section-title">
+          <IconInfo size={22} />
+          Preguntas frecuentes
+        </h2>
         <div className="faq-list">
           {faqItems.map((item, i) => (
-            <div key={i} className={`faq-item ${openFaq === i ? 'faq-item--open' : ''}`}>
-              <button className="faq-question" onClick={() => setOpenFaq(openFaq === i ? null : i)}>
+            <div key={item.q} className={`faq-item ${openFaq === i ? 'faq-item--open' : ''}`}>
+              <button
+                type="button"
+                className="faq-question"
+                onClick={() => setOpenFaq(openFaq === i ? null : i)}
+              >
                 {item.q}
                 <span className="faq-chevron">{openFaq === i ? '−' : '+'}</span>
               </button>
@@ -238,16 +298,16 @@ export function EducationPage() {
         </div>
       </section>
 
-      {/* Emergency */}
       <section className="edu-section">
         <div className="emergency-box">
-          <span className="emergency-icon">🚨</span>
+          <span className="emergency-icon" aria-hidden="true">
+            <IconAlert size={28} />
+          </span>
           <div>
             <h3>¿Sospecha de intoxicación?</h3>
             <p>
-              <strong>Llama al 112</strong> o al Instituto Nacional de Toxicología:{' '}
-              <strong>915 620 420</strong> (24h). Conserva una muestra de la seta y no te
-              automediques.
+              <strong>112</strong> o Toxicología <strong>915 620 420</strong> (24 h). Conserva una
+              muestra. No te automediques.
             </p>
           </div>
         </div>

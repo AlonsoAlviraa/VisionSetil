@@ -1,0 +1,63 @@
+{
+  "version": "industrial_v1",
+  "updated": "2026-07-17",
+  "policy": "R7: false-safe on these taxa is a blocker. Orientation only — never consumption permission.",
+  "species": [
+    {
+      "latin_name": "Amanita phalloides",
+      "risk_level": "critical",
+      "priority": 1
+    },
+    {
+      "latin_name": "Amanita virosa",
+      "risk_level": "critical",
+      "priority": 1
+    },
+    {
+      "latin_name": "Amanita muscaria",
+      "risk_level": "high",
+      "priority": 1
+    },
+    {
+      "latin_name": "Amanita pantherina",
+      "risk_level": "high",
+      "priority": 1
+    },
+    {
+      "latin_name": "Galerina marginata",
+      "risk_level": "critical",
+      "priority": 1
+    },
+    {
+      "latin_name": "Gyromitra esculenta",
+      "risk_level": "high",
+      "priority": 1
+    },
+    {
+      "latin_name": "Cortinarius rubellus",
+      "risk_level": "critical",
+      "priority": 1,
+      "notes": "Deadly orellanine complex; C. orellanus often absent from dumps"
+    },
+    {
+      "latin_name": "Hypholoma fasciculare",
+      "risk_level": "high",
+      "priority": 1
+    },
+    {
+      "latin_name": "Lepiota castanea",
+      "risk_level": "critical",
+      "priority": 1
+    },
+    {
+      "latin_name": "Lepiota subincarnata",
+      "risk_level": "critical",
+      "priority": 1
+    },
+    {
+      "latin_name": "Paxillus involutus",
+      "risk_level": "high",
+      "priority": 1
+    }
+  ]
+}

@@ -104,3 +104,84 @@ class ClassificationJob(Base):
     completed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
     observation: Mapped[Observation] = relationship("Observation")
+
+
+class User(Base):
+    """Registered community user (login)."""
+
+    __tablename__ = "users"
+    __table_args__ = (Index("ix_users_email", "email", unique=True),)
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    email: Mapped[str] = mapped_column(String(255), unique=True)
+    username: Mapped[str] = mapped_column(String(80), unique=True)
+    password_hash: Mapped[str] = mapped_column(String(255))
+    display_name: Mapped[str] = mapped_column(String(120))
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
+
+    sessions: Mapped[list["AuthSession"]] = relationship(
+        "AuthSession", back_populates="user", cascade="all, delete-orphan"
+    )
+    posts: Mapped[list["CommunityPost"]] = relationship(
+        "CommunityPost", back_populates="author", cascade="all, delete-orphan"
+    )
+    comments: Mapped[list["CommunityComment"]] = relationship(
+        "CommunityComment", back_populates="author", cascade="all, delete-orphan"
+    )
+
+
+class AuthSession(Base):
+    """Bearer token session for SPA login."""
+
+    __tablename__ = "auth_sessions"
+    __table_args__ = (Index("ix_auth_sessions_token", "token", unique=True),)
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    token: Mapped[str] = mapped_column(String(64), unique=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
+    expires_at: Mapped[datetime] = mapped_column(DateTime)
+    revoked: Mapped[bool] = mapped_column(Boolean, default=False)
+
+    user: Mapped[User] = relationship("User", back_populates="sessions")
+
+
+class CommunityPost(Base):
+    """Community feed post (chat-style) with optional photo."""
+
+    __tablename__ = "community_posts"
+    __table_args__ = (Index("ix_community_posts_created_at", "created_at"),)
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    author_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    body: Mapped[str] = mapped_column(Text)
+    image_path: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    image_url: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    # Safety: never consumption advice
+    orientation_only: Mapped[bool] = mapped_column(Boolean, default=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
+
+    author: Mapped[User] = relationship("User", back_populates="posts")
+    comments: Mapped[list["CommunityComment"]] = relationship(
+        "CommunityComment",
+        back_populates="post",
+        cascade="all, delete-orphan",
+        order_by="CommunityComment.created_at",
+    )
+
+
+class CommunityComment(Base):
+    """Comment on a community post."""
+
+    __tablename__ = "community_comments"
+    __table_args__ = (Index("ix_community_comments_post_id", "post_id"),)
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    post_id: Mapped[int] = mapped_column(ForeignKey("community_posts.id"))
+    author_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    body: Mapped[str] = mapped_column(Text)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
+
+    post: Mapped[CommunityPost] = relationship("CommunityPost", back_populates="comments")
+    author: Mapped[User] = relationship("User", back_populates="comments")

@@ -55,13 +55,35 @@ export default defineConfig({
             },
           },
           {
-            urlPattern: /\.(?:png|jpg|jpeg|svg|gif)$/,
+            urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp)$/,
             handler: 'StaleWhileRevalidate',
             options: {
               cacheName: 'images-cache',
               expiration: {
-                maxEntries: 50,
-                maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+                maxEntries: 80,
+                maxAgeSeconds: 60 * 60 * 24 * 30,
+              },
+            },
+          },
+          {
+            urlPattern: /^https:\/\/upload\.wikimedia\.org\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'wiki-fungi-images',
+              expiration: {
+                maxEntries: 200,
+                maxAgeSeconds: 60 * 60 * 24 * 30,
+              },
+            },
+          },
+          {
+            urlPattern: /^https:\/\/(.*\.)?inaturalist\.(org|open-data\.s3\.amazonaws\.com)\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'inat-fungi-images',
+              expiration: {
+                maxEntries: 200,
+                maxAgeSeconds: 60 * 60 * 24 * 14,
               },
             },
           },
@@ -77,10 +99,38 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
+      // Community photos + observation uploads served by FastAPI StaticFiles
+      '/uploads': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+      },
     },
+  },
+  build: {
+    target: 'es2020',
+    cssCodeSplit: true,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules/three')) return 'three'
+          if (id.includes('node_modules/react-dom') || id.includes('node_modules/react/'))
+            return 'react-vendor'
+          if (id.includes('node_modules/react-router')) return 'router'
+          if (id.includes('node_modules/framer-motion')) return 'motion'
+          if (id.includes('node_modules/leaflet') || id.includes('react-leaflet')) return 'map'
+          if (id.includes('speciesPhotos.json')) return 'species-photos'
+          if (id.includes('speciesCatalog.json')) return 'species-catalog'
+        },
+      },
+    },
+    chunkSizeWarningLimit: 900,
   },
   test: {
     globals: true,
-    environment: 'jsdom',
+    // Pure unit tests (step-up helpers, geometry, risk labels) run in Node.
+    // jsdom@29 is ESM-only and breaks vitest CJS require (ERR_REQUIRE_ESM).
+    environment: 'node',
+    include: ['src/**/*.{test,spec}.{ts,tsx}'],
+    setupFiles: ['src/test/setupCatalog.ts'],
   },
 })

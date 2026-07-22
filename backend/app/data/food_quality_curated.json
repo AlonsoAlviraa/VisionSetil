@@ -1,0 +1,1433 @@
+{
+  "version": "1.0.0",
+  "policy": "orientation_only; never invent; parsed from FE mushroomDatabase sources",
+  "count": 142,
+  "by_class": {
+    "comestible": 72,
+    "mortal": 7,
+    "toxica": 22,
+    "no_comestible": 41
+  },
+  "records": [
+    {
+      "taxon": "Boletus edulis",
+      "common": "Hongo blanco",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Amanita phalloides",
+      "common": "Oronja verde",
+      "food_class": "mortal",
+      "food_label": "Mortal",
+      "documented_edibility": "mortifero",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Lactarius deliciosus",
+      "common": "Nízcalo",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "buen_comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Cantharellus cibarius",
+      "common": "Rebollón",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Amanita muscaria",
+      "common": "Matamoscas",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "documented_edibility": "toxico",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Tuber melanosporum",
+      "common": "Trufa negra",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Pleurotus ostreatus",
+      "common": "Seta de ostra",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "buen_comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Agaricus campestris",
+      "common": "Champiñón silvestre",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Macrolepiota procera",
+      "common": "Apagador",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "buen_comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Coprinus comatus",
+      "common": "Barbuda",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Russula virescens",
+      "common": "Hongo verde",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Hydnum repandum",
+      "common": "Lengua de gato",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Amanita caesarea",
+      "common": "Oronja",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Ganoderma lucidum",
+      "common": "Reishi",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "documented_edibility": "no_recomendado",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Morchella esculenta",
+      "common": "Colmena",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "buen_comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Boletus reticulatus",
+      "common": "Hongo negro",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Boletus pinophilus",
+      "common": "Hondo pinícola",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Suillus luteus",
+      "common": "Mocosa",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "buen_comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Lactarius sanguifluus",
+      "common": "Nízcalo de sangre",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Tricholoma equestre",
+      "common": "Seta de los caballeros",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "documented_edibility": "comestible_con_cautela",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Pleurotus eryngii",
+      "common": "Seta de cardo",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Calocybe gambosa",
+      "common": "Seta de San Juan",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Marasmius oreades",
+      "common": "Senderuela",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Flammulina velutipes",
+      "common": "Cola de faiso",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "buen_comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Hericium erinaceus",
+      "common": "Barba de león",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Boletus aereus",
+      "common": "Hongo negro",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Rubroboletus luridus",
+      "common": "Hongo brujas",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "documented_edibility": "comestible_con_cautela",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Amanita virosa",
+      "common": "Oronja blanca",
+      "food_class": "mortal",
+      "food_label": "Mortal",
+      "documented_edibility": "mortifero",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Amanita verna",
+      "common": "Oronja blanca de primavera",
+      "food_class": "mortal",
+      "food_label": "Mortal",
+      "documented_edibility": "mortifero",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Gyromitra esculenta",
+      "common": "Colmenilla falsa",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "documented_edibility": "toxico",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Cortinarius orellanus",
+      "common": "Cortinario de Orellanus",
+      "food_class": "mortal",
+      "food_label": "Mortal",
+      "documented_edibility": "mortifero",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Omphalotus olearius",
+      "common": "Oreja de pau",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "documented_edibility": "toxico",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Entoloma sinuatum",
+      "common": "Entoloma tóxico",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "documented_edibility": "toxico",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Lepiota brunneoincarnata",
+      "common": "Lepiota mortal",
+      "food_class": "mortal",
+      "food_label": "Mortal",
+      "documented_edibility": "mortifero",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Coprinus atramentarius",
+      "common": "Coprina",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "documented_edibility": "toxico",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Russula cyanoxantha",
+      "common": "Rúsula de los curas",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Laccaria laccata",
+      "common": "Lacaria",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "buen_comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Armillaria mellea",
+      "common": "Senderuela de otoño",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "documented_edibility": "comestible_con_cautela",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Fistulina hepatica",
+      "common": "Lengua de buey",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "buen_comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Laetiporus sulphureus",
+      "common": "Pollo del bosque",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "buen_comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Tuber aestivum",
+      "common": "Trufa de verano",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Tuber magnatum",
+      "common": "Trufa blanca",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Morchella elata",
+      "common": "Colmena negra",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "buen_comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Verpa conica",
+      "common": "Verpa",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "documented_edibility": "comestible_con_cautela",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Agaricus arvensis",
+      "common": "Champiñón de prado",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Agaricus bisporus",
+      "common": "Champiñón común",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Helvella crispa",
+      "common": "Oreja de gato",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "documented_edibility": "comestible_con_cautela",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Helvella lacunosa",
+      "common": "Helvela negra",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "documented_edibility": "comestible_con_cautela",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Inocybe rimosa",
+      "common": "Inocibe fibroso",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "documented_edibility": "toxico",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Clitocybe dealbata",
+      "common": "Clitocibe blanco",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "documented_edibility": "toxico",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Paxillus involutus",
+      "common": "Enrollado",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "documented_edibility": "toxico",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Schizophyllum commune",
+      "common": "Cola de gallo",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "buen_comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Auricularia auricula-judae",
+      "common": "Oreja de Judas",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "buen_comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Hericium coralloides",
+      "common": "Coral blanco",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Grifola frondosa",
+      "common": "Maitake",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Trametes versicolor",
+      "common": "Cola de pavo",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "documented_edibility": "no_recomendado",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Fomes fomentarius",
+      "common": "Yesquero",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "documented_edibility": "no_recomendado",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Cordyceps militaris",
+      "common": "Cordyceps",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "documented_edibility": "no_recomendado",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Clavaria zollingeri",
+      "common": "Coral púrpura",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "documented_edibility": "comestible_con_cautela",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Ramaria botrytis",
+      "common": "Coral de roble",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "buen_comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Sparassis crispa",
+      "common": "Coliflor",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Boletus erythropus",
+      "common": "Pie rojo",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "documented_edibility": "comestible_con_cautela",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Boletus impolitus",
+      "common": "Boletus impoluto",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "buen_comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Boletus satanas",
+      "common": "Boletus de Satán",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "documented_edibility": "toxico",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Rubroboletus satanas",
+      "common": "Boletus de Satán (moderno)",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "documented_edibility": "toxico",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Leccinum scabrum",
+      "common": "Bipi",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "buen_comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Leccinum versipelle",
+      "common": "Leccinum anaranjado",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Strobilomyces strobilaceus",
+      "common": "Boletus piña",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "documented_edibility": "comestible_con_cautela",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Tylopilus felleus",
+      "common": "Boletus de la hiel",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "documented_edibility": "no_recomendado",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Russula vesca",
+      "common": "Rúsula de los cerdos",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Russula emetica",
+      "common": "Rúsula emética",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "documented_edibility": "toxico",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Lactarius torminosus",
+      "common": "Falso nízcalo",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "documented_edibility": "toxico",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Lactarius pergamenus",
+      "common": "Lactarius pálido",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "documented_edibility": "toxico",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Agaricus silvicola",
+      "common": "Champiñón de bosque",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "buen_comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Agaricus xanthoderma",
+      "common": "Champiñón amarilleante tóxico",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "documented_edibility": "toxico",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Macrolepiota mastoidea",
+      "common": "Apagador menor",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "buen_comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Tricholoma portentosum",
+      "common": "Seta de los pinos negra",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Tricholoma terreum",
+      "common": "Seta de los caballeros menor",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "buen_comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Peziza vesiculosa",
+      "common": "Peziza común",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "documented_edibility": "no_recomendado",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Aleuria aurantia",
+      "common": "Copa naranja",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "documented_edibility": "comestible_con_cautela",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Sarcoscypha coccinea",
+      "common": "Copa escarlata",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "documented_edibility": "comestible_con_cautela",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Polyporus squamosus",
+      "common": "Poliporo escamoso",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "documented_edibility": "comestible_con_cautela",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Calvatia gigantea",
+      "common": "Bola de nieve gigante",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "documented_edibility": "comestible_con_cautela",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Cantharellus lutescens",
+      "common": "Chantarela amarilla",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Hydnum rufescens",
+      "common": "Lengua de gato parda",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Amanita rubescens",
+      "common": "Amanita rubescente",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "documented_edibility": "comestible_con_cautela",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Amanita pantherina",
+      "common": "Matamoscas pantera",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "documented_edibility": "toxico",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Suillus granulatus",
+      "common": "Bocalbo anillado",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "buen_comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Lactarius chrysorrheus",
+      "common": "Lactarius de látex amarillo",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "documented_edibility": "no_recomendado",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Collybia butyracea",
+      "common": "Colibia mantecosa",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "documented_edibility": "comestible_con_cautela",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Tricholomopsis rutilans",
+      "common": "Tricholomopsis roja",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "documented_edibility": "no_recomendado",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Pholiota squarrosa",
+      "common": "Foliota escamosa",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "documented_edibility": "no_recomendado",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Hygrophoropsis aurantiaca",
+      "common": "Falso chantarela",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "documented_edibility": "no_recomendado",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Imleria badia",
+      "common": "Boleto bayo",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Xerocomellus chrysenteron",
+      "common": "Boleto quebradizo",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "buen_comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Suillus bovinus",
+      "common": "Bocaldo",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "buen_comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Suillus grevillei",
+      "common": "Boleto del alerce",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "buen_comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Gyroporus castaneus",
+      "common": "Boleto castaño",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Caloboletus calopus",
+      "common": "Boleto amargo",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "documented_edibility": "toxico",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Chalciporus piperatus",
+      "common": "Boleto picante",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "documented_edibility": "comestible_con_cautela",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Russula heterophylla",
+      "common": "Rúsula de láminas desiguales",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Russula xerampelina",
+      "common": "Rúsula gamba",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Russula nigricans",
+      "common": "Rúsula negra",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "documented_edibility": "comestible_con_cautela",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Russula foetens",
+      "common": "Rúsula fétida",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "documented_edibility": "toxico",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Lactarius deterrimus",
+      "common": "Falso nízcalo",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "buen_comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Lactarius salmonicolor",
+      "common": "Nízcalo de abeto salmonado",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "documented_edibility": "comestible_con_cautela",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Craterellus cornucopioides",
+      "common": "Trompeta de los muertos",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Craterellus tubaeformis",
+      "common": "Cantharela de invierno",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Polyozellus multiplex",
+      "common": "Chantarela azul",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Hydnellum peckii",
+      "common": "Hongo sangrante",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "documented_edibility": "no_recomendado",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Sarcodon imbricatus",
+      "common": "Hidno escamoso",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "documented_edibility": "comestible_con_cautela",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Cortinarius rubellus",
+      "common": "Cortinario mortal rojo",
+      "food_class": "mortal",
+      "food_label": "Mortal",
+      "documented_edibility": "mortifero",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Galerina marginata",
+      "common": "Galerina mortal",
+      "food_class": "mortal",
+      "food_label": "Mortal",
+      "documented_edibility": "mortifero",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Hypholoma fasciculare",
+      "common": "Galerina amarilla",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "documented_edibility": "toxico",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Cortinarius sanguineus",
+      "common": "Cortinario sanguíneo",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "documented_edibility": "toxico",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Hebeloma crustuliniforme",
+      "common": "Hebeloma venenoso",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "documented_edibility": "toxico",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Inonotus obliquus",
+      "common": "Chaga",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "documented_edibility": "no_recomendado",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Ganoderma applanatum",
+      "common": "Hongo del artista",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "documented_edibility": "no_recomendado",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Piptoporus betulinus",
+      "common": "Pólipo del abedul",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "documented_edibility": "no_recomendado",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Trametes gibbosa",
+      "common": "Pólipo abultado",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "documented_edibility": "no_recomendado",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Pleurotus cornucopiae",
+      "common": "Seta de ostra dorada",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Lentinula edodes",
+      "common": "Shiitake",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Cyclocybe aegerita",
+      "common": "Seta de chopo",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Kuehneromyces mutabilis",
+      "common": "Seta de tocón variable",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Coprinellus micaceus",
+      "common": "Coprina micácea",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "documented_edibility": "comestible_con_cautela",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Coprinopsis picacea",
+      "common": "Coprina urraca",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "documented_edibility": "toxico",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Pluteus cervinus",
+      "common": "Pluteo cervino",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "buen_comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Clitopilus prunulus",
+      "common": "Harinero",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Megacollybia platyphylla",
+      "common": "Colibia ancha",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "buen_comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Oudemansiella mucida",
+      "common": "Porcelana",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "buen_comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Macrolepiota konradii",
+      "common": "Parasol de Konrad",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Chlorophyllum rhacodes",
+      "common": "Parasol escamoso",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "documented_edibility": "comestible_con_cautela",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Amanita fulva",
+      "common": "Amanita fulva",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "buen_comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Amanita citrina",
+      "common": "Falsa oronja verde",
+      "food_class": "toxica",
+      "food_label": "Tóxica",
+      "documented_edibility": "toxico",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Morchella importuna",
+      "common": "Colmena de jardín",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "buen_comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Morchella semilibera",
+      "common": "Medio libre",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "buen_comestible",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Disciotis venosa",
+      "common": "Oreja de elefante",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "documented_edibility": "comestible_con_cautela",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Terfezia claveryi",
+      "common": "Trufa del desierto",
+      "food_class": "comestible",
+      "food_label": "Comestible",
+      "documented_edibility": "excelente",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Daedaleopsis confragosa",
+      "common": "Pólipo sonrosado",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "documented_edibility": "no_recomendado",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Stereum hirsutum",
+      "common": "Cortina peluda",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "documented_edibility": "no_recomendado",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Bjerkandera adusta",
+      "common": "Pólipo ahumado",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "documented_edibility": "no_recomendado",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    },
+    {
+      "taxon": "Phaeolus schweinitzii",
+      "common": "Pólipo teñidor",
+      "food_class": "no_comestible",
+      "food_label": "No comestible",
+      "documented_edibility": "no_recomendado",
+      "food_sources": [
+        "mushroomDatabase (curada Iberia/Europa)"
+      ]
+    }
+  ]
+}

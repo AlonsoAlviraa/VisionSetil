@@ -60,6 +60,22 @@ jobs:
         # -ll = low severity threshold (report medium+high only)
         # -x  = exclude tests
 
+      # ── Dependency audits (S4) ──
+      - name: pip-audit (backend)
+        run: |
+          pip install pip-audit
+          pip-audit -r backend/requirements.txt || pip-audit --path backend || true
+        # non-blocking until requirements lock is strict; still surfaces CVEs in logs
+
+      - name: Set up Node for npm audit
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: npm audit (frontend production deps)
+        working-directory: frontend
+        run: npm audit --omit=dev --audit-level=high || true
+
       # ── Gitleaks: secrets in git history ──
       - name: Gitleaks
         uses: gitleaks/gitleaks-action@v2
@@ -109,6 +125,9 @@ jobs:
 
       - name: TypeScript check
         run: npx tsc --noEmit
+
+      - name: Unit tests (incl. safety-copy + offline pack)
+        run: npm test
 
       - name: Build
         run: npm run build

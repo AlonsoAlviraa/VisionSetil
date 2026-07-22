@@ -18,6 +18,87 @@ def list_mock_species_catalog() -> list[dict]:
     return _load_json(settings.mock_species_catalog_path)
 
 
+def _expanded_catalog_path() -> Path:
+    return Path(__file__).resolve().parents[1] / "data" / "species_catalog_expanded.json"
+
+
+@lru_cache(maxsize=1)
+def list_expanded_species_catalog() -> dict:
+    """Load the expanded risk-first species catalog artifact.
+
+    Returns the full payload: {version, count, policy, sources, species: [...]}.
+    Falls back to mock catalog wrapped in the same shape if the expanded file is missing.
+    Documented food quality is applied from curated sources only (never invented).
+    """
+    from app.services.food_quality_sync import apply_food_quality_to_species_row, build_food_quality_index
+
+    path = _expanded_catalog_path()
+    if path.exists():
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    else:
+        mock = list_mock_species_catalog()
+        species = []
+        for item in mock:
+            species.append(
+                {
+                    "taxon": item.get("taxon"),
+                    "slug": str(item.get("taxon", "")).lower().replace(" ", "-"),
+                    "rank": item.get("rank", "species"),
+                    "common_names": item.get("common_names") or [],
+                    "risk_label": item.get("risk_level") or "dangerous_or_unknown",
+                    "description": item.get("description"),
+                    "source": "mock_fallback",
+                }
+            )
+        payload = {
+            "version": "mock-fallback",
+            "count": len(species),
+            "policy": "orientation_only; unsafe_to_consume",
+            "sources": ["mock_species_catalog.json"],
+            "species": species,
+        }
+
+    index = build_food_quality_index()
+    payload["species"] = [
+        apply_food_quality_to_species_row(row, index) for row in (payload.get("species") or [])
+    ]
+    return payload
+
+
+def list_expanded_species(
+    *,
+    q: str | None = None,
+    risk_label: str | None = None,
+    limit: int = 100,
+    offset: int = 0,
+) -> list[dict]:
+    payload = list_expanded_species_catalog()
+    rows: list[dict] = list(payload.get("species") or [])
+    if q:
+        ql = q.lower().strip()
+        rows = [
+            r
+            for r in rows
+            if ql in str(r.get("taxon", "")).lower()
+            or any(ql in str(c).lower() for c in (r.get("common_names") or []))
+            or ql in str(r.get("family") or "").lower()
+        ]
+    if risk_label:
+        rl = risk_label.lower().strip()
+        rows = [r for r in rows if str(r.get("risk_label", "")).lower() == rl]
+    limit = max(1, min(int(limit), 500))
+    offset = max(0, int(offset))
+    return rows[offset : offset + limit]
+
+
+def get_species_by_slug(slug: str) -> dict | None:
+    target = slug.lower().strip()
+    for row in list_expanded_species_catalog().get("species") or []:
+        if str(row.get("slug", "")).lower() == target:
+            return row
+    return None
+
+
 @lru_cache(maxsize=4)
 def load_real_species_index(index_dir: Path = None) -> tuple[list[dict], dict]:
     """Load real species visual prototypes and metadata from species_index directory.

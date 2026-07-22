@@ -1,8 +1,11 @@
 # VisionSetil — Model Metrics Report
 
-> **Status:** METHODOLOGY + REFERENCE BENCHMARKS. No real training run has been executed yet on FungiCLEF 2025.
-> All "target" values in this document are **projections** grounded in published competition results and ablation literature, clearly labeled as such. They are NOT measurements.
-> When training is executed via `kaggle/mega_training.py`, the harness `eval/scripts/compute_full_metrics.py` will produce a real `full_metrics_report.json` that replaces this document's projection tables with measured values.
+> **Status:** Hay un run **medido** en repo (`kaggle/kernel_output_v9/models/metrics.json`, subsample
+> FungiTastic+FungiCLEF, 500 spp, few-shot). MAP@3 test ≈ **0.076** — honesto, no producción.
+> Dashboard: `/ml` y API `/models/training`. Fuentes ES/Soria: `docs/DATA_SOURCES_SPAIN_SORIA.md`.
+>
+> Las tablas `[TARGET]` / leaderboard FungiCLEF de abajo siguen siendo **proyecciones** de referencia.
+> Un re-entreno full (sin subsample 500×8) debe regenerar métricas con `eval/scripts/compute_full_metrics.py`.
 
 ---
 

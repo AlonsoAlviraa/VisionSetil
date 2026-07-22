@@ -10,8 +10,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.base import BaseHTTPMiddleware
 
+from app.api.routes_auth import router as auth_router
 from app.api.routes_classification import router as classification_router
 from app.api.routes_classify import router as classify_router
+from app.api.routes_community import router as community_router
 from app.api.routes_feedback import router as feedback_router
 from app.api.routes_health import router as health_router
 from app.api.routes_human_review import router as human_review_router
@@ -80,6 +82,8 @@ app.add_middleware(SecurityHeadersMiddleware)
 
 app.mount("/uploads", StaticFiles(directory=str(settings.upload_dir)), name="uploads")
 app.include_router(health_router)
+app.include_router(auth_router)
+app.include_router(community_router)
 app.include_router(observations_router)
 app.include_router(images_router)
 app.include_router(classification_router)

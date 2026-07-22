@@ -1,238 +1,176 @@
-/** Species detail page: full info, photo gallery from Wikipedia, taxonomy, safety info. */
+/** Species detail — editorial layout, real photo 360, safe prose (Wave B). */
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import {
-  getMushroomByScientificName,
-  EDIBILITY_COLORS,
-  EDIBILITY_LABELS,
-} from '../data/mushroomDatabase'
-import { getWikiMediaImages, getWikiSummary } from '../api/wikipedia'
-import type { WikiImage, WikiSummary } from '../api/wikipedia'
-import { getMushroomImages } from '../api/mushroomImages'
+import { getSpeciesBySlug, loadSpeciesCatalog } from '../data/speciesCatalog'
+import { getMushroomByScientificName } from '../data/mushroomDatabase'
+import { getRiskMeta } from '../lib/riskLabels'
+import { PhotoSpinViewer } from '../components/PhotoSpinViewer'
+import { rankLookalikes } from '../lib/lookalikeRisk'
+import { SpeciesNameBlock } from '../components/SpeciesNameBlock'
+import { RiskChip } from '../components/RiskChip'
+import { sanitizeEducationalText } from '../lib/educationCopy'
+import { EmptyState } from '../components/EmptyState'
+import { getFoodQuality } from '../lib/foodQuality'
 
 export function SpeciesDetailPage() {
   const { slug } = useParams<{ slug: string }>()
-  const scientificName = slug ? decodeURIComponent(slug) : ''
-  const species = getMushroomByScientificName(scientificName)
-
-  const [images, setImages] = useState<WikiImage[]>([])
-  const [wiki, setWiki] = useState<WikiSummary | null>(null)
-  const [lightbox, setLightbox] = useState<WikiImage | null>(null)
-  const [loading, setLoading] = useState(true)
-
+  const [ready, setReady] = useState(false)
   useEffect(() => {
-    window.scrollTo(0, 0)
-    setLoading(true)
-    setImages([])
-    setWiki(null)
-    Promise.all([
-      getWikiMediaImages(scientificName, 8),
-      getWikiSummary(scientificName),
-      getMushroomImages(scientificName, 6),
-    ]).then(([wikiImgs, summary, apiImgs]) => {
-      // Merge all images, deduplicating by URL
-      const merged: WikiImage[] = [...wikiImgs]
-      for (const img of apiImgs) {
-        if (!merged.some((m) => m.url === img.url)) {
-          merged.push({ url: img.url, caption: img.caption })
-        }
-      }
-      setImages(merged)
-      setWiki(summary)
-      setLoading(false)
-    })
-  }, [scientificName])
+    void loadSpeciesCatalog().then(() => setReady(true))
+  }, [])
+  const catalog = ready && slug ? getSpeciesBySlug(slug) : undefined
+  const scientificName =
+    catalog?.taxon || (slug ? decodeURIComponent(slug).replace(/-/g, ' ') : '')
+  const rich = scientificName ? getMushroomByScientificName(scientificName) : undefined
+  const riskRaw = catalog?.risk_label || rich?.edibility || 'dangerous_or_unknown'
+  const riskMeta = getRiskMeta(riskRaw)
 
-  if (!species) {
+  const commons =
+    catalog?.common_names?.length ? catalog.common_names : rich?.commonNames || []
+
+  const lookalikes = rankLookalikes(
+    rich?.lookAlikes || catalog?.description?.match(/[A-Z][a-z]+ [a-z]+/g) || [],
+  )
+
+  const description = sanitizeEducationalText(
+    catalog?.description || rich?.description || '',
+  )
+  const habitat = rich?.habitat ? sanitizeEducationalText(rich.habitat, '') : ''
+  const toxicity = rich?.toxicity ? sanitizeEducationalText(rich.toxicity, '') : ''
+  const foodQ = getFoodQuality(scientificName)
+
+  if (!ready) {
     return (
-      <div className="page-detail">
-        <div className="empty-results">
-          <span className="empty-results-icon">🍄</span>
-          <h3>Especie no encontrada</h3>
-          <p>No tenemos información sobre "{scientificName}".</p>
-          <Link to="/enciclopedia" className="btn btn-primary">
-            ← Volver a la enciclopedia
-          </Link>
+      <div className="page-detail page-atelier-shell">
+        <div className="skeleton-atelier" style={{ minHeight: 240 }}>
+          <div className="skeleton-atelier__shimmer" />
         </div>
       </div>
     )
   }
 
-  const isDangerous = species.edibility === 'toxico' || species.edibility === 'mortifero'
+  if (!catalog && !rich) {
+    return (
+      <div className="page-detail page-atelier-shell">
+        <EmptyState
+          title="Especie no encontrada"
+          description={`No hay ficha para «${slug}».`}
+          actionLabel="Volver a la enciclopedia"
+          actionTo="/enciclopedia"
+        />
+      </div>
+    )
+  }
 
   return (
-    <div className="page-detail">
+    <div className="page-detail species-product">
       <div className="detail-back">
-        <Link to="/enciclopedia">← Volver a la enciclopedia</Link>
+        <Link to="/enciclopedia">Enciclopedia</Link>
+        <span aria-hidden="true"> / </span>
+        <span>{scientificName}</span>
       </div>
 
-      {/* Header card */}
-      <div className="detail-header">
-        <div className="detail-header-image">
-          {loading ? (
-            <div className="detail-image-placeholder">
-              <span>{species.icon}</span>
+      <div className="species-product__layout">
+        <div className="species-product__gallery">
+          <PhotoSpinViewer
+            taxon={scientificName}
+            height={420}
+            riskLabel={riskRaw}
+            label={`Fotos reales de ${scientificName}`}
+            autoPlay
+          />
+        </div>
+
+        <div className="species-product__info">
+          <div className={`species-product__risk-sticky risk-sticky risk-sticky--${riskMeta.className}`}>
+            <RiskChip risk={riskRaw} />
+            <span className="risk-sticky__hint">Solo orientación · no consumo</span>
+          </div>
+
+          <SpeciesNameBlock
+            taxon={scientificName}
+            commonNames={commons}
+            family={catalog?.family || rich?.family}
+            familyEs={catalog?.family_es}
+            size="lg"
+            className="species-product__names"
+          />
+
+          <p className="species-product__desc">{description}</p>
+
+          {foodQ ? (
+            <div className={`species-product__food food-badge food-badge--${foodQ.food_class}`}>
+              <p className="food-badge__label">
+                Calidad documentada: <strong>{foodQ.label}</strong>
+              </p>
+              <p className="food-badge__source">
+                Fuente: {foodQ.sources.join(' · ')} — no es permiso de consumo.
+              </p>
+              {foodQ.edibility && (
+                <p className="food-badge__raw">
+                  Nivel curado: <code>{foodQ.edibility}</code>
+                </p>
+              )}
             </div>
-          ) : images[0]?.url ? (
-            <img src={images[0].url} alt={species.commonNames[0]} />
           ) : (
-            <div className="detail-image-placeholder">
-              <span>{species.icon}</span>
+            <div className="species-product__food food-badge food-badge--unknown">
+              <p className="food-badge__label">
+                Sin calidad alimenticia documentada en nuestras fuentes.
+              </p>
+              <p className="food-badge__source">
+                No inventamos comestibilidad. Solo base curada Iberia + lista tóxicas.
+              </p>
+            </div>
+          )}
+
+          {rich?.keyFeatures && rich.keyFeatures.length > 0 && (
+            <div className="species-product__block">
+              <h3>Caracteres</h3>
+              <ul>
+                {rich.keyFeatures.map((f) => (
+                  <li key={f}>{sanitizeEducationalText(f, f)}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {habitat && (
+            <div className="species-product__block">
+              <h3>Hábitat</h3>
+              <p>{habitat}</p>
+            </div>
+          )}
+
+          {toxicity && (
+            <div className="species-product__block species-product__alert" role="alert">
+              <h3>Toxicidad (educativa)</h3>
+              <p>{toxicity}</p>
+            </div>
+          )}
+
+          {lookalikes.length > 0 && (
+            <div className="species-product__block">
+              <h3>Lookalikes de riesgo</h3>
+              <ul className="lookalike-list">
+                {lookalikes.map((l) => {
+                  const m = getRiskMeta(l.risk_label)
+                  return (
+                    <li key={l.name} className="lookalike-item">
+                      <span className={`risk-chip ${m.className}`}>{m.label}</span>
+                      <em>{l.name}</em>
+                      {l.slug && (
+                        <Link to={`/enciclopedia/${l.slug}`} className="lookalike-link">
+                          Ver
+                        </Link>
+                      )}
+                    </li>
+                  )
+                })}
+              </ul>
             </div>
           )}
         </div>
-        <div className="detail-header-info">
-          <span className="detail-icon">{species.icon}</span>
-          <h1>{species.commonNames[0]}</h1>
-          <p className="detail-scientific">{species.scientificName}</p>
-          <p className="detail-tagline">{species.tagline}</p>
-          <div className="detail-meta-row">
-            <span
-              className="detail-badge"
-              style={{ backgroundColor: EDIBILITY_COLORS[species.edibility] }}
-            >
-              {EDIBILITY_LABELS[species.edibility]}
-            </span>
-            <span className="detail-chip">🌳 {species.family}</span>
-            <span className="detail-chip">📅 {species.season}</span>
-          </div>
-        </div>
       </div>
-
-      {/* Danger warning */}
-      {isDangerous && (
-        <div className="danger-banner">
-          <span className="danger-banner-icon">☠️</span>
-          <div>
-            <strong>
-              {species.edibility === 'mortifero' ? 'ESPECIE MORTAL' : 'Especie tóxica'}
-            </strong>
-            <p>
-              {species.toxicity ??
-                'Esta seta es peligrosa. No consumir bajo ningún concepto.'}
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Description */}
-      <div className="detail-section">
-        <h2>📖 Descripción</h2>
-        <p className="detail-description">{species.description}</p>
-        {wiki?.extract && <p className="detail-wiki-extract">{wiki.extract}</p>}
-      </div>
-
-      {/* Photo gallery */}
-      <div className="detail-section">
-        <h2>📸 Galería de fotos</h2>
-        {loading ? (
-          <div className="gallery-loading">Cargando fotos…</div>
-        ) : images.length > 0 ? (
-          <div className="photo-gallery">
-            {images.map((img, i) => (
-              <div key={i} className="gallery-item" onClick={() => setLightbox(img)}>
-                <img src={img.url} alt={img.caption ?? species.commonNames[0]} loading="lazy" />
-                {img.license && <span className="gallery-license">📷 {img.license}</span>}
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="gallery-empty">No hay fotos disponibles en este momento.</p>
-        )}
-        {wiki?.url && (
-          <p className="wiki-source">
-            Fuente:{' '}
-            <a href={wiki.url} target="_blank" rel="noopener noreferrer">
-              Wikipedia
-            </a>
-          </p>
-        )}
-      </div>
-
-      {/* Identification features */}
-      <div className="detail-section">
-        <h2>🔍 Características de identificación</h2>
-        <div className="features-list">
-          {species.keyFeatures.map((f, i) => (
-            <div key={i} className="feature-bullet">
-              <span className="feature-bullet-icon">✓</span>
-              {f}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Anatomy cards */}
-      <div className="detail-anatomy">
-        <div className="anatomy-card">
-          <span className="anatomy-icon">🎩</span>
-          <h3>Sombrero</h3>
-          <p>{species.cap}</p>
-        </div>
-        <div className="anatomy-card">
-          <span className="anatomy-icon">🦵</span>
-          <h3>Pie</h3>
-          <p>{species.stem}</p>
-        </div>
-        <div className="anatomy-card">
-          <span className="anatomy-icon">🔻</span>
-          <h3>Himenio</h3>
-          <p>{species.hymenium}</p>
-        </div>
-      </div>
-
-      {/* Habitat */}
-      <div className="detail-section">
-        <h2>🌳 Hábitat y temporada</h2>
-        <div className="habitat-info">
-          <div className="habitat-item">
-            <span className="habitat-label">Dónde encontrarla</span>
-            <span className="habitat-value">{species.habitat}</span>
-          </div>
-          <div className="habitat-item">
-            <span className="habitat-label">Cuándo</span>
-            <span className="habitat-value">{species.season}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Look-alikes */}
-      {species.lookAlikes && species.lookAlikes.length > 0 && (
-        <div className="detail-section">
-          <h2>⚠️ Especies similares</h2>
-          <p className="lookalikes-intro">
-            Cuidado con estas especies que pueden confundirse:
-          </p>
-          <ul className="lookalikes-list">
-            {species.lookAlikes.map((l, i) => (
-              <li key={i}>{l}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {/* Also known as */}
-      <div className="detail-section">
-        <h2>🏷️ También conocida como</h2>
-        <div className="aka-tags">
-          {species.commonNames.map((n) => (
-            <span key={n} className="aka-tag">
-              {n}
-            </span>
-          ))}
-        </div>
-      </div>
-
-      {/* Lightbox */}
-      {lightbox && (
-        <div className="lightbox" onClick={() => setLightbox(null)}>
-          <img src={lightbox.url} alt={lightbox.caption ?? species.commonNames[0]} />
-          {lightbox.caption && <p className="lightbox-caption">{lightbox.caption}</p>}
-          <button className="lightbox-close" onClick={() => setLightbox(null)} aria-label="Cerrar">
-            ✕
-          </button>
-        </div>
-      )}
     </div>
   )
 }

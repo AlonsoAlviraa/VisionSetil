@@ -1,8 +1,8 @@
 /**
- * Identify page: the AI classification flow extracted from the original App.tsx.
- * Reuses UploadZone, CameraCapture, MetadataForm, ResultCard, BatchCompare.
+ * Identify page: guided multi-view + classify + history.
  */
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useMemo } from 'react'
+import { Link } from 'react-router-dom'
 import { useDropzone } from 'react-dropzone'
 import { classifyImages, submitFeedback } from '../api/client'
 import type { ClassificationResult, ObservationMetadata } from '../api/types'
@@ -11,42 +11,34 @@ import { UploadZone } from '../components/UploadZone'
 import { CameraCapture } from '../components/CameraCapture'
 import { MetadataForm } from '../components/MetadataForm'
 import { BatchCompare } from '../components/BatchCompare'
+import { MultiViewWizard } from '../components/MultiViewWizard'
+import { IconClose, IconExpert, IconHistory, IconSearch } from '../components/icons'
+import { MEDIA } from '../data/media'
+import {
+  assessMultiViewReadiness,
+  buildViewTypesOrder,
+  orderedSlotKeys,
+  type CanonicalView,
+  type SlotAssignment,
+} from '../lib/multiViewSlots'
+import {
+  appendHistory,
+  clearHistoryStore,
+  loadHistory,
+  summarizeHistory,
+  type HistoryEntry,
+} from '../lib/observationHistory'
+import { decisionLabelEs } from '../lib/decisionLabels'
 
 interface SelectedImage {
   file: File
   preview: string
 }
 
-interface HistoryEntry {
-  id: string
-  timestamp: number
-  previews: string[]
-  result: ClassificationResult
-}
-
-const HISTORY_KEY = 'visionsetil_history'
-const MAX_HISTORY = 20
-
-function loadHistory(): HistoryEntry[] {
-  try {
-    const raw = localStorage.getItem(HISTORY_KEY)
-    if (!raw) return []
-    return JSON.parse(raw) as HistoryEntry[]
-  } catch {
-    return []
-  }
-}
-
-function saveHistory(entries: HistoryEntry[]): void {
-  try {
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(entries.slice(0, MAX_HISTORY)))
-  } catch {
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(entries.slice(0, 5)))
-  }
-}
-
 export function IdentifyPage() {
   const [selectedImages, setSelectedImages] = useState<SelectedImage[]>([])
+  const [assignments, setAssignments] = useState<SlotAssignment>({})
+  const [useWizard, setUseWizard] = useState(true)
   const [result, setResult] = useState<ClassificationResult | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -59,6 +51,9 @@ export function IdentifyPage() {
   useEffect(() => {
     setHistory(loadHistory())
   }, [])
+
+  const readiness = useMemo(() => assessMultiViewReadiness(assignments), [assignments])
+  const historySummary = useMemo(() => summarizeHistory(history), [history])
 
   const addFiles = useCallback((files: File[]) => {
     const newImages = files.map((file) => ({
@@ -76,35 +71,82 @@ export function IdentifyPage() {
     })
   }, [])
 
+  const onAssignSlot = useCallback((view: CanonicalView, file: File, previewUrl: string) => {
+    setAssignments((prev) => {
+      const old = prev[view]
+      if (old) URL.revokeObjectURL(old.previewUrl)
+      return { ...prev, [view]: { fileName: file.name, previewUrl, file } }
+    })
+  }, [])
+
+  const onClearSlot = useCallback((view: CanonicalView) => {
+    setAssignments((prev) => {
+      const next = { ...prev }
+      const old = next[view]
+      if (old) URL.revokeObjectURL(old.previewUrl)
+      delete next[view]
+      return next
+    })
+  }, [])
+
+  const collectWizardFiles = useCallback((): {
+    files: File[]
+    viewTypes: string[]
+    previews: string[]
+  } => {
+    const keys = orderedSlotKeys(assignments)
+    const files: File[] = []
+    const previews: string[] = []
+    for (const k of keys) {
+      const slot = assignments[k]
+      if (slot?.file) {
+        files.push(slot.file)
+        previews.push(slot.previewUrl)
+      }
+    }
+    return { files, viewTypes: buildViewTypesOrder(assignments), previews }
+  }, [assignments])
+
   const handleClassify = useCallback(async () => {
-    if (selectedImages.length === 0) return
+    let files: File[]
+    let viewTypes: string[] | undefined
+    let previews: string[]
+
+    if (useWizard) {
+      const pack = collectWizardFiles()
+      files = pack.files
+      viewTypes = pack.viewTypes
+      previews = pack.previews
+      if (files.length === 0) return
+    } else {
+      if (selectedImages.length === 0) return
+      files = selectedImages.map((img) => img.file)
+      previews = selectedImages.map((img) => img.preview)
+      viewTypes = undefined
+    }
 
     setLoading(true)
     setError(null)
     setResult(null)
 
     try {
-      const files = selectedImages.map((img) => img.file)
-      const data = await classifyImages(files, metadata)
+      const data = await classifyImages(files, metadata, viewTypes)
       setResult(data)
 
       const entry: HistoryEntry = {
         id: data.request_id,
         timestamp: Date.now(),
-        previews: selectedImages.map((img) => img.preview),
+        previews,
         result: data,
+        view_types: viewTypes,
       }
-      setHistory((prev) => {
-        const next = [entry, ...prev].slice(0, MAX_HISTORY)
-        saveHistory(next)
-        return next
-      })
+      setHistory(appendHistory(entry))
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error desconocido')
     } finally {
       setLoading(false)
     }
-  }, [selectedImages, metadata])
+  }, [useWizard, collectWizardFiles, selectedImages, metadata])
 
   const handleFeedback = useCallback(
     async (isCorrect: boolean, species?: string) => {
@@ -112,25 +154,29 @@ export function IdentifyPage() {
       try {
         await submitFeedback(result.request_id, isCorrect, species)
       } catch {
-        // Feedback is best-effort
+        // best-effort
       }
     },
     [result],
   )
 
   const clearHistory = useCallback(() => {
-    history.forEach((e) => e.previews.forEach((p) => URL.revokeObjectURL(p)))
+    clearHistoryStore()
     setHistory([])
-    localStorage.removeItem(HISTORY_KEY)
-  }, [history])
+  }, [])
 
   const reset = useCallback(() => {
     selectedImages.forEach((img) => URL.revokeObjectURL(img.preview))
+    orderedSlotKeys(assignments).forEach((k) => {
+      const p = assignments[k]?.previewUrl
+      if (p) URL.revokeObjectURL(p)
+    })
     setSelectedImages([])
+    setAssignments({})
     setResult(null)
     setError(null)
     setMetadata({})
-  }, [selectedImages])
+  }, [selectedImages, assignments])
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: addFiles,
@@ -139,19 +185,45 @@ export function IdentifyPage() {
     maxSize: 20 * 1024 * 1024,
   })
 
-  const hasImages = selectedImages.length > 0
+  const hasImages = useWizard ? readiness.filled > 0 : selectedImages.length > 0
   const showResult = result !== null && !loading
 
   return (
     <div className="page-identify">
-      <div className="page-header">
-        <h1 className="page-title">🔍 Identificar una seta</h1>
-        <p className="page-subtitle">
-          Sube una o varias fotos y nuestra IA te ayudará con una identificación orientativa
-        </p>
+      <div className="atelier-banner">
+        <div
+          className="atelier-banner__media"
+          style={{ backgroundImage: `url(${MEDIA.mushroomsClose})` }}
+        />
+        <div className="atelier-banner__veil" />
+        <div className="atelier-banner__copy">
+          <h1>Identificar</h1>
+          <p>Multi-vista guiada. Si no está seguro, se calla. Mejor eso que inventar.</p>
+        </div>
       </div>
 
-      {/* Camera capture overlay */}
+      <div className="page-header">
+        <div className="identify-mode-toggle">
+          <button
+            type="button"
+            className={useWizard ? 'btn-atelier btn-atelier--primary' : 'btn-atelier btn-atelier--ghost'}
+            onClick={() => setUseWizard(true)}
+          >
+            Modo guiado
+          </button>
+          <button
+            type="button"
+            className={!useWizard ? 'btn-atelier btn-atelier--primary' : 'btn-atelier btn-atelier--ghost'}
+            onClick={() => setUseWizard(false)}
+          >
+            Modo libre
+          </button>
+          <Link to="/historial" className="btn-atelier btn-atelier--ghost">
+            Historial ({historySummary.total})
+          </Link>
+        </div>
+      </div>
+
       {showCamera && (
         <CameraCapture
           onCapture={(file) => {
@@ -162,8 +234,43 @@ export function IdentifyPage() {
         />
       )}
 
-      {/* Upload zone */}
-      {!hasImages && !showResult && !loading && (
+      {!showResult && !loading && useWizard && (
+        <>
+          <MultiViewWizard
+            assignments={assignments}
+            onAssign={onAssignSlot}
+            onClear={onClearSlot}
+            onOpenCamera={() => setShowCamera(true)}
+          />
+          {hasImages && (
+            <div className="image-review-section">
+              <MetadataForm metadata={metadata} onChange={setMetadata} />
+              <div className="analyze-actions">
+                <button
+                  type="button"
+                  className="btn-atelier btn-atelier--primary"
+                  onClick={handleClassify}
+                  disabled={loading || !readiness.canSubmit}
+                >
+                  {loading ? (
+                    'Analizando…'
+                  ) : (
+                    <>
+                      <IconSearch size={18} />
+                      Analizar ({readiness.filled} vistas)
+                    </>
+                  )}
+                </button>
+                <button type="button" className="btn-atelier btn-atelier--ghost" onClick={reset}>
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          )}
+        </>
+      )}
+
+      {!showResult && !loading && !useWizard && !hasImages && (
         <UploadZone
           getRootProps={getRootProps}
           getInputProps={getInputProps}
@@ -173,17 +280,12 @@ export function IdentifyPage() {
         />
       )}
 
-      {/* Selected images preview grid + analyze button */}
-      {hasImages && !showResult && (
+      {!showResult && !loading && !useWizard && hasImages && (
         <div className="image-review-section">
           <h2>Fotos seleccionadas ({selectedImages.length})</h2>
           <div className="image-grid">
             {selectedImages.map((img, idx) => (
-              <div
-                key={idx}
-                className="image-grid-item"
-                onClick={() => setLightbox(img.preview)}
-              >
+              <div key={idx} className="image-grid-item" onClick={() => setLightbox(img.preview)}>
                 <img src={img.preview} alt={`Seta ${idx + 1}`} />
                 <button
                   className="btn-remove-image"
@@ -193,42 +295,46 @@ export function IdentifyPage() {
                   }}
                   aria-label="Eliminar imagen"
                 >
-                  ✕
+                  <IconClose size={14} />
                 </button>
               </div>
             ))}
           </div>
-
           <MetadataForm metadata={metadata} onChange={setMetadata} />
-
           <div className="analyze-actions">
             <button
-              className="btn-analyze"
+              type="button"
+              className="btn-atelier btn-atelier--primary"
               onClick={handleClassify}
-              disabled={loading || selectedImages.length === 0}
+              disabled={loading}
             >
-              {loading ? 'Analizando…' : '🔍 Analizar'}
+              {loading ? (
+                'Analizando…'
+              ) : (
+                <>
+                  <IconSearch size={18} />
+                  Analizar
+                </>
+              )}
             </button>
-            <button className="btn-add-more" {...getRootProps()}>
+            <button type="button" className="btn-atelier btn-atelier--ghost" {...getRootProps()}>
               + Añadir más fotos
             </button>
             <input {...getInputProps()} />
-            <button className="btn-cancel" onClick={reset}>
+            <button type="button" className="btn-atelier btn-atelier--ghost" onClick={reset}>
               Cancelar
             </button>
           </div>
         </div>
       )}
 
-      {/* Loading state */}
       {loading && (
         <div className="loading">
           <div className="spinner" />
-          <p>Analizando {selectedImages.length} imagen(es)…</p>
+          <p>Analizando con multi-vista…</p>
         </div>
       )}
 
-      {/* Error state */}
       {error && (
         <div className="error-banner">
           <strong>Error:</strong> {error}
@@ -238,68 +344,73 @@ export function IdentifyPage() {
         </div>
       )}
 
-      {/* Result display */}
       {showResult && result && (
         <div className="result-layout">
           <div className="result-image-section">
             <div className="result-image-grid">
-              {selectedImages.map((img, idx) => (
+              {(useWizard
+                ? orderedSlotKeys(assignments).map((k) => assignments[k]!.previewUrl)
+                : selectedImages.map((i) => i.preview)
+              ).map((src, idx) => (
                 <img
                   key={idx}
-                  src={img.preview}
+                  src={src}
                   alt={`Resultado ${idx + 1}`}
                   className="preview-image"
-                  onClick={() => setLightbox(img.preview)}
+                  onClick={() => setLightbox(src)}
                 />
               ))}
             </div>
             <div className="result-actions-bar">
-              <button className="btn-new-analysis" onClick={reset}>
-                ↻ Nuevo análisis
+              <button type="button" className="btn-atelier btn-atelier--primary" onClick={reset}>
+                Nuevo análisis
               </button>
-              <button
-                className="btn-export"
-                onClick={() => {
-                  const blob = new Blob([JSON.stringify(result, null, 2)], {
-                    type: 'application/json',
-                  })
-                  const url = URL.createObjectURL(blob)
-                  const a = document.createElement('a')
-                  a.href = url
-                  a.download = `visionsetil_${result.request_id}.json`
-                  a.click()
-                  URL.revokeObjectURL(url)
-                }}
-              >
-                ⬇ Exportar JSON
-              </button>
+              <Link to="/historial" className="btn-atelier btn-atelier--ghost">
+                <IconHistory size={16} />
+                Cuaderno
+              </Link>
+              <Link to="/revision-experta" className="btn-atelier btn-atelier--ghost">
+                <IconExpert size={16} />
+                Expertos
+              </Link>
             </div>
           </div>
-          <ResultCard result={result} onFeedback={handleFeedback} />
+          <ResultCard
+            result={result}
+            onFeedback={handleFeedback}
+            viewTypes={
+              useWizard
+                ? orderedSlotKeys(assignments)
+                : selectedImages.map((_, i) => `free_${i + 1}`)
+            }
+            previews={
+              useWizard
+                ? orderedSlotKeys(assignments).map((k) => assignments[k]!.previewUrl)
+                : selectedImages.map((i) => i.preview)
+            }
+          />
         </div>
       )}
 
-      {/* Lightbox */}
       {lightbox && (
         <div className="lightbox" onClick={() => setLightbox(null)}>
           <img src={lightbox} alt="Vista ampliada" />
           <button className="lightbox-close" onClick={() => setLightbox(null)} aria-label="Cerrar">
-            ✕
+            <IconClose size={18} />
           </button>
         </div>
       )}
 
-      {/* Session history */}
       {history.length > 0 && !loading && !showResult && (
         <div className="history-section">
           <div className="history-header">
-            <h2>Historial de sesión ({history.length})</h2>
+            <h2>Historial reciente ({historySummary.total})</h2>
             <div className="history-actions">
+              <Link to="/historial">Ver todo</Link>
               <button
                 className="btn-compare"
                 onClick={() => setShowCompare(true)}
                 disabled={history.length < 2}
-                title={history.length < 2 ? 'Necesitas al menos 2 resultados' : 'Comparar resultados'}
               >
                 ⇄ Comparar
               </button>
@@ -314,18 +425,19 @@ export function IdentifyPage() {
                 key={entry.id}
                 className={`history-item ${entry.result.decision}`}
                 onClick={() => {
-                  setResult(entry.result)
-                  setSelectedImages(
-                    entry.previews.map((preview) => ({ file: new File([], ''), preview })),
-                  )
+                  setResult(entry.result as ClassificationResult)
                 }}
               >
-                <img src={entry.previews[0]} alt="Historial" className="history-thumb" />
+                {entry.previews[0] && (
+                  <img src={entry.previews[0]} alt="Historial" className="history-thumb" />
+                )}
                 <div className="history-meta">
                   <span className="history-time">
                     {new Date(entry.timestamp).toLocaleTimeString()}
                   </span>
-                  <span className="history-decision">{entry.result.decision}</span>
+                  <span className="history-decision">
+                    {decisionLabelEs(entry.result.decision)}
+                  </span>
                 </div>
               </div>
             ))}
@@ -333,16 +445,12 @@ export function IdentifyPage() {
         </div>
       )}
 
-      {/* Batch comparison modal */}
       {showCompare && (
         <BatchCompare
-          history={history}
+          history={history as never}
           onClose={() => setShowCompare(false)}
           onSelectEntry={(entry) => {
-            setResult(entry.result)
-            setSelectedImages(
-              entry.previews.map((preview) => ({ file: new File([], ''), preview })),
-            )
+            setResult(entry.result as ClassificationResult)
             setShowCompare(false)
           }}
         />

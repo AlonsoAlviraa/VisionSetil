@@ -1,0 +1,29 @@
+{
+  "experiment": "E15-focus40",
+  "plan_week": 1,
+  "max_species": 40,
+  "allowlist_path": "data/industrial_v1/species_allowlist.json",
+  "deadly_path": "data/industrial_v1/deadly_set.json",
+  "label2idx_path": "data/industrial_v1/labels/label2idx.json",
+  "training": {
+    "epochs": 25,
+    "batch_size": 16,
+    "max_obs_per_species": 80,
+    "min_obs_per_species": 8,
+    "deadly_max_obs": 120,
+    "deadly_class_weight": 10.0,
+    "backbone": "convnextv2_tiny.fcmae_ft_in22k_in1k",
+    "d_model": 512,
+    "early_stop_metric": "safety_recall_deadly",
+    "secondary_metric": "val_map3"
+  },
+  "success_criteria": {
+    "test_map_at_3_min": 0.15,
+    "safety_recall_deadly_at_3_min": 0.5
+  },
+  "deploy_gate": {
+    "test_map_at_3_min": 0.2,
+    "safety_recall_deadly_min": 0.9,
+    "note": "Do not point multi_view_weights_path here until gates pass"
+  }
+}

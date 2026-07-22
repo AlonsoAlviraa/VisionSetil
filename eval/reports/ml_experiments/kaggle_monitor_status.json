@@ -1,0 +1,10 @@
+{
+  "kernel": "alonsoalvira/visionsetil-exp-v12-data-scale",
+  "status": "COMPLETE_HANDLED",
+  "download_ok": true,
+  "pred": "C:\\AlonsoAlviraa\\VisionSetil\\kaggle\\kernel_output_v12\\models\\test_predictions.npz",
+  "metrics": "C:\\AlonsoAlviraa\\VisionSetil\\kaggle\\kernel_output_v12\\models\\metrics.json",
+  "battery_exit": 0,
+  "updated_at": "2026-07-17T12:21:59.640208+00:00",
+  "elapsed_min": 139.48
+}

@@ -43,6 +43,7 @@ KAGGLE_DIR = PROJECT_ROOT / "kaggle"
 EXPORT_DIR = PROJECT_ROOT / "kaggle_dataset_export"
 WEIGHTS_DIR = PROJECT_ROOT / "backend" / "app" / "ml" / "weights"
 REPORTS_DIR = PROJECT_ROOT / "eval" / "reports"
+DEFAULT_LOOP_CONFIG = KAGGLE_DIR / "configs" / "image_ml_loop_v1.json"
 
 # Kaggle dataset/kernel slugs (change USERNAME to your Kaggle username).
 KAGGLE_USERNAME = os.environ.get("KAGGLE_USERNAME", "alonsoalvira")
@@ -315,33 +316,69 @@ def step_download() -> None:
 # ─── Step 5: Evaluate ────────────────────────────────────────────────────────
 
 def step_evaluate() -> None:
-    """Run comprehensive evaluation on downloaded results."""
+    """Run comprehensive evaluation via image ML loop config + compute_full_metrics."""
     print("\n" + "=" * 70)
-    print("STEP 5: Comprehensive Evaluation")
+    print("STEP 5: Comprehensive Evaluation (image_ml_loop_v1)")
     print("=" * 70)
 
     REPORTS_DIR.mkdir(parents=True, exist_ok=True)
 
-    # Check for metrics JSON from kernel.
-    metrics_files = list(WEIGHTS_DIR.glob("*metrics*.json")) + list(REPORTS_DIR.glob("*metrics*.json"))
-    if metrics_files:
-        print(f"  Found metrics file: {metrics_files[0]}")
-        with open(metrics_files[0]) as f:
-            metrics = json.load(f)
-        print_metrics_table(metrics)
-    else:
-        print("  [INFO] No metrics JSON found. Running local evaluation...")
+    # Prefer kernel_output_v9 artifacts when present (local loop).
+    v9_preds = (
+        PROJECT_ROOT
+        / "kaggle"
+        / "kernel_output_v9"
+        / "models"
+        / "test_predictions.npz"
+    )
+    v9_labels = (
+        PROJECT_ROOT / "kaggle" / "kernel_output_v9" / "models" / "label2idx.json"
+    )
+    loop_runner = PROJECT_ROOT / "scripts" / "run_image_ml_loop.py"
+    loop_config = DEFAULT_LOOP_CONFIG
 
-    # Run the eval harness.
-    eval_script = PROJECT_ROOT / "eval" / "scripts" / "compute_full_metrics.py"
-    if eval_script.exists():
-        print(f"\n  Running evaluation harness: {eval_script}")
-        run_cmd(
-            ["python", str(eval_script),
-             "--predictions", str(WEIGHTS_DIR),
-             "--output", str(REPORTS_DIR / "full_metrics.json")],
+    if loop_runner.exists() and loop_config.exists() and v9_preds.exists():
+        print(f"  Running image ML loop: {loop_runner.name} + {loop_config.name}")
+        code, output = run_cmd(
+            [
+                "python",
+                str(loop_runner),
+                "--config",
+                str(loop_config),
+                "--predictions",
+                str(v9_preds),
+                "--label2idx",
+                str(v9_labels),
+                "--output-dir",
+                str(REPORTS_DIR / "ml_loop_v1"),
+            ],
             check=False,
         )
+        print(output)
+        metrics_path = REPORTS_DIR / "ml_loop_v1" / "image_ml_loop_metrics.json"
+        if metrics_path.exists():
+            with open(metrics_path, encoding="utf-8") as f:
+                report = json.load(f)
+            map3 = report.get("map_at_3") or {}
+            print_metrics_table(
+                {
+                    "MAP@3": map3.get("point"),
+                    "MAP@3_CI_low": map3.get("ci_low"),
+                    "MAP@3_CI_high": map3.get("ci_high"),
+                    **(report.get("classification") or {}),
+                    **{f"safety_{k}": v for k, v in (report.get("safety") or {}).items()},
+                }
+            )
+    else:
+        print("  [INFO] Loop runner or v9 predictions missing; falling back to metrics scan.")
+        metrics_files = list(WEIGHTS_DIR.glob("*metrics*.json")) + list(
+            REPORTS_DIR.glob("*metrics*.json")
+        )
+        if metrics_files:
+            print(f"  Found metrics file: {metrics_files[0]}")
+            with open(metrics_files[0], encoding="utf-8") as f:
+                metrics = json.load(f)
+            print_metrics_table(metrics)
 
     # Generate ablation table.
     generate_ablation_table()

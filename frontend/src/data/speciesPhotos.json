@@ -1,0 +1,1745 @@
+{
+  "version": "2.0.0",
+  "generated": "2026-07-16",
+  "policy": "mycology-only verified photos; orientation only",
+  "photos": {
+    "agaricus arvensis": {
+      "taxon": "Agaricus arvensis",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/4/40/Pieczarka_polowa_vongrzanka.JPG",
+      "provider": "wikipedia_en"
+    },
+    "agaricus augustus": {
+      "taxon": "Agaricus augustus",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Agaricus_augustus_2011_G1.jpg/3840px-Agaricus_augustus_2011_G1.jpg",
+      "provider": "wikipedia_en"
+    },
+    "agaricus bisporus": {
+      "taxon": "Agaricus bisporus",
+      "url": "https://static.inaturalist.org/photos/351794616/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "agaricus bitorquis": {
+      "taxon": "Agaricus bitorquis",
+      "url": "https://static.inaturalist.org/photos/271145739/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "agaricus campestris": {
+      "taxon": "Agaricus campestris",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/457253795/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "agaricus langei": {
+      "taxon": "Agaricus langei",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/12343404/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "agaricus moelleri": {
+      "taxon": "Agaricus moelleri",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/457293503/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "agaricus silvicola": {
+      "taxon": "Agaricus silvicola",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/457255427/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "agaricus sylvaticus": {
+      "taxon": "Agaricus sylvaticus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/457254125/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "agaricus sylvicola": {
+      "taxon": "Agaricus sylvicola",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/457255427/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "agaricus xanthoderma": {
+      "taxon": "Agaricus xanthoderma",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/5235305/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "agaricus xanthodermus": {
+      "taxon": "Agaricus xanthodermus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/5235305/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "agrocybe pediades": {
+      "taxon": "Agrocybe pediades",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/357567832/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "agrocybe praecox": {
+      "taxon": "Agrocybe praecox",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Agrocybe_praecox_cupertino.jpg/3840px-Agrocybe_praecox_cupertino.jpg",
+      "provider": "wikipedia_en"
+    },
+    "aleuria aurantia": {
+      "taxon": "Aleuria aurantia",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/0/01/Aleuria_aurantia_%28Orange_Peel_Fungus%29.JPG",
+      "provider": "wikipedia_en"
+    },
+    "amanita battarrae": {
+      "taxon": "Amanita battarrae",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/2/23/2009-08-20_Amanita_battarrae_%28Boud.%29_Bon_54495_crop.jpg",
+      "provider": "wikipedia_en"
+    },
+    "amanita caesarea": {
+      "taxon": "Amanita caesarea",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/3/31/Oronges.jpg",
+      "provider": "wikipedia_en"
+    },
+    "amanita citrina": {
+      "taxon": "Amanita citrina",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/0/00/Amanita_sp._2010-10-31.jpg",
+      "provider": "wikipedia_en"
+    },
+    "amanita crocea": {
+      "taxon": "Amanita crocea",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/d/d5/Amanita_crocea_-_Lindsey.jpg",
+      "provider": "wikipedia_en"
+    },
+    "amanita echinocephala": {
+      "taxon": "Amanita echinocephala",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/3/34/Am.echin.jpg",
+      "provider": "wikipedia_en"
+    },
+    "amanita excelsa": {
+      "taxon": "Amanita excelsa",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/1/1d/2008-07-07_Amanita_excelsa_colors_corrected.jpg",
+      "provider": "wikipedia_en"
+    },
+    "amanita franchetii": {
+      "taxon": "Amanita franchetii",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/f/f7/Amanita_franchetii_%28Boud.%29_Fayod.jpg",
+      "provider": "wikipedia_en"
+    },
+    "amanita fulva": {
+      "taxon": "Amanita fulva",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/8/83/Amanita_fulva_lowpx.jpg",
+      "provider": "wikipedia_en"
+    },
+    "amanita gemmata": {
+      "taxon": "Amanita gemmata",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/111494893/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "amanita junquillea": {
+      "taxon": "Amanita junquillea",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/339046306/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "amanita muscaria": {
+      "taxon": "Amanita muscaria",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/111494893/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "amanita ovoidea": {
+      "taxon": "Amanita ovoidea",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/240645283/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "amanita pantherina": {
+      "taxon": "Amanita pantherina",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/112768591/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "amanita phalloides": {
+      "taxon": "Amanita phalloides",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/9/99/Amanita_phalloides_1.JPG",
+      "provider": "wikipedia_es"
+    },
+    "amanita porphyria": {
+      "taxon": "Amanita porphyria",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/179820114/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "amanita rubescens": {
+      "taxon": "Amanita rubescens",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/161000598/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "amanita spissa": {
+      "taxon": "Amanita spissa",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/82601721/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "amanita strobiliformis": {
+      "taxon": "Amanita strobiliformis",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/204386527/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "amanita vaginata": {
+      "taxon": "Amanita vaginata",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/444207380/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "amanita verna": {
+      "taxon": "Amanita verna",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/29238677/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "amanita virosa": {
+      "taxon": "Amanita virosa",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/110521312/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "armillaria gallica": {
+      "taxon": "Armillaria gallica",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/5622972/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "armillaria mellea": {
+      "taxon": "Armillaria mellea",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/10028/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "armillaria ostoyae": {
+      "taxon": "Armillaria ostoyae",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/4694601/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "armillaria tabescens": {
+      "taxon": "Armillaria tabescens",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/345654444/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "astraeus hygrometricus": {
+      "taxon": "Astraeus hygrometricus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/29238645/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "astraeus pteridis": {
+      "taxon": "Astraeus pteridis",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/70534831/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "aureoboletus projectellus": {
+      "taxon": "Aureoboletus projectellus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/158404074/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "auricularia auricula-judae": {
+      "taxon": "Auricularia auricula-judae",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/441012834/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "bjerkandera adusta": {
+      "taxon": "Bjerkandera adusta",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/13445427/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "boletus aereus": {
+      "taxon": "Boletus aereus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/334808481/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "boletus appendiculatus": {
+      "taxon": "Boletus appendiculatus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/29239298/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "boletus calopus": {
+      "taxon": "Boletus calopus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/174714429/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "boletus edulis": {
+      "taxon": "Boletus edulis",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/328303120/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "boletus erythropus": {
+      "taxon": "Boletus erythropus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/326321427/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "boletus legaliae": {
+      "taxon": "Boletus legaliae",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/29587581/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "boletus luridiformis": {
+      "taxon": "Boletus luridiformis",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/326321427/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "boletus pinophilus": {
+      "taxon": "Boletus pinophilus",
+      "url": "https://static.inaturalist.org/photos/11801921/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "boletus reticulatus": {
+      "taxon": "Boletus reticulatus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/244672547/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "boletus rhodoxanthus": {
+      "taxon": "Boletus rhodoxanthus",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/0/09/Boletus_rhodoxanthus.JPG",
+      "provider": "wikipedia_en"
+    },
+    "boletus satanas": {
+      "taxon": "Boletus satanas",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/8/8c/Boletus_satanas.JPG",
+      "provider": "wikipedia_en"
+    },
+    "boletus subtomentosus": {
+      "taxon": "Boletus subtomentosus",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/5/51/Ziegenlippe_Xerocomus_subtomentosus.jpg",
+      "provider": "wikipedia_en"
+    },
+    "bovista plumbea": {
+      "taxon": "Bovista plumbea",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/8/87/Bovista_plumbea_128403.jpg",
+      "provider": "wikipedia_en"
+    },
+    "butyriboletus appendiculatus": {
+      "taxon": "Butyriboletus appendiculatus",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/8/8c/Anh%C3%A4ngsel-R%C3%B6hrling_Boletus_appendiculatus.jpg",
+      "provider": "wikipedia_en"
+    },
+    "caloboletus calopus": {
+      "taxon": "Caloboletus calopus",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/6/66/Schoenfussroehrling.jpg",
+      "provider": "wikipedia_en"
+    },
+    "calocera viscosa": {
+      "taxon": "Calocera viscosa",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/2025-11-04_D500-1620_Achim-Lammerts_Calocera-viscosa.jpg/3840px-2025-11-04_D500-1620_Achim-Lammerts_Calocera-viscosa.jpg",
+      "provider": "wikipedia_en"
+    },
+    "calocybe gambosa": {
+      "taxon": "Calocybe gambosa",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/0/0c/Calocybe_gambosa_080420wa.jpg",
+      "provider": "wikipedia_en"
+    },
+    "calvatia gigantea": {
+      "taxon": "Calvatia gigantea",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/2/2f/Giant_Puffball.jpg",
+      "provider": "wikipedia_en"
+    },
+    "cantharellus amethysteus": {
+      "taxon": "Cantharellus amethysteus",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/6/65/Cantharellus_amethysteus_2012-09-28.jpg",
+      "provider": "wikipedia_en"
+    },
+    "cantharellus cibarius": {
+      "taxon": "Cantharellus cibarius",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/309948593/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "cantharellus friesii": {
+      "taxon": "Cantharellus friesii",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/175404608/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "cantharellus pallens": {
+      "taxon": "Cantharellus pallens",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/111940893/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "chalciporus piperatus": {
+      "taxon": "Chalciporus piperatus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/171178/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "chlorophyllum brunneum": {
+      "taxon": "Chlorophyllum brunneum",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/100055263/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "chlorophyllum molybdites": {
+      "taxon": "Chlorophyllum molybdites",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/4133009/medium.",
+      "provider": "inaturalist"
+    },
+    "chlorophyllum rhacodes": {
+      "taxon": "Chlorophyllum rhacodes",
+      "url": "https://static.inaturalist.org/photos/11608138/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "chroogomphus rutilus": {
+      "taxon": "Chroogomphus rutilus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/2340566/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "clathrus ruber": {
+      "taxon": "Clathrus ruber",
+      "url": "https://static.inaturalist.org/photos/129792378/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "clavaria fragilis": {
+      "taxon": "Clavaria fragilis",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/6517/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "clavaria zollingeri": {
+      "taxon": "Clavaria zollingeri",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/561449804/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "clavariadelphus pistillaris": {
+      "taxon": "Clavariadelphus pistillaris",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/162512361/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "clavulina cinerea": {
+      "taxon": "Clavulina cinerea",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/2339989/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "clavulina coralloides": {
+      "taxon": "Clavulina coralloides",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/109776289/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "clitocybe nebularis": {
+      "taxon": "Clitocybe nebularis",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/172190659/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "clitocybe rivulosa": {
+      "taxon": "Clitocybe rivulosa",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/593007839/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "clitopilus prunulus": {
+      "taxon": "Clitopilus prunulus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/20528/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "collybia butyracea": {
+      "taxon": "Collybia butyracea",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/197650108/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "coprinellus disseminatus": {
+      "taxon": "Coprinellus disseminatus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/162946776/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "coprinellus micaceus": {
+      "taxon": "Coprinellus micaceus",
+      "url": "https://static.inaturalist.org/photos/200982305/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "coprinopsis atramentaria": {
+      "taxon": "Coprinopsis atramentaria",
+      "url": "https://static.inaturalist.org/photos/93786223/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "coprinopsis picacea": {
+      "taxon": "Coprinopsis picacea",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/32539740/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "coprinus comatus": {
+      "taxon": "Coprinus comatus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/93399523/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "cordyceps militaris": {
+      "taxon": "Cordyceps militaris",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/23680390/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "cortinarius alboviolaceus": {
+      "taxon": "Cortinarius alboviolaceus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/171535975/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "cortinarius armillatus": {
+      "taxon": "Cortinarius armillatus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/105998802/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "cortinarius caperatus": {
+      "taxon": "Cortinarius caperatus",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/b/be/Rozites_caperata_20100919w.JPG",
+      "provider": "wikipedia_es"
+    },
+    "cortinarius cinnamomeus": {
+      "taxon": "Cortinarius cinnamomeus",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/3/35/Cortinarius_cinnamomeus_-_Lindsey.jpg",
+      "provider": "wikipedia_en"
+    },
+    "cortinarius collinitus": {
+      "taxon": "Cortinarius collinitus",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/5/5f/Cortinarius_collinitus.jpg",
+      "provider": "wikipedia_en"
+    },
+    "cortinarius glaucopus": {
+      "taxon": "Cortinarius glaucopus",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/e/e7/Cortinarius_glaucopus_G5.jpg",
+      "provider": "wikipedia_en"
+    },
+    "cortinarius mucosus": {
+      "taxon": "Cortinarius mucosus",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/7/7e/Cortinarius_mucosus.jpg",
+      "provider": "wikipedia_en"
+    },
+    "cortinarius orellanus": {
+      "taxon": "Cortinarius orellanus",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/6/60/Corellanus.jpg",
+      "provider": "wikipedia_en"
+    },
+    "cortinarius rubellus": {
+      "taxon": "Cortinarius rubellus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/106833656/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "cortinarius sanguineus": {
+      "taxon": "Cortinarius sanguineus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/154966463/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "cortinarius semisanguineus": {
+      "taxon": "Cortinarius semisanguineus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/161151149/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "cortinarius speciosissimus": {
+      "taxon": "Cortinarius speciosissimus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/106833656/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "cortinarius traganus": {
+      "taxon": "Cortinarius traganus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/4159185/medium.",
+      "provider": "inaturalist"
+    },
+    "cortinarius violaceus": {
+      "taxon": "Cortinarius violaceus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/119988828/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "craterellus cornucopioides": {
+      "taxon": "Craterellus cornucopioides",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/33343395/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "craterellus lutescens": {
+      "taxon": "Craterellus lutescens",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/254486691/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "craterellus tubaeformis": {
+      "taxon": "Craterellus tubaeformis",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/337165669/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "crepidotus mollis": {
+      "taxon": "Crepidotus mollis",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/338534765/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "crepidotus variabilis": {
+      "taxon": "Crepidotus variabilis",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/1867849/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "cyanoboletus pulverulentus": {
+      "taxon": "Cyanoboletus pulverulentus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/145013833/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "cyclocybe aegerita": {
+      "taxon": "Cyclocybe aegerita",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/274016662/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "cyclocybe cylindracea": {
+      "taxon": "Cyclocybe cylindracea",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/274016662/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "dacrymyces stillatus": {
+      "taxon": "Dacrymyces stillatus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/5337/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "daedaleopsis confragosa": {
+      "taxon": "Daedaleopsis confragosa",
+      "url": "https://static.inaturalist.org/photos/242695040/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "disciotis venosa": {
+      "taxon": "Disciotis venosa",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/71179006/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "entoloma clypeatum": {
+      "taxon": "Entoloma clypeatum",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/275868650/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "entoloma rhodopolium": {
+      "taxon": "Entoloma rhodopolium",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/166372616/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "entoloma sericeum": {
+      "taxon": "Entoloma sericeum",
+      "url": "https://static.inaturalist.org/photos/30023639/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "entoloma sinuatum": {
+      "taxon": "Entoloma sinuatum",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/111692094/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "fistulina hepatica": {
+      "taxon": "Fistulina hepatica",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/13074462/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "flammulina velutipes": {
+      "taxon": "Flammulina velutipes",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/600969536/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "fomes fomentarius": {
+      "taxon": "Fomes fomentarius",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/11787994/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "galerina hypnorum": {
+      "taxon": "Galerina hypnorum",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/41423328/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "galerina marginata": {
+      "taxon": "Galerina marginata",
+      "url": "https://static.inaturalist.org/photos/188934/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "galerina unicolor": {
+      "taxon": "Galerina unicolor",
+      "url": "https://static.inaturalist.org/photos/188934/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "ganoderma applanatum": {
+      "taxon": "Ganoderma applanatum",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/87978650/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "ganoderma lucidum": {
+      "taxon": "Ganoderma lucidum",
+      "url": "https://static.inaturalist.org/photos/34743855/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "geastrum saccatum": {
+      "taxon": "Geastrum saccatum",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/18854/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "geastrum triplex": {
+      "taxon": "Geastrum triplex",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/422970290/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "gomphidius glutinosus": {
+      "taxon": "Gomphidius glutinosus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/12443054/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "grifola frondosa": {
+      "taxon": "Grifola frondosa",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/2/23/Grifola_frondosa_%2829715305790%29.jpg",
+      "provider": "wikipedia_en"
+    },
+    "gymnopilus junonius": {
+      "taxon": "Gymnopilus junonius",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/9/9d/Gymnopilus_junonius-02.jpg",
+      "provider": "wikipedia_en"
+    },
+    "gymnopilus penetrans": {
+      "taxon": "Gymnopilus penetrans",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/3/3d/Gymnopilus_sapineus_group_568289.jpg",
+      "provider": "wikipedia_en"
+    },
+    "gymnopus dryophilus": {
+      "taxon": "Gymnopus dryophilus",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/2/25/Collybia_dryophila_20061001w.jpg",
+      "provider": "wikipedia_en"
+    },
+    "gyromitra esculenta": {
+      "taxon": "Gyromitra esculenta",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/9/97/Fr%C3%BChjahrslorchel.JPG",
+      "provider": "wikipedia_en"
+    },
+    "gyromitra infula": {
+      "taxon": "Gyromitra infula",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/9/91/Gyromitra_infula_Sasata.jpg",
+      "provider": "wikipedia_en"
+    },
+    "gyroporus castaneus": {
+      "taxon": "Gyroporus castaneus",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/0/07/Gyro.cast.jpg",
+      "provider": "wikipedia_en"
+    },
+    "gyroporus cyanescens": {
+      "taxon": "Gyroporus cyanescens",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/4/49/2007-08-15_Gyroporus_cyanescens.jpg",
+      "provider": "wikipedia_en"
+    },
+    "hebeloma crustuliniforme": {
+      "taxon": "Hebeloma crustuliniforme",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/7/7b/2012-10-16_Hebeloma_crustuliniforme_%28Bull.%29_Qu%C3%A9l_272561_crop.jpg",
+      "provider": "wikipedia_en"
+    },
+    "hebeloma sinapizans": {
+      "taxon": "Hebeloma sinapizans",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/6/66/Hebeloma_sinapizans.JPG",
+      "provider": "wikipedia_en"
+    },
+    "helvella crispa": {
+      "taxon": "Helvella crispa",
+      "url": "https://static.inaturalist.org/photos/28754886/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "helvella lacunosa": {
+      "taxon": "Helvella lacunosa",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/109187405/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "hemileccinum impolitum": {
+      "taxon": "Hemileccinum impolitum",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/240646256/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "hericium coralloides": {
+      "taxon": "Hericium coralloides",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/13296024/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "hericium erinaceus": {
+      "taxon": "Hericium erinaceus",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/f/f1/Lion%27s-mane_mushroom_imported_from_iNaturalist_photo_29576097_on_21_March_2024.jpg",
+      "provider": "wikipedia_en"
+    },
+    "hortiboletus rubellus": {
+      "taxon": "Hortiboletus rubellus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/596934654/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "hydnellum peckii": {
+      "taxon": "Hydnellum peckii",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/110612066/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "hydnum albidum": {
+      "taxon": "Hydnum albidum",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/9219200/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "hydnum repandum": {
+      "taxon": "Hydnum repandum",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/102523946/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "hydnum rufescens": {
+      "taxon": "Hydnum rufescens",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/644433/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "hygrophoropsis aurantiaca": {
+      "taxon": "Hygrophoropsis aurantiaca",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/237942491/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "hypholoma capnoides": {
+      "taxon": "Hypholoma capnoides",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/28385753/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "hypholoma fasciculare": {
+      "taxon": "Hypholoma fasciculare",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/256148291/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "hypholoma lateritium": {
+      "taxon": "Hypholoma lateritium",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/13077486/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "imleria badia": {
+      "taxon": "Imleria badia",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/110384969/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "inocybe asterospora": {
+      "taxon": "Inocybe asterospora",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/574566551/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "inocybe dulcamara": {
+      "taxon": "Inocybe dulcamara",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/24557245/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "inocybe geophylla": {
+      "taxon": "Inocybe geophylla",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/13970162/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "inocybe lacera": {
+      "taxon": "Inocybe lacera",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/402577337/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "inonotus obliquus": {
+      "taxon": "Inonotus obliquus",
+      "url": "https://static.inaturalist.org/photos/96195428/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "kuehneromyces mutabilis": {
+      "taxon": "Kuehneromyces mutabilis",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/332957297/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "laccaria laccata": {
+      "taxon": "Laccaria laccata",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/4135349/medium.",
+      "provider": "inaturalist"
+    },
+    "lacrymaria lacrymabunda": {
+      "taxon": "Lacrymaria lacrymabunda",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/160418/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "lactarius blennius": {
+      "taxon": "Lactarius blennius",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/50274036/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "lactarius chrysorrheus": {
+      "taxon": "Lactarius chrysorrheus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/6993818/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "lactarius controversus": {
+      "taxon": "Lactarius controversus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/22235959/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "lactarius deliciosus": {
+      "taxon": "Lactarius deliciosus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/235753421/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "lactarius deterrimus": {
+      "taxon": "Lactarius deterrimus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/172926337/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "lactarius quietus": {
+      "taxon": "Lactarius quietus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/110844769/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "lactarius rufus": {
+      "taxon": "Lactarius rufus",
+      "url": "https://static.inaturalist.org/photos/11819029/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "lactarius salmonicolor": {
+      "taxon": "Lactarius salmonicolor",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/109848229/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "lactarius sanguifluus": {
+      "taxon": "Lactarius sanguifluus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/598783046/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "lactarius semisanguifluus": {
+      "taxon": "Lactarius semisanguifluus",
+      "url": "https://static.inaturalist.org/photos/34981127/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "lactarius torminosus": {
+      "taxon": "Lactarius torminosus",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/0/01/Lactarius_torminosus_%28cropped%29.jpg",
+      "provider": "wikipedia_en"
+    },
+    "lactarius vellereus": {
+      "taxon": "Lactarius vellereus",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/3/3d/Lactarius_vellereus.jpg",
+      "provider": "wikipedia_en"
+    },
+    "lactarius volemus": {
+      "taxon": "Lactarius volemus",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/1/11/Lactarius_volemus_54887.jpg",
+      "provider": "wikipedia_en"
+    },
+    "laetiporus sulphureus": {
+      "taxon": "Laetiporus sulphureus",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/e/ec/Laetiporus_sulphureus_big.jpg",
+      "provider": "wikipedia_en"
+    },
+    "langermannia gigantea": {
+      "taxon": "Langermannia gigantea",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/2/2f/Giant_Puffball.jpg",
+      "provider": "wikipedia_en"
+    },
+    "leccinum aurantiacum": {
+      "taxon": "Leccinum aurantiacum",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/7/7a/Leccinum_aurantiacum.jpg",
+      "provider": "wikipedia_en"
+    },
+    "leccinum quercinum": {
+      "taxon": "Leccinum quercinum",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/7/7a/Leccinum_aurantiacum.jpg",
+      "provider": "wikipedia_en"
+    },
+    "leccinum scabrum": {
+      "taxon": "Leccinum scabrum",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/8/85/Birkenpilz01.jpg",
+      "provider": "wikipedia_en"
+    },
+    "leccinum versipelle": {
+      "taxon": "Leccinum versipelle",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/0/05/Leccinum_versipelle_LC0366.jpg",
+      "provider": "wikipedia_en"
+    },
+    "lentinula edodes": {
+      "taxon": "Lentinula edodes",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/443071643/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "lentinus tigrinus": {
+      "taxon": "Lentinus tigrinus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/132207076/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "lepiota brunneoincarnata": {
+      "taxon": "Lepiota brunneoincarnata",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/99365273/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "lepiota clypeolaria": {
+      "taxon": "Lepiota clypeolaria",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/65897399/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "lepiota cristata": {
+      "taxon": "Lepiota cristata",
+      "url": "https://static.inaturalist.org/photos/318056797/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "lepiota helveola": {
+      "taxon": "Lepiota helveola",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/0/05/Bresadola_-_Lepiota_helveola.png",
+      "provider": "wikipedia_es"
+    },
+    "lepiota josserandii": {
+      "taxon": "Lepiota josserandii",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/29816474/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "lepiota subincarnata": {
+      "taxon": "Lepiota subincarnata",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/29816474/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "lepista inversa": {
+      "taxon": "Lepista inversa",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/288656354/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "lycoperdon perlatum": {
+      "taxon": "Lycoperdon perlatum",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/237728653/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "macrolepiota excoriata": {
+      "taxon": "Macrolepiota excoriata",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/2339079/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "macrolepiota konradii": {
+      "taxon": "Macrolepiota konradii",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/598782842/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "macrolepiota mastoidea": {
+      "taxon": "Macrolepiota mastoidea",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/598782842/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "macrolepiota procera": {
+      "taxon": "Macrolepiota procera",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/440636205/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "marasmius oreades": {
+      "taxon": "Marasmius oreades",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/35760467/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "marasmius rotula": {
+      "taxon": "Marasmius rotula",
+      "url": "https://static.inaturalist.org/photos/149910374/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "marasmius wynnei": {
+      "taxon": "Marasmius wynnei",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/27260696/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "megacollybia marginata": {
+      "taxon": "Megacollybia marginata",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/4097955/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "megacollybia platyphylla": {
+      "taxon": "Megacollybia platyphylla",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/607219465/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "morchella conica": {
+      "taxon": "Morchella conica",
+      "url": "https://static.inaturalist.org/photos/119761552/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "morchella elata": {
+      "taxon": "Morchella elata",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/273233405/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "morchella esculenta": {
+      "taxon": "Morchella esculenta",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/194781537/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "morchella importuna": {
+      "taxon": "Morchella importuna",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/366632931/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "morchella semilibera": {
+      "taxon": "Morchella semilibera",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/185479950/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "morchella vulgaris": {
+      "taxon": "Morchella vulgaris",
+      "url": "https://static.inaturalist.org/photos/272747803/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "mutinus caninus": {
+      "taxon": "Mutinus caninus",
+      "url": "https://static.inaturalist.org/photos/661211329/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "mycena galericulata": {
+      "taxon": "Mycena galericulata",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/a/a8/Mycena_60303.jpg",
+      "provider": "wikipedia_en"
+    },
+    "mycena haematopus": {
+      "taxon": "Mycena haematopus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/335243815/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "mycena inclinata": {
+      "taxon": "Mycena inclinata",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/28633778/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "mycena polygramma": {
+      "taxon": "Mycena polygramma",
+      "url": "https://static.inaturalist.org/photos/402814500/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "mycena pura": {
+      "taxon": "Mycena pura",
+      "url": "https://static.inaturalist.org/photos/26988956/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "mycena rosea": {
+      "taxon": "Mycena rosea",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/333447195/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "neoboletus luridiformis": {
+      "taxon": "Neoboletus luridiformis",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/a/a6/Boletus_erythropus_2010_G3.jpg",
+      "provider": "wikipedia_en"
+    },
+    "neolentinus lepideus": {
+      "taxon": "Neolentinus lepideus",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/6/61/NeoLentinus_lepideus.JPG",
+      "provider": "wikipedia_en"
+    },
+    "omphalotus illudens": {
+      "taxon": "Omphalotus illudens",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/9/93/Jack_o%27_Lantern_Mushroom_Fungus.png",
+      "provider": "wikipedia_en"
+    },
+    "omphalotus olearius": {
+      "taxon": "Omphalotus olearius",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/9/9c/Omphalotus_olearius.JPG",
+      "provider": "wikipedia_en"
+    },
+    "oudemansiella mucida": {
+      "taxon": "Oudemansiella mucida",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/1/15/Oudemansiella_mucida_JPG1.jpg",
+      "provider": "wikipedia_en"
+    },
+    "panaeolus cinctulus": {
+      "taxon": "Panaeolus cinctulus",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/5/57/Panaeolus.subbalteatus.3.jpg",
+      "provider": "wikipedia_en"
+    },
+    "panaeolus foenisecii": {
+      "taxon": "Panaeolus foenisecii",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Panaeolus_foenisecii_Cupertino.jpg/3840px-Panaeolus_foenisecii_Cupertino.jpg",
+      "provider": "wikipedia_en"
+    },
+    "panellus stipticus": {
+      "taxon": "Panellus stipticus",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Panellus_stipticus_%2837162668243%29.jpg/3840px-Panellus_stipticus_%2837162668243%29.jpg",
+      "provider": "wikipedia_en"
+    },
+    "panus conchatus": {
+      "taxon": "Panus conchatus",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/3/32/Panus-conchatus.jpg",
+      "provider": "wikipedia_en"
+    },
+    "paxillus involutus": {
+      "taxon": "Paxillus involutus",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Navadne_podvihanke_%28Paxillus_involutus%29.jpg/3840px-Navadne_podvihanke_%28Paxillus_involutus%29.jpg",
+      "provider": "wikipedia_en"
+    },
+    "paxillus rubicundulus": {
+      "taxon": "Paxillus rubicundulus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/53663075/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "peziza vesiculosa": {
+      "taxon": "Peziza vesiculosa",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/13784804/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "phaeolus schweinitzii": {
+      "taxon": "Phaeolus schweinitzii",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/11773675/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "phallus impudicus": {
+      "taxon": "Phallus impudicus",
+      "url": "https://static.inaturalist.org/photos/172151620/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "phellodon niger": {
+      "taxon": "Phellodon niger",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/35478307/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "pholiota adiposa": {
+      "taxon": "Pholiota adiposa",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/4282429/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "pholiota squarrosa": {
+      "taxon": "Pholiota squarrosa",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/97453612/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "pisolithus arhizus": {
+      "taxon": "Pisolithus arhizus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/414890506/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "pleurotus cornucopiae": {
+      "taxon": "Pleurotus cornucopiae",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/203958681/medium.png",
+      "provider": "inaturalist"
+    },
+    "pleurotus eryngii": {
+      "taxon": "Pleurotus eryngii",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/29410378/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "pleurotus ostreatus": {
+      "taxon": "Pleurotus ostreatus",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/f/f6/Pleurotus_ostreatus_JPG7.jpg",
+      "provider": "wikipedia_en"
+    },
+    "pleurotus pulmonarius": {
+      "taxon": "Pleurotus pulmonarius",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/59421868/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "pluteus cervinus": {
+      "taxon": "Pluteus cervinus",
+      "url": "https://static.inaturalist.org/photos/116658302/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "pluteus salicinus": {
+      "taxon": "Pluteus salicinus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/1091274/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "polyozellus multiplex": {
+      "taxon": "Polyozellus multiplex",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/187105/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "porphyrellus porphyrosporus": {
+      "taxon": "Porphyrellus porphyrosporus",
+      "url": "https://static.inaturalist.org/photos/221332163/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "psilocybe cubensis": {
+      "taxon": "Psilocybe cubensis",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/77336534/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "psilocybe semilanceata": {
+      "taxon": "Psilocybe semilanceata",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/89483267/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "ramaria botrytis": {
+      "taxon": "Ramaria botrytis",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/183302941/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "ramaria formosa": {
+      "taxon": "Ramaria formosa",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/98256639/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "ramaria stricta": {
+      "taxon": "Ramaria stricta",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/4162738/medium.JPG",
+      "provider": "inaturalist"
+    },
+    "rhizopogon luteolus": {
+      "taxon": "Rhizopogon luteolus",
+      "url": "https://static.inaturalist.org/photos/322706290/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "rhizopogon roseolus": {
+      "taxon": "Rhizopogon roseolus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/169401344/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "rhodocollybia butyracea": {
+      "taxon": "Rhodocollybia butyracea",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/197650108/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "rubroboletus satanas": {
+      "taxon": "Rubroboletus satanas",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/112254196/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "russula aeruginea": {
+      "taxon": "Russula aeruginea",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/106503487/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "russula atropurpurea": {
+      "taxon": "Russula atropurpurea",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/246913575/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "russula caerulea": {
+      "taxon": "Russula caerulea",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/159040169/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "russula cyanoxantha": {
+      "taxon": "Russula cyanoxantha",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/128039200/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "russula delica": {
+      "taxon": "Russula delica",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/453190381/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "russula emetica": {
+      "taxon": "Russula emetica",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/109349419/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "russula foetens": {
+      "taxon": "Russula foetens",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/e/e4/Russula_foetens.JPG",
+      "provider": "wikipedia_en"
+    },
+    "russula fragilis": {
+      "taxon": "Russula fragilis",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/c/cd/Russula_fragilis.jpg",
+      "provider": "wikipedia_en"
+    },
+    "russula heterophylla": {
+      "taxon": "Russula heterophylla",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/d/db/Russ.het.jpg",
+      "provider": "wikipedia_en"
+    },
+    "russula integra": {
+      "taxon": "Russula integra",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/0/02/Russula_integra_%282%29.jpg",
+      "provider": "wikipedia_en"
+    },
+    "russula mairei": {
+      "taxon": "Russula mairei",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/3/3c/Russ_nobilis.jpg",
+      "provider": "wikipedia_en"
+    },
+    "russula nigricans": {
+      "taxon": "Russula nigricans",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/d/df/Russula_nigricans_-_Lindsey_3a.jpg",
+      "provider": "wikipedia_en"
+    },
+    "russula ochroleuca": {
+      "taxon": "Russula ochroleuca",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/1/1f/Russula_ochroleuca_ch%C3%A2taigne.JPG",
+      "provider": "wikipedia_en"
+    },
+    "russula sardonia": {
+      "taxon": "Russula sardonia",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/8/8c/Russ.sard.jpg",
+      "provider": "wikipedia_en"
+    },
+    "russula vesca": {
+      "taxon": "Russula vesca",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/f/fe/Russ.ves.jpg",
+      "provider": "wikipedia_en"
+    },
+    "russula virescens": {
+      "taxon": "Russula virescens",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/7/79/Russula_virescens3.JPG",
+      "provider": "wikipedia_en"
+    },
+    "russula xerampelina": {
+      "taxon": "Russula xerampelina",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/329463336/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "sarcodon imbricatus": {
+      "taxon": "Sarcodon imbricatus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/196776/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "sarcoscypha coccinea": {
+      "taxon": "Sarcoscypha coccinea",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/33054360/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "schizophyllum commune": {
+      "taxon": "Schizophyllum commune",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/9681138/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "scleroderma citrinum": {
+      "taxon": "Scleroderma citrinum",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/1334660/medium.JPG",
+      "provider": "inaturalist"
+    },
+    "scleroderma verrucosum": {
+      "taxon": "Scleroderma verrucosum",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/7027061/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "sparassis crispa": {
+      "taxon": "Sparassis crispa",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/177899698/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "sparassis laminosa": {
+      "taxon": "Sparassis laminosa",
+      "url": "https://static.inaturalist.org/photos/49782356/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "stereum hirsutum": {
+      "taxon": "Stereum hirsutum",
+      "url": "https://static.inaturalist.org/photos/110545420/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "strobilomyces strobilaceus": {
+      "taxon": "Strobilomyces strobilaceus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/7027090/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "stropharia aeruginosa": {
+      "taxon": "Stropharia aeruginosa",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/171671477/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "stropharia coronilla": {
+      "taxon": "Stropharia coronilla",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/4159985/medium.",
+      "provider": "inaturalist"
+    },
+    "stropharia rugosoannulata": {
+      "taxon": "Stropharia rugosoannulata",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/282486244/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "suillellus luridus": {
+      "taxon": "Suillellus luridus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/423931840/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "suillus bovinus": {
+      "taxon": "Suillus bovinus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/1825888/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "suillus granulatus": {
+      "taxon": "Suillus granulatus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/200412063/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "suillus grevillei": {
+      "taxon": "Suillus grevillei",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/236113746/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "suillus luteus": {
+      "taxon": "Suillus luteus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/12823339/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "suillus variegatus": {
+      "taxon": "Suillus variegatus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/107237846/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "tapinella atrotomentosa": {
+      "taxon": "Tapinella atrotomentosa",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/84323636/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "terfezia claveryi": {
+      "taxon": "Terfezia claveryi",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/112561633/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "thelephora terrestris": {
+      "taxon": "Thelephora terrestris",
+      "url": "https://static.inaturalist.org/photos/47027958/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "trametes gibbosa": {
+      "taxon": "Trametes gibbosa",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/34683955/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "trametes versicolor": {
+      "taxon": "Trametes versicolor",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/160331738/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "tremella mesenterica": {
+      "taxon": "Tremella mesenterica",
+      "url": "https://static.inaturalist.org/photos/56108682/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "tricholoma columbetta": {
+      "taxon": "Tricholoma columbetta",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/6993853/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "tricholoma equestre": {
+      "taxon": "Tricholoma equestre",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/14377130/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "tricholoma focale": {
+      "taxon": "Tricholoma focale",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/28019593/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "tricholoma matsutake": {
+      "taxon": "Tricholoma matsutake",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/105910334/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "tricholoma populinum": {
+      "taxon": "Tricholoma populinum",
+      "url": "https://static.inaturalist.org/photos/5567020/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "tricholoma portentosum": {
+      "taxon": "Tricholoma portentosum",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/110384962/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "tricholoma saponaceum": {
+      "taxon": "Tricholoma saponaceum",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/4135083/medium.",
+      "provider": "inaturalist"
+    },
+    "tricholoma scalpturatum": {
+      "taxon": "Tricholoma scalpturatum",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/161913832/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "tricholoma sejunctum": {
+      "taxon": "Tricholoma sejunctum",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/116777452/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "tricholoma sulphureum": {
+      "taxon": "Tricholoma sulphureum",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/245302122/medium.jpeg",
+      "provider": "inaturalist"
+    },
+    "tricholoma terreum": {
+      "taxon": "Tricholoma terreum",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/4133564/medium.",
+      "provider": "inaturalist"
+    },
+    "tricholomopsis rutilans": {
+      "taxon": "Tricholomopsis rutilans",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/29980732/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "tuber aestivum": {
+      "taxon": "Tuber aestivum",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/8/89/Tuber_aestivum_Valnerina_018.jpg",
+      "provider": "wikipedia_en"
+    },
+    "tuber brumale": {
+      "taxon": "Tuber brumale",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/0/02/Tuber_brumale_-_Vue_sur_la_tranche_coup%C3%A9e.jpg",
+      "provider": "wikipedia_en"
+    },
+    "tuber magnatum": {
+      "taxon": "Tuber magnatum",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/c/c9/Truffle_washed_and_cut.jpg",
+      "provider": "wikipedia_en"
+    },
+    "tuber melanosporum": {
+      "taxon": "Tuber melanosporum",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/2/26/Truffe_nature.JPG",
+      "provider": "wikipedia_en"
+    },
+    "tylopilus felleus": {
+      "taxon": "Tylopilus felleus",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/e/e3/2006-09-14_Tylopilus_felleus_crop.jpg",
+      "provider": "wikipedia_en"
+    },
+    "verpa bohemica": {
+      "taxon": "Verpa bohemica",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/2/21/Verpa_bohemica1.jpg",
+      "provider": "wikipedia_en"
+    },
+    "verpa conica": {
+      "taxon": "Verpa conica",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/1/15/Verpa_conica_by_Ron_Pastorino.jpg",
+      "provider": "wikipedia_en"
+    },
+    "volvariella gloiocephala": {
+      "taxon": "Volvariella gloiocephala",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/3/3e/Volvopluteus_SoCal.jpg",
+      "provider": "wikipedia_en"
+    },
+    "volvariella volvacea": {
+      "taxon": "Volvariella volvacea",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/f/fc/StrawMushroom.jpg",
+      "provider": "wikipedia_en"
+    },
+    "xerocomellus chrysenteron": {
+      "taxon": "Xerocomellus chrysenteron",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Xerocomellus_chrysenteron28.jpg/1920px-Xerocomellus_chrysenteron28.jpg",
+      "provider": "wikipedia_en"
+    },
+    "xerocomellus cisalpinus": {
+      "taxon": "Xerocomellus cisalpinus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/596935138/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "xerocomus subtomentosus": {
+      "taxon": "Xerocomus subtomentosus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/7018628/medium.jpg",
+      "provider": "inaturalist"
+    },
+    "bankera fuligineoalba": {
+      "taxon": "Bankera fuligineoalba",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/91954805/medium.jpeg",
+      "provider": "inaturalist_syn"
+    },
+    "boletus badius": {
+      "taxon": "Boletus badius",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/110384969/medium.jpg",
+      "provider": "inaturalist_syn"
+    },
+    "boletus impolitus": {
+      "taxon": "Boletus impolitus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/240646256/medium.jpeg",
+      "provider": "inaturalist_syn"
+    },
+    "cantharellus lutescens": {
+      "taxon": "Cantharellus lutescens",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/254486691/medium.jpeg",
+      "provider": "inaturalist_syn"
+    },
+    "clitocybe dealbata": {
+      "taxon": "Clitocybe dealbata",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/21188016/medium.jpg",
+      "provider": "inaturalist_syn"
+    },
+    "clitocybe geotropa": {
+      "taxon": "Clitocybe geotropa",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/166989398/medium.jpg",
+      "provider": "inaturalist_syn"
+    },
+    "clitocybe odora": {
+      "taxon": "Clitocybe odora",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/94714435/medium.jpeg",
+      "provider": "inaturalist_syn"
+    },
+    "collybia dryophila": {
+      "taxon": "Collybia dryophila",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/2/25/Collybia_dryophila_20061001w.jpg",
+      "provider": "wikipedia_en_syn"
+    },
+    "coprinus atramentarius": {
+      "taxon": "Coprinus atramentarius",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/2409764/medium.JPG",
+      "provider": "inaturalist_syn"
+    },
+    "cortinarius caerulescens": {
+      "taxon": "Cortinarius caerulescens",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/101592462/medium.jpg",
+      "provider": "inaturalist_syn"
+    },
+    "cortinarius elegantior": {
+      "taxon": "Cortinarius elegantior",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/155170536/medium.jpg",
+      "provider": "inaturalist_syn"
+    },
+    "cortinarius largus": {
+      "taxon": "Cortinarius largus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/109084192/medium.jpg",
+      "provider": "inaturalist_syn"
+    },
+    "cortinarius purpurascens": {
+      "taxon": "Cortinarius purpurascens",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/4135442/medium.",
+      "provider": "inaturalist_syn"
+    },
+    "cortinarius triumphans": {
+      "taxon": "Cortinarius triumphans",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/102630629/medium.jpg",
+      "provider": "inaturalist_syn"
+    },
+    "daedalea quercina": {
+      "taxon": "Daedalea quercina",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/7068451/medium.jpeg",
+      "provider": "inaturalist_syn"
+    },
+    "hymenopellis radicata": {
+      "taxon": "Hymenopellis radicata",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/436466903/medium.jpg",
+      "provider": "inaturalist_syn"
+    },
+    "inocybe erubescens": {
+      "taxon": "Inocybe erubescens",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/42050373/medium.jpeg",
+      "provider": "inaturalist_syn"
+    },
+    "inocybe rimosa": {
+      "taxon": "Inocybe rimosa",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/12938954/medium.jpg",
+      "provider": "inaturalist_syn"
+    },
+    "lactarius pergamenus": {
+      "taxon": "Lactarius pergamenus",
+      "url": "https://static.inaturalist.org/photos/32834443/medium.jpg",
+      "provider": "inaturalist_syn"
+    },
+    "lactarius piperatus": {
+      "taxon": "Lactarius piperatus",
+      "url": "https://static.inaturalist.org/photos/32834443/medium.jpg",
+      "provider": "inaturalist_syn"
+    },
+    "lepiota aspera": {
+      "taxon": "Lepiota aspera",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/253686/medium.JPG",
+      "provider": "inaturalist_syn"
+    },
+    "lepista nuda": {
+      "taxon": "Lepista nuda",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/57891023/medium.jpeg",
+      "provider": "inaturalist_syn"
+    },
+    "lepista personata": {
+      "taxon": "Lepista personata",
+      "url": "https://static.inaturalist.org/photos/318624464/medium.jpeg",
+      "provider": "inaturalist_syn"
+    },
+    "lepista saeva": {
+      "taxon": "Lepista saeva",
+      "url": "https://static.inaturalist.org/photos/318624464/medium.jpeg",
+      "provider": "inaturalist_syn"
+    },
+    "lycoperdon pyriforme": {
+      "taxon": "Lycoperdon pyriforme",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/39899941/medium.jpg",
+      "provider": "inaturalist_syn"
+    },
+    "peziza badia": {
+      "taxon": "Peziza badia",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/2340303/medium.jpg",
+      "provider": "inaturalist_syn"
+    },
+    "piptoporus betulinus": {
+      "taxon": "Piptoporus betulinus",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Piptoporus_betulinus_55.jpg/3840px-Piptoporus_betulinus_55.jpg",
+      "provider": "wikipedia_en_syn"
+    },
+    "polyporus squamosus": {
+      "taxon": "Polyporus squamosus",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/3/36/Polyporus_squamosus_Molter.jpg",
+      "provider": "wikipedia_en_syn"
+    },
+    "psathyrella candolleana": {
+      "taxon": "Psathyrella candolleana",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/0/06/Psathyrella_candolleana_060801wa.jpg",
+      "provider": "wikipedia_en_syn"
+    },
+    "psathyrella multipedata": {
+      "taxon": "Psathyrella multipedata",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/40244966/medium.jpeg",
+      "provider": "inaturalist_syn"
+    },
+    "rheubarbariboletus armeniacus": {
+      "taxon": "Rheubarbariboletus armeniacus",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/9/9b/Xerocomus_armeniacus.jpg",
+      "provider": "wikipedia_en_syn"
+    },
+    "xerula radicata": {
+      "taxon": "Xerula radicata",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/b/bf/Xerula.radicata3.-.lindsey.jpg",
+      "provider": "wikipedia_en_syn"
+    },
+    "megacollybia rimosa": {
+      "taxon": "Megacollybia rimosa",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/607219465/medium.jpg",
+      "provider": "inaturalist_alias"
+    },
+    "rubroboletus luridus": {
+      "taxon": "Rubroboletus luridus",
+      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/423931840/medium.jpg",
+      "provider": "inaturalist_alias"
+    }
+  },
+  "stats": {
+    "total": 347,
+    "with_photo": 346,
+    "missing": 1,
+    "missing_taxa": [
+      "Picosphaera cistidiolens"
+    ]
+  }
+}

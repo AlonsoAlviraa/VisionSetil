@@ -1,0 +1,27 @@
+{
+  "name": "visionsetil_image_ml_loop_v1",
+  "date": "2026-07-16",
+  "goal": "Improve multi-view image identification MAP@3 while keeping deadly recall 100%",
+  "notes": "Loop engineering: config -> train/eval -> capture metrics -> threshold calibrate",
+  "runner": "scripts/run_image_ml_loop.py",
+  "kaggle_kernel": "kaggle/visionsetil_mega_training.ipynb",
+  "default_predictions": "kaggle/kernel_output_v9/models/test_predictions.npz",
+  "default_label2idx": "kaggle/kernel_output_v9/models/label2idx.json",
+  "local_eval": "eval/scripts/compute_full_metrics.py",
+  "output_dir": "eval/reports/ml_loop_v1",
+  "backbone": "convnextv2_tiny",
+  "multi_view": true,
+  "views": ["gills", "front", "habitat", "detail"],
+  "loss": ["focal", "label_smoothing"],
+  "anti_leak": "observation_id GroupKFold",
+  "metrics": ["MAP@3", "top1", "top3", "macro_f1", "deadly_recall", "ECE"],
+  "bootstrap_iters": 1000,
+  "bootstrap_ci": 0.95,
+  "open_set": true,
+  "dataset_sources": ["FungiCLEF-style", "FungiTastic", "DF20 converters in kaggle/"],
+  "commands": {
+    "local_eval": "python scripts/run_image_ml_loop.py --config kaggle/configs/image_ml_loop_v1.json",
+    "kaggle_push": "kaggle kernels push -p kaggle/",
+    "kaggle_status": "kaggle kernels status $KAGGLE_USERNAME/visionsetil-mega-training"
+  }
+}

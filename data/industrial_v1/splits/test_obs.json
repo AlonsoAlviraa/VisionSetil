@@ -1,0 +1,9 @@
+{
+  "observation_ids": [
+    "o10",
+    "o4"
+  ],
+  "count": 2,
+  "seed": 42,
+  "source_jsonl": "..\\data\\industrial_v1\\_synthetic_obs.jsonl"
+}

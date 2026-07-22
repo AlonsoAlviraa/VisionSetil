@@ -1,0 +1,646 @@
+{
+  "generated_at": "2026-07-17T09:58:20.759486+00:00",
+  "artifacts": {
+    "predictions": "C:\\AlonsoAlviraa\\VisionSetil\\kaggle\\kernel_output_v9\\models\\test_predictions.npz",
+    "label2idx": "C:\\AlonsoAlviraa\\VisionSetil\\kaggle\\kernel_output_v9\\models\\label2idx.json",
+    "disk_metrics": {
+      "test_accuracy": 0.05,
+      "test_map_at_3": 0.07583333333333335,
+      "test_map_at_3_ci_low": 0.05888888888888888,
+      "test_map_at_3_ci_high": 0.09444444444444447,
+      "test_f1_macro": 0.029443802190241813,
+      "test_balanced_accuracy": 0.049,
+      "test_ece": 0.11058435034162055,
+      "safety_recall_deadly": 0.0,
+      "n_deadly_in_test": 5,
+      "best_val_map3": 0.06583333333333333,
+      "best_epoch": 6,
+      "num_classes": 500,
+      "num_train_obs": 2800,
+      "num_val_obs": 600,
+      "num_test_obs": 600,
+      "temperature": 1.1201627254486084,
+      "model_params_M": 31.117504,
+      "databases_used": [
+        "fungitastic",
+        "fungiclef"
+      ],
+      "subsample_config": {
+        "max_species": 500,
+        "max_obs_per_species": 8
+      },
+      "deadly_species_known": 26,
+      "deadly_species_in_dataset": 4,
+      "version": "v8"
+    }
+  },
+  "deadly_class_indices": [
+    13,
+    15,
+    18,
+    156
+  ],
+  "deadly_class_names": [
+    "Amanita muscaria",
+    "Amanita phalloides",
+    "Amanita virosa",
+    "Galerina marginata"
+  ],
+  "experiments": {
+    "baseline": {
+      "name": "baseline_v9_test",
+      "top1": 0.05,
+      "top3": 0.10833333333333334,
+      "top5": 0.16,
+      "map_at_3": 0.07583333333333334,
+      "ece": 0.046332031182639934,
+      "genus_top1": 0.06333333333333334,
+      "margins": {
+        "mean_margin": 0.04201341300744417,
+        "median_margin": 0.01179744159074693,
+        "p10_margin": 0.0019367406476971103,
+        "p90_margin": 0.10241909058943428
+      },
+      "deadly": {
+        "n_deadly_in_test": 6,
+        "species_top1_accuracy_on_deadly": 0.0,
+        "any_deadly_in_top1": 0.0,
+        "any_deadly_in_topk": 0.0,
+        "k": 3,
+        "note": "Safety: prefer high any_deadly_in_topk even if species wrong"
+      },
+      "n": 600,
+      "n_classes_in_test": 500
+    },
+    "temperature": {
+      "grid": [
+        {
+          "T": 0.5,
+          "top1": 0.05,
+          "map_at_3": 0.07583333333333334,
+          "ece": 0.24944639369054294,
+          "mean_max_conf": 0.2987946613441048
+        },
+        {
+          "T": 0.75,
+          "top1": 0.05,
+          "map_at_3": 0.07583333333333334,
+          "ece": 0.10879696663911581,
+          "mean_max_conf": 0.15853054445525358
+        },
+        {
+          "T": 1.0,
+          "top1": 0.05,
+          "map_at_3": 0.07583333333333334,
+          "ece": 0.04633203118263993,
+          "mean_max_conf": 0.08895170661403566
+        },
+        {
+          "T": 1.12,
+          "top1": 0.05,
+          "map_at_3": 0.07583333333333334,
+          "ece": 0.026994145025865425,
+          "mean_max_conf": 0.06869874364453964
+        },
+        {
+          "T": 1.25,
+          "top1": 0.05,
+          "map_at_3": 0.07583333333333334,
+          "ece": 0.021606055191478717,
+          "mean_max_conf": 0.05284417227326455
+        },
+        {
+          "T": 1.5,
+          "top1": 0.05,
+          "map_at_3": 0.07583333333333334,
+          "ece": 0.0172616642221716,
+          "mean_max_conf": 0.03391236805872065
+        },
+        {
+          "T": 2.0,
+          "top1": 0.05,
+          "map_at_3": 0.07583333333333334,
+          "ece": 0.03225822923621569,
+          "mean_max_conf": 0.01774177076378431
+        },
+        {
+          "T": 3.0,
+          "top1": 0.05,
+          "map_at_3": 0.07583333333333334,
+          "ece": 0.04122288767643581,
+          "mean_max_conf": 0.008777112323564191
+        },
+        {
+          "T": 5.0,
+          "top1": 0.05,
+          "map_at_3": 0.07583333333333334,
+          "ece": 0.04509358709462744,
+          "mean_max_conf": 0.004906412905372562
+        }
+      ],
+      "best_by_ece": {
+        "T": 1.5,
+        "top1": 0.05,
+        "map_at_3": 0.07583333333333334,
+        "ece": 0.0172616642221716,
+        "mean_max_conf": 0.03391236805872065
+      }
+    },
+    "open_set": {
+      "n_configs": 42,
+      "best_utility_accept_ge_0.2": {
+        "accept_rate": 0.20333333333333334,
+        "abstain_rate": 0.7966666666666666,
+        "accuracy_when_accept": 0.16393442622950818,
+        "coverage_correct": 0.03333333333333333,
+        "n_accept": 122,
+        "n_total": 600,
+        "conf_thr": 0.1,
+        "margin_thr": 0.0,
+        "utility": 0.07392212709545727
+      },
+      "best_accuracy_accept_ge_0.2": {
+        "accept_rate": 0.20333333333333334,
+        "abstain_rate": 0.7966666666666666,
+        "accuracy_when_accept": 0.16393442622950818,
+        "coverage_correct": 0.03333333333333333,
+        "n_accept": 122,
+        "n_total": 600,
+        "conf_thr": 0.1,
+        "margin_thr": 0.0,
+        "utility": 0.07392212709545727
+      },
+      "pareto_sample": [
+        {
+          "accept_rate": 0.175,
+          "abstain_rate": 0.825,
+          "accuracy_when_accept": 0.19047619047619047,
+          "coverage_correct": 0.03333333333333333,
+          "n_accept": 105,
+          "n_total": 600,
+          "conf_thr": 0.1,
+          "margin_thr": 0.02,
+          "utility": 0.07968190728895957
+        },
+        {
+          "accept_rate": 0.15166666666666667,
+          "abstain_rate": 0.8483333333333334,
+          "accuracy_when_accept": 0.17582417582417584,
+          "coverage_correct": 0.02666666666666667,
+          "n_accept": 91,
+          "n_total": 600,
+          "conf_thr": 0.05,
+          "margin_thr": 0.05,
+          "utility": 0.06847367880174608
+        },
+        {
+          "accept_rate": 0.20333333333333334,
+          "abstain_rate": 0.7966666666666666,
+          "accuracy_when_accept": 0.16393442622950818,
+          "coverage_correct": 0.03333333333333333,
+          "n_accept": 122,
+          "n_total": 600,
+          "conf_thr": 0.1,
+          "margin_thr": 0.0,
+          "utility": 0.07392212709545727
+        },
+        {
+          "accept_rate": 0.28833333333333333,
+          "abstain_rate": 0.7116666666666667,
+          "accuracy_when_accept": 0.12716763005780346,
+          "coverage_correct": 0.03666666666666667,
+          "n_accept": 173,
+          "n_total": 600,
+          "conf_thr": 0.05,
+          "margin_thr": 0.02,
+          "utility": 0.06828479407686208
+        },
+        {
+          "accept_rate": 0.5566666666666666,
+          "abstain_rate": 0.44333333333333336,
+          "accuracy_when_accept": 0.0718562874251497,
+          "coverage_correct": 0.04,
+          "n_accept": 334,
+          "n_total": 600,
+          "conf_thr": 0.05,
+          "margin_thr": 0.0,
+          "utility": 0.05361204619305243
+        }
+      ]
+    },
+    "confidence_bins": {
+      "bins": [
+        {
+          "bin": "[0, 0.05)",
+          "n": 266,
+          "acc": 0.022556390977443608,
+          "mean_conf": 0.03381812774475057
+        },
+        {
+          "bin": "[0.05, 0.1)",
+          "n": 212,
+          "acc": 0.018867924528301886,
+          "mean_conf": 0.06707681763518292
+        },
+        {
+          "bin": "[0.1, 0.15)",
+          "n": 55,
+          "acc": 0.05454545454545454,
+          "mean_conf": 0.12292214689083332
+        },
+        {
+          "bin": "[0.15, 0.2)",
+          "n": 12,
+          "acc": 0.08333333333333333,
+          "mean_conf": 0.18648064251524463
+        },
+        {
+          "bin": "[0.2, 0.3)",
+          "n": 23,
+          "acc": 0.13043478260869565,
+          "mean_conf": 0.2414042992250856
+        },
+        {
+          "bin": "[0.3, 0.5)",
+          "n": 22,
+          "acc": 0.36363636363636365,
+          "mean_conf": 0.39662755926282317
+        },
+        {
+          "bin": "[0.5, 1.01)",
+          "n": 10,
+          "acc": 0.5,
+          "mean_conf": 0.687852567452112
+        }
+      ]
+    },
+    "long_tail": {
+      "n_classes_seen": 500,
+      "head50_mean_acc": 0.11,
+      "tail_mean_acc": 0.042222222222222223,
+      "zero_acc_classes": 472,
+      "worst10": [
+        {
+          "class_idx": 1,
+          "name": "Agaricus arvensis",
+          "n": 2,
+          "acc": 0.0
+        },
+        {
+          "class_idx": 4,
+          "name": "Agaricus campestris",
+          "n": 2,
+          "acc": 0.0
+        },
+        {
+          "class_idx": 12,
+          "name": "Amanita gemmata",
+          "n": 2,
+          "acc": 0.0
+        },
+        {
+          "class_idx": 13,
+          "name": "Amanita muscaria",
+          "n": 2,
+          "acc": 0.0
+        },
+        {
+          "class_idx": 21,
+          "name": "Apioperdon pyriforme",
+          "n": 2,
+          "acc": 0.0
+        },
+        {
+          "class_idx": 27,
+          "name": "Ascocoryne cylichnium",
+          "n": 2,
+          "acc": 0.0
+        },
+        {
+          "class_idx": 32,
+          "name": "Auricularia auricula-judae",
+          "n": 2,
+          "acc": 0.0
+        },
+        {
+          "class_idx": 40,
+          "name": "Boletus edulis",
+          "n": 2,
+          "acc": 0.0
+        },
+        {
+          "class_idx": 41,
+          "name": "Boletus reticulatus",
+          "n": 2,
+          "acc": 0.0
+        },
+        {
+          "class_idx": 47,
+          "name": "Byssomerulius corium",
+          "n": 2,
+          "acc": 0.0
+        }
+      ],
+      "best10": [
+        {
+          "class_idx": 282,
+          "name": "Micarea lignaria",
+          "n": 2,
+          "acc": 1.0
+        },
+        {
+          "class_idx": 482,
+          "name": "Urocystis eranthidis",
+          "n": 2,
+          "acc": 1.0
+        },
+        {
+          "class_idx": 25,
+          "name": "Arrhenia retiruga",
+          "n": 1,
+          "acc": 1.0
+        },
+        {
+          "class_idx": 26,
+          "name": "Arthonia radiata",
+          "n": 1,
+          "acc": 1.0
+        },
+        {
+          "class_idx": 66,
+          "name": "Cheilymenia granulata",
+          "n": 1,
+          "acc": 1.0
+        },
+        {
+          "class_idx": 84,
+          "name": "Clitocybe fragrans",
+          "n": 1,
+          "acc": 1.0
+        },
+        {
+          "class_idx": 137,
+          "name": "Erythricium aurantiacum",
+          "n": 1,
+          "acc": 1.0
+        },
+        {
+          "class_idx": 222,
+          "name": "Lachnum virgineum",
+          "n": 1,
+          "acc": 1.0
+        },
+        {
+          "class_idx": 229,
+          "name": "Lactarius necator",
+          "n": 1,
+          "acc": 1.0
+        },
+        {
+          "class_idx": 283,
+          "name": "Microbotryum stellariae",
+          "n": 1,
+          "acc": 1.0
+        }
+      ]
+    },
+    "topk_curve": [
+      {
+        "k": 1,
+        "acc": 0.05,
+        "map": 0.05
+      },
+      {
+        "k": 2,
+        "acc": 0.08833333333333333,
+        "map": 0.06916666666666667
+      },
+      {
+        "k": 3,
+        "acc": 0.10833333333333334,
+        "map": 0.07583333333333334
+      },
+      {
+        "k": 4,
+        "acc": 0.13333333333333333,
+        "map": 0.08208333333333333
+      },
+      {
+        "k": 5,
+        "acc": 0.16,
+        "map": 0.08741666666666667
+      },
+      {
+        "k": 6,
+        "acc": 0.175,
+        "map": 0.08991666666666667
+      },
+      {
+        "k": 7,
+        "acc": 0.195,
+        "map": 0.09277380952380954
+      },
+      {
+        "k": 8,
+        "acc": 0.205,
+        "map": 0.09402380952380952
+      },
+      {
+        "k": 9,
+        "acc": 0.22166666666666668,
+        "map": 0.09587566137566138
+      },
+      {
+        "k": 10,
+        "acc": 0.23666666666666666,
+        "map": 0.09737566137566138
+      }
+    ],
+    "chance_baselines": {
+      "uniform_top1": 0.0033333333333333335,
+      "uniform_map3": 0.005555555555555555,
+      "frequency_prior_top1": 0.0033333333333333335,
+      "frequency_prior_map3": 0.0061111111111111106,
+      "random_top1": 0.0,
+      "chance_1_over_C": 0.002,
+      "model_lift_over_chance_top1": 25.0
+    },
+    "multiview_proxy": {
+      "mix_uniform_grid": [
+        {
+          "signal_alpha": 1.0,
+          "top1": 0.05,
+          "map_at_3": 0.07583333333333334,
+          "interpretation": "alpha~ fraction of multi-view evidence kept"
+        },
+        {
+          "signal_alpha": 0.75,
+          "top1": 0.05,
+          "map_at_3": 0.07583333333333334,
+          "interpretation": "alpha~ fraction of multi-view evidence kept"
+        },
+        {
+          "signal_alpha": 0.5,
+          "top1": 0.05,
+          "map_at_3": 0.07583333333333334,
+          "interpretation": "alpha~ fraction of multi-view evidence kept"
+        },
+        {
+          "signal_alpha": 0.25,
+          "top1": 0.05,
+          "map_at_3": 0.07583333333333334,
+          "interpretation": "alpha~ fraction of multi-view evidence kept"
+        },
+        {
+          "signal_alpha": 0.0,
+          "top1": 0.0033333333333333335,
+          "map_at_3": 0.005555555555555555,
+          "interpretation": "alpha~ fraction of multi-view evidence kept"
+        }
+      ]
+    },
+    "recommended_gpu_matrix": {
+      "gpu_quota_note": "Check kaggle get_accelerator_quota; design fits remaining hours",
+      "priority_order": [
+        {
+          "id": "E-data-scale",
+          "name": "More data per class",
+          "change": "max_species=1000, max_obs_per_species=20, epochs=15",
+          "hypothesis": "MAP@3 lifts mainly from data not architecture at few-shot regime",
+          "primary_metric": "test_map_at_3",
+          "safety_metric": "safety_recall_deadly"
+        },
+        {
+          "id": "E-deadly-oversample",
+          "name": "Oversample critical taxa",
+          "change": "weighted sampler 5x for deadly label indices + focal loss",
+          "hypothesis": "Raises safety_recall_deadly without collapsing MAP@3",
+          "primary_metric": "safety_recall_deadly"
+        },
+        {
+          "id": "E-views",
+          "name": "Multi-view vs single-view",
+          "change": "train with 1 vs 2–4 views per obs",
+          "hypothesis": "MAP@3 gap quantifies multi-view value",
+          "primary_metric": "test_map_at_3"
+        },
+        {
+          "id": "E-backbone",
+          "name": "tiny vs base",
+          "change": "convnextv2_tiny (current) vs base if GPU allows",
+          "hypothesis": "base helps head classes; tiny better for few-shot speed",
+          "primary_metric": "test_map_at_3"
+        },
+        {
+          "id": "E-open-set",
+          "name": "Open-set threshold from val",
+          "change": "sweep conf/margin on val; freeze on test",
+          "hypothesis": "Accept@20% can double conditional accuracy",
+          "primary_metric": "accuracy_when_accept"
+        },
+        {
+          "id": "E-region-cyl",
+          "name": "Hold-out Spain/Soria GBIF",
+          "change": "eval-only set from GBIF ES media",
+          "hypothesis": "Domain shift estimate for production Spain",
+          "primary_metric": "map_at_3_region"
+        }
+      ],
+      "baseline_to_beat": {
+        "run": "kernel_output_v9",
+        "test_map_at_3": 0.0758,
+        "test_accuracy": 0.05,
+        "safety_recall_deadly": 0.0
+      }
+    },
+    "cpu_forward_smoke": {
+      "ok": true,
+      "load_seconds": 3.6167112000002817,
+      "arch": "multiview_v8",
+      "hparams": {
+        "d_model": 512,
+        "metadata_dim": 64,
+        "num_classes": 500,
+        "lora_rank": 16,
+        "backbone_name": "convnextv2_tiny.fcmae_ft_in22k_in1k",
+        "vocab_sizes": {
+          "habitat": 100,
+          "substrate": 50,
+          "smell": 30,
+          "country": 200
+        }
+      },
+      "forwards": [
+        {
+          "n_views": 1,
+          "ms": 327.5530999999319,
+          "logits_shape": [
+            1,
+            500
+          ],
+          "emb_shape": [
+            1,
+            576
+          ]
+        },
+        {
+          "n_views": 2,
+          "ms": 298.1856999995216,
+          "logits_shape": [
+            1,
+            500
+          ],
+          "emb_shape": [
+            1,
+            576
+          ]
+        },
+        {
+          "n_views": 4,
+          "ms": 580.0758000004862,
+          "logits_shape": [
+            1,
+            500
+          ],
+          "emb_shape": [
+            1,
+            576
+          ]
+        }
+      ],
+      "device": "cpu"
+    }
+  },
+  "elapsed_seconds": 8.265313900001274,
+  "executive_summary": {
+    "headline": "v9 offline: MAP@3=0.0758, top1=0.0500, genus=0.0633, ECE=0.0463. Lift over chance x25.0.",
+    "safety": {
+      "n_deadly_in_test": 6,
+      "species_top1_accuracy_on_deadly": 0.0,
+      "any_deadly_in_top1": 0.0,
+      "any_deadly_in_topk": 0.0,
+      "k": 3,
+      "note": "Safety: prefer high any_deadly_in_topk even if species wrong"
+    },
+    "best_temperature_by_ece": {
+      "T": 1.5,
+      "top1": 0.05,
+      "map_at_3": 0.07583333333333334,
+      "ece": 0.0172616642221716,
+      "mean_max_conf": 0.03391236805872065
+    },
+    "best_open_set": {
+      "conf_thr": 0.1,
+      "margin_thr": 0.0,
+      "accept_rate": 0.20333333333333334,
+      "accuracy_when_accept": 0.16393442622950818
+    },
+    "next_actions": [
+      "Run E-data-scale on Kaggle GPU (more obs/class)",
+      "Oversample deadly + re-measure safety_recall_deadly",
+      "Ship open-set thresholds from best_open_set into settings",
+      "Build Spain/Soria GBIF hold-out eval set"
+    ],
+    "policy": "orientation_only — never consumption permission"
+  }
+}

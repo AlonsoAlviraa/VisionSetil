@@ -50,14 +50,18 @@ export interface MushroomSpecies {
   featured?: boolean
 }
 
+/**
+ * Short educational labels aligned with foodQuality registry.
+ * Never “you may eat this” — UI always pairs with orientation disclaimer.
+ */
 export const EDIBILITY_LABELS: Record<EdibilityLevel, string> = {
-  excelente: 'Excelente comestible',
-  buen_comestible: 'Buen comestible',
-  comestible_con_cautela: 'Comestible con cautela',
-  no_recomendado: 'No recomendado',
-  toxico: 'Tóxico',
+  excelente: 'Comestible (documentada)',
+  buen_comestible: 'Comestible (documentada)',
+  comestible_con_cautela: 'No comestible / cautela',
+  no_recomendado: 'No comestible',
+  toxico: 'Tóxica',
   mortifero: 'Mortal',
-  desconocido: 'Desconocido',
+  desconocido: 'Sin calidad documentada',
 }
 
 export const EDIBILITY_COLORS: Record<EdibilityLevel, string> = {
@@ -1485,7 +1489,8 @@ export function getFeaturedMushrooms(): MushroomSpecies[] {
 }
 
 export function getMushroomByScientificName(name: string): MushroomSpecies | undefined {
-  return mushroomDatabase.find((m) => m.scientificName === name)
+  const key = name.trim().toLowerCase()
+  return mushroomDatabase.find((m) => m.scientificName.toLowerCase() === key)
 }
 
 export function searchMushrooms(query: string): MushroomSpecies[] {
@@ -1525,25 +1530,26 @@ export function filterByEdibility(
   return species.filter((m) => m.edibility === edibility)
 }
 
+/** Category chips — text-only labels (no emoji chrome in product UI). */
 export const ALL_CATEGORIES = [
-  { id: 'todas', label: 'Todas', icon: '🍄' },
-  { id: 'comestible', label: 'Comestibles', icon: '🍽️' },
-  { id: 'excelente', label: 'Excelentes', icon: '⭐' },
-  { id: 'toxico', label: 'Tóxicas', icon: '⚠️' },
-  { id: 'mortifero', label: 'Mortales', icon: '☠️' },
-  { id: 'medicinal', label: 'Medicinales', icon: '💊' },
-  { id: 'premium', label: 'Premium', icon: '💎' },
-  { id: 'cultivable', label: 'Cultivables', icon: '🌱' },
-  { id: 'popular', label: 'Populares', icon: '👍' },
-  { id: 'bosque', label: 'Bosque', icon: '🌳' },
-  { id: 'pinar', label: 'Pinares', icon: '🌲' },
-  { id: 'prado', label: 'Prados', icon: '🌾' },
-  { id: 'caracteristico', label: 'Únicas', icon: '✨' },
-  { id: 'raro', label: 'Raras', icon: '🔮' },
-  { id: 'grande', label: 'Gigantes', icon: '📏' },
-  { id: 'peligroso', label: 'Peligrosas', icon: '🚨' },
-  { id: 'primavera', label: 'Primavera', icon: '🌸' },
-  { id: 'verano', label: 'Verano', icon: '☀️' },
-  { id: 'otono', label: 'Otoño', icon: '🍂' },
-  { id: 'invierno', label: 'Invierno', icon: '❄️' },
+  { id: 'todas', label: 'Todas', icon: '' },
+  { id: 'comestible', label: 'Comestibles', icon: '' },
+  { id: 'excelente', label: 'Excelentes', icon: '' },
+  { id: 'toxico', label: 'Tóxicas', icon: '' },
+  { id: 'mortifero', label: 'Mortales', icon: '' },
+  { id: 'medicinal', label: 'Medicinales', icon: '' },
+  { id: 'premium', label: 'Premium', icon: '' },
+  { id: 'cultivable', label: 'Cultivables', icon: '' },
+  { id: 'popular', label: 'Populares', icon: '' },
+  { id: 'bosque', label: 'Bosque', icon: '' },
+  { id: 'pinar', label: 'Pinares', icon: '' },
+  { id: 'prado', label: 'Prados', icon: '' },
+  { id: 'caracteristico', label: 'Únicas', icon: '' },
+  { id: 'raro', label: 'Raras', icon: '' },
+  { id: 'grande', label: 'Gigantes', icon: '' },
+  { id: 'peligroso', label: 'Peligrosas', icon: '' },
+  { id: 'primavera', label: 'Primavera', icon: '' },
+  { id: 'verano', label: 'Verano', icon: '' },
+  { id: 'otono', label: 'Otoño', icon: '' },
+  { id: 'invierno', label: 'Invierno', icon: '' },
 ]

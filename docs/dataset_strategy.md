@@ -1,5 +1,10 @@
 # Dataset Strategy
 
+> **España / Soria / organismos públicos:** ver
+> [`DATA_SOURCES_SPAIN_SORIA.md`](./DATA_SOURCES_SPAIN_SORIA.md) y
+> `data/training_sources_registry.json`. Sondeo GBIF:
+> `python scripts/probe_gbif_spain_fungi.py --write`.
+
 ## FungiTastic
 
 Usar FungiTastic como fuente principal para:

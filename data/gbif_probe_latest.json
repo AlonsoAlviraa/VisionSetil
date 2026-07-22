@@ -1,0 +1,37 @@
+{
+  "probed_at": "2026-07-17T09:46:26.135388+00:00",
+  "api": "https://api.gbif.org/v1/occurrence/search",
+  "counts": {
+    "ES_fungi_any": 1149714,
+    "ES_fungi_with_still_image": 244010,
+    "ES_fungi_human_obs_with_image": 235225,
+    "soria_bbox_fungi_with_image": 4337
+  },
+  "samples": [
+    {
+      "species": "Lasallia pustulata",
+      "media_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/604794423/original.jpg",
+      "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+      "datasetKey": "50c9509d-22c7-4a22-a47d-8c48425ef4a7"
+    },
+    {
+      "species": "Hygrocybe acutoconica",
+      "media_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/605126388/original.jpg",
+      "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+      "datasetKey": "50c9509d-22c7-4a22-a47d-8c48425ef4a7"
+    },
+    {
+      "species": "Clathrus ruber",
+      "media_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/604815636/original.jpg",
+      "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+      "datasetKey": "50c9509d-22c7-4a22-a47d-8c48425ef4a7"
+    }
+  ],
+  "next_steps": [
+    "Create free GBIF account for bulk occurrence download",
+    "Filter licenses CC0/CC-BY for commercial-safe training",
+    "Package into VisionSetil observation JSON via kaggle/converters",
+    "Contact Micocyl/CESEFOR/Montes de Soria for expert-labelled CyL photos"
+  ],
+  "docs": "docs/DATA_SOURCES_SPAIN_SORIA.md"
+}

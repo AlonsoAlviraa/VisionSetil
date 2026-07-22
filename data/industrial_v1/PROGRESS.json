@@ -1,0 +1,34 @@
+{
+  "plan": "PLAN_30D_MODELO_INDUSTRIAL",
+  "week": 1,
+  "day": 4,
+  "updated": "2026-07-17T16:24:56.715122+00:00",
+  "completed": [
+    "allowlist40 + deadly + industrial labels",
+    "E15 RUNNING (await metrics)",
+    "eval/gate scripts + GBIF probe package",
+    "outreach pack + E15b notebook ready",
+    "anti-leak split util + model card template",
+    "species_allowlist.csv export",
+    "merge_gbif_stub.py (waiting_for_gbif_download)",
+    "GET /models/industrial-progress API",
+    "industrial_tick.py (auto download/eval on COMPLETE)",
+    "push_e15b_when_ready.py helper"
+  ],
+  "blocked_waiting": [
+    "E15 COMPLETE"
+  ],
+  "external_blockers": [
+    "GBIF authenticated bulk download",
+    "Human outreach (CONTACT_PACK_ES.md)"
+  ],
+  "quality_gate": "UNACCEPTABLE \u2014 species ID blocked",
+  "best_run_so_far": "E14 map=0.093 deadly=0.021",
+  "next": [
+    "E15 COMPLETE \u2192 eval + gate",
+    "week1 fail \u2192 push E15b",
+    "week1 pass \u2192 E16 with GBIF when download available"
+  ],
+  "policy": "orientation_only_never_consume",
+  "last_kernel_status": "RUNNING"
+}

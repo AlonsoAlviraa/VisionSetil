@@ -1,0 +1,1095 @@
+[{"stream_name":"stderr","time":6.704570788,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":6.704671053,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":6.70467613,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":6.704678628,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":7.294685661,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":7.294719306,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":7.294722931,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":7.294725561,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":21.826918866,"data":"GPU detected but PyTorch CUDA kernels broken. Reinstalling...\n"}
+,{"stream_name":"stdout","time":50.232622737,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 780.4/780.4 MB 2.4 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":50.438963739,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 780.4/780.4 MB 2.4 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":52.787969569,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.3/7.3 MB 110.7 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":52.990057759,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.3/7.3 MB 110.7 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":53.612771739,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 23.7/23.7 MB 70.8 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":53.81469896,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 23.7/23.7 MB 70.8 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":53.935781852,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 823.6/823.6 kB 47.2 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":54.138185224,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 823.6/823.6 kB 47.2 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":54.645019368,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.1/14.1 MB 102.8 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":54.847558477,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.1/14.1 MB 102.8 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":61.871695909,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 664.8/664.8 MB 2.6 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":62.073881117,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 664.8/664.8 MB 2.6 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":69.116135117,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 410.6/410.6 MB 3.3 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":69.315638518,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 410.6/410.6 MB 3.3 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":72.674566501,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 121.6/121.6 MB 8.5 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":72.876895179,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 121.6/121.6 MB 8.5 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":74.115995723,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 56.5/56.5 MB 34.3 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":74.318193808,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 56.5/56.5 MB 34.3 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":76.652285427,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 124.2/124.2 MB 7.9 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":76.854787784,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 124.2/124.2 MB 7.9 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":79.721564126,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 196.0/196.0 MB 9.6 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":79.924367117,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 196.0/196.0 MB 9.6 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":83.378934026,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 188.7/188.7 MB 5.8 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":83.585069837,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 188.7/188.7 MB 5.8 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":84.533635971,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 99.1/99.1 kB 7.6 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":84.735839959,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 99.1/99.1 kB 7.6 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":89.290306233,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 209.6/209.6 MB 3.7 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":89.492545512,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 209.6/209.6 MB 3.7 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":90.628478826,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.2/6.2 MB 18.1 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":90.830634713,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.2/6.2 MB 18.1 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":187.700788821,"data":"CUDA after reinstall: True\n"}
+,{"stream_name":"stdout","time":187.701629766,"data":"Dependencies installed. CUDA ready: True\n"}
+,{"stream_name":"stdout","time":190.088042364,"data":"PyTorch: 2.5.1+cu121\n"}
+,{"stream_name":"stdout","time":190.090092329,"data":"CUDA available: True\n"}
+,{"stream_name":"stdout","time":190.244511137,"data":"✓ CUDA smoke test PASSED. GPU: Tesla P100-PCIE-16GB\n"}
+,{"stream_name":"stdout","time":190.245346418,"data":"  Memory: 17.1 GB\n"}
+,{"stream_name":"stdout","time":198.027037782,"data":"timm: 1.0.26\n"}
+,{"stream_name":"stdout","time":198.027901922,"data":"[11:41:50] [INFO] Environment ready.\n"}
+,{"stream_name":"stdout","time":198.052098563,"data":"[11:41:50] [INFO]   ✓ Found FungiTastic: /kaggle/input/datasets/picekl/fungitastic\n"}
+,{"stream_name":"stdout","time":198.053825001,"data":"[11:41:50] [INFO]   ✓ Found FungiCLEF: /kaggle/input/datasets/seemshukla/fungiclef\n"}
+,{"stream_name":"stdout","time":198.054660734,"data":"[11:41:50] [INFO] Total datasets detected: 2\n"}
+,{"stream_name":"stdout","time":198.056004264,"data":"[11:41:50] [INFO]   fungitastic: /kaggle/input/datasets/picekl/fungitastic\n"}
+,{"stream_name":"stdout","time":198.056889984,"data":"[11:41:50] [INFO]   fungiclef: /kaggle/input/datasets/seemshukla/fungiclef\n"}
+,{"stream_name":"stdout","time":198.09072999,"data":"[11:41:50] [INFO] Loading dataset 'fungitastic' from /kaggle/input/datasets/picekl/fungitastic...\n"}
+,{"stream_name":"stdout","time":198.091389487,"data":"[11:41:50] [INFO]   Trying direct CSV paths (no filesystem scanning)...\n"}
+,{"stream_name":"stdout","time":198.120696163,"data":"[11:41:50] [INFO]   ✓ CSV found (direct path): /kaggle/input/datasets/picekl/fungitastic/metadata/FungiTastic/FungiTastic-ClosedSet-Val.csv\n"}
+,{"stream_name":"stdout","time":200.904821935,"data":"[11:41:53] [INFO]   Shape: (89659, 32), Columns: ['eventDate', 'year', 'month', 'day', 'habitat', 'countryCode', 'scientificName', 'kingdom', 'phylum', 'class', 'order', 'family', 'genus', 'specificEpithet', 'hasCoordinate']...\n"}
+,{"stream_name":"stdout","time":201.774844467,"data":"[11:41:54] [INFO]   Loaded: 89659 images, 2275 species, 45613 observations\n"}
+,{"stream_name":"stdout","time":201.775798748,"data":"[11:41:54] [INFO] Loading dataset 'fungiclef' from /kaggle/input/datasets/seemshukla/fungiclef...\n"}
+,{"stream_name":"stdout","time":201.776640931,"data":"[11:41:54] [INFO]   Trying direct CSV paths (no filesystem scanning)...\n"}
+,{"stream_name":"stdout","time":201.782375829,"data":"[11:41:54] [INFO]   Direct paths exhausted. Trying 1-level glob...\n"}
+,{"stream_name":"stdout","time":201.78941432,"data":"[11:41:54] [INFO]   WARNING: No valid image CSV found in /kaggle/input/datasets/seemshukla/fungiclef\n"}
+,{"stream_name":"stdout","time":201.790395025,"data":"[11:41:54] [INFO]   No CSV found. Building from image files (1-level glob)...\n"}
+,{"stream_name":"stdout","time":201.796804462,"data":"[11:41:54] [INFO]   Built from files: 0 images\n"}
+,{"stream_name":"stdout","time":201.801060069,"data":"[11:41:54] [INFO]   ⚠️ WARNING: Only 0 species! Trying parent-dir relabel...\n"}
+,{"stream_name":"stdout","time":201.802288226,"data":"[11:41:54] [INFO]   Loaded: 0 images, 0 species, 0 observations\n"}
+,{"stream_name":"stdout","time":201.82170115,"data":"[11:41:54] [INFO] \n"}
+,{"stream_name":"stdout","time":201.821754618,"data":"COMBINED: 89659 images, 2275 species, 45613 observations from 1 DBs\n"}
+,{"stream_name":"stdout","time":202.196933744,"data":"[11:41:54] [INFO] After min-obs filter: 85644 images, 1478 species\n"}
+,{"stream_name":"stdout","time":202.309475367,"data":"[11:41:54] [INFO] Forced deadly species in set: 10 -\u003e ['Amanita muscaria', 'Hypholoma fasciculare', 'Amanita pantherina', 'Amanita phalloides', 'Galerina marginata', 'Amanita virosa', 'Lepiota castanea', 'Lepiota subincarnata', 'Cortinarius rubellus', 'Lepiota brunneoincarnata']\n"}
+,{"stream_name":"stdout","time":203.081684452,"data":"[11:41:55] [INFO] After E13 subsampling (≤1000 spp, deadly×32):\n"}
+,{"stream_name":"stdout","time":203.082421771,"data":"[11:41:55] [INFO]   Images: 28981\n"}
+,{"stream_name":"stdout","time":203.085479022,"data":"[11:41:55] [INFO]   Species: 1000\n"}
+,{"stream_name":"stdout","time":203.092123252,"data":"[11:41:55] [INFO]   Observations: 14478\n"}
+,{"stream_name":"stdout","time":203.095314102,"data":"[11:41:55] [INFO]   Source DBs: {'fungitastic': 28981}\n"}
+,{"stream_name":"stdout","time":279.095165065,"data":"[11:43:11] [INFO] View type distribution:\n"}
+,{"stream_name":"stdout","time":279.0952068,"data":"view_type\n"}
+,{"stream_name":"stdout","time":279.095211307,"data":"gills      15103\n"}
+,{"stream_name":"stdout","time":279.095214404,"data":"front       8458\n"}
+,{"stream_name":"stdout","time":279.095217369,"data":"habitat     3832\n"}
+,{"stream_name":"stdout","time":279.095220513,"data":"detail      1588\n"}
+,{"stream_name":"stdout","time":279.149000141,"data":"[11:43:11] [INFO] Valid observations: 14475 | Valid species: 999\n"}
+,{"stream_name":"stdout","time":279.155039406,"data":"[11:43:11] [INFO]   Large classes (\u003e=4 obs): 999 species, 14475 obs\n"}
+,{"stream_name":"stdout","time":279.15606505,"data":"[11:43:11] [INFO]   Small classes (2-3 obs): 0 species, 0 obs\n"}
+,{"stream_name":"stdout","time":279.187216818,"data":"[11:43:11] [INFO]   WARNING: Stratified split failed (The least populated class in y has only 1 member, which is too few. The minimum number of groups for any class cannot be less than 2.), using random split\n"}
+,{"stream_name":"stdout","time":279.24197222,"data":"[11:43:11] [INFO] Split: train=10132 obs (20341 imgs) | val=2171 obs (4273 imgs) | test=2172 obs (4356 imgs)\n"}
+,{"stream_name":"stdout","time":284.82161122,"data":"[11:43:17] [INFO] Observations: train=10132 | val=2171 | test=2172\n"}
+,{"stream_name":"stdout","time":284.82501664,"data":"[11:43:17] [INFO] Classes: 999\n"}
+,{"stream_name":"stdout","time":284.868608951,"data":"[11:43:17] [INFO] MultiViewDataset + collate_fn defined.\n"}
+,{"stream_name":"stdout","time":284.890656878,"data":"[11:43:17] [INFO] VectorizedLoRA defined.\n"}
+,{"stream_name":"stdout","time":284.915386047,"data":"[11:43:17] [INFO] ViewConditionedBackbone defined.\n"}
+,{"stream_name":"stdout","time":284.938333399,"data":"[11:43:17] [INFO] MetadataEncoder defined.\n"}
+,{"stream_name":"stdout","time":284.965938232,"data":"[11:43:17] [INFO] AttentionFusion defined.\n"}
+,{"stream_name":"stdout","time":284.989959712,"data":"[11:43:17] [INFO] ArcFaceHead, CenterLoss, TemperatureScaler defined.\n"}
+,{"stream_name":"stdout","time":285.012940045,"data":"[11:43:17] [INFO] MultiViewModel defined.\n"}
+,{"stream_name":"stdout","time":285.043661204,"data":"[11:43:17] [INFO] Metadata vocab sizes: {'habitat': 33, 'substrate': 29, 'smell': 2, 'country': 2}\n"}
+,{"stream_name":"stdout","time":285.044479209,"data":"[11:43:17] [INFO] Testing model forward pass...\n"}
+,{"stream_name":"stderr","time":285.747911241,"data":"Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n"}
+,{"stream_name":"stderr","time":285.747948712,"data":"\n"}
+,{"stream_name":"stderr","time":285.747952889,"data":"Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n"}
+,{"stream_name":"stdout","time":293.814368843,"data":"[11:43:26] [INFO]   Forward OK | logits: torch.Size([4, 100]) | emb: torch.Size([4, 288]) | params: 28.8M\n"}
+,{"stream_name":"stdout","time":293.842244195,"data":"[11:43:26] [INFO] Deadly species in dataset: 9\n"}
+,{"stream_name":"stdout","time":293.843229064,"data":"[11:43:26] [INFO] E13 class weights: deadly=9 set to 8.0\n"}
+,{"stream_name":"stdout","time":293.847535412,"data":"[11:43:26] [INFO] Config: backbone=convnextv2_tiny.fcmae_ft_in22k_in1k, epochs=14, batch=12\n"}
+,{"stream_name":"stdout","time":294.639178719,"data":"[11:43:27] [INFO] Model parameters: 31.7M\n"}
+,{"stream_name":"stdout","time":294.6676634,"data":"[11:43:27] [INFO] Optimizer + AMP + SWA ready.\n"}
+,{"stream_name":"stdout","time":294.706486694,"data":"[11:43:27] [INFO] Ep0: Backbone FROZEN (warmup)\n"}
+,{"stream_name":"stdout","time":294.70759937,"data":"[11:43:27] [INFO]   Loaders: 845 train batches, 181 val batches\n"}
+,{"stream_name":"stdout","time":294.708300297,"data":"[11:43:27] [INFO] ============================================================\n"}
+,{"stream_name":"stdout","time":294.709250311,"data":"[11:43:27] [INFO] EPOCH 0/13\n"}
+,{"stream_name":"stdout","time":294.710334789,"data":"[11:43:27] [INFO] ============================================================\n"}
+,{"stream_name":"stdout","time":295.794353291,"data":"[11:43:28] [INFO]   Ep0 B0/845 | loss=46.1902 | 1s | ETA 15.2min\n"}
+,{"stream_name":"stdout","time":297.28128414,"data":"[11:43:29] [INFO]   Ep0 B10/845 | loss=26.5134 | 3s | ETA 3.2min\n"}
+,{"stream_name":"stdout","time":298.642413325,"data":"[11:43:31] [INFO]   Ep0 B20/845 | loss=39.5358 | 4s | ETA 2.6min\n"}
+,{"stream_name":"stdout","time":299.977594908,"data":"[11:43:32] [INFO]   Ep0 B30/845 | loss=39.1876 | 5s | ETA 2.3min\n"}
+,{"stream_name":"stdout","time":301.306546427,"data":"[11:43:33] [INFO]   Ep0 B40/845 | loss=39.3303 | 7s | ETA 2.2min\n"}
+,{"stream_name":"stdout","time":302.701550233,"data":"[11:43:35] [INFO]   Ep0 B50/845 | loss=25.5211 | 8s | ETA 2.1min\n"}
+,{"stream_name":"stdout","time":304.048403282,"data":"[11:43:36] [INFO]   Ep0 B60/845 | loss=38.2247 | 9s | ETA 2.0min\n"}
+,{"stream_name":"stdout","time":305.45190279,"data":"[11:43:37] [INFO]   Ep0 B70/845 | loss=26.1595 | 11s | ETA 2.0min\n"}
+,{"stream_name":"stdout","time":306.702569301,"data":"[11:43:39] [INFO]   Ep0 B80/845 | loss=38.8178 | 12s | ETA 1.9min\n"}
+,{"stream_name":"stdout","time":308.115142195,"data":"[11:43:40] [INFO]   Ep0 B90/845 | loss=25.2598 | 13s | ETA 1.9min\n"}
+,{"stream_name":"stdout","time":309.488940879,"data":"[11:43:41] [INFO]   Ep0 B100/845 | loss=25.4323 | 15s | ETA 1.8min\n"}
+,{"stream_name":"stdout","time":310.925702161,"data":"[11:43:43] [INFO]   Ep0 B110/845 | loss=38.6273 | 16s | ETA 1.8min\n"}
+,{"stream_name":"stdout","time":312.259799527,"data":"[11:43:44] [INFO]   Ep0 B120/845 | loss=38.5030 | 18s | ETA 1.7min\n"}
+,{"stream_name":"stdout","time":313.650877823,"data":"[11:43:46] [INFO]   Ep0 B130/845 | loss=25.5150 | 19s | ETA 1.7min\n"}
+,{"stream_name":"stdout","time":314.986073388,"data":"[11:43:47] [INFO]   Ep0 B140/845 | loss=25.8658 | 20s | ETA 1.7min\n"}
+,{"stream_name":"stdout","time":316.387328955,"data":"[11:43:48] [INFO]   Ep0 B150/845 | loss=37.5603 | 22s | ETA 1.7min\n"}
+,{"stream_name":"stdout","time":317.694640296,"data":"[11:43:50] [INFO]   Ep0 B160/845 | loss=25.4316 | 23s | ETA 1.6min\n"}
+,{"stream_name":"stdout","time":319.004350156,"data":"[11:43:51] [INFO]   Ep0 B170/845 | loss=38.4959 | 24s | ETA 1.6min\n"}
+,{"stream_name":"stdout","time":320.580700814,"data":"[11:43:53] [INFO]   Ep0 B180/845 | loss=37.6885 | 26s | ETA 1.6min\n"}
+,{"stream_name":"stdout","time":321.969240452,"data":"[11:43:54] [INFO]   Ep0 B190/845 | loss=25.4906 | 27s | ETA 1.6min\n"}
+,{"stream_name":"stdout","time":323.319667295,"data":"[11:43:55] [INFO]   Ep0 B200/845 | loss=38.0911 | 29s | ETA 1.5min\n"}
+,{"stream_name":"stdout","time":324.729506129,"data":"[11:43:57] [INFO]   Ep0 B210/845 | loss=25.1038 | 30s | ETA 1.5min\n"}
+,{"stream_name":"stdout","time":326.148234606,"data":"[11:43:58] [INFO]   Ep0 B220/845 | loss=37.2738 | 31s | ETA 1.5min\n"}
+,{"stream_name":"stdout","time":327.606239749,"data":"[11:44:00] [INFO]   Ep0 B230/845 | loss=23.9643 | 33s | ETA 1.5min\n"}
+,{"stream_name":"stdout","time":329.022731766,"data":"[11:44:01] [INFO]   Ep0 B240/845 | loss=23.9000 | 34s | ETA 1.4min\n"}
+,{"stream_name":"stdout","time":330.496338485,"data":"[11:44:02] [INFO]   Ep0 B250/845 | loss=26.0384 | 36s | ETA 1.4min\n"}
+,{"stream_name":"stdout","time":331.959037204,"data":"[11:44:04] [INFO]   Ep0 B260/845 | loss=37.4269 | 37s | ETA 1.4min\n"}
+,{"stream_name":"stdout","time":333.262180949,"data":"[11:44:05] [INFO]   Ep0 B270/845 | loss=37.8901 | 39s | ETA 1.4min\n"}
+,{"stream_name":"stdout","time":334.627210278,"data":"[11:44:07] [INFO]   Ep0 B280/845 | loss=37.5098 | 40s | ETA 1.3min\n"}
+,{"stream_name":"stdout","time":335.989672091,"data":"[11:44:08] [INFO]   Ep0 B290/845 | loss=23.8237 | 41s | ETA 1.3min\n"}
+,{"stream_name":"stdout","time":337.402069901,"data":"[11:44:09] [INFO]   Ep0 B300/845 | loss=38.6491 | 43s | ETA 1.3min\n"}
+,{"stream_name":"stdout","time":338.74364532,"data":"[11:44:11] [INFO]   Ep0 B310/845 | loss=37.6262 | 44s | ETA 1.3min\n"}
+,{"stream_name":"stdout","time":340.102994427,"data":"[11:44:12] [INFO]   Ep0 B320/845 | loss=37.1491 | 45s | ETA 1.2min\n"}
+,{"stream_name":"stdout","time":341.498368021,"data":"[11:44:13] [INFO]   Ep0 B330/845 | loss=38.0783 | 47s | ETA 1.2min\n"}
+,{"stream_name":"stdout","time":343.010285914,"data":"[11:44:15] [INFO]   Ep0 B340/845 | loss=37.3440 | 48s | ETA 1.2min\n"}
+,{"stream_name":"stdout","time":344.341679358,"data":"[11:44:16] [INFO]   Ep0 B350/845 | loss=37.1428 | 50s | ETA 1.2min\n"}
+,{"stream_name":"stdout","time":345.557159954,"data":"[11:44:18] [INFO]   Ep0 B360/845 | loss=38.2829 | 51s | ETA 1.1min\n"}
+,{"stream_name":"stdout","time":346.938326071,"data":"[11:44:19] [INFO]   Ep0 B370/845 | loss=37.4500 | 52s | ETA 1.1min\n"}
+,{"stream_name":"stdout","time":348.3836611,"data":"[11:44:20] [INFO]   Ep0 B380/845 | loss=36.9402 | 54s | ETA 1.1min\n"}
+,{"stream_name":"stdout","time":349.767547657,"data":"[11:44:22] [INFO]   Ep0 B390/845 | loss=36.9174 | 55s | ETA 1.1min\n"}
+,{"stream_name":"stdout","time":351.173674033,"data":"[11:44:23] [INFO]   Ep0 B400/845 | loss=23.1096 | 56s | ETA 1.0min\n"}
+,{"stream_name":"stdout","time":352.555471279,"data":"[11:44:25] [INFO]   Ep0 B410/845 | loss=37.1377 | 58s | ETA 1.0min\n"}
+,{"stream_name":"stdout","time":353.860970504,"data":"[11:44:26] [INFO]   Ep0 B420/845 | loss=23.4582 | 59s | ETA 1.0min\n"}
+,{"stream_name":"stdout","time":355.284528267,"data":"[11:44:27] [INFO]   Ep0 B430/845 | loss=23.1804 | 61s | ETA 1.0min\n"}
+,{"stream_name":"stdout","time":356.62031165,"data":"[11:44:29] [INFO]   Ep0 B440/845 | loss=37.4410 | 62s | ETA 0.9min\n"}
+,{"stream_name":"stdout","time":357.90136254,"data":"[11:44:30] [INFO]   Ep0 B450/845 | loss=35.9781 | 63s | ETA 0.9min\n"}
+,{"stream_name":"stdout","time":359.323816904,"data":"[11:44:31] [INFO]   Ep0 B460/845 | loss=23.5868 | 65s | ETA 0.9min\n"}
+,{"stream_name":"stdout","time":360.710625838,"data":"[11:44:33] [INFO]   Ep0 B470/845 | loss=24.4673 | 66s | ETA 0.9min\n"}
+,{"stream_name":"stdout","time":362.102990753,"data":"[11:44:34] [INFO]   Ep0 B480/845 | loss=23.5925 | 67s | ETA 0.8min\n"}
+,{"stream_name":"stdout","time":363.465245362,"data":"[11:44:35] [INFO]   Ep0 B490/845 | loss=23.3640 | 69s | ETA 0.8min\n"}
+,{"stream_name":"stdout","time":364.858801112,"data":"[11:44:37] [INFO]   Ep0 B500/845 | loss=36.0185 | 70s | ETA 0.8min\n"}
+,{"stream_name":"stdout","time":366.17039801,"data":"[11:44:38] [INFO]   Ep0 B510/845 | loss=23.3522 | 71s | ETA 0.8min\n"}
+,{"stream_name":"stdout","time":367.596899298,"data":"[11:44:40] [INFO]   Ep0 B520/845 | loss=37.1075 | 73s | ETA 0.8min\n"}
+,{"stream_name":"stdout","time":368.931780487,"data":"[11:44:41] [INFO]   Ep0 B530/845 | loss=24.1340 | 74s | ETA 0.7min\n"}
+,{"stream_name":"stdout","time":370.256317254,"data":"[11:44:42] [INFO]   Ep0 B540/845 | loss=37.0641 | 76s | ETA 0.7min\n"}
+,{"stream_name":"stdout","time":371.658970687,"data":"[11:44:44] [INFO]   Ep0 B550/845 | loss=36.6451 | 77s | ETA 0.7min\n"}
+,{"stream_name":"stdout","time":373.041694548,"data":"[11:44:45] [INFO]   Ep0 B560/845 | loss=23.4552 | 78s | ETA 0.7min\n"}
+,{"stream_name":"stdout","time":374.43544528,"data":"[11:44:46] [INFO]   Ep0 B570/845 | loss=35.9191 | 80s | ETA 0.6min\n"}
+,{"stream_name":"stdout","time":375.930353579,"data":"[11:44:48] [INFO]   Ep0 B580/845 | loss=23.7274 | 81s | ETA 0.6min\n"}
+,{"stream_name":"stdout","time":377.331153477,"data":"[11:44:49] [INFO]   Ep0 B590/845 | loss=36.0662 | 83s | ETA 0.6min\n"}
+,{"stream_name":"stdout","time":378.663288361,"data":"[11:44:51] [INFO]   Ep0 B600/845 | loss=24.0921 | 84s | ETA 0.6min\n"}
+,{"stream_name":"stdout","time":379.939516195,"data":"[11:44:52] [INFO]   Ep0 B610/845 | loss=36.6041 | 85s | ETA 0.5min\n"}
+,{"stream_name":"stdout","time":381.454040764,"data":"[11:44:53] [INFO]   Ep0 B620/845 | loss=24.2097 | 87s | ETA 0.5min\n"}
+,{"stream_name":"stdout","time":382.723931788,"data":"[11:44:55] [INFO]   Ep0 B630/845 | loss=36.7859 | 88s | ETA 0.5min\n"}
+,{"stream_name":"stdout","time":384.012348186,"data":"[11:44:56] [INFO]   Ep0 B640/845 | loss=36.5683 | 89s | ETA 0.5min\n"}
+,{"stream_name":"stdout","time":385.436370681,"data":"[11:44:57] [INFO]   Ep0 B650/845 | loss=24.0431 | 91s | ETA 0.5min\n"}
+,{"stream_name":"stdout","time":386.763703143,"data":"[11:44:59] [INFO]   Ep0 B660/845 | loss=36.4625 | 92s | ETA 0.4min\n"}
+,{"stream_name":"stdout","time":388.19710336,"data":"[11:45:00] [INFO]   Ep0 B670/845 | loss=24.2265 | 93s | ETA 0.4min\n"}
+,{"stream_name":"stdout","time":389.517833781,"data":"[11:45:01] [INFO]   Ep0 B680/845 | loss=35.4738 | 95s | ETA 0.4min\n"}
+,{"stream_name":"stdout","time":390.869629195,"data":"[11:45:03] [INFO]   Ep0 B690/845 | loss=35.7952 | 96s | ETA 0.4min\n"}
+,{"stream_name":"stdout","time":392.146524629,"data":"[11:45:04] [INFO]   Ep0 B700/845 | loss=35.9024 | 97s | ETA 0.3min\n"}
+,{"stream_name":"stdout","time":393.57119746,"data":"[11:45:06] [INFO]   Ep0 B710/845 | loss=36.6998 | 99s | ETA 0.3min\n"}
+,{"stream_name":"stdout","time":394.911143148,"data":"[11:45:07] [INFO]   Ep0 B720/845 | loss=23.6936 | 100s | ETA 0.3min\n"}
+,{"stream_name":"stdout","time":396.200519637,"data":"[11:45:08] [INFO]   Ep0 B730/845 | loss=23.8568 | 101s | ETA 0.3min\n"}
+,{"stream_name":"stdout","time":397.525822231,"data":"[11:45:09] [INFO]   Ep0 B740/845 | loss=36.2852 | 103s | ETA 0.2min\n"}
+,{"stream_name":"stdout","time":398.862160365,"data":"[11:45:11] [INFO]   Ep0 B750/845 | loss=23.8879 | 104s | ETA 0.2min\n"}
+,{"stream_name":"stdout","time":400.334720869,"data":"[11:45:12] [INFO]   Ep0 B760/845 | loss=34.5919 | 106s | ETA 0.2min\n"}
+,{"stream_name":"stdout","time":401.644264655,"data":"[11:45:14] [INFO]   Ep0 B770/845 | loss=36.5750 | 107s | ETA 0.2min\n"}
+,{"stream_name":"stdout","time":402.970503859,"data":"[11:45:15] [INFO]   Ep0 B780/845 | loss=36.9756 | 108s | ETA 0.1min\n"}
+,{"stream_name":"stdout","time":404.293506632,"data":"[11:45:16] [INFO]   Ep0 B790/845 | loss=36.7579 | 110s | ETA 0.1min\n"}
+,{"stream_name":"stdout","time":405.723791702,"data":"[11:45:18] [INFO]   Ep0 B800/845 | loss=23.4593 | 111s | ETA 0.1min\n"}
+,{"stream_name":"stdout","time":407.189536156,"data":"[11:45:19] [INFO]   Ep0 B810/845 | loss=23.2471 | 112s | ETA 0.1min\n"}
+,{"stream_name":"stdout","time":408.730452195,"data":"[11:45:21] [INFO]   Ep0 B820/845 | loss=36.0505 | 114s | ETA 0.1min\n"}
+,{"stream_name":"stdout","time":410.149237914,"data":"[11:45:22] [INFO]   Ep0 B830/845 | loss=36.8033 | 115s | ETA 0.0min\n"}
+,{"stream_name":"stdout","time":411.557013463,"data":"[11:45:24] [INFO]   Ep0 B840/845 | loss=23.9667 | 117s | ETA 0.0min\n"}
+,{"stream_name":"stdout","time":412.112222661,"data":"[11:45:24] [INFO]   Ep0 DONE | avg_loss=30.9996 | time=117s (2.0min)\n"}
+,{"stream_name":"stdout","time":426.945483198,"data":"[11:45:39] [INFO] Ep0 RESULT | loss=30.9996 | acc=0.0138 | map3=0.0268 | f1=0.0056\n"}
+,{"stream_name":"stdout","time":427.099931453,"data":"[11:45:39] [INFO]   ★ New best MAP@3: 0.0268 — saved!\n"}
+,{"stream_name":"stdout","time":427.296217665,"data":"[11:45:39] [INFO] ============================================================\n"}
+,{"stream_name":"stdout","time":427.2972451,"data":"[11:45:39] [INFO] EPOCH 1/13\n"}
+,{"stream_name":"stdout","time":427.298021154,"data":"[11:45:39] [INFO] ============================================================\n"}
+,{"stream_name":"stdout","time":428.617619708,"data":"[11:45:41] [INFO]   Ep1 B0/845 | loss=36.4943 | 1s | ETA 18.5min\n"}
+,{"stream_name":"stdout","time":438.173542553,"data":"[11:45:50] [INFO]   Ep1 B10/845 | loss=35.4391 | 11s | ETA 13.7min\n"}
+,{"stream_name":"stdout","time":448.070321089,"data":"[11:46:00] [INFO]   Ep1 B20/845 | loss=35.5451 | 21s | ETA 13.6min\n"}
+,{"stream_name":"stdout","time":457.696458043,"data":"[11:46:10] [INFO]   Ep1 B30/845 | loss=35.5656 | 30s | ETA 13.3min\n"}
+,{"stream_name":"stdout","time":467.452199813,"data":"[11:46:19] [INFO]   Ep1 B40/845 | loss=35.5057 | 40s | ETA 13.1min\n"}
+,{"stream_name":"stdout","time":477.372018044,"data":"[11:46:29] [INFO]   Ep1 B50/845 | loss=23.2372 | 50s | ETA 13.0min\n"}
+,{"stream_name":"stdout","time":487.149917436,"data":"[11:46:39] [INFO]   Ep1 B60/845 | loss=35.4574 | 60s | ETA 12.8min\n"}
+,{"stream_name":"stdout","time":496.685007253,"data":"[11:46:49] [INFO]   Ep1 B70/845 | loss=21.8791 | 69s | ETA 12.6min\n"}
+,{"stream_name":"stdout","time":506.300951035,"data":"[11:46:58] [INFO]   Ep1 B80/845 | loss=23.0293 | 79s | ETA 12.4min\n"}
+,{"stream_name":"stdout","time":515.998463816,"data":"[11:47:08] [INFO]   Ep1 B90/845 | loss=35.6882 | 89s | ETA 12.2min\n"}
+,{"stream_name":"stdout","time":525.744193765,"data":"[11:47:18] [INFO]   Ep1 B100/845 | loss=21.7474 | 98s | ETA 12.1min\n"}
+,{"stream_name":"stdout","time":535.613167927,"data":"[11:47:28] [INFO]   Ep1 B110/845 | loss=35.0881 | 108s | ETA 11.9min\n"}
+,{"stream_name":"stdout","time":545.377415542,"data":"[11:47:37] [INFO]   Ep1 B120/845 | loss=23.1460 | 118s | ETA 11.8min\n"}
+,{"stream_name":"stdout","time":555.188743209,"data":"[11:47:47] [INFO]   Ep1 B130/845 | loss=22.9673 | 128s | ETA 11.6min\n"}
+,{"stream_name":"stdout","time":565.115019597,"data":"[11:47:57] [INFO]   Ep1 B140/845 | loss=34.2499 | 138s | ETA 11.5min\n"}
+,{"stream_name":"stdout","time":574.837946865,"data":"[11:48:07] [INFO]   Ep1 B150/845 | loss=21.8597 | 148s | ETA 11.3min\n"}
+,{"stream_name":"stdout","time":584.277505406,"data":"[11:48:16] [INFO]   Ep1 B160/845 | loss=22.3697 | 157s | ETA 11.1min\n"}
+,{"stream_name":"stdout","time":593.639961614,"data":"[11:48:26] [INFO]   Ep1 B170/845 | loss=22.0177 | 166s | ETA 10.9min\n"}
+,{"stream_name":"stdout","time":603.279657466,"data":"[11:48:35] [INFO]   Ep1 B180/845 | loss=35.5657 | 176s | ETA 10.8min\n"}
+,{"stream_name":"stdout","time":612.818375276,"data":"[11:48:45] [INFO]   Ep1 B190/845 | loss=35.9718 | 185s | ETA 10.6min\n"}
+,{"stream_name":"stdout","time":622.501350197,"data":"[11:48:54] [INFO]   Ep1 B200/845 | loss=35.5381 | 195s | ETA 10.4min\n"}
+,{"stream_name":"stdout","time":632.162105476,"data":"[11:49:04] [INFO]   Ep1 B210/845 | loss=22.6052 | 205s | ETA 10.3min\n"}
+,{"stream_name":"stdout","time":641.880281878,"data":"[11:49:14] [INFO]   Ep1 B220/845 | loss=22.7106 | 215s | ETA 10.1min\n"}
+,{"stream_name":"stdout","time":651.875359462,"data":"[11:49:24] [INFO]   Ep1 B230/845 | loss=35.4340 | 225s | ETA 9.9min\n"}
+,{"stream_name":"stdout","time":661.538874354,"data":"[11:49:33] [INFO]   Ep1 B240/845 | loss=22.9103 | 234s | ETA 9.8min\n"}
+,{"stream_name":"stdout","time":671.260238492,"data":"[11:49:43] [INFO]   Ep1 B250/845 | loss=34.9788 | 244s | ETA 9.6min\n"}
+,{"stream_name":"stdout","time":680.850959272,"data":"[11:49:53] [INFO]   Ep1 B260/845 | loss=35.4886 | 254s | ETA 9.5min\n"}
+,{"stream_name":"stdout","time":690.672628097,"data":"[11:50:03] [INFO]   Ep1 B270/845 | loss=35.5067 | 263s | ETA 9.3min\n"}
+,{"stream_name":"stdout","time":700.412069835,"data":"[11:50:12] [INFO]   Ep1 B280/845 | loss=22.7583 | 273s | ETA 9.1min\n"}
+,{"stream_name":"stdout","time":710.026842889,"data":"[11:50:22] [INFO]   Ep1 B290/845 | loss=35.6818 | 283s | ETA 9.0min\n"}
+,{"stream_name":"stdout","time":719.552764171,"data":"[11:50:31] [INFO]   Ep1 B300/845 | loss=35.8437 | 292s | ETA 8.8min\n"}
+,{"stream_name":"stdout","time":728.990014184,"data":"[11:50:41] [INFO]   Ep1 B310/845 | loss=22.6370 | 302s | ETA 8.6min\n"}
+,{"stream_name":"stdout","time":738.962588282,"data":"[11:50:51] [INFO]   Ep1 B320/845 | loss=23.5345 | 312s | ETA 8.5min\n"}
+,{"stream_name":"stdout","time":748.602547789,"data":"[11:51:01] [INFO]   Ep1 B330/845 | loss=35.5453 | 321s | ETA 8.3min\n"}
+,{"stream_name":"stdout","time":758.39275792,"data":"[11:51:10] [INFO]   Ep1 B340/845 | loss=22.5072 | 331s | ETA 8.2min\n"}
+,{"stream_name":"stdout","time":768.007130612,"data":"[11:51:20] [INFO]   Ep1 B350/845 | loss=36.1064 | 341s | ETA 8.0min\n"}
+,{"stream_name":"stdout","time":777.732129358,"data":"[11:51:30] [INFO]   Ep1 B360/845 | loss=22.8368 | 350s | ETA 7.8min\n"}
+,{"stream_name":"stdout","time":787.59318216,"data":"[11:51:40] [INFO]   Ep1 B370/845 | loss=35.9999 | 360s | ETA 7.7min\n"}
+,{"stream_name":"stdout","time":797.506888386,"data":"[11:51:49] [INFO]   Ep1 B380/845 | loss=22.9219 | 370s | ETA 7.5min\n"}
+,{"stream_name":"stdout","time":807.097188335,"data":"[11:51:59] [INFO]   Ep1 B390/845 | loss=22.8790 | 380s | ETA 7.3min\n"}
+,{"stream_name":"stdout","time":816.677812858,"data":"[11:52:09] [INFO]   Ep1 B400/845 | loss=35.5732 | 389s | ETA 7.2min\n"}
+,{"stream_name":"stdout","time":826.516065632,"data":"[11:52:18] [INFO]   Ep1 B410/845 | loss=22.2185 | 399s | ETA 7.0min\n"}
+,{"stream_name":"stdout","time":836.344308012,"data":"[11:52:28] [INFO]   Ep1 B420/845 | loss=34.9063 | 409s | ETA 6.9min\n"}
+,{"stream_name":"stdout","time":846.3959055,"data":"[11:52:38] [INFO]   Ep1 B430/845 | loss=22.5326 | 419s | ETA 6.7min\n"}
+,{"stream_name":"stdout","time":855.859461811,"data":"[11:52:48] [INFO]   Ep1 B440/845 | loss=35.2569 | 429s | ETA 6.5min\n"}
+,{"stream_name":"stdout","time":865.761925722,"data":"[11:52:58] [INFO]   Ep1 B450/845 | loss=35.3351 | 438s | ETA 6.4min\n"}
+,{"stream_name":"stdout","time":875.669775412,"data":"[11:53:08] [INFO]   Ep1 B460/845 | loss=36.5294 | 448s | ETA 6.2min\n"}
+,{"stream_name":"stdout","time":885.403191265,"data":"[11:53:17] [INFO]   Ep1 B470/845 | loss=22.1587 | 458s | ETA 6.1min\n"}
+,{"stream_name":"stdout","time":895.24917775,"data":"[11:53:27] [INFO]   Ep1 B480/845 | loss=21.9362 | 468s | ETA 5.9min\n"}
+,{"stream_name":"stdout","time":905.014411771,"data":"[11:53:37] [INFO]   Ep1 B490/845 | loss=21.7602 | 478s | ETA 5.7min\n"}
+,{"stream_name":"stdout","time":914.543490117,"data":"[11:53:46] [INFO]   Ep1 B500/845 | loss=21.4880 | 487s | ETA 5.6min\n"}
+,{"stream_name":"stdout","time":924.203943281,"data":"[11:53:56] [INFO]   Ep1 B510/845 | loss=22.9287 | 497s | ETA 5.4min\n"}
+,{"stream_name":"stdout","time":933.898691176,"data":"[11:54:06] [INFO]   Ep1 B520/845 | loss=22.1699 | 507s | ETA 5.3min\n"}
+,{"stream_name":"stdout","time":943.705111704,"data":"[11:54:16] [INFO]   Ep1 B530/845 | loss=35.4288 | 516s | ETA 5.1min\n"}
+,{"stream_name":"stdout","time":953.30529723,"data":"[11:54:25] [INFO]   Ep1 B540/845 | loss=22.1296 | 526s | ETA 4.9min\n"}
+,{"stream_name":"stdout","time":963.488404377,"data":"[11:54:35] [INFO]   Ep1 B550/845 | loss=34.2062 | 536s | ETA 4.8min\n"}
+,{"stream_name":"stdout","time":973.213638585,"data":"[11:54:45] [INFO]   Ep1 B560/845 | loss=21.8311 | 546s | ETA 4.6min\n"}
+,{"stream_name":"stdout","time":982.988005166,"data":"[11:54:55] [INFO]   Ep1 B570/845 | loss=22.5517 | 556s | ETA 4.4min\n"}
+,{"stream_name":"stdout","time":992.742148202,"data":"[11:55:05] [INFO]   Ep1 B580/845 | loss=21.5907 | 565s | ETA 4.3min\n"}
+,{"stream_name":"stdout","time":1002.651773655,"data":"[11:55:15] [INFO]   Ep1 B590/845 | loss=34.7288 | 575s | ETA 4.1min\n"}
+,{"stream_name":"stdout","time":1012.190153348,"data":"[11:55:24] [INFO]   Ep1 B600/845 | loss=35.3852 | 585s | ETA 4.0min\n"}
+,{"stream_name":"stdout","time":1021.571948561,"data":"[11:55:34] [INFO]   Ep1 B610/845 | loss=34.0943 | 594s | ETA 3.8min\n"}
+,{"stream_name":"stdout","time":1031.493864371,"data":"[11:55:43] [INFO]   Ep1 B620/845 | loss=22.5167 | 604s | ETA 3.6min\n"}
+,{"stream_name":"stdout","time":1041.090677909,"data":"[11:55:53] [INFO]   Ep1 B630/845 | loss=34.3211 | 614s | ETA 3.5min\n"}
+,{"stream_name":"stdout","time":1050.767138875,"data":"[11:56:03] [INFO]   Ep1 B640/845 | loss=34.0520 | 623s | ETA 3.3min\n"}
+,{"stream_name":"stdout","time":1060.446018041,"data":"[11:56:12] [INFO]   Ep1 B650/845 | loss=34.9922 | 633s | ETA 3.1min\n"}
+,{"stream_name":"stdout","time":1069.994766159,"data":"[11:56:22] [INFO]   Ep1 B660/845 | loss=21.7625 | 643s | ETA 3.0min\n"}
+,{"stream_name":"stdout","time":1079.314052587,"data":"[11:56:31] [INFO]   Ep1 B670/845 | loss=35.0973 | 652s | ETA 2.8min\n"}
+,{"stream_name":"stdout","time":1088.471161559,"data":"[11:56:40] [INFO]   Ep1 B680/845 | loss=35.5170 | 661s | ETA 2.7min\n"}
+,{"stream_name":"stdout","time":1098.022691943,"data":"[11:56:50] [INFO]   Ep1 B690/845 | loss=21.4292 | 671s | ETA 2.5min\n"}
+,{"stream_name":"stdout","time":1107.712679882,"data":"[11:57:00] [INFO]   Ep1 B700/845 | loss=34.8339 | 680s | ETA 2.3min\n"}
+,{"stream_name":"stdout","time":1117.643176611,"data":"[11:57:10] [INFO]   Ep1 B710/845 | loss=35.7471 | 690s | ETA 2.2min\n"}
+,{"stream_name":"stdout","time":1127.380291531,"data":"[11:57:19] [INFO]   Ep1 B720/845 | loss=34.9473 | 700s | ETA 2.0min\n"}
+,{"stream_name":"stdout","time":1137.221183267,"data":"[11:57:29] [INFO]   Ep1 B730/845 | loss=35.6176 | 710s | ETA 1.8min\n"}
+,{"stream_name":"stdout","time":1147.030730991,"data":"[11:57:39] [INFO]   Ep1 B740/845 | loss=21.3621 | 720s | ETA 1.7min\n"}
+,{"stream_name":"stdout","time":1156.659769865,"data":"[11:57:49] [INFO]   Ep1 B750/845 | loss=22.1423 | 729s | ETA 1.5min\n"}
+,{"stream_name":"stdout","time":1166.098525041,"data":"[11:57:58] [INFO]   Ep1 B760/845 | loss=34.1552 | 739s | ETA 1.4min\n"}
+,{"stream_name":"stdout","time":1175.655648546,"data":"[11:58:08] [INFO]   Ep1 B770/845 | loss=35.1252 | 748s | ETA 1.2min\n"}
+,{"stream_name":"stdout","time":1185.225234282,"data":"[11:58:17] [INFO]   Ep1 B780/845 | loss=21.8612 | 758s | ETA 1.0min\n"}
+,{"stream_name":"stdout","time":1194.805964561,"data":"[11:58:27] [INFO]   Ep1 B790/845 | loss=22.2409 | 767s | ETA 0.9min\n"}
+,{"stream_name":"stdout","time":1204.623944945,"data":"[11:58:37] [INFO]   Ep1 B800/845 | loss=35.5638 | 777s | ETA 0.7min\n"}
+,{"stream_name":"stdout","time":1214.267686728,"data":"[11:58:46] [INFO]   Ep1 B810/845 | loss=21.5672 | 787s | ETA 0.5min\n"}
+,{"stream_name":"stdout","time":1224.118828477,"data":"[11:58:56] [INFO]   Ep1 B820/845 | loss=35.8555 | 797s | ETA 0.4min\n"}
+,{"stream_name":"stdout","time":1233.863277508,"data":"[11:59:06] [INFO]   Ep1 B830/845 | loss=21.7118 | 807s | ETA 0.2min\n"}
+,{"stream_name":"stdout","time":1243.565862276,"data":"[11:59:16] [INFO]   Ep1 B840/845 | loss=22.5439 | 816s | ETA 0.1min\n"}
+,{"stream_name":"stdout","time":1247.166659231,"data":"[11:59:19] [INFO]   Ep1 DONE | avg_loss=28.9229 | time=820s (13.7min)\n"}
+,{"stream_name":"stdout","time":1261.70547499,"data":"[11:59:34] [INFO] Ep1 RESULT | loss=28.9229 | acc=0.0267 | map3=0.0439 | f1=0.0134\n"}
+,{"stream_name":"stdout","time":1261.988743177,"data":"[11:59:34] [INFO]   ★ New best MAP@3: 0.0439 — saved!\n"}
+,{"stream_name":"stdout","time":1262.765034644,"data":"[11:59:35] [INFO] ============================================================\n"}
+,{"stream_name":"stdout","time":1262.765550415,"data":"[11:59:35] [INFO] EPOCH 2/13\n"}
+,{"stream_name":"stdout","time":1262.7686333,"data":"[11:59:35] [INFO] ============================================================\n"}
+,{"stream_name":"stdout","time":1264.245265824,"data":"[11:59:36] [INFO]   Ep2 B0/845 | loss=34.6333 | 1s | ETA 20.5min\n"}
+,{"stream_name":"stdout","time":1274.37377307,"data":"[11:59:46] [INFO]   Ep2 B10/845 | loss=35.0857 | 12s | ETA 14.7min\n"}
+,{"stream_name":"stdout","time":1284.097200161,"data":"[11:59:56] [INFO]   Ep2 B20/845 | loss=34.6663 | 21s | ETA 13.9min\n"}
+,{"stream_name":"stdout","time":1294.095915343,"data":"[12:00:06] [INFO]   Ep2 B30/845 | loss=35.3824 | 31s | ETA 13.7min\n"}
+,{"stream_name":"stdout","time":1304.304240286,"data":"[12:00:16] [INFO]   Ep2 B40/845 | loss=35.1144 | 42s | ETA 13.6min\n"}
+,{"stream_name":"stdout","time":1313.925151586,"data":"[12:00:26] [INFO]   Ep2 B50/845 | loss=21.3583 | 51s | ETA 13.3min\n"}
+,{"stream_name":"stdout","time":1323.663755118,"data":"[12:00:36] [INFO]   Ep2 B60/845 | loss=22.3794 | 61s | ETA 13.0min\n"}
+,{"stream_name":"stdout","time":1333.209867624,"data":"[12:00:45] [INFO]   Ep2 B70/845 | loss=33.8435 | 70s | ETA 12.8min\n"}
+,{"stream_name":"stdout","time":1342.996733947,"data":"[12:00:55] [INFO]   Ep2 B80/845 | loss=21.4381 | 80s | ETA 12.6min\n"}
+,{"stream_name":"stdout","time":1352.539671527,"data":"[12:01:04] [INFO]   Ep2 B90/845 | loss=34.1834 | 90s | ETA 12.4min\n"}
+,{"stream_name":"stdout","time":1361.946094935,"data":"[12:01:14] [INFO]   Ep2 B100/845 | loss=22.0464 | 99s | ETA 12.2min\n"}
+,{"stream_name":"stdout","time":1371.693696282,"data":"[12:01:24] [INFO]   Ep2 B110/845 | loss=33.8614 | 109s | ETA 12.0min\n"}
+,{"stream_name":"stdout","time":1381.774303835,"data":"[12:01:34] [INFO]   Ep2 B120/845 | loss=21.4373 | 119s | ETA 11.9min\n"}
+,{"stream_name":"stdout","time":1391.239022401,"data":"[12:01:43] [INFO]   Ep2 B130/845 | loss=34.4064 | 128s | ETA 11.7min\n"}
+,{"stream_name":"stdout","time":1401.230919822,"data":"[12:01:53] [INFO]   Ep2 B140/845 | loss=21.1216 | 138s | ETA 11.5min\n"}
+,{"stream_name":"stdout","time":1410.898748726,"data":"[12:02:03] [INFO]   Ep2 B150/845 | loss=20.6480 | 148s | ETA 11.3min\n"}
+,{"stream_name":"stdout","time":1420.503622533,"data":"[12:02:12] [INFO]   Ep2 B160/845 | loss=21.4551 | 158s | ETA 11.2min\n"}
+,{"stream_name":"stdout","time":1430.146156291,"data":"[12:02:22] [INFO]   Ep2 B170/845 | loss=33.5425 | 167s | ETA 11.0min\n"}
+,{"stream_name":"stdout","time":1439.85503631,"data":"[12:02:32] [INFO]   Ep2 B180/845 | loss=33.3524 | 177s | ETA 10.8min\n"}
+,{"stream_name":"stdout","time":1449.710109235,"data":"[12:02:42] [INFO]   Ep2 B190/845 | loss=20.9877 | 187s | ETA 10.7min\n"}
+,{"stream_name":"stdout","time":1459.407290447,"data":"[12:02:51] [INFO]   Ep2 B200/845 | loss=21.7965 | 197s | ETA 10.5min\n"}
+,{"stream_name":"stdout","time":1468.959682463,"data":"[12:03:01] [INFO]   Ep2 B210/845 | loss=21.7287 | 206s | ETA 10.3min\n"}
+,{"stream_name":"stdout","time":1478.941704418,"data":"[12:03:11] [INFO]   Ep2 B220/845 | loss=34.6519 | 216s | ETA 10.2min\n"}
+,{"stream_name":"stdout","time":1488.962622006,"data":"[12:03:21] [INFO]   Ep2 B230/845 | loss=34.1912 | 226s | ETA 10.0min\n"}
+,{"stream_name":"stdout","time":1498.679065249,"data":"[12:03:31] [INFO]   Ep2 B240/845 | loss=34.6219 | 236s | ETA 9.9min\n"}
+,{"stream_name":"stdout","time":1508.107593555,"data":"[12:03:40] [INFO]   Ep2 B250/845 | loss=21.3509 | 245s | ETA 9.7min\n"}
+,{"stream_name":"stdout","time":1517.68365592,"data":"[12:03:50] [INFO]   Ep2 B260/845 | loss=20.8363 | 255s | ETA 9.5min\n"}
+,{"stream_name":"stdout","time":1527.423390663,"data":"[12:03:59] [INFO]   Ep2 B270/845 | loss=22.0551 | 265s | ETA 9.3min\n"}
+,{"stream_name":"stdout","time":1536.889762757,"data":"[12:04:09] [INFO]   Ep2 B280/845 | loss=21.2015 | 274s | ETA 9.2min\n"}
+,{"stream_name":"stdout","time":1546.70594579,"data":"[12:04:19] [INFO]   Ep2 B290/845 | loss=21.8563 | 284s | ETA 9.0min\n"}
+,{"stream_name":"stdout","time":1556.427001252,"data":"[12:04:28] [INFO]   Ep2 B300/845 | loss=20.8965 | 294s | ETA 8.8min\n"}
+,{"stream_name":"stdout","time":1566.089483722,"data":"[12:04:38] [INFO]   Ep2 B310/845 | loss=20.9819 | 303s | ETA 8.7min\n"}
+,{"stream_name":"stdout","time":1575.949037312,"data":"[12:04:48] [INFO]   Ep2 B320/845 | loss=21.9985 | 313s | ETA 8.5min\n"}
+,{"stream_name":"stdout","time":1585.752261876,"data":"[12:04:58] [INFO]   Ep2 B330/845 | loss=21.4339 | 323s | ETA 8.4min\n"}
+,{"stream_name":"stdout","time":1595.609255194,"data":"[12:05:08] [INFO]   Ep2 B340/845 | loss=21.8274 | 333s | ETA 8.2min\n"}
+,{"stream_name":"stdout","time":1605.312189227,"data":"[12:05:17] [INFO]   Ep2 B350/845 | loss=34.3512 | 343s | ETA 8.0min\n"}
+,{"stream_name":"stdout","time":1614.769232109,"data":"[12:05:27] [INFO]   Ep2 B360/845 | loss=21.5024 | 352s | ETA 7.9min\n"}
+,{"stream_name":"stdout","time":1624.187496766,"data":"[12:05:36] [INFO]   Ep2 B370/845 | loss=33.3815 | 361s | ETA 7.7min\n"}
+,{"stream_name":"stdout","time":1634.372693045,"data":"[12:05:46] [INFO]   Ep2 B380/845 | loss=21.6118 | 372s | ETA 7.5min\n"}
+,{"stream_name":"stdout","time":1644.008661588,"data":"[12:05:56] [INFO]   Ep2 B390/845 | loss=34.3272 | 381s | ETA 7.4min\n"}
+,{"stream_name":"stdout","time":1653.795708365,"data":"[12:06:06] [INFO]   Ep2 B400/845 | loss=34.7206 | 391s | ETA 7.2min\n"}
+,{"stream_name":"stdout","time":1663.620994655,"data":"[12:06:16] [INFO]   Ep2 B410/845 | loss=33.5220 | 401s | ETA 7.1min\n"}
+,{"stream_name":"stdout","time":1673.21566032,"data":"[12:06:25] [INFO]   Ep2 B420/845 | loss=22.4082 | 410s | ETA 6.9min\n"}
+,{"stream_name":"stdout","time":1683.062395339,"data":"[12:06:35] [INFO]   Ep2 B430/845 | loss=21.3141 | 420s | ETA 6.7min\n"}
+,{"stream_name":"stdout","time":1693.095236397,"data":"[12:06:45] [INFO]   Ep2 B440/845 | loss=33.4172 | 430s | ETA 6.6min\n"}
+,{"stream_name":"stdout","time":1702.601665529,"data":"[12:06:55] [INFO]   Ep2 B450/845 | loss=21.0314 | 440s | ETA 6.4min\n"}
+,{"stream_name":"stdout","time":1711.925751093,"data":"[12:07:04] [INFO]   Ep2 B460/845 | loss=21.7450 | 449s | ETA 6.2min\n"}
+,{"stream_name":"stdout","time":1721.657766954,"data":"[12:07:14] [INFO]   Ep2 B470/845 | loss=21.7798 | 459s | ETA 6.1min\n"}
+,{"stream_name":"stdout","time":1731.35638378,"data":"[12:07:23] [INFO]   Ep2 B480/845 | loss=35.1603 | 469s | ETA 5.9min\n"}
+,{"stream_name":"stdout","time":1741.009603102,"data":"[12:07:33] [INFO]   Ep2 B490/845 | loss=21.4073 | 478s | ETA 5.7min\n"}
+,{"stream_name":"stdout","time":1750.475707265,"data":"[12:07:42] [INFO]   Ep2 B500/845 | loss=34.0327 | 488s | ETA 5.6min\n"}
+,{"stream_name":"stdout","time":1760.41463951,"data":"[12:07:52] [INFO]   Ep2 B510/845 | loss=33.2794 | 498s | ETA 5.4min\n"}
+,{"stream_name":"stdout","time":1769.786326655,"data":"[12:08:02] [INFO]   Ep2 B520/845 | loss=21.2476 | 507s | ETA 5.3min\n"}
+,{"stream_name":"stdout","time":1779.324211584,"data":"[12:08:11] [INFO]   Ep2 B530/845 | loss=20.7246 | 517s | ETA 5.1min\n"}
+,{"stream_name":"stdout","time":1788.611843695,"data":"[12:08:21] [INFO]   Ep2 B540/845 | loss=21.3134 | 526s | ETA 4.9min\n"}
+,{"stream_name":"stdout","time":1798.525220678,"data":"[12:08:30] [INFO]   Ep2 B550/845 | loss=34.3918 | 536s | ETA 4.8min\n"}
+,{"stream_name":"stdout","time":1808.167664566,"data":"[12:08:40] [INFO]   Ep2 B560/845 | loss=20.5110 | 545s | ETA 4.6min\n"}
+,{"stream_name":"stdout","time":1817.950800561,"data":"[12:08:50] [INFO]   Ep2 B570/845 | loss=34.5305 | 555s | ETA 4.4min\n"}
+,{"stream_name":"stdout","time":1827.830404024,"data":"[12:09:00] [INFO]   Ep2 B580/845 | loss=22.5787 | 565s | ETA 4.3min\n"}
+,{"stream_name":"stdout","time":1837.301781751,"data":"[12:09:09] [INFO]   Ep2 B590/845 | loss=20.5216 | 575s | ETA 4.1min\n"}
+,{"stream_name":"stdout","time":1846.741455582,"data":"[12:09:19] [INFO]   Ep2 B600/845 | loss=34.5606 | 584s | ETA 4.0min\n"}
+,{"stream_name":"stdout","time":1856.464249795,"data":"[12:09:28] [INFO]   Ep2 B610/845 | loss=33.8292 | 594s | ETA 3.8min\n"}
+,{"stream_name":"stdout","time":1866.255367909,"data":"[12:09:38] [INFO]   Ep2 B620/845 | loss=33.2655 | 603s | ETA 3.6min\n"}
+,{"stream_name":"stdout","time":1876.128119923,"data":"[12:09:48] [INFO]   Ep2 B630/845 | loss=34.4774 | 613s | ETA 3.5min\n"}
+,{"stream_name":"stdout","time":1886.010217922,"data":"[12:09:58] [INFO]   Ep2 B640/845 | loss=21.6006 | 623s | ETA 3.3min\n"}
+,{"stream_name":"stdout","time":1895.834278723,"data":"[12:10:08] [INFO]   Ep2 B650/845 | loss=33.3620 | 633s | ETA 3.1min\n"}
+,{"stream_name":"stdout","time":1905.852103241,"data":"[12:10:18] [INFO]   Ep2 B660/845 | loss=21.1836 | 643s | ETA 3.0min\n"}
+,{"stream_name":"stdout","time":1915.621461218,"data":"[12:10:28] [INFO]   Ep2 B670/845 | loss=33.6267 | 653s | ETA 2.8min\n"}
+,{"stream_name":"stdout","time":1925.264941506,"data":"[12:10:37] [INFO]   Ep2 B680/845 | loss=20.4437 | 662s | ETA 2.7min\n"}
+,{"stream_name":"stdout","time":1935.039255857,"data":"[12:10:47] [INFO]   Ep2 B690/845 | loss=33.8427 | 672s | ETA 2.5min\n"}
+,{"stream_name":"stdout","time":1944.768073086,"data":"[12:10:57] [INFO]   Ep2 B700/845 | loss=21.3130 | 682s | ETA 2.3min\n"}
+,{"stream_name":"stdout","time":1954.566265985,"data":"[12:11:07] [INFO]   Ep2 B710/845 | loss=34.1586 | 692s | ETA 2.2min\n"}
+,{"stream_name":"stdout","time":1964.31274716,"data":"[12:11:16] [INFO]   Ep2 B720/845 | loss=34.2802 | 702s | ETA 2.0min\n"}
+,{"stream_name":"stdout","time":1973.761341788,"data":"[12:11:26] [INFO]   Ep2 B730/845 | loss=20.9647 | 711s | ETA 1.8min\n"}
+,{"stream_name":"stdout","time":1983.704267668,"data":"[12:11:36] [INFO]   Ep2 B740/845 | loss=33.6710 | 721s | ETA 1.7min\n"}
+,{"stream_name":"stdout","time":1993.55468096,"data":"[12:11:45] [INFO]   Ep2 B750/845 | loss=21.6950 | 731s | ETA 1.5min\n"}
+,{"stream_name":"stdout","time":2003.513959831,"data":"[12:11:55] [INFO]   Ep2 B760/845 | loss=34.0696 | 741s | ETA 1.4min\n"}
+,{"stream_name":"stdout","time":2013.427715796,"data":"[12:12:05] [INFO]   Ep2 B770/845 | loss=21.3139 | 751s | ETA 1.2min\n"}
+,{"stream_name":"stdout","time":2023.113208046,"data":"[12:12:15] [INFO]   Ep2 B780/845 | loss=34.2424 | 760s | ETA 1.0min\n"}
+,{"stream_name":"stdout","time":2032.528685522,"data":"[12:12:24] [INFO]   Ep2 B790/845 | loss=21.0063 | 770s | ETA 0.9min\n"}
+,{"stream_name":"stdout","time":2042.217652556,"data":"[12:12:34] [INFO]   Ep2 B800/845 | loss=33.7076 | 779s | ETA 0.7min\n"}
+,{"stream_name":"stdout","time":2052.094433124,"data":"[12:12:44] [INFO]   Ep2 B810/845 | loss=32.8968 | 789s | ETA 0.6min\n"}
+,{"stream_name":"stdout","time":2061.627105268,"data":"[12:12:54] [INFO]   Ep2 B820/845 | loss=34.1932 | 799s | ETA 0.4min\n"}
+,{"stream_name":"stdout","time":2071.262307155,"data":"[12:13:03] [INFO]   Ep2 B830/845 | loss=21.3210 | 808s | ETA 0.2min\n"}
+,{"stream_name":"stdout","time":2081.15413128,"data":"[12:13:13] [INFO]   Ep2 B840/845 | loss=20.6307 | 818s | ETA 0.1min\n"}
+,{"stream_name":"stdout","time":2084.939486095,"data":"[12:13:17] [INFO]   Ep2 DONE | avg_loss=27.7543 | time=822s (13.7min)\n"}
+,{"stream_name":"stdout","time":2099.479658919,"data":"[12:13:31] [INFO] Ep2 RESULT | loss=27.7543 | acc=0.0341 | map3=0.0547 | f1=0.0164\n"}
+,{"stream_name":"stdout","time":2099.759842856,"data":"[12:13:32] [INFO]   ★ New best MAP@3: 0.0547 — saved!\n"}
+,{"stream_name":"stdout","time":2100.528472466,"data":"[12:13:32] [INFO] ============================================================\n"}
+,{"stream_name":"stdout","time":2100.529695411,"data":"[12:13:32] [INFO] EPOCH 3/13\n"}
+,{"stream_name":"stdout","time":2100.530790204,"data":"[12:13:32] [INFO] ============================================================\n"}
+,{"stream_name":"stdout","time":2102.006849136,"data":"[12:13:34] [INFO]   Ep3 B0/845 | loss=33.3787 | 1s | ETA 20.7min\n"}
+,{"stream_name":"stdout","time":2111.659955844,"data":"[12:13:44] [INFO]   Ep3 B10/845 | loss=20.8278 | 11s | ETA 14.0min\n"}
+,{"stream_name":"stdout","time":2121.388764861,"data":"[12:13:53] [INFO]   Ep3 B20/845 | loss=33.4764 | 21s | ETA 13.6min\n"}
+,{"stream_name":"stdout","time":2131.139933567,"data":"[12:14:03] [INFO]   Ep3 B30/845 | loss=19.6252 | 31s | ETA 13.4min\n"}
+,{"stream_name":"stdout","time":2140.474755655,"data":"[12:14:12] [INFO]   Ep3 B40/845 | loss=20.6506 | 40s | ETA 13.1min\n"}
+,{"stream_name":"stdout","time":2150.104129246,"data":"[12:14:22] [INFO]   Ep3 B50/845 | loss=20.0413 | 50s | ETA 12.9min\n"}
+,{"stream_name":"stdout","time":2159.859658873,"data":"[12:14:32] [INFO]   Ep3 B60/845 | loss=33.3993 | 59s | ETA 12.7min\n"}
+,{"stream_name":"stdout","time":2169.546827306,"data":"[12:14:41] [INFO]   Ep3 B70/845 | loss=20.1701 | 69s | ETA 12.5min\n"}
+,{"stream_name":"stdout","time":2179.461310822,"data":"[12:14:51] [INFO]   Ep3 B80/845 | loss=33.8792 | 79s | ETA 12.4min\n"}
+,{"stream_name":"stdout","time":2189.222131881,"data":"[12:15:01] [INFO]   Ep3 B90/845 | loss=33.6665 | 89s | ETA 12.2min\n"}
+,{"stream_name":"stdout","time":2198.815936776,"data":"[12:15:11] [INFO]   Ep3 B100/845 | loss=32.8446 | 98s | ETA 12.1min\n"}
+,{"stream_name":"stdout","time":2208.447525095,"data":"[12:15:20] [INFO]   Ep3 B110/845 | loss=34.0445 | 108s | ETA 11.9min\n"}
+,{"stream_name":"stdout","time":2218.084858717,"data":"[12:15:30] [INFO]   Ep3 B120/845 | loss=33.5322 | 118s | ETA 11.7min\n"}
+,{"stream_name":"stdout","time":2227.590225322,"data":"[12:15:40] [INFO]   Ep3 B130/845 | loss=20.5467 | 127s | ETA 11.5min\n"}
+,{"stream_name":"stdout","time":2237.398934604,"data":"[12:15:49] [INFO]   Ep3 B140/845 | loss=33.2096 | 137s | ETA 11.4min\n"}
+,{"stream_name":"stdout","time":2246.754279685,"data":"[12:15:59] [INFO]   Ep3 B150/845 | loss=34.4149 | 146s | ETA 11.2min\n"}
+,{"stream_name":"stdout","time":2256.237233508,"data":"[12:16:08] [INFO]   Ep3 B160/845 | loss=20.9660 | 156s | ETA 11.0min\n"}
+,{"stream_name":"stdout","time":2266.268595773,"data":"[12:16:18] [INFO]   Ep3 B170/845 | loss=19.8203 | 166s | ETA 10.9min\n"}
+,{"stream_name":"stdout","time":2275.743235414,"data":"[12:16:28] [INFO]   Ep3 B180/845 | loss=32.8025 | 175s | ETA 10.7min\n"}
+,{"stream_name":"stdout","time":2285.589623254,"data":"[12:16:38] [INFO]   Ep3 B190/845 | loss=20.1595 | 185s | ETA 10.6min\n"}
+,{"stream_name":"stdout","time":2295.019212712,"data":"[12:16:47] [INFO]   Ep3 B200/845 | loss=20.1878 | 194s | ETA 10.4min\n"}
+,{"stream_name":"stdout","time":2304.839601861,"data":"[12:16:57] [INFO]   Ep3 B210/845 | loss=33.0899 | 204s | ETA 10.2min\n"}
+,{"stream_name":"stdout","time":2314.717215328,"data":"[12:17:07] [INFO]   Ep3 B220/845 | loss=21.1061 | 214s | ETA 10.1min\n"}
+,{"stream_name":"stdout","time":2324.048778557,"data":"[12:17:16] [INFO]   Ep3 B230/845 | loss=33.8393 | 224s | ETA 9.9min\n"}
+,{"stream_name":"stdout","time":2333.617599073,"data":"[12:17:26] [INFO]   Ep3 B240/845 | loss=20.4812 | 233s | ETA 9.7min\n"}
+,{"stream_name":"stdout","time":2343.069785012,"data":"[12:17:35] [INFO]   Ep3 B250/845 | loss=33.7439 | 243s | ETA 9.6min\n"}
+,{"stream_name":"stdout","time":2352.667302283,"data":"[12:17:45] [INFO]   Ep3 B260/845 | loss=19.6247 | 252s | ETA 9.4min\n"}
+,{"stream_name":"stdout","time":2361.981438261,"data":"[12:17:54] [INFO]   Ep3 B270/845 | loss=33.3671 | 261s | ETA 9.2min\n"}
+,{"stream_name":"stdout","time":2371.829790928,"data":"[12:18:04] [INFO]   Ep3 B280/845 | loss=21.1104 | 271s | ETA 9.1min\n"}
+,{"stream_name":"stdout","time":2381.785399024,"data":"[12:18:14] [INFO]   Ep3 B290/845 | loss=20.8436 | 281s | ETA 8.9min\n"}
+,{"stream_name":"stdout","time":2391.338968292,"data":"[12:18:23] [INFO]   Ep3 B300/845 | loss=32.7067 | 291s | ETA 8.8min\n"}
+,{"stream_name":"stdout","time":2401.103058915,"data":"[12:18:33] [INFO]   Ep3 B310/845 | loss=19.8059 | 301s | ETA 8.6min\n"}
+,{"stream_name":"stdout","time":2410.685613375,"data":"[12:18:43] [INFO]   Ep3 B320/845 | loss=20.9460 | 310s | ETA 8.4min\n"}
+,{"stream_name":"stdout","time":2420.490111519,"data":"[12:18:52] [INFO]   Ep3 B330/845 | loss=20.3323 | 320s | ETA 8.3min\n"}
+,{"stream_name":"stdout","time":2430.231344343,"data":"[12:19:02] [INFO]   Ep3 B340/845 | loss=33.7734 | 330s | ETA 8.1min\n"}
+,{"stream_name":"stdout","time":2439.873509984,"data":"[12:19:12] [INFO]   Ep3 B350/845 | loss=20.0222 | 339s | ETA 8.0min\n"}
+,{"stream_name":"stdout","time":2449.33093311,"data":"[12:19:21] [INFO]   Ep3 B360/845 | loss=33.0657 | 349s | ETA 7.8min\n"}
+,{"stream_name":"stdout","time":2458.912694733,"data":"[12:19:31] [INFO]   Ep3 B370/845 | loss=33.5985 | 358s | ETA 7.6min\n"}
+,{"stream_name":"stdout","time":2468.394907325,"data":"[12:19:40] [INFO]   Ep3 B380/845 | loss=32.6710 | 368s | ETA 7.5min\n"}
+,{"stream_name":"stdout","time":2477.899841387,"data":"[12:19:50] [INFO]   Ep3 B390/845 | loss=33.3255 | 377s | ETA 7.3min\n"}
+,{"stream_name":"stdout","time":2487.737655795,"data":"[12:20:00] [INFO]   Ep3 B400/845 | loss=32.7297 | 387s | ETA 7.1min\n"}
+,{"stream_name":"stdout","time":2497.552314825,"data":"[12:20:09] [INFO]   Ep3 B410/845 | loss=20.1228 | 397s | ETA 7.0min\n"}
+,{"stream_name":"stdout","time":2507.204516913,"data":"[12:20:19] [INFO]   Ep3 B420/845 | loss=20.6774 | 407s | ETA 6.8min\n"}
+,{"stream_name":"stdout","time":2516.897485071,"data":"[12:20:29] [INFO]   Ep3 B430/845 | loss=33.1620 | 416s | ETA 6.7min\n"}
+,{"stream_name":"stdout","time":2526.552631082,"data":"[12:20:38] [INFO]   Ep3 B440/845 | loss=33.7206 | 426s | ETA 6.5min\n"}
+,{"stream_name":"stdout","time":2536.306265109,"data":"[12:20:48] [INFO]   Ep3 B450/845 | loss=21.0888 | 436s | ETA 6.3min\n"}
+,{"stream_name":"stdout","time":2545.927496496,"data":"[12:20:58] [INFO]   Ep3 B460/845 | loss=20.4575 | 445s | ETA 6.2min\n"}
+,{"stream_name":"stdout","time":2555.741272972,"data":"[12:21:08] [INFO]   Ep3 B470/845 | loss=33.5148 | 455s | ETA 6.0min\n"}
+,{"stream_name":"stdout","time":2565.512330464,"data":"[12:21:17] [INFO]   Ep3 B480/845 | loss=20.9399 | 465s | ETA 5.9min\n"}
+,{"stream_name":"stdout","time":2575.260374153,"data":"[12:21:27] [INFO]   Ep3 B490/845 | loss=19.5783 | 475s | ETA 5.7min\n"}
+,{"stream_name":"stdout","time":2584.913723663,"data":"[12:21:37] [INFO]   Ep3 B500/845 | loss=33.3019 | 484s | ETA 5.5min\n"}
+,{"stream_name":"stdout","time":2594.993304964,"data":"[12:21:47] [INFO]   Ep3 B510/845 | loss=19.4839 | 494s | ETA 5.4min\n"}
+,{"stream_name":"stdout","time":2604.671887624,"data":"[12:21:57] [INFO]   Ep3 B520/845 | loss=33.9267 | 504s | ETA 5.2min\n"}
+,{"stream_name":"stdout","time":2614.751491658,"data":"[12:22:07] [INFO]   Ep3 B530/845 | loss=20.2491 | 514s | ETA 5.1min\n"}
+,{"stream_name":"stdout","time":2624.537079277,"data":"[12:22:16] [INFO]   Ep3 B540/845 | loss=33.2992 | 524s | ETA 4.9min\n"}
+,{"stream_name":"stdout","time":2634.207508721,"data":"[12:22:26] [INFO]   Ep3 B550/845 | loss=32.8214 | 534s | ETA 4.7min\n"}
+,{"stream_name":"stdout","time":2644.664281374,"data":"[12:22:37] [INFO]   Ep3 B560/845 | loss=32.5332 | 544s | ETA 4.6min\n"}
+,{"stream_name":"stdout","time":2654.503615222,"data":"[12:22:46] [INFO]   Ep3 B570/845 | loss=20.0981 | 554s | ETA 4.4min\n"}
+,{"stream_name":"stdout","time":2664.333059045,"data":"[12:22:56] [INFO]   Ep3 B580/845 | loss=19.2345 | 564s | ETA 4.3min\n"}
+,{"stream_name":"stdout","time":2674.138345617,"data":"[12:23:06] [INFO]   Ep3 B590/845 | loss=20.4835 | 574s | ETA 4.1min\n"}
+,{"stream_name":"stdout","time":2683.856992584,"data":"[12:23:16] [INFO]   Ep3 B600/845 | loss=32.2581 | 583s | ETA 3.9min\n"}
+,{"stream_name":"stdout","time":2693.362687443,"data":"[12:23:25] [INFO]   Ep3 B610/845 | loss=19.9267 | 593s | ETA 3.8min\n"}
+,{"stream_name":"stdout","time":2703.121882367,"data":"[12:23:35] [INFO]   Ep3 B620/845 | loss=32.9155 | 603s | ETA 3.6min\n"}
+,{"stream_name":"stdout","time":2712.723689464,"data":"[12:23:45] [INFO]   Ep3 B630/845 | loss=18.9008 | 612s | ETA 3.5min\n"}
+,{"stream_name":"stdout","time":2722.443366766,"data":"[12:23:54] [INFO]   Ep3 B640/845 | loss=20.8082 | 622s | ETA 3.3min\n"}
+,{"stream_name":"stdout","time":2731.778955968,"data":"[12:24:04] [INFO]   Ep3 B650/845 | loss=32.3049 | 631s | ETA 3.1min\n"}
+,{"stream_name":"stdout","time":2741.16506418,"data":"[12:24:13] [INFO]   Ep3 B660/845 | loss=20.7474 | 641s | ETA 3.0min\n"}
+,{"stream_name":"stdout","time":2750.643436529,"data":"[12:24:23] [INFO]   Ep3 B670/845 | loss=33.1278 | 650s | ETA 2.8min\n"}
+,{"stream_name":"stdout","time":2760.2262273,"data":"[12:24:32] [INFO]   Ep3 B680/845 | loss=32.9714 | 660s | ETA 2.6min\n"}
+,{"stream_name":"stdout","time":2770.025462777,"data":"[12:24:42] [INFO]   Ep3 B690/845 | loss=20.0955 | 669s | ETA 2.5min\n"}
+,{"stream_name":"stdout","time":2779.714195873,"data":"[12:24:52] [INFO]   Ep3 B700/845 | loss=32.4369 | 679s | ETA 2.3min\n"}
+,{"stream_name":"stdout","time":2789.455407016,"data":"[12:25:01] [INFO]   Ep3 B710/845 | loss=32.0023 | 689s | ETA 2.2min\n"}
+,{"stream_name":"stdout","time":2799.313463548,"data":"[12:25:11] [INFO]   Ep3 B720/845 | loss=19.7162 | 699s | ETA 2.0min\n"}
+,{"stream_name":"stdout","time":2809.046598863,"data":"[12:25:21] [INFO]   Ep3 B730/845 | loss=32.7398 | 708s | ETA 1.8min\n"}
+,{"stream_name":"stdout","time":2818.524668058,"data":"[12:25:30] [INFO]   Ep3 B740/845 | loss=33.9282 | 718s | ETA 1.7min\n"}
+,{"stream_name":"stdout","time":2828.145247364,"data":"[12:25:40] [INFO]   Ep3 B750/845 | loss=19.5561 | 728s | ETA 1.5min\n"}
+,{"stream_name":"stdout","time":2838.06115351,"data":"[12:25:50] [INFO]   Ep3 B760/845 | loss=33.0271 | 738s | ETA 1.4min\n"}
+,{"stream_name":"stdout","time":2847.703365497,"data":"[12:26:00] [INFO]   Ep3 B770/845 | loss=19.8958 | 747s | ETA 1.2min\n"}
+,{"stream_name":"stdout","time":2857.519994246,"data":"[12:26:09] [INFO]   Ep3 B780/845 | loss=32.3913 | 757s | ETA 1.0min\n"}
+,{"stream_name":"stdout","time":2867.598191269,"data":"[12:26:20] [INFO]   Ep3 B790/845 | loss=20.4695 | 767s | ETA 0.9min\n"}
+,{"stream_name":"stdout","time":2877.365884808,"data":"[12:26:29] [INFO]   Ep3 B800/845 | loss=20.0008 | 777s | ETA 0.7min\n"}
+,{"stream_name":"stdout","time":2887.16162496,"data":"[12:26:39] [INFO]   Ep3 B810/845 | loss=33.3222 | 787s | ETA 0.5min\n"}
+,{"stream_name":"stdout","time":2896.762314012,"data":"[12:26:49] [INFO]   Ep3 B820/845 | loss=31.9379 | 796s | ETA 0.4min\n"}
+,{"stream_name":"stdout","time":2906.239692668,"data":"[12:26:58] [INFO]   Ep3 B830/845 | loss=19.2643 | 806s | ETA 0.2min\n"}
+,{"stream_name":"stdout","time":2916.313128892,"data":"[12:27:08] [INFO]   Ep3 B840/845 | loss=19.4317 | 816s | ETA 0.1min\n"}
+,{"stream_name":"stdout","time":2920.195850029,"data":"[12:27:12] [INFO]   Ep3 DONE | avg_loss=26.7505 | time=820s (13.7min)\n"}
+,{"stream_name":"stdout","time":2934.692349451,"data":"[12:27:27] [INFO] Ep3 RESULT | loss=26.7505 | acc=0.0336 | map3=0.0560 | f1=0.0156\n"}
+,{"stream_name":"stdout","time":2934.984108277,"data":"[12:27:27] [INFO]   ★ New best MAP@3: 0.0560 — saved!\n"}
+,{"stream_name":"stdout","time":2935.762798545,"data":"[12:27:28] [INFO] ============================================================\n"}
+,{"stream_name":"stdout","time":2935.76492402,"data":"[12:27:28] [INFO] EPOCH 4/13\n"}
+,{"stream_name":"stdout","time":2935.766116513,"data":"[12:27:28] [INFO] ============================================================\n"}
+,{"stream_name":"stdout","time":2937.346707571,"data":"[12:27:29] [INFO]   Ep4 B0/845 | loss=32.8083 | 2s | ETA 22.2min\n"}
+,{"stream_name":"stdout","time":2947.205134753,"data":"[12:27:39] [INFO]   Ep4 B10/845 | loss=32.7238 | 11s | ETA 14.5min\n"}
+,{"stream_name":"stdout","time":2956.896049748,"data":"[12:27:49] [INFO]   Ep4 B20/845 | loss=19.3813 | 21s | ETA 13.8min\n"}
+,{"stream_name":"stdout","time":2966.46117415,"data":"[12:27:58] [INFO]   Ep4 B30/845 | loss=32.8525 | 31s | ETA 13.4min\n"}
+,{"stream_name":"stdout","time":2976.221135783,"data":"[12:28:08] [INFO]   Ep4 B40/845 | loss=18.7762 | 40s | ETA 13.2min\n"}
+,{"stream_name":"stdout","time":2985.761718583,"data":"[12:28:18] [INFO]   Ep4 B50/845 | loss=20.2333 | 50s | ETA 13.0min\n"}
+,{"stream_name":"stdout","time":2996.206036717,"data":"[12:28:28] [INFO]   Ep4 B60/845 | loss=19.0387 | 60s | ETA 12.9min\n"}
+,{"stream_name":"stdout","time":3006.070048245,"data":"[12:28:38] [INFO]   Ep4 B70/845 | loss=32.9309 | 70s | ETA 12.8min\n"}
+,{"stream_name":"stdout","time":3016.066700648,"data":"[12:28:48] [INFO]   Ep4 B80/845 | loss=19.5741 | 80s | ETA 12.6min\n"}
+,{"stream_name":"stdout","time":3025.848117908,"data":"[12:28:58] [INFO]   Ep4 B90/845 | loss=19.8509 | 90s | ETA 12.4min\n"}
+,{"stream_name":"stdout","time":3035.822664214,"data":"[12:29:08] [INFO]   Ep4 B100/845 | loss=32.6914 | 100s | ETA 12.3min\n"}
+,{"stream_name":"stdout","time":3045.535159299,"data":"[12:29:17] [INFO]   Ep4 B110/845 | loss=32.8220 | 110s | ETA 12.1min\n"}
+,{"stream_name":"stdout","time":3055.294998622,"data":"[12:29:27] [INFO]   Ep4 B120/845 | loss=33.3528 | 120s | ETA 11.9min\n"}
+,{"stream_name":"stdout","time":3065.537097823,"data":"[12:29:37] [INFO]   Ep4 B130/845 | loss=19.3084 | 130s | ETA 11.8min\n"}
+,{"stream_name":"stdout","time":3075.313709028,"data":"[12:29:47] [INFO]   Ep4 B140/845 | loss=32.6265 | 140s | ETA 11.6min\n"}
+,{"stream_name":"stdout","time":3085.161098465,"data":"[12:29:57] [INFO]   Ep4 B150/845 | loss=32.3690 | 149s | ETA 11.4min\n"}
+,{"stream_name":"stdout","time":3094.827073259,"data":"[12:30:07] [INFO]   Ep4 B160/845 | loss=32.1237 | 159s | ETA 11.3min\n"}
+,{"stream_name":"stdout","time":3104.603735897,"data":"[12:30:17] [INFO]   Ep4 B170/845 | loss=33.2470 | 169s | ETA 11.1min\n"}
+,{"stream_name":"stdout","time":3114.430690628,"data":"[12:30:26] [INFO]   Ep4 B180/845 | loss=32.1710 | 179s | ETA 10.9min\n"}
+,{"stream_name":"stdout","time":3124.161244227,"data":"[12:30:36] [INFO]   Ep4 B190/845 | loss=33.4275 | 188s | ETA 10.8min\n"}
+,{"stream_name":"stdout","time":3133.701674454,"data":"[12:30:46] [INFO]   Ep4 B200/845 | loss=32.8547 | 198s | ETA 10.6min\n"}
+,{"stream_name":"stdout","time":3143.31996327,"data":"[12:30:55] [INFO]   Ep4 B210/845 | loss=20.0964 | 208s | ETA 10.4min\n"}
+,{"stream_name":"stdout","time":3152.904677573,"data":"[12:31:05] [INFO]   Ep4 B220/845 | loss=31.2061 | 217s | ETA 10.2min\n"}
+,{"stream_name":"stdout","time":3162.697148288,"data":"[12:31:15] [INFO]   Ep4 B230/845 | loss=33.1485 | 227s | ETA 10.1min\n"}
+,{"stream_name":"stdout","time":3172.225833535,"data":"[12:31:24] [INFO]   Ep4 B240/845 | loss=19.1438 | 236s | ETA 9.9min\n"}
+,{"stream_name":"stdout","time":3181.79449776,"data":"[12:31:34] [INFO]   Ep4 B250/845 | loss=19.3191 | 246s | ETA 9.7min\n"}
+,{"stream_name":"stdout","time":3191.475965917,"data":"[12:31:43] [INFO]   Ep4 B260/845 | loss=32.5793 | 256s | ETA 9.5min\n"}
+,{"stream_name":"stdout","time":3201.429721026,"data":"[12:31:53] [INFO]   Ep4 B270/845 | loss=19.7812 | 266s | ETA 9.4min\n"}
+,{"stream_name":"stdout","time":3210.930983155,"data":"[12:32:03] [INFO]   Ep4 B280/845 | loss=32.4259 | 275s | ETA 9.2min\n"}
+,{"stream_name":"stdout","time":3220.594466466,"data":"[12:32:13] [INFO]   Ep4 B290/845 | loss=19.9646 | 285s | ETA 9.0min\n"}
+,{"stream_name":"stdout","time":3230.211690666,"data":"[12:32:22] [INFO]   Ep4 B300/845 | loss=19.0254 | 294s | ETA 8.9min\n"}
+,{"stream_name":"stdout","time":3239.703875695,"data":"[12:32:32] [INFO]   Ep4 B310/845 | loss=18.9878 | 304s | ETA 8.7min\n"}
+,{"stream_name":"stdout","time":3249.342734775,"data":"[12:32:41] [INFO]   Ep4 B320/845 | loss=33.1497 | 314s | ETA 8.5min\n"}
+,{"stream_name":"stdout","time":3259.059030523,"data":"[12:32:51] [INFO]   Ep4 B330/845 | loss=32.7777 | 323s | ETA 8.4min\n"}
+,{"stream_name":"stdout","time":3268.939499897,"data":"[12:33:01] [INFO]   Ep4 B340/845 | loss=19.2537 | 333s | ETA 8.2min\n"}
+,{"stream_name":"stdout","time":3278.496624141,"data":"[12:33:10] [INFO]   Ep4 B350/845 | loss=19.2327 | 343s | ETA 8.0min\n"}
+,{"stream_name":"stdout","time":3288.037499656,"data":"[12:33:20] [INFO]   Ep4 B360/845 | loss=19.1597 | 352s | ETA 7.9min\n"}
+,{"stream_name":"stdout","time":3297.56942415,"data":"[12:33:30] [INFO]   Ep4 B370/845 | loss=32.1175 | 362s | ETA 7.7min\n"}
+,{"stream_name":"stdout","time":3307.506689083,"data":"[12:33:39] [INFO]   Ep4 B380/845 | loss=31.5054 | 372s | ETA 7.5min\n"}
+,{"stream_name":"stdout","time":3316.8502185,"data":"[12:33:49] [INFO]   Ep4 B390/845 | loss=32.5319 | 381s | ETA 7.4min\n"}
+,{"stream_name":"stdout","time":3326.459979391,"data":"[12:33:58] [INFO]   Ep4 B400/845 | loss=32.0903 | 391s | ETA 7.2min\n"}
+,{"stream_name":"stdout","time":3336.313610357,"data":"[12:34:08] [INFO]   Ep4 B410/845 | loss=32.4748 | 401s | ETA 7.0min\n"}
+,{"stream_name":"stdout","time":3346.21366114,"data":"[12:34:18] [INFO]   Ep4 B420/845 | loss=19.4911 | 410s | ETA 6.9min\n"}
+,{"stream_name":"stdout","time":3355.928819088,"data":"[12:34:28] [INFO]   Ep4 B430/845 | loss=32.0806 | 420s | ETA 6.7min\n"}
+,{"stream_name":"stdout","time":3365.532707106,"data":"[12:34:37] [INFO]   Ep4 B440/845 | loss=31.4161 | 430s | ETA 6.6min\n"}
+,{"stream_name":"stdout","time":3375.249261777,"data":"[12:34:47] [INFO]   Ep4 B450/845 | loss=18.9481 | 439s | ETA 6.4min\n"}
+,{"stream_name":"stdout","time":3384.820667718,"data":"[12:34:57] [INFO]   Ep4 B460/845 | loss=31.6089 | 449s | ETA 6.2min\n"}
+,{"stream_name":"stdout","time":3394.646007436,"data":"[12:35:07] [INFO]   Ep4 B470/845 | loss=19.2538 | 459s | ETA 6.1min\n"}
+,{"stream_name":"stdout","time":3404.557286128,"data":"[12:35:17] [INFO]   Ep4 B480/845 | loss=32.2619 | 469s | ETA 5.9min\n"}
+,{"stream_name":"stdout","time":3414.345672342,"data":"[12:35:26] [INFO]   Ep4 B490/845 | loss=31.5833 | 479s | ETA 5.8min\n"}
+,{"stream_name":"stdout","time":3423.945952867,"data":"[12:35:36] [INFO]   Ep4 B500/845 | loss=20.6927 | 488s | ETA 5.6min\n"}
+,{"stream_name":"stdout","time":3434.052497107,"data":"[12:35:46] [INFO]   Ep4 B510/845 | loss=31.5321 | 498s | ETA 5.4min\n"}
+,{"stream_name":"stdout","time":3443.519460554,"data":"[12:35:55] [INFO]   Ep4 B520/845 | loss=19.7169 | 508s | ETA 5.3min\n"}
+,{"stream_name":"stdout","time":3453.053043009,"data":"[12:36:05] [INFO]   Ep4 B530/845 | loss=19.5480 | 517s | ETA 5.1min\n"}
+,{"stream_name":"stdout","time":3462.710716678,"data":"[12:36:15] [INFO]   Ep4 B540/845 | loss=30.8846 | 527s | ETA 4.9min\n"}
+,{"stream_name":"stdout","time":3472.156606481,"data":"[12:36:24] [INFO]   Ep4 B550/845 | loss=19.5636 | 536s | ETA 4.8min\n"}
+,{"stream_name":"stdout","time":3481.944045881,"data":"[12:36:34] [INFO]   Ep4 B560/845 | loss=19.2483 | 546s | ETA 4.6min\n"}
+,{"stream_name":"stdout","time":3491.592079772,"data":"[12:36:44] [INFO]   Ep4 B570/845 | loss=19.4697 | 556s | ETA 4.4min\n"}
+,{"stream_name":"stdout","time":3501.24824209,"data":"[12:36:53] [INFO]   Ep4 B580/845 | loss=19.0494 | 565s | ETA 4.3min\n"}
+,{"stream_name":"stdout","time":3510.737692627,"data":"[12:37:03] [INFO]   Ep4 B590/845 | loss=19.7155 | 575s | ETA 4.1min\n"}
+,{"stream_name":"stdout","time":3520.837565051,"data":"[12:37:13] [INFO]   Ep4 B600/845 | loss=32.3769 | 585s | ETA 4.0min\n"}
+,{"stream_name":"stdout","time":3530.808274752,"data":"[12:37:23] [INFO]   Ep4 B610/845 | loss=31.8707 | 595s | ETA 3.8min\n"}
+,{"stream_name":"stdout","time":3540.54795034,"data":"[12:37:32] [INFO]   Ep4 B620/845 | loss=19.8407 | 605s | ETA 3.6min\n"}
+,{"stream_name":"stdout","time":3549.954818709,"data":"[12:37:42] [INFO]   Ep4 B630/845 | loss=20.0370 | 614s | ETA 3.5min\n"}
+,{"stream_name":"stdout","time":3559.708982781,"data":"[12:37:52] [INFO]   Ep4 B640/845 | loss=18.8232 | 624s | ETA 3.3min\n"}
+,{"stream_name":"stdout","time":3569.328172511,"data":"[12:38:01] [INFO]   Ep4 B650/845 | loss=31.5195 | 634s | ETA 3.1min\n"}
+,{"stream_name":"stdout","time":3579.055266386,"data":"[12:38:11] [INFO]   Ep4 B660/845 | loss=19.9179 | 643s | ETA 3.0min\n"}
+,{"stream_name":"stdout","time":3588.491790305,"data":"[12:38:20] [INFO]   Ep4 B670/845 | loss=18.5446 | 653s | ETA 2.8min\n"}
+,{"stream_name":"stdout","time":3598.355639843,"data":"[12:38:30] [INFO]   Ep4 B680/845 | loss=19.3746 | 663s | ETA 2.7min\n"}
+,{"stream_name":"stdout","time":3608.030938688,"data":"[12:38:40] [INFO]   Ep4 B690/845 | loss=31.7291 | 672s | ETA 2.5min\n"}
+,{"stream_name":"stdout","time":3618.011641834,"data":"[12:38:50] [INFO]   Ep4 B700/845 | loss=19.0943 | 682s | ETA 2.3min\n"}
+,{"stream_name":"stdout","time":3627.805587812,"data":"[12:39:00] [INFO]   Ep4 B710/845 | loss=18.7114 | 692s | ETA 2.2min\n"}
+,{"stream_name":"stdout","time":3637.729247772,"data":"[12:39:10] [INFO]   Ep4 B720/845 | loss=18.7333 | 702s | ETA 2.0min\n"}
+,{"stream_name":"stdout","time":3647.826396859,"data":"[12:39:20] [INFO]   Ep4 B730/845 | loss=20.1630 | 712s | ETA 1.9min\n"}
+,{"stream_name":"stdout","time":3657.35798958,"data":"[12:39:29] [INFO]   Ep4 B740/845 | loss=31.0592 | 722s | ETA 1.7min\n"}
+,{"stream_name":"stdout","time":3667.076987965,"data":"[12:39:39] [INFO]   Ep4 B750/845 | loss=31.1776 | 731s | ETA 1.5min\n"}
+,{"stream_name":"stdout","time":3676.69834657,"data":"[12:39:49] [INFO]   Ep4 B760/845 | loss=19.9773 | 741s | ETA 1.4min\n"}
+,{"stream_name":"stdout","time":3686.552710867,"data":"[12:39:58] [INFO]   Ep4 B770/845 | loss=31.5910 | 751s | ETA 1.2min\n"}
+,{"stream_name":"stdout","time":3696.306052421,"data":"[12:40:08] [INFO]   Ep4 B780/845 | loss=19.7909 | 760s | ETA 1.0min\n"}
+,{"stream_name":"stdout","time":3706.032510678,"data":"[12:40:18] [INFO]   Ep4 B790/845 | loss=31.7899 | 770s | ETA 0.9min\n"}
+,{"stream_name":"stdout","time":3715.819568118,"data":"[12:40:28] [INFO]   Ep4 B800/845 | loss=31.6818 | 780s | ETA 0.7min\n"}
+,{"stream_name":"stdout","time":3725.490721884,"data":"[12:40:37] [INFO]   Ep4 B810/845 | loss=19.4997 | 790s | ETA 0.6min\n"}
+,{"stream_name":"stdout","time":3735.053093425,"data":"[12:40:47] [INFO]   Ep4 B820/845 | loss=31.2682 | 799s | ETA 0.4min\n"}
+,{"stream_name":"stdout","time":3744.682720602,"data":"[12:40:57] [INFO]   Ep4 B830/845 | loss=32.2773 | 809s | ETA 0.2min\n"}
+,{"stream_name":"stdout","time":3754.403993289,"data":"[12:41:06] [INFO]   Ep4 B840/845 | loss=19.4759 | 819s | ETA 0.1min\n"}
+,{"stream_name":"stdout","time":3758.170662816,"data":"[12:41:10] [INFO]   Ep4 DONE | avg_loss=25.9974 | time=822s (13.7min)\n"}
+,{"stream_name":"stdout","time":3772.751818128,"data":"[12:41:25] [INFO] Ep4 RESULT | loss=25.9974 | acc=0.0419 | map3=0.0603 | f1=0.0225\n"}
+,{"stream_name":"stdout","time":3773.013460822,"data":"[12:41:25] [INFO]   ★ New best MAP@3: 0.0603 — saved!\n"}
+,{"stream_name":"stdout","time":3773.812069051,"data":"[12:41:26] [INFO] ============================================================\n"}
+,{"stream_name":"stdout","time":3773.812909815,"data":"[12:41:26] [INFO] EPOCH 5/13\n"}
+,{"stream_name":"stdout","time":3773.813586841,"data":"[12:41:26] [INFO] ============================================================\n"}
+,{"stream_name":"stdout","time":3775.153003529,"data":"[12:41:27] [INFO]   Ep5 B0/845 | loss=18.7504 | 1s | ETA 18.8min\n"}
+,{"stream_name":"stdout","time":3784.559515461,"data":"[12:41:37] [INFO]   Ep5 B10/845 | loss=31.9015 | 11s | ETA 13.6min\n"}
+,{"stream_name":"stdout","time":3794.005656608,"data":"[12:41:46] [INFO]   Ep5 B20/845 | loss=17.6033 | 20s | ETA 13.2min\n"}
+,{"stream_name":"stdout","time":3803.705483757,"data":"[12:41:56] [INFO]   Ep5 B30/845 | loss=19.1530 | 30s | ETA 13.1min\n"}
+,{"stream_name":"stdout","time":3813.378669015,"data":"[12:42:05] [INFO]   Ep5 B40/845 | loss=31.6645 | 40s | ETA 12.9min\n"}
+,{"stream_name":"stdout","time":3822.8467811,"data":"[12:42:15] [INFO]   Ep5 B50/845 | loss=18.2155 | 49s | ETA 12.7min\n"}
+,{"stream_name":"stdout","time":3832.264480271,"data":"[12:42:24] [INFO]   Ep5 B60/845 | loss=18.0202 | 58s | ETA 12.5min\n"}
+,{"stream_name":"stdout","time":3841.896226182,"data":"[12:42:34] [INFO]   Ep5 B70/845 | loss=31.6349 | 68s | ETA 12.4min\n"}
+,{"stream_name":"stdout","time":3851.767967061,"data":"[12:42:44] [INFO]   Ep5 B80/845 | loss=18.9670 | 78s | ETA 12.3min\n"}
+,{"stream_name":"stdout","time":3861.257409564,"data":"[12:42:53] [INFO]   Ep5 B90/845 | loss=19.2816 | 87s | ETA 12.1min\n"}
+,{"stream_name":"stdout","time":3871.010022886,"data":"[12:43:03] [INFO]   Ep5 B100/845 | loss=31.8287 | 97s | ETA 11.9min\n"}
+,{"stream_name":"stdout","time":3881.010740509,"data":"[12:43:13] [INFO]   Ep5 B110/845 | loss=19.2708 | 107s | ETA 11.8min\n"}
+,{"stream_name":"stdout","time":3890.599724136,"data":"[12:43:23] [INFO]   Ep5 B120/845 | loss=32.2843 | 117s | ETA 11.6min\n"}
+,{"stream_name":"stdout","time":3899.893225699,"data":"[12:43:32] [INFO]   Ep5 B130/845 | loss=18.9130 | 126s | ETA 11.5min\n"}
+,{"stream_name":"stdout","time":3909.306968512,"data":"[12:43:41] [INFO]   Ep5 B140/845 | loss=18.5314 | 135s | ETA 11.3min\n"}
+,{"stream_name":"stdout","time":3919.335724569,"data":"[12:43:51] [INFO]   Ep5 B150/845 | loss=30.5477 | 145s | ETA 11.1min\n"}
+,{"stream_name":"stdout","time":3929.431897802,"data":"[12:44:01] [INFO]   Ep5 B160/845 | loss=19.1904 | 156s | ETA 11.0min\n"}
+,{"stream_name":"stdout","time":3938.855448423,"data":"[12:44:11] [INFO]   Ep5 B170/845 | loss=18.8595 | 165s | ETA 10.8min\n"}
+,{"stream_name":"stdout","time":3948.518390974,"data":"[12:44:20] [INFO]   Ep5 B180/845 | loss=32.3411 | 175s | ETA 10.7min\n"}
+,{"stream_name":"stdout","time":3958.212337903,"data":"[12:44:30] [INFO]   Ep5 B190/845 | loss=18.4602 | 184s | ETA 10.5min\n"}
+,{"stream_name":"stdout","time":3967.767407439,"data":"[12:44:40] [INFO]   Ep5 B200/845 | loss=19.3069 | 194s | ETA 10.4min\n"}
+,{"stream_name":"stdout","time":3977.289766361,"data":"[12:44:49] [INFO]   Ep5 B210/845 | loss=19.2389 | 203s | ETA 10.2min\n"}
+,{"stream_name":"stdout","time":3987.211477429,"data":"[12:44:59] [INFO]   Ep5 B220/845 | loss=31.5051 | 213s | ETA 10.0min\n"}
+,{"stream_name":"stdout","time":3996.865649227,"data":"[12:45:09] [INFO]   Ep5 B230/845 | loss=31.3624 | 223s | ETA 9.9min\n"}
+,{"stream_name":"stdout","time":4006.77097488,"data":"[12:45:19] [INFO]   Ep5 B240/845 | loss=31.9154 | 233s | ETA 9.7min\n"}
+,{"stream_name":"stdout","time":4016.231709534,"data":"[12:45:28] [INFO]   Ep5 B250/845 | loss=19.4638 | 242s | ETA 9.6min\n"}
+,{"stream_name":"stdout","time":4025.616665149,"data":"[12:45:38] [INFO]   Ep5 B260/845 | loss=18.1442 | 252s | ETA 9.4min\n"}
+,{"stream_name":"stdout","time":4035.518980686,"data":"[12:45:47] [INFO]   Ep5 B270/845 | loss=18.5013 | 262s | ETA 9.2min\n"}
+,{"stream_name":"stdout","time":4045.034248764,"data":"[12:45:57] [INFO]   Ep5 B280/845 | loss=30.5884 | 271s | ETA 9.1min\n"}
+,{"stream_name":"stdout","time":4055.011324821,"data":"[12:46:07] [INFO]   Ep5 B290/845 | loss=18.9066 | 281s | ETA 8.9min\n"}
+,{"stream_name":"stdout","time":4064.520162074,"data":"[12:46:16] [INFO]   Ep5 B300/845 | loss=31.4541 | 291s | ETA 8.8min\n"}
+,{"stream_name":"stdout","time":4074.664485943,"data":"[12:46:27] [INFO]   Ep5 B310/845 | loss=18.4394 | 301s | ETA 8.6min\n"}
+,{"stream_name":"stdout","time":4084.661210401,"data":"[12:46:37] [INFO]   Ep5 B320/845 | loss=31.4680 | 311s | ETA 8.5min\n"}
+,{"stream_name":"stdout","time":4094.443021325,"data":"[12:46:46] [INFO]   Ep5 B330/845 | loss=18.7434 | 321s | ETA 8.3min\n"}
+,{"stream_name":"stdout","time":4104.357323614,"data":"[12:46:56] [INFO]   Ep5 B340/845 | loss=17.9272 | 331s | ETA 8.1min\n"}
+,{"stream_name":"stdout","time":4114.472759771,"data":"[12:47:06] [INFO]   Ep5 B350/845 | loss=17.8841 | 341s | ETA 8.0min\n"}
+,{"stream_name":"stdout","time":4124.21370275,"data":"[12:47:16] [INFO]   Ep5 B360/845 | loss=19.2962 | 350s | ETA 7.8min\n"}
+,{"stream_name":"stdout","time":4133.993844359,"data":"[12:47:26] [INFO]   Ep5 B370/845 | loss=31.3745 | 360s | ETA 7.7min\n"}
+,{"stream_name":"stdout","time":4143.751929025,"data":"[12:47:36] [INFO]   Ep5 B380/845 | loss=31.1665 | 370s | ETA 7.5min\n"}
+,{"stream_name":"stdout","time":4153.495402978,"data":"[12:47:45] [INFO]   Ep5 B390/845 | loss=31.2233 | 380s | ETA 7.3min\n"}
+,{"stream_name":"stdout","time":4163.087633818,"data":"[12:47:55] [INFO]   Ep5 B400/845 | loss=30.5494 | 389s | ETA 7.2min\n"}
+,{"stream_name":"stdout","time":4172.909102449,"data":"[12:48:05] [INFO]   Ep5 B410/845 | loss=31.6096 | 399s | ETA 7.0min\n"}
+,{"stream_name":"stdout","time":4182.69969512,"data":"[12:48:15] [INFO]   Ep5 B420/845 | loss=18.8571 | 409s | ETA 6.9min\n"}
+,{"stream_name":"stdout","time":4192.709664575,"data":"[12:48:25] [INFO]   Ep5 B430/845 | loss=30.2832 | 419s | ETA 6.7min\n"}
+,{"stream_name":"stdout","time":4202.81127665,"data":"[12:48:35] [INFO]   Ep5 B440/845 | loss=19.0458 | 429s | ETA 6.6min\n"}
+,{"stream_name":"stdout","time":4212.347183051,"data":"[12:48:44] [INFO]   Ep5 B450/845 | loss=32.1651 | 439s | ETA 6.4min\n"}
+,{"stream_name":"stdout","time":4221.850016994,"data":"[12:48:54] [INFO]   Ep5 B460/845 | loss=18.8393 | 448s | ETA 6.2min\n"}
+,{"stream_name":"stdout","time":4231.489879045,"data":"[12:49:03] [INFO]   Ep5 B470/845 | loss=31.0759 | 458s | ETA 6.1min\n"}
+,{"stream_name":"stdout","time":4241.302456943,"data":"[12:49:13] [INFO]   Ep5 B480/845 | loss=31.1820 | 467s | ETA 5.9min\n"}
+,{"stream_name":"stdout","time":4250.806473961,"data":"[12:49:23] [INFO]   Ep5 B490/845 | loss=18.3597 | 477s | ETA 5.7min\n"}
+,{"stream_name":"stdout","time":4260.844949168,"data":"[12:49:33] [INFO]   Ep5 B500/845 | loss=18.7048 | 487s | ETA 5.6min\n"}
+,{"stream_name":"stdout","time":4270.989782381,"data":"[12:49:43] [INFO]   Ep5 B510/845 | loss=31.5165 | 497s | ETA 5.4min\n"}
+,{"stream_name":"stdout","time":4280.621792309,"data":"[12:49:53] [INFO]   Ep5 B520/845 | loss=29.7739 | 507s | ETA 5.3min\n"}
+,{"stream_name":"stdout","time":4289.881665337,"data":"[12:50:02] [INFO]   Ep5 B530/845 | loss=18.6603 | 516s | ETA 5.1min\n"}
+,{"stream_name":"stdout","time":4299.487521048,"data":"[12:50:11] [INFO]   Ep5 B540/845 | loss=30.8500 | 526s | ETA 4.9min\n"}
+,{"stream_name":"stdout","time":4309.554411464,"data":"[12:50:21] [INFO]   Ep5 B550/845 | loss=30.9018 | 536s | ETA 4.8min\n"}
+,{"stream_name":"stdout","time":4319.225239041,"data":"[12:50:31] [INFO]   Ep5 B560/845 | loss=18.3941 | 545s | ETA 4.6min\n"}
+,{"stream_name":"stdout","time":4328.781172222,"data":"[12:50:41] [INFO]   Ep5 B570/845 | loss=30.6067 | 555s | ETA 4.4min\n"}
+,{"stream_name":"stdout","time":4338.584701637,"data":"[12:50:51] [INFO]   Ep5 B580/845 | loss=31.5135 | 565s | ETA 4.3min\n"}
+,{"stream_name":"stdout","time":4348.055141845,"data":"[12:51:00] [INFO]   Ep5 B590/845 | loss=30.4863 | 574s | ETA 4.1min\n"}
+,{"stream_name":"stdout","time":4357.885267196,"data":"[12:51:10] [INFO]   Ep5 B600/845 | loss=19.2322 | 584s | ETA 4.0min\n"}
+,{"stream_name":"stdout","time":4367.59046374,"data":"[12:51:20] [INFO]   Ep5 B610/845 | loss=18.5156 | 594s | ETA 3.8min\n"}
+,{"stream_name":"stdout","time":4376.930724105,"data":"[12:51:29] [INFO]   Ep5 B620/845 | loss=31.2924 | 603s | ETA 3.6min\n"}
+,{"stream_name":"stdout","time":4386.330497051,"data":"[12:51:38] [INFO]   Ep5 B630/845 | loss=19.2531 | 612s | ETA 3.5min\n"}
+,{"stream_name":"stdout","time":4395.890374981,"data":"[12:51:48] [INFO]   Ep5 B640/845 | loss=31.1803 | 622s | ETA 3.3min\n"}
+,{"stream_name":"stdout","time":4405.491864232,"data":"[12:51:57] [INFO]   Ep5 B650/845 | loss=18.8653 | 632s | ETA 3.1min\n"}
+,{"stream_name":"stdout","time":4415.32049094,"data":"[12:52:07] [INFO]   Ep5 B660/845 | loss=31.6238 | 642s | ETA 3.0min\n"}
+,{"stream_name":"stdout","time":4425.044033673,"data":"[12:52:17] [INFO]   Ep5 B670/845 | loss=18.3814 | 651s | ETA 2.8min\n"}
+,{"stream_name":"stdout","time":4434.563044635,"data":"[12:52:27] [INFO]   Ep5 B680/845 | loss=17.9619 | 661s | ETA 2.7min\n"}
+,{"stream_name":"stdout","time":4443.976947255,"data":"[12:52:36] [INFO]   Ep5 B690/845 | loss=18.7526 | 670s | ETA 2.5min\n"}
+,{"stream_name":"stdout","time":4453.704720119,"data":"[12:52:46] [INFO]   Ep5 B700/845 | loss=18.0563 | 680s | ETA 2.3min\n"}
+,{"stream_name":"stdout","time":4463.396271073,"data":"[12:52:55] [INFO]   Ep5 B710/845 | loss=30.7064 | 690s | ETA 2.2min\n"}
+,{"stream_name":"stdout","time":4473.200677822,"data":"[12:53:05] [INFO]   Ep5 B720/845 | loss=17.2133 | 699s | ETA 2.0min\n"}
+,{"stream_name":"stdout","time":4482.77228714,"data":"[12:53:15] [INFO]   Ep5 B730/845 | loss=31.0597 | 709s | ETA 1.8min\n"}
+,{"stream_name":"stdout","time":4492.635469973,"data":"[12:53:25] [INFO]   Ep5 B740/845 | loss=30.0816 | 719s | ETA 1.7min\n"}
+,{"stream_name":"stdout","time":4502.309906046,"data":"[12:53:34] [INFO]   Ep5 B750/845 | loss=19.3866 | 728s | ETA 1.5min\n"}
+,{"stream_name":"stdout","time":4511.87215746,"data":"[12:53:44] [INFO]   Ep5 B760/845 | loss=31.2426 | 738s | ETA 1.4min\n"}
+,{"stream_name":"stdout","time":4521.421768541,"data":"[12:53:53] [INFO]   Ep5 B770/845 | loss=30.9353 | 748s | ETA 1.2min\n"}
+,{"stream_name":"stdout","time":4531.04282796,"data":"[12:54:03] [INFO]   Ep5 B780/845 | loss=17.9494 | 757s | ETA 1.0min\n"}
+,{"stream_name":"stdout","time":4540.631163215,"data":"[12:54:13] [INFO]   Ep5 B790/845 | loss=31.6950 | 767s | ETA 0.9min\n"}
+,{"stream_name":"stdout","time":4550.207840552,"data":"[12:54:22] [INFO]   Ep5 B800/845 | loss=30.6813 | 776s | ETA 0.7min\n"}
+,{"stream_name":"stdout","time":4560.033029619,"data":"[12:54:32] [INFO]   Ep5 B810/845 | loss=18.3199 | 786s | ETA 0.5min\n"}
+,{"stream_name":"stdout","time":4569.570100095,"data":"[12:54:42] [INFO]   Ep5 B820/845 | loss=30.7968 | 796s | ETA 0.4min\n"}
+,{"stream_name":"stdout","time":4579.346609143,"data":"[12:54:51] [INFO]   Ep5 B830/845 | loss=31.0105 | 805s | ETA 0.2min\n"}
+,{"stream_name":"stdout","time":4588.985597133,"data":"[12:55:01] [INFO]   Ep5 B840/845 | loss=18.2317 | 815s | ETA 0.1min\n"}
+,{"stream_name":"stdout","time":4592.659470527,"data":"[12:55:05] [INFO]   Ep5 DONE | avg_loss=24.8540 | time=819s (13.6min)\n"}
+,{"stream_name":"stdout","time":4607.190850386,"data":"[12:55:19] [INFO] Ep5 RESULT | loss=24.8540 | acc=0.0368 | map3=0.0571 | f1=0.0190\n"}
+,{"stream_name":"stdout","time":4607.19180542,"data":"[12:55:19] [INFO]   No improvement for 1 epoch(s).\n"}
+,{"stream_name":"stdout","time":4607.983683661,"data":"[12:55:20] [INFO] ============================================================\n"}
+,{"stream_name":"stdout","time":4607.984766103,"data":"[12:55:20] [INFO] EPOCH 6/13\n"}
+,{"stream_name":"stdout","time":4607.985465347,"data":"[12:55:20] [INFO] ============================================================\n"}
+,{"stream_name":"stdout","time":4609.336984952,"data":"[12:55:21] [INFO]   Ep6 B0/845 | loss=18.3348 | 1s | ETA 18.9min\n"}
+,{"stream_name":"stdout","time":4619.142672211,"data":"[12:55:31] [INFO]   Ep6 B10/845 | loss=30.2259 | 11s | ETA 14.0min\n"}
+,{"stream_name":"stdout","time":4628.993486384,"data":"[12:55:41] [INFO]   Ep6 B20/845 | loss=30.0826 | 21s | ETA 13.7min\n"}
+,{"stream_name":"stdout","time":4638.683408662,"data":"[12:55:51] [INFO]   Ep6 B30/845 | loss=30.3255 | 31s | ETA 13.4min\n"}
+,{"stream_name":"stdout","time":4648.359573101,"data":"[12:56:00] [INFO]   Ep6 B40/845 | loss=30.4398 | 40s | ETA 13.2min\n"}
+,{"stream_name":"stdout","time":4658.175964619,"data":"[12:56:10] [INFO]   Ep6 B50/845 | loss=18.2405 | 50s | ETA 13.0min\n"}
+,{"stream_name":"stdout","time":4667.614002982,"data":"[12:56:20] [INFO]   Ep6 B60/845 | loss=31.2305 | 60s | ETA 12.8min\n"}
+,{"stream_name":"stdout","time":4677.547521721,"data":"[12:56:29] [INFO]   Ep6 B70/845 | loss=18.5887 | 70s | ETA 12.6min\n"}
+,{"stream_name":"stdout","time":4687.243664488,"data":"[12:56:39] [INFO]   Ep6 B80/845 | loss=30.1373 | 79s | ETA 12.5min\n"}
+,{"stream_name":"stdout","time":4697.0315574,"data":"[12:56:49] [INFO]   Ep6 B90/845 | loss=18.3663 | 89s | ETA 12.3min\n"}
+,{"stream_name":"stdout","time":4706.814400252,"data":"[12:56:59] [INFO]   Ep6 B100/845 | loss=18.5052 | 99s | ETA 12.1min\n"}
+,{"stream_name":"stdout","time":4716.413979601,"data":"[12:57:08] [INFO]   Ep6 B110/845 | loss=17.7102 | 108s | ETA 11.9min\n"}
+,{"stream_name":"stdout","time":4726.141029639,"data":"[12:57:18] [INFO]   Ep6 B120/845 | loss=30.2792 | 118s | ETA 11.8min\n"}
+,{"stream_name":"stdout","time":4735.733800556,"data":"[12:57:28] [INFO]   Ep6 B130/845 | loss=29.9463 | 128s | ETA 11.6min\n"}
+,{"stream_name":"stdout","time":4745.541073461,"data":"[12:57:37] [INFO]   Ep6 B140/845 | loss=30.9734 | 138s | ETA 11.4min\n"}
+,{"stream_name":"stdout","time":4755.207189626,"data":"[12:57:47] [INFO]   Ep6 B150/845 | loss=17.5934 | 147s | ETA 11.3min\n"}
+,{"stream_name":"stdout","time":4764.838956429,"data":"[12:57:57] [INFO]   Ep6 B160/845 | loss=18.5578 | 157s | ETA 11.1min\n"}
+,{"stream_name":"stdout","time":4775.095221311,"data":"[12:58:07] [INFO]   Ep6 B170/845 | loss=29.3412 | 167s | ETA 11.0min\n"}
+,{"stream_name":"stdout","time":4784.511704044,"data":"[12:58:16] [INFO]   Ep6 B180/845 | loss=18.8931 | 177s | ETA 10.8min\n"}
+,{"stream_name":"stdout","time":4794.098305785,"data":"[12:58:26] [INFO]   Ep6 B190/845 | loss=17.6327 | 186s | ETA 10.6min\n"}
+,{"stream_name":"stdout","time":4803.97397125,"data":"[12:58:36] [INFO]   Ep6 B200/845 | loss=31.4064 | 196s | ETA 10.5min\n"}
+,{"stream_name":"stdout","time":4813.988936595,"data":"[12:58:46] [INFO]   Ep6 B210/845 | loss=30.6097 | 206s | ETA 10.3min\n"}
+,{"stream_name":"stdout","time":4823.746705631,"data":"[12:58:56] [INFO]   Ep6 B220/845 | loss=30.9892 | 216s | ETA 10.2min\n"}
+,{"stream_name":"stdout","time":4833.31184424,"data":"[12:59:05] [INFO]   Ep6 B230/845 | loss=30.5669 | 225s | ETA 10.0min\n"}
+,{"stream_name":"stdout","time":4843.206132362,"data":"[12:59:15] [INFO]   Ep6 B240/845 | loss=30.1343 | 235s | ETA 9.8min\n"}
+,{"stream_name":"stdout","time":4853.546184322,"data":"[12:59:25] [INFO]   Ep6 B250/845 | loss=17.8137 | 246s | ETA 9.7min\n"}
+,{"stream_name":"stdout","time":4863.420711769,"data":"[12:59:35] [INFO]   Ep6 B260/845 | loss=29.2164 | 255s | ETA 9.5min\n"}
+,{"stream_name":"stdout","time":4873.342611607,"data":"[12:59:45] [INFO]   Ep6 B270/845 | loss=18.8747 | 265s | ETA 9.4min\n"}
+,{"stream_name":"stdout","time":4883.384273154,"data":"[12:59:55] [INFO]   Ep6 B280/845 | loss=30.0345 | 275s | ETA 9.2min\n"}
+,{"stream_name":"stdout","time":4893.223711844,"data":"[13:00:05] [INFO]   Ep6 B290/845 | loss=18.2517 | 285s | ETA 9.0min\n"}
+,{"stream_name":"stdout","time":4902.705038613,"data":"[13:00:15] [INFO]   Ep6 B300/845 | loss=29.1731 | 295s | ETA 8.9min\n"}
+,{"stream_name":"stdout","time":4912.229379213,"data":"[13:00:24] [INFO]   Ep6 B310/845 | loss=17.6619 | 304s | ETA 8.7min\n"}
+,{"stream_name":"stdout","time":4922.016995311,"data":"[13:00:34] [INFO]   Ep6 B320/845 | loss=18.0026 | 314s | ETA 8.5min\n"}
+,{"stream_name":"stdout","time":4931.525720387,"data":"[13:00:43] [INFO]   Ep6 B330/845 | loss=30.2434 | 323s | ETA 8.4min\n"}
+,{"stream_name":"stdout","time":4941.414326067,"data":"[13:00:53] [INFO]   Ep6 B340/845 | loss=17.9166 | 333s | ETA 8.2min\n"}
+,{"stream_name":"stdout","time":4951.108050862,"data":"[13:01:03] [INFO]   Ep6 B350/845 | loss=18.0690 | 343s | ETA 8.0min\n"}
+,{"stream_name":"stdout","time":4960.961621557,"data":"[13:01:13] [INFO]   Ep6 B360/845 | loss=17.4986 | 353s | ETA 7.9min\n"}
+,{"stream_name":"stdout","time":4970.883994476,"data":"[13:01:23] [INFO]   Ep6 B370/845 | loss=31.2065 | 363s | ETA 7.7min\n"}
+,{"stream_name":"stdout","time":4980.406853925,"data":"[13:01:32] [INFO]   Ep6 B380/845 | loss=30.1536 | 372s | ETA 7.6min\n"}
+,{"stream_name":"stdout","time":4989.870522536,"data":"[13:01:42] [INFO]   Ep6 B390/845 | loss=30.2745 | 382s | ETA 7.4min\n"}
+,{"stream_name":"stdout","time":4999.359942467,"data":"[13:01:51] [INFO]   Ep6 B400/845 | loss=17.7148 | 391s | ETA 7.2min\n"}
+,{"stream_name":"stdout","time":5009.262901735,"data":"[13:02:01] [INFO]   Ep6 B410/845 | loss=30.1751 | 401s | ETA 7.1min\n"}
+,{"stream_name":"stdout","time":5018.926280007,"data":"[13:02:11] [INFO]   Ep6 B420/845 | loss=29.7924 | 411s | ETA 6.9min\n"}
+,{"stream_name":"stdout","time":5028.811389344,"data":"[13:02:21] [INFO]   Ep6 B430/845 | loss=17.9938 | 421s | ETA 6.7min\n"}
+,{"stream_name":"stdout","time":5038.867893218,"data":"[13:02:31] [INFO]   Ep6 B440/845 | loss=29.2428 | 431s | ETA 6.6min\n"}
+,{"stream_name":"stdout","time":5048.538076051,"data":"[13:02:40] [INFO]   Ep6 B450/845 | loss=18.5224 | 441s | ETA 6.4min\n"}
+,{"stream_name":"stdout","time":5057.686278819,"data":"[13:02:50] [INFO]   Ep6 B460/845 | loss=18.0841 | 450s | ETA 6.2min\n"}
+,{"stream_name":"stdout","time":5067.641433435,"data":"[13:03:00] [INFO]   Ep6 B470/845 | loss=30.5348 | 460s | ETA 6.1min\n"}
+,{"stream_name":"stdout","time":5077.21036371,"data":"[13:03:09] [INFO]   Ep6 B480/845 | loss=30.1978 | 469s | ETA 5.9min\n"}
+,{"stream_name":"stdout","time":5087.197890135,"data":"[13:03:19] [INFO]   Ep6 B490/845 | loss=29.4918 | 479s | ETA 5.8min\n"}
+,{"stream_name":"stdout","time":5096.680679708,"data":"[13:03:29] [INFO]   Ep6 B500/845 | loss=18.4281 | 489s | ETA 5.6min\n"}
+,{"stream_name":"stdout","time":5106.47895354,"data":"[13:03:38] [INFO]   Ep6 B510/845 | loss=29.8676 | 498s | ETA 5.4min\n"}
+,{"stream_name":"stdout","time":5116.116429302,"data":"[13:03:48] [INFO]   Ep6 B520/845 | loss=18.3728 | 508s | ETA 5.3min\n"}
+,{"stream_name":"stdout","time":5125.752063388,"data":"[13:03:58] [INFO]   Ep6 B530/845 | loss=17.5170 | 518s | ETA 5.1min\n"}
+,{"stream_name":"stdout","time":5135.477169363,"data":"[13:04:07] [INFO]   Ep6 B540/845 | loss=30.1334 | 527s | ETA 4.9min\n"}
+,{"stream_name":"stdout","time":5145.156675903,"data":"[13:04:17] [INFO]   Ep6 B550/845 | loss=28.4562 | 537s | ETA 4.8min\n"}
+,{"stream_name":"stdout","time":5154.528090357,"data":"[13:04:26] [INFO]   Ep6 B560/845 | loss=29.3192 | 547s | ETA 4.6min\n"}
+,{"stream_name":"stdout","time":5164.186514534,"data":"[13:04:36] [INFO]   Ep6 B570/845 | loss=17.5488 | 556s | ETA 4.4min\n"}
+,{"stream_name":"stdout","time":5174.046530921,"data":"[13:04:46] [INFO]   Ep6 B580/845 | loss=17.9637 | 566s | ETA 4.3min\n"}
+,{"stream_name":"stdout","time":5183.644628077,"data":"[13:04:56] [INFO]   Ep6 B590/845 | loss=18.7056 | 576s | ETA 4.1min\n"}
+,{"stream_name":"stdout","time":5193.588118711,"data":"[13:05:06] [INFO]   Ep6 B600/845 | loss=17.9193 | 586s | ETA 4.0min\n"}
+,{"stream_name":"stdout","time":5203.270159214,"data":"[13:05:15] [INFO]   Ep6 B610/845 | loss=30.4751 | 595s | ETA 3.8min\n"}
+,{"stream_name":"stdout","time":5213.036465664,"data":"[13:05:25] [INFO]   Ep6 B620/845 | loss=17.6239 | 605s | ETA 3.6min\n"}
+,{"stream_name":"stdout","time":5222.743628459,"data":"[13:05:35] [INFO]   Ep6 B630/845 | loss=30.1960 | 615s | ETA 3.5min\n"}
+,{"stream_name":"stdout","time":5232.308278433,"data":"[13:05:44] [INFO]   Ep6 B640/845 | loss=29.5461 | 624s | ETA 3.3min\n"}
+,{"stream_name":"stdout","time":5241.748904322,"data":"[13:05:54] [INFO]   Ep6 B650/845 | loss=17.4030 | 634s | ETA 3.1min\n"}
+,{"stream_name":"stdout","time":5251.235942893,"data":"[13:06:03] [INFO]   Ep6 B660/845 | loss=30.3503 | 643s | ETA 3.0min\n"}
+,{"stream_name":"stdout","time":5260.870199602,"data":"[13:06:13] [INFO]   Ep6 B670/845 | loss=19.1026 | 653s | ETA 2.8min\n"}
+,{"stream_name":"stdout","time":5271.03718546,"data":"[13:06:23] [INFO]   Ep6 B680/845 | loss=17.5564 | 663s | ETA 2.7min\n"}
+,{"stream_name":"stdout","time":5280.739839658,"data":"[13:06:33] [INFO]   Ep6 B690/845 | loss=17.8932 | 673s | ETA 2.5min\n"}
+,{"stream_name":"stdout","time":5290.345648081,"data":"[13:06:42] [INFO]   Ep6 B700/845 | loss=17.9285 | 682s | ETA 2.3min\n"}
+,{"stream_name":"stdout","time":5300.056722397,"data":"[13:06:52] [INFO]   Ep6 B710/845 | loss=30.1224 | 692s | ETA 2.2min\n"}
+,{"stream_name":"stdout","time":5309.837652393,"data":"[13:07:02] [INFO]   Ep6 B720/845 | loss=18.0696 | 702s | ETA 2.0min\n"}
+,{"stream_name":"stdout","time":5319.625290637,"data":"[13:07:12] [INFO]   Ep6 B730/845 | loss=30.1853 | 712s | ETA 1.8min\n"}
+,{"stream_name":"stdout","time":5329.170355366,"data":"[13:07:21] [INFO]   Ep6 B740/845 | loss=30.2508 | 721s | ETA 1.7min\n"}
+,{"stream_name":"stdout","time":5339.091860387,"data":"[13:07:31] [INFO]   Ep6 B750/845 | loss=29.8318 | 731s | ETA 1.5min\n"}
+,{"stream_name":"stdout","time":5348.532200789,"data":"[13:07:40] [INFO]   Ep6 B760/845 | loss=29.2067 | 741s | ETA 1.4min\n"}
+,{"stream_name":"stdout","time":5358.171528048,"data":"[13:07:50] [INFO]   Ep6 B770/845 | loss=17.2534 | 750s | ETA 1.2min\n"}
+,{"stream_name":"stdout","time":5368.081423945,"data":"[13:08:00] [INFO]   Ep6 B780/845 | loss=18.0044 | 760s | ETA 1.0min\n"}
+,{"stream_name":"stdout","time":5377.810960687,"data":"[13:08:10] [INFO]   Ep6 B790/845 | loss=17.6691 | 770s | ETA 0.9min\n"}
+,{"stream_name":"stdout","time":5387.346019297,"data":"[13:08:19] [INFO]   Ep6 B800/845 | loss=30.2827 | 779s | ETA 0.7min\n"}
+,{"stream_name":"stdout","time":5397.039999379,"data":"[13:08:29] [INFO]   Ep6 B810/845 | loss=29.7643 | 789s | ETA 0.6min\n"}
+,{"stream_name":"stdout","time":5406.55016139,"data":"[13:08:38] [INFO]   Ep6 B820/845 | loss=30.0656 | 799s | ETA 0.4min\n"}
+,{"stream_name":"stdout","time":5416.229262066,"data":"[13:08:48] [INFO]   Ep6 B830/845 | loss=30.8740 | 808s | ETA 0.2min\n"}
+,{"stream_name":"stdout","time":5426.009615261,"data":"[13:08:58] [INFO]   Ep6 B840/845 | loss=29.7479 | 818s | ETA 0.1min\n"}
+,{"stream_name":"stdout","time":5430.14881688,"data":"[13:09:02] [INFO]   Ep6 DONE | avg_loss=24.0170 | time=822s (13.7min)\n"}
+,{"stream_name":"stdout","time":5444.683853344,"data":"[13:09:17] [INFO] Ep6 RESULT | loss=24.0170 | acc=0.0341 | map3=0.0539 | f1=0.0172\n"}
+,{"stream_name":"stdout","time":5444.684570734,"data":"[13:09:17] [INFO]   No improvement for 2 epoch(s).\n"}
+,{"stream_name":"stdout","time":5445.481374898,"data":"[13:09:17] [INFO] ============================================================\n"}
+,{"stream_name":"stdout","time":5445.482299707,"data":"[13:09:17] [INFO] EPOCH 7/13\n"}
+,{"stream_name":"stdout","time":5445.483418121,"data":"[13:09:17] [INFO] ============================================================\n"}
+,{"stream_name":"stdout","time":5446.890098998,"data":"[13:09:19] [INFO]   Ep7 B0/845 | loss=17.5795 | 1s | ETA 19.7min\n"}
+,{"stream_name":"stdout","time":5456.696436749,"data":"[13:09:29] [INFO]   Ep7 B10/845 | loss=17.0875 | 11s | ETA 14.2min\n"}
+,{"stream_name":"stdout","time":5466.336771621,"data":"[13:09:38] [INFO]   Ep7 B20/845 | loss=30.3243 | 21s | ETA 13.6min\n"}
+,{"stream_name":"stdout","time":5475.727911285,"data":"[13:09:48] [INFO]   Ep7 B30/845 | loss=29.0653 | 30s | ETA 13.2min\n"}
+,{"stream_name":"stdout","time":5485.581479287,"data":"[13:09:58] [INFO]   Ep7 B40/845 | loss=29.1464 | 40s | ETA 13.1min\n"}
+,{"stream_name":"stdout","time":5495.351238896,"data":"[13:10:07] [INFO]   Ep7 B50/845 | loss=18.1139 | 50s | ETA 12.9min\n"}
+,{"stream_name":"stdout","time":5505.230222792,"data":"[13:10:17] [INFO]   Ep7 B60/845 | loss=17.7328 | 60s | ETA 12.8min\n"}
+,{"stream_name":"stdout","time":5514.832655448,"data":"[13:10:27] [INFO]   Ep7 B70/845 | loss=28.7355 | 69s | ETA 12.6min\n"}
+,{"stream_name":"stdout","time":5524.711945569,"data":"[13:10:37] [INFO]   Ep7 B80/845 | loss=17.5396 | 79s | ETA 12.5min\n"}
+,{"stream_name":"stdout","time":5534.271805581,"data":"[13:10:46] [INFO]   Ep7 B90/845 | loss=28.7102 | 89s | ETA 12.3min\n"}
+,{"stream_name":"stdout","time":5543.841088527,"data":"[13:10:56] [INFO]   Ep7 B100/845 | loss=16.6517 | 98s | ETA 12.1min\n"}
+,{"stream_name":"stdout","time":5553.070821286,"data":"[13:11:05] [INFO]   Ep7 B110/845 | loss=16.4815 | 108s | ETA 11.9min\n"}
+,{"stream_name":"stdout","time":5562.60727592,"data":"[13:11:15] [INFO]   Ep7 B120/845 | loss=29.6992 | 117s | ETA 11.7min\n"}
+,{"stream_name":"stdout","time":5572.216028397,"data":"[13:11:24] [INFO]   Ep7 B130/845 | loss=17.0709 | 127s | ETA 11.5min\n"}
+,{"stream_name":"stdout","time":5581.687829985,"data":"[13:11:34] [INFO]   Ep7 B140/845 | loss=30.0497 | 136s | ETA 11.3min\n"}
+,{"stream_name":"stdout","time":5591.333409713,"data":"[13:11:43] [INFO]   Ep7 B150/845 | loss=29.5073 | 146s | ETA 11.2min\n"}
+,{"stream_name":"stdout","time":5600.785657599,"data":"[13:11:53] [INFO]   Ep7 B160/845 | loss=29.3106 | 155s | ETA 11.0min\n"}
+,{"stream_name":"stdout","time":5610.622419757,"data":"[13:12:03] [INFO]   Ep7 B170/845 | loss=28.8915 | 165s | ETA 10.8min\n"}
+,{"stream_name":"stdout","time":5620.18077775,"data":"[13:12:12] [INFO]   Ep7 B180/845 | loss=17.3122 | 175s | ETA 10.7min\n"}
+,{"stream_name":"stdout","time":5629.786907042,"data":"[13:12:22] [INFO]   Ep7 B190/845 | loss=17.4501 | 184s | ETA 10.5min\n"}
+,{"stream_name":"stdout","time":5639.503364628,"data":"[13:12:31] [INFO]   Ep7 B200/845 | loss=29.0469 | 194s | ETA 10.4min\n"}
+,{"stream_name":"stdout","time":5649.059285266,"data":"[13:12:41] [INFO]   Ep7 B210/845 | loss=17.4013 | 204s | ETA 10.2min\n"}
+,{"stream_name":"stdout","time":5658.883793697,"data":"[13:12:51] [INFO]   Ep7 B220/845 | loss=29.7486 | 213s | ETA 10.0min\n"}
+,{"stream_name":"stdout","time":5668.344855105,"data":"[13:13:00] [INFO]   Ep7 B230/845 | loss=17.9077 | 223s | ETA 9.9min\n"}
+,{"stream_name":"stdout","time":5677.677009143,"data":"[13:13:10] [INFO]   Ep7 B240/845 | loss=29.6170 | 232s | ETA 9.7min\n"}
+,{"stream_name":"stdout","time":5687.445331674,"data":"[13:13:19] [INFO]   Ep7 B250/845 | loss=17.4831 | 242s | ETA 9.5min\n"}
+,{"stream_name":"stdout","time":5697.091731133,"data":"[13:13:29] [INFO]   Ep7 B260/845 | loss=28.7528 | 252s | ETA 9.4min\n"}
+,{"stream_name":"stdout","time":5706.86982439,"data":"[13:13:39] [INFO]   Ep7 B270/845 | loss=29.5233 | 261s | ETA 9.2min\n"}
+,{"stream_name":"stdout","time":5716.70661326,"data":"[13:13:49] [INFO]   Ep7 B280/845 | loss=17.5537 | 271s | ETA 9.1min\n"}
+,{"stream_name":"stdout","time":5726.429685668,"data":"[13:13:58] [INFO]   Ep7 B290/845 | loss=16.8655 | 281s | ETA 8.9min\n"}
+,{"stream_name":"stdout","time":5736.497727318,"data":"[13:14:08] [INFO]   Ep7 B300/845 | loss=17.1268 | 291s | ETA 8.8min\n"}
+,{"stream_name":"stdout","time":5746.390921931,"data":"[13:14:18] [INFO]   Ep7 B310/845 | loss=29.3666 | 301s | ETA 8.6min\n"}
+,{"stream_name":"stdout","time":5756.364589752,"data":"[13:14:28] [INFO]   Ep7 B320/845 | loss=16.6606 | 311s | ETA 8.5min\n"}
+,{"stream_name":"stdout","time":5766.181746218,"data":"[13:14:38] [INFO]   Ep7 B330/845 | loss=29.2008 | 321s | ETA 8.3min\n"}
+,{"stream_name":"stdout","time":5775.784241661,"data":"[13:14:48] [INFO]   Ep7 B340/845 | loss=28.7859 | 330s | ETA 8.1min\n"}
+,{"stream_name":"stdout","time":5785.396525578,"data":"[13:14:57] [INFO]   Ep7 B350/845 | loss=29.0236 | 340s | ETA 8.0min\n"}
+,{"stream_name":"stdout","time":5795.0426195,"data":"[13:15:07] [INFO]   Ep7 B360/845 | loss=29.1662 | 350s | ETA 7.8min\n"}
+,{"stream_name":"stdout","time":5804.493868686,"data":"[13:15:16] [INFO]   Ep7 B370/845 | loss=29.0170 | 359s | ETA 7.6min\n"}
+,{"stream_name":"stdout","time":5814.6653726,"data":"[13:15:27] [INFO]   Ep7 B380/845 | loss=28.7713 | 369s | ETA 7.5min\n"}
+,{"stream_name":"stdout","time":5824.333214161,"data":"[13:15:36] [INFO]   Ep7 B390/845 | loss=29.3731 | 379s | ETA 7.3min\n"}
+,{"stream_name":"stdout","time":5834.322893948,"data":"[13:15:46] [INFO]   Ep7 B400/845 | loss=28.6116 | 389s | ETA 7.2min\n"}
+,{"stream_name":"stdout","time":5843.828685871,"data":"[13:15:56] [INFO]   Ep7 B410/845 | loss=17.2528 | 398s | ETA 7.0min\n"}
+,{"stream_name":"stdout","time":5853.923248055,"data":"[13:16:06] [INFO]   Ep7 B420/845 | loss=16.8127 | 408s | ETA 6.9min\n"}
+,{"stream_name":"stdout","time":5863.684469071,"data":"[13:16:16] [INFO]   Ep7 B430/845 | loss=17.6421 | 418s | ETA 6.7min\n"}
+,{"stream_name":"stdout","time":5873.488596695,"data":"[13:16:25] [INFO]   Ep7 B440/845 | loss=28.7779 | 428s | ETA 6.5min\n"}
+,{"stream_name":"stdout","time":5883.281849804,"data":"[13:16:35] [INFO]   Ep7 B450/845 | loss=28.2485 | 438s | ETA 6.4min\n"}
+,{"stream_name":"stdout","time":5893.238120102,"data":"[13:16:45] [INFO]   Ep7 B460/845 | loss=28.4685 | 448s | ETA 6.2min\n"}
+,{"stream_name":"stdout","time":5902.86203459,"data":"[13:16:55] [INFO]   Ep7 B470/845 | loss=16.5763 | 457s | ETA 6.1min\n"}
+,{"stream_name":"stdout","time":5912.443292348,"data":"[13:17:04] [INFO]   Ep7 B480/845 | loss=17.5047 | 467s | ETA 5.9min\n"}
+,{"stream_name":"stdout","time":5922.037988196,"data":"[13:17:14] [INFO]   Ep7 B490/845 | loss=28.6528 | 477s | ETA 5.7min\n"}
+,{"stream_name":"stdout","time":5931.599730504,"data":"[13:17:24] [INFO]   Ep7 B500/845 | loss=17.3194 | 486s | ETA 5.6min\n"}
+,{"stream_name":"stdout","time":5941.395234332,"data":"[13:17:33] [INFO]   Ep7 B510/845 | loss=17.4363 | 496s | ETA 5.4min\n"}
+,{"stream_name":"stdout","time":5951.388539845,"data":"[13:17:43] [INFO]   Ep7 B520/845 | loss=17.3197 | 506s | ETA 5.2min\n"}
+,{"stream_name":"stdout","time":5960.79641677,"data":"[13:17:53] [INFO]   Ep7 B530/845 | loss=28.4921 | 515s | ETA 5.1min\n"}
+,{"stream_name":"stdout","time":5970.670158523,"data":"[13:18:03] [INFO]   Ep7 B540/845 | loss=28.5713 | 525s | ETA 4.9min\n"}
+,{"stream_name":"stdout","time":5980.512666898,"data":"[13:18:12] [INFO]   Ep7 B550/845 | loss=28.4151 | 535s | ETA 4.8min\n"}
+,{"stream_name":"stdout","time":5990.271794984,"data":"[13:18:22] [INFO]   Ep7 B560/845 | loss=28.6179 | 545s | ETA 4.6min\n"}
+,{"stream_name":"stdout","time":5999.904762866,"data":"[13:18:32] [INFO]   Ep7 B570/845 | loss=28.6751 | 554s | ETA 4.4min\n"}
+,{"stream_name":"stdout","time":6009.858492874,"data":"[13:18:42] [INFO]   Ep7 B580/845 | loss=18.5228 | 564s | ETA 4.3min\n"}
+,{"stream_name":"stdout","time":6019.17113187,"data":"[13:18:51] [INFO]   Ep7 B590/845 | loss=28.4656 | 574s | ETA 4.1min\n"}
+,{"stream_name":"stdout","time":6028.912226993,"data":"[13:19:01] [INFO]   Ep7 B600/845 | loss=28.4691 | 583s | ETA 3.9min\n"}
+,{"stream_name":"stdout","time":6038.015056245,"data":"[13:19:10] [INFO]   Ep7 B610/845 | loss=28.5996 | 593s | ETA 3.8min\n"}
+,{"stream_name":"stdout","time":6047.774843846,"data":"[13:19:20] [INFO]   Ep7 B620/845 | loss=27.7183 | 602s | ETA 3.6min\n"}
+,{"stream_name":"stdout","time":6057.381245427,"data":"[13:19:29] [INFO]   Ep7 B630/845 | loss=28.6867 | 612s | ETA 3.5min\n"}
+,{"stream_name":"stdout","time":6067.143269173,"data":"[13:19:39] [INFO]   Ep7 B640/845 | loss=28.0820 | 622s | ETA 3.3min\n"}
+,{"stream_name":"stdout","time":6076.618373849,"data":"[13:19:49] [INFO]   Ep7 B650/845 | loss=17.3788 | 631s | ETA 3.1min\n"}
+,{"stream_name":"stdout","time":6086.280027831,"data":"[13:19:58] [INFO]   Ep7 B660/845 | loss=28.4691 | 641s | ETA 3.0min\n"}
+,{"stream_name":"stdout","time":6095.602789332,"data":"[13:20:08] [INFO]   Ep7 B670/845 | loss=28.0788 | 650s | ETA 2.8min\n"}
+,{"stream_name":"stdout","time":6105.356362413,"data":"[13:20:17] [INFO]   Ep7 B680/845 | loss=17.9136 | 660s | ETA 2.6min\n"}
+,{"stream_name":"stdout","time":6114.830697328,"data":"[13:20:27] [INFO]   Ep7 B690/845 | loss=17.9309 | 669s | ETA 2.5min\n"}
+,{"stream_name":"stdout","time":6124.439693751,"data":"[13:20:36] [INFO]   Ep7 B700/845 | loss=16.8877 | 679s | ETA 2.3min\n"}
+,{"stream_name":"stdout","time":6134.073793855,"data":"[13:20:46] [INFO]   Ep7 B710/845 | loss=28.9704 | 689s | ETA 2.2min\n"}
+,{"stream_name":"stdout","time":6143.627308956,"data":"[13:20:56] [INFO]   Ep7 B720/845 | loss=28.4503 | 698s | ETA 2.0min\n"}
+,{"stream_name":"stdout","time":6153.512337801,"data":"[13:21:05] [INFO]   Ep7 B730/845 | loss=28.6173 | 708s | ETA 1.8min\n"}
+,{"stream_name":"stdout","time":6163.637014419,"data":"[13:21:16] [INFO]   Ep7 B740/845 | loss=17.5499 | 718s | ETA 1.7min\n"}
+,{"stream_name":"stdout","time":6173.208843646,"data":"[13:21:25] [INFO]   Ep7 B750/845 | loss=28.1113 | 728s | ETA 1.5min\n"}
+,{"stream_name":"stdout","time":6183.144825978,"data":"[13:21:35] [INFO]   Ep7 B760/845 | loss=27.8244 | 738s | ETA 1.4min\n"}
+,{"stream_name":"stdout","time":6193.027662577,"data":"[13:21:45] [INFO]   Ep7 B770/845 | loss=16.6735 | 748s | ETA 1.2min\n"}
+,{"stream_name":"stdout","time":6202.601648172,"data":"[13:21:54] [INFO]   Ep7 B780/845 | loss=17.0092 | 757s | ETA 1.0min\n"}
+,{"stream_name":"stdout","time":6211.989890334,"data":"[13:22:04] [INFO]   Ep7 B790/845 | loss=17.2781 | 767s | ETA 0.9min\n"}
+,{"stream_name":"stdout","time":6221.467383399,"data":"[13:22:13] [INFO]   Ep7 B800/845 | loss=16.8385 | 776s | ETA 0.7min\n"}
+,{"stream_name":"stdout","time":6231.068729856,"data":"[13:22:23] [INFO]   Ep7 B810/845 | loss=17.0786 | 786s | ETA 0.5min\n"}
+,{"stream_name":"stdout","time":6240.982007297,"data":"[13:22:33] [INFO]   Ep7 B820/845 | loss=16.8329 | 795s | ETA 0.4min\n"}
+,{"stream_name":"stdout","time":6250.540277233,"data":"[13:22:42] [INFO]   Ep7 B830/845 | loss=26.9170 | 805s | ETA 0.2min\n"}
+,{"stream_name":"stdout","time":6260.341119461,"data":"[13:22:52] [INFO]   Ep7 B840/845 | loss=28.2332 | 815s | ETA 0.1min\n"}
+,{"stream_name":"stdout","time":6264.164939629,"data":"[13:22:56] [INFO]   Ep7 DONE | avg_loss=23.0601 | time=819s (13.6min)\n"}
+,{"stream_name":"stdout","time":6278.72549373,"data":"[13:23:11] [INFO] Ep7 RESULT | loss=23.0601 | acc=0.0350 | map3=0.0530 | f1=0.0140\n"}
+,{"stream_name":"stdout","time":6278.726517051,"data":"[13:23:11] [INFO]   No improvement for 3 epoch(s).\n"}
+,{"stream_name":"stdout","time":6279.495792878,"data":"[13:23:11] [INFO] ============================================================\n"}
+,{"stream_name":"stdout","time":6279.496902553,"data":"[13:23:11] [INFO] EPOCH 8/13\n"}
+,{"stream_name":"stdout","time":6279.497972571,"data":"[13:23:11] [INFO] ============================================================\n"}
+,{"stream_name":"stdout","time":6280.818085326,"data":"[13:23:13] [INFO]   Ep8 B0/845 | loss=16.9273 | 1s | ETA 18.5min\n"}
+,{"stream_name":"stdout","time":6290.410167695,"data":"[13:23:22] [INFO]   Ep8 B10/845 | loss=28.3872 | 11s | ETA 13.8min\n"}
+,{"stream_name":"stdout","time":6300.011174779,"data":"[13:23:32] [INFO]   Ep8 B20/845 | loss=27.9547 | 21s | ETA 13.4min\n"}
+,{"stream_name":"stdout","time":6309.676445249,"data":"[13:23:42] [INFO]   Ep8 B30/845 | loss=27.9741 | 30s | ETA 13.2min\n"}
+,{"stream_name":"stdout","time":6319.73355249,"data":"[13:23:52] [INFO]   Ep8 B40/845 | loss=27.7636 | 40s | ETA 13.1min\n"}
+,{"stream_name":"stdout","time":6329.622676983,"data":"[13:24:02] [INFO]   Ep8 B50/845 | loss=17.2109 | 50s | ETA 13.0min\n"}
+,{"stream_name":"stdout","time":6339.122904173,"data":"[13:24:11] [INFO]   Ep8 B60/845 | loss=27.8089 | 60s | ETA 12.8min\n"}
+,{"stream_name":"stdout","time":6349.116959535,"data":"[13:24:21] [INFO]   Ep8 B70/845 | loss=27.0311 | 70s | ETA 12.6min\n"}
+,{"stream_name":"stdout","time":6358.673324809,"data":"[13:24:31] [INFO]   Ep8 B80/845 | loss=16.6174 | 79s | ETA 12.4min\n"}
+,{"stream_name":"stdout","time":6368.499662673,"data":"[13:24:40] [INFO]   Ep8 B90/845 | loss=28.2960 | 89s | ETA 12.3min\n"}
+,{"stream_name":"stdout","time":6378.075861796,"data":"[13:24:50] [INFO]   Ep8 B100/845 | loss=27.8623 | 99s | ETA 12.1min\n"}
+,{"stream_name":"stdout","time":6387.957382391,"data":"[13:25:00] [INFO]   Ep8 B110/845 | loss=28.1160 | 108s | ETA 11.9min\n"}
+,{"stream_name":"stdout","time":6397.577391697,"data":"[13:25:10] [INFO]   Ep8 B120/845 | loss=16.6546 | 118s | ETA 11.8min\n"}
+,{"stream_name":"stdout","time":6407.566239863,"data":"[13:25:20] [INFO]   Ep8 B130/845 | loss=17.1441 | 128s | ETA 11.6min\n"}
+,{"stream_name":"stdout","time":6417.216532199,"data":"[13:25:29] [INFO]   Ep8 B140/845 | loss=27.9330 | 138s | ETA 11.5min\n"}
+,{"stream_name":"stdout","time":6426.934543945,"data":"[13:25:39] [INFO]   Ep8 B150/845 | loss=27.5731 | 147s | ETA 11.3min\n"}
+,{"stream_name":"stdout","time":6436.93512119,"data":"[13:25:49] [INFO]   Ep8 B160/845 | loss=16.2134 | 157s | ETA 11.1min\n"}
+,{"stream_name":"stdout","time":6446.451524226,"data":"[13:25:58] [INFO]   Ep8 B170/845 | loss=28.2398 | 167s | ETA 11.0min\n"}
+,{"stream_name":"stdout","time":6456.679749033,"data":"[13:26:09] [INFO]   Ep8 B180/845 | loss=26.8836 | 177s | ETA 10.8min\n"}
+,{"stream_name":"stdout","time":6466.496272892,"data":"[13:26:18] [INFO]   Ep8 B190/845 | loss=27.4755 | 187s | ETA 10.7min\n"}
+,{"stream_name":"stdout","time":6476.142485465,"data":"[13:26:28] [INFO]   Ep8 B200/845 | loss=17.0007 | 197s | ETA 10.5min\n"}
+,{"stream_name":"stdout","time":6485.830560713,"data":"[13:26:38] [INFO]   Ep8 B210/845 | loss=27.1766 | 206s | ETA 10.3min\n"}
+,{"stream_name":"stdout","time":6495.705124958,"data":"[13:26:48] [INFO]   Ep8 B220/845 | loss=16.9518 | 216s | ETA 10.2min\n"}
+,{"stream_name":"stdout","time":6505.707318254,"data":"[13:26:57] [INFO]   Ep8 B230/845 | loss=27.1517 | 226s | ETA 10.0min\n"}
+,{"stream_name":"stdout","time":6515.412592606,"data":"[13:27:07] [INFO]   Ep8 B240/845 | loss=16.6159 | 236s | ETA 9.9min\n"}
+,{"stream_name":"stdout","time":6525.273169112,"data":"[13:27:17] [INFO]   Ep8 B250/845 | loss=17.0016 | 246s | ETA 9.7min\n"}
+,{"stream_name":"stdout","time":6535.198785537,"data":"[13:27:27] [INFO]   Ep8 B260/845 | loss=16.3554 | 256s | ETA 9.5min\n"}
+,{"stream_name":"stdout","time":6544.892588154,"data":"[13:27:37] [INFO]   Ep8 B270/845 | loss=27.1274 | 265s | ETA 9.4min\n"}
+,{"stream_name":"stdout","time":6554.811290632,"data":"[13:27:47] [INFO]   Ep8 B280/845 | loss=17.4797 | 275s | ETA 9.2min\n"}
+,{"stream_name":"stdout","time":6564.763451633,"data":"[13:27:57] [INFO]   Ep8 B290/845 | loss=27.3504 | 285s | ETA 9.1min\n"}
+,{"stream_name":"stdout","time":6574.45889145,"data":"[13:28:06] [INFO]   Ep8 B300/845 | loss=16.8459 | 295s | ETA 8.9min\n"}
+,{"stream_name":"stdout","time":6584.313609812,"data":"[13:28:16] [INFO]   Ep8 B310/845 | loss=17.3688 | 305s | ETA 8.7min\n"}
+,{"stream_name":"stdout","time":6593.861703445,"data":"[13:28:26] [INFO]   Ep8 B320/845 | loss=27.3983 | 314s | ETA 8.6min\n"}
+,{"stream_name":"stdout","time":6603.202520036,"data":"[13:28:35] [INFO]   Ep8 B330/845 | loss=26.6281 | 324s | ETA 8.4min\n"}
+,{"stream_name":"stdout","time":6612.837298618,"data":"[13:28:45] [INFO]   Ep8 B340/845 | loss=27.0316 | 333s | ETA 8.2min\n"}
+,{"stream_name":"stdout","time":6622.405247674,"data":"[13:28:54] [INFO]   Ep8 B350/845 | loss=27.4900 | 343s | ETA 8.0min\n"}
+,{"stream_name":"stdout","time":6632.153328644,"data":"[13:29:04] [INFO]   Ep8 B360/845 | loss=17.1090 | 353s | ETA 7.9min\n"}
+,{"stream_name":"stdout","time":6642.040435565,"data":"[13:29:14] [INFO]   Ep8 B370/845 | loss=28.0274 | 363s | ETA 7.7min\n"}
+,{"stream_name":"stdout","time":6651.527073841,"data":"[13:29:23] [INFO]   Ep8 B380/845 | loss=16.7041 | 372s | ETA 7.6min\n"}
+,{"stream_name":"stdout","time":6660.900557785,"data":"[13:29:33] [INFO]   Ep8 B390/845 | loss=16.7321 | 381s | ETA 7.4min\n"}
+,{"stream_name":"stdout","time":6670.325039759,"data":"[13:29:42] [INFO]   Ep8 B400/845 | loss=26.8706 | 391s | ETA 7.2min\n"}
+,{"stream_name":"stdout","time":6679.835218321,"data":"[13:29:52] [INFO]   Ep8 B410/845 | loss=27.7148 | 400s | ETA 7.0min\n"}
+,{"stream_name":"stdout","time":6689.488519081,"data":"[13:30:01] [INFO]   Ep8 B420/845 | loss=27.3424 | 410s | ETA 6.9min\n"}
+,{"stream_name":"stdout","time":6698.78841491,"data":"[13:30:11] [INFO]   Ep8 B430/845 | loss=27.1706 | 419s | ETA 6.7min\n"}
+,{"stream_name":"stdout","time":6708.099888261,"data":"[13:30:20] [INFO]   Ep8 B440/845 | loss=27.1161 | 429s | ETA 6.5min\n"}
+,{"stream_name":"stdout","time":6718.353543047,"data":"[13:30:30] [INFO]   Ep8 B450/845 | loss=16.5236 | 439s | ETA 6.4min\n"}
+,{"stream_name":"stdout","time":6727.919666632,"data":"[13:30:40] [INFO]   Ep8 B460/845 | loss=27.4502 | 448s | ETA 6.2min\n"}
+,{"stream_name":"stdout","time":6737.569251097,"data":"[13:30:49] [INFO]   Ep8 B470/845 | loss=26.1197 | 458s | ETA 6.1min\n"}
+,{"stream_name":"stdout","time":6747.184231597,"data":"[13:30:59] [INFO]   Ep8 B480/845 | loss=26.8205 | 468s | ETA 5.9min\n"}
+,{"stream_name":"stdout","time":6757.04199184,"data":"[13:31:09] [INFO]   Ep8 B490/845 | loss=26.8543 | 478s | ETA 5.7min\n"}
+,{"stream_name":"stdout","time":6766.700265971,"data":"[13:31:19] [INFO]   Ep8 B500/845 | loss=16.2872 | 487s | ETA 5.6min\n"}
+,{"stream_name":"stdout","time":6776.205103807,"data":"[13:31:28] [INFO]   Ep8 B510/845 | loss=16.2091 | 497s | ETA 5.4min\n"}
+,{"stream_name":"stdout","time":6785.984948532,"data":"[13:31:38] [INFO]   Ep8 B520/845 | loss=26.2197 | 506s | ETA 5.2min\n"}
+,{"stream_name":"stdout","time":6795.801618046,"data":"[13:31:48] [INFO]   Ep8 B530/845 | loss=16.6291 | 516s | ETA 5.1min\n"}
+,{"stream_name":"stdout","time":6805.313863014,"data":"[13:31:57] [INFO]   Ep8 B540/845 | loss=16.7642 | 526s | ETA 4.9min\n"}
+,{"stream_name":"stdout","time":6815.154529104,"data":"[13:32:07] [INFO]   Ep8 B550/845 | loss=17.0995 | 536s | ETA 4.8min\n"}
+,{"stream_name":"stdout","time":6824.886067362,"data":"[13:32:17] [INFO]   Ep8 B560/845 | loss=16.6394 | 545s | ETA 4.6min\n"}
+,{"stream_name":"stdout","time":6834.571705551,"data":"[13:32:27] [INFO]   Ep8 B570/845 | loss=27.2150 | 555s | ETA 4.4min\n"}
+,{"stream_name":"stdout","time":6844.646009141,"data":"[13:32:37] [INFO]   Ep8 B580/845 | loss=16.9499 | 565s | ETA 4.3min\n"}
+,{"stream_name":"stdout","time":6854.731668423,"data":"[13:32:47] [INFO]   Ep8 B590/845 | loss=18.1901 | 575s | ETA 4.1min\n"}
+,{"stream_name":"stdout","time":6864.215621508,"data":"[13:32:56] [INFO]   Ep8 B600/845 | loss=16.4959 | 585s | ETA 4.0min\n"}
+,{"stream_name":"stdout","time":6873.985987624,"data":"[13:33:06] [INFO]   Ep8 B610/845 | loss=16.5547 | 594s | ETA 3.8min\n"}
+,{"stream_name":"stdout","time":6883.550026322,"data":"[13:33:15] [INFO]   Ep8 B620/845 | loss=16.0696 | 604s | ETA 3.6min\n"}
+,{"stream_name":"stdout","time":6893.30844543,"data":"[13:33:25] [INFO]   Ep8 B630/845 | loss=16.5325 | 614s | ETA 3.5min\n"}
+,{"stream_name":"stdout","time":6902.631104675,"data":"[13:33:35] [INFO]   Ep8 B640/845 | loss=17.5931 | 623s | ETA 3.3min\n"}
+,{"stream_name":"stdout","time":6912.292194536,"data":"[13:33:44] [INFO]   Ep8 B650/845 | loss=26.4395 | 633s | ETA 3.1min\n"}
+,{"stream_name":"stdout","time":6922.443003737,"data":"[13:33:54] [INFO]   Ep8 B660/845 | loss=17.2316 | 643s | ETA 3.0min\n"}
+,{"stream_name":"stdout","time":6932.332729786,"data":"[13:34:04] [INFO]   Ep8 B670/845 | loss=17.2032 | 653s | ETA 2.8min\n"}
+,{"stream_name":"stdout","time":6942.035118866,"data":"[13:34:14] [INFO]   Ep8 B680/845 | loss=16.7818 | 663s | ETA 2.7min\n"}
+,{"stream_name":"stdout","time":6951.771667796,"data":"[13:34:24] [INFO]   Ep8 B690/845 | loss=16.8847 | 672s | ETA 2.5min\n"}
+,{"stream_name":"stdout","time":6961.434817822,"data":"[13:34:33] [INFO]   Ep8 B700/845 | loss=25.0639 | 682s | ETA 2.3min\n"}
+,{"stream_name":"stdout","time":6971.166725452,"data":"[13:34:43] [INFO]   Ep8 B710/845 | loss=16.4074 | 692s | ETA 2.2min\n"}
+,{"stream_name":"stdout","time":6981.107084943,"data":"[13:34:53] [INFO]   Ep8 B720/845 | loss=16.4652 | 702s | ETA 2.0min\n"}
+,{"stream_name":"stdout","time":6990.78561393,"data":"[13:35:03] [INFO]   Ep8 B730/845 | loss=26.2790 | 711s | ETA 1.8min\n"}
+,{"stream_name":"stdout","time":7000.430532629,"data":"[13:35:12] [INFO]   Ep8 B740/845 | loss=26.1227 | 721s | ETA 1.7min\n"}
+,{"stream_name":"stdout","time":7010.505523709,"data":"[13:35:22] [INFO]   Ep8 B750/845 | loss=26.4101 | 731s | ETA 1.5min\n"}
+,{"stream_name":"stdout","time":7020.17288372,"data":"[13:35:32] [INFO]   Ep8 B760/845 | loss=16.3540 | 741s | ETA 1.4min\n"}
+,{"stream_name":"stdout","time":7029.824278053,"data":"[13:35:42] [INFO]   Ep8 B770/845 | loss=16.2076 | 750s | ETA 1.2min\n"}
+,{"stream_name":"stdout","time":7039.555271937,"data":"[13:35:52] [INFO]   Ep8 B780/845 | loss=26.2417 | 760s | ETA 1.0min\n"}
+,{"stream_name":"stdout","time":7049.571904625,"data":"[13:36:01] [INFO]   Ep8 B790/845 | loss=16.7480 | 770s | ETA 0.9min\n"}
+,{"stream_name":"stdout","time":7059.140798131,"data":"[13:36:11] [INFO]   Ep8 B800/845 | loss=25.7700 | 780s | ETA 0.7min\n"}
+,{"stream_name":"stdout","time":7068.889771175,"data":"[13:36:21] [INFO]   Ep8 B810/845 | loss=16.4110 | 789s | ETA 0.6min\n"}
+,{"stream_name":"stdout","time":7078.426651775,"data":"[13:36:30] [INFO]   Ep8 B820/845 | loss=16.9362 | 799s | ETA 0.4min\n"}
+,{"stream_name":"stdout","time":7088.391473251,"data":"[13:36:40] [INFO]   Ep8 B830/845 | loss=15.9755 | 809s | ETA 0.2min\n"}
+,{"stream_name":"stdout","time":7097.996875528,"data":"[13:36:50] [INFO]   Ep8 B840/845 | loss=16.1575 | 818s | ETA 0.1min\n"}
+,{"stream_name":"stdout","time":7101.725141935,"data":"[13:36:54] [INFO]   Ep8 DONE | avg_loss=21.6626 | time=822s (13.7min)\n"}
+,{"stream_name":"stdout","time":7116.298460048,"data":"[13:37:08] [INFO] Ep8 RESULT | loss=21.6626 | acc=0.0318 | map3=0.0530 | f1=0.0154\n"}
+,{"stream_name":"stdout","time":7116.299218209,"data":"[13:37:08] [INFO]   No improvement for 4 epoch(s).\n"}
+,{"stream_name":"stdout","time":7117.119943959,"data":"[13:37:09] [INFO] ============================================================\n"}
+,{"stream_name":"stdout","time":7117.12085487,"data":"[13:37:09] [INFO] EPOCH 9/13\n"}
+,{"stream_name":"stdout","time":7117.122097564,"data":"[13:37:09] [INFO] ============================================================\n"}
+,{"stream_name":"stdout","time":7118.469255403,"data":"[13:37:10] [INFO]   Ep9 B0/845 | loss=15.5559 | 1s | ETA 18.0min\n"}
+,{"stream_name":"stdout","time":7128.453776323,"data":"[13:37:20] [INFO]   Ep9 B10/845 | loss=15.9005 | 11s | ETA 14.3min\n"}
+,{"stream_name":"stdout","time":7138.120422836,"data":"[13:37:30] [INFO]   Ep9 B20/845 | loss=16.2382 | 21s | ETA 13.7min\n"}
+,{"stream_name":"stdout","time":7147.834540745,"data":"[13:37:40] [INFO]   Ep9 B30/845 | loss=26.1080 | 31s | ETA 13.4min\n"}
+,{"stream_name":"stdout","time":7157.111201255,"data":"[13:37:49] [INFO]   Ep9 B40/845 | loss=15.6104 | 40s | ETA 13.0min\n"}
+,{"stream_name":"stdout","time":7166.830040958,"data":"[13:37:59] [INFO]   Ep9 B50/845 | loss=16.0950 | 50s | ETA 12.9min\n"}
+,{"stream_name":"stdout","time":7176.617747941,"data":"[13:38:09] [INFO]   Ep9 B60/845 | loss=25.6565 | 59s | ETA 12.7min\n"}
+,{"stream_name":"stdout","time":7186.546785063,"data":"[13:38:18] [INFO]   Ep9 B70/845 | loss=16.1005 | 69s | ETA 12.6min\n"}
+,{"stream_name":"stdout","time":7196.101944783,"data":"[13:38:28] [INFO]   Ep9 B80/845 | loss=25.5378 | 79s | ETA 12.4min\n"}
+,{"stream_name":"stdout","time":7205.675922134,"data":"[13:38:38] [INFO]   Ep9 B90/845 | loss=25.6070 | 89s | ETA 12.2min\n"}
+,{"stream_name":"stdout","time":7215.046124055,"data":"[13:38:47] [INFO]   Ep9 B100/845 | loss=15.6940 | 98s | ETA 12.0min\n"}
+,{"stream_name":"stdout","time":7224.892285575,"data":"[13:38:57] [INFO]   Ep9 B110/845 | loss=16.3692 | 108s | ETA 11.9min\n"}
+,{"stream_name":"stdout","time":7234.548367639,"data":"[13:39:06] [INFO]   Ep9 B120/845 | loss=15.7483 | 117s | ETA 11.7min\n"}
+,{"stream_name":"stdout","time":7243.901832447,"data":"[13:39:16] [INFO]   Ep9 B130/845 | loss=16.0790 | 127s | ETA 11.5min\n"}
+,{"stream_name":"stdout","time":7253.503029429,"data":"[13:39:25] [INFO]   Ep9 B140/845 | loss=24.5832 | 136s | ETA 11.3min\n"}
+,{"stream_name":"stdout","time":7263.140516512,"data":"[13:39:35] [INFO]   Ep9 B150/845 | loss=16.0522 | 146s | ETA 11.2min\n"}
+,{"stream_name":"stdout","time":7272.792966885,"data":"[13:39:45] [INFO]   Ep9 B160/845 | loss=16.7852 | 156s | ETA 11.0min\n"}
+,{"stream_name":"stdout","time":7282.599346582,"data":"[13:39:55] [INFO]   Ep9 B170/845 | loss=16.2954 | 165s | ETA 10.9min\n"}
+,{"stream_name":"stdout","time":7292.335374852,"data":"[13:40:04] [INFO]   Ep9 B180/845 | loss=25.4044 | 175s | ETA 10.7min\n"}
+,{"stream_name":"stdout","time":7302.046671536,"data":"[13:40:14] [INFO]   Ep9 B190/845 | loss=24.6672 | 185s | ETA 10.6min\n"}
+,{"stream_name":"stdout","time":7312.016430105,"data":"[13:40:24] [INFO]   Ep9 B200/845 | loss=24.4640 | 195s | ETA 10.4min\n"}
+,{"stream_name":"stdout","time":7321.558902376,"data":"[13:40:34] [INFO]   Ep9 B210/845 | loss=16.3734 | 204s | ETA 10.2min\n"}
+,{"stream_name":"stdout","time":7331.100275239,"data":"[13:40:43] [INFO]   Ep9 B220/845 | loss=16.2728 | 214s | ETA 10.1min\n"}
+,{"stream_name":"stdout","time":7340.913109467,"data":"[13:40:53] [INFO]   Ep9 B230/845 | loss=17.2302 | 224s | ETA 9.9min\n"}
+,{"stream_name":"stdout","time":7350.73708445,"data":"[13:41:03] [INFO]   Ep9 B240/845 | loss=16.1871 | 234s | ETA 9.8min\n"}
+,{"stream_name":"stdout","time":7360.237818884,"data":"[13:41:12] [INFO]   Ep9 B250/845 | loss=15.9138 | 243s | ETA 9.6min\n"}
+,{"stream_name":"stdout","time":7369.67918999,"data":"[13:41:22] [INFO]   Ep9 B260/845 | loss=24.9726 | 253s | ETA 9.4min\n"}
+,{"stream_name":"stdout","time":7379.195911347,"data":"[13:41:31] [INFO]   Ep9 B270/845 | loss=15.5938 | 262s | ETA 9.3min\n"}
+,{"stream_name":"stdout","time":7389.035963316,"data":"[13:41:41] [INFO]   Ep9 B280/845 | loss=15.9997 | 272s | ETA 9.1min\n"}
+,{"stream_name":"stdout","time":7398.929777594,"data":"[13:41:51] [INFO]   Ep9 B290/845 | loss=24.1641 | 282s | ETA 8.9min\n"}
+,{"stream_name":"stdout","time":7408.580219792,"data":"[13:42:01] [INFO]   Ep9 B300/845 | loss=16.3990 | 291s | ETA 8.8min\n"}
+,{"stream_name":"stdout","time":7418.226781743,"data":"[13:42:10] [INFO]   Ep9 B310/845 | loss=24.5004 | 301s | ETA 8.6min\n"}
+,{"stream_name":"stdout","time":7427.956671276,"data":"[13:42:20] [INFO]   Ep9 B320/845 | loss=15.8517 | 311s | ETA 8.5min\n"}
+,{"stream_name":"stdout","time":7437.618348483,"data":"[13:42:30] [INFO]   Ep9 B330/845 | loss=24.9891 | 320s | ETA 8.3min\n"}
+,{"stream_name":"stdout","time":7447.328233855,"data":"[13:42:39] [INFO]   Ep9 B340/845 | loss=16.7978 | 330s | ETA 8.1min\n"}
+,{"stream_name":"stdout","time":7456.952741958,"data":"[13:42:49] [INFO]   Ep9 B350/845 | loss=16.4752 | 340s | ETA 8.0min\n"}
+,{"stream_name":"stdout","time":7466.754457242,"data":"[13:42:59] [INFO]   Ep9 B360/845 | loss=24.9812 | 350s | ETA 7.8min\n"}
+,{"stream_name":"stdout","time":7476.385689311,"data":"[13:43:08] [INFO]   Ep9 B370/845 | loss=16.2729 | 359s | ETA 7.7min\n"}
+,{"stream_name":"stdout","time":7486.308743001,"data":"[13:43:18] [INFO]   Ep9 B380/845 | loss=25.3566 | 369s | ETA 7.5min\n"}
+,{"stream_name":"stdout","time":7496.249708536,"data":"[13:43:28] [INFO]   Ep9 B390/845 | loss=25.0562 | 379s | ETA 7.3min\n"}
+,{"stream_name":"stdout","time":7506.125648748,"data":"[13:43:38] [INFO]   Ep9 B400/845 | loss=23.5646 | 389s | ETA 7.2min\n"}
+,{"stream_name":"stdout","time":7515.912526414,"data":"[13:43:48] [INFO]   Ep9 B410/845 | loss=16.6779 | 399s | ETA 7.0min\n"}
+,{"stream_name":"stdout","time":7525.732482661,"data":"[13:43:58] [INFO]   Ep9 B420/845 | loss=24.6837 | 409s | ETA 6.9min\n"}
+,{"stream_name":"stdout","time":7535.721550735,"data":"[13:44:08] [INFO]   Ep9 B430/845 | loss=24.8864 | 419s | ETA 6.7min\n"}
+,{"stream_name":"stdout","time":7545.409156874,"data":"[13:44:17] [INFO]   Ep9 B440/845 | loss=16.0655 | 428s | ETA 6.5min\n"}
+,{"stream_name":"stdout","time":7554.906036429,"data":"[13:44:27] [INFO]   Ep9 B450/845 | loss=15.5150 | 438s | ETA 6.4min\n"}
+,{"stream_name":"stdout","time":7564.656267424,"data":"[13:44:37] [INFO]   Ep9 B460/845 | loss=16.5465 | 448s | ETA 6.2min\n"}
+,{"stream_name":"stdout","time":7574.427697839,"data":"[13:44:46] [INFO]   Ep9 B470/845 | loss=24.8408 | 457s | ETA 6.1min\n"}
+,{"stream_name":"stdout","time":7584.192413752,"data":"[13:44:56] [INFO]   Ep9 B480/845 | loss=24.3999 | 467s | ETA 5.9min\n"}
+,{"stream_name":"stdout","time":7593.728860744,"data":"[13:45:06] [INFO]   Ep9 B490/845 | loss=16.1865 | 477s | ETA 5.7min\n"}
+,{"stream_name":"stdout","time":7603.476647088,"data":"[13:45:15] [INFO]   Ep9 B500/845 | loss=16.0252 | 486s | ETA 5.6min\n"}
+,{"stream_name":"stdout","time":7613.314472787,"data":"[13:45:25] [INFO]   Ep9 B510/845 | loss=24.5312 | 496s | ETA 5.4min\n"}
+,{"stream_name":"stdout","time":7623.010688949,"data":"[13:45:35] [INFO]   Ep9 B520/845 | loss=23.0371 | 506s | ETA 5.2min\n"}
+,{"stream_name":"stdout","time":7633.035689552,"data":"[13:45:45] [INFO]   Ep9 B530/845 | loss=16.0459 | 516s | ETA 5.1min\n"}
+,{"stream_name":"stdout","time":7642.952438642,"data":"[13:45:55] [INFO]   Ep9 B540/845 | loss=16.2582 | 526s | ETA 4.9min\n"}
+,{"stream_name":"stdout","time":7652.74747933,"data":"[13:46:05] [INFO]   Ep9 B550/845 | loss=17.0755 | 536s | ETA 4.8min\n"}
+,{"stream_name":"stdout","time":7662.668114587,"data":"[13:46:15] [INFO]   Ep9 B560/845 | loss=23.9895 | 546s | ETA 4.6min\n"}
+,{"stream_name":"stdout","time":7672.896775378,"data":"[13:46:25] [INFO]   Ep9 B570/845 | loss=16.9750 | 556s | ETA 4.4min\n"}
+,{"stream_name":"stdout","time":7682.934928507,"data":"[13:46:35] [INFO]   Ep9 B580/845 | loss=16.5642 | 566s | ETA 4.3min\n"}
+,{"stream_name":"stdout","time":7692.583808931,"data":"[13:46:45] [INFO]   Ep9 B590/845 | loss=24.0272 | 575s | ETA 4.1min\n"}
+,{"stream_name":"stdout","time":7702.538828521,"data":"[13:46:54] [INFO]   Ep9 B600/845 | loss=23.6162 | 585s | ETA 4.0min\n"}
+,{"stream_name":"stdout","time":7711.999659433,"data":"[13:47:04] [INFO]   Ep9 B610/845 | loss=16.5673 | 595s | ETA 3.8min\n"}
+,{"stream_name":"stdout","time":7721.6871685,"data":"[13:47:14] [INFO]   Ep9 B620/845 | loss=23.6307 | 605s | ETA 3.6min\n"}
+,{"stream_name":"stdout","time":7731.375550902,"data":"[13:47:23] [INFO]   Ep9 B630/845 | loss=23.3881 | 614s | ETA 3.5min\n"}
+,{"stream_name":"stdout","time":7741.275844112,"data":"[13:47:33] [INFO]   Ep9 B640/845 | loss=16.9925 | 624s | ETA 3.3min\n"}
+,{"stream_name":"stdout","time":7750.833787077,"data":"[13:47:43] [INFO]   Ep9 B650/845 | loss=15.3988 | 634s | ETA 3.1min\n"}
+,{"stream_name":"stdout","time":7760.468144026,"data":"[13:47:52] [INFO]   Ep9 B660/845 | loss=23.6920 | 643s | ETA 3.0min\n"}
+,{"stream_name":"stdout","time":7770.101158835,"data":"[13:48:02] [INFO]   Ep9 B670/845 | loss=16.3466 | 653s | ETA 2.8min\n"}
+,{"stream_name":"stdout","time":7779.92699129,"data":"[13:48:12] [INFO]   Ep9 B680/845 | loss=23.3041 | 663s | ETA 2.7min\n"}
+,{"stream_name":"stdout","time":7789.302332599,"data":"[13:48:21] [INFO]   Ep9 B690/845 | loss=16.4224 | 672s | ETA 2.5min\n"}
+,{"stream_name":"stdout","time":7798.824877921,"data":"[13:48:31] [INFO]   Ep9 B700/845 | loss=23.3023 | 682s | ETA 2.3min\n"}
+,{"stream_name":"stdout","time":7808.182129411,"data":"[13:48:40] [INFO]   Ep9 B710/845 | loss=23.4380 | 691s | ETA 2.2min\n"}
+,{"stream_name":"stdout","time":7817.640600663,"data":"[13:48:50] [INFO]   Ep9 B720/845 | loss=17.9151 | 700s | ETA 2.0min\n"}
+,{"stream_name":"stdout","time":7827.280518327,"data":"[13:48:59] [INFO]   Ep9 B730/845 | loss=16.7267 | 710s | ETA 1.8min\n"}
+,{"stream_name":"stdout","time":7836.976694212,"data":"[13:49:09] [INFO]   Ep9 B740/845 | loss=23.2635 | 720s | ETA 1.7min\n"}
+,{"stream_name":"stdout","time":7846.379198241,"data":"[13:49:18] [INFO]   Ep9 B750/845 | loss=22.9916 | 729s | ETA 1.5min\n"}
+,{"stream_name":"stdout","time":7856.009315202,"data":"[13:49:28] [INFO]   Ep9 B760/845 | loss=16.4461 | 739s | ETA 1.4min\n"}
+,{"stream_name":"stdout","time":7865.300002898,"data":"[13:49:37] [INFO]   Ep9 B770/845 | loss=23.3851 | 748s | ETA 1.2min\n"}
+,{"stream_name":"stdout","time":7874.681102897,"data":"[13:49:47] [INFO]   Ep9 B780/845 | loss=23.0828 | 758s | ETA 1.0min\n"}
+,{"stream_name":"stdout","time":7883.978202875,"data":"[13:49:56] [INFO]   Ep9 B790/845 | loss=22.6472 | 767s | ETA 0.9min\n"}
+,{"stream_name":"stdout","time":7893.921267193,"data":"[13:50:06] [INFO]   Ep9 B800/845 | loss=21.8993 | 777s | ETA 0.7min\n"}
+,{"stream_name":"stdout","time":7903.443406112,"data":"[13:50:15] [INFO]   Ep9 B810/845 | loss=16.4590 | 786s | ETA 0.5min\n"}
+,{"stream_name":"stdout","time":7912.76723901,"data":"[13:50:25] [INFO]   Ep9 B820/845 | loss=16.3224 | 796s | ETA 0.4min\n"}
+,{"stream_name":"stdout","time":7922.537001771,"data":"[13:50:34] [INFO]   Ep9 B830/845 | loss=23.0112 | 805s | ETA 0.2min\n"}
+,{"stream_name":"stdout","time":7932.289543104,"data":"[13:50:44] [INFO]   Ep9 B840/845 | loss=22.9485 | 815s | ETA 0.1min\n"}
+,{"stream_name":"stdout","time":7935.839719551,"data":"[13:50:48] [INFO]   Ep9 DONE | avg_loss=20.5277 | time=819s (13.6min)\n"}
+,{"stream_name":"stdout","time":7950.375138223,"data":"[13:51:02] [INFO] Ep9 RESULT | loss=20.5277 | acc=0.0230 | map3=0.0411 | f1=0.0095\n"}
+,{"stream_name":"stdout","time":7950.375952558,"data":"[13:51:02] [INFO]   No improvement for 5 epoch(s).\n"}
+,{"stream_name":"stdout","time":7951.176518533,"data":"[13:51:03] [INFO] ⚠️ Early stopping!\n"}
+,{"stream_name":"stdout","time":7951.177405978,"data":"[13:51:03] [INFO] \n"}
+,{"stream_name":"stdout","time":7951.177429855,"data":"TRAINING COMPLETE! Best MAP@3: 0.0603 @ epoch 4\n"}
+,{"stream_name":"stdout","time":7951.270288773,"data":"[13:51:03] [INFO] Calibrating temperature...\n"}
+,{"stream_name":"stdout","time":7965.898313558,"data":"[13:51:18] [INFO] Learned temperature: 0.7687\n"}
+,{"stream_name":"stdout","time":7965.995949134,"data":"[13:51:18] [INFO] ============================================================\n"}
+,{"stream_name":"stdout","time":7965.997759127,"data":"[13:51:18] [INFO] FINAL TEST EVALUATION\n"}
+,{"stream_name":"stdout","time":7965.997893241,"data":"[13:51:18] [INFO] ============================================================\n"}
+,{"stream_name":"stdout","time":7984.117314106,"data":"[13:51:36] [INFO]   Accuracy:       0.0341\n"}
+,{"stream_name":"stdout","time":7984.118367332,"data":"[13:51:36] [INFO]   MAP@3:          0.0523\n"}
+,{"stream_name":"stdout","time":7984.119547696,"data":"[13:51:36] [INFO]   Macro-F1:       0.0178\n"}
+,{"stream_name":"stdout","time":7984.120478111,"data":"[13:51:36] [INFO]   Balanced Acc:   0.0339\n"}
+,{"stream_name":"stdout","time":7984.121203696,"data":"[13:51:36] [INFO]   ECE:            0.1571\n"}
+,{"stream_name":"stdout","time":7984.123257468,"data":"[13:51:36] [INFO]   🔴 DEADLY species in test: 28\n"}
+,{"stream_name":"stdout","time":7984.124222008,"data":"[13:51:36] [INFO]   🔴 Safety Recall Deadly: 0.0357\n"}
+,{"stream_name":"stdout","time":7984.125480313,"data":"[13:51:36] [INFO] Computing IC 95%...\n"}
+,{"stream_name":"stdout","time":8026.679099865,"data":"[13:52:19] [INFO]   MAP@3 95% CI:   [0.0447, 0.0611]\n"}
+,{"stream_name":"stdout","time":8026.680252248,"data":"[13:52:19] [INFO] \n"}
+,{"stream_name":"stdout","time":8026.68027373,"data":"Per-species accuracy (worst 20):\n"}
+,{"stream_name":"stdout","time":8026.681496583,"data":"[13:52:19] [INFO]      Xylaria longipes                        : 0.00\n"}
+,{"stream_name":"stdout","time":8026.682228094,"data":"[13:52:19] [INFO]      Bjerkandera adusta                      : 0.00\n"}
+,{"stream_name":"stdout","time":8026.682962715,"data":"[13:52:19] [INFO]      Heterobasidion annosum                  : 0.00\n"}
+,{"stream_name":"stdout","time":8026.683719693,"data":"[13:52:19] [INFO]      Coniophora puteana                      : 0.00\n"}
+,{"stream_name":"stdout","time":8026.684433566,"data":"[13:52:19] [INFO]      Illosporiopsis christiansenii           : 0.00\n"}
+,{"stream_name":"stdout","time":8026.685129652,"data":"[13:52:19] [INFO]      Gloeophyllum sepiarium                  : 0.00\n"}
+,{"stream_name":"stdout","time":8026.685837634,"data":"[13:52:19] [INFO]      Exidia glandulosa                       : 0.00\n"}
+,{"stream_name":"stdout","time":8026.686495574,"data":"[13:52:19] [INFO]      Deconica horizontalis                   : 0.00\n"}
+,{"stream_name":"stdout","time":8026.687169553,"data":"[13:52:19] [INFO]      Hypoxylon fuscum                        : 0.00\n"}
+,{"stream_name":"stdout","time":8026.68787854,"data":"[13:52:19] [INFO]      Mycoacia uda                            : 0.00\n"}
+,{"stream_name":"stdout","time":8026.688529278,"data":"[13:52:19] [INFO]      Cyanosporus caesius                     : 0.00\n"}
+,{"stream_name":"stdout","time":8026.689243915,"data":"[13:52:19] [INFO]      Stereum subtomentosum                   : 0.00\n"}
+,{"stream_name":"stdout","time":8026.689984833,"data":"[13:52:19] [INFO]      Lachnum impudicum                       : 0.00\n"}
+,{"stream_name":"stdout","time":8026.690728471,"data":"[13:52:19] [INFO]      Scytinostroma hemidichophyticum         : 0.00\n"}
+,{"stream_name":"stdout","time":8026.691420584,"data":"[13:52:19] [INFO]      Mycena vitilis                          : 0.00\n"}
+,{"stream_name":"stdout","time":8026.69212502,"data":"[13:52:19] [INFO]      Lepista personata                       : 0.00\n"}
+,{"stream_name":"stdout","time":8026.692814816,"data":"[13:52:19] [INFO]      Crinipellis scabella                    : 0.00\n"}
+,{"stream_name":"stdout","time":8026.69348955,"data":"[13:52:19] [INFO]      Xylaria hypoxylon                       : 0.00\n"}
+,{"stream_name":"stdout","time":8026.694137479,"data":"[13:52:19] [INFO]      Fomitopsis betulina                     : 0.00\n"}
+,{"stream_name":"stdout","time":8026.694846552,"data":"[13:52:19] [INFO]      Chondrostereum purpureum                : 0.00\n"}
+,{"stream_name":"stdout","time":8026.806267704,"data":"[13:52:19] [INFO] Artifacts saved:\n"}
+,{"stream_name":"stdout","time":8026.807604861,"data":"[13:52:19] [INFO]   best.pt: 126.9 MB\n"}
+,{"stream_name":"stdout","time":8026.808507037,"data":"[13:52:19] [INFO]   checkpoint_latest.pt: 380.6 MB\n"}
+,{"stream_name":"stdout","time":8026.809425324,"data":"[13:52:19] [INFO]   label2idx.json: 30.1 KB\n"}
+,{"stream_name":"stdout","time":8026.810363452,"data":"[13:52:19] [INFO]   metrics.json: 0.9 KB\n"}
+,{"stream_name":"stdout","time":8026.811361282,"data":"[13:52:19] [INFO]   temperature_scaler.pt: 1.4 KB\n"}
+,{"stream_name":"stdout","time":8026.812352736,"data":"[13:52:19] [INFO]   test_predictions.npz: 8.7 MB\n"}
+,{"stream_name":"stdout","time":8026.813401146,"data":"[13:52:19] [INFO]   training_history.json: 1.7 KB\n"}
+,{"stream_name":"stdout","time":8026.814601028,"data":"[13:52:19] [INFO] \n"}
+,{"stream_name":"stdout","time":8026.814618736,"data":"============================================================\n"}
+,{"stream_name":"stdout","time":8026.815442964,"data":"[13:52:19] [INFO] TRAINING COMPLETE! (v13-E13-deadly-data)\n"}
+,{"stream_name":"stdout","time":8026.816195349,"data":"[13:52:19] [INFO]   MAP@3:          0.0523 (CI: [0.0447, 0.0611])\n"}
+,{"stream_name":"stdout","time":8026.817191734,"data":"[13:52:19] [INFO]   Accuracy:       0.0341\n"}
+,{"stream_name":"stdout","time":8026.818449801,"data":"[13:52:19] [INFO]   Macro-F1:       0.0178\n"}
+,{"stream_name":"stdout","time":8026.819186147,"data":"[13:52:19] [INFO]   ECE:            0.1571\n"}
+,{"stream_name":"stdout","time":8026.820351608,"data":"[13:52:19] [INFO]   Safety Recall:  0.0357\n"}
+,{"stream_name":"stdout","time":8026.82148625,"data":"[13:52:19] [INFO]   DBs:            ['fungitastic', 'fungiclef']\n"}
+,{"stream_name":"stdout","time":8026.822420467,"data":"[13:52:19] [INFO] ============================================================\n"}
+,{"stream_name":"stdout","time":8026.823390174,"data":"[13:52:19] [INFO] \n"}
+,{"stream_name":"stdout","time":8026.823406383,"data":"📋 DEFINITION OF DONE STATUS:\n"}
+,{"stream_name":"stdout","time":8026.824138549,"data":"[13:52:19] [INFO]   DO1: Runs \u003c 8h ............... ✅ (est. ~2.5-3h)\n"}
+,{"stream_name":"stdout","time":8026.825521008,"data":"[13:52:19] [INFO]   DO2: MAP@3 ≥ 0.450 ........... ⚠️ (0.0523)\n"}
+,{"stream_name":"stdout","time":8026.826670585,"data":"[13:52:19] [INFO]   DO3: Safety Recall = 100% .... ❌ (0.0357)\n"}
+,{"stream_name":"stdout","time":8026.827664702,"data":"[13:52:19] [INFO]   DO4: Logging real-time ....... ✅\n"}
+,{"stream_name":"stdout","time":8026.828487587,"data":"[13:52:19] [INFO]   DO5: Checkpoint each epoch ... ✅\n"}
+,{"stream_name":"stdout","time":8026.829918767,"data":"[13:52:19] [INFO]   DO6: LoRA vectorized .......... ✅\n"}
+,{"stream_name":"stdout","time":8026.830680515,"data":"[13:52:19] [INFO]   DO7: Multi-DB detected ........ ✅ (['fungitastic', 'fungiclef'])\n"}
+,{"stream_name":"stdout","time":8026.831724408,"data":"[13:52:19] [INFO]   DO8: Artifacts exported ...... ✅\n"}
+,{"stream_name":"stdout","time":8026.833132505,"data":"[13:52:19] [INFO]   DO9: ECE \u003c 0.15 .............. ⚠️ (0.1571)\n"}
+,{"stream_name":"stdout","time":8026.834025227,"data":"[13:52:19] [INFO]   DO10: Per-species diag ....... ✅\n"}
+,{"stream_name":"stderr","time":8031.795812608,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":8031.795843727,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":8031.982441616,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":8031.982469274,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":8032.637931626,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":8033.089535722,"data":"[NbConvertApp] Writing 185532 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":8035.488657038,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":8036.601164491,"data":"[NbConvertApp] Writing 682155 bytes to __results__.html\n"}
+]

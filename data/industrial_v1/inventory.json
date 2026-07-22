@@ -1,0 +1,33 @@
+{
+  "generated_at": "2026-07-17T15:30:23.355105+00:00",
+  "allowlist_count": 40,
+  "present_in_e14_label2idx": 40,
+  "missing_from_e14": [],
+  "deadly_in_allowlist": [
+    "Amanita muscaria",
+    "Amanita pantherina",
+    "Amanita phalloides",
+    "Amanita virosa",
+    "Cortinarius rubellus",
+    "Galerina marginata",
+    "Gyromitra esculenta",
+    "Hypholoma fasciculare",
+    "Lepiota castanea",
+    "Lepiota subincarnata",
+    "Paxillus involutus"
+  ],
+  "deadly_with_label": [
+    "Amanita muscaria",
+    "Amanita pantherina",
+    "Amanita phalloides",
+    "Amanita virosa",
+    "Cortinarius rubellus",
+    "Galerina marginata",
+    "Gyromitra esculenta",
+    "Hypholoma fasciculare",
+    "Lepiota castanea",
+    "Lepiota subincarnata",
+    "Paxillus involutus"
+  ],
+  "note": "Image paths not packed here; Kaggle notebook filters FT/FC to this allowlist."
+}

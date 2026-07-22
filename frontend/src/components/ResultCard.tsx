@@ -1,42 +1,49 @@
 /**
- * Result card showing classification predictions with mandatory safety warnings.
- *
- * SAFETY POLICY: This component MUST always display a prominent disclaimer.
- * Mushroom misidentification can be fatal. Never remove the safety banner.
- *
- * Enhanced with: quality warnings, missing evidence, dangerous lookalikes,
- * model stack info, open-set rejection reasons, human review recommendations,
- * confidence interpretation, safety level badges, and per-prediction explanations.
- *
- * Sprint N+2 (FE-2): Added confidence interpretation, safety level badge,
- * per-prediction expandable rationale, and model uncertainty visualization.
+ * Result card — 3-layer hierarchy (Wave A):
+ * 1) Safety + decision + top predictions
+ * 2) Confidence + lookalikes (if any)
+ * 3) Accordion: quality, evidence, questions, feedback, technical
  */
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import type { ClassificationResult, SpeciesPrediction } from '../api/types'
+import { getRiskMeta } from '../lib/riskLabels'
+import { lookalikeSummary, rankLookalikes } from '../lib/lookalikeRisk'
+import { SpeciesThumb } from './SpeciesThumb'
+import { SpeciesNameBlock } from './SpeciesNameBlock'
+import { RiskChip } from './RiskChip'
+import {
+  buildExpertHandoff,
+  expertReviewPath,
+  saveHandoffDraft,
+} from '../lib/expertHandoff'
+import {
+  IconAlert,
+  IconCheck,
+  IconClose,
+  IconExpert,
+  IconInfo,
+  IconMicroscope,
+  IconThumbsDown,
+  IconThumbsUp,
+} from './icons'
+import { stackBadgeEs } from '../lib/modelStackLabel'
+import { FoodQualityChip } from './FoodQualityChip'
+import { getFoodQuality } from '../lib/foodQuality'
+import { ModelInsightsPanel } from './ModelInsightsPanel'
 
 interface ResultCardProps {
   result: ClassificationResult
   onFeedback?: (isCorrect: boolean, species?: string) => void
+  viewTypes?: string[]
+  previews?: string[]
 }
 
-/** Map edibility strings to semantic CSS classes and human labels. */
-const EDIBILITY_META: Record<string, { label: string; class: string; icon: string }> = {
-  toxic: { label: 'Tóxica', class: 'ed-toxic', icon: '☠️' },
-  poisonous: { label: 'Venenosa', class: 'ed-toxic', icon: '☠️' },
-  deadly: { label: 'Mortal', class: 'ed-deadly', icon: '💀' },
-  edible: { label: 'Comestible', class: 'ed-edible', icon: '✓' },
-  'edible-conditionally': { label: 'Comestible condicional', class: 'ed-caution', icon: '⚠️' },
-  inedible: { label: 'No comestible', class: 'ed-caution', icon: '⚠️' },
-  unknown: { label: 'Desconocida', class: 'ed-unknown', icon: '?' },
+function getEdibilityMeta(edibility: string | null): { label: string; class: string } {
+  const meta = getRiskMeta(edibility)
+  return { label: meta.label, class: meta.className }
 }
 
-function getEdibilityMeta(edibility: string | null): { label: string; class: string; icon: string } {
-  if (!edibility) return { label: 'Desconocida', class: 'ed-unknown', icon: '?' }
-  const key = edibility.toLowerCase().trim()
-  return EDIBILITY_META[key] ?? { label: edibility, class: 'ed-unknown', icon: '?' }
-}
-
-/** Interpret confidence into a semantic label and risk level. */
 function getConfidenceInterpretation(confidence: number): {
   label: string
   level: 'low' | 'moderate' | 'high'
@@ -46,274 +53,411 @@ function getConfidenceInterpretation(confidence: number): {
     return {
       label: 'Baja confianza',
       level: 'low',
-      description: 'El modelo no está seguro. La identificación podría ser incorrecta.',
+      description: 'Pista floja. Mejor no te fíes solo de esto.',
     }
-  } else if (confidence < 0.7) {
+  }
+  if (confidence < 0.7) {
     return {
       label: 'Confianza moderada',
       level: 'moderate',
-      description: 'El modelo tiene una idea razonable, pero hay incertidumbre significativa.',
+      description: 'Hay una idea razonable, con margen de error.',
     }
-  } else {
-    return {
-      label: 'Alta confianza',
-      level: 'high',
-      description: 'El modelo está bastante seguro, pero la verificación humana sigue siendo esencial.',
-    }
+  }
+  return {
+    label: 'Alta confianza',
+    level: 'high',
+    description: 'El modelo se atreve… y aun así conviene un humano.',
   }
 }
 
-/** Safety level metadata for display. */
-const SAFETY_LEVEL_META: Record<string, { label: string; icon: string; class: string }> = {
-  safe: { label: 'Segura', icon: '🟢', class: 'sl-safe' },
-  caution: { label: 'Precaución', icon: '🟡', class: 'sl-caution' },
-  warning: { label: 'Advertencia', icon: '🟠', class: 'sl-warning' },
-  danger: { label: 'Peligro', icon: '🔴', class: 'sl-danger' },
-  critical: { label: 'Crítico', icon: '💀', class: 'sl-critical' },
+const SAFETY_LEVEL_META: Record<string, { label: string; class: string }> = {
+  safe: { label: 'Solo orientación', class: 'sl-caution' },
+  unsafe_to_consume: { label: 'No apta para consumo', class: 'sl-danger' },
+  caution: { label: 'Precaución', class: 'sl-caution' },
+  warning: { label: 'Advertencia', class: 'sl-warning' },
+  danger: { label: 'Peligro', class: 'sl-danger' },
+  critical: { label: 'Crítico', class: 'sl-critical' },
 }
 
-export function ResultCard({ result, onFeedback }: ResultCardProps) {
+export function ResultCard({ result, onFeedback, viewTypes = [], previews = [] }: ResultCardProps) {
+  const navigate = useNavigate()
   const [feedbackSent, setFeedbackSent] = useState(false)
-  const [showDetails, setShowDetails] = useState(false)
+  const [layer2Open, setLayer2Open] = useState(true)
+  const [layer3Open, setLayer3Open] = useState(false)
+  const [handoffSaved, setHandoffSaved] = useState(false)
+
   const isRejected = result.decision === 'rejected'
   const topPrediction = result.predictions[0]
   const topEdibility = getEdibilityMeta(topPrediction?.edibility ?? null)
-  const isDangerous = ['ed-toxic', 'ed-deadly'].includes(topEdibility.class)
+  const isDangerous = [
+    'risk-toxic',
+    'risk-poisonous',
+    'risk-deadly',
+    'ed-toxic',
+    'ed-deadly',
+  ].includes(topEdibility.class)
+  const isDeadly =
+    topEdibility.class === 'risk-deadly' || topEdibility.class === 'ed-deadly'
+  const stackBadge = stackBadgeEs(result.model_stack)
+  const topFood = topPrediction ? getFoodQuality(topPrediction.species) : null
+
+  const rankedLookalikes = useMemo(
+    () => rankLookalikes(result.dangerous_lookalikes || []),
+    [result.dangerous_lookalikes],
+  )
+  const lookalikeStats = useMemo(
+    () => lookalikeSummary(result.dangerous_lookalikes || []),
+    [result.dangerous_lookalikes],
+  )
+
+  const needsExpert = result.recommend_human_review || isRejected || isDangerous
+  const hasLayer2 =
+    (!isRejected && !!topPrediction) || rankedLookalikes.length > 0 || isDangerous
+  const hasLayer3 =
+    true /* always show ML insights accordion */
 
   const handleFeedback = (correct: boolean) => {
     onFeedback?.(correct, topPrediction?.species)
     setFeedbackSent(true)
   }
 
+  const handleExpertHandoff = () => {
+    const draft = buildExpertHandoff({ result, viewTypes, previews })
+    saveHandoffDraft(draft)
+    setHandoffSaved(true)
+    navigate(expertReviewPath(draft.id))
+  }
+
+  const sl = SAFETY_LEVEL_META[result.safety_level] ?? SAFETY_LEVEL_META.caution
+
   return (
-    <div className="result-card">
-      {/* MANDATORY SAFETY DISCLAIMER — never remove */}
-      <div className="safety-disclaimer" role="alert">
-        <strong>⚠️ ADVERTENCIA DE SEGURIDAD</strong>
-        <p>
-          Esta identificación es <strong>orientativa</strong> y puede ser incorrecta.
-          <strong> NUNCA consumas una seta basándote solo en este resultado.</strong>
-          Consulta siempre con un micólogo experto antes de consumir.
-        </p>
-      </div>
-
-      {/* Safety level badge */}
-      {(() => {
-        const sl = SAFETY_LEVEL_META[result.safety_level] ?? SAFETY_LEVEL_META['caution']
-        return (
-          <div className={`safety-level-badge ${sl.class}`}>
-            <span className="sl-icon">{sl.icon}</span>
-            <span>Nivel de seguridad: <strong>{sl.label}</strong></span>
-          </div>
-        )
-      })()}
-
-      {/* Decision banner */}
-      <div className={`decision-banner ${isRejected ? 'rejected' : 'accepted'}`}>
-        {isRejected ? (
-          <>
-            <strong>⚠️ No identificado con confianza</strong>
-            <p>{result.rejection_reason || result.open_set_reason || 'No se encontró una coincidencia fiable.'}</p>
-            <p className="hint">
-              Esto puede significar que la seta no está en nuestra base de datos, o que la
-              foto no tiene suficiente calidad. Por seguridad, trata toda seta no identificada
-              como potencialmente peligrosa.
-            </p>
-          </>
-        ) : (
-          <>
-            <strong>✅ Identificación tentativa</strong>
-            <p>Confianza máxima: {(topPrediction?.confidence * 100).toFixed(1)}%</p>
-          </>
-        )}
-      </div>
-
-      {/* Confidence interpretation (Sprint N+2 FE-2) */}
-      {!isRejected && topPrediction && (() => {
-        const interp = getConfidenceInterpretation(topPrediction.confidence)
-        return (
-          <div className={`confidence-interpretation ci-${interp.level}`}>
-            <span className="ci-icon">
-              {interp.level === 'high' ? '✓' : interp.level === 'moderate' ? '⚠' : '✗'}
-            </span>
-            <div>
-              <strong>{interp.label}</strong>
-              <p>{interp.description}</p>
-            </div>
-          </div>
-        )
-      })()}
-
-      {/* Human review recommendation */}
-      {result.recommend_human_review && (
-        <div className="review-callout">
-          <strong>🔬 Recomendada revisión humana</strong>
-          <p>Este caso presenta baja confianza. Un experto debería revisarlo.</p>
+    <div
+      className={`result-card result-card--layered ${isDeadly && !isRejected ? 'result-card--deadly' : ''}`}
+    >
+      {/* ── Layer 1: safety + decision + top predictions ── */}
+      <section className="result-layer result-layer--1" aria-label="Resultado principal">
+        <div className="result-meta-row">
+          <span
+            className={`stack-badge stack-badge--${stackBadge.mode}`}
+            title={stackBadge.hint}
+          >
+            {stackBadge.label}
+          </span>
         </div>
-      )}
 
-      {/* Predictions list */}
-      {result.predictions.length > 0 && (
-        <div className="predictions">
-          <h3>Predicciones ({result.predictions.length})</h3>
-          <ul>
-            {result.predictions.map((pred: SpeciesPrediction, idx: number) => {
-              const meta = getEdibilityMeta(pred.edibility)
-              return (
-                <li
-                  key={`${pred.species}-${idx}`}
-                  className={`prediction-item ${meta.class} ${idx === 0 ? 'top-match' : ''}`}
-                >
-                  <div className="prediction-info">
-                    <span className="species-name">
-                      <span className="rank-badge">#{idx + 1}</span>
-                      <em>{pred.species}</em>
-                      {pred.common_name && (
-                        <span className="common-name"> — {pred.common_name}</span>
-                      )}
-                    </span>
-                    <span className={`edibility-badge ${meta.class}`}>
-                      {meta.icon} {meta.label}
-                    </span>
-                  </div>
-                  <div className="confidence-bar">
-                    <div
-                      className="confidence-fill"
-                      style={{ width: `${Math.min(pred.confidence * 100, 100)}%` }}
-                    />
-                  </div>
-                  <span className="confidence-value">
-                    {(pred.confidence * 100).toFixed(1)}%
-                  </span>
-                </li>
-              )
-            })}
-          </ul>
-        </div>
-      )}
-
-      {/* Danger callout if top match is toxic/deadly */}
-      {isDangerous && !isRejected && (
-        <div className="danger-callout" role="alert">
-          <strong>💀 ESPECIE POTENCIALMENTE PELIGROSA DETECTADA</strong>
+        <div className="safety-disclaimer" role="alert">
+          <strong>Solo orientación</strong>
           <p>
-            La coincidencia más probable pertenece a una categoría <strong>{topEdibility.label.toLowerCase()}</strong>.
-            Mantenla lejos de niños y mascotas. No la toques con manos heridas y lávate las manos después.
+            Puede fallar. <strong>No comas por lo que diga la app</strong> — un micólogo manda.
+          </p>
+          <p className={`safety-disclaimer__level ${sl.class}`}>
+            <IconAlert size={14} /> {sl.label}
           </p>
         </div>
-      )}
 
-      {/* Dangerous lookalikes warning */}
-      {result.dangerous_lookalikes.length > 0 && (
-        <div className="lookalikes-warning">
-          <strong>⚠️ Especies peligrosas similares:</strong>
-          <ul>
-            {result.dangerous_lookalikes.map((sp, i) => (
-              <li key={i}>
-                <em>{sp}</em>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {/* Quality warnings */}
-      {result.quality_warnings.length > 0 && (
-        <div className="quality-warnings">
-          <strong>ℹ️ Avisos de calidad de imagen:</strong>
-          <ul>
-            {result.quality_warnings.map((w, i) => (
-              <li key={i}>{w}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {/* Missing evidence / questions for user */}
-      {result.missing_evidence.length > 0 && (
-        <div className="missing-evidence">
-          <strong>📷 Para mejorar la identificación:</strong>
-          <ul>
-            {result.missing_evidence.map((e, i) => (
-              <li key={i}>{e}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {result.questions_for_user.length > 0 && (
-        <div className="questions-section">
-          <strong>❓ Preguntas para mejorar el resultado:</strong>
-          <ul>
-            {result.questions_for_user.map((q, i) => (
-              <li key={i}>{q}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {/* Feedback mechanism */}
-      {onFeedback && !feedbackSent && !isRejected && (
-        <div className="feedback-section">
-          <p className="feedback-question">¿Es correcta esta identificación?</p>
-          <div className="feedback-buttons">
-            <button className="btn-feedback yes" onClick={() => handleFeedback(true)}>
-              👍 Sí
-            </button>
-            <button className="btn-feedback no" onClick={() => handleFeedback(false)}>
-              👎 No
-            </button>
-          </div>
-        </div>
-      )}
-      {feedbackSent && (
-        <div className="feedback-sent">
-          ✓ Gracias por tu feedback. Ayuda a mejorar el modelo.
-        </div>
-      )}
-
-      {/* Technical details (collapsible) */}
-      <button className="details-toggle" onClick={() => setShowDetails(!showDetails)}>
-        {showDetails ? '▼' : '▸'} Detalles técnicos
-      </button>
-      {showDetails && (
-        <div className="technical-details">
-          <p>
-            <strong>ID:</strong> {result.request_id}
-          </p>
-          <p>
-            <strong>Tiempo:</strong> {result.processing_time_ms}ms
-          </p>
-          {result.model_stack && (
+        <div className={`decision-banner ${isRejected ? 'rejected' : 'accepted'}`}>
+          {isRejected ? (
             <>
+              <strong className="decision-banner__title">
+                <IconAlert size={18} />
+                Sin ID fiable
+              </strong>
               <p>
-                <strong>Detector:</strong> {result.model_stack.detector}
+                {result.rejection_reason ||
+                  result.open_set_reason ||
+                  'No hay coincidencia clara. Trátala como riesgo hasta que un experto diga lo contrario.'}
               </p>
+            </>
+          ) : (
+            <>
+              <strong className="decision-banner__title">
+                <IconCheck size={18} />
+                Pista tentativa
+              </strong>
               <p>
-                <strong>Visual:</strong> {result.model_stack.visual_embedder}
-              </p>
-              <p>
-                <strong>Texto-imagen:</strong> {result.model_stack.image_text_embedder}
-              </p>
-              <p>
-                <strong>Metadata:</strong> {result.model_stack.metadata_encoder}
+                {((topPrediction?.confidence ?? 0) * 100).toFixed(1)}% de confianza del modelo
+                {result.predictions.length >= 2
+                  ? ' · el modelo duda entre varias especies'
+                  : ''}
               </p>
             </>
           )}
-          {result.observation_id && (
+        </div>
+
+        {isDeadly && !isRejected && (
+          <div className="danger-callout danger-callout--deadly" role="alert">
+            <strong>
+              <IconAlert size={18} /> Posible confusión mortal
+            </strong>
             <p>
-              <strong>Obs ID:</strong> {result.observation_id}
+              {topEdibility.label}. Mantén distancia de niños y mascotas. No toques ni pruebes.
+              Confirma con un micólogo.
+            </p>
+          </div>
+        )}
+
+        {isDangerous && !isDeadly && !isRejected && (
+          <div className="danger-callout danger-callout--compact" role="alert">
+            <strong>
+              <IconAlert size={16} /> Posible riesgo alto
+            </strong>
+            <span> — {topEdibility.label}. Mantén distancia de niños y mascotas.</span>
+          </div>
+        )}
+
+        {topFood && !isRejected && (
+          <div className="result-food-row">
+            <FoodQualityChip foodClass={topFood.food_class} label={topFood.label} />
+            <span className="result-food-row__note">
+              Calidad documentada (base curada) — no es permiso de consumo
+            </span>
+          </div>
+        )}
+
+        {result.predictions.length > 0 && (
+          <div className="predictions">
+            <h3>Mejores pistas</h3>
+            <ul>
+              {result.predictions.slice(0, 3).map((pred: SpeciesPrediction, idx: number) => {
+                const meta = getEdibilityMeta(pred.edibility)
+                const fq = getFoodQuality(pred.species)
+                return (
+                  <li
+                    key={`${pred.species}-${idx}`}
+                    className={`prediction-item ${meta.class} ${idx === 0 ? 'top-match' : ''}`}
+                  >
+                    <SpeciesThumb
+                      taxon={pred.species}
+                      riskLabel={pred.edibility}
+                      size={idx === 0 ? 56 : 44}
+                      className="prediction-thumb"
+                    />
+                    <div className="prediction-info">
+                      <span className="rank-badge">#{idx + 1}</span>
+                      <SpeciesNameBlock
+                        taxon={pred.species}
+                        commonNames={pred.common_name}
+                        size="sm"
+                        showFamily
+                      />
+                      {fq ? (
+                        <FoodQualityChip foodClass={fq.food_class} label={fq.label} compact />
+                      ) : (
+                        <RiskChip risk={pred.edibility} className={`edibility-badge ${meta.class}`} />
+                      )}
+                      <div className="confidence-bar">
+                        <div
+                          className="confidence-fill"
+                          style={{ width: `${Math.min(pred.confidence * 100, 100)}%` }}
+                        />
+                      </div>
+                      <span className="confidence-value">
+                        {(pred.confidence * 100).toFixed(1)}%
+                      </span>
+                    </div>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+        )}
+
+        <div className="review-callout review-callout--compact">
+          <div className="review-callout__actions">
+            <button
+              type="button"
+              className="btn-atelier btn-atelier--primary"
+              onClick={handleExpertHandoff}
+            >
+              <IconExpert size={16} />
+              {needsExpert ? 'Revisión experta' : 'Segunda opinión'}
+            </button>
+            <Link className="btn-atelier btn-atelier--ghost" to="/lookalikes">
+              Lookalikes
+            </Link>
+          </div>
+          {handoffSaved && (
+            <p className="muted" role="status">
+              Borrador guardado.
             </p>
           )}
         </div>
+      </section>
+
+      {/* ── Layer 2: confidence + lookalikes ── */}
+      {hasLayer2 && (
+        <section className="result-layer result-layer--2">
+          <button
+            type="button"
+            className="result-layer__toggle"
+            aria-expanded={layer2Open}
+            onClick={() => setLayer2Open((v) => !v)}
+          >
+            <span>Confianza y confusiones</span>
+            <span aria-hidden="true">{layer2Open ? '−' : '+'}</span>
+          </button>
+          {layer2Open && (
+            <div className="result-layer__body">
+              {!isRejected && topPrediction && (() => {
+                const interp = getConfidenceInterpretation(topPrediction.confidence)
+                return (
+                  <div className={`confidence-interpretation ci-${interp.level}`}>
+                    <span className="ci-icon" aria-hidden="true">
+                      {interp.level === 'high' ? (
+                        <IconCheck size={16} />
+                      ) : interp.level === 'moderate' ? (
+                        <IconAlert size={16} />
+                      ) : (
+                        <IconClose size={16} />
+                      )}
+                    </span>
+                    <div>
+                      <strong>{interp.label}</strong>
+                      <p>{interp.description}</p>
+                    </div>
+                  </div>
+                )
+              })()}
+
+              {rankedLookalikes.length > 0 && (
+                <div className="lookalikes-warning lookalikes-ranked" role="alert">
+                  <strong className="lookalikes-warning__title">
+                    <IconAlert size={16} />
+                    Confusiones de riesgo ({lookalikeStats.total}
+                    {lookalikeStats.deadly > 0 ? ` · ${lookalikeStats.deadly} mortales` : ''}
+                    )
+                  </strong>
+                  <ul className="lookalike-list">
+                    {rankedLookalikes.map((sp) => {
+                      const meta = getRiskMeta(sp.risk_label)
+                      return (
+                        <li key={sp.name} className={`lookalike-item ${meta.className}`}>
+                          <SpeciesThumb taxon={sp.name} riskLabel={sp.risk_label} size={40} />
+                          <div className="lookalike-item__text">
+                            <RiskChip risk={sp.risk_label} />
+                            <SpeciesNameBlock
+                              taxon={sp.name}
+                              commonNames={sp.common_names}
+                              size="sm"
+                              showFamily={false}
+                            />
+                            {sp.slug && (
+                              <Link to={`/enciclopedia/${sp.slug}`} className="lookalike-link">
+                                Ver ficha
+                              </Link>
+                            )}
+                          </div>
+                        </li>
+                      )
+                    })}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+        </section>
       )}
 
-      {/* Metadata footer */}
-      <div className="processing-time">
-        {result.final_warning && (
-          <p className="final-warning">{result.final_warning}</p>
-        )}
-      </div>
+      {/* ── Layer 3: details accordion ── */}
+      {hasLayer3 && (
+        <section className="result-layer result-layer--3">
+          <button
+            type="button"
+            className="result-layer__toggle"
+            aria-expanded={layer3Open}
+            onClick={() => setLayer3Open((v) => !v)}
+          >
+            <span>Más detalle</span>
+            <span aria-hidden="true">{layer3Open ? '−' : '+'}</span>
+          </button>
+          {layer3Open && (
+            <div className="result-layer__body">
+              {result.quality_warnings.length > 0 && (
+                <div className="quality-warnings">
+                  <strong className="inline-icon-label">
+                    <IconInfo size={16} />
+                    Calidad de imagen
+                  </strong>
+                  <ul>
+                    {result.quality_warnings.map((w, i) => (
+                      <li key={i}>{w}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {result.missing_evidence.length > 0 && (
+                <div className="missing-evidence">
+                  <strong className="inline-icon-label">
+                    <IconMicroscope size={16} />
+                    Para mejorar
+                  </strong>
+                  <ul>
+                    {result.missing_evidence.map((e, i) => (
+                      <li key={i}>{e}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {result.questions_for_user.length > 0 && (
+                <div className="questions-section">
+                  <strong className="inline-icon-label">
+                    <IconInfo size={16} />
+                    Preguntas
+                  </strong>
+                  <ul>
+                    {result.questions_for_user.map((q, i) => (
+                      <li key={i}>{q}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {onFeedback && !feedbackSent && !isRejected && (
+                <div className="feedback-section">
+                  <p className="feedback-question">¿La pista te encaja?</p>
+                  <div className="feedback-buttons">
+                    <button
+                      type="button"
+                      className="btn-atelier btn-atelier--ghost"
+                      onClick={() => handleFeedback(true)}
+                    >
+                      <IconThumbsUp size={16} /> Sí
+                    </button>
+                    <button
+                      type="button"
+                      className="btn-atelier btn-atelier--ghost"
+                      onClick={() => handleFeedback(false)}
+                    >
+                      <IconThumbsDown size={16} /> No
+                    </button>
+                  </div>
+                </div>
+              )}
+              {feedbackSent && (
+                <div className="feedback-sent">
+                  <IconCheck size={16} /> Gracias — ayuda a mejorar el modelo.
+                </div>
+              )}
+
+              <ModelInsightsPanel result={result} viewTypes={viewTypes} />
+
+              {result.model_stack && (
+                <div className="technical-details">
+                  <p>
+                    <strong>ID:</strong> {result.request_id} · {result.processing_time_ms} ms
+                  </p>
+                </div>
+              )}
+
+              {result.final_warning && (
+                <p className="final-warning final-warning--quiet">{result.final_warning}</p>
+              )}
+            </div>
+          )}
+        </section>
+      )}
     </div>
   )
 }

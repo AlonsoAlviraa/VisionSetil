@@ -67,7 +67,24 @@ def test_multi_view_classifier_falls_back_to_mock_without_weights(tmp_path, monk
         reset_multi_view_classifier,
     )
 
+    # Stub discovery so in-repo kaggle best.pt cannot leak into this unit test
+    monkeypatch.setattr(
+        "app.ml.weight_discovery.resolve_multiview_weights_path",
+        lambda **_kwargs: None,
+    )
+    monkeypatch.setattr(
+        "app.ml.weight_discovery.describe_weight_discovery",
+        lambda **_kwargs: {
+            "configured": str(tmp_path / "nonexistent.pt"),
+            "configured_exists": False,
+            "resolved": None,
+            "resolved_exists": False,
+            "candidates": [],
+            "candidate_count": 0,
+        },
+    )
     monkeypatch.setattr(settings, "multi_view_weights_path", tmp_path / "nonexistent.pt")
+    monkeypatch.setattr(settings, "model_fallback_to_mock", True)
     reset_multi_view_classifier()
 
     clf = MultiViewMushroomClassifier()
@@ -76,6 +93,7 @@ def test_multi_view_classifier_falls_back_to_mock_without_weights(tmp_path, monk
     status = clf.get_status()
     assert status["backend"] == "mock_fallback"
     assert status["loaded"] is False
+    assert status["honesty"] == "mock_no_weights"
 
 
 def test_multi_view_classifier_status_shape():

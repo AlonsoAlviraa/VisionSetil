@@ -66,6 +66,8 @@ def _map_to_simple(
     result: ClassificationResponse,
     request_id: str,
     processing_time_ms: int,
+    *,
+    classifier: object | None = None,
 ) -> SimpleClassificationResult:
     """Convert the rich ClassificationResponse into the simplified frontend schema."""
 
@@ -74,6 +76,7 @@ def _map_to_simple(
         predictions.append(
             SimpleSpeciesPrediction(
                 species=candidate.taxon,
+                common_name=None,
                 confidence=candidate.confidence,
                 edibility=candidate.edibility_label,
             )
@@ -86,7 +89,32 @@ def _map_to_simple(
         decision = "rejected"
         rejection_reason = result.open_set.reason
 
-    return SimpleClassificationResult(
+    confs = [p.confidence for p in predictions]
+    margin = None
+    if len(confs) >= 2:
+        margin = round(max(0.0, confs[0] - confs[1]), 4)
+    elif len(confs) == 1:
+        margin = round(confs[0], 4)
+
+    view_coverage: list[str] = []
+    ml_notes: list[str] = []
+    is_mock = True
+    if classifier is not None:
+        view_coverage = list(getattr(classifier, "last_view_coverage", []) or [])
+        ml_notes = list(getattr(classifier, "last_ml_notes", []) or [])
+        if getattr(classifier, "last_confidence_margin", None) is not None:
+            margin = getattr(classifier, "last_confidence_margin")
+        # MultiViewMushroomClassifier sets is_real
+        if getattr(classifier, "is_real", False):
+            is_mock = False
+        stack = result.model_stack
+        if stack and all(
+            "mock" not in str(getattr(stack, f, "")).lower()
+            for f in ("detector", "visual_embedder", "image_text_embedder", "metadata_encoder")
+        ):
+            is_mock = False
+
+    simple = SimpleClassificationResult(
         request_id=request_id,
         decision=decision,
         predictions=predictions,
@@ -101,9 +129,19 @@ def _map_to_simple(
         questions_for_user=result.questions_for_user,
         model_stack=result.model_stack,
         open_set_reason=rejection_reason,
-        recommend_human_review=bool(result.human_review and result.human_review.recommended),
+        recommend_human_review=bool(result.human_review and result.human_review.recommended)
+        or decision == "rejected",
         final_warning=result.final_warning,
+        confidence_margin=margin,
+        view_coverage=view_coverage,
+        is_mock_stack=is_mock,
+        ml_notes=ml_notes,
     )
+    # Hard quality gate: block species ID when on-disk metrics are unacceptable
+    from app.ml.quality_gate import apply_quality_gate_to_simple_result
+
+    gated = apply_quality_gate_to_simple_result(simple.model_dump())
+    return SimpleClassificationResult(**{k: v for k, v in gated.items() if k != "quality_gate"})
 
 
 @router.post("/classify", response_model=SimpleClassificationResult)
@@ -182,7 +220,9 @@ async def classify_images(
         result = classifier.classify(observation, saved_images)
 
     elapsed_ms = int((time.perf_counter() - start) * 1000)
-    simple_result = _map_to_simple(result, request_id, elapsed_ms)
+    # Prefer mock fallback diagnostics when MultiView wraps Mock
+    diag = getattr(classifier, "_mock_fallback", None) or classifier
+    simple_result = _map_to_simple(result, request_id, elapsed_ms, classifier=diag)
 
     # If not persisting, delete the observation and images
     if not persist:

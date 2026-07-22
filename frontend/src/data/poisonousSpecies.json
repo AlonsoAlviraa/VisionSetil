@@ -1,0 +1,44 @@
+[
+  {
+    "latin_name": "Amanita phalloides",
+    "common_name": "Oronja verde",
+    "risk_level": "critical",
+    "notes": "Amatoxinas potencialmente mortales y alta confusion con especies verdes o juveniles."
+  },
+  {
+    "latin_name": "Amanita muscaria",
+    "common_name": "Matamoscas",
+    "risk_level": "high",
+    "notes": "Toxica, vistosa y no segura para consumo."
+  },
+  {
+    "latin_name": "Amanita virosa",
+    "common_name": "Angel destructor",
+    "risk_level": "critical",
+    "notes": "Amanita blanca muy toxica con lookalikes peligrosos."
+  },
+  {
+    "latin_name": "Galerina marginata",
+    "common_name": "Galerina mortal",
+    "risk_level": "critical",
+    "notes": "Pequena especie de madera con toxinas graves."
+  },
+  {
+    "latin_name": "Cortinarius orellanus",
+    "common_name": "Cortinario de montana",
+    "risk_level": "high",
+    "notes": "Puede causar insuficiencia renal tardia."
+  },
+  {
+    "latin_name": "Lepiota brunneoincarnata",
+    "common_name": "Lepiota mortal",
+    "risk_level": "critical",
+    "notes": "Pequena lepiota muy toxica y facilmente infravalorada."
+  },
+  {
+    "latin_name": "Gyromitra esculenta",
+    "common_name": "Falsa colmenilla",
+    "risk_level": "high",
+    "notes": "Toxica incluso cuando existe tradicion culinaria local."
+  }
+]

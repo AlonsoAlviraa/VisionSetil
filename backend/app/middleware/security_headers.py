@@ -39,16 +39,19 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         self.hsts_max_age = hsts_max_age
         self.hsts_include_subdomains = hsts_include_subdomains
 
-        # Default CSP: restrictive — allow self + inline styles (Vite dev)
+        # Default CSP: restrictive — self + fungi photo hosts + fonts
         self.csp_policy = csp_policy or (
             "default-src 'self'; "
             "script-src 'self'; "
-            "style-src 'self' 'unsafe-inline'; "
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
             "img-src 'self' data: blob: https:; "
-            "font-src 'self'; "
-            "connect-src 'self'; "
+            "font-src 'self' https://fonts.gstatic.com data:; "
+            "connect-src 'self' https://api.inaturalist.org https://*.wikipedia.org "
+            "https://upload.wikimedia.org https://api.open-meteo.com; "
+            "worker-src 'self' blob:; "
             "base-uri 'self'; "
-            "frame-ancestors 'none'"
+            "frame-ancestors 'none'; "
+            "object-src 'none'"
         )
 
     async def dispatch(

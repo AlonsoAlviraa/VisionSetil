@@ -1,0 +1,4633 @@
+{
+  "metadata": {
+    "num_samples": 600,
+    "num_observations": 600,
+    "num_classes": 500
+  },
+  "classification": {
+    "top1_acc": 0.05,
+    "top3_acc": 0.10833333333333334,
+    "top5_acc": 0.16,
+    "f1_macro": 0.029443802190241813,
+    "f1_micro": 0.05,
+    "balanced_acc": 0.049,
+    "num_samples": 600,
+    "num_classes": 500
+  },
+  "map_at_3": {
+    "point": 0.07583333333333334,
+    "ci_low": 0.0614249322493225,
+    "ci_high": 0.09004736243138303,
+    "confidence": 0.95,
+    "n_resamples": 1000,
+    "std": 0.00743106714350264
+  },
+  "open_set": null,
+  "calibration": {
+    "ece": 0.0463,
+    "mce": 0.8433,
+    "n_bins": 15,
+    "reliability_diagram": [
+      {
+        "bin_lo": 0.0,
+        "bin_hi": 0.067,
+        "count": 387,
+        "avg_confidence": 0.0414,
+        "avg_accuracy": 0.0207,
+        "gap": 0.0208
+      },
+      {
+        "bin_lo": 0.067,
+        "bin_hi": 0.133,
+        "count": 129,
+        "avg_confidence": 0.0892,
+        "avg_accuracy": 0.031,
+        "gap": 0.0582
+      },
+      {
+        "bin_lo": 0.133,
+        "bin_hi": 0.2,
+        "count": 29,
+        "avg_confidence": 0.1607,
+        "avg_accuracy": 0.069,
+        "gap": 0.0918
+      },
+      {
+        "bin_lo": 0.2,
+        "bin_hi": 0.267,
+        "count": 16,
+        "avg_confidence": 0.2246,
+        "avg_accuracy": 0.1875,
+        "gap": 0.0371
+      },
+      {
+        "bin_lo": 0.267,
+        "bin_hi": 0.333,
+        "count": 12,
+        "avg_confidence": 0.2934,
+        "avg_accuracy": 0.1667,
+        "gap": 0.1268
+      },
+      {
+        "bin_lo": 0.333,
+        "bin_hi": 0.4,
+        "count": 7,
+        "avg_confidence": 0.3639,
+        "avg_accuracy": 0.5714,
+        "gap": 0.2075
+      },
+      {
+        "bin_lo": 0.4,
+        "bin_hi": 0.467,
+        "count": 5,
+        "avg_confidence": 0.4427,
+        "avg_accuracy": 0.2,
+        "gap": 0.2427
+      },
+      {
+        "bin_lo": 0.467,
+        "bin_hi": 0.533,
+        "count": 8,
+        "avg_confidence": 0.4901,
+        "avg_accuracy": 0.125,
+        "gap": 0.3651
+      },
+      {
+        "bin_lo": 0.533,
+        "bin_hi": 0.6,
+        "count": 0,
+        "avg_confidence": 0,
+        "avg_accuracy": 0,
+        "gap": 0
+      },
+      {
+        "bin_lo": 0.6,
+        "bin_hi": 0.667,
+        "count": 2,
+        "avg_confidence": 0.6428,
+        "avg_accuracy": 1.0,
+        "gap": 0.3572
+      },
+      {
+        "bin_lo": 0.667,
+        "bin_hi": 0.733,
+        "count": 0,
+        "avg_confidence": 0,
+        "avg_accuracy": 0,
+        "gap": 0
+      },
+      {
+        "bin_lo": 0.733,
+        "bin_hi": 0.8,
+        "count": 3,
+        "avg_confidence": 0.7594,
+        "avg_accuracy": 0.6667,
+        "gap": 0.0928
+      },
+      {
+        "bin_lo": 0.8,
+        "bin_hi": 0.867,
+        "count": 1,
+        "avg_confidence": 0.8433,
+        "avg_accuracy": 0.0,
+        "gap": 0.8433
+      },
+      {
+        "bin_lo": 0.867,
+        "bin_hi": 0.933,
+        "count": 0,
+        "avg_confidence": 0,
+        "avg_accuracy": 0,
+        "gap": 0
+      },
+      {
+        "bin_lo": 0.933,
+        "bin_hi": 1.0,
+        "count": 1,
+        "avg_confidence": 0.9527,
+        "avg_accuracy": 1.0,
+        "gap": 0.0473
+      }
+    ]
+  },
+  "safety": {
+    "toxic_recall": 1.0,
+    "deadly_recall": 1.0,
+    "false_edible_rate": 0.0,
+    "rejection_threshold": 0.42,
+    "n_toxic": 13,
+    "n_deadly": 9
+  },
+  "confusion": {
+    "top_confused_pairs": [
+      {
+        "true_species": "Ascocoryne cylichnium",
+        "pred_species": "Botryobasidium aureum",
+        "count": 2
+      },
+      {
+        "true_species": "Russula paludosa",
+        "pred_species": "Russula xerampelina",
+        "count": 2
+      },
+      {
+        "true_species": "Cortinarius caerulescens",
+        "pred_species": "Russula nobilis",
+        "count": 2
+      },
+      {
+        "true_species": "Coprinopsis picacea",
+        "pred_species": "Russula nobilis",
+        "count": 2
+      },
+      {
+        "true_species": "Entoloma prunuloides",
+        "pred_species": "Lycoperdon lividum",
+        "count": 2
+      },
+      {
+        "true_species": "Hygrocybe coccinea",
+        "pred_species": "Lycoperdon lividum",
+        "count": 2
+      },
+      {
+        "true_species": "Cuphophyllus russocoriaceus",
+        "pred_species": "Clavulinopsis corniculata",
+        "count": 2
+      },
+      {
+        "true_species": "Stereum hirsutum",
+        "pred_species": "Botryobasidium aureum",
+        "count": 1
+      },
+      {
+        "true_species": "Auricularia auricula-judae",
+        "pred_species": "Botryobasidium aureum",
+        "count": 1
+      },
+      {
+        "true_species": "Ischnoderma benzoinum",
+        "pred_species": "Sarcomyxa serotina",
+        "count": 1
+      },
+      {
+        "true_species": "Phlyctis argena",
+        "pred_species": "Physcia adscendens",
+        "count": 1
+      },
+      {
+        "true_species": "Hypogymnia physodes",
+        "pred_species": "Ascodichaena rugosa",
+        "count": 1
+      },
+      {
+        "true_species": "Tulostoma brumale",
+        "pred_species": "Cladonia furcata",
+        "count": 1
+      },
+      {
+        "true_species": "Typhula fistulosa",
+        "pred_species": "Inocybe geophylla",
+        "count": 1
+      },
+      {
+        "true_species": "Byssomerulius corium",
+        "pred_species": "Trichaptum abietinum",
+        "count": 1
+      },
+      {
+        "true_species": "Ganoderma lucidum",
+        "pred_species": "Sarcomyxa serotina",
+        "count": 1
+      },
+      {
+        "true_species": "Lyomyces sambuci",
+        "pred_species": "Stereum rugosum",
+        "count": 1
+      },
+      {
+        "true_species": "Myxarium nucleatum",
+        "pred_species": "Xylaria hypoxylon",
+        "count": 1
+      },
+      {
+        "true_species": "Hydnoporia tabacina",
+        "pred_species": "Neoantrodia serialis",
+        "count": 1
+      },
+      {
+        "true_species": "Daedalea quercina",
+        "pred_species": "Trichaptum abietinum",
+        "count": 1
+      }
+    ],
+    "genus_accuracy": [
+      {
+        "genus": "Mycena",
+        "accuracy": 0.0,
+        "samples": 19
+      },
+      {
+        "genus": "Amanita",
+        "accuracy": 0.0,
+        "samples": 11
+      },
+      {
+        "genus": "Hygrocybe",
+        "accuracy": 0.0,
+        "samples": 13
+      },
+      {
+        "genus": "Lactarius",
+        "accuracy": 0.05555555555555555,
+        "samples": 18
+      },
+      {
+        "genus": "Russula",
+        "accuracy": 0.13636363636363635,
+        "samples": 22
+      }
+    ]
+  },
+  "per_class": {
+    "full_report": [
+      {
+        "class_id": 0,
+        "species": "Abortiporus biennis",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 1,
+        "species": "Agaricus arvensis",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 2,
+        "species": "Agaricus augustus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 3,
+        "species": "Agaricus bitorquis",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 4,
+        "species": "Agaricus campestris",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 5,
+        "species": "Agaricus impudicus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 6,
+        "species": "Agaricus sylvicola",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 7,
+        "species": "Agaricus xanthodermus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 8,
+        "species": "Agrocybe praecox",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 9,
+        "species": "Aleuria aurantia",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 10,
+        "species": "Amanita citrina",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 11,
+        "species": "Amanita fulva",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 12,
+        "species": "Amanita gemmata",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 13,
+        "species": "Amanita muscaria",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 14,
+        "species": "Amanita pantherina",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 15,
+        "species": "Amanita phalloides",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 16,
+        "species": "Amanita porphyria",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 17,
+        "species": "Amanita rubescens",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 18,
+        "species": "Amanita virosa",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 19,
+        "species": "Amaropostia stiptica",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 20,
+        "species": "Ampulloclitocybe clavipes",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 21,
+        "species": "Apioperdon pyriforme",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 22,
+        "species": "Armillaria lutea",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 23,
+        "species": "Armillaria mellea",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 24,
+        "species": "Armillaria ostoyae",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 25,
+        "species": "Arrhenia retiruga",
+        "precision": 0.3333,
+        "recall": 1.0,
+        "f1": 0.5,
+        "support": 1
+      },
+      {
+        "class_id": 26,
+        "species": "Arthonia radiata",
+        "precision": 0.5,
+        "recall": 1.0,
+        "f1": 0.6667,
+        "support": 1
+      },
+      {
+        "class_id": 27,
+        "species": "Ascocoryne cylichnium",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 28,
+        "species": "Ascocoryne sarcoides",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 29,
+        "species": "Ascodichaena rugosa",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 30,
+        "species": "Aspropaxillus giganteus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 31,
+        "species": "Atheniella flavoalba",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 32,
+        "species": "Auricularia auricula-judae",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 33,
+        "species": "Auriscalpium vulgare",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 34,
+        "species": "Badhamia utricularis",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 35,
+        "species": "Baeospora myosura",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 36,
+        "species": "Bispora pallescens",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 37,
+        "species": "Bjerkandera adusta",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 38,
+        "species": "Bjerkandera fumosa",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 39,
+        "species": "Bolbitius titubans",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 40,
+        "species": "Boletus edulis",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 41,
+        "species": "Boletus reticulatus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 42,
+        "species": "Botryobasidium aureum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 43,
+        "species": "Bovistella utriformis",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 44,
+        "species": "Britzelmayria multipedata",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 45,
+        "species": "Bulgaria inquinans",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 46,
+        "species": "Butyriboletus appendiculatus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 47,
+        "species": "Byssomerulius corium",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 48,
+        "species": "Calcipostia guttulata",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 49,
+        "species": "Calloria urticae",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 50,
+        "species": "Caloboletus calopus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 51,
+        "species": "Caloboletus radicans",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 52,
+        "species": "Calocera cornea",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 53,
+        "species": "Calocera viscosa",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 54,
+        "species": "Calocybe carnea",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 55,
+        "species": "Calocybe gambosa",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 56,
+        "species": "Calvatia gigantea",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 57,
+        "species": "Calycina citrina",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 58,
+        "species": "Candelariella vitellina",
+        "precision": 0.3333,
+        "recall": 0.5,
+        "f1": 0.4,
+        "support": 2
+      },
+      {
+        "class_id": 59,
+        "species": "Candolleomyces candolleanus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 60,
+        "species": "Cantharellus cibarius",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 61,
+        "species": "Cantharellus pallens",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 62,
+        "species": "Ceratiomyxa fruticulosa",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 63,
+        "species": "Cerioporus squamosus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 64,
+        "species": "Cerioporus varius",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 65,
+        "species": "Chalciporus piperatus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 66,
+        "species": "Cheilymenia granulata",
+        "precision": 0.5,
+        "recall": 1.0,
+        "f1": 0.6667,
+        "support": 1
+      },
+      {
+        "class_id": 67,
+        "species": "Chlorociboria aeruginascens",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 68,
+        "species": "Chlorophyllum olivieri",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 69,
+        "species": "Chlorophyllum rhacodes",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 70,
+        "species": "Chondrostereum purpureum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 71,
+        "species": "Chromocyphella muscicola",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 72,
+        "species": "Ciboria amentacea",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 73,
+        "species": "Circinaria contorta",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 74,
+        "species": "Cladonia diversa",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 75,
+        "species": "Cladonia fimbriata",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 76,
+        "species": "Cladonia floerkeana",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 77,
+        "species": "Cladonia furcata",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 78,
+        "species": "Cladonia portentosa",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 79,
+        "species": "Cladonia uncialis",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 80,
+        "species": "Clavaria argillacea",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 81,
+        "species": "Clavariadelphus pistillaris",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 82,
+        "species": "Clavulinopsis corniculata",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 83,
+        "species": "Clavulinopsis helvola",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 84,
+        "species": "Clitocybe fragrans",
+        "precision": 0.0833,
+        "recall": 1.0,
+        "f1": 0.1538,
+        "support": 1
+      },
+      {
+        "class_id": 85,
+        "species": "Clitocybe nebularis",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 86,
+        "species": "Clitocybe rivulosa",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 87,
+        "species": "Clitopilus prunulus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 88,
+        "species": "Coleosporium tussilaginis",
+        "precision": 0.3333,
+        "recall": 0.5,
+        "f1": 0.4,
+        "support": 2
+      },
+      {
+        "class_id": 89,
+        "species": "Collybiopsis confluens",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 90,
+        "species": "Collybiopsis peronata",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 91,
+        "species": "Collybiopsis ramealis",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 92,
+        "species": "Coniophora puteana",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 93,
+        "species": "Coprinellus disseminatus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 94,
+        "species": "Coprinellus micaceus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 95,
+        "species": "Coprinopsis atramentaria",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 96,
+        "species": "Coprinopsis lagopus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 97,
+        "species": "Coprinopsis nivea",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 98,
+        "species": "Coprinopsis picacea",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 99,
+        "species": "Coprinus comatus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 100,
+        "species": "Cordyceps militaris",
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.6667,
+        "support": 2
+      },
+      {
+        "class_id": 101,
+        "species": "Cortinarius anserinus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 102,
+        "species": "Cortinarius caerulescens",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 103,
+        "species": "Cortinarius elatior",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 104,
+        "species": "Cortinarius largus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 105,
+        "species": "Cortinarius malicorius",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 106,
+        "species": "Cortinarius torvus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 107,
+        "species": "Cosmospora arxii",
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.6667,
+        "support": 2
+      },
+      {
+        "class_id": 108,
+        "species": "Craterellus cornucopioides",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 109,
+        "species": "Craterellus tubaeformis",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 110,
+        "species": "Crepidotus mollis",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 111,
+        "species": "Crinipellis scabella",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 112,
+        "species": "Crucibulum crucibuliforme",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 113,
+        "species": "Cumminsiella mirabilissima",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 114,
+        "species": "Cuphophyllus pratensis",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 115,
+        "species": "Cuphophyllus russocoriaceus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 116,
+        "species": "Cuphophyllus virgineus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 117,
+        "species": "Cyanosporus alni",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 118,
+        "species": "Cyanosporus caesius",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 119,
+        "species": "Cyathus striatus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 120,
+        "species": "Cylindrobasidium evolvens",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 121,
+        "species": "Cystoderma amianthinum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 122,
+        "species": "Dacrymyces lacrymalis",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 123,
+        "species": "Dacrymyces stillatus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 124,
+        "species": "Daedalea quercina",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 125,
+        "species": "Daedaleopsis confragosa",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 126,
+        "species": "Daldinia concentrica",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 127,
+        "species": "Deconica montana",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 128,
+        "species": "Dermoloma cuneifolium",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 129,
+        "species": "Diatrype bullata",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 130,
+        "species": "Diatrype decorticata",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 131,
+        "species": "Diatrype disciformis",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 132,
+        "species": "Diatrypella quercina",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 133,
+        "species": "Echinoderma asperum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 134,
+        "species": "Encoelia furfuracea",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 135,
+        "species": "Entoloma prunuloides",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 136,
+        "species": "Erysiphe alphitoides",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 137,
+        "species": "Erythricium aurantiacum",
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 1
+      },
+      {
+        "class_id": 138,
+        "species": "Eutypa spinosa",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 139,
+        "species": "Eutypella sorbi",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 140,
+        "species": "Evernia prunastri",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 141,
+        "species": "Exidia glandulosa",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 142,
+        "species": "Exidia nigricans",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 143,
+        "species": "Exidia pithya",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 144,
+        "species": "Exidia recisa",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 145,
+        "species": "Exidia thuretiana",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 146,
+        "species": "Exidiopsis effusa",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 147,
+        "species": "Exobasidium vaccinii",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 148,
+        "species": "Fistulina hepatica",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 149,
+        "species": "Flammulina velutipes",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 150,
+        "species": "Fomes fomentarius",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 151,
+        "species": "Fomitiporia punctata",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 152,
+        "species": "Fomitopsis betulina",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 153,
+        "species": "Fomitopsis pinicola",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 154,
+        "species": "Fuligo septica",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 155,
+        "species": "Fuscoporia ferrea",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 156,
+        "species": "Galerina marginata",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 157,
+        "species": "Ganoderma adspersum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 158,
+        "species": "Ganoderma applanatum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 159,
+        "species": "Ganoderma lucidum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 160,
+        "species": "Ganoderma pfeifferi",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 161,
+        "species": "Geastrum michelianum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 162,
+        "species": "Glaucomaria carpinea",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 163,
+        "species": "Gliophorus irrigatus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 164,
+        "species": "Gliophorus laetus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 165,
+        "species": "Gliophorus psittacinus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 166,
+        "species": "Gloeophyllum odoratum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 167,
+        "species": "Gloeophyllum sepiarium",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 168,
+        "species": "Glyphium elatum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 169,
+        "species": "Gomphidius glutinosus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 170,
+        "species": "Graphis scripta",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 171,
+        "species": "Gymnopilus penetrans",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 172,
+        "species": "Gymnopilus spectabilis",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 173,
+        "species": "Gymnopus androsaceus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 174,
+        "species": "Gymnopus dryophilus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 175,
+        "species": "Hapalopilus rutilans",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 176,
+        "species": "Hebeloma sinapizans",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 177,
+        "species": "Helvella crispa",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 178,
+        "species": "Helvella elastica",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 179,
+        "species": "Helvella lacunosa",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 180,
+        "species": "Hericium coralloides",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 181,
+        "species": "Heterobasidion annosum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 182,
+        "species": "Hortiboletus bubalinus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 183,
+        "species": "Hydnoporia tabacina",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 184,
+        "species": "Hydnum repandum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 185,
+        "species": "Hygrocybe acutoconica",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 186,
+        "species": "Hygrocybe ceracea",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 187,
+        "species": "Hygrocybe chlorophana",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 188,
+        "species": "Hygrocybe coccinea",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 189,
+        "species": "Hygrocybe conica",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 190,
+        "species": "Hygrocybe insipida",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 191,
+        "species": "Hygrocybe miniata",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 192,
+        "species": "Hygrocybe punicea",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 193,
+        "species": "Hygrocybe reidii",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 194,
+        "species": "Hygrophoropsis aurantiaca",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 195,
+        "species": "Hygrophorus eburneus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 196,
+        "species": "Hygrophorus hypothejus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 197,
+        "species": "Hygrophorus pustulatus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 198,
+        "species": "Hymenochaete rubiginosa",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 199,
+        "species": "Hymenopellis radicata",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 200,
+        "species": "Hypholoma capnoides",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 201,
+        "species": "Hypholoma fasciculare",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 202,
+        "species": "Hypholoma lateritium",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 203,
+        "species": "Hypogymnia physodes",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 204,
+        "species": "Hypogymnia tubulosa",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 205,
+        "species": "Hypoxylon fragiforme",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 206,
+        "species": "Hypoxylon fuscum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 207,
+        "species": "Hypoxylon petriniae",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 208,
+        "species": "Illosporiopsis christiansenii",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 209,
+        "species": "Imleria badia",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 210,
+        "species": "Infundibulicybe geotropa",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 211,
+        "species": "Infundibulicybe gibba",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 212,
+        "species": "Inocybe geophylla",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 213,
+        "species": "Ischnoderma benzoinum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 214,
+        "species": "Ischnoderma resinosum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 215,
+        "species": "Jackrogersella cohaerens",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 216,
+        "species": "Jackrogersella multiformis",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 217,
+        "species": "Kretzschmaria deusta",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 218,
+        "species": "Kuehneromyces mutabilis",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 219,
+        "species": "Laccaria amethystina",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 220,
+        "species": "Laccaria laccata",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 221,
+        "species": "Laccaria proxima",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 222,
+        "species": "Lachnum virgineum",
+        "precision": 0.5,
+        "recall": 1.0,
+        "f1": 0.6667,
+        "support": 1
+      },
+      {
+        "class_id": 223,
+        "species": "Lacrymaria lacrymabunda",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 224,
+        "species": "Lactarius blennius",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 225,
+        "species": "Lactarius deliciosus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 226,
+        "species": "Lactarius deterrimus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 227,
+        "species": "Lactarius glyciosmus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 228,
+        "species": "Lactarius helvus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 229,
+        "species": "Lactarius necator",
+        "precision": 0.25,
+        "recall": 1.0,
+        "f1": 0.4,
+        "support": 1
+      },
+      {
+        "class_id": 230,
+        "species": "Lactarius pallidus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 231,
+        "species": "Lactarius pubescens",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 232,
+        "species": "Lactarius pyrogalus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 233,
+        "species": "Lactarius quietus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 234,
+        "species": "Lactarius rufus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 235,
+        "species": "Lactarius subdulcis",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 236,
+        "species": "Lactarius tabidus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 237,
+        "species": "Lactarius torminosus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 238,
+        "species": "Laetiporus sulphureus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 239,
+        "species": "Lecanora campestris",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 240,
+        "species": "Lecanora chlarotera",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 241,
+        "species": "Leccinum albostipitatum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 242,
+        "species": "Leccinum scabrum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 243,
+        "species": "Leccinum versipelle",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 244,
+        "species": "Lecidella elaeochroma",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 245,
+        "species": "Lentinellus cochleatus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 246,
+        "species": "Lentinellus ursinus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 247,
+        "species": "Lentinus brumalis",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 248,
+        "species": "Lentinus substrictus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 249,
+        "species": "Lenzites betulinus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 250,
+        "species": "Leotia lubrica",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 251,
+        "species": "Lepiota cristata",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 252,
+        "species": "Lepiota magnispora",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 253,
+        "species": "Lepista nuda",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 254,
+        "species": "Lepista personata",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 255,
+        "species": "Leptosphaeria acuta",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 256,
+        "species": "Leucoagaricus leucothites",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 257,
+        "species": "Leucoagaricus nympharum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 258,
+        "species": "Leucocybe connata",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 259,
+        "species": "Lichenomphalia umbellifera",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 260,
+        "species": "Lobaria pulmonaria",
+        "precision": 0.3333,
+        "recall": 0.5,
+        "f1": 0.4,
+        "support": 2
+      },
+      {
+        "class_id": 261,
+        "species": "Lophodermium pinastri",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 262,
+        "species": "Lycogala epidendrum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 263,
+        "species": "Lycoperdon echinatum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 264,
+        "species": "Lycoperdon excipuliforme",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 265,
+        "species": "Lycoperdon lividum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 266,
+        "species": "Lycoperdon nigrescens",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 267,
+        "species": "Lycoperdon perlatum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 268,
+        "species": "Lycoperdon pratense",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 269,
+        "species": "Lyomyces sambuci",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 270,
+        "species": "Lyophyllum decastes",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 271,
+        "species": "Macrocystidia cucumis",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 272,
+        "species": "Macrolepiota excoriata",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 273,
+        "species": "Macrolepiota procera",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 274,
+        "species": "Marasmius oreades",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 275,
+        "species": "Marasmius rotula",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 276,
+        "species": "Megacollybia platyphylla",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 277,
+        "species": "Melanelixia subaurifera",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 278,
+        "species": "Mensularia nodulosa",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 279,
+        "species": "Meripilus giganteus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 280,
+        "species": "Merismodes anomala",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 281,
+        "species": "Meruliopsis taxicola",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 282,
+        "species": "Micarea lignaria",
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 2
+      },
+      {
+        "class_id": 283,
+        "species": "Microbotryum stellariae",
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 1
+      },
+      {
+        "class_id": 284,
+        "species": "Mucidula mucida",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 285,
+        "species": "Mutinus caninus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 286,
+        "species": "Mycena acicula",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 287,
+        "species": "Mycena aetites",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 288,
+        "species": "Mycena crocata",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 289,
+        "species": "Mycena epipterygia",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 290,
+        "species": "Mycena galericulata",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 291,
+        "species": "Mycena galopus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 292,
+        "species": "Mycena haematopus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 293,
+        "species": "Mycena inclinata",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 294,
+        "species": "Mycena leptocephala",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 295,
+        "species": "Mycena olivaceomarginata",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 296,
+        "species": "Mycena pelianthina",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 297,
+        "species": "Mycena pseudocorticola",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 298,
+        "species": "Mycena renati",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 299,
+        "species": "Mycena rosea",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 300,
+        "species": "Mycena sanguinolenta",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 301,
+        "species": "Mycena tintinnabulum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 302,
+        "species": "Mycena vitilis",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 303,
+        "species": "Mycetinis alliaceus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 304,
+        "species": "Myxarium nucleatum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 305,
+        "species": "Nectria cinnabarina",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 306,
+        "species": "Neoantrodia serialis",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 307,
+        "species": "Neoboletus erythropus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 308,
+        "species": "Neobulgaria pura",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 309,
+        "species": "Neohygrocybe nitrata",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 310,
+        "species": "Ochrolechia frigida",
+        "precision": 0.5,
+        "recall": 1.0,
+        "f1": 0.6667,
+        "support": 1
+      },
+      {
+        "class_id": 311,
+        "species": "Otidea onotica",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 312,
+        "species": "Oxyporus populinus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 313,
+        "species": "Panaeolina foenisecii",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 314,
+        "species": "Panaeolus papilionaceus",
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 1
+      },
+      {
+        "class_id": 315,
+        "species": "Panellus mitis",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 316,
+        "species": "Panellus stipticus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 317,
+        "species": "Paragymnopus perforans",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 318,
+        "species": "Paralepista flaccida",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 319,
+        "species": "Parasola conopilea",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 320,
+        "species": "Parmelia sulcata",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 321,
+        "species": "Paxillus involutus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 322,
+        "species": "Paxillus obscurisporus",
+        "precision": 0.5,
+        "recall": 1.0,
+        "f1": 0.6667,
+        "support": 1
+      },
+      {
+        "class_id": 323,
+        "species": "Peltigera membranacea",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 324,
+        "species": "Peniophora incarnata",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 325,
+        "species": "Peniophora limitata",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 326,
+        "species": "Peniophora quercina",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 327,
+        "species": "Pertusaria pertusa",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 328,
+        "species": "Phacidium lauri",
+        "precision": 0.5,
+        "recall": 1.0,
+        "f1": 0.6667,
+        "support": 1
+      },
+      {
+        "class_id": 329,
+        "species": "Phaeoclavulina eumorpha",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 330,
+        "species": "Phaeolepiota aurea",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 331,
+        "species": "Phaeolus schweinitzii",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 332,
+        "species": "Phaeophyscia orbicularis",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 333,
+        "species": "Phallus impudicus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 334,
+        "species": "Phellinopsis conchata",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 335,
+        "species": "Phellinus igniarius",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 336,
+        "species": "Phellinus pomaceus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 337,
+        "species": "Phellinus populicola",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 338,
+        "species": "Phlebia radiata",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 339,
+        "species": "Phlebia tremellosa",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 340,
+        "species": "Phlegmacium triumphans",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 341,
+        "species": "Phleogena faginea",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 342,
+        "species": "Phloeomana speirea",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 343,
+        "species": "Phlyctis argena",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 344,
+        "species": "Pholiota adiposa",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 345,
+        "species": "Pholiota gummosa",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 346,
+        "species": "Pholiota squarrosa",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 347,
+        "species": "Phragmidium rubi-idaei",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 348,
+        "species": "Phragmidium violaceum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 349,
+        "species": "Phyllotopsis nidulans",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 350,
+        "species": "Physcia adscendens",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 351,
+        "species": "Physcia caesia",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 352,
+        "species": "Physcia tenella",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 353,
+        "species": "Physisporinus vitreus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 354,
+        "species": "Picipes badius",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 355,
+        "species": "Pithya vulgaris",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 356,
+        "species": "Platismatia glauca",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 357,
+        "species": "Pleuroceras pseudoplatani",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 358,
+        "species": "Pleurocybella porrigens",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 359,
+        "species": "Pleurotus ostreatus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 360,
+        "species": "Pleurotus pulmonarius",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 361,
+        "species": "Plicaturopsis crispa",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 362,
+        "species": "Pluteus cervinus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 363,
+        "species": "Pluteus salicinus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 364,
+        "species": "Pluteus umbrosus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 365,
+        "species": "Podofomes mollis",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 366,
+        "species": "Podosphaera aphanis",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 367,
+        "species": "Polydesmia pruinosa",
+        "precision": 0.5,
+        "recall": 1.0,
+        "f1": 0.6667,
+        "support": 1
+      },
+      {
+        "class_id": 368,
+        "species": "Polyozosia albescens",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 369,
+        "species": "Polyporus tuberaster",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 370,
+        "species": "Postia ptychogaster",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 371,
+        "species": "Propolis farinosa",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 372,
+        "species": "Protomyces macrosporus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 373,
+        "species": "Protoparmeliopsis muralis",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 374,
+        "species": "Protostropharia semiglobata",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 375,
+        "species": "Psathyrella piluliformis",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 376,
+        "species": "Pseudevernia furfuracea",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 377,
+        "species": "Pseudoclitocybe cyathiformis",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 378,
+        "species": "Pseudohydnum gelatinosum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 379,
+        "species": "Psilocybe coronilla",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 380,
+        "species": "Psilocybe semilanceata",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 381,
+        "species": "Puccinia malvacearum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 382,
+        "species": "Puccinia suaveolens",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 383,
+        "species": "Puccinia urticata",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 384,
+        "species": "Pycnoporellus fulgens",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 385,
+        "species": "Ramalina farinacea",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 386,
+        "species": "Ramalina fastigiata",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 387,
+        "species": "Ramaria stricta",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 388,
+        "species": "Resupinatus trichotis",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 389,
+        "species": "Reticularia lycoperdon",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 390,
+        "species": "Rhizopogon obtextus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 391,
+        "species": "Rhodocollybia asema",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 392,
+        "species": "Rhodocollybia maculata",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 393,
+        "species": "Rhopographus filicinus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 394,
+        "species": "Rhytisma acerinum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 395,
+        "species": "Rhytisma salicinum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 396,
+        "species": "Rickenella fibula",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 397,
+        "species": "Rickenella swartzii",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 398,
+        "species": "Russula adusta",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 399,
+        "species": "Russula aeruginea",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 400,
+        "species": "Russula cessans",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 401,
+        "species": "Russula chloroides",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 402,
+        "species": "Russula claroflava",
+        "precision": 0.2,
+        "recall": 0.5,
+        "f1": 0.2857,
+        "support": 2
+      },
+      {
+        "class_id": 403,
+        "species": "Russula cyanoxantha",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 404,
+        "species": "Russula delica",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 405,
+        "species": "Russula emetica",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 406,
+        "species": "Russula fellea",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 407,
+        "species": "Russula foetens",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 408,
+        "species": "Russula fragilis",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 409,
+        "species": "Russula nobilis",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 410,
+        "species": "Russula ochroleuca",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 411,
+        "species": "Russula olivacea",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 412,
+        "species": "Russula paludosa",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 413,
+        "species": "Russula queletii",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 414,
+        "species": "Russula recondita",
+        "precision": 0.1429,
+        "recall": 1.0,
+        "f1": 0.25,
+        "support": 1
+      },
+      {
+        "class_id": 415,
+        "species": "Russula rosea",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 416,
+        "species": "Russula vesca",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 417,
+        "species": "Russula xerampelina",
+        "precision": 0.0588,
+        "recall": 1.0,
+        "f1": 0.1111,
+        "support": 1
+      },
+      {
+        "class_id": 418,
+        "species": "Sarcomyxa serotina",
+        "precision": 0.0294,
+        "recall": 1.0,
+        "f1": 0.0571,
+        "support": 1
+      },
+      {
+        "class_id": 419,
+        "species": "Sarcoscypha austriaca",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 420,
+        "species": "Schizophyllum commune",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 421,
+        "species": "Schizopora paradoxa",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 422,
+        "species": "Scleroderma citrinum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 423,
+        "species": "Scleroderma verrucosum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 424,
+        "species": "Seifertia azaleae",
+        "precision": 0.3333,
+        "recall": 0.5,
+        "f1": 0.4,
+        "support": 2
+      },
+      {
+        "class_id": 425,
+        "species": "Serpula himantioides",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 426,
+        "species": "Skeletocutis amorpha",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 427,
+        "species": "Skeletocutis nemoralis",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 428,
+        "species": "Sparassis crispa",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 429,
+        "species": "Spathularia flavida",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 430,
+        "species": "Spinellus fusiger",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 431,
+        "species": "Steccherinum fimbriatum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 432,
+        "species": "Steccherinum ochraceum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 433,
+        "species": "Stereum hirsutum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 434,
+        "species": "Stereum rugosum",
+        "precision": 0.0556,
+        "recall": 1.0,
+        "f1": 0.1053,
+        "support": 1
+      },
+      {
+        "class_id": 435,
+        "species": "Stereum sanguinolentum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 436,
+        "species": "Stereum subtomentosum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 437,
+        "species": "Strobilurus esculentus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 438,
+        "species": "Stropharia aeruginosa",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 439,
+        "species": "Stropharia cyanea",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 440,
+        "species": "Suillellus luridus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 441,
+        "species": "Suillus bovinus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 442,
+        "species": "Suillus cavipes",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 443,
+        "species": "Suillus granulatus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 444,
+        "species": "Suillus grevillei",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 445,
+        "species": "Suillus luteus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 446,
+        "species": "Suillus variegatus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 447,
+        "species": "Taphrina alni",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 448,
+        "species": "Taphrina betulina",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 449,
+        "species": "Taphrina pruni",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 450,
+        "species": "Tapinella atrotomentosa",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 451,
+        "species": "Tapinella panuoides",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 452,
+        "species": "Tephromela atra",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 453,
+        "species": "Thekopsora areolata",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 454,
+        "species": "Thelephora terrestris",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 455,
+        "species": "Trametes cinnabarina",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 456,
+        "species": "Trametes gibbosa",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 457,
+        "species": "Trametes hirsuta",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 458,
+        "species": "Trametes ochracea",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 459,
+        "species": "Trametes versicolor",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 460,
+        "species": "Tranzschelia anemones",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 461,
+        "species": "Tremella mesenterica",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 462,
+        "species": "Trichaptum abietinum",
+        "precision": 0.0303,
+        "recall": 1.0,
+        "f1": 0.0588,
+        "support": 1
+      },
+      {
+        "class_id": 463,
+        "species": "Trichoderma aureoviride",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 464,
+        "species": "Trichoderma europaeum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 465,
+        "species": "Trichoderma pulvinatum",
+        "precision": 0.25,
+        "recall": 1.0,
+        "f1": 0.4,
+        "support": 1
+      },
+      {
+        "class_id": 466,
+        "species": "Tricholoma argyraceum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 467,
+        "species": "Tricholoma equestre",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 468,
+        "species": "Tricholoma fulvum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 469,
+        "species": "Tricholoma scalpturatum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 470,
+        "species": "Tricholoma stiparophyllum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 471,
+        "species": "Tricholoma sulphureum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 472,
+        "species": "Tricholoma terreum",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 473,
+        "species": "Tricholoma ustale",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 474,
+        "species": "Tricholomopsis rutilans",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 475,
+        "species": "Tubaria furfuracea",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 476,
+        "species": "Tubifera ferruginosa",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 477,
+        "species": "Tulostoma brumale",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 478,
+        "species": "Tylopilus felleus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 479,
+        "species": "Typhula fistulosa",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 480,
+        "species": "Typhula juncea",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 481,
+        "species": "Tyromyces lacteus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 482,
+        "species": "Urocystis eranthidis",
+        "precision": 0.6667,
+        "recall": 1.0,
+        "f1": 0.8,
+        "support": 2
+      },
+      {
+        "class_id": 483,
+        "species": "Uromyces dactylidis",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 484,
+        "species": "Uromyces ficariae",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 485,
+        "species": "Volvopluteus gloiocephalus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 486,
+        "species": "Vuilleminia comedens",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 487,
+        "species": "Xanthoporia radiata",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 488,
+        "species": "Xanthoria parietina",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 489,
+        "species": "Xerocomellus chrysenteron",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 490,
+        "species": "Xerocomellus cisalpinus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 491,
+        "species": "Xerocomellus porosporus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 492,
+        "species": "Xerocomellus pruinatus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 493,
+        "species": "Xerocomus ferrugineus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 494,
+        "species": "Xylaria carpophila",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 495,
+        "species": "Xylaria hypoxylon",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 496,
+        "species": "Xylaria longipes",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 497,
+        "species": "Xylaria polymorpha",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 498,
+        "species": "Xylodon radula",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 499,
+        "species": "Xylodon subtropicus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      }
+    ],
+    "worst_classes": [
+      {
+        "class_id": 0,
+        "species": "Abortiporus biennis",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 1,
+        "species": "Agaricus arvensis",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 2,
+        "species": "Agaricus augustus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 3,
+        "species": "Agaricus bitorquis",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 4,
+        "species": "Agaricus campestris",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 5,
+        "species": "Agaricus impudicus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 6,
+        "species": "Agaricus sylvicola",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 7,
+        "species": "Agaricus xanthodermus",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 8,
+        "species": "Agrocybe praecox",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 9,
+        "species": "Aleuria aurantia",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 10,
+        "species": "Amanita citrina",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 11,
+        "species": "Amanita fulva",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 12,
+        "species": "Amanita gemmata",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 13,
+        "species": "Amanita muscaria",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 2
+      },
+      {
+        "class_id": 14,
+        "species": "Amanita pantherina",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 15,
+        "species": "Amanita phalloides",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 16,
+        "species": "Amanita porphyria",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 17,
+        "species": "Amanita rubescens",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 18,
+        "species": "Amanita virosa",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      {
+        "class_id": 19,
+        "species": "Amaropostia stiptica",
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      }
+    ],
+    "best_classes": [
+      {
+        "class_id": 137,
+        "species": "Erythricium aurantiacum",
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 1
+      },
+      {
+        "class_id": 282,
+        "species": "Micarea lignaria",
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 2
+      },
+      {
+        "class_id": 283,
+        "species": "Microbotryum stellariae",
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 1
+      },
+      {
+        "class_id": 314,
+        "species": "Panaeolus papilionaceus",
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 1
+      },
+      {
+        "class_id": 482,
+        "species": "Urocystis eranthidis",
+        "precision": 0.6667,
+        "recall": 1.0,
+        "f1": 0.8,
+        "support": 2
+      },
+      {
+        "class_id": 26,
+        "species": "Arthonia radiata",
+        "precision": 0.5,
+        "recall": 1.0,
+        "f1": 0.6667,
+        "support": 1
+      },
+      {
+        "class_id": 66,
+        "species": "Cheilymenia granulata",
+        "precision": 0.5,
+        "recall": 1.0,
+        "f1": 0.6667,
+        "support": 1
+      },
+      {
+        "class_id": 100,
+        "species": "Cordyceps militaris",
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.6667,
+        "support": 2
+      },
+      {
+        "class_id": 107,
+        "species": "Cosmospora arxii",
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.6667,
+        "support": 2
+      },
+      {
+        "class_id": 222,
+        "species": "Lachnum virgineum",
+        "precision": 0.5,
+        "recall": 1.0,
+        "f1": 0.6667,
+        "support": 1
+      },
+      {
+        "class_id": 310,
+        "species": "Ochrolechia frigida",
+        "precision": 0.5,
+        "recall": 1.0,
+        "f1": 0.6667,
+        "support": 1
+      },
+      {
+        "class_id": 322,
+        "species": "Paxillus obscurisporus",
+        "precision": 0.5,
+        "recall": 1.0,
+        "f1": 0.6667,
+        "support": 1
+      },
+      {
+        "class_id": 328,
+        "species": "Phacidium lauri",
+        "precision": 0.5,
+        "recall": 1.0,
+        "f1": 0.6667,
+        "support": 1
+      },
+      {
+        "class_id": 367,
+        "species": "Polydesmia pruinosa",
+        "precision": 0.5,
+        "recall": 1.0,
+        "f1": 0.6667,
+        "support": 1
+      },
+      {
+        "class_id": 25,
+        "species": "Arrhenia retiruga",
+        "precision": 0.3333,
+        "recall": 1.0,
+        "f1": 0.5,
+        "support": 1
+      },
+      {
+        "class_id": 58,
+        "species": "Candelariella vitellina",
+        "precision": 0.3333,
+        "recall": 0.5,
+        "f1": 0.4,
+        "support": 2
+      },
+      {
+        "class_id": 88,
+        "species": "Coleosporium tussilaginis",
+        "precision": 0.3333,
+        "recall": 0.5,
+        "f1": 0.4,
+        "support": 2
+      },
+      {
+        "class_id": 229,
+        "species": "Lactarius necator",
+        "precision": 0.25,
+        "recall": 1.0,
+        "f1": 0.4,
+        "support": 1
+      },
+      {
+        "class_id": 260,
+        "species": "Lobaria pulmonaria",
+        "precision": 0.3333,
+        "recall": 0.5,
+        "f1": 0.4,
+        "support": 2
+      },
+      {
+        "class_id": 424,
+        "species": "Seifertia azaleae",
+        "precision": 0.3333,
+        "recall": 0.5,
+        "f1": 0.4,
+        "support": 2
+      }
+    ],
+    "macro_avg": {
+      "precision": 0.025867235379000087,
+      "recall": 0.049,
+      "f1-score": 0.029443802190241813,
+      "support": 600.0
+    },
+    "weighted_avg": {
+      "precision": 0.03022269614916674,
+      "recall": 0.05,
+      "f1-score": 0.03290158119028088,
+      "support": 600.0
+    }
+  },
+  "multi_view_ablation": null
+}

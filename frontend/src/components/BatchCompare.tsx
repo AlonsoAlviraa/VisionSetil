@@ -1,11 +1,11 @@
 /**
- * BatchCompare — Side-by-side comparison of past identification results.
- *
- * Lets users compare up to 3 results from session history to help them
- * distinguish similar species (e.g. "is this the same mushroom I found yesterday?").
+ * BatchCompare — side-by-side comparison of past identification results.
+ * Photography-first; risk labels without emoji chrome.
  */
 import { useMemo, useState } from 'react'
 import type { ClassificationResult } from '../api/types'
+import { getRiskMeta } from '../lib/riskLabels'
+import { IconCheck, IconClose } from './icons'
 
 export interface HistoryEntry {
   id: string
@@ -38,25 +38,13 @@ export function BatchCompare({ history, onClose, onSelectEntry }: BatchComparePr
     })
   }
 
-  const edibilityIcon = (ed: string | null): string => {
-    const map: Record<string, string> = {
-      toxic: '☠️',
-      poisonous: '☠️',
-      deadly: '💀',
-      edible: '✓',
-      'edible-conditionally': '⚠️',
-      inedible: '⚠️',
-    }
-    return ed ? (map[ed.toLowerCase()] ?? '?') : '?'
-  }
-
   return (
     <div className="batch-compare-overlay">
       <div className="batch-compare-modal">
         <div className="batch-compare-header">
-          <h2> Comparar identificaciones</h2>
-          <button className="btn-icon" onClick={onClose} aria-label="Cerrar comparación">
-            ✕
+          <h2>Comparar identificaciones</h2>
+          <button type="button" className="btn-icon" onClick={onClose} aria-label="Cerrar comparación">
+            <IconClose size={18} />
           </button>
         </div>
         <p className="batch-compare-hint">
@@ -67,7 +55,6 @@ export function BatchCompare({ history, onClose, onSelectEntry }: BatchComparePr
           <p className="empty-state">No hay historial para comparar.</p>
         ) : (
           <>
-            {/* History picker */}
             <div className="compare-picker">
               {history.map((entry) => {
                 const isSelected = selected.includes(entry.id)
@@ -75,6 +62,7 @@ export function BatchCompare({ history, onClose, onSelectEntry }: BatchComparePr
                 return (
                   <button
                     key={entry.id}
+                    type="button"
                     className={`compare-pick-item ${isSelected ? 'selected' : ''}`}
                     onClick={() => toggle(entry.id)}
                     disabled={isDisabled}
@@ -88,13 +76,14 @@ export function BatchCompare({ history, onClose, onSelectEntry }: BatchComparePr
                         {entry.result.predictions[0]?.species ?? 'Rechazado'}
                       </span>
                     </div>
-                    <span className="compare-check">{isSelected ? '✓' : ''}</span>
+                    <span className="compare-check" aria-hidden="true">
+                      {isSelected ? <IconCheck size={14} /> : null}
+                    </span>
                   </button>
                 )
               })}
             </div>
 
-            {/* Comparison grid */}
             {selectedEntries.length > 0 && (
               <div
                 className="compare-grid"
@@ -103,18 +92,19 @@ export function BatchCompare({ history, onClose, onSelectEntry }: BatchComparePr
                 {selectedEntries.map((entry) => {
                   const top = entry.result.predictions[0]
                   const confidence = top ? (top.confidence * 100).toFixed(1) : '—'
+                  const risk = getRiskMeta(top?.edibility)
                   return (
                     <div key={entry.id} className="compare-card">
                       <img
                         src={entry.previews[0]}
-                        alt={top?.species ?? 'Mushroom'}
+                        alt={top?.species ?? 'Seta'}
                         className="compare-card-img"
                       />
                       <div className="compare-card-body">
-                        <span
-                          className={`compare-decision ${entry.result.decision}`}
-                        >
-                          {entry.result.decision === 'accepted' ? '✅ Aceptado' : '⚠️ Rechazado'}
+                        <span className={`compare-decision ${entry.result.decision}`}>
+                          {entry.result.decision === 'accepted'
+                            ? 'Pista tentativa'
+                            : 'Sin ID fiable'}
                         </span>
                         <h3 className="compare-species">{top?.species ?? 'No identificado'}</h3>
                         {top?.common_name && (
@@ -124,22 +114,21 @@ export function BatchCompare({ history, onClose, onSelectEntry }: BatchComparePr
                           <div className="confidence-bar">
                             <div
                               className="confidence-fill"
-                              style={{ width: `${Math.min(Number(confidence), 100)}%` }}
+                              style={{ width: `${Math.min(Number(confidence) || 0, 100)}%` }}
                             />
                           </div>
                           <span>{confidence}%</span>
                         </div>
                         {top?.edibility && (
-                          <span className="compare-edibility">
-                            {edibilityIcon(top.edibility)} {top.edibility}
-                          </span>
+                          <span className={`risk-chip ${risk.className}`}>{risk.label}</span>
                         )}
                         {onSelectEntry && (
                           <button
+                            type="button"
                             className="btn-open-entry"
                             onClick={() => onSelectEntry(entry)}
                           >
-                            Ver detalle →
+                            Ver detalle
                           </button>
                         )}
                       </div>

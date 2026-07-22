@@ -1,203 +1,236 @@
-import { useState, useEffect, useMemo } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { mushroomDatabase, getFeaturedMushrooms } from '../data/mushroomDatabase'
-import { FeaturedMushroomCard } from '../components/FeaturedMushroomCard'
-import { getMushroomImage } from '../api/mushroomImages'
-import { SporeParticles } from '../components/SporeParticles'
+import { HOME_FEATURES, MEDIA } from '../data/media'
+import { useSpeciesImage } from '../hooks/useSpeciesImage'
+import { SeasonRadar } from '../components/SeasonRadar'
+import { loadSpeciesCatalog, type CatalogSpecies } from '../data/speciesCatalog'
 
-type SeasonKey = 'winter' | 'spring' | 'summer' | 'autumn'
+const PhotoSpinViewer = lazy(() =>
+  import('../components/PhotoSpinViewer').then((m) => ({ default: m.PhotoSpinViewer })),
+)
 
-function getSeasonInfo() {
-  const month = new Date().getMonth() + 1
-  const seasons: Record<SeasonKey, { label: string; icon: string; color: string }> = {
-    winter: { label: 'Invierno', icon: '❄️', color: '#5b9bd5' },
-    spring: { label: 'Primavera', icon: '🌿', color: '#7cb342' },
-    summer: { label: 'Verano', icon: '☀️', color: '#f5a623' },
-    autumn: { label: 'Otoño', icon: '🍂', color: '#d97706' },
-  }
-  let key: SeasonKey = 'autumn'
-  if (month >= 12 || month <= 2) key = 'winter'
-  else if (month >= 3 && month <= 5) key = 'spring'
-  else if (month >= 6 && month <= 8) key = 'summer'
-  return { ...seasons[key], month }
+/** Lightweight deadly taxa for first paint — full catalog loads async (code-split). */
+const HOME_DEADLY_SEED: Array<{ taxon: string; slug: string; name: string; risk: string }> = [
+  { taxon: 'Amanita phalloides', slug: 'amanita-phalloides', name: 'Oronja verde', risk: 'deadly' },
+  { taxon: 'Amanita virosa', slug: 'amanita-virosa', name: 'Ángel destructor', risk: 'deadly' },
+  {
+    taxon: 'Galerina marginata',
+    slug: 'galerina-marginata',
+    name: 'Galerina de los márgenes',
+    risk: 'deadly',
+  },
+  {
+    taxon: 'Cortinarius rubellus',
+    slug: 'cortinarius-rubellus',
+    name: 'Cortinario mortal',
+    risk: 'deadly',
+  },
+  {
+    taxon: 'Lepiota brunneoincarnata',
+    slug: 'lepiota-brunneoincarnata',
+    name: 'Lepiota mortal',
+    risk: 'deadly',
+  },
+]
+
+function seasonLabel(): string {
+  const m = new Date().getMonth() + 1
+  if (m >= 12 || m <= 2) return 'Invierno'
+  if (m <= 5) return 'Primavera'
+  if (m <= 8) return 'Verano'
+  return 'Otoño'
+}
+
+function DeadlyThumb({
+  taxon,
+  slug,
+  name,
+  risk,
+}: {
+  taxon: string
+  slug: string
+  name: string
+  risk: string
+}) {
+  const { url } = useSpeciesImage(taxon, { riskLabel: risk, context: 'eager' })
+  return (
+    <Link to={`/enciclopedia/${slug}`} className="home-deadly-chip" title={`${name} — ${taxon}`}>
+      <img src={url} alt={`${name} (${taxon})`} loading="lazy" decoding="async" />
+      <span>
+        <small>{name}</small>
+        <em>{taxon}</em>
+      </span>
+    </Link>
+  )
 }
 
 export function HomePage() {
-  const featured = getFeaturedMushrooms()
-  const [heroImage, setHeroImage] = useState<string | null>(null)
-  const seasonInfo = getSeasonInfo()
-
-  const inSeason = useMemo(() => {
-    const iconToSeason: Record<string, string> = {
-      '❄️': 'winter',
-      '🌿': 'spring',
-      '☀️': 'summer',
-      '🍂': 'autumn',
-    }
-    const seasonKeywords: Record<string, string[]> = {
-      winter: ['invierno', 'todas'],
-      spring: ['primavera', 'todas'],
-      summer: ['verano', 'todas'],
-      autumn: ['otono', 'otoño', 'todas'],
-    }
-    const seasonKey = iconToSeason[seasonInfo.icon] || 'autumn'
-    const keywords = seasonKeywords[seasonKey] || seasonKeywords.autumn
-    return mushroomDatabase.filter((m) => m.season && keywords.some((kw) => m.season.toLowerCase().includes(kw))).slice(0, 4)
-  }, [seasonInfo])
-
-  const deadly = useMemo(() => mushroomDatabase.filter((m) => m.edibility === 'mortifero').slice(0, 3), [])
+  const [catalogCount, setCatalogCount] = useState<number | null>(null)
+  const [deadlyPreview, setDeadlyPreview] = useState(HOME_DEADLY_SEED)
+  const [seasonOpen, setSeasonOpen] = useState(false)
 
   useEffect(() => {
-    getMushroomImage('Cantharellus cibarius').then((url) => url && setHeroImage(url))
+    let cancelled = false
+    void loadSpeciesCatalog().then((list: CatalogSpecies[]) => {
+      if (cancelled) return
+      setCatalogCount(list.length)
+      const deadly = list
+        .filter((s) => s.risk_label === 'deadly')
+        .slice(0, 5)
+        .map((s) => ({
+          taxon: s.taxon,
+          slug: s.slug,
+          name: s.common_names[0] || s.taxon,
+          risk: s.risk_label,
+        }))
+      if (deadly.length > 0) setDeadlyPreview(deadly)
+    })
+    return () => {
+      cancelled = true
+    }
   }, [])
 
+  const displayCount = catalogCount ?? '…'
+
   return (
-    <div className="home-page">
-      {/* ═══ HERO ═══ */}
-      <section className="hero-section">
-        {heroImage && (
-          <div className="hero-bg-image" style={{ backgroundImage: `url(${heroImage})` }} />
-        )}
-        <div className="hero-overlay" />
-        <SporeParticles count={20} color="rgba(255, 255, 255, 0.3)" />
-        <div className="hero-content">
-          <h1 className="hero-title">
-            Guía de setas<br />
-            de <span className="hero-highlight">España</span>
+    <div className="home-page home-atelier">
+      <section className="atelier-hero" aria-label="Presentación">
+        <div
+          className="atelier-hero__media"
+          style={{ backgroundImage: `url(${MEDIA.heroForest})` }}
+          role="img"
+          aria-label="Setas en su hábitat natural"
+        />
+        <div className="atelier-hero__veil" />
+        <div className="atelier-hero__content">
+          <span className="atelier-kicker">Micología de campo</span>
+          <h1>
+            Setas reales.
+            <br />
+            <em>Riesgo claro.</em>
           </h1>
-          <p className="hero-description">
-            Enciclopedia con {mushroomDatabase.length} especies, identificador visual,
-            mapa de zonas y guía de seguridad. Todo lo que necesitas como aficionado a la micología.
+          <p className="atelier-hero__lead">
+            Fotos de campo, catálogo y una IA que se calla si duda. Te orientamos — el micólogo
+            decide.
           </p>
-          <div className="hero-cta">
-            <Link to="/identificar" className="btn-hero-primary">🔍 Identificar seta</Link>
-            <Link to="/enciclopedia" className="btn-hero-secondary">📚 Enciclopedia</Link>
+          <div className="atelier-cta-row">
+            <Link to="/identificar" className="btn-atelier btn-atelier--primary">
+              Identificar seta
+            </Link>
+            <Link to="/reto" className="btn-atelier btn-atelier--ghost">
+              Jugar al reto
+            </Link>
           </div>
-          <div className="hero-stats-bar">
-            <div className="hero-stat-item">
-              <span className="hero-stat-number">{mushroomDatabase.length}</span>
-              <span className="hero-stat-label">Especies</span>
+          <div className="atelier-stats">
+            <div className="atelier-stat">
+              <strong>{displayCount}</strong>
+              <span>Taxones</span>
             </div>
-            <div className="hero-divider" />
-            <div className="hero-stat-item">
-              <span className="hero-stat-number">66</span>
-              <span className="hero-stat-label">Zonas</span>
+            <div className="atelier-stat">
+              <strong>{deadlyPreview.length}+</strong>
+              <span>Mortales</span>
             </div>
-            <div className="hero-divider" />
-            <div className="hero-stat-item">
-              <span className="hero-stat-number">{seasonInfo.icon}</span>
-              <span className="hero-stat-label">{seasonInfo.label}</span>
+            <div className="atelier-stat">
+              <strong>{seasonLabel()}</strong>
+              <span>Temporada</span>
             </div>
           </div>
+          <p className="atelier-hero__fine">
+            Calidad alimenticia solo con fuentes curadas · el reto no inventa comestibles.
+          </p>
         </div>
       </section>
 
-      {/* ═══ FEATURES ═══ */}
-      <section className="section">
-        <div className="section-header-center">
-          <h2 className="section-title-lg">Explora</h2>
-          <p className="section-subtitle-lg">Herramientas para el aficionado a las setas</p>
-        </div>
-        <div className="features-grid-v2">
-          <Link to="/identificar" className="feature-tile">
-            <div className="feature-tile-icon" style={{ background: 'linear-gradient(135deg, #3a5a40, #588157)' }}>🔍</div>
-            <h3>Identificador</h3>
-            <p>Sube una foto y obtén el resultado en segundos.</p>
-            <span className="feature-arrow">→</span>
-          </Link>
-          <Link to="/enciclopedia" className="feature-tile">
-            <div className="feature-tile-icon" style={{ background: 'linear-gradient(135deg, #bc6c25, #dda15e)' }}>📖</div>
-            <h3>Enciclopedia</h3>
-            <p>{mushroomDatabase.length} especies con fotos, descripción y hábitat.</p>
-            <span className="feature-arrow">→</span>
-          </Link>
-          <Link to="/mapa" className="feature-tile">
-            <div className="feature-tile-icon" style={{ background: 'linear-gradient(135deg, #3d5a80, #98c1d9)' }}>🗺️</div>
-            <h3>Mapa de zonas</h3>
-            <p>66 zonas con datos de fructificación por época del año.</p>
-            <span className="feature-arrow">→</span>
-          </Link>
-          <Link to="/educacion" className="feature-tile">
-            <div className="feature-tile-icon" style={{ background: 'linear-gradient(135deg, #5c3d2e, #a4633a)' }}>🎓</div>
-            <h3>Aprende</h3>
-            <p>Reglas de oro, anatomía y guía de seguridad.</p>
-            <span className="feature-arrow">→</span>
-          </Link>
+      <section className="atelier-section home-spin-section">
+        <div className="home-spin-grid">
+          <div>
+            <p className="atelier-kicker home-kicker">Fotografía de campo</p>
+            <h2 className="home-spin-title">Fotos reales en 360°</h2>
+            <p className="home-spin-lead">
+              Arrastra entre fotos de la misma especie. Sin dibujos inventados.
+            </p>
+            <Link to="/enciclopedia" className="btn-atelier btn-atelier--ink">
+              Abrir fichas
+            </Link>
+          </div>
+          <Suspense
+            fallback={
+              <div className="skeleton-atelier skeleton-atelier--spin" aria-hidden>
+                <div className="skeleton-atelier__shimmer" />
+              </div>
+            }
+          >
+            <PhotoSpinViewer
+              taxon="Amanita phalloides"
+              height={400}
+              riskLabel="deadly"
+              label="Oronja verde — fotos reales"
+              autoPlay
+            />
+          </Suspense>
         </div>
       </section>
 
-      {/* ═══ FEATURED ═══ */}
-      <section className="section">
-        <div className="section-header-center">
-          <span className="section-badge">⭐ Destacadas</span>
-          <h2 className="section-title-lg">Especies que debes conocer</h2>
-          <p className="section-subtitle-lg">De los reyes del bosque a las más peligrosas</p>
+      <section className="atelier-section">
+        <div className="atelier-section__head">
+          <div>
+            <h2>Tres caminos</h2>
+            <p>Identifica, consulta el catálogo o entrena con el reto.</p>
+          </div>
         </div>
-        <div className="featured-mushroom-grid">
-          {featured.map((m) => (
-            <FeaturedMushroomCard key={m.scientificName} species={m} />
+        <div className="atelier-grid atelier-grid--3">
+          {HOME_FEATURES.slice(0, 3).map((f) => (
+            <Link key={f.to} to={f.to} className="atelier-card">
+              <div className="atelier-card__img" style={{ backgroundImage: `url(${f.image})` }} />
+              <div className="atelier-card__veil" />
+              <div className="atelier-card__body">
+                <h3>{f.title}</h3>
+                <p>{f.description}</p>
+                <span className="atelier-card__cta">{f.cta}</span>
+              </div>
+            </Link>
           ))}
         </div>
       </section>
 
-      {/* ═══ IN SEASON ═══ */}
-      {inSeason.length > 0 && (
-        <section className="section">
-          <div className="section-header-center">
-            <span className="section-badge" style={{ background: seasonInfo.color + '22', color: seasonInfo.color }}>
-              {seasonInfo.icon} Temporada actual
-            </span>
-            <h2 className="section-title-lg">En temporada este {seasonInfo.label.toLowerCase()}</h2>
-            <p className="section-subtitle-lg">Especies que fructifican ahora</p>
+      <section className="atelier-section">
+        <div className="atelier-section__head">
+          <div>
+            <h2>Alertas mortales</h2>
+            <p>Las que conviene conocer de memoria.</p>
           </div>
-          <div className="featured-mushroom-grid">
-            {inSeason.map((m) => (
-              <FeaturedMushroomCard key={m.scientificName} species={m} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* ═══ DEADLY ═══ */}
-      {deadly.length > 0 && (
-        <section className="section">
-          <div className="section-header-center">
-            <span className="section-badge" style={{ background: 'rgba(220,38,38,0.1)', color: '#dc2626' }}>
-              ☠️ Mortales
-            </span>
-            <h2 className="section-title-lg">Las que pueden matarte</h2>
-            <p className="section-subtitle-lg">Aprende a identificarlas para evitarlas</p>
-          </div>
-          <div className="featured-mushroom-grid">
-            {deadly.map((m) => (
-              <FeaturedMushroomCard key={m.scientificName} species={m} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* ═══ SAFETY ═══ */}
-      <section className="section">
-        <div className="safety-banner-v2">
-          <div className="safety-banner-icon">⚠️</div>
-          <div className="safety-banner-content">
-            <h3>Seguridad ante todo</h3>
-            <p>
-              Esta herramienta es orientativa. <strong>Nunca consumas una seta
-              sin la validación de un experto micólogo.</strong> Ante la duda, desecha.
-            </p>
-          </div>
+        </div>
+        <div className="home-deadly-row" role="list">
+          {deadlyPreview.map((s) => (
+            <DeadlyThumb
+              key={s.slug}
+              taxon={s.taxon}
+              slug={s.slug}
+              name={s.name}
+              risk={s.risk}
+            />
+          ))}
         </div>
       </section>
 
-      {/* ═══ CTA ═══ */}
-      <section className="section">
-        <div className="cta-card">
-          <div style={{ fontSize: '3rem', marginBottom: '0.75rem' }}>🍄</div>
-          <h2>¿Tienes una seta en mano?</h2>
-          <p>Súbela y te ayudamos a identificarla.</p>
-          <Link to="/identificar" className="btn-hero-primary">🔍 Identificar ahora</Link>
-        </div>
+      <section className="atelier-section">
+        <button
+          type="button"
+          className="home-season-toggle"
+          aria-expanded={seasonOpen}
+          onClick={() => setSeasonOpen((v) => !v)}
+        >
+          <span>
+            <strong>Esta temporada</strong>
+            <em>Vista educativa de lo que suele fructificar</em>
+          </span>
+          <span aria-hidden="true">{seasonOpen ? '−' : '+'}</span>
+        </button>
+        {seasonOpen && (
+          <div className="home-season-body">
+            <SeasonRadar />
+          </div>
+        )}
       </section>
     </div>
   )

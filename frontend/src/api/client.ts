@@ -23,11 +23,17 @@ const client = axios.create({
 export async function classifyImages(
   files: File[],
   metadata?: ObservationMetadata,
+  viewTypes?: string[],
 ): Promise<ClassificationResult> {
   const formData = new FormData()
 
   for (const file of files) {
     formData.append('images', file)
+  }
+
+  if (viewTypes && viewTypes.length > 0) {
+    // Backend expects comma-separated canonical views (gills,front,habitat,detail).
+    formData.append('view_types', viewTypes.join(','))
   }
 
   if (metadata) {

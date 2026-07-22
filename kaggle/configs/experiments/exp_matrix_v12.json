@@ -1,0 +1,90 @@
+{
+  "matrix_name": "visionsetil_exp_matrix_v12",
+  "baseline": {
+    "run": "kernel_output_v9",
+    "test_map_at_3": 0.0758,
+    "test_accuracy": 0.05,
+    "safety_recall_deadly": 0.0,
+    "max_species": 500,
+    "max_obs_per_species": 8,
+    "epochs": 8,
+    "backbone": "convnextv2_tiny.fcmae_ft_in22k_in1k"
+  },
+  "gpu_budget_hours_estimate": 6,
+  "experiments": [
+    {
+      "id": "E12-data-scale",
+      "enabled": true,
+      "priority": 1,
+      "config_overrides": {
+        "max_species": 1000,
+        "max_obs_per_species": 16,
+        "epochs": 12,
+        "patience": 4,
+        "batch_size": 12,
+        "d_model": 512,
+        "backbone": "convnextv2_tiny.fcmae_ft_in22k_in1k",
+        "deadly_oversample": 1.0
+      },
+      "hypothesis": "More observations per class dominate architecture tweaks in few-shot fungi.",
+      "success_criteria": {
+        "test_map_at_3_min": 0.12,
+        "safety_recall_deadly_min": 0.2
+      }
+    },
+    {
+      "id": "E12-deadly-focus",
+      "enabled": true,
+      "priority": 2,
+      "config_overrides": {
+        "max_species": 500,
+        "max_obs_per_species": 12,
+        "epochs": 10,
+        "deadly_oversample": 5.0,
+        "focal_gamma": 2.5,
+        "center_loss_weight": 0.02
+      },
+      "hypothesis": "Weighted deadly sampling raises safety recall without full collapse of MAP@3.",
+      "success_criteria": {
+        "safety_recall_deadly_min": 0.5,
+        "test_map_at_3_min": 0.06
+      }
+    },
+    {
+      "id": "E12-single-view-ablation",
+      "enabled": true,
+      "priority": 3,
+      "config_overrides": {
+        "max_views_train": 1,
+        "max_species": 500,
+        "max_obs_per_species": 12,
+        "epochs": 8
+      },
+      "hypothesis": "Single-view MAP@3 will be lower than multi-view; gap is the multi-view ROI.",
+      "success_criteria": {
+        "compare_to": "E12-data-scale",
+        "expect": "lower_map_at_3"
+      }
+    },
+    {
+      "id": "E12-open-set-cal",
+      "enabled": true,
+      "priority": 4,
+      "config_overrides": {
+        "posthoc_only": true,
+        "conf_grid": [0.1, 0.15, 0.2, 0.3, 0.4],
+        "margin_grid": [0.02, 0.05, 0.1, 0.15]
+      },
+      "hypothesis": "Abstention at conf/margin thresholds doubles conditional accuracy at 20%+ coverage.",
+      "success_criteria": {
+        "accuracy_when_accept_min": 0.15,
+        "accept_rate_min": 0.2
+      }
+    }
+  ],
+  "shipping_gates": {
+    "never_claim_real_if_mock": true,
+    "orientation_only": true,
+    "deadly_false_safe_is_blocker": true
+  }
+}

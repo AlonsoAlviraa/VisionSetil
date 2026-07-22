@@ -1,4 +1,7 @@
-import { useState, useMemo, useEffect } from 'react'
+/**
+ * Mycological zones map — live weather-alert levels (red = poor conditions).
+ */
+import { useState, useMemo, useEffect, useCallback } from 'react'
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet'
 import L from 'leaflet'
 import { Link } from 'react-router-dom'
@@ -10,19 +13,22 @@ import {
   SPAIN_ZOOM,
   type MushroomZone,
 } from '../data/mushroomZones'
-import {
-  getMushroomByScientificName,
-  EDIBILITY_LABELS,
-  EDIBILITY_COLORS,
-} from '../data/mushroomDatabase'
+import { getSpeciesByTaxon, loadSpeciesCatalog } from '../data/speciesCatalog'
+import { getRiskMeta } from '../lib/riskLabels'
+import { SpeciesNameBlock } from '../components/SpeciesNameBlock'
+import { SeasonRadar } from '../components/SeasonRadar'
 import {
   fetchWeatherData,
   evaluateMushroomConditions,
-  type WeatherData,
   type MushroomConditions,
 } from '../api/weather'
+import {
+  alertFromConditions,
+  alertFromScore,
+  mapPool,
+  type ZoneAlertMeta,
+} from '../lib/zoneAlerts'
 
-// Fix Leaflet default icon issue with bundlers
 delete (L.Icon.Default.prototype as unknown as { _getIconUrl?: unknown })._getIconUrl
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
@@ -30,65 +36,61 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 })
 
-/** Color based on fruiting conditions score */
-function getScoreColor(score: number | null): string {
-  if (score === null) return '#94a3b8' // gray = loading
-  if (score >= 75) return '#16a34a' // green = perfecto
-  if (score >= 55) return '#84cc16' // lime = bueno
-  if (score >= 35) return '#f59e0b' // amber = regular
-  return '#dc2626' // red = seco
-}
-
-/** Custom colored icon based on fruiting conditions score */
-function makeIcon(score: number | null): L.DivIcon {
-  const color = getScoreColor(score)
-  const size = score !== null ? 28 : 22
-  const ring = score === null ? '#cbd5e1' : color
+function makeAlertIcon(meta: ZoneAlertMeta): L.DivIcon {
+  const color = meta.color
+  const pulse = meta.level === 'extreme' || meta.level === 'severe'
+  const scoreTxt = meta.score === null ? '·' : String(Math.round(meta.score))
   return L.divIcon({
-    className: 'custom-marker',
-    html: `<div style="
-      background: ${color};
-      width: ${size}px; height: ${size}px;
-      border-radius: 50% 50% 50% 0;
-      transform: rotate(-45deg);
-      border: 3px solid white;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.35), 0 0 0 2px ${ring}33;
-    "></div>`,
-    iconSize: [size, size],
-    iconAnchor: [size / 2, size],
-    popupAnchor: [0, -size],
+    className: 'zone-alert-marker',
+    html: `<div class="zam ${pulse ? 'zam--pulse' : ''}" style="--zam:${color}">
+      <span class="zam__score">${scoreTxt}</span>
+    </div>`,
+    iconSize: [36, 36],
+    iconAnchor: [18, 36],
+    popupAnchor: [0, -32],
   })
 }
 
-/** Component to fly to zone when selected (FIXED: uses useEffect) */
 function MapController({ zone }: { zone: MushroomZone | null }) {
   const map = useMap()
   useEffect(() => {
-    if (zone) {
-      map.flyTo([zone.lat, zone.lng], 9, { duration: 1.2 })
-    }
+    if (zone) map.flyTo([zone.lat, zone.lng], 9, { duration: 1.1 })
   }, [zone, map])
   return null
 }
 
-/** Weather widget for a zone */
-function ZoneWeather({ lat, lng }: { lat: number; lng: number }) {
-  const [weather, setWeather] = useState<WeatherData | null>(null)
-  const [conditions, setConditions] = useState<MushroomConditions | null>(null)
-  const [loading, setLoading] = useState(true)
+function speciesSlug(sciName: string): string {
+  const cat = getSpeciesByTaxon(sciName)
+  if (cat) return cat.slug
+  return sciName.toLowerCase().replace(/\s+/g, '-')
+}
+
+function ZoneWeatherPanel({
+  lat,
+  lng,
+  cached,
+}: {
+  lat: number
+  lng: number
+  cached: MushroomConditions | null | undefined
+}) {
+  const [conditions, setConditions] = useState<MushroomConditions | null>(cached ?? null)
+  const [loading, setLoading] = useState(cached === undefined)
   const [error, setError] = useState(false)
 
   useEffect(() => {
+    if (cached !== undefined) {
+      setConditions(cached)
+      setLoading(false)
+      return
+    }
     let cancelled = false
     setLoading(true)
-    setError(false)
     fetchWeatherData(lat, lng)
       .then((w) => {
         if (cancelled) return
-        setWeather(w)
-        if (w) {
-          setConditions(evaluateMushroomConditions(w))
-        }
+        if (w) setConditions(evaluateMushroomConditions(w))
+        else setError(true)
         setLoading(false)
       })
       .catch(() => {
@@ -100,99 +102,63 @@ function ZoneWeather({ lat, lng }: { lat: number; lng: number }) {
     return () => {
       cancelled = true
     }
-  }, [lat, lng])
+  }, [lat, lng, cached])
 
   if (loading) {
+    return <div className="alert-banner alert-banner--unknown">Cargando aviso meteorológico…</div>
+  }
+  if (error || !conditions) {
     return (
-      <div className="weather-widget weather-loading">
-        <span className="weather-spinner">🌦️</span>
-        <span>Cargando datos meteorológicos...</span>
+      <div className="alert-banner alert-banner--unknown">
+        No se pudieron cargar datos. Fuente:{' '}
+        <a href="https://open-meteo.com" target="_blank" rel="noopener noreferrer">
+          Open-Meteo
+        </a>
       </div>
     )
   }
 
-  if (error || !weather || !conditions) {
-    return (
-      <div className="weather-widget weather-error">
-        <span>⚠️ No se pudieron cargar los datos meteorológicos</span>
-      </div>
-    )
-  }
-
-  const scoreColor =
-    conditions.score >= 75
-      ? '#16a34a'
-      : conditions.score >= 55
-        ? '#f59e0b'
-        : conditions.score >= 35
-          ? '#d97706'
-          : '#dc2626'
-
+  const meta = alertFromConditions(conditions)
   return (
-    <div className="weather-widget">
-      <div className="conditions-header">
-        <span className="conditions-icon">{conditions.icon}</span>
-        <div className="conditions-info">
-          <span className="conditions-label">Condiciones para setas</span>
-          <span className="conditions-score-text" style={{ color: scoreColor }}>
-            {conditions.label.toUpperCase()} · {conditions.score}/100
-          </span>
-        </div>
+    <div
+      className={`alert-banner alert-banner--${meta.level}`}
+      style={{ borderColor: meta.border, background: meta.bg }}
+    >
+      <div className="alert-banner__row">
+        <span className="alert-banner__level" style={{ color: meta.color }}>
+          {meta.label}
+        </span>
+        <span className="alert-banner__score" style={{ color: meta.color }}>
+          Índice {conditions.score}/100
+        </span>
       </div>
-
-      <div className="conditions-score-bar">
-        <div
-          className="conditions-score-fill"
-          style={{
-            width: `${conditions.score}%`,
-            background: `linear-gradient(90deg, ${scoreColor}, ${scoreColor}cc)`,
-          }}
-        ></div>
-      </div>
-
-      <div className="weather-grid">
-        <div className="weather-item">
-          <span className="weather-icon">💧</span>
-          <span className="weather-label">Humedad suelo (0-7cm)</span>
-          <span className="weather-value">{weather.soilMoisture07 >= 0 ? `${weather.soilMoisture07.toFixed(0)}%` : '—'}</span>
-        </div>
-        <div className="weather-item">
-          <span className="weather-icon">💧</span>
-          <span className="weather-label">Humedad profunda (7-28cm)</span>
-          <span className="weather-value">{weather.soilMoisture728 >= 0 ? `${weather.soilMoisture728.toFixed(0)}%` : '—'}</span>
-        </div>
-        <div className="weather-item">
-          <span className="weather-icon">🌧️</span>
-          <span className="weather-label">Precipitación hoy</span>
-          <span className="weather-value">{weather.precipitation.toFixed(1)} mm</span>
-        </div>
-        <div className="weather-item">
-          <span className="weather-icon">📊</span>
-          <span className="weather-label">Prob. lluvia mañana</span>
-          <span className="weather-value">{weather.precipitationProbability}%</span>
-        </div>
-        <div className="weather-item">
-          <span className="weather-icon">🌡️</span>
-          <span className="weather-label">Temp. suelo</span>
-          <span className="weather-value">{weather.soilTemperature > -50 ? `${weather.soilTemperature.toFixed(1)}°C` : '—'}</span>
-        </div>
-        <div className="weather-item">
-          <span className="weather-icon">💨</span>
-          <span className="weather-label">Humedad aire</span>
-          <span className="weather-value">{weather.relativeHumidity >= 0 ? `${weather.relativeHumidity.toFixed(0)}%` : '—'}</span>
-        </div>
-      </div>
-
-      <div className="conditions-details">
-        {conditions.details.map((d, i) => (
-          <div key={i} className="condition-detail-line">
-            {d}
-          </div>
+      <p className="alert-banner__advisory">{meta.advisory}</p>
+      <ul className="alert-banner__details">
+        {conditions.details.slice(0, 5).map((d) => (
+          <li key={d}>{d.replace(/[✅⚠️🔴🟡📊💧]/g, '').trim()}</li>
         ))}
-      </div>
-
-      <p className="weather-source">
-        Datos: <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> · Actualizado cada 30 min
+      </ul>
+      <p className="alert-banner__source">
+        Datos en tiempo real ·{' '}
+        <a href="https://open-meteo.com" target="_blank" rel="noopener noreferrer">
+          Open-Meteo
+        </a>
+        {' · '}
+        <a
+          href={`https://www.google.com/maps?q=${lat},${lng}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Ver en mapa
+        </a>
+        {' · '}
+        <a
+          href="https://www.aemet.es/es/eltiempo/prediccion/municipios"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          AEMET municipios
+        </a>
       </p>
     </div>
   )
@@ -200,62 +166,176 @@ function ZoneWeather({ lat, lng }: { lat: number; lng: number }) {
 
 export default function SpainMapPage() {
   const [selectedZone, setSelectedZone] = useState<MushroomZone | null>(null)
-  const [filterRegion, setFilterRegion] = useState<string>('todas')
-  const [filterAbundance, setFilterAbundance] = useState<string>('todas')
+  const [filterRegion, setFilterRegion] = useState('todas')
+  const [filterAlert, setFilterAlert] = useState<string>('todas')
+  const [scores, setScores] = useState<Record<string, number | null>>({})
+  const [conditionsMap, setConditionsMap] = useState<
+    Record<string, MushroomConditions | null>
+  >({})
+  const [loadingAlerts, setLoadingAlerts] = useState(true)
+  /** Wave B: simple = map + panel; advanced = radar + strip + full filters */
+  const [mapMode, setMapMode] = useState<'simple' | 'advanced'>('simple')
 
   const regions = useMemo(() => {
     const set = new Set(mushroomZones.map((z) => z.region))
     return ['todas', ...Array.from(set).sort()]
   }, [])
 
+  useEffect(() => {
+    void loadSpeciesCatalog()
+  }, [])
+
+  // Load weather for all zones → color markers like a weather board
+  useEffect(() => {
+    let cancelled = false
+    setLoadingAlerts(true)
+    void mapPool(mushroomZones, 6, async (zone) => {
+      const w = await fetchWeatherData(zone.lat, zone.lng)
+      if (!w) return { id: zone.id, score: null as number | null, cond: null as MushroomConditions | null }
+      const cond = evaluateMushroomConditions(w)
+      return { id: zone.id, score: cond.score, cond }
+    }).then((rows) => {
+      if (cancelled) return
+      const sc: Record<string, number | null> = {}
+      const cm: Record<string, MushroomConditions | null> = {}
+      for (const r of rows) {
+        sc[r.id] = r.score
+        cm[r.id] = r.cond
+      }
+      setScores(sc)
+      setConditionsMap(cm)
+      setLoadingAlerts(false)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  const alertSummary = useMemo(() => {
+    const counts = { extreme: 0, severe: 0, moderate: 0, good: 0, unknown: 0 }
+    for (const z of mushroomZones) {
+      const meta = alertFromScore(scores[z.id] ?? null)
+      counts[meta.level]++
+    }
+    return counts
+  }, [scores])
+
   const filteredZones = useMemo(() => {
     return mushroomZones.filter((z) => {
       if (filterRegion !== 'todas' && z.region !== filterRegion) return false
-      if (filterAbundance !== 'todas' && z.abundance !== filterAbundance) return false
+      if (filterAlert !== 'todas') {
+        const level = alertFromScore(scores[z.id] ?? null).level
+        if (level !== filterAlert) return false
+      }
       return true
     })
-  }, [filterRegion, filterAbundance])
+  }, [filterRegion, filterAlert, scores])
 
-  const handleSelectZone = (zone: MushroomZone) => {
+  const handleSelectZone = useCallback((zone: MushroomZone) => {
     setSelectedZone(zone)
-    // Scroll to sidebar on mobile
     setTimeout(() => {
       const sidebar = document.getElementById('map-sidebar')
       if (sidebar && window.innerWidth < 900) {
         sidebar.scrollIntoView({ behavior: 'smooth', block: 'start' })
       }
-    }, 100)
-  }
+    }, 80)
+  }, [])
 
   return (
-    <div className="page-map">
+    <div className={`page-map page-map--${mapMode}`}>
       <div className="page-header">
-        <h1 className="page-title">🗺️ Mapa Micológico de España</h1>
+        <h1 className="page-title">Mapa de zonas micológicas</h1>
         <p className="page-subtitle">
-          Explora las mejores zonas de España para la recolección de setas. Pincha en cada marcador
-          para ver las especies, condiciones meteorológicas en tiempo real y el índice de fructificación.
+          Condiciones en vivo. Rojo = desfavorable. Solo orientación educativa.
         </p>
+        <div className="identify-mode-toggle map-mode-toggle">
+          <button
+            type="button"
+            className={
+              mapMode === 'simple'
+                ? 'btn-atelier btn-atelier--primary'
+                : 'btn-atelier btn-atelier--ghost'
+            }
+            onClick={() => setMapMode('simple')}
+          >
+            Simple
+          </button>
+          <button
+            type="button"
+            className={
+              mapMode === 'advanced'
+                ? 'btn-atelier btn-atelier--primary'
+                : 'btn-atelier btn-atelier--ghost'
+            }
+            onClick={() => setMapMode('advanced')}
+          >
+            Avanzado
+          </button>
+        </div>
       </div>
+
+      {mapMode === 'advanced' && (
+        <div className="atelier-panel" style={{ marginBottom: '1rem' }}>
+          <SeasonRadar compact />
+        </div>
+      )}
+
+      {mapMode === 'advanced' && (
+        <div className="map-alert-strip" role="status">
+          <div className="map-alert-strip__item map-alert-strip__item--extreme">
+            <strong>{alertSummary.extreme}</strong>
+            <span>Desfavorable</span>
+          </div>
+          <div className="map-alert-strip__item map-alert-strip__item--severe">
+            <strong>{alertSummary.severe}</strong>
+            <span>Regular</span>
+          </div>
+          <div className="map-alert-strip__item map-alert-strip__item--moderate">
+            <strong>{alertSummary.moderate}</strong>
+            <span>Aceptable</span>
+          </div>
+          <div className="map-alert-strip__item map-alert-strip__item--good">
+            <strong>{alertSummary.good}</strong>
+            <span>Favorable</span>
+          </div>
+          <div className="map-alert-strip__item map-alert-strip__item--unknown">
+            <strong>{loadingAlerts ? '…' : alertSummary.unknown}</strong>
+            <span>{loadingAlerts ? 'Cargando' : 'Sin datos'}</span>
+          </div>
+        </div>
+      )}
 
       <div className="map-toolbar">
         <div className="filter-row">
-          <label>🌍 Comunidad:</label>
+          <label>Comunidad</label>
           <select value={filterRegion} onChange={(e) => setFilterRegion(e.target.value)}>
             {regions.map((r) => (
               <option key={r} value={r}>
-                {r === 'todas' ? 'Todas las comunidades' : r}
+                {r === 'todas' ? 'Todas' : r}
               </option>
             ))}
           </select>
         </div>
-        <div className="filter-row">
-          <label>📊 Abundancia:</label>
-          <select value={filterAbundance} onChange={(e) => setFilterAbundance(e.target.value)}>
-            <option value="todas">Todas</option>
-            <option value="alta">🟢 Alta producción</option>
-            <option value="media">🟡 Media</option>
-            <option value="baja">🔴 Baja</option>
-          </select>
+        {mapMode === 'advanced' && (
+          <div className="filter-row">
+            <label>Aviso</label>
+            <select value={filterAlert} onChange={(e) => setFilterAlert(e.target.value)}>
+              <option value="todas">Todos los niveles</option>
+              <option value="extreme">Desfavorable (rojo)</option>
+              <option value="severe">Regular (naranja)</option>
+              <option value="moderate">Aceptable (ámbar)</option>
+              <option value="good">Favorable (verde)</option>
+              <option value="unknown">Sin datos</option>
+            </select>
+          </div>
+        )}
+        <div className="filter-row map-toolbar__meta">
+          <span>
+            {filteredZones.length} zonas ·{' '}
+            <a href="https://open-meteo.com" target="_blank" rel="noopener noreferrer">
+              Open-Meteo
+            </a>
+          </span>
         </div>
       </div>
 
@@ -264,69 +344,84 @@ export default function SpainMapPage() {
           <MapContainer
             center={SPAIN_CENTER}
             zoom={SPAIN_ZOOM}
-            scrollWheelZoom={true}
-            style={{ height: '600px', width: '100%', borderRadius: '16px', zIndex: 1 }}
+            scrollWheelZoom
+            className="map-leaflet-host"
+            style={{
+              height: mapMode === 'simple' ? 'min(50vh, 420px)' : 'min(70vh, 620px)',
+              width: '100%',
+              borderRadius: '20px',
+              zIndex: 1,
+            }}
           >
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            {filteredZones.map((zone) => (
-              <Marker
-                key={zone.id}
-                position={[zone.lat, zone.lng]}
-                icon={makeIcon(null)}
-                eventHandlers={{
-                  click: () => handleSelectZone(zone),
-                }}
-              >
-                <Popup>
-                  <div className="map-popup">
-                    <strong>{zone.icon} {zone.name}</strong>
-                    <br />
-                    <span style={{ fontSize: '0.8rem', color: '#666' }}>{zone.region}</span>
-                    <br />
-                    <span style={{ fontSize: '0.85rem' }}>{zone.habitat}</span>
-                    <br />
-                    <span style={{ fontSize: '0.8rem' }}>🍄 {zone.species.length} especies</span>
-                  </div>
-                </Popup>
-              </Marker>
-            ))}
+            {filteredZones.map((zone) => {
+              const meta = alertFromScore(scores[zone.id] ?? null)
+              return (
+                <Marker
+                  key={zone.id}
+                  position={[zone.lat, zone.lng]}
+                  icon={makeAlertIcon(meta)}
+                  eventHandlers={{ click: () => handleSelectZone(zone) }}
+                >
+                  <Popup>
+                    <div className="map-popup">
+                      <strong>{zone.name}</strong>
+                      <br />
+                      <span style={{ color: meta.color, fontWeight: 700 }}>{meta.label}</span>
+                      {meta.score !== null && (
+                        <span style={{ color: meta.color }}> · {meta.score}/100</span>
+                      )}
+                      <br />
+                      <span style={{ fontSize: '0.8rem' }}>{zone.region}</span>
+                      <br />
+                      <button
+                        type="button"
+                        className="map-popup__btn"
+                        onClick={() => handleSelectZone(zone)}
+                      >
+                        Ver ficha y especies
+                      </button>
+                    </div>
+                  </Popup>
+                </Marker>
+              )
+            })}
             <MapController zone={selectedZone} />
           </MapContainer>
 
-          <div className="map-legend">
-            <strong style={{ fontSize: '0.72rem', display: 'block', marginBottom: '0.3rem' }}>
-              Abundancia
-            </strong>
+          <div className="map-legend map-legend--alerts">
+            <strong>Aviso de condiciones</strong>
             <span className="legend-item">
-              <span className="legend-dot" style={{ background: '#16a34a' }}></span> Alta
+              <span className="legend-dot" style={{ background: '#b91c1c' }} /> Desfavorable
             </span>
             <span className="legend-item">
-              <span className="legend-dot" style={{ background: '#f59e0b' }}></span> Media
+              <span className="legend-dot" style={{ background: '#c2410c' }} /> Regular
             </span>
             <span className="legend-item">
-              <span className="legend-dot" style={{ background: '#dc2626' }}></span> Baja
+              <span className="legend-dot" style={{ background: '#a16207' }} /> Aceptable
+            </span>
+            <span className="legend-item">
+              <span className="legend-dot" style={{ background: '#15803d' }} /> Favorable
             </span>
           </div>
         </div>
 
-        {/* Side panel */}
         <div className="map-sidebar" id="map-sidebar">
           {!selectedZone ? (
             <div className="zone-placeholder">
-              <span className="zone-placeholder-icon">👆</span>
               <h3>Selecciona una zona</h3>
               <p>
-                Pincha en cualquier marcador del mapa para ver:
+                Los marcadores se colorean con el índice de fructificación en vivo (rojo = malas
+                condiciones).
               </p>
               <ul className="zone-placeholder-list">
-                <li>🍄 Especies que puedes encontrar</li>
-                <li>🌦️ Condiciones meteorológicas en tiempo real</li>
-                <li>📊 Índice de fructificación (0-100)</li>
-                <li>💧 Humedad del suelo y probabilidad de lluvia</li>
-                <li>💡 Consejos de recolección</li>
+                <li>Aviso meteorológico por zona</li>
+                <li>Enlaces a fichas de la enciclopedia</li>
+                <li>Enlaces a mapas y AEMET</li>
+                <li>Consejos y hábitat</li>
               </ul>
               <div className="zone-stats">
                 <div className="zone-stat">
@@ -335,114 +430,128 @@ export default function SpainMapPage() {
                 </div>
                 <div className="zone-stat">
                   <strong>{regions.length - 1}</strong>
-                  <span>comunidades</span>
+                  <span>CC.AA.</span>
                 </div>
                 <div className="zone-stat">
-                  <strong>GRATIS</strong>
-                  <span>datos meteo</span>
+                  <strong>{alertSummary.extreme}</strong>
+                  <span>en rojo</span>
                 </div>
               </div>
+              <p className="zone-disclaimer">
+                No autoriza recolección ni consumo. Consulta normativa local y un micólogo.
+              </p>
             </div>
           ) : (
             <div className="zone-detail">
-              <button className="zone-close" onClick={() => setSelectedZone(null)}>
-                ✕ Cerrar
+              <button type="button" className="zone-close" onClick={() => setSelectedZone(null)}>
+                Cerrar
               </button>
 
-              <span className="zone-detail-icon">{selectedZone.icon}</span>
+              {(() => {
+                const meta = alertFromScore(scores[selectedZone.id] ?? null)
+                return (
+                  <div
+                    className="zone-detail-alert"
+                    style={{ borderColor: meta.border, background: meta.bg }}
+                  >
+                    <span style={{ color: meta.color, fontWeight: 800 }}>{meta.label}</span>
+                    {meta.score !== null && (
+                      <span style={{ color: meta.color }}> · {meta.score}/100</span>
+                    )}
+                    <p>{meta.advisory}</p>
+                  </div>
+                )
+              })()}
+
               <h2 className="zone-detail-name">{selectedZone.name}</h2>
               <p className="zone-detail-region">
-                📍 {selectedZone.region} ({selectedZone.provinces.join(', ')})
+                {selectedZone.region} · {selectedZone.provinces.join(', ')}
               </p>
-
               <p className="zone-detail-desc">{selectedZone.description}</p>
 
-              {/* Weather widget */}
-              <ZoneWeather lat={selectedZone.lat} lng={selectedZone.lng} />
+              <ZoneWeatherPanel
+                lat={selectedZone.lat}
+                lng={selectedZone.lng}
+                cached={
+                  selectedZone.id in conditionsMap
+                    ? conditionsMap[selectedZone.id]
+                    : undefined
+                }
+              />
+
+              <div className="zone-links">
+                <a
+                  href={`https://www.openstreetmap.org/?mlat=${selectedZone.lat}&mlon=${selectedZone.lng}#map=11/${selectedZone.lat}/${selectedZone.lng}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  OpenStreetMap
+                </a>
+                <a
+                  href={`https://www.google.com/maps?q=${selectedZone.lat},${selectedZone.lng}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Google Maps
+                </a>
+                <a
+                  href="https://www.aemet.es/es/eltiempo/prediccion/municipios"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  AEMET
+                </a>
+                <Link to="/enciclopedia">Enciclopedia</Link>
+                <Link to="/identificar">Identificar</Link>
+              </div>
 
               <div className="zone-detail-meta">
                 <div className="zone-meta-item">
-                  <span className="zone-meta-label">🌳 Hábitat</span>
+                  <span className="zone-meta-label">Hábitat</span>
                   <span className="zone-meta-value">{selectedZone.habitat}</span>
                 </div>
                 <div className="zone-meta-item">
-                  <span className="zone-meta-label">📅 Temporada</span>
+                  <span className="zone-meta-label">Temporada</span>
                   <span className="zone-meta-value">{selectedZone.season}</span>
                 </div>
                 <div className="zone-meta-item">
-                  <span className="zone-meta-label">📊 Producción</span>
-                  <span
-                    className="zone-meta-value abundance-badge"
-                    style={{
-                      background:
-                        selectedZone.abundance === 'alta'
-                          ? '#d4edda'
-                          : selectedZone.abundance === 'media'
-                            ? '#fff3cd'
-                            : '#f8d7da',
-                      color:
-                        selectedZone.abundance === 'alta'
-                          ? '#155724'
-                          : selectedZone.abundance === 'media'
-                            ? '#856404'
-                            : '#721c24',
-                    }}
-                  >
-                    {selectedZone.abundance.toUpperCase()}
-                  </span>
+                  <span className="zone-meta-label">Producción habitual</span>
+                  <span className="zone-meta-value">{selectedZone.abundance}</span>
                 </div>
               </div>
 
               <div className="zone-tips">
-                <strong>💡 Consejos:</strong>
+                <strong>Consejos de campo</strong>
                 <ul>
-                  {selectedZone.tips.map((tip, i) => (
-                    <li key={i}>{tip}</li>
+                  {selectedZone.tips.map((tip) => (
+                    <li key={tip}>{tip}</li>
                   ))}
                 </ul>
               </div>
 
               <div className="zone-species">
-                <h3>🍄 Especies que puedes encontrar ({selectedZone.species.length})</h3>
+                <h3>Especies orientativas ({selectedZone.species.length})</h3>
                 <div className="zone-species-list">
                   {selectedZone.species.map((sciName) => {
-                    const species = getMushroomByScientificName(sciName)
-                    if (!species) {
-                      return (
-                        <div key={sciName} className="zone-species-card">
-                          <span className="species-icon">🍄</span>
-                          <div className="species-info">
-                            <span className="species-common">{sciName}</span>
-                            <span className="species-sci">No catalogada</span>
-                          </div>
-                          <span className="species-edibility" style={{ background: '#f1f5f9', color: '#64748b' }}>
-                            —
-                          </span>
-                        </div>
-                      )
-                    }
+                    const cat = getSpeciesByTaxon(sciName)
+                    const risk = getRiskMeta(cat?.risk_label || 'dangerous_or_unknown')
+                    const slug = speciesSlug(sciName)
                     return (
                       <Link
                         key={sciName}
-                        to={`/enciclopedia/${encodeURIComponent(species.scientificName)}`}
+                        to={`/enciclopedia/${slug}`}
                         className="zone-species-card"
                       >
-                        <span className="species-icon">{species.icon}</span>
                         <div className="species-info">
-                          <span className="species-common">{species.commonNames[0]}</span>
-                          <span className="species-sci">
-                            <em>{species.scientificName}</em>
-                          </span>
+                          <SpeciesNameBlock
+                            taxon={sciName}
+                            commonNames={cat?.common_names}
+                            family={cat?.family}
+                            familyEs={cat?.family_es}
+                            size="sm"
+                          />
                         </div>
-                        <span
-                          className="species-edibility"
-                          style={{
-                            background: EDIBILITY_COLORS[species.edibility] + '22',
-                            color: EDIBILITY_COLORS[species.edibility],
-                          }}
-                        >
-                          {EDIBILITY_LABELS[species.edibility]}
-                        </span>
+                        <span className={`risk-chip ${risk.className}`}>{risk.label}</span>
                       </Link>
                     )
                   })}
@@ -453,35 +562,31 @@ export default function SpainMapPage() {
         </div>
       </div>
 
-      {/* Quick zone list below map */}
       <div className="zone-list-section">
-        <h2 className="zone-list-title">📋 Todas las zonas ({filteredZones.length})</h2>
+        <h2 className="zone-list-title">Tablero de avisos ({filteredZones.length})</h2>
         <div className="zone-list-grid">
-          {filteredZones.map((zone) => (
-            <button
-              key={zone.id}
-              className={`zone-card ${selectedZone?.id === zone.id ? 'active' : ''}`}
-              onClick={() => handleSelectZone(zone)}
-            >
-              <span className="zone-card-icon">{zone.icon}</span>
-              <div className="zone-card-info">
-                <span className="zone-card-name">{zone.name}</span>
-                <span className="zone-card-region">{zone.region}</span>
-                <span className="zone-card-count">🍄 {zone.species.length} especies</span>
-              </div>
-              <span
-                className="zone-card-dot"
-                style={{
-                  background:
-                    zone.abundance === 'alta'
-                      ? '#16a34a'
-                      : zone.abundance === 'media'
-                        ? '#f59e0b'
-                        : '#dc2626',
-                }}
-              ></span>
-            </button>
-          ))}
+          {filteredZones.map((zone) => {
+            const meta = alertFromScore(scores[zone.id] ?? null)
+            return (
+              <button
+                key={zone.id}
+                type="button"
+                className={`zone-card zone-card--alert ${selectedZone?.id === zone.id ? 'active' : ''}`}
+                style={{ borderLeftColor: meta.color }}
+                onClick={() => handleSelectZone(zone)}
+              >
+                <div className="zone-card-info">
+                  <span className="zone-card-name">{zone.name}</span>
+                  <span className="zone-card-region">{zone.region}</span>
+                  <span className="zone-card-alert" style={{ color: meta.color }}>
+                    {meta.label}
+                    {meta.score !== null ? ` · ${meta.score}` : ''}
+                  </span>
+                </div>
+                <span className="zone-card-dot" style={{ background: meta.color }} />
+              </button>
+            )
+          })}
         </div>
       </div>
     </div>

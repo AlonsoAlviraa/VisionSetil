@@ -26,3 +26,19 @@ backend/mushroom_photo_id.db-journal
 
 yolov8n.pt
 *.pt
+
+# Local MCP configs may contain credentials — keep only *.example.json in git
+.cline/mcp_settings.json
+.cline/**/mcp_settings.json
+!.cline/**/mcp_settings.example.json
+
+# Training artifacts (weights already *.pt; keep metrics/label json)
+*.npz
+kaggle/kernel_output_*/models/checkpoint*
+kaggle/pull_*/
+kaggle/push_*/
+kaggle/temp_*/
+kaggle/kernel_output_v11_dl/
+
+# Local agent / session noise
+.grok/sessions/

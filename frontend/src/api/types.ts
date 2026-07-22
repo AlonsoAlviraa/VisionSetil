@@ -31,6 +31,11 @@ export interface ClassificationResult {
   open_set_reason: string | null
   recommend_human_review: boolean
   final_warning: string
+  /** Optional ML transparency fields (backend v4+) */
+  confidence_margin?: number | null
+  view_coverage?: string[]
+  is_mock_stack?: boolean
+  ml_notes?: string[]
 }
 
 export interface ApiError {

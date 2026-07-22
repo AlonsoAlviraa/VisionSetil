@@ -14,7 +14,10 @@ from typing import Annotated
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
+# backend/app/core/config.py → parents[2] = backend package root
 _BASE_DIR = Path(__file__).resolve().parents[2]
+# monorepo root (…/VisionSetil) — kaggle weights live here, not under backend/
+_REPO_ROOT = Path(__file__).resolve().parents[3]
 
 
 class Settings(BaseSettings):
@@ -29,6 +32,8 @@ class Settings(BaseSettings):
 
     # --- Core paths ---------------------------------------------------------
     base_dir: Path = Field(default=_BASE_DIR)
+    # Monorepo root for discovering in-repo Kaggle checkpoints / eval assets.
+    repo_root: Path = Field(default=_REPO_ROOT)
     database_path: Path = Field(default=_BASE_DIR / "mushroom_photo_id.db")
     upload_dir: Path = Field(default=_BASE_DIR / "uploads")
     poisonous_species_path: Path = Field(
@@ -43,6 +48,9 @@ class Settings(BaseSettings):
 
     # --- Uploads ------------------------------------------------------------
     max_upload_size_bytes: int = Field(default=10 * 1024 * 1024, validation_alias="MAX_IMAGE_MB")
+    # S4 upload hardening
+    max_image_dimension: int = Field(default=4096, validation_alias="MAX_IMAGE_DIMENSION")
+    max_images_per_request: int = Field(default=10, validation_alias="MAX_IMAGES_PER_REQUEST")
     allowed_extensions: Annotated[set[str], NoDecode] = Field(
         default_factory=lambda: {"jpg", "jpeg", "png", "webp"}
     )
@@ -74,8 +82,20 @@ class Settings(BaseSettings):
     siglip_embedding_dim: int = Field(default=768)
 
     # --- Open-set rejection -------------------------------------------------
-    open_set_min_confidence: float = Field(default=0.55)
-    open_set_min_margin: float = Field(default=0.15)
+    # Defaults for stronger models. Weak few-shot v9 (MAP@3~0.08) is better
+    # served by post-hoc thresholds from eval/reports/ml_experiments
+    # (conf>=0.10 → ~16% acc@20% accept). Product still abstains aggressively.
+    open_set_min_confidence: float = Field(default=0.48)
+    open_set_min_margin: float = Field(default=0.10)
+    # Recommended offline calibration for current multi-view v9 checkpoint
+    # (see experiment_battery_report.json → best_open_set).
+    multiview_open_set_conf_thr: float = Field(default=0.10)
+    multiview_open_set_margin_thr: float = Field(default=0.0)
+    multiview_temperature_recommended: float = Field(default=1.5)
+    # Hard product gate: if on-disk test MAP@3 is below this, classify NEVER
+    # returns decision=accepted (species ID blocked). v9 is ~0.076 → blocked.
+    model_min_acceptable_map_at_3: float = Field(default=0.20)
+    model_block_species_id_when_below_gate: bool = Field(default=True)
     open_set_max_evidence_penalty: float = Field(default=0.3)
     open_set_reject_on_missing_critical_evidence: bool = Field(default=True)
     open_set_reject_on_deadly_lookalikes: bool = Field(default=True)
@@ -92,8 +112,13 @@ class Settings(BaseSettings):
 
     # --- Multi-view model (v5) ----------------------------------------------
     # Path to the trained MultiViewModel checkpoint (torch .pt).
+    # Prefer in-repo Kaggle best.pt when present; else backend/app/ml/weights/.
     multi_view_weights_path: Path = Field(
-        default=_BASE_DIR / "backend" / "app" / "ml" / "weights" / "multiview_v1.pt"
+        default=_REPO_ROOT
+        / "kaggle"
+        / "kernel_output_v9"
+        / "models"
+        / "best.pt"
     )
     # Path to the view classifier ONNX weights.
     view_classifier_model_path: str = Field(default="")

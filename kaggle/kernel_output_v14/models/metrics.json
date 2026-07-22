@@ -1,0 +1,31 @@
+{
+  "test_accuracy": 0.06321839080459771,
+  "test_map_at_3": 0.09267241379310347,
+  "test_map_at_3_ci_low": 0.07375478927203066,
+  "test_map_at_3_ci_high": 0.11206896551724138,
+  "test_f1_macro": 0.03672534566437689,
+  "test_balanced_accuracy": 0.061624649859943974,
+  "test_ece": 0.14241398057375831,
+  "safety_recall_deadly": 0.020833333333333332,
+  "n_deadly_in_test": 48,
+  "best_val_map3": 0.11446360153256703,
+  "best_epoch": 10,
+  "num_classes": 119,
+  "num_train_obs": 3245,
+  "num_val_obs": 696,
+  "num_test_obs": 696,
+  "temperature": 1.05335533618927,
+  "model_params_M": 30.678592,
+  "databases_used": [
+    "fungitastic",
+    "fungiclef"
+  ],
+  "subsample_config": {
+    "max_species": 120,
+    "max_obs": 40,
+    "experiment": "E14-focused"
+  },
+  "deadly_species_known": 26,
+  "deadly_species_in_dataset": 11,
+  "version": "v14-E14-focused"
+}

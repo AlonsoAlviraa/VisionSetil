@@ -149,12 +149,13 @@ class ViewConditionedBackbone(nn.Module):
         d_model: int = 1024,
         lora_rank: int = 16,
         use_lora_adapters: bool = True,
-        pretrained: bool = True,
+        pretrained: bool = False,
     ) -> None:
         super().__init__()
         import timm
 
         self.use_lora_adapters = use_lora_adapters
+        # Default pretrained=False for serving: checkpoint supplies weights; avoids HF download.
         self.backbone = timm.create_model(base_backbone, pretrained=pretrained, num_classes=0)
         feat_dim = self.backbone.num_features
         self.feat_dim = feat_dim
@@ -210,13 +211,15 @@ class MetadataEncoder(nn.Module):
     def __init__(
         self,
         embed_dim: int = 64,
-        vocab: MetadataVocab = field(default_factory=MetadataVocab),
+        vocab: MetadataVocab | None = None,
         use_habitat: bool = True,
         use_substrate: bool = True,
         use_smell: bool = True,
         use_country: bool = True,
     ) -> None:
         super().__init__()
+        if vocab is None:
+            vocab = MetadataVocab()
         self.use_habitat = use_habitat
         self.use_substrate = use_substrate
         self.use_smell = use_smell

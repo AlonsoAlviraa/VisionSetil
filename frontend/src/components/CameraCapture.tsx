@@ -1,20 +1,39 @@
 /**
- * Camera capture component using getUserMedia with guided multi-view mode.
- *
- * Allows the user to take photos directly from their device camera (especially
- * useful on mobile). Supports switching between front/back cameras on phones.
- *
- * Sprint N+2 (FE-1): Enhanced with guided multi-view capture that prompts
- * the user for cap, gills, stem, and base photos — improving model accuracy.
+ * Camera capture with guided multi-view mode.
+ * Professional field UX — SVG icons, no emoji chrome.
  */
 import { useState, useRef, useCallback, useEffect } from 'react'
+import {
+  IconAlert,
+  IconCheck,
+  IconClose,
+  IconFlip,
+  IconLightbulb,
+  IconSkip,
+  ViewIcon,
+} from './icons'
 
-/** Preset views for guided multi-view capture. */
 const VIEW_STEPS = [
-  { id: 'cap', label: 'Sombrero', icon: '🍄', hint: 'Fotografía la parte superior (sombrero) desde arriba.' },
-  { id: 'gills', label: 'Láminas/Poros', icon: '🔬', hint: 'Da la vuelta y fotografía la parte inferior (láminas o poros).' },
-  { id: 'stem', label: 'Pie', icon: '📏', hint: 'Fotografía el pie (tallo) de lado, incluyendo cualquier anillo o volva.' },
-  { id: 'base', label: 'Base', icon: '🌱', hint: 'Excava ligeramente y fotografía la base del pie (bulbo, rizomorfos).' },
+  {
+    id: 'cap',
+    label: 'Sombrero',
+    hint: 'Fotografía la parte superior (sombrero) desde arriba, con buena luz natural.',
+  },
+  {
+    id: 'gills',
+    label: 'Láminas / poros',
+    hint: 'Da la vuelta y fotografía el himenio (láminas o poros) de cerca.',
+  },
+  {
+    id: 'stem',
+    label: 'Pie',
+    hint: 'Fotografía el pie de lado, incluyendo anillo o volva si existen.',
+  },
+  {
+    id: 'base',
+    label: 'Base',
+    hint: 'Incluye la base del pie (bulbo, rizomorfos) con un poco de sustrato.',
+  },
 ] as const
 
 interface CapturedView {
@@ -25,20 +44,21 @@ interface CapturedView {
 interface CameraCaptureProps {
   onCapture: (file: File) => void
   onClose: () => void
-  /** When true, enables guided multi-view capture mode. */
   multiView?: boolean
-  /** Called when all guided views are captured (multi-view mode). */
   onMultiViewCapture?: (views: CapturedView[]) => void
 }
 
-export function CameraCapture({ onCapture, onClose, multiView = false, onMultiViewCapture }: CameraCaptureProps) {
+export function CameraCapture({
+  onCapture,
+  onClose,
+  multiView = false,
+  onMultiViewCapture,
+}: CameraCaptureProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
   const streamRef = useRef<MediaStream | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [facingMode, setFacingMode] = useState<'environment' | 'user'>('environment')
   const [isReady, setIsReady] = useState(false)
-
-  // Multi-view state
   const [guidedMode, setGuidedMode] = useState(multiView)
   const [currentStep, setCurrentStep] = useState(0)
   const [capturedViews, setCapturedViews] = useState<CapturedView[]>([])
@@ -87,7 +107,6 @@ export function CameraCapture({ onCapture, onClose, multiView = false, onMultiVi
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-    // Mirror if front camera
     if (facingMode === 'user') {
       ctx.translate(canvas.width, 0)
       ctx.scale(-1, 1)
@@ -105,10 +124,8 @@ export function CameraCapture({ onCapture, onClose, multiView = false, onMultiVi
           setCapturedViews(updated)
 
           if (currentStep < VIEW_STEPS.length - 1) {
-            // Advance to next view.
             setCurrentStep((s) => s + 1)
           } else {
-            // All views captured — send batch.
             onMultiViewCapture?.(updated)
             onClose()
           }
@@ -119,13 +136,21 @@ export function CameraCapture({ onCapture, onClose, multiView = false, onMultiVi
       'image/jpeg',
       0.92,
     )
-  }, [isReady, facingMode, onCapture, guidedMode, currentStep, capturedViews, onMultiViewCapture, onClose])
+  }, [
+    isReady,
+    facingMode,
+    onCapture,
+    guidedMode,
+    currentStep,
+    capturedViews,
+    onMultiViewCapture,
+    onClose,
+  ])
 
   const skipStep = useCallback(() => {
     if (currentStep < VIEW_STEPS.length - 1) {
       setCurrentStep((s) => s + 1)
     } else {
-      // Finished — send whatever we have.
       if (capturedViews.length > 0) {
         onMultiViewCapture?.(capturedViews)
       }
@@ -140,26 +165,36 @@ export function CameraCapture({ onCapture, onClose, multiView = false, onMultiVi
     onClose()
   }, [capturedViews, onMultiViewCapture, onClose])
 
+  const step = VIEW_STEPS[currentStep]
+
   return (
     <div className="camera-overlay">
       <div className="camera-container">
         <div className="camera-header">
-          <h3>📸 {guidedMode ? `Vista ${currentStep + 1}/${VIEW_STEPS.length}: ${VIEW_STEPS[currentStep].label}` : 'Capturar con cámara'}</h3>
+          <h3>
+            {guidedMode
+              ? `Vista ${currentStep + 1}/${VIEW_STEPS.length}: ${step.label}`
+              : 'Capturar con cámara'}
+          </h3>
           <button className="btn-camera-close" onClick={onClose} aria-label="Cerrar cámara">
-            ✕
+            <IconClose size={18} />
           </button>
         </div>
 
-        {/* Multi-view progress indicator */}
         {guidedMode && (
-          <div className="multiview-progress">
-            {VIEW_STEPS.map((step, idx) => (
+          <div className="multiview-progress" role="list" aria-label="Progreso de vistas">
+            {VIEW_STEPS.map((s, idx) => (
               <div
-                key={step.id}
+                key={s.id}
+                role="listitem"
                 className={`progress-dot ${idx < currentStep ? 'done' : idx === currentStep ? 'active' : ''}`}
-                title={step.label}
+                title={s.label}
               >
-                <span>{idx < currentStep ? '✓' : step.icon}</span>
+                {idx < currentStep ? (
+                  <IconCheck size={14} />
+                ) : (
+                  <ViewIcon view={s.id} size={14} />
+                )}
               </div>
             ))}
           </div>
@@ -167,7 +202,10 @@ export function CameraCapture({ onCapture, onClose, multiView = false, onMultiVi
 
         {error ? (
           <div className="camera-error">
-            <p>⚠️ {error}</p>
+            <p className="camera-error__row">
+              <IconAlert size={18} />
+              <span>{error}</span>
+            </p>
             <p className="hint">
               Asegúrate de dar permiso de cámara. También puedes subir fotos desde tus archivos.
             </p>
@@ -182,7 +220,7 @@ export function CameraCapture({ onCapture, onClose, multiView = false, onMultiVi
               className={facingMode === 'user' ? 'mirrored' : ''}
             />
             {!isReady && <div className="camera-loading">Iniciando cámara…</div>}
-            <div className="camera-grid-overlay">
+            <div className="camera-grid-overlay" aria-hidden="true">
               <div className="grid-line-h top" />
               <div className="grid-line-h bottom" />
               <div className="grid-line-v left" />
@@ -191,55 +229,71 @@ export function CameraCapture({ onCapture, onClose, multiView = false, onMultiVi
           </div>
         )}
 
-        {/* Guided mode hint */}
         {guidedMode && !error && (
           <div className="view-hint">
-            <span className="view-icon">{VIEW_STEPS[currentStep].icon}</span>
-            <p>{VIEW_STEPS[currentStep].hint}</p>
+            <span className="view-icon">
+              <ViewIcon view={step.id} size={22} />
+            </span>
+            <p>{step.hint}</p>
           </div>
         )}
 
         <div className="camera-controls">
           <button
+            type="button"
             className="btn-switch-camera"
             onClick={() => setFacingMode((m) => (m === 'environment' ? 'user' : 'environment'))}
             disabled={!!error}
           >
-            🔄 Cambiar cámara
+            <IconFlip size={16} />
+            Cambiar
           </button>
           <button
+            type="button"
             className="btn-capture"
             onClick={capture}
             disabled={!isReady || !!error}
-            aria-label={guidedMode ? `Capturar ${VIEW_STEPS[currentStep].label}` : 'Capturar foto'}
+            aria-label={guidedMode ? `Capturar ${step.label}` : 'Capturar foto'}
           >
             <span className="capture-ring" />
           </button>
           {guidedMode ? (
-            <button className="btn-skip" onClick={skipStep} disabled={!!error}>
-              ⏭️ Saltar
+            <button type="button" className="btn-skip" onClick={skipStep} disabled={!!error}>
+              <IconSkip size={16} />
+              Saltar
             </button>
           ) : (
             <div className="spacer" />
           )}
         </div>
 
-        {/* Mode toggle and early finish */}
         <div className="camera-footer">
-          <button className="btn-mode-toggle" onClick={() => { setGuidedMode(!guidedMode); setCapturedViews([]); setCurrentStep(0) }}>
-            {guidedMode ? '📷 Modo simple' : '🔍 Modo guiado multi-vista'}
+          <button
+            type="button"
+            className="btn-mode-toggle"
+            onClick={() => {
+              setGuidedMode(!guidedMode)
+              setCapturedViews([])
+              setCurrentStep(0)
+            }}
+          >
+            {guidedMode ? 'Modo simple' : 'Modo guiado multi-vista'}
           </button>
           {guidedMode && capturedViews.length > 0 && (
-            <button className="btn-finish-early" onClick={finishEarly}>
-              ✓ Finalizar ({capturedViews.length} capturadas)
+            <button type="button" className="btn-finish-early" onClick={finishEarly}>
+              <IconCheck size={14} />
+              Finalizar ({capturedViews.length})
             </button>
           )}
         </div>
 
         <p className="camera-tip">
-          💡 {guidedMode
-            ? 'Captura las 4 vistas anatómicas para máxima precisión. Puedes saltar las que no apliquen.'
-            : 'Toma fotos de: sombrero (arriba), láminas/poros (abajo), pie y base para mejor precisión'}
+          <IconLightbulb size={15} />
+          <span>
+            {guidedMode
+              ? 'Las cuatro vistas anatómicas mejoran la precisión. Puedes saltar las que no apliquen.'
+              : 'Incluye sombrero, láminas, pie y base para una identificación más fiable.'}
+          </span>
         </p>
       </div>
     </div>

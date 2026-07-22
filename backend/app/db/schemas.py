@@ -247,3 +247,9 @@ class SimpleClassificationResult(BaseModel):
     open_set_reason: str | None = None
     recommend_human_review: bool = False
     final_warning: str = ""
+    # ML transparency (optional for older clients)
+    confidence_margin: float | None = None
+    view_coverage: list[str] = Field(default_factory=list)
+    is_mock_stack: bool = True
+    ml_notes: list[str] = Field(default_factory=list)
+

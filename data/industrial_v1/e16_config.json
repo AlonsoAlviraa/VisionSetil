@@ -1,0 +1,27 @@
+{
+  "experiment": "E16-focus40-gbif",
+  "plan_week": 2,
+  "depends_on": "E15-focus40 week1 KPIs (map>=0.15 deadly@3>=0.50) OR deepen-only if fail",
+  "allowlist_path": "data/industrial_v1/species_allowlist.json",
+  "gbif_package": "data/industrial_v1/gbif/gbif_es_allowlist_package.json",
+  "training": {
+    "epochs": 25,
+    "max_obs_per_species": 100,
+    "deadly_max_obs": 150,
+    "deadly_class_weight": 10.0,
+    "sources": ["fungitastic", "fungiclef", "gbif_es_cc_clean"]
+  },
+  "success_criteria": {
+    "test_map_at_3_min": 0.22,
+    "safety_recall_deadly_at_3_min": 0.80,
+    "ece_max": 0.08
+  },
+  "external_blockers": [
+    "GBIF bulk download requires authenticated GBIF account (credentials not in repo)",
+    "License filter CC0/CC-BY before commercial train"
+  ],
+  "deploy_gate": {
+    "test_map_at_3_min": 0.20,
+    "safety_recall_deadly_min": 0.90
+  }
+}
