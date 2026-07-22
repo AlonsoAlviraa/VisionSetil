@@ -4982,6 +4982,17 @@ label,
   color: var(--ink);
 }
 
+/* B-30: programmatic focus ring (tabIndex=-1 handoff when result arrives) */
+.result-mode-banner:focus {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.result-mode-banner:focus:not(:focus-visible) {
+  outline: 2px solid color-mix(in srgb, var(--primary) 60%, transparent);
+  outline-offset: 2px;
+}
+
 .result-mode-banner__row {
   display: flex;
   flex-wrap: wrap;

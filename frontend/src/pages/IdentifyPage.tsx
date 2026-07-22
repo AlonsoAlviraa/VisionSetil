@@ -1,7 +1,8 @@
 /**
  * Identify page: guided multi-view + classify + history.
+ * B-30: scroll result region into view when a result arrives (focus on banner via ResultCard).
  */
-import { useState, useCallback, useEffect, useMemo } from 'react'
+import { useState, useCallback, useEffect, useMemo, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useDropzone } from 'react-dropzone'
 import { classifyImages, submitFeedback } from '../api/client'
@@ -49,10 +50,22 @@ export function IdentifyPage() {
   const [history, setHistory] = useState<HistoryEntry[]>([])
   const [lightbox, setLightbox] = useState<string | null>(null)
   const [showCompare, setShowCompare] = useState(false)
+  const resultRegionRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     setHistory(loadHistory())
   }, [])
+
+  // B-30: bring result region into view when classification (or history pick) yields a result
+  useEffect(() => {
+    if (!result || loading) return
+    const el = resultRegionRef.current
+    if (!el) return
+    const raf = requestAnimationFrame(() => {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    })
+    return () => cancelAnimationFrame(raf)
+  }, [result?.request_id, loading])
 
   const readiness = useMemo(() => assessMultiViewReadiness(assignments), [assignments])
   const historySummary = useMemo(() => summarizeHistory(history), [history])
@@ -348,7 +361,13 @@ export function IdentifyPage() {
       )}
 
       {showResult && result && (
-        <div className="result-layout" data-testid="identify-result">
+        <div
+          ref={resultRegionRef}
+          className="result-layout"
+          role="region"
+          aria-label="Resultado de identificación"
+          data-testid="identify-result"
+        >
           <div className="result-image-section">
             <div className="result-image-grid">
               {(useWizard
