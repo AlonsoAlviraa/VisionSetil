@@ -88,4 +88,12 @@ describe('product surfaces routes', () => {
     expect(read('components/SeasonRadar.tsx')).toMatch(/SeasonRadar/)
     expect(read('components/ResultCard.tsx')).toMatch(/handleExpertHandoff|buildExpertHandoff/)
   })
+
+  it('ResultCard shows out-of-catalog badge when in_catalog is false (B-40)', () => {
+    const src = read('components/ResultCard.tsx')
+    expect(src).toMatch(/in_catalog === false/)
+    expect(src).toMatch(/catalog-badge--out/)
+    expect(src).toMatch(/Fuera del catálogo/)
+    expect(read('api/types.ts')).toMatch(/in_catalog\?:/)
+  })
 })

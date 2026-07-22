@@ -192,6 +192,8 @@
     "humanReviewTitle": "Human review recommended",
     "humanReviewBody": "This case has low confidence. An expert should review it.",
     "predictions": "Predictions",
+    "outOfCatalog": "Out of catalog",
+    "outOfCatalogHint": "The model suggests this taxon, but it is not in the app catalog (no species card or curated media).",
     "dangerTitle": "POTENTIALLY DANGEROUS SPECIES DETECTED",
     "dangerBody": "The top match is in category {{category}}. Keep away from children and pets.",
     "lookalikesTitle": "Dangerous similar species:",

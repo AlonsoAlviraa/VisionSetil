@@ -192,6 +192,8 @@
     "humanReviewTitle": "Giza berrikuspena gomendatzen da",
     "humanReviewBody": "Kasu honek konfiantza baxua du. Aditu batek berrikusi beharko luke.",
     "predictions": "Iragarpenak",
+    "outOfCatalog": "Katalogotik kanpo",
+    "outOfCatalogHint": "Ereduak taxon hau iradokitzen du, baina ez dago app-aren katalogoan (fitxarik edo media kuraturik gabe).",
     "dangerTitle": "ESPEZIE ARRISKUTSUA DETEKTATU DA",
     "dangerBody": "Bat-etortze nagusia {{category}} kategorian dago. Mantendu haur eta maskotetatik urrun.",
     "lookalikesTitle": "Antzeko espezie arriskutsuak:",
