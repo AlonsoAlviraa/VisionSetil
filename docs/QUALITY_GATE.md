@@ -123,5 +123,15 @@ E14 es el plan realista: **120 clases × 40 obs**, no 500×8 few-shot.
 
 Hasta entonces: **solo orientación + abstención + experto**.
 
+## Disable del gate (dev-only; B-23 / D-B3)
+
+| Env | `MODEL_BLOCK_SPECIES_ID_WHEN_BELOW_GATE=false` |
+|-----|-----------------------------------------------|
+| `development` / `staging` | Permitido; warn estructurado (B-19) |
+| `production` / `prod` | **Rechazado** al construir `Settings` (B-23) — el proceso no arranca |
+
+Default: `true` (fail-closed). Disable **nunca** fuerza `metrics_acceptable=true`.  
+Runbook: [`ML_WEIGHTS_RUNBOOK.md`](./ML_WEIGHTS_RUNBOOK.md) · config: [`configuration.md`](./configuration.md).
+
 Plan de recuperación 30 días (autopsia E12–E14 + roadmap industrial):  
 [`PLAN_30D_MODELO_INDUSTRIAL.md`](./PLAN_30D_MODELO_INDUSTRIAL.md).

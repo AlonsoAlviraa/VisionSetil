@@ -8,13 +8,18 @@ for serve. metrics_path is always a full path when present (D-B23).
 from __future__ import annotations
 
 import json
-import os
-import time
+import logging
 from pathlib import Path
 
 import pytest
 
-from app.core.config import settings
+import app.core.config as config_mod
+from app.core.config import (
+    Settings,
+    is_production_environment,
+    settings,
+    warn_if_quality_gate_block_disabled,
+)
 from app.ml.quality_gate import (
     apply_quality_gate_to_simple_result,
     clear_metrics_cache,
@@ -26,8 +31,10 @@ from app.ml.quality_gate import (
 @pytest.fixture(autouse=True)
 def _clear_cache():
     clear_metrics_cache()
+    config_mod._gate_disable_warned = False
     yield
     clear_metrics_cache()
+    config_mod._gate_disable_warned = False
 
 
 def _write_metrics(path: Path, *, map3: float, deadly: float, version: str) -> Path:
@@ -199,6 +206,76 @@ def test_dual_signal_disable_does_not_force_metrics_acceptable(monkeypatch, tmp_
     assert gate["verdict"] == "UNACCEPTABLE"
     assert gate["reason_code"] == "gate_disabled"
     assert gate["test_map_at_3"] == pytest.approx(0.05)
+
+
+def test_fail_closed_gate_default_true():
+    """B-19 / D-B3: model_block_species_id_when_below_gate defaults to True."""
+    s = Settings()
+    assert s.model_block_species_id_when_below_gate is True
+
+
+def test_warn_if_quality_gate_block_disabled_structured(caplog):
+    """B-19: structured warn when gate is fail-open; silent when fail-closed."""
+    config_mod._gate_disable_warned = False
+    closed = Settings(model_block_species_id_when_below_gate=True)
+    assert warn_if_quality_gate_block_disabled(settings_obj=closed) is False
+
+    # Disable only allowed outside production (B-23 refuses prod+false).
+    open_s = Settings(
+        model_block_species_id_when_below_gate=False,
+        environment="development",
+    )
+    with caplog.at_level(logging.WARNING, logger="app.core.config"):
+        assert warn_if_quality_gate_block_disabled(settings_obj=open_s) is True
+    assert any("quality_gate block DISABLED" in r.message for r in caplog.records)
+    # once per process
+    with caplog.at_level(logging.WARNING, logger="app.core.config"):
+        caplog.clear()
+        assert warn_if_quality_gate_block_disabled(settings_obj=open_s) is True
+        assert not caplog.records
+    # force re-emits
+    with caplog.at_level(logging.WARNING, logger="app.core.config"):
+        assert warn_if_quality_gate_block_disabled(settings_obj=open_s, force=True) is True
+        assert any("quality_gate block DISABLED" in r.message for r in caplog.records)
+
+    assert is_production_environment("production") is True
+    assert is_production_environment("prod") is True
+    assert is_production_environment("development") is False
+
+
+def test_refuse_gate_disable_in_production():
+    """B-23: Settings refuse fail-open gate when ENVIRONMENT is production/prod."""
+    from pydantic import ValidationError
+
+    # production still OK when fail-closed
+    ok = Settings(
+        model_block_species_id_when_below_gate=True,
+        environment="production",
+    )
+    assert ok.model_block_species_id_when_below_gate is True
+
+    with pytest.raises(ValidationError) as exc_prod:
+        Settings(
+            model_block_species_id_when_below_gate=False,
+            environment="production",
+        )
+    assert "MODEL_BLOCK_SPECIES_ID_WHEN_BELOW_GATE" in str(exc_prod.value)
+
+    with pytest.raises(ValidationError) as exc_alias:
+        Settings(
+            model_block_species_id_when_below_gate=False,
+            environment="prod",
+        )
+    assert "dev-only" in str(exc_alias.value).lower() or "MODEL_BLOCK" in str(
+        exc_alias.value
+    )
+
+    # Non-prod disable remains allowed
+    dev_open = Settings(
+        model_block_species_id_when_below_gate=False,
+        environment="development",
+    )
+    assert dev_open.model_block_species_id_when_below_gate is False
 
 
 def test_metrics_ssot_sibling_not_max_map(monkeypatch, tmp_path):

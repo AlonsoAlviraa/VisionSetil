@@ -16,14 +16,6 @@ from typing import TYPE_CHECKING, Any
 
 from app.core.config import settings, warn_if_quality_gate_block_disabled
 
-if TYPE_CHECKING:
-    from app.db.schemas import QualityGatePayload
-
-logger = logging.getLogger(__name__)
-
-if TYPE_CHECKING:
-    from app.db.schemas import QualityGatePayload
-
 
 def _repo_root() -> Path:
     return Path(getattr(settings, "repo_root", None) or Path(settings.base_dir).parent)
@@ -164,6 +156,9 @@ def quality_gate_status(
     min_map = float(getattr(settings, "model_min_acceptable_map_at_3", 0.20))
     min_deadly = 0.90
     block = bool(getattr(settings, "model_block_species_id_when_below_gate", True))
+    # B-19: structured warn when gate is fail-open (once per process).
+    if not block:
+        warn_if_quality_gate_block_disabled()
 
     map3 = None
     deadly = None

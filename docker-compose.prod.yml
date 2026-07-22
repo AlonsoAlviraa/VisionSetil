@@ -54,6 +54,9 @@ services:
       DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-visionsetil}:${POSTGRES_PASSWORD:-changeme}@postgres:5432/${POSTGRES_DB:-visionsetil}
       # ── Redis ──
       REDIS_URL: redis://redis:6379/0
+      # ── Runtime / quality gate (B-23 fail-closed) ──
+      ENVIRONMENT: ${ENVIRONMENT:-production}
+      MODEL_BLOCK_SPECIES_ID_WHEN_BELOW_GATE: ${MODEL_BLOCK_SPECIES_ID_WHEN_BELOW_GATE:-true}
       # ── ML Config ──
       USE_REAL_YOLOE: ${USE_REAL_YOLOE:-false}
       USE_REAL_DINOV3: ${USE_REAL_DINOV3:-false}
