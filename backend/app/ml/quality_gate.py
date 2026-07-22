@@ -9,6 +9,7 @@ is policy (respects block_enabled); verdict tracks metrics only.
 from __future__ import annotations
 
 import json
+import logging
 from functools import lru_cache
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
@@ -17,6 +18,8 @@ from app.core.config import settings, warn_if_quality_gate_block_disabled
 
 if TYPE_CHECKING:
     from app.db.schemas import QualityGatePayload
+
+logger = logging.getLogger(__name__)
 
 
 def _repo_root() -> Path:
@@ -158,9 +161,6 @@ def quality_gate_status(
     min_map = float(getattr(settings, "model_min_acceptable_map_at_3", 0.20))
     min_deadly = 0.90
     block = bool(getattr(settings, "model_block_species_id_when_below_gate", True))
-    # B-19: structured warn when gate is fail-open (once per process).
-    if not block:
-        warn_if_quality_gate_block_disabled()
 
     map3 = None
     deadly = None
@@ -207,14 +207,19 @@ def quality_gate_status(
     # verdict tracks metrics only — not disable bypass
     verdict = "ACCEPTABLE" if metrics_acceptable else "UNACCEPTABLE"
 
-    # Normalize version to str | None for stable QualityGatePayload contract
-    version_s: str | None
-    if version is None:
-        version_s = None
-    elif isinstance(version, str):
-        version_s = version
-    else:
-        version_s = str(version)
+    # D-B23 / B-20: always log full metrics_path (never basename-only) on evaluate
+    logger.info(
+        "quality_gate evaluate reason_code=%s verdict=%s test_map_at_3=%s "
+        "safety_recall_deadly=%s metrics_path=%s metrics_acceptable=%s "
+        "species_id_allowed=%s",
+        reason_code,
+        verdict,
+        map3_f,
+        deadly_f,
+        path,
+        metrics_acceptable,
+        species_id_allowed,
+    )
 
     return {
         "species_id_allowed": species_id_allowed,
@@ -226,43 +231,10 @@ def quality_gate_status(
         "safety_recall_deadly": deadly_f,
         "min_map_at_3": min_map,
         "min_deadly_recall": min_deadly,
-        "metrics_path": path,
-        "version": version_s,
+        "metrics_path": path,  # full path always (D-B23); never basename-only
+        "version": version,
         "verdict": verdict,
     }
-
-
-# Stable machine reason_code set (D-B11 / D-B15). Endpoint + classify share this.
-REASON_CODES = frozenset(
-    {
-        "no_metrics",
-        "map_below",
-        "deadly_below",
-        "gates_passed",
-        "gate_disabled",
-        "unset",
-    }
-)
-
-
-def quality_gate_payload(
-    *,
-    loaded_weights_path: str | Path | None = None,
-    repo_root: str | None = None,
-) -> QualityGatePayload:
-    """Validate gate status into the stable ``QualityGatePayload`` contract.
-
-    Used by ``GET /models/quality-gate`` so OpenAPI + preflight always see the
-    dual-signal fields (``metrics_acceptable``, ``species_id_allowed``,
-    ``reason_code``, ``verdict`` metrics-only).
-    """
-    from app.db.schemas import QualityGatePayload as _QualityGatePayload
-
-    data = quality_gate_status(
-        loaded_weights_path=loaded_weights_path,
-        repo_root=repo_root,
-    )
-    return _QualityGatePayload(**data)
 
 
 def apply_quality_gate_to_simple_result(

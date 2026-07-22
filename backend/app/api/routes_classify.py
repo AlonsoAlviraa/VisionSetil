@@ -78,15 +78,12 @@ def _map_to_simple(
     *,
     classifier: object | None = None,
     loaded_weights_path: str | None = None,
-    locale: str = "es",
 ) -> SimpleClassificationResult:
     """Convert the rich ClassificationResponse into the simplified frontend schema.
 
     ``loaded_weights_path`` is the multi-view checkpoint actually resolved for
     serve (D-B12). Prefer the outer MultiView classifier path even when
     ``classifier`` is a mock fallback used for diagnostics.
-
-    ``locale`` is the resolved form locale (D-B5); default ``es`` when omitted.
     """
 
     predictions: list[SimpleSpeciesPrediction] = []
@@ -154,7 +151,7 @@ def _map_to_simple(
         view_coverage=view_coverage,
         is_mock_stack=is_mock,
         ml_notes=ml_notes,
-        locale=locale,
+        locale="es",  # B-04 will add form field; default echo "es"
     )
     # Hard quality gate: always attach dual-signal quality_gate (D-B2 / D-B15)
     from app.ml.classify_mode import derive_classify_mode
@@ -177,7 +174,7 @@ def _map_to_simple(
         is_mock_stack=is_mock_stack,
         species_id_allowed=bool(gate.get("species_id_allowed", False)),
     )
-    gated["locale"] = locale or gated.get("locale") or catalog.DEFAULT_LOCALE
+    gated["locale"] = gated.get("locale") or "es"
     # quality_gate always present from apply_* (pass and fail) — do not strip
     return SimpleClassificationResult(**gated)
 
@@ -288,7 +285,6 @@ async def classify_images(
         elapsed_ms,
         classifier=diag,
         loaded_weights_path=getattr(classifier, "resolved_weights_path", None),
-        locale=resolved_locale,
     )
 
     # If not persisting, delete the observation and images
