@@ -1,0 +1,34 @@
+{
+  "slug": "amanita-muscaria",
+  "scientific_name": "Amanita muscaria",
+  "source": "wikipedia_es",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/fa/Amanita_muscaria_%281%29_%288692325426%29.jpg",
+  "license": "wikipedia-page-image",
+  "license_url": "https://es.wikipedia.org/wiki/Amanita_muscaria",
+  "creator": "Wikipedia/es",
+  "attribution_text": "Wikipedia/es — wikipedia-page-image",
+  "gbif_occurrence_id": null,
+  "sha256_source": "d90713e94810d7fbd583fefd1f9d609869cf5941671ab1a7433509beb27fcb49",
+  "sha256_derivatives": {
+    "lqip": "764afb0eb12ac859959e53d5b61d54116c57993c3e4ce41f6ea81c9458460475",
+    "thumb": "1d9f97cea234ffcf5e0803156621510b611689a85fa874f629b9f62d9c8536cb",
+    "card": "4b648b5dc23a96dd543c45b89089b3a6ca66b5ea83b04120faa6d869964b3fda",
+    "detail": "d90713e94810d7fbd583fefd1f9d609869cf5941671ab1a7433509beb27fcb49"
+  },
+  "gallery": [
+    {
+      "file": "gallery/01.webp"
+    },
+    {
+      "file": "gallery/02.webp"
+    },
+    {
+      "file": "gallery/03.webp"
+    },
+    {
+      "file": "gallery/04.webp"
+    }
+  ],
+  "fetched_at": "2026-07-22T14:12:51.847429+00:00",
+  "status": "ok"
+}

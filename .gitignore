@@ -10,6 +10,20 @@ backend/*.db
 frontend/node_modules/
 frontend/dist/
 
+# Local full species media corpus (regenerate: python scripts/precompute_species_images.py --all)
+# Keep only a few fixtures committed for CI smoke.
+media/species/**
+!media/species/amanita-phalloides/
+!media/species/amanita-phalloides/**
+!media/species/boletus-edulis/
+!media/species/boletus-edulis/**
+!media/species/cantharellus-cibarius/
+!media/species/cantharellus-cibarius/**
+!media/species/lactarius-deliciosus/
+!media/species/lactarius-deliciosus/**
+!media/species/amanita-muscaria/
+!media/species/amanita-muscaria/**
+
 # Kaggle / Local evaluation temp files and logs
 download_output.log
 download_output_utf8.log

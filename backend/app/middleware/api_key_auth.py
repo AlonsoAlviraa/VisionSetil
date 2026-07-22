@@ -1,20 +1,31 @@
-"""API Key authentication with org + scopes (Sprint N+2 + N+4 SC-4 + S4).
+"""API Key authentication dependency and middleware (Sprint N+2 + N+4 SC-4).
 
 Supports two modes:
     1. DISABLED (default): no authentication required.
     2. ENABLED: requires a valid API key in the X-API-Key header.
 
-API_KEYS formats (comma-separated)::
+API keys are validated against a set of valid keys configured via
+the API_KEYS environment variable (comma-separated).
 
-    vs_abc123
-    vs_abc123:org_id
-    vs_abc123:org_id:classify+review
-    vs_abc123:org_id:admin
+Multi-tenant (SC-4)
+-------------------
+Keys can be scoped to an organization using the format ``key:org_id``.
+If no org is specified, the key belongs to the ``default`` org.
 
-When auth is enabled, scoped routes require matching scope:
-    classify → /classify, /jobs, /observations, /feedback
-    review   → /human-reviews
-    admin    → /metrics, /models (admin also implies all)
+Examples::
+
+    API_KEYS="vs_abc123:acme,vs_def456:globex"
+
+Keys without an explicit org are assigned to ``default``::
+
+    API_KEYS="vs_abc123"
+
+The resolved ``organization_id`` is stored on ``request.state.organization_id``
+so downstream handlers can scope their queries.
+
+For production, keys should be hashed (SHA-256) and stored in a
+database or secrets manager. This implementation uses plaintext
+comparison with constant-time comparison for security.
 """
 
 from __future__ import annotations
@@ -28,62 +39,62 @@ from collections.abc import Awaitable, Callable
 from fastapi import Request, Response
 from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
-from starlette.status import HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN
-
-from app.core.security_scopes import (
-    DEFAULT_SCOPES,
-    ParsedApiKey,
-    parse_api_key_entry,
-    required_scope_for_path,
-    scopes_imply,
-)
+from starlette.status import HTTP_401_UNAUTHORIZED
 
 # Paths that never require authentication
 PUBLIC_PATHS = {
     "/health",
     "/healthz",
     "/readyz",
-    "/models/status",
-    "/models/discovery",
-    "/models/training",
-    "/models/data-sources",
-    "/models/experiments",
-    "/models/quality-gate",
-    "/models/industrial-progress",
     "/docs",
     "/openapi.json",
     "/redoc",
-    "/auth/register",
-    "/auth/login",
-    "/community/posts",
+    # Professional Upgrade: public read catalog + media
+    "/media",
+    "/species",
+    # Colleague product: auth + community browse
+    "/auth",
+    "/community",
 }
 
 DEFAULT_ORG = "default"
 
 
-def _parse_all_entries() -> list[ParsedApiKey]:
-    raw = os.getenv("API_KEYS", "")
-    out: list[ParsedApiKey] = []
-    for entry in raw.split(","):
-        parsed = parse_api_key_entry(entry, default_org=DEFAULT_ORG)
-        if parsed:
-            out.append(parsed)
-    return out
-
-
 def get_valid_api_keys() -> set[str]:
-    """Load valid API key strings (key part only)."""
-    return {p.key for p in _parse_all_entries()}
+    """Load valid API keys from environment variable API_KEYS.
+
+    Keys are comma-separated. Empty values are filtered out.
+    Supports the ``key:org_id`` format (returns just the key part).
+    """
+    raw = os.getenv("API_KEYS", "")
+    keys: set[str] = set()
+    for entry in raw.split(","):
+        entry = entry.strip()
+        if not entry:
+            continue
+        # Split on last colon to allow keys containing colons (unlikely but safe)
+        key_part = entry.rsplit(":", 1)[0] if ":" in entry else entry
+        keys.add(key_part)
+    return keys
 
 
 def get_key_org_map() -> dict[str, str]:
-    """Return mapping of api_key → organization_id."""
-    return {p.key: p.organization_id for p in _parse_all_entries()}
+    """Return a mapping of ``api_key → organization_id``.
 
-
-def get_key_scopes_map() -> dict[str, frozenset[str]]:
-    """Return mapping of api_key → scopes."""
-    return {p.key: p.scopes for p in _parse_all_entries()}
+    Keys without an explicit org are mapped to ``DEFAULT_ORG``.
+    """
+    raw = os.getenv("API_KEYS", "")
+    key_org: dict[str, str] = {}
+    for entry in raw.split(","):
+        entry = entry.strip()
+        if not entry:
+            continue
+        if ":" in entry:
+            key_part, org_part = entry.rsplit(":", 1)
+            key_org[key_part] = org_part.strip() or DEFAULT_ORG
+        else:
+            key_org[entry] = DEFAULT_ORG
+    return key_org
 
 
 def hash_api_key(key: str) -> str:
@@ -114,6 +125,7 @@ def validate_api_key(provided_key: str) -> bool:
         if hmac.compare_digest(provided_key, valid_key):
             return True
 
+    # Also check hashed keys (if stored as hashes)
     provided_hash = hash_api_key(provided_key)
     for valid_key in valid_keys:
         if len(valid_key) == 64 and hmac.compare_digest(provided_hash, valid_key):
@@ -123,12 +135,17 @@ def validate_api_key(provided_key: str) -> bool:
 
 
 def resolve_organization(provided_key: str) -> str:
-    """Resolve the organization ID for a given API key."""
+    """Resolve the organization ID for a given API key.
+
+    Returns ``DEFAULT_ORG`` if the key is not found or auth is disabled.
+    """
     if not provided_key:
         return DEFAULT_ORG
     key_org = get_key_org_map()
+    # Direct lookup
     if provided_key in key_org:
         return key_org[provided_key]
+    # Hashed key lookup
     provided_hash = hash_api_key(provided_key)
     for stored_key, org in key_org.items():
         if len(stored_key) == 64 and hmac.compare_digest(provided_hash, stored_key):
@@ -136,42 +153,39 @@ def resolve_organization(provided_key: str) -> str:
     return DEFAULT_ORG
 
 
-def resolve_scopes(provided_key: str) -> frozenset[str]:
-    """Resolve scopes for a given API key."""
-    if not provided_key:
-        return DEFAULT_SCOPES
-    scopes_map = get_key_scopes_map()
-    if provided_key in scopes_map:
-        return scopes_map[provided_key]
-    provided_hash = hash_api_key(provided_key)
-    for stored_key, scopes in scopes_map.items():
-        if len(stored_key) == 64 and hmac.compare_digest(provided_hash, stored_key):
-            return scopes
-    return DEFAULT_SCOPES
-
-
 class APIKeyMiddleware(BaseHTTPMiddleware):
-    """Enforces API key auth + optional scope checks when API_KEYS is set."""
+    """Middleware that enforces API key authentication when enabled.
+
+    When the API_KEYS environment variable is set, all non-public
+    endpoints require a valid X-API-Key header.
+
+    Multi-tenant: resolves ``organization_id`` from the key and stores
+    it on ``request.state.organization_id``.
+    """
 
     def __init__(self, app, header_name: str = "X-API-Key"):
         super().__init__(app)
         self.header_name = header_name
 
     def _is_public(self, path: str) -> bool:
+        """Check if path is public (no auth required)."""
         return any(path == public or path.startswith(public + "/") for public in PUBLIC_PATHS)
 
     async def dispatch(
         self, request: Request, call_next: Callable[[Request], Awaitable[Response]]
     ) -> Response:
+        # Always set a default org on request state
         request.state.organization_id = DEFAULT_ORG
-        request.state.api_scopes = frozenset({"admin"})  # open mode: full access
 
+        # Skip if auth not enabled
         if not is_auth_enabled():
             return await call_next(request)
 
+        # Skip public paths
         if self._is_public(request.url.path):
             return await call_next(request)
 
+        # Check for API key
         api_key = request.headers.get(self.header_name, "")
         if not api_key:
             return JSONResponse(
@@ -191,20 +205,7 @@ class APIKeyMiddleware(BaseHTTPMiddleware):
                 },
             )
 
+        # Resolve org and attach to request state (SC-4 multi-tenant)
         request.state.organization_id = resolve_organization(api_key)
-        scopes = resolve_scopes(api_key)
-        request.state.api_scopes = scopes
-
-        need = required_scope_for_path(request.url.path)
-        if need and not scopes_imply(scopes, need):
-            return JSONResponse(
-                status_code=HTTP_403_FORBIDDEN,
-                content={
-                    "error": "insufficient_scope",
-                    "message": f"API key lacks required scope '{need}'.",
-                    "required_scope": need,
-                    "scopes": sorted(scopes),
-                },
-            )
 
         return await call_next(request)

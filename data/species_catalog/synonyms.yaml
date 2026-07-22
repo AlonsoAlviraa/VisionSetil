@@ -1,0 +1,34 @@
+# ML / catalog synonym map (PR-17)
+# Key: preferred scientific name used in catalog
+# Values: alternate scientific names / historical synonyms
+
+Amanita phalloides:
+  - Amanita phalloides
+  - Agaricus phalloides
+Amanita muscaria:
+  - Amanita muscaria
+  - Agaricus muscarius
+Amanita virosa:
+  - Amanita virosa
+  - Amanita verna var. virosa
+Boletus edulis:
+  - Boletus edulis
+  - Boletus bulbosus
+Cantharellus cibarius:
+  - Cantharellus cibarius
+  - Cantharellus edulis
+Galerina marginata:
+  - Galerina marginata
+  - Galerina autumnalis
+  - Pholiota marginata
+Gyromitra esculenta:
+  - Gyromitra esculenta
+  - Helvella esculenta
+Cortinarius orellanus:
+  - Cortinarius orellanus
+Lactarius deliciosus:
+  - Lactarius deliciosus
+  - Lactarius sanguifluus  # often confused; keep separate taxa in catalog
+Macrolepiota procera:
+  - Macrolepiota procera
+  - Lepiota procera

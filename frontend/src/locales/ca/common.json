@@ -1,0 +1,236 @@
+{
+  "app": {
+    "name": "VisionSetil",
+    "tagline": "La teva guia intel·ligent del món dels bolets",
+    "footerDisclaimer": "Eina orientativa i educativa. No substitueix el consell d'un micòleg expert. Una identificació incorrecta pot costar una vida.",
+    "poweredBy": "Powered by FungiCLEF 2025"
+  },
+  "nav": {
+    "home": "Inici",
+    "identify": "Identificar",
+    "encyclopedia": "Enciclopèdia",
+    "map": "Mapa",
+    "education": "Aprèn"
+  },
+  "actions": {
+    "search": "Cercar",
+    "clear": "Netejar",
+    "retry": "Tornar-ho a provar",
+    "back": "Tornar",
+    "share": "Compartir",
+    "favorite": "Preferit",
+    "unfavorite": "Treure dels preferits",
+    "classify": "Identificar",
+    "skip": "Ometre",
+    "next": "Següent",
+    "previous": "Anterior",
+    "darkMode": "Mode fosc",
+    "lightMode": "Mode clar",
+    "menu": "Menú"
+  },
+  "safety": {
+    "bannerTitle": "ADVERTÈNCIA DE SEGURETAT",
+    "bannerBody": "Aquesta identificació és orientativa i pot ser incorrecta. MAI no consumiu un bolet basant-vos només en aquest resultat. Consulteu sempre un micòleg expert.",
+    "encyclopediaDisclaimer": "Informació educativa. VisionSetil no recomana el consum de bolets silvestres. La comestibilitat mostrada és de referència micològica, no una autorització de consum.",
+    "orientationOnly": "Identificació orientativa. No consumiu basant-vos només en aquesta app."
+  },
+  "edibility": {
+    "excelente": "Interès culinari alt (només referència educativa)",
+    "buen_comestible": "Interès culinari (referència educativa)",
+    "comestible_con_cautela": "Citat amb cautela (educatiu)",
+    "no_recomendado": "No recomanat (referència)",
+    "toxico": "Tòxic",
+    "mortifero": "Mortal",
+    "desconocido": "Desconegut"
+  },
+  "home": {
+    "heroTitle": "Guia de bolets d'Espanya",
+    "heroBody": "Enciclopèdia, identificador visual, mapa de zones i guia de seguretat.",
+    "ctaIdentify": "Identificar bolet",
+    "ctaEncyclopedia": "Enciclopèdia",
+    "species": "Espècies",
+    "featured": "Destacades",
+    "inSeason": "De temporada",
+    "deadly": "Espècies mortals",
+    "featuredHint": "Espècies ibèriques destacades",
+    "deadlyShort": "Mortals",
+    "collections": "Col·leccions",
+    "collectionAmanitas": "Amanites",
+    "collectionBoletales": "Boletales",
+    "collectionMilkcaps": "Rovellons",
+    "collectionChanterelles": "Rossinyols",
+    "collectionToxic": "Tòxiques",
+    "collectionTruffles": "Tòfones"
+  },
+  "encyclopedia": {
+    "title": "Enciclopèdia micològica",
+    "subtitle": "Explora espècies ibèriques amb fotos, descripcions i dades clau",
+    "searchPlaceholder": "Cerca per nom, família o descripció…",
+    "edibilityFilter": "Comestibilitat:",
+    "all": "Totes",
+    "empty": "No s'han trobat espècies",
+    "notFound": "Espècie no trobada",
+    "backToEncyclopedia": "Tornar a l'enciclopèdia",
+    "imageCredits": "Crèdits d'imatges",
+    "riskFilter": "Risc:",
+    "riskHigh": "Risc alt",
+    "riskDeadly": "Mortals",
+    "familyFilter": "Família:",
+    "showing": "Mostrant {{shown}} de {{total}}",
+    "loadMore": "Carrega mes"
+  },
+  "identify": {
+    "title": "Identificar bolet",
+    "subtitle": "Puja fotos des de diverses vistes per a una identificació més fiable",
+    "wizardTitle": "Guia de 4 vistes",
+    "views": {
+      "gills": "Làmines / porus",
+      "front": "Front / barret",
+      "habitat": "Hàbitat",
+      "detail": "Detall (base / tall)"
+    },
+    "viewHint": {
+      "gills": "Foto de l'himeni (làmines o porus) ben il·luminat",
+      "front": "Vista frontal o superior del barret",
+      "habitat": "Entorn i substrat on creix",
+      "detail": "Base del peu, volva o secció"
+    },
+    "history": "Historial local",
+    "clearHistory": "Buidar historial",
+    "coachTitle": "Com fer bones fotos",
+    "coachTip1": "Llum natural frontal; evita contrallum fort",
+    "coachTip2": "Omple l enquadrament amb el bolet",
+    "coachTip3": "Inclou peu i base si pots",
+    "coachTip4": "Mes vistes = millor orientacio (mai 100 percent segur)",
+    "missingViews": "Vistes recomanades que falten",
+    "viewIcon": {
+      "gills": "🔻",
+      "front": "🍄",
+      "habitat": "🌲",
+      "detail": "🔍"
+    },
+    "takePhoto": "Fer foto",
+    "uploadPhotos": "Pujar fotos"
+  },
+  "empty": {
+    "defaultTitle": "Res per aquí",
+    "defaultDescription": "Prova de canviar els filtres o la cerca."
+  },
+  "error": {
+    "defaultTitle": "Alguna cosa ha fallat",
+    "defaultDescription": "Torna-ho a provar d'aquí a uns moments."
+  },
+  "share": {
+    "title": "Resultat VisionSetil",
+    "copied": "Enllaç copiat",
+    "disclaimer": "Només orientació — no consumir"
+  },
+  "risk": {
+    "toxic": "Tòxica",
+    "poisonous": "Verinosa",
+    "deadly": "Mortal",
+    "high": "Risc alt / tòxica",
+    "critical": "Crític",
+    "medium": "Risc moderat",
+    "low": "Risc desconegut — no consumir",
+    "unknown": "Desconeguda — no consumir",
+    "risky_lookalikes": "Possibles confusions perilloses",
+    "dangerous_or_unknown": "Perillosa o desconeguda",
+    "edible": "No consumir (orientatiu)",
+    "edible-conditionally": "No consumir (orientatiu)",
+    "inedible": "No comestible"
+  },
+  "result": {
+    "safetyLevelLabel": "Nivell de seguretat",
+    "safetyLevel": {
+      "safe": "Orientatiu — no consumir",
+      "caution": "Precaució",
+      "warning": "Advertència",
+      "danger": "Perill",
+      "critical": "Crític",
+      "unsafe_to_consume": "No segur per consumir",
+      "unknown_or_risky": "Desconegut o arriscat"
+    },
+    "rejectedTitle": "No identificat amb confiança",
+    "rejectedDefault": "No s'ha trobat una coincidència fiable.",
+    "rejectedHint": "Per seguretat, tracteu tot bolet no identificat com a potencialment perillós.",
+    "acceptedTitle": "Identificació temptativa",
+    "maxConfidence": "Confiança màxima",
+    "confidence": {
+      "low": {
+        "label": "Baixa confiança",
+        "description": "El model no n'està segur. La identificació podria ser incorrecta."
+      },
+      "moderate": {
+        "label": "Confiança moderada",
+        "description": "El model té una idea raonable, però hi ha incertesa significativa."
+      },
+      "high": {
+        "label": "Alta confiança",
+        "description": "El model n'està bastant segur, però la verificació humana segueix essent essencial."
+      }
+    },
+    "humanReviewTitle": "Recomanada revisió humana",
+    "humanReviewBody": "Aquest cas presenta baixa confiança. Un expert l'hauria de revisar.",
+    "predictions": "Prediccions",
+    "dangerTitle": "ESPÈCIE POTENCIALMENT PERILLOSA DETECTADA",
+    "dangerBody": "La coincidència més probable pertany a la categoria {{category}}. Mantingueu-la lluny de nens i mascotes.",
+    "lookalikesTitle": "Espècies perilloses similars:",
+    "qualityTitle": "Avisos de qualitat d'imatge:",
+    "missingEvidenceTitle": "Per millorar la identificació:",
+    "questionsTitle": "Preguntes per millorar el resultat:",
+    "feedbackQuestion": "És correcta aquesta identificació?",
+    "feedbackYes": "Sí",
+    "feedbackNo": "No",
+    "feedbackThanks": "Gràcies pel teu feedback. Ajuda a millorar el model.",
+    "technicalDetails": "Detalls tècnics",
+    "time": "Temps"
+  },
+  "categories": {
+    "todas": "Totes",
+    "comestible": "Interès culinari (educatiu)",
+    "excelente": "Alt interès culinari (educatiu)",
+    "toxico": "Tòxiques",
+    "mortifero": "Mortals",
+    "medicinal": "Medicinals",
+    "premium": "Premium",
+    "cultivable": "Cultivables",
+    "popular": "Populars",
+    "bosque": "Bosc",
+    "pinar": "Pinedes",
+    "prado": "Prats",
+    "caracteristico": "Úniques",
+    "raro": "Rares",
+    "grande": "Gegants",
+    "peligroso": "Perilloses",
+    "primavera": "Primavera",
+    "verano": "Estiu",
+    "otono": "Tardor",
+    "invierno": "Hivern"
+  },
+  "api": {
+    "offlineTitle": "API desconnectada",
+    "offlineBody": "Pots explorar; identificar necessita el backend."
+  },
+  "seasons": {
+    "winter": "Hivern",
+    "spring": "Primavera",
+    "summer": "Estiu",
+    "autumn": "Tardor"
+  },
+  "detail": {
+    "description": "Descripcion",
+    "morphology": "Morfologia",
+    "cap": "Barret",
+    "stem": "Peu",
+    "hymenium": "Himeni",
+    "keyFeatures": "Caracteristiques",
+    "deadlySpecies": "ESPECIE MORTAL",
+    "toxicSpecies": "Especie toxica",
+    "dangerDefault": "Perillosa. No consumir."
+  },
+  "education": {
+    "title": "Apren micologia",
+    "subtitle": "Guies de camp amb seguretat"
+  }
+}

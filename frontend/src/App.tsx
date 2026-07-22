@@ -1,8 +1,11 @@
-/** App shell — lazy routes for faster first paint. */
+/** App shell — colleague product routes + local i18n / media reliability. */
 import { lazy, Suspense } from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { AuthProvider } from './auth/AuthContext'
 import { Header } from './components/Header'
+import { ApiStatusBanner } from './components/ApiStatusBanner'
+import { DocumentTitle } from './components/DocumentTitle'
 import { HomePage } from './pages/HomePage'
 
 const IdentifyPage = lazy(() =>
@@ -66,12 +69,16 @@ function PageFallback() {
 }
 
 function App() {
+  const { t } = useTranslation()
+
   return (
     <AuthProvider>
       <BrowserRouter>
+        <DocumentTitle />
         <div className="app bg-aurora">
           <Header />
-          <main className="container">
+          <ApiStatusBanner />
+          <main className="container" id="main-content">
             <Suspense fallback={<PageFallback />}>
               <Routes>
                 <Route path="/" element={<HomePage />} />
@@ -95,13 +102,23 @@ function App() {
           </main>
           <footer className="footer">
             <div className="footer-content">
-              <p className="footer-brand">VisionSetil</p>
+              <p className="footer-brand">🍄 {t('app.name', { defaultValue: 'VisionSetil' })}</p>
               <p>
-                Orientación de campo, no permiso de consumo. Ante la duda, un micólogo de carne y
-                hueso.
+                {t('app.footerDisclaimer', {
+                  defaultValue:
+                    'Orientación de campo, no permiso de consumo. Ante la duda, un micólogo de carne y hueso.',
+                })}
               </p>
+              <nav className="footer-links" aria-label="Footer">
+                <Link to="/enciclopedia">{t('nav.encyclopedia', { defaultValue: 'Enciclopedia' })}</Link>
+                <Link to="/identificar">{t('nav.identify', { defaultValue: 'Identificar' })}</Link>
+                <Link to="/reto">{t('nav.quiz', { defaultValue: 'Reto' })}</Link>
+                <Link to="/comunidad">{t('nav.community', { defaultValue: 'Comunidad' })}</Link>
+                <Link to="/ml">{t('nav.ml', { defaultValue: 'ML' })}</Link>
+              </nav>
               <p className="footer-meta">
-                Micología · Riesgo · Comunidad · {new Date().getFullYear()}
+                {t('app.poweredBy', { defaultValue: 'Micología · Riesgo · Comunidad' })} ·
+                v1.0.0-unified · {new Date().getFullYear()}
               </p>
             </div>
           </footer>

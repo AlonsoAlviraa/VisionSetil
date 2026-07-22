@@ -1,0 +1,34 @@
+{
+  "slug": "boletus-edulis",
+  "scientific_name": "Boletus edulis",
+  "source": "wikipedia_es",
+  "source_url": "https://upload.wikimedia.org/wikipedia/commons/b/b0/Boletus_edulis_EtgHollande_041031_091.jpg",
+  "license": "wikipedia-page-image",
+  "license_url": "https://es.wikipedia.org/wiki/Boletus_edulis",
+  "creator": "Wikipedia/es",
+  "attribution_text": "Wikipedia/es — wikipedia-page-image",
+  "gbif_occurrence_id": null,
+  "sha256_source": "1fbd2c537e7661e9dca50ba746ccd6a19e5c777453afc55315e632e9d2c2c325",
+  "sha256_derivatives": {
+    "lqip": "fcce3d9f3c68d12f338f5c254f9513b8b189252818918c937c0066f99df49ebe",
+    "thumb": "0f68c7a7be9cce517f6dc2b8f8831926ee0574f6c70810d420d3c0898d60c3ea",
+    "card": "f080558ed8c82d5b9f3bb0ac3af9519f9f21b4784fd13146db99343c8df66a88",
+    "detail": "1fbd2c537e7661e9dca50ba746ccd6a19e5c777453afc55315e632e9d2c2c325"
+  },
+  "gallery": [
+    {
+      "file": "gallery/01.webp"
+    },
+    {
+      "file": "gallery/02.webp"
+    },
+    {
+      "file": "gallery/03.webp"
+    },
+    {
+      "file": "gallery/04.webp"
+    }
+  ],
+  "fetched_at": "2026-07-22T14:13:15.505735+00:00",
+  "status": "ok"
+}

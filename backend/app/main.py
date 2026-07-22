@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 import uuid
+from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -19,6 +20,7 @@ from app.api.routes_health import router as health_router
 from app.api.routes_human_review import router as human_review_router
 from app.api.routes_images import router as images_router
 from app.api.routes_jobs import router as jobs_router
+from app.api.routes_media import router as media_router
 from app.api.routes_metrics import router as metrics_router
 from app.api.routes_models import router as models_router
 from app.api.routes_observations import router as observations_router
@@ -35,8 +37,15 @@ settings = get_settings()
 configure_logging(level=settings.log_level, fmt=settings.log_format)
 
 settings.upload_dir.mkdir(parents=True, exist_ok=True)
+Path(settings.species_media_root).mkdir(parents=True, exist_ok=True)
 init_db()
 ensure_seed_data()
+
+# Validate CDN host allowlist at boot (PR-03)
+if settings.species_media_cdn_base:
+    from app.services.species_media import validate_cdn_config_at_boot
+
+    validate_cdn_config_at_boot()
 
 app = FastAPI(title="mushroom-photo-id")
 
@@ -66,12 +75,22 @@ app.add_middleware(
 )
 
 # Rate limiting (Sprint N+2)
+# Exempt public media/species GETs so encyclopedia grids (N cards × variants) don't trip 60/min.
 _rate_limit_requests = int(os.getenv("RATE_LIMIT_REQUESTS", "60"))
 _rate_limit_window = int(os.getenv("RATE_LIMIT_WINDOW_SECONDS", "60"))
 app.add_middleware(
     RateLimitMiddleware,
     max_requests=_rate_limit_requests,
     window_seconds=_rate_limit_window,
+    exempt_paths={
+        "/health",
+        "/readyz",
+        "/docs",
+        "/openapi.json",
+        "/redoc",
+        "/media",
+        "/species",
+    },
 )
 
 # API Key authentication (Sprint N+2) — active when API_KEYS env is set
@@ -88,6 +107,7 @@ app.include_router(observations_router)
 app.include_router(images_router)
 app.include_router(classification_router)
 app.include_router(classify_router)
+app.include_router(media_router)
 app.include_router(species_router)
 app.include_router(models_router)
 app.include_router(human_review_router)

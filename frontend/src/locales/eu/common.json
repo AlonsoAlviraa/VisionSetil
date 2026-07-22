@@ -1,0 +1,236 @@
+{
+  "app": {
+    "name": "VisionSetil",
+    "tagline": "Perretxikoen mundurako gida adimenduna",
+    "footerDisclaimer": "Tresna orientagarri eta hezigarria. Ez du mikologo aditu baten aholkua ordezkatzen. Identifikazio oker batek bizitza kosta dezake.",
+    "poweredBy": "Powered by FungiCLEF 2025"
+  },
+  "nav": {
+    "home": "Hasiera",
+    "identify": "Identifikatu",
+    "encyclopedia": "Entziklopedia",
+    "map": "Mapa",
+    "education": "Ikasi"
+  },
+  "actions": {
+    "search": "Bilatu",
+    "clear": "Garbitu",
+    "retry": "Saiatu berriro",
+    "back": "Itzuli",
+    "share": "Partekatu",
+    "favorite": "Gogoko",
+    "unfavorite": "Kendu gogokoetatik",
+    "classify": "Identifikatu",
+    "skip": "Saltatu",
+    "next": "Hurrengoa",
+    "previous": "Aurrekoa",
+    "darkMode": "Modu iluna",
+    "lightMode": "Modu argia",
+    "menu": "Menua"
+  },
+  "safety": {
+    "bannerTitle": "SEGURTASUN OHARRA",
+    "bannerBody": "Identifikazio hau orientagarria da eta okerra izan daiteke. INOIZ ez jan perretxikorik emaitza honetan soilik oinarrituta. Kontsultatu beti mikologo aditu bati.",
+    "encyclopediaDisclaimer": "Informazio hezigarria. VisionSetil-ek ez du basoko perretxikoak jatea gomendatzen. Erakutsitako jangarritasuna erreferentzia mikologikoa da, ez kontsumorako baimena.",
+    "orientationOnly": "Identifikazio orientagarria. Ez jan app honetan soilik oinarrituta."
+  },
+  "edibility": {
+    "excelente": "Sukaldaritzako interes handia (hezkuntza-erreferentzia soilik)",
+    "buen_comestible": "Sukaldaritzako interesa (hezkuntza-erreferentzia)",
+    "comestible_con_cautela": "Kontuz aipatua (hezitzailea)",
+    "no_recomendado": "Ez gomendatua (erreferentzia)",
+    "toxico": "Toxikoa",
+    "mortifero": "Hilgarria",
+    "desconocido": "Ezezaguna"
+  },
+  "home": {
+    "heroTitle": "Espainiako perretxikoen gida",
+    "heroBody": "Entziklopedia, identifikatzaile bisuala, zona-mapa eta segurtasun gida.",
+    "ctaIdentify": "Perretxikoa identifikatu",
+    "ctaEncyclopedia": "Entziklopedia",
+    "species": "Espezieak",
+    "featured": "Nabarmenduak",
+    "inSeason": "Sasoikoak",
+    "deadly": "Espezie hilgarriak",
+    "featuredHint": "Iberiar espezie nabarmenak",
+    "deadlyShort": "Hilgarriak",
+    "collections": "Bildumak",
+    "collectionAmanitas": "Amanitak",
+    "collectionBoletales": "Boletales",
+    "collectionMilkcaps": "Esne-zizak",
+    "collectionChanterelles": "Ziza horiak",
+    "collectionToxic": "Toxikoak",
+    "collectionTruffles": "Trufak"
+  },
+  "encyclopedia": {
+    "title": "Entziklopedia mikologikoa",
+    "subtitle": "Arakatu iberiar espezieak argazki, deskribapen eta datu gakoekin",
+    "searchPlaceholder": "Bilatu izena, familia edo deskribapena…",
+    "edibilityFilter": "Jangarritasuna:",
+    "all": "Guztiak",
+    "empty": "Ez da espezierik aurkitu",
+    "notFound": "Espeziea ez da aurkitu",
+    "backToEncyclopedia": "Itzuli entziklopediara",
+    "imageCredits": "Irudien kredituak",
+    "riskFilter": "Arriskua:",
+    "riskHigh": "Arrisku handia",
+    "riskDeadly": "Hilgarriak",
+    "familyFilter": "Familia:",
+    "showing": "{{shown}} / {{total}}",
+    "loadMore": "Gehiago kargatu"
+  },
+  "identify": {
+    "title": "Perretxikoa identifikatu",
+    "subtitle": "Igo hainbat ikuspegitako argazkiak identifikazio fidagarriago baterako",
+    "wizardTitle": "4 ikuspegiko gida",
+    "views": {
+      "gills": "Orriak / poroak",
+      "front": "Aurrealdea / txapela",
+      "habitat": "Habitata",
+      "detail": "Xehetasuna (oinarria / ebakidura)"
+    },
+    "viewHint": {
+      "gills": "Himenioaren argazkia (orriak edo poroak) ondo argiztatuta",
+      "front": "Txapelaren aurreko edo goiko ikuspegia",
+      "habitat": "Hazten den ingurunea eta substratu",
+      "detail": "Oinaren oinarria, volva edo ebakidura"
+    },
+    "history": "Historia lokala",
+    "clearHistory": "Historia hustu",
+    "coachTitle": "Argazki onak nola egin",
+    "coachTip1": "Argi naturala aurrez; saihestu kontrako argia",
+    "coachTip2": "Betetu markoa perretxikoarekin",
+    "coachTip3": "Sartu oina eta oinarria ahal bada",
+    "coachTip4": "Ikuspegi gehiago = orientazio hobea (inoiz ez 100 ehuneko seguru)",
+    "missingViews": "Falta diren ikuspegiak",
+    "viewIcon": {
+      "gills": "🔻",
+      "front": "🍄",
+      "habitat": "🌲",
+      "detail": "🔍"
+    },
+    "takePhoto": "Argazkia atera",
+    "uploadPhotos": "Argazkiak igo"
+  },
+  "empty": {
+    "defaultTitle": "Ezer ez hemen",
+    "defaultDescription": "Saiatu iragazkiak edo bilaketa aldatzen."
+  },
+  "error": {
+    "defaultTitle": "Zerbait gaizki atera da",
+    "defaultDescription": "Saiatu berriro une batzuk barru."
+  },
+  "share": {
+    "title": "VisionSetil emaitza",
+    "copied": "Esteka kopiatuta",
+    "disclaimer": "Orientazioa soilik — ez jan"
+  },
+  "risk": {
+    "toxic": "Toxikoa",
+    "poisonous": "Pozoitsua",
+    "deadly": "Hilgarria",
+    "high": "Arrisku handia / toxikoa",
+    "critical": "Kritikoa",
+    "medium": "Arrisku ertaina",
+    "low": "Arrisku ezezaguna — ez jan",
+    "unknown": "Ezezaguna — ez jan",
+    "risky_lookalikes": "Nahasketa arriskutsuak posible",
+    "dangerous_or_unknown": "Arriskutsua edo ezezaguna",
+    "edible": "Ez jan (orientagarria)",
+    "edible-conditionally": "Ez jan (orientagarria)",
+    "inedible": "Ez jangarria"
+  },
+  "result": {
+    "safetyLevelLabel": "Segurtasun maila",
+    "safetyLevel": {
+      "safe": "Orientagarria — ez jan",
+      "caution": "Kontuz",
+      "warning": "Abisua",
+      "danger": "Arriskua",
+      "critical": "Kritikoa",
+      "unsafe_to_consume": "Ez da segurua kontsumitzeko",
+      "unknown_or_risky": "Ezezaguna edo arriskutsua"
+    },
+    "rejectedTitle": "Ez da konfiantzaz identifikatu",
+    "rejectedDefault": "Ez da bat-etortze fidagarririk aurkitu.",
+    "rejectedHint": "Segurtasunerako, tratatu identifikatu gabeko perretxiko guztiak arriskutsu gisa.",
+    "acceptedTitle": "Identifikazio tentatiboa",
+    "maxConfidence": "Konfiantza maximoa",
+    "confidence": {
+      "low": {
+        "label": "Konfiantza baxua",
+        "description": "Eredua ez dago ziur. Identifikazioa okerra izan daiteke."
+      },
+      "moderate": {
+        "label": "Konfiantza ertaina",
+        "description": "Ereduak ideia zentzuzkoa du, baina ziurgabetasun handia dago."
+      },
+      "high": {
+        "label": "Konfiantza handia",
+        "description": "Eredua nahiko ziur dago, baina giza egiaztapena ezinbestekoa da oraindik."
+      }
+    },
+    "humanReviewTitle": "Giza berrikuspena gomendatzen da",
+    "humanReviewBody": "Kasu honek konfiantza baxua du. Aditu batek berrikusi beharko luke.",
+    "predictions": "Iragarpenak",
+    "dangerTitle": "ESPEZIE ARRISKUTSUA DETEKTATU DA",
+    "dangerBody": "Bat-etortze nagusia {{category}} kategorian dago. Mantendu haur eta maskotetatik urrun.",
+    "lookalikesTitle": "Antzeko espezie arriskutsuak:",
+    "qualityTitle": "Irudiaren kalitate oharrak:",
+    "missingEvidenceTitle": "Identifikazioa hobetzeko:",
+    "questionsTitle": "Emaitza hobetzeko galderak:",
+    "feedbackQuestion": "Identifikazio hau zuzena da?",
+    "feedbackYes": "Bai",
+    "feedbackNo": "Ez",
+    "feedbackThanks": "Eskerrik asko feedbackagatik. Eredua hobetzen laguntzen du.",
+    "technicalDetails": "Xehetasun teknikoak",
+    "time": "Denbora"
+  },
+  "categories": {
+    "todas": "Guztiak",
+    "comestible": "Sukaldaritzako interesa (hezitzailea)",
+    "excelente": "Sukaldaritzako interes handia (hezitzailea)",
+    "toxico": "Toxikoak",
+    "mortifero": "Hilgarriak",
+    "medicinal": "Sendagarriak",
+    "premium": "Premium",
+    "cultivable": "Landagarriak",
+    "popular": "Ospe handikoak",
+    "bosque": "Basoa",
+    "pinar": "Pinudiak",
+    "prado": "Belardiak",
+    "caracteristico": "Bereziak",
+    "raro": "Arraroak",
+    "grande": "Handiak",
+    "peligroso": "Arriskutsuak",
+    "primavera": "Udaberria",
+    "verano": "Uda",
+    "otono": "Udazkena",
+    "invierno": "Negua"
+  },
+  "api": {
+    "offlineTitle": "API deskonektatuta",
+    "offlineBody": "Entziklopedia ikus daiteke; identifikazioak backend behar du."
+  },
+  "seasons": {
+    "winter": "Negua",
+    "spring": "Udaberria",
+    "summer": "Uda",
+    "autumn": "Udazkena"
+  },
+  "detail": {
+    "description": "Descripcion",
+    "morphology": "Morfologia",
+    "cap": "Kapela",
+    "stem": "Oina",
+    "hymenium": "Himeni",
+    "keyFeatures": "Ezaugarriak",
+    "deadlySpecies": "ESPECIE MORTAL",
+    "toxicSpecies": "Especie toxica",
+    "dangerDefault": "Perillosa. No consumir."
+  },
+  "education": {
+    "title": "Mikologia ikasi",
+    "subtitle": "Guies de camp amb seguretat"
+  }
+}

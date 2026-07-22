@@ -1,10 +1,92 @@
-import { defineConfig } from 'vite'
+import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
+import fs from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const MEDIA_ROOT = path.resolve(__dirname, '../media')
+
+/**
+ * Serve monorepo media/ at /media/* in dev so species photos work
+ * even when FastAPI is down or the /api proxy fails.
+ */
+function serveRepoMediaPlugin(): Plugin {
+  const mime: Record<string, string> = {
+    '.webp': 'image/webp',
+    '.png': 'image/png',
+    '.jpg': 'image/jpeg',
+    '.jpeg': 'image/jpeg',
+    '.json': 'application/json',
+    '.svg': 'image/svg+xml',
+  }
+
+  const safeResolve = (rel: string): string | null => {
+    const normalized = rel.replace(/^[/\\]+/, '').replace(/\\/g, '/')
+    const file = path.resolve(MEDIA_ROOT, normalized)
+    const root = path.resolve(MEDIA_ROOT)
+    if (!file.toLowerCase().startsWith(root.toLowerCase() + path.sep) && file.toLowerCase() !== root.toLowerCase()) {
+      return null
+    }
+    return file
+  }
+
+  return {
+    name: 'serve-repo-media',
+    configureServer(server) {
+      // Register early so /media never falls through to SPA index.html
+      server.middlewares.use((req, res, next) => {
+        if (!req.url || !req.url.startsWith('/media/')) {
+          next()
+          return
+        }
+        try {
+          const urlPath = decodeURIComponent(req.url.split('?')[0] || '')
+          const rel = urlPath.slice('/media/'.length)
+          // Gallery JSON only on FastAPI
+          if (/^species\/[^/]+\/gallery\/?$/.test(rel)) {
+            next()
+            return
+          }
+          let file = safeResolve(rel)
+          // Fallback: missing species card → brand placeholder
+          if (!file || !fs.existsSync(file) || !fs.statSync(file).isFile()) {
+            if (rel.includes('/placeholder/')) {
+              res.statusCode = 404
+              res.end('placeholder missing')
+              return
+            }
+            const kind = /deadly|mort|virosa|phalloides|proxima|filaris|brunneo/i.test(rel)
+              ? 'deadly'
+              : /toxic|toxico|xanthoderma|omphalotus/i.test(rel)
+                ? 'toxic'
+                : 'default'
+            file = safeResolve(`placeholders/${kind}.webp`)
+          }
+          if (!file || !fs.existsSync(file)) {
+            res.statusCode = 404
+            res.end('media not found')
+            return
+          }
+          const ext = path.extname(file).toLowerCase()
+          res.statusCode = 200
+          res.setHeader('Content-Type', mime[ext] || 'application/octet-stream')
+          res.setHeader('Cache-Control', 'public, max-age=86400')
+          fs.createReadStream(file).pipe(res)
+        } catch {
+          res.statusCode = 500
+          res.end('media error')
+        }
+      })
+    },
+  }
+}
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
+    serveRepoMediaPlugin(),
     react(),
     VitePWA({
       registerType: 'autoUpdate',
@@ -41,7 +123,7 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,webp,json}'],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
@@ -50,40 +132,30 @@ export default defineConfig({
               cacheName: 'google-fonts-cache',
               expiration: {
                 maxEntries: 10,
-                maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
+                maxAgeSeconds: 60 * 60 * 24 * 365,
               },
             },
           },
+          // Static /media and proxied /api/media
           {
-            urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp)$/,
-            handler: 'StaleWhileRevalidate',
-            options: {
-              cacheName: 'images-cache',
-              expiration: {
-                maxEntries: 80,
-                maxAgeSeconds: 60 * 60 * 24 * 30,
-              },
-            },
-          },
-          {
-            urlPattern: /^https:\/\/upload\.wikimedia\.org\/.*/i,
+            urlPattern: /\/(?:api\/)?media\/(species|placeholder)\/.+\.(webp|png|jpe?g)$/i,
             handler: 'CacheFirst',
             options: {
-              cacheName: 'wiki-fungi-images',
+              cacheName: 'species-media',
               expiration: {
-                maxEntries: 200,
-                maxAgeSeconds: 60 * 60 * 24 * 30,
+                maxEntries: 800,
+                maxAgeSeconds: 30 * 86400,
               },
             },
           },
           {
-            urlPattern: /^https:\/\/(.*\.)?inaturalist\.(org|open-data\.s3\.amazonaws\.com)\/.*/i,
+            urlPattern: /\/(?:api\/)?media\/placeholder\/[a-z]+/i,
             handler: 'CacheFirst',
             options: {
-              cacheName: 'inat-fungi-images',
+              cacheName: 'species-media-placeholders',
               expiration: {
-                maxEntries: 200,
-                maxAgeSeconds: 60 * 60 * 24 * 14,
+                maxEntries: 20,
+                maxAgeSeconds: 30 * 86400,
               },
             },
           },
@@ -93,44 +165,21 @@ export default defineConfig({
   ],
   server: {
     port: 5173,
+    strictPort: true,
     proxy: {
+      // API + gallery JSON need FastAPI (photos are served statically from media/)
       '/api': {
-        target: 'http://localhost:8000',
+        target: 'http://127.0.0.1:8000',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
-      // Community photos + observation uploads served by FastAPI StaticFiles
-      '/uploads': {
-        target: 'http://localhost:8000',
-        changeOrigin: true,
-      },
     },
-  },
-  build: {
-    target: 'es2020',
-    cssCodeSplit: true,
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          if (id.includes('node_modules/three')) return 'three'
-          if (id.includes('node_modules/react-dom') || id.includes('node_modules/react/'))
-            return 'react-vendor'
-          if (id.includes('node_modules/react-router')) return 'router'
-          if (id.includes('node_modules/framer-motion')) return 'motion'
-          if (id.includes('node_modules/leaflet') || id.includes('react-leaflet')) return 'map'
-          if (id.includes('speciesPhotos.json')) return 'species-photos'
-          if (id.includes('speciesCatalog.json')) return 'species-catalog'
-        },
-      },
+    fs: {
+      allow: [path.resolve(__dirname, '..')],
     },
-    chunkSizeWarningLimit: 900,
   },
   test: {
     globals: true,
-    // Pure unit tests (step-up helpers, geometry, risk labels) run in Node.
-    // jsdom@29 is ESM-only and breaks vitest CJS require (ERR_REQUIRE_ESM).
     environment: 'node',
-    include: ['src/**/*.{test,spec}.{ts,tsx}'],
-    setupFiles: ['src/test/setupCatalog.ts'],
   },
 })

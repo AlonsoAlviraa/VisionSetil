@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { NavLink, Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
+import { LanguageSwitcher } from './LanguageSwitcher'
 
 const THEME_KEY = 'visionsetil_theme'
 
@@ -254,6 +255,7 @@ export function Header() {
               <IconUser />
             </Link>
           )}
+          <LanguageSwitcher />
           <button
             className="btn-icon"
             type="button"
