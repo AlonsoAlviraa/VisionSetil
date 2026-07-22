@@ -21,6 +21,9 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
+if TYPE_CHECKING:
+    from app.db.schemas import QualityGatePayload
+
 
 def _repo_root() -> Path:
     return Path(getattr(settings, "repo_root", None) or Path(settings.base_dir).parent)
@@ -207,19 +210,14 @@ def quality_gate_status(
     # verdict tracks metrics only — not disable bypass
     verdict = "ACCEPTABLE" if metrics_acceptable else "UNACCEPTABLE"
 
-    # D-B23 / B-20: always log full metrics_path (never basename-only) on evaluate
-    logger.info(
-        "quality_gate evaluate reason_code=%s verdict=%s test_map_at_3=%s "
-        "safety_recall_deadly=%s metrics_path=%s metrics_acceptable=%s "
-        "species_id_allowed=%s",
-        reason_code,
-        verdict,
-        map3_f,
-        deadly_f,
-        path,
-        metrics_acceptable,
-        species_id_allowed,
-    )
+    # Normalize version to str | None for stable QualityGatePayload contract
+    version_s: str | None
+    if version is None:
+        version_s = None
+    elif isinstance(version, str):
+        version_s = version
+    else:
+        version_s = str(version)
 
     return {
         "species_id_allowed": species_id_allowed,
@@ -231,10 +229,43 @@ def quality_gate_status(
         "safety_recall_deadly": deadly_f,
         "min_map_at_3": min_map,
         "min_deadly_recall": min_deadly,
-        "metrics_path": path,  # full path always (D-B23); never basename-only
-        "version": version,
+        "metrics_path": path,
+        "version": version_s,
         "verdict": verdict,
     }
+
+
+# Stable machine reason_code set (D-B11 / D-B15). Endpoint + classify share this.
+REASON_CODES = frozenset(
+    {
+        "no_metrics",
+        "map_below",
+        "deadly_below",
+        "gates_passed",
+        "gate_disabled",
+        "unset",
+    }
+)
+
+
+def quality_gate_payload(
+    *,
+    loaded_weights_path: str | Path | None = None,
+    repo_root: str | None = None,
+) -> QualityGatePayload:
+    """Validate gate status into the stable ``QualityGatePayload`` contract.
+
+    Used by ``GET /models/quality-gate`` so OpenAPI + preflight always see the
+    dual-signal fields (``metrics_acceptable``, ``species_id_allowed``,
+    ``reason_code``, ``verdict`` metrics-only).
+    """
+    from app.db.schemas import QualityGatePayload as _QualityGatePayload
+
+    data = quality_gate_status(
+        loaded_weights_path=loaded_weights_path,
+        repo_root=repo_root,
+    )
+    return _QualityGatePayload(**data)
 
 
 def apply_quality_gate_to_simple_result(
