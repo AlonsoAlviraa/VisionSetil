@@ -226,5 +226,35 @@
     "verano": "Verano",
     "otono": "Otoño",
     "invierno": "Invierno"
+  },
+  "honesty": {
+    "mode": {
+      "blocked": "Identificación bloqueada: modelo bajo umbral",
+      "mock": "Modo demo — sin pesos de campo",
+      "real": "Modelo en vivo — solo orientación"
+    },
+    "gate": {
+      "no_metrics": "Sin métricas del modelo en disco",
+      "map_below": "MAP@3 por debajo del umbral mínimo",
+      "deadly_below": "Recall de especies mortales por debajo del umbral",
+      "gates_passed": "Umbrales de calidad superados",
+      "gate_disabled": "Gate de calidad deshabilitado (solo desarrollo)"
+    },
+    "preflight": {
+      "offline": "API no disponible. No se puede identificar ahora.",
+      "blocked": "Identificación de especie no permitida: el modelo no supera el umbral de calidad.",
+      "mock": "Modo demo: predicciones de demostración, no identificación de campo.",
+      "real": "Modelo en vivo. Identificación solo orientativa.",
+      "metrics_warning": "Métricas del modelo por debajo del umbral (gate deshabilitado). No se muestra confianza.",
+      "submit_offline": "Conecta la API para enviar fotos. Identificación deshabilitada sin backend.",
+      "unknown": "Estado del modelo desconocido. Identificación solo orientativa."
+    },
+    "decision": {
+      "rejected_open_set": "El modelo se abstiene (incertidumbre / open-set)",
+      "rejected_gate": "Identificación bloqueada por el umbral de calidad del modelo"
+    },
+    "confidence_hidden": "Confianza no disponible en este modo",
+    "educational_blocked_title": "Identificación no disponible",
+    "educational_blocked_body": "El modelo actual no supera el umbral de calidad para identificar especies. Usa la enciclopedia y consulta a un micólogo experto. Esta app es solo orientativa y educativa."
   }
 }

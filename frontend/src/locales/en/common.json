@@ -232,5 +232,35 @@
   "education": {
     "title": "Learn mycology",
     "subtitle": "Safety-first field guides"
+  },
+  "honesty": {
+    "mode": {
+      "blocked": "Identification blocked: model below quality threshold",
+      "mock": "Demo mode — no field weights",
+      "real": "Live model — orientation only"
+    },
+    "gate": {
+      "no_metrics": "No model metrics on disk",
+      "map_below": "MAP@3 below minimum threshold",
+      "deadly_below": "Deadly-species recall below threshold",
+      "gates_passed": "Quality thresholds passed",
+      "gate_disabled": "Quality gate disabled (development only)"
+    },
+    "preflight": {
+      "offline": "API unavailable. Identification cannot run now.",
+      "blocked": "Species identification not allowed: the model does not meet the quality threshold.",
+      "mock": "Demo mode: demonstration predictions, not field identification.",
+      "real": "Live model. Identification is orientation-only.",
+      "metrics_warning": "Model metrics below threshold (gate disabled). Confidence is hidden.",
+      "submit_offline": "Connect the API to submit photos. Identification is disabled without the backend.",
+      "unknown": "Model status unknown. Identification is orientation-only."
+    },
+    "decision": {
+      "rejected_open_set": "The model abstains (uncertainty / open-set)",
+      "rejected_gate": "Identification blocked by the model quality threshold"
+    },
+    "confidence_hidden": "Confidence is not available in this mode",
+    "educational_blocked_title": "Identification unavailable",
+    "educational_blocked_body": "The current model does not meet the quality threshold for species identification. Use the encyclopedia and consult an expert mycologist. This app is orientation and educational only."
   }
 }
