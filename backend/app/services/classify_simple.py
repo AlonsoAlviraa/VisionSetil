@@ -16,6 +16,11 @@ from app.db.schemas import (
     SimpleClassificationResult,
     SimpleSpeciesPrediction,
 )
+from app.api.routes_metrics import (
+    record_classification,
+    record_classify_mode,
+    record_gate_blocked,
+)
 from app.ml.classify_mode import derive_classify_mode
 from app.ml.quality_gate import apply_quality_gate_to_simple_result
 from app.services import unified_catalog as catalog
@@ -122,14 +127,34 @@ def map_to_simple(
     # Stack truth is independent of mode (D-B1) — never overwrite is_mock_stack from mode
     is_mock_stack = bool(gated.get("is_mock_stack", True))
     gated["is_mock_stack"] = is_mock_stack
-    gated["mode"] = derive_classify_mode(
+    mode = derive_classify_mode(
         is_mock_stack=is_mock_stack,
         species_id_allowed=bool(gate.get("species_id_allowed", False)),
     )
+    gated["mode"] = mode
     gated["locale"] = locale or gated.get("locale") or catalog.DEFAULT_LOCALE
     # quality_gate always present from apply_* (pass and fail) — do not strip
     out = SimpleClassificationResult(**gated)
+
+    # Observability (B-51): wire counters from the shared map path so sync + async match
+    _record_classify_metrics(out, gate)
+
     return _hydrate_simple_result(out, locale=locale)
+
+
+def _record_classify_metrics(result: SimpleClassificationResult, gate: dict[str, Any]) -> None:
+    """Emit classification + mode + gate-block counters (best-effort, never raises)."""
+    try:
+        record_classification(rejected=result.decision == "rejected")
+        # mode may be Enum or str depending on model dump / construct path
+        mode_val = result.mode
+        mode_str = mode_val.value if hasattr(mode_val, "value") else str(mode_val)
+        record_classify_mode(mode_str)
+        if not bool(gate.get("species_id_allowed", False)):
+            record_gate_blocked(str(gate.get("reason_code") or "unknown"))
+    except Exception:
+        # Metrics must never break classify
+        pass
 
 
 def _hydrate_simple_result(
