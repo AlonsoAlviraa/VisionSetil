@@ -24,8 +24,6 @@ download.log
 kaggle_cloud_outputs/
 backend/mushroom_photo_id.db-journal
 
-yolov8n.pt
-*.pt
 
 # Local MCP configs may contain credentials — keep only *.example.json in git
 .cline/mcp_settings.json
@@ -42,3 +40,8 @@ kaggle/kernel_output_v11_dl/
 
 # Local agent / session noise
 .grok/sessions/
+
+# Large intermediate training checkpoints (reproducible from best.pt)
+**/checkpoint_latest.pt
+
+
