@@ -1,12 +1,20 @@
 /**
- * Result card — 3-layer hierarchy (Wave A):
- * 1) Safety + decision + top predictions
- * 2) Confidence + lookalikes (if any)
+ * Result card — 3-layer hierarchy (Wave A) + Phase B honesty (B-08):
+ * 0) ResultModeBanner + educational blocked shell
+ * 1) Safety + decision + top predictions (no FoodQualityChip — D-B16)
+ * 2) Confidence (gated D-B9) + lookalikes
  * 3) Accordion: quality, evidence, questions, feedback, technical
  */
 import { useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import type { ClassificationResult, SpeciesPrediction } from '../api/types'
+import {
+  isOpenSetRejected,
+  resolveMode,
+  shouldShowConfidence,
+  shouldShowEducationalShell,
+} from '../lib/classifyMode'
 import { getRiskMeta } from '../lib/riskLabels'
 import { lookalikeSummary, rankLookalikes } from '../lib/lookalikeRisk'
 import { SpeciesThumb } from './SpeciesThumb'
@@ -28,9 +36,11 @@ import {
   IconThumbsUp,
 } from './icons'
 import { stackBadgeEs } from '../lib/modelStackLabel'
-import { FoodQualityChip } from './FoodQualityChip'
-import { getFoodQuality } from '../lib/foodQuality'
 import { ModelInsightsPanel } from './ModelInsightsPanel'
+import {
+  EducationalBlockedShell,
+  ResultModeBanner,
+} from './ResultModeBanner'
 
 interface ResultCardProps {
   result: ClassificationResult
@@ -80,12 +90,17 @@ const SAFETY_LEVEL_META: Record<string, { label: string; class: string }> = {
 }
 
 export function ResultCard({ result, onFeedback, viewTypes = [], previews = [] }: ResultCardProps) {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [feedbackSent, setFeedbackSent] = useState(false)
   const [layer2Open, setLayer2Open] = useState(true)
   const [layer3Open, setLayer3Open] = useState(false)
   const [handoffSaved, setHandoffSaved] = useState(false)
 
+  const mode = resolveMode(result)
+  const showConfidence = shouldShowConfidence(result)
+  const showBlockedShell = shouldShowEducationalShell(result)
+  const openSetRejected = isOpenSetRejected(result)
   const isRejected = result.decision === 'rejected'
   const topPrediction = result.predictions[0]
   const topEdibility = getEdibilityMeta(topPrediction?.edibility ?? null)
@@ -99,7 +114,6 @@ export function ResultCard({ result, onFeedback, viewTypes = [], previews = [] }
   const isDeadly =
     topEdibility.class === 'risk-deadly' || topEdibility.class === 'ed-deadly'
   const stackBadge = stackBadgeEs(result.model_stack)
-  const topFood = topPrediction ? getFoodQuality(topPrediction.species) : null
 
   const rankedLookalikes = useMemo(
     () => rankLookalikes(result.dangerous_lookalikes || []),
@@ -110,11 +124,12 @@ export function ResultCard({ result, onFeedback, viewTypes = [], previews = [] }
     [result.dangerous_lookalikes],
   )
 
-  const needsExpert = result.recommend_human_review || isRejected || isDangerous
+  const needsExpert = result.recommend_human_review || isRejected || isDangerous || showBlockedShell
   const hasLayer2 =
-    (!isRejected && !!topPrediction) || rankedLookalikes.length > 0 || isDangerous
-  const hasLayer3 =
-    true /* always show ML insights accordion */
+    (!showBlockedShell && !isRejected && !!topPrediction && showConfidence) ||
+    rankedLookalikes.length > 0 ||
+    (isDangerous && !showBlockedShell)
+  const hasLayer3 = true /* always show ML insights accordion */
 
   const handleFeedback = (correct: boolean) => {
     onFeedback?.(correct, topPrediction?.species)
@@ -132,14 +147,20 @@ export function ResultCard({ result, onFeedback, viewTypes = [], previews = [] }
 
   return (
     <div
-      className={`result-card result-card--layered ${isDeadly && !isRejected ? 'result-card--deadly' : ''}`}
+      className={`result-card result-card--layered result-card--mode-${mode} ${isDeadly && !isRejected && !showBlockedShell ? 'result-card--deadly' : ''}`}
+      data-testid="result-card"
+      data-mode={mode}
+      data-show-confidence={showConfidence ? 'true' : 'false'}
     >
+      <ResultModeBanner result={result} />
+
       {/* ── Layer 1: safety + decision + top predictions ── */}
       <section className="result-layer result-layer--1" aria-label="Resultado principal">
         <div className="result-meta-row">
           <span
             className={`stack-badge stack-badge--${stackBadge.mode}`}
             title={stackBadge.hint}
+            data-testid="stack-badge"
           >
             {stackBadge.label}
           </span>
@@ -155,111 +176,142 @@ export function ResultCard({ result, onFeedback, viewTypes = [], previews = [] }
           </p>
         </div>
 
-        <div className={`decision-banner ${isRejected ? 'rejected' : 'accepted'}`}>
-          {isRejected ? (
-            <>
-              <strong className="decision-banner__title">
-                <IconAlert size={18} />
-                Sin ID fiable
-              </strong>
-              <p>
-                {result.rejection_reason ||
-                  result.open_set_reason ||
-                  'No hay coincidencia clara. Trátala como riesgo hasta que un experto diga lo contrario.'}
-              </p>
-            </>
-          ) : (
-            <>
-              <strong className="decision-banner__title">
-                <IconCheck size={18} />
-                Pista tentativa
-              </strong>
-              <p>
-                {((topPrediction?.confidence ?? 0) * 100).toFixed(1)}% de confianza del modelo
-                {result.predictions.length >= 2
-                  ? ' · el modelo duda entre varias especies'
-                  : ''}
-              </p>
-            </>
-          )}
-        </div>
+        {showBlockedShell ? (
+          <EducationalBlockedShell result={result} />
+        ) : (
+          <>
+            <div
+              className={`decision-banner ${isRejected ? 'rejected' : 'accepted'}`}
+              data-testid="decision-banner"
+              data-open-set={openSetRejected ? 'true' : 'false'}
+            >
+              {isRejected ? (
+                <>
+                  <strong className="decision-banner__title">
+                    <IconAlert size={18} />
+                    {openSetRejected
+                      ? t('honesty.decision.rejected_open_set')
+                      : t('honesty.decision.rejected_gate')}
+                  </strong>
+                  <p>
+                    {result.rejection_reason ||
+                      result.open_set_reason ||
+                      (openSetRejected
+                        ? t('honesty.decision.rejected_open_set')
+                        : t('honesty.decision.rejected_gate'))}
+                  </p>
+                </>
+              ) : (
+                <>
+                  <strong className="decision-banner__title">
+                    <IconCheck size={18} />
+                    Pista tentativa
+                  </strong>
+                  <p>
+                    {showConfidence && topPrediction ? (
+                      <>
+                        {((topPrediction.confidence ?? 0) * 100).toFixed(1)}% de confianza del modelo
+                        {result.predictions.length >= 2
+                          ? ' · el modelo duda entre varias especies'
+                          : ''}
+                      </>
+                    ) : (
+                      t('honesty.confidence_hidden')
+                    )}
+                  </p>
+                </>
+              )}
+            </div>
 
-        {isDeadly && !isRejected && (
-          <div className="danger-callout danger-callout--deadly" role="alert">
-            <strong>
-              <IconAlert size={18} /> Posible confusión mortal
-            </strong>
-            <p>
-              {topEdibility.label}. Mantén distancia de niños y mascotas. No toques ni pruebes.
-              Confirma con un micólogo.
-            </p>
-          </div>
-        )}
+            {isDeadly && !isRejected && (
+              <div className="danger-callout danger-callout--deadly" role="alert">
+                <strong>
+                  <IconAlert size={18} /> Posible confusión mortal
+                </strong>
+                <p>
+                  {topEdibility.label}. Mantén distancia de niños y mascotas. No toques ni pruebes.
+                  Confirma con un micólogo.
+                </p>
+              </div>
+            )}
 
-        {isDangerous && !isDeadly && !isRejected && (
-          <div className="danger-callout danger-callout--compact" role="alert">
-            <strong>
-              <IconAlert size={16} /> Posible riesgo alto
-            </strong>
-            <span> — {topEdibility.label}. Mantén distancia de niños y mascotas.</span>
-          </div>
-        )}
+            {isDangerous && !isDeadly && !isRejected && (
+              <div className="danger-callout danger-callout--compact" role="alert">
+                <strong>
+                  <IconAlert size={16} /> Posible riesgo alto
+                </strong>
+                <span> — {topEdibility.label}. Mantén distancia de niños y mascotas.</span>
+              </div>
+            )}
 
-        {topFood && !isRejected && (
-          <div className="result-food-row">
-            <FoodQualityChip foodClass={topFood.food_class} label={topFood.label} />
-            <span className="result-food-row__note">
-              Calidad documentada (base curada) — no es permiso de consumo
-            </span>
-          </div>
-        )}
+            {/* D-B16: FoodQualityChip banned on Identify — risk chips only */}
 
-        {result.predictions.length > 0 && (
-          <div className="predictions">
-            <h3>Mejores pistas</h3>
-            <ul>
-              {result.predictions.slice(0, 3).map((pred: SpeciesPrediction, idx: number) => {
-                const meta = getEdibilityMeta(pred.edibility)
-                const fq = getFoodQuality(pred.species)
-                return (
-                  <li
-                    key={`${pred.species}-${idx}`}
-                    className={`prediction-item ${meta.class} ${idx === 0 ? 'top-match' : ''}`}
-                  >
-                    <SpeciesThumb
-                      taxon={pred.species}
-                      riskLabel={pred.edibility}
-                      size={idx === 0 ? 56 : 44}
-                      className="prediction-thumb"
-                    />
-                    <div className="prediction-info">
-                      <span className="rank-badge">#{idx + 1}</span>
-                      <SpeciesNameBlock
-                        taxon={pred.species}
-                        commonNames={pred.common_name}
-                        size="sm"
-                        showFamily
-                      />
-                      {fq ? (
-                        <FoodQualityChip foodClass={fq.food_class} label={fq.label} compact />
-                      ) : (
-                        <RiskChip risk={pred.edibility} className={`edibility-badge ${meta.class}`} />
-                      )}
-                      <div className="confidence-bar">
-                        <div
-                          className="confidence-fill"
-                          style={{ width: `${Math.min(pred.confidence * 100, 100)}%` }}
+            {result.predictions.length > 0 && (
+              <div className="predictions" data-testid="predictions-list">
+                <h3>Mejores pistas</h3>
+                <ul>
+                  {result.predictions.slice(0, 3).map((pred: SpeciesPrediction, idx: number) => {
+                    const meta = getEdibilityMeta(pred.edibility)
+                    return (
+                      <li
+                        key={`${pred.species}-${idx}`}
+                        className={`prediction-item ${meta.class} ${idx === 0 ? 'top-match' : ''}`}
+                        data-testid={`prediction-item-${idx}`}
+                      >
+                        <SpeciesThumb
+                          taxon={pred.species}
+                          riskLabel={pred.edibility}
+                          size={idx === 0 ? 56 : 44}
+                          className="prediction-thumb"
                         />
-                      </div>
-                      <span className="confidence-value">
-                        {(pred.confidence * 100).toFixed(1)}%
-                      </span>
-                    </div>
-                  </li>
-                )
-              })}
-            </ul>
-          </div>
+                        <div className="prediction-info">
+                          <span className="rank-badge">#{idx + 1}</span>
+                          <SpeciesNameBlock
+                            taxon={pred.species}
+                            commonNames={pred.common_name}
+                            size="sm"
+                            showFamily
+                          />
+                          <RiskChip
+                            risk={pred.edibility}
+                            className={`edibility-badge ${meta.class}`}
+                          />
+                          {showConfidence ? (
+                            <>
+                              <div
+                                className="confidence-bar"
+                                data-testid="confidence-bar"
+                              >
+                                <div
+                                  className="confidence-fill"
+                                  style={{
+                                    width: `${Math.min(pred.confidence * 100, 100)}%`,
+                                  }}
+                                />
+                              </div>
+                              <span
+                                className="confidence-value"
+                                data-testid="confidence-value"
+                              >
+                                {(pred.confidence * 100).toFixed(1)}%
+                              </span>
+                            </>
+                          ) : (
+                            <span
+                              className="confidence-hidden muted"
+                              data-testid="confidence-hidden"
+                            >
+                              {t('honesty.confidence_hidden')}
+                            </span>
+                          )}
+                        </div>
+                      </li>
+                    )
+                  })}
+                </ul>
+              </div>
+            )}
+          </>
         )}
 
         <div className="review-callout review-callout--compact">
@@ -268,6 +320,7 @@ export function ResultCard({ result, onFeedback, viewTypes = [], previews = [] }
               type="button"
               className="btn-atelier btn-atelier--primary"
               onClick={handleExpertHandoff}
+              data-testid="cta-expert-handoff"
             >
               <IconExpert size={16} />
               {needsExpert ? 'Revisión experta' : 'Segunda opinión'}
@@ -275,6 +328,15 @@ export function ResultCard({ result, onFeedback, viewTypes = [], previews = [] }
             <Link className="btn-atelier btn-atelier--ghost" to="/lookalikes">
               Lookalikes
             </Link>
+            {showBlockedShell && (
+              <Link
+                className="btn-atelier btn-atelier--ghost"
+                to="/enciclopedia"
+                data-testid="cta-encyclopedia-inline"
+              >
+                Enciclopedia
+              </Link>
+            )}
           </div>
           {handoffSaved && (
             <p className="muted" role="status">
@@ -293,15 +355,20 @@ export function ResultCard({ result, onFeedback, viewTypes = [], previews = [] }
             aria-expanded={layer2Open}
             onClick={() => setLayer2Open((v) => !v)}
           >
-            <span>Confianza y confusiones</span>
+            <span>
+              {showConfidence ? 'Confianza y confusiones' : 'Confusiones de riesgo'}
+            </span>
             <span aria-hidden="true">{layer2Open ? '−' : '+'}</span>
           </button>
           {layer2Open && (
             <div className="result-layer__body">
-              {!isRejected && topPrediction && (() => {
+              {showConfidence && !isRejected && topPrediction && (() => {
                 const interp = getConfidenceInterpretation(topPrediction.confidence)
                 return (
-                  <div className={`confidence-interpretation ci-${interp.level}`}>
+                  <div
+                    className={`confidence-interpretation ci-${interp.level}`}
+                    data-testid="confidence-interpretation"
+                  >
                     <span className="ci-icon" aria-hidden="true">
                       {interp.level === 'high' ? (
                         <IconCheck size={16} />
@@ -414,7 +481,7 @@ export function ResultCard({ result, onFeedback, viewTypes = [], previews = [] }
                 </div>
               )}
 
-              {onFeedback && !feedbackSent && !isRejected && (
+              {onFeedback && !feedbackSent && !isRejected && !showBlockedShell && (
                 <div className="feedback-section">
                   <p className="feedback-question">¿La pista te encaja?</p>
                   <div className="feedback-buttons">
