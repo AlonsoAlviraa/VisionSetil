@@ -1,2 +1,2 @@
-*.pt filter=lfs diff=lfs merge=lfs -text
-**/*.pt filter=lfs diff=lfs merge=lfs -text
+# Model weights are NOT tracked (local only). See .gitignore for *.pt / *.pth / etc.
+# Do not re-enable Git LFS for weights unless you intentionally host them remotely.

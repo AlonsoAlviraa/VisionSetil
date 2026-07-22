@@ -44,7 +44,28 @@ backend/mushroom_photo_id.db-journal
 .cline/**/mcp_settings.json
 !.cline/**/mcp_settings.example.json
 
-# Training artifacts (weights already *.pt; keep metrics/label json)
+# ── Model weights: LOCAL ONLY (never push to GitHub) ──
+# Keep files on disk; they are not versioned. Load via weight_discovery / config paths.
+*.pt
+**/*.pt
+*.pth
+**/*.pth
+*.onnx
+**/*.onnx
+*.safetensors
+**/*.safetensors
+*.ckpt
+**/*.ckpt
+*.bin
+!**/package-lock.json
+# common weight locations
+yolov8n.pt
+yolov8*.pt
+backend/app/ml/weights/**
+kaggle/kernel_output_*/models/*.pt
+kaggle/kernel_output_*/models/*.pth
+
+# Training artifacts (keep metrics/label json in git if small)
 *.npz
 kaggle/kernel_output_*/models/checkpoint*
 kaggle/pull_*/
@@ -55,7 +76,7 @@ kaggle/kernel_output_v11_dl/
 # Local agent / session noise
 .grok/sessions/
 
-# Large intermediate training checkpoints (reproducible from best.pt)
+# Large intermediate training checkpoints
 **/checkpoint_latest.pt
 
 
