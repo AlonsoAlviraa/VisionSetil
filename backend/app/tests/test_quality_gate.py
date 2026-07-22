@@ -392,8 +392,8 @@ def test_golden_metrics_path_never_basename_only(tmp_path):
 
 
 def test_map_to_simple_retains_quality_gate_and_mode(monkeypatch, tmp_path):
-    """Regression: _map_to_simple must not strip quality_gate; mode matches derive."""
-    from app.api.routes_classify import _map_to_simple
+    """Regression: map_to_simple must not strip quality_gate; mode matches derive."""
+    from app.services.classify_simple import map_to_simple as _map_to_simple
     from app.db.schemas import (
         CandidateResult,
         ClassificationResponse,
