@@ -82,7 +82,7 @@
   "identify": {
     "title": "Identificar bolet",
     "subtitle": "Puja fotos des de diverses vistes per a una identificació més fiable",
-    "wizardTitle": "Guia de 4 vistes",
+    "wizardTitle": "Quatre vistes de camp",
     "views": {
       "gills": "Làmines / porus",
       "front": "Front / barret",
@@ -110,7 +110,25 @@
       "detail": "🔍"
     },
     "takePhoto": "Fer foto",
-    "uploadPhotos": "Pujar fotos"
+    "uploadPhotos": "Pujar fotos",
+    "wizardSubtitle": "Làmines, perfil, hàbitat i detall. Completa les crítiques abans d'analitzar.",
+    "wizardAriaLabel": "Captura multi-vista guiada",
+    "progressAria": "Progrés {{filled}} de {{total}}",
+    "progressCount": "{{filled}}/{{total}}",
+    "progressViewsLabel": "vistes",
+    "missingCritical": "falten crítiques: {{views}}",
+    "badgeCritical": "crítica",
+    "badgeOptional": "opcional",
+    "gallery": "Galeria",
+    "camera": "Càmera",
+    "remove": "Treure",
+    "viewAlt": "Vista {{view}}",
+    "readiness": {
+      "missing_habitat": "Falta la vista d'hàbitat: millora l'evidència ecològica (recomanat).",
+      "missing_detail": "Falta detall de peu/anell/volva: redueix confusió amb lookalikes.",
+      "missing_required": "Vistes crítiques pendents: {{views}}. Pots enviar amb avís, però l'open-set pot rebutjar.",
+      "hard_blocked": "Mode estricte: afegeix les vistes crítiques (làmines i frontal) abans d'analitzar."
+    }
   },
   "empty": {
     "defaultTitle": "Res per aquí",

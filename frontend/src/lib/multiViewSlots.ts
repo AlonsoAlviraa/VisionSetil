@@ -1,15 +1,23 @@
 /**
  * Guided multi-view capture model (iNaturalist / FungiCLEF style).
  * Pure logic — unit-tested without React.
+ *
+ * D-B14 (B-25): default readiness is **soft** — submit with ≥1 filled view;
+ * missing required (gills/front) are warnings. Hard gate (gills+front required
+ * for canSubmit) only when `hardMinViews: true` (VITE_FEATURE_HARD_VIEW_MIN).
  */
 
 export const CANONICAL_VIEWS = ['gills', 'front', 'habitat', 'detail'] as const
 export type CanonicalView = (typeof CANONICAL_VIEWS)[number]
 
+/** i18n key under `identify.views.*` / `identify.viewHint.*`. */
 export type ViewSlot = {
   view: CanonicalView
+  /** ES fallback when i18n is unavailable. */
   labelEs: string
+  /** ES fallback hint when i18n is unavailable. */
   hintEs: string
+  /** Critical for multi-view evidence (gills, front). */
   required: boolean
 }
 
@@ -66,36 +74,78 @@ export function orderedSlotKeys(assignments: SlotAssignment): CanonicalView[] {
   return CANONICAL_VIEWS.filter((v) => Boolean(assignments[v]))
 }
 
+/** Stable warning codes for i18n (`identify.readiness.*`). */
+export type MultiViewWarningCode =
+  | 'missing_habitat'
+  | 'missing_detail'
+  | 'missing_required'
+
 export type MultiViewReadiness = {
   canSubmit: boolean
   filled: number
   missingRequired: CanonicalView[]
+  /** Machine codes — prefer for UI i18n. */
+  warningCodes: MultiViewWarningCode[]
+  /**
+   * Human-readable ES fallback strings (soft copy).
+   * Prefer `warningCodes` + i18n in UI.
+   */
   warnings: string[]
+  /** Echo of options.hardMinViews for callers/tests. */
+  hardMinViews: boolean
 }
 
-export function assessMultiViewReadiness(assignments: SlotAssignment): MultiViewReadiness {
+export type AssessMultiViewOptions = {
+  /**
+   * D-B14 hard gate: require all `required` slots (gills + front) filled.
+   * Default **false** = soft (submit if ≥1 view; required gaps are warnings only).
+   */
+  hardMinViews?: boolean
+}
+
+const WARNING_ES: Record<MultiViewWarningCode, string> = {
+  missing_habitat:
+    'Falta vista de hábitat: mejora la evidencia ecológica (recomendado).',
+  missing_detail:
+    'Falta detalle de pie/anillo/volva: reduce confusión con lookalikes.',
+  missing_required:
+    'Vistas críticas pendientes. Puedes enviar con advertencia, pero el open-set puede rechazar.',
+}
+
+export function assessMultiViewReadiness(
+  assignments: SlotAssignment,
+  options: AssessMultiViewOptions = {},
+): MultiViewReadiness {
+  const hardMinViews = options.hardMinViews === true
   const missingRequired = VIEW_SLOTS.filter((s) => s.required && !assignments[s.view]).map(
     (s) => s.view,
   )
   const filled = orderedSlotKeys(assignments).length
-  const warnings: string[] = []
-  if (!assignments.habitat) {
-    warnings.push('Falta vista de hábitat: mejora la evidencia ecológica (recomendado).')
-  }
-  if (!assignments.detail) {
-    warnings.push('Falta detalle de pie/anillo/volva: reduce confusión con lookalikes.')
-  }
-  if (missingRequired.length > 0) {
-    warnings.push(
-      `Vistas críticas pendientes: ${missingRequired.join(', ')}. Puedes enviar con advertencia, pero el open-set puede rechazar.`,
-    )
-  }
-  // Allow submit with ≥1 image (including partial wizard); flag readiness honestly.
+  const warningCodes: MultiViewWarningCode[] = []
+
+  if (!assignments.habitat) warningCodes.push('missing_habitat')
+  if (!assignments.detail) warningCodes.push('missing_detail')
+  if (missingRequired.length > 0) warningCodes.push('missing_required')
+
+  const warnings = warningCodes.map((code) => {
+    if (code === 'missing_required' && missingRequired.length > 0) {
+      return `Vistas críticas pendientes: ${missingRequired.join(', ')}. Puedes enviar con advertencia, pero el open-set puede rechazar.`
+    }
+    return WARNING_ES[code]
+  })
+
+  // Soft (default): ≥1 image. Hard: ≥1 image AND all required slots filled.
+  const canSubmit = hardMinViews
+    ? filled >= 1 && missingRequired.length === 0
+    : filled >= 1
+
   return {
-    canSubmit: filled >= 1,
+    canSubmit,
     filled,
     missingRequired,
+    warningCodes,
     warnings,
+    hardMinViews,
   }
 }
 

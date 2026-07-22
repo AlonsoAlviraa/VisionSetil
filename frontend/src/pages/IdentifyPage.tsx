@@ -137,7 +137,13 @@ export function IdentifyPage() {
     }
   }, [preflightEnabled, runPreflight])
 
-  const readiness = useMemo(() => assessMultiViewReadiness(assignments), [assignments])
+  const readiness = useMemo(
+    () =>
+      assessMultiViewReadiness(assignments, {
+        hardMinViews: featureFlags.HARD_VIEW_MIN,
+      }),
+    [assignments],
+  )
   const historySummary = useMemo(() => summarizeHistory(history), [history])
 
   const addFiles = useCallback((files: File[]) => {

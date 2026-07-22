@@ -82,7 +82,7 @@
   "identify": {
     "title": "Perretxikoa identifikatu",
     "subtitle": "Igo hainbat ikuspegitako argazkiak identifikazio fidagarriago baterako",
-    "wizardTitle": "4 ikuspegiko gida",
+    "wizardTitle": "Lau ikuspegi landa",
     "views": {
       "gills": "Orriak / poroak",
       "front": "Aurrealdea / txapela",
@@ -110,7 +110,25 @@
       "detail": "🔍"
     },
     "takePhoto": "Argazkia atera",
-    "uploadPhotos": "Argazkiak igo"
+    "uploadPhotos": "Argazkiak igo",
+    "wizardSubtitle": "Orriak, profila, habitata eta xehetasuna. Osatu kritikoak aztertu aurretik.",
+    "wizardAriaLabel": "Ikuspegi anitzeko gida-harrapaketa",
+    "progressAria": "Aurrerapena {{filled}} / {{total}}",
+    "progressCount": "{{filled}}/{{total}}",
+    "progressViewsLabel": "ikuspegi",
+    "missingCritical": "kritikoak falta: {{views}}",
+    "badgeCritical": "kritikoa",
+    "badgeOptional": "aukerakoa",
+    "gallery": "Galeria",
+    "camera": "Kamera",
+    "remove": "Kendu",
+    "viewAlt": "Ikuspegia {{view}}",
+    "readiness": {
+      "missing_habitat": "Habitata falta da: ebidentzia ekologikoa hobetzen du (gomendatua).",
+      "missing_detail": "Oin/eraztun/volva xehetasuna falta: lookalike nahasketa murrizten du.",
+      "missing_required": "Ikuspegi kritikoak falta: {{views}}. Abisuarekin bidali dezakezu, baina open-set-ek errefusatu dezake.",
+      "hard_blocked": "Modu zorrotza: gehitu ikuspegi kritikoak (orriak eta aurrealdea) aztertu aurretik."
+    }
   },
   "empty": {
     "defaultTitle": "Ezer ez hemen",
