@@ -4,6 +4,7 @@ Endpoints
 ---------
 POST /classify/async
     Upload images, create observation + job, return job ID immediately.
+    Form parity with sync ``POST /classify`` for ``view_types`` + ``locale`` (B-44).
 
 GET /jobs/{job_id}
     Poll job status. Returns ``ClassificationJobRead``.
@@ -26,6 +27,7 @@ GET /jobs/stats/summary
 from __future__ import annotations
 
 from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, HTTPException, Request, UploadFile
+from fastapi.responses import JSONResponse
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -33,8 +35,10 @@ from app.core.config import settings
 from app.db.database import get_db
 from app.db.models import Observation
 from app.db.schemas import ClassificationJobRead, JobResultEnvelope
+from app.services import unified_catalog as catalog
 from app.services.image_storage import store_observation_images
 from app.services.task_queue import create_job, get_job, get_queue_stats, run_classification_job
+from app.services.view_classifier import CANONICAL_VIEWS
 
 router = APIRouter()
 
@@ -42,6 +46,35 @@ router = APIRouter()
 def _get_org_id(request: Request) -> str:
     """Extract the organization_id from request state (set by APIKeyMiddleware)."""
     return getattr(request.state, "organization_id", "default")
+
+
+def _locale_from_form(locale: str | None) -> str:
+    """Optional form locale; omit/blank → es; invalid raises ValueError (caller → 400)."""
+    if locale is None or not str(locale).strip():
+        return catalog.DEFAULT_LOCALE
+    return catalog.normalize_locale(locale)
+
+
+def _parse_view_types(view_types: str | None, n_images: int) -> list[str] | None:
+    """Parse comma-separated ``view_types`` (sync /classify parity).
+
+    Returns ``None`` if absent (auto-label). Invalid labels → HTTP 400.
+    """
+    if not view_types:
+        return None
+    parts = [v.strip().lower() for v in view_types.split(",") if v.strip()]
+    invalid = [p for p in parts if p not in CANONICAL_VIEWS]
+    if invalid:
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                f"Invalid view_types label(s): {invalid}. "
+                f"Valid labels: {list(CANONICAL_VIEWS)}."
+            ),
+        )
+    while len(parts) < n_images:
+        parts.append("")
+    return parts[:n_images]
 
 
 @router.post("/classify/async", response_model=ClassificationJobRead, status_code=202)
@@ -56,14 +89,46 @@ async def classify_async(
     substrate: str | None = Form(default=None),
     notes: str | None = Form(default=None),
     smell: str | None = Form(default=None),
+    view_types: str | None = Form(
+        default=None,
+        description=(
+            "Optional comma-separated view labels, one per image "
+            "(e.g. 'gills,front,habitat,detail'). If omitted, the backend "
+            "auto-classifies each image with the View Classifier service. "
+            f"Valid labels: {list(CANONICAL_VIEWS)}. Parity with POST /classify (B-44)."
+        ),
+    ),
+    locale: str | None = Form(
+        default=None,
+        description=(
+            "Optional UI locale for localized safety/copy (es|ca|eu|en). "
+            "Invalid values return HTTP 400 with supported list. Default: es. "
+            "Parity with POST /classify (B-44 / D-B5)."
+        ),
+    ),
     db: Session = Depends(get_db),
-) -> ClassificationJobRead:
+) -> ClassificationJobRead | JSONResponse:
     """Submit images for async classification.
 
     Returns a job ID immediately (HTTP 202).  The client should poll
     ``GET /jobs/{job_id}`` until ``status == "completed"``.
+
+    Form parity (B-44): accepts the same ``view_types`` and ``locale`` fields
+    as sync ``POST /classify`` and passes them into the worker's
+    ``classify_to_simple`` path.
     """
     org_id = _get_org_id(request)
+
+    try:
+        resolved_locale = _locale_from_form(locale)
+    except ValueError:
+        return JSONResponse(
+            status_code=400,
+            content={
+                "error": "invalid_locale",
+                "supported": list(catalog.SUPPORTED_LOCALES),
+            },
+        )
 
     if not images:
         raise HTTPException(status_code=400, detail="At least one image is required")
@@ -77,6 +142,9 @@ async def classify_async(
                 status_code=400,
                 detail=f"Unsupported extension '{ext}'. Allowed: {sorted(settings.allowed_extensions)}",
             )
+
+    # Parse view_types before creating observation so bad labels fail fast (no orphan row).
+    parsed_view_types = _parse_view_types(view_types, len(images))
 
     # Create observation (org-scoped)
     observation = Observation(
@@ -104,8 +172,13 @@ async def classify_async(
     # Create job (org-scoped)
     job = create_job(db, observation.id, organization_id=org_id)
 
-    # Enqueue background worker
-    background_tasks.add_task(run_classification_job, job.id)
+    # Enqueue background worker with form-parity kwargs (B-44)
+    background_tasks.add_task(
+        run_classification_job,
+        job.id,
+        view_types=parsed_view_types,
+        locale=resolved_locale,
+    )
 
     return ClassificationJobRead.model_validate(job)
 
