@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 import { useDropzone } from 'react-dropzone'
 import { classifyImages, submitFeedback } from '../api/client'
 import type { ClassificationResult, ObservationMetadata } from '../api/types'
+import i18n from '../i18n'
 import { ResultCard } from '../components/ResultCard'
 import { UploadZone } from '../components/UploadZone'
 import { CameraCapture } from '../components/CameraCapture'
@@ -131,7 +132,9 @@ export function IdentifyPage() {
     setResult(null)
 
     try {
-      const data = await classifyImages(files, metadata, viewTypes)
+      // Current UI language (es|ca|eu|en); backend defaults to es if omitted.
+      const locale = (i18n.language || 'es').slice(0, 2)
+      const data = await classifyImages(files, metadata, viewTypes, locale)
       setResult(data)
 
       // B-38: stamp mode / gate_summary / locale on history entry

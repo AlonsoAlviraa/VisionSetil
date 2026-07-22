@@ -19,11 +19,13 @@ const client = axios.create({
  *
  * Supports optional observation metadata (habitat, substrate, etc.) which
  * improves classification accuracy through multi-modal fusion.
+ * Optional `locale` (es|ca|eu|en) is echoed by the backend for safety/i18n.
  */
 export async function classifyImages(
   files: File[],
   metadata?: ObservationMetadata,
   viewTypes?: string[],
+  locale?: string,
 ): Promise<ClassificationResult> {
   const formData = new FormData()
 
@@ -34,6 +36,10 @@ export async function classifyImages(
   if (viewTypes && viewTypes.length > 0) {
     // Backend expects comma-separated canonical views (gills,front,habitat,detail).
     formData.append('view_types', viewTypes.join(','))
+  }
+
+  if (locale) {
+    formData.append('locale', locale)
   }
 
   if (metadata) {
