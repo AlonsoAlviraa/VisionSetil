@@ -11,9 +11,12 @@ from __future__ import annotations
 import json
 from functools import lru_cache
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from app.core.config import settings
+
+if TYPE_CHECKING:
+    from app.db.schemas import QualityGatePayload
 
 
 def _repo_root() -> Path:
@@ -201,6 +204,15 @@ def quality_gate_status(
     # verdict tracks metrics only — not disable bypass
     verdict = "ACCEPTABLE" if metrics_acceptable else "UNACCEPTABLE"
 
+    # Normalize version to str | None for stable QualityGatePayload contract
+    version_s: str | None
+    if version is None:
+        version_s = None
+    elif isinstance(version, str):
+        version_s = version
+    else:
+        version_s = str(version)
+
     return {
         "species_id_allowed": species_id_allowed,
         "metrics_acceptable": metrics_acceptable,
@@ -212,9 +224,42 @@ def quality_gate_status(
         "min_map_at_3": min_map,
         "min_deadly_recall": min_deadly,
         "metrics_path": path,
-        "version": version,
+        "version": version_s,
         "verdict": verdict,
     }
+
+
+# Stable machine reason_code set (D-B11 / D-B15). Endpoint + classify share this.
+REASON_CODES = frozenset(
+    {
+        "no_metrics",
+        "map_below",
+        "deadly_below",
+        "gates_passed",
+        "gate_disabled",
+        "unset",
+    }
+)
+
+
+def quality_gate_payload(
+    *,
+    loaded_weights_path: str | Path | None = None,
+    repo_root: str | None = None,
+) -> QualityGatePayload:
+    """Validate gate status into the stable ``QualityGatePayload`` contract.
+
+    Used by ``GET /models/quality-gate`` so OpenAPI + preflight always see the
+    dual-signal fields (``metrics_acceptable``, ``species_id_allowed``,
+    ``reason_code``, ``verdict`` metrics-only).
+    """
+    from app.db.schemas import QualityGatePayload as _QualityGatePayload
+
+    data = quality_gate_status(
+        loaded_weights_path=loaded_weights_path,
+        repo_root=repo_root,
+    )
+    return _QualityGatePayload(**data)
 
 
 def apply_quality_gate_to_simple_result(

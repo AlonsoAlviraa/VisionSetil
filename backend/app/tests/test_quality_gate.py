@@ -395,3 +395,115 @@ def test_map_to_simple_retains_quality_gate_and_mode(monkeypatch, tmp_path):
     assert result.locale == "es"
     assert result.decision == "rejected"
     assert result.predictions == []
+
+
+# ─── B-09: GET /models/quality-gate dual-signal contract ─────────────────────
+
+# Required keys for stable QualityGatePayload (preflight / OpenAPI)
+_QUALITY_GATE_REQUIRED_KEYS = {
+    "species_id_allowed",
+    "metrics_acceptable",
+    "block_enabled",
+    "reason",
+    "reason_code",
+    "test_map_at_3",
+    "safety_recall_deadly",
+    "min_map_at_3",
+    "min_deadly_recall",
+    "metrics_path",
+    "version",
+    "verdict",
+}
+
+
+def test_quality_gate_payload_matches_status():
+    """quality_gate_payload validates the same dual-signal dict as status."""
+    from app.db.schemas import QualityGatePayload
+    from app.ml.quality_gate import REASON_CODES, quality_gate_payload
+
+    status = quality_gate_status()
+    payload = quality_gate_payload()
+    assert isinstance(payload, QualityGatePayload)
+    dumped = payload.model_dump()
+    assert set(dumped.keys()) == _QUALITY_GATE_REQUIRED_KEYS
+    assert dumped["species_id_allowed"] == status["species_id_allowed"]
+    assert dumped["metrics_acceptable"] == status["metrics_acceptable"]
+    assert dumped["reason_code"] == status["reason_code"]
+    assert dumped["reason_code"] in REASON_CODES
+    assert dumped["verdict"] == (
+        "ACCEPTABLE" if dumped["metrics_acceptable"] else "UNACCEPTABLE"
+    )
+
+
+def test_models_quality_gate_endpoint_dual_signal_contract(client):
+    """GET /models/quality-gate returns stable QualityGatePayload dual signals."""
+    from app.db.schemas import QualityGatePayload
+    from app.ml.quality_gate import REASON_CODES
+
+    resp = client.get("/models/quality-gate")
+    assert resp.status_code == 200
+    body = resp.json()
+
+    # Exact contract keys (response_model strips extras)
+    assert set(body.keys()) == _QUALITY_GATE_REQUIRED_KEYS
+
+    assert isinstance(body["species_id_allowed"], bool)
+    assert isinstance(body["metrics_acceptable"], bool)
+    assert isinstance(body["block_enabled"], bool)
+    assert isinstance(body["reason"], str) and body["reason"]
+    assert body["reason_code"] in REASON_CODES
+    assert body["reason_code"] != "unset"
+    assert body["verdict"] in {"ACCEPTABLE", "UNACCEPTABLE"}
+    # D-B15: verdict tracks metrics only
+    assert body["verdict"] == (
+        "ACCEPTABLE" if body["metrics_acceptable"] else "UNACCEPTABLE"
+    )
+    assert isinstance(body["min_map_at_3"], (int, float))
+    assert isinstance(body["min_deadly_recall"], (int, float))
+
+    # Re-validate through schema (fail if shape drifts)
+    QualityGatePayload(**body)
+
+    # Policy consistency when block is enabled
+    if body["block_enabled"]:
+        assert body["species_id_allowed"] == body["metrics_acceptable"]
+    else:
+        assert body["species_id_allowed"] is True
+        assert body["reason_code"] == "gate_disabled"
+
+
+def test_models_quality_gate_endpoint_gate_disabled_dual_signal(client, monkeypatch):
+    """Disable policy allows species ID but keeps metrics_acceptable honest."""
+    monkeypatch.setattr(settings, "model_block_species_id_when_below_gate", False)
+    clear_metrics_cache()
+
+    resp = client.get("/models/quality-gate")
+    assert resp.status_code == 200
+    body = resp.json()
+
+    assert body["block_enabled"] is False
+    assert body["species_id_allowed"] is True
+    assert body["reason_code"] == "gate_disabled"
+    assert "metrics_acceptable" in body
+    # verdict still tracks raw metrics (not forced ACCEPTABLE by disable)
+    assert body["verdict"] == (
+        "ACCEPTABLE" if body["metrics_acceptable"] else "UNACCEPTABLE"
+    )
+
+
+def test_models_quality_gate_endpoint_no_gpu_keys(client):
+    """Endpoint must stay light: dual-signal fields only, no heavy stack dump."""
+    resp = client.get("/models/quality-gate")
+    assert resp.status_code == 200
+    body = resp.json()
+    # Must not leak /models/status-style bulk fields
+    for forbidden in (
+        "weight_discovery",
+        "training_metrics",
+        "multi_view_classifier",
+        "detector",
+        "summary",
+        "config",
+    ):
+        assert forbidden not in body
+    assert set(body.keys()) == _QUALITY_GATE_REQUIRED_KEYS
