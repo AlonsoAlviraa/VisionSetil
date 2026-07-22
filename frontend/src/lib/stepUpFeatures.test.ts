@@ -3,7 +3,9 @@ import {
   assessMultiViewReadiness,
   buildViewTypesOrder,
   CANONICAL_VIEWS,
+  nextCameraSlot,
   orderedSlotKeys,
+  resolveCameraTargetSlot,
 } from './multiViewSlots'
 import { hasHighRiskLookalike, lookalikeSummary, rankLookalikes } from './lookalikeRisk'
 import {
@@ -99,6 +101,63 @@ describe('multiViewSlots guided capture', () => {
     expect(both.missingRequired).toEqual([])
     expect(both.warningCodes).toContain('missing_habitat')
     expect(both.warningCodes).toContain('missing_detail')
+  })
+
+  it('B-27 nextCameraSlot: missing required first, then optional', () => {
+    expect(nextCameraSlot({})).toBe('gills')
+    expect(
+      nextCameraSlot({ gills: { fileName: 'g.jpg', previewUrl: 'blob:g' } }),
+    ).toBe('front')
+    // habitat filled but required still missing → still gills first
+    expect(
+      nextCameraSlot({ habitat: { fileName: 'h.jpg', previewUrl: 'blob:h' } }),
+    ).toBe('gills')
+    // both required filled → first optional
+    expect(
+      nextCameraSlot({
+        gills: { fileName: 'g.jpg', previewUrl: 'blob:g' },
+        front: { fileName: 'f.jpg', previewUrl: 'blob:f' },
+      }),
+    ).toBe('habitat')
+    expect(
+      nextCameraSlot({
+        gills: { fileName: 'g.jpg', previewUrl: 'blob:g' },
+        front: { fileName: 'f.jpg', previewUrl: 'blob:f' },
+        habitat: { fileName: 'h.jpg', previewUrl: 'blob:h' },
+      }),
+    ).toBe('detail')
+    expect(
+      nextCameraSlot({
+        gills: { fileName: 'g.jpg', previewUrl: 'blob:g' },
+        front: { fileName: 'f.jpg', previewUrl: 'blob:f' },
+        habitat: { fileName: 'h.jpg', previewUrl: 'blob:h' },
+        detail: { fileName: 'd.jpg', previewUrl: 'blob:d' },
+      }),
+    ).toBeNull()
+  })
+
+  it('B-27 resolveCameraTargetSlot: preferred optional defers to missing required', () => {
+    // Preferring habitat while gills empty → still gills
+    expect(resolveCameraTargetSlot({}, 'habitat')).toBe('gills')
+    // Preferring empty required → honor it
+    expect(resolveCameraTargetSlot({}, 'front')).toBe('front')
+    // Preferring empty optional after required filled → honor it
+    expect(
+      resolveCameraTargetSlot(
+        {
+          gills: { fileName: 'g.jpg', previewUrl: 'blob:g' },
+          front: { fileName: 'f.jpg', previewUrl: 'blob:f' },
+        },
+        'detail',
+      ),
+    ).toBe('detail')
+    // Preferred already filled → fall back to next
+    expect(
+      resolveCameraTargetSlot(
+        { gills: { fileName: 'g.jpg', previewUrl: 'blob:g' } },
+        'gills',
+      ),
+    ).toBe('front')
   })
 })
 

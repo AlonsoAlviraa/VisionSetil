@@ -152,3 +152,39 @@ export function assessMultiViewReadiness(
 export function isCanonicalView(value: string): value is CanonicalView {
   return (CANONICAL_VIEWS as readonly string[]).includes(value)
 }
+
+/**
+ * B-27: next wizard slot for a camera capture.
+ * Priority: first missing **required** slot (gills → front), then first missing
+ * optional (habitat → detail). Returns null when every slot is filled.
+ */
+export function nextCameraSlot(assignments: SlotAssignment): CanonicalView | null {
+  for (const slot of VIEW_SLOTS) {
+    if (slot.required && !assignments[slot.view]) return slot.view
+  }
+  for (const slot of VIEW_SLOTS) {
+    if (!slot.required && !assignments[slot.view]) return slot.view
+  }
+  return null
+}
+
+/**
+ * Resolve which slot receives a camera capture (B-27).
+ *
+ * - Prefer an explicit empty `preferred` only when it is required, or when no
+ *   required slots are still missing (user picked an optional slot intentionally).
+ * - Otherwise fall back to {@link nextCameraSlot} (missing required first).
+ */
+export function resolveCameraTargetSlot(
+  assignments: SlotAssignment,
+  preferred?: CanonicalView | null,
+): CanonicalView | null {
+  if (preferred && !assignments[preferred]) {
+    const prefMeta = VIEW_SLOTS.find((s) => s.view === preferred)
+    const missingRequired = VIEW_SLOTS.some((s) => s.required && !assignments[s.view])
+    if (prefMeta?.required || !missingRequired) {
+      return preferred
+    }
+  }
+  return nextCameraSlot(assignments)
+}

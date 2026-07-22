@@ -19,7 +19,12 @@ type Props = {
   assignments: SlotAssignment
   onAssign: (view: CanonicalView, file: File, previewUrl: string) => void
   onClear: (view: CanonicalView) => void
-  onOpenCamera?: () => void
+  /**
+   * Open device camera for wizard capture (B-27).
+   * When provided with a view, parent may prefer that empty slot — still
+   * assigns missing required first via resolveCameraTargetSlot.
+   */
+  onOpenCamera?: (view?: CanonicalView) => void
 }
 
 function slotLabel(
@@ -220,7 +225,8 @@ export function MultiViewWizard({ assignments, onAssign, onClear, onOpenCamera }
                     <button
                       type="button"
                       className="btn-atelier btn-atelier--ghost mv-camera-btn"
-                      onClick={onOpenCamera}
+                      data-testid={`mv-camera-${slot.view}`}
+                      onClick={() => onOpenCamera(slot.view)}
                     >
                       <IconCamera size={16} />
                       {t('identify.camera', {

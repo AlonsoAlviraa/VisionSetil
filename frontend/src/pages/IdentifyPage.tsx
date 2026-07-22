@@ -24,6 +24,8 @@ import {
   assessMultiViewReadiness,
   buildViewTypesOrder,
   orderedSlotKeys,
+  resolveCameraTargetSlot,
+  VIEW_SLOTS,
   type CanonicalView,
   type SlotAssignment,
 } from '../lib/multiViewSlots'
@@ -60,6 +62,8 @@ export function IdentifyPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [showCamera, setShowCamera] = useState(false)
+  /** Slot the user opened camera from (wizard); B-27 still prefers missing required. */
+  const [cameraTargetSlot, setCameraTargetSlot] = useState<CanonicalView | null>(null)
   const [metadata, setMetadata] = useState<ObservationMetadata>({})
   const [history, setHistory] = useState<HistoryEntry[]>([])
   const [lightbox, setLightbox] = useState<string | null>(null)
@@ -151,6 +155,45 @@ export function IdentifyPage() {
       delete next[view]
       return next
     })
+  }, [])
+
+  /** Open camera; in wizard mode remember which slot button was used (B-27). */
+  const openCamera = useCallback((view?: CanonicalView) => {
+    setCameraTargetSlot(view ?? null)
+    setShowCamera(true)
+  }, [])
+
+  /**
+   * B-27: camera capture assigns into the active wizard slot —
+   * missing required first, then optional; free mode still appends to gallery.
+   * Slot resolution runs against latest assignments (functional update).
+   */
+  const handleCameraCapture = useCallback(
+    (file: File) => {
+      if (useWizard) {
+        setAssignments((prev) => {
+          const slot = resolveCameraTargetSlot(prev, cameraTargetSlot)
+          if (!slot) return prev
+          const old = prev[slot]
+          if (old) URL.revokeObjectURL(old.previewUrl)
+          const previewUrl = URL.createObjectURL(file)
+          return {
+            ...prev,
+            [slot]: { fileName: file.name, previewUrl, file },
+          }
+        })
+      } else {
+        addFiles([file])
+      }
+      setCameraTargetSlot(null)
+      setShowCamera(false)
+    },
+    [useWizard, cameraTargetSlot, addFiles],
+  )
+
+  const closeCamera = useCallback(() => {
+    setCameraTargetSlot(null)
+    setShowCamera(false)
   }, [])
 
   const collectWizardFiles = useCallback((): {
@@ -354,11 +397,17 @@ export function IdentifyPage() {
 
         {showCamera && (
           <CameraCapture
-            onCapture={(file) => {
-              addFiles([file])
-              setShowCamera(false)
-            }}
-            onClose={() => setShowCamera(false)}
+            onCapture={handleCameraCapture}
+            onClose={closeCamera}
+            slotLabel={
+              useWizard
+                ? (() => {
+                    const slot = resolveCameraTargetSlot(assignments, cameraTargetSlot)
+                    if (!slot) return undefined
+                    return VIEW_SLOTS.find((s) => s.view === slot)?.labelEs
+                  })()
+                : undefined
+            }
           />
         )}
 
@@ -405,7 +454,7 @@ export function IdentifyPage() {
                   assignments={assignments}
                   onAssign={onAssignSlot}
                   onClear={onClearSlot}
-                  onOpenCamera={() => setShowCamera(true)}
+                  onOpenCamera={openCamera}
                 />
                 {hasImages && (
                   <div className="image-review-section">
@@ -453,7 +502,7 @@ export function IdentifyPage() {
                 getInputProps={getInputProps}
                 isDragActive={isDragActive}
                 fileCount={selectedImages.length}
-                onOpenCamera={() => setShowCamera(true)}
+                onOpenCamera={() => openCamera()}
               />
             )}
 
