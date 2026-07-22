@@ -1,5 +1,6 @@
 # B-39 / D-B25 — label2idx ↔ catalog_v2 join coverage report
 # Cadence: nightly + on-demand (workflow_dispatch). NOT on pull_request.
+# Nightly artifact is operational truth; committed report JSON is a baseline snapshot.
 name: Species index join (nightly)
 
 on:
@@ -7,6 +8,9 @@ on:
     # 04:15 UTC nightly
     - cron: "15 4 * * *"
   workflow_dispatch: {}
+
+permissions:
+  contents: read
 
 jobs:
   join-report:
@@ -22,6 +26,7 @@ jobs:
       - name: Run label2idx ↔ catalog_v2 join report
         run: python scripts/build_species_index_join.py
         # Exit 0 even if coverage is incomplete — report is informational.
+        # Job fails only on script crash / exit 1 (catalog missing).
 
       - name: Upload report artifact
         uses: actions/upload-artifact@v4

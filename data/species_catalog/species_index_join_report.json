@@ -1,14 +1,20 @@
 {
-  "timestamp": "2026-07-22T16:40:21.059298+00:00",
+  "timestamp": "2026-07-22T16:46:18.226995+00:00",
   "cadence": "nightly_and_on_demand",
-  "cadence_note": "D-B25: run nightly + on-demand; not required on every PR CI. Incomplete coverage is informational (exit 0).",
+  "cadence_note": "D-B25: run nightly + on-demand; not required on every PR CI. Incomplete coverage is informational (exit 0). Nightly workflow artifact is operational truth; committed JSON is a baseline snapshot.",
   "catalog_path": "data/species_catalog/species_catalog_v2.json",
   "catalog_version": "2.2.0",
-  "catalog_count": 519,
+  "catalog_count": 520,
   "catalog_count_raw": 520,
   "label2idx_path": "kaggle/kernel_output_v9/models/label2idx.json",
   "label2idx_discovered": true,
+  "label2idx_load_error": null,
+  "label2idx_load_errors": [],
+  "selection_reason": "multi_view_configured_sibling",
+  "selection_policy": "configured multi-view sibling labels (product default), not necessarily the largest tracked label2idx; falls back to resolved-weights sibling then max classes",
   "multi_view_weights_path": "kaggle/kernel_output_v9/models/best.pt",
+  "multi_view_weights_exists": false,
+  "multi_view_weights_resolved": null,
   "candidates_considered": [
     "kaggle/kernel_output_v9/models/label2idx.json",
     "kaggle/kernel_output_v12/models/label2idx.json",
@@ -16,10 +22,11 @@
     "kaggle/kernel_output_v14/models/label2idx.json"
   ],
   "model_count": 500,
+  "model_count_raw": 500,
   "intersection_count": 163,
   "coverage_pct": 32.6,
   "coverage_model_in_catalog_pct": 32.6,
-  "coverage_catalog_in_model_pct": 31.41,
+  "coverage_catalog_in_model_pct": 31.35,
   "missing_in_catalog": [
     "Abortiporus biennis",
     "Agaricus sylvicola",
@@ -556,6 +563,7 @@
     "Lactarius quieticolor",
     "Lactarius rubrocinctus",
     "Lactarius salmonicolor",
+    "Lactarius sanguifluus",
     "Lactarius semisanguifluus",
     "Lactarius uvidus",
     "Lactarius vellereus",
@@ -718,6 +726,16 @@
     "Volvariella bombycina",
     "Xerocomus subtomentosus"
   ],
-  "missing_in_model_count": 356,
-  "synonym_groups": 10
+  "missing_in_model_count": 357,
+  "synonym_groups": 10,
+  "synonyms_applied": [],
+  "synonyms_applied_count": 0,
+  "synonym_collisions_skipped": [
+    {
+      "alias": "lactarius sanguifluus",
+      "preferred": "Lactarius deliciosus",
+      "reason": "alias_is_catalog_taxon"
+    }
+  ],
+  "synonym_policy": "catalog taxa never collapsed; model aliases map only when alias is absent from catalog scientific_names"
 }
