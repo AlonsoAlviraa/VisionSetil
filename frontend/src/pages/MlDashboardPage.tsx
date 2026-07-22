@@ -202,6 +202,273 @@ function SignalCard({
   )
 }
 
+/** Catalog ↔ model (label2idx) join from GET /models/catalog-join (B-43 / B-39). */
+type CatalogJoinPayload = {
+  available: boolean
+  coverage_pct: number | null
+  coverage_model_in_catalog_pct: number | null
+  coverage_catalog_in_model_pct: number | null
+  intersection_count: number | null
+  model_count: number | null
+  catalog_count: number | null
+  missing_in_catalog_count: number | null
+  missing_in_model_count: number | null
+  label2idx_path: string | null
+  label2idx_discovered: boolean
+  catalog_path: string | null
+  catalog_version: string | null
+  timestamp: string | null
+  cadence: string | null
+  selection_reason: string | null
+  overlap_verdict: 'ALIGNED' | 'PARTIAL' | 'MISMATCH' | 'UNKNOWN'
+  mismatch: boolean | null
+  report_path: string | null
+  hint: string | null
+  align_pct_threshold?: number
+  warn_pct_threshold?: number
+}
+
+function parseCatalogJoinPayload(v: unknown): CatalogJoinPayload | null {
+  if (!v || typeof v !== 'object') return null
+  const o = v as Record<string, unknown>
+  if (typeof o.available !== 'boolean') return null
+  const verdictRaw = o.overlap_verdict
+  const overlap_verdict =
+    verdictRaw === 'ALIGNED' ||
+    verdictRaw === 'PARTIAL' ||
+    verdictRaw === 'MISMATCH' ||
+    verdictRaw === 'UNKNOWN'
+      ? verdictRaw
+      : 'UNKNOWN'
+  const numOrNull = (x: unknown): number | null =>
+    typeof x === 'number' && !Number.isNaN(x) ? x : null
+  const strOrNull = (x: unknown): string | null =>
+    typeof x === 'string' ? x : null
+  return {
+    available: o.available,
+    coverage_pct: numOrNull(o.coverage_pct),
+    coverage_model_in_catalog_pct: numOrNull(o.coverage_model_in_catalog_pct),
+    coverage_catalog_in_model_pct: numOrNull(o.coverage_catalog_in_model_pct),
+    intersection_count: numOrNull(o.intersection_count),
+    model_count: numOrNull(o.model_count),
+    catalog_count: numOrNull(o.catalog_count),
+    missing_in_catalog_count: numOrNull(o.missing_in_catalog_count),
+    missing_in_model_count: numOrNull(o.missing_in_model_count),
+    label2idx_path: strOrNull(o.label2idx_path),
+    label2idx_discovered: Boolean(o.label2idx_discovered),
+    catalog_path: strOrNull(o.catalog_path),
+    catalog_version: strOrNull(o.catalog_version),
+    timestamp: strOrNull(o.timestamp),
+    cadence: strOrNull(o.cadence),
+    selection_reason: strOrNull(o.selection_reason),
+    overlap_verdict,
+    mismatch: typeof o.mismatch === 'boolean' ? o.mismatch : null,
+    report_path: strOrNull(o.report_path),
+    hint: strOrNull(o.hint),
+    align_pct_threshold:
+      typeof o.align_pct_threshold === 'number' ? o.align_pct_threshold : undefined,
+    warn_pct_threshold:
+      typeof o.warn_pct_threshold === 'number' ? o.warn_pct_threshold : undefined,
+  }
+}
+
+/** Hero tone from overlap band — informational only, never a serve block. */
+function joinHeroTone(join: CatalogJoinPayload | null): 'real' | 'mock' | 'error' {
+  if (!join || !join.available) return 'mock'
+  if (join.overlap_verdict === 'ALIGNED') return 'real'
+  if (join.overlap_verdict === 'PARTIAL') return 'mock'
+  if (join.overlap_verdict === 'MISMATCH') return 'error'
+  return 'mock'
+}
+
+/** Format coverage already stored as 0–100 percentage points. */
+function coveragePctLabel(n: number | null | undefined, digits = 1): string {
+  if (n == null || Number.isNaN(Number(n))) return '—'
+  return `${Number(n).toFixed(digits)}%`
+}
+
+function CatalogJoinTile({
+  join,
+  loading,
+}: {
+  join: CatalogJoinPayload | null
+  loading: boolean
+}) {
+  const tone = joinHeroTone(join)
+  const heroClass =
+    tone === 'error' ? 'mock' : tone === 'real' ? 'real' : 'mock'
+
+  return (
+    <section
+      className={`atelier-panel ml-dash-hero ml-dash-hero--${heroClass} ml-dash-join-tile`}
+      style={{ marginTop: '0.5rem' }}
+      data-testid="ml-catalog-join-tile"
+      aria-live="polite"
+    >
+      <header
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '0.5rem',
+          marginBottom: '0.5rem',
+        }}
+      >
+        <h2 style={{ margin: 0 }}>Solapamiento catálogo ↔ modelo</h2>
+        {join?.available && (
+          <span
+            className={`ml-dash-pill ml-dash-pill--${
+              join.overlap_verdict === 'ALIGNED'
+                ? 'real'
+                : join.overlap_verdict === 'MISMATCH'
+                  ? 'error'
+                  : 'mock'
+            }`}
+            data-testid="ml-catalog-join-verdict"
+          >
+            {join.overlap_verdict}
+          </span>
+        )}
+      </header>
+
+      <p>
+        Cobertura del join label2idx ↔ catalog_v2 (B-39 / D-B25). Métrica primaria:{' '}
+        <strong>% de taxones del modelo presentes en el catálogo (allowlist)</strong>.
+        Informativo — no bloquea /classify ni el quality gate.
+      </p>
+
+      {loading && !join && (
+        <p className="muted">Cargando join desde /models/catalog-join…</p>
+      )}
+
+      {!loading && !join && (
+        <p className="ml-dash-warn" role="status">
+          No se pudo leer <code>/models/catalog-join</code>. Sin informe de solapamiento
+          no se afirma alineación catálogo–modelo.
+        </p>
+      )}
+
+      {join && !join.available && (
+        <p className="ml-dash-warn" role="status" data-testid="ml-catalog-join-missing">
+          Informe no disponible
+          {join.hint ? (
+            <>
+              : <code>{join.hint}</code>
+            </>
+          ) : (
+            '.'
+          )}
+        </p>
+      )}
+
+      {join?.available && (
+        <>
+          <div className="ml-dash-metrics" style={{ marginTop: '0.75rem' }}>
+            <div>
+              <span>Overlap (modelo→catálogo)</span>
+              <strong data-testid="ml-catalog-join-coverage">
+                {coveragePctLabel(join.coverage_pct, 1)}
+              </strong>
+            </div>
+            <div>
+              <span>Catálogo en modelo</span>
+              <strong data-testid="ml-catalog-join-catalog-in-model">
+                {coveragePctLabel(join.coverage_catalog_in_model_pct, 1)}
+              </strong>
+            </div>
+            <div>
+              <span>Intersección</span>
+              <strong data-testid="ml-catalog-join-intersection">
+                {join.intersection_count ?? '—'}
+              </strong>
+            </div>
+            <div>
+              <span>Modelo / catálogo</span>
+              <strong data-testid="ml-catalog-join-counts">
+                {join.model_count ?? '—'} / {join.catalog_count ?? '—'}
+              </strong>
+            </div>
+          </div>
+
+          <div className="ml-dash-metrics ml-dash-metrics--compact" style={{ marginTop: '0.65rem' }}>
+            <div>
+              <span>Faltan en catálogo</span>
+              <strong data-testid="ml-catalog-join-missing-catalog">
+                {join.missing_in_catalog_count ?? '—'}
+              </strong>
+            </div>
+            <div>
+              <span>Faltan en modelo</span>
+              <strong data-testid="ml-catalog-join-missing-model">
+                {join.missing_in_model_count ?? '—'}
+              </strong>
+            </div>
+            <div>
+              <span>mismatch</span>
+              <strong data-testid="ml-catalog-join-mismatch-flag">
+                {join.mismatch == null ? '—' : join.mismatch ? 'true' : 'false'}
+              </strong>
+            </div>
+          </div>
+
+          {join.mismatch && (
+            <p className="ml-dash-warn" role="status" data-testid="ml-catalog-join-mismatch-copy">
+              Desalineación allowlist/modelo: solo{' '}
+              <strong>{coveragePctLabel(join.coverage_pct, 1)}</strong> de las clases del
+              modelo están en catalog_v2
+              {join.align_pct_threshold != null
+                ? ` (umbral alineado ≥ ${join.align_pct_threshold}%)`
+                : ''}
+              . Predicciones pueden marcar <code>in_catalog=false</code>. Regenerar informe:{' '}
+              <code>python scripts/build_species_index_join.py</code>.
+            </p>
+          )}
+
+          <dl className="ml-dash-meta">
+            <div>
+              <dt>label2idx</dt>
+              <dd className="ml-dash-path" data-testid="ml-catalog-join-label2idx">
+                {join.label2idx_path || '—'}
+                {join.label2idx_discovered ? '' : ' (no descubierto)'}
+              </dd>
+            </div>
+            <div>
+              <dt>catalog</dt>
+              <dd className="ml-dash-path">
+                {join.catalog_path || '—'}
+                {join.catalog_version ? ` · v${join.catalog_version}` : ''}
+              </dd>
+            </div>
+            <div>
+              <dt>selection</dt>
+              <dd>
+                <code>{join.selection_reason || '—'}</code>
+              </dd>
+            </div>
+            <div>
+              <dt>report</dt>
+              <dd className="ml-dash-path" data-testid="ml-catalog-join-report-path">
+                {join.report_path || '—'}
+              </dd>
+            </div>
+            <div>
+              <dt>timestamp</dt>
+              <dd data-testid="ml-catalog-join-timestamp">{join.timestamp || '—'}</dd>
+            </div>
+            <div>
+              <dt>endpoint</dt>
+              <dd>
+                <code>GET /models/catalog-join</code>
+              </dd>
+            </div>
+          </dl>
+        </>
+      )}
+    </section>
+  )
+}
+
 function QualityGateTile({
   gate,
   loading,
@@ -454,6 +721,7 @@ export function MlDashboardPage() {
     calibrated_thresholds?: Record<string, number | null>
   } | null>(null)
   const [qualityGate, setQualityGate] = useState<QualityGatePayload | null>(null)
+  const [catalogJoin, setCatalogJoin] = useState<CatalogJoinPayload | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [ts, setTs] = useState<string>('')
@@ -463,7 +731,7 @@ export function MlDashboardPage() {
     setError(null)
     const headers = API_KEY ? { 'X-API-Key': API_KEY } : {}
     try {
-      const [s, r, exp, qg] = await Promise.all([
+      const [s, r, exp, qg, cj] = await Promise.all([
         axios.get(`${API_BASE}/models/status`, { headers, timeout: 20000 }),
         axios.get(`${API_BASE}/readyz`, {
           headers,
@@ -480,16 +748,23 @@ export function MlDashboardPage() {
           timeout: 15000,
           validateStatus: () => true,
         }),
+        axios.get(`${API_BASE}/models/catalog-join`, {
+          headers,
+          timeout: 15000,
+          validateStatus: () => true,
+        }),
       ])
       setStatus(s.data as ModelsStatus)
       setReady(r.data)
       setExperiments(exp.status === 200 ? exp.data : null)
       setQualityGate(qg.status === 200 ? parseQualityGatePayload(qg.data) : null)
+      setCatalogJoin(cj.status === 200 ? parseCatalogJoinPayload(cj.data) : null)
       setTs(new Date().toLocaleString())
     } catch (e) {
       setError(e instanceof Error ? e.message : 'No se pudo cargar el estado ML')
       setStatus(null)
       setQualityGate(null)
+      setCatalogJoin(null)
     } finally {
       setLoading(false)
     }
@@ -603,6 +878,8 @@ export function MlDashboardPage() {
           null
         }
       />
+
+      <CatalogJoinTile join={catalogJoin} loading={loading} />
 
       {experiments?.available && experiments.executive_summary && (
         <section className="atelier-panel" style={{ marginTop: '1rem' }}>
@@ -816,6 +1093,7 @@ export function MlDashboardPage() {
             <dt>API</dt>
             <dd>
               <code>/models/status</code> · <code>/models/discovery</code> ·{' '}
+              <code>/models/quality-gate</code> · <code>/models/catalog-join</code> ·{' '}
               <code>/readyz</code>
             </dd>
           </div>

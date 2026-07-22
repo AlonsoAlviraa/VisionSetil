@@ -111,6 +111,22 @@ def models_quality_gate() -> QualityGatePayload:
     return quality_gate_payload()
 
 
+@router.get("/models/catalog-join")
+def models_catalog_join() -> dict:
+    """label2idx ↔ catalog_v2 join coverage for ML dashboard tile (B-43).
+
+    Reads the committed join report from B-39
+    (``data/species_catalog/species_index_join_report.json``). Primary field
+    ``coverage_pct`` is % of model taxa present in the product catalog
+    (allowlist). Incomplete coverage is **informational** (D-B25) — never a
+    serve / quality-gate block. No GPU.
+    """
+    from app.ml.species_index_join import catalog_join_payload
+
+    repo_root = getattr(settings, "repo_root", None) or settings.base_dir.parent
+    return catalog_join_payload(repo_root=repo_root)
+
+
 @router.get("/models/industrial-progress")
 def models_industrial_progress() -> dict:
     """Plan-30d industrial_v1 progress JSON (read-only, no GPU)."""
