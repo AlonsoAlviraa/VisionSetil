@@ -274,7 +274,10 @@
       "mock": "Mode demo: prediccions de demostració, no identificació de camp.",
       "real": "Model en viu. Identificació només orientativa.",
       "metrics_warning": "Mètriques del model per sota del llindar (gate deshabilitat). No es mostra confiança.",
-      "submit_offline": "Connecta l'API per enviar fotos. Identificació deshabilitada sense backend.",
+      "submit_offline": "Sense resposta de xarxa de l'API. Connecta el backend per enviar fotos.",
+      "submit_offline_empty": "L'API ha respost sense un payload de readiness usable (p. ex. 503). Identificació deshabilitada fins que el backend estigui llest.",
+      "retry": "Tornar-ho a provar",
+      "retrying": "Comprovant…",
       "unknown": "Estat del model desconegut. Identificació només orientativa."
     },
     "decision": {

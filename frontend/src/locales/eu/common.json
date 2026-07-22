@@ -274,7 +274,10 @@
       "mock": "Demo modua: demostrazio-iragarpenak, ez landa-identifikazioa.",
       "real": "Zuzeneko modeloa. Identifikazioa orientagarria soilik.",
       "metrics_warning": "Modeloaren metrikak atalasearen azpitik (gate desgaituta). Konfiantza ezkutatuta dago.",
-      "submit_offline": "Konektatu APIa argazkiak bidaltzeko. Identifikazioa desgaituta dago backend gabe.",
+      "submit_offline": "Ez dago APIaren sare-erantzunik. Konektatu backend-a argazkiak bidaltzeko.",
+      "submit_offline_empty": "APIak erantzun du, baina readiness payload erabilgarririk gabe (adib. 503). Identifikazioa desgaituta backend-a prest egon arte.",
+      "retry": "Saiatu berriro",
+      "retrying": "Egiaztatzen…",
       "unknown": "Modeloaren egoera ezezaguna. Identifikazioa orientagarria soilik."
     },
     "decision": {

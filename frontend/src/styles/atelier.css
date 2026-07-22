@@ -5140,6 +5140,39 @@ label,
   font-weight: 600;
 }
 
+.preflight-banner__retry {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-left: auto;
+  padding: 0.28rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, #9a3412 40%, var(--line));
+  background: color-mix(in srgb, #ea580c 14%, var(--surface));
+  color: #7c2d12;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.preflight-banner__retry:hover:not(:disabled) {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+.preflight-banner__retry:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+[data-theme='dark'] .preflight-banner__retry {
+  color: #fdba74;
+  border-color: color-mix(in srgb, #fdba74 35%, var(--line));
+  background: color-mix(in srgb, #7c2d12 45%, var(--surface));
+}
+
 [data-theme='dark'] .preflight-banner--real {
   background: color-mix(in srgb, #0c4a6e 35%, var(--surface));
 }

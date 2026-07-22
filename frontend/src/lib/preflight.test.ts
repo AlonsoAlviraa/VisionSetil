@@ -3,6 +3,7 @@ import {
   buildPreflightState,
   canSubmitPreflight,
   mapPreflightMode,
+  offlineDetailI18nKey,
   type MapPreflightInput,
 } from './preflight'
 
@@ -168,5 +169,25 @@ describe('canSubmitPreflight', () => {
         }),
       ),
     ).toBe(true)
+  })
+})
+
+describe('offlineDetailI18nKey (B-15 polish)', () => {
+  it('uses empty-response copy for api_empty (reachable but unusable, e.g. 503 body)', () => {
+    expect(offlineDetailI18nKey('api_empty')).toBe(
+      'honesty.preflight.submit_offline_empty',
+    )
+  })
+
+  it('uses network copy for unreachable / throw / unknown errors', () => {
+    expect(offlineDetailI18nKey('api_unreachable')).toBe(
+      'honesty.preflight.submit_offline',
+    )
+    expect(offlineDetailI18nKey('preflight_throw')).toBe(
+      'honesty.preflight.submit_offline',
+    )
+    expect(offlineDetailI18nKey(undefined)).toBe(
+      'honesty.preflight.submit_offline',
+    )
   })
 })

@@ -1,10 +1,11 @@
 /**
- * Identify preflight advisory banner (B-11 / Appendix D.1).
+ * Identify preflight advisory banner (B-11 / B-15 polish).
  * Never hard-blocks submit for gate — only offline disables (see canSubmitPreflight).
+ * B-15: offline retry control + slightly clearer network vs empty-response copy.
  */
 import { useTranslation } from 'react-i18next'
-import type { PreflightState } from '../lib/preflight'
-import { IconAlert, IconInfo } from './icons'
+import { offlineDetailI18nKey, type PreflightState } from '../lib/preflight'
+import { IconAlert, IconFlip, IconInfo } from './icons'
 
 const KNOWN_GATE_CODES = [
   'no_metrics',
@@ -25,13 +26,15 @@ function gateReasonI18nKey(code: string | undefined): string | null {
 type Props = {
   state: PreflightState
   className?: string
+  /** B-15: re-run preflight when offline (does not change hard disable rules). */
+  onRetry?: () => void
 }
 
 /**
  * Advisory banner for blocked / mock / real / offline / metrics_warning / unknown.
  * Returns null while first load is in progress with no prior data.
  */
-export function PreflightBanner({ state, className = '' }: Props) {
+export function PreflightBanner({ state, className = '', onRetry }: Props) {
   const { t } = useTranslation()
 
   // Avoid flash of "unknown" on first paint before fetch settles.
@@ -43,6 +46,7 @@ export function PreflightBanner({ state, className = '' }: Props) {
   const reasonKey = gateReasonI18nKey(state.reason_code)
   const showMetricsWarning =
     state.metrics_warning && (mode === 'real' || mode === 'mock')
+  const retrying = mode === 'offline' && state.loading
 
   const bodyKey =
     mode === 'offline'
@@ -64,6 +68,7 @@ export function PreflightBanner({ state, className = '' }: Props) {
       data-mode={mode}
       data-submit-enabled={state.submit_enabled ? 'true' : 'false'}
       data-metrics-warning={showMetricsWarning ? 'true' : 'false'}
+      data-error={state.error ?? ''}
     >
       <div className="preflight-banner__row">
         {mode === 'offline' || mode === 'blocked' ? (
@@ -83,6 +88,21 @@ export function PreflightBanner({ state, className = '' }: Props) {
         >
           {mode}
         </span>
+        {mode === 'offline' && onRetry && (
+          <button
+            type="button"
+            className="preflight-banner__retry"
+            onClick={onRetry}
+            disabled={retrying}
+            data-testid="preflight-offline-retry"
+            aria-busy={retrying || undefined}
+          >
+            <IconFlip size={14} />
+            {retrying
+              ? t('honesty.preflight.retrying')
+              : t('honesty.preflight.retry')}
+          </button>
+        )}
       </div>
 
       {mode === 'offline' && (
@@ -90,7 +110,7 @@ export function PreflightBanner({ state, className = '' }: Props) {
           className="preflight-banner__detail"
           data-testid="preflight-submit-offline"
         >
-          {t('honesty.preflight.submit_offline')}
+          {t(offlineDetailI18nKey(state.error))}
         </p>
       )}
 

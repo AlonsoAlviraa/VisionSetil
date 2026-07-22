@@ -202,6 +202,16 @@ export function canSubmitPreflight(state: PreflightState | null | undefined): bo
   return state.submit_enabled && state.mode !== 'offline'
 }
 
+/**
+ * B-15: offline detail i18n key by error source.
+ * api_empty = reachable but unusable payload (e.g. 503 / empty body);
+ * everything else (network throw, unreachable) uses the network copy.
+ */
+export function offlineDetailI18nKey(error: string | undefined): string {
+  if (error === 'api_empty') return 'honesty.preflight.submit_offline_empty'
+  return 'honesty.preflight.submit_offline'
+}
+
 type JsonResult = {
   reached: boolean
   status: number

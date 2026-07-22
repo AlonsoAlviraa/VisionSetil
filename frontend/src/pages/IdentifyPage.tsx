@@ -74,39 +74,61 @@ export function IdentifyPage() {
     setHistory(loadHistory())
   }, [])
 
+  const applyOfflinePreflight = useCallback((error: string) => {
+    setPreflight({
+      ...initialPreflightState(),
+      mode: 'offline',
+      ready: false,
+      metrics_warning: false,
+      submit_enabled: false,
+      loading: false,
+      fetched_at: Date.now(),
+      error,
+    })
+  }, [])
+
+  const runPreflight = useCallback(
+    async (opts?: { cancelled?: () => boolean }) => {
+      if (!preflightEnabled) return
+      try {
+        const state = await fetchPreflight()
+        if (opts?.cancelled?.()) return
+        setPreflight(state)
+      } catch {
+        if (opts?.cancelled?.()) return
+        applyOfflinePreflight('preflight_throw')
+      }
+    },
+    [preflightEnabled, applyOfflinePreflight],
+  )
+
+  /** B-15: manual retry from offline banner (hard disable unchanged). */
+  const handlePreflightRetry = useCallback(() => {
+    if (!preflightEnabled) return
+    setPreflight((prev) => ({
+      ...prev,
+      loading: true,
+      // Keep offline + submit disabled until fetch settles (no flash of enabled).
+      mode: 'offline',
+      submit_enabled: false,
+    }))
+    void runPreflight()
+  }, [preflightEnabled, runPreflight])
+
   useEffect(() => {
     if (!preflightEnabled) return
     let cancelled = false
+    const isCancelled = () => cancelled
 
-    async function run() {
-      try {
-        const state = await fetchPreflight()
-        if (!cancelled) setPreflight(state)
-      } catch {
-        if (!cancelled) {
-          setPreflight({
-            ...initialPreflightState(),
-            mode: 'offline',
-            ready: false,
-            metrics_warning: false,
-            submit_enabled: false,
-            loading: false,
-            fetched_at: Date.now(),
-            error: 'preflight_throw',
-          })
-        }
-      }
-    }
-
-    void run()
+    void runPreflight({ cancelled: isCancelled })
     const id = window.setInterval(() => {
-      void run()
+      void runPreflight({ cancelled: isCancelled })
     }, PREFLIGHT_POLL_MS)
     return () => {
       cancelled = true
       window.clearInterval(id)
     }
-  }, [preflightEnabled])
+  }, [preflightEnabled, runPreflight])
 
   const readiness = useMemo(() => assessMultiViewReadiness(assignments), [assignments])
   const historySummary = useMemo(() => summarizeHistory(history), [history])
@@ -302,7 +324,7 @@ export function IdentifyPage() {
       </div>
 
       {preflightEnabled && !showResult && (
-        <PreflightBanner state={preflight} />
+        <PreflightBanner state={preflight} onRetry={handlePreflightRetry} />
       )}
 
       {showCamera && (

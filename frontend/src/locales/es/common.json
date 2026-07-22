@@ -268,7 +268,10 @@
       "mock": "Modo demo: predicciones de demostración, no identificación de campo.",
       "real": "Modelo en vivo. Identificación solo orientativa.",
       "metrics_warning": "Métricas del modelo por debajo del umbral (gate deshabilitado). No se muestra confianza.",
-      "submit_offline": "Conecta la API para enviar fotos. Identificación deshabilitada sin backend.",
+      "submit_offline": "Sin respuesta de red de la API. Conecta el backend para enviar fotos.",
+      "submit_offline_empty": "La API respondió sin un payload de readiness usable (p. ej. 503). Identificación deshabilitada hasta que el backend esté listo.",
+      "retry": "Reintentar",
+      "retrying": "Comprobando…",
       "unknown": "Estado del modelo desconocido. Identificación solo orientativa."
     },
     "decision": {

@@ -274,7 +274,10 @@
       "mock": "Demo mode: demonstration predictions, not field identification.",
       "real": "Live model. Identification is orientation-only.",
       "metrics_warning": "Model metrics below threshold (gate disabled). Confidence is hidden.",
-      "submit_offline": "Connect the API to submit photos. Identification is disabled without the backend.",
+      "submit_offline": "No network response from the API. Connect the backend to submit photos.",
+      "submit_offline_empty": "The API responded without a usable readiness payload (e.g. 503). Identification stays disabled until the backend is ready.",
+      "retry": "Retry",
+      "retrying": "Checking…",
       "unknown": "Model status unknown. Identification is orientation-only."
     },
     "decision": {
