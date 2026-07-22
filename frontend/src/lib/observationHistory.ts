@@ -141,8 +141,8 @@ export function migrateHistoryEntry(raw: HistoryEntry): HistoryEntry {
 
   let locale = raw.locale
   if (locale === undefined) {
-    const fromResult = (result as { locale?: unknown }).locale
-    locale = typeof fromResult === 'string' && fromResult ? fromResult : undefined
+    // Align with needsMigrate: only promote non-empty strings (empty → stay undefined)
+    locale = resultLocaleToPromote(result)
   }
 
   return {
@@ -154,12 +154,22 @@ export function migrateHistoryEntry(raw: HistoryEntry): HistoryEntry {
   }
 }
 
-/** True when soft-migrate would add fields not present on the raw entry. */
+/** Non-empty string locale worth promoting from result → top-level (align with migrate). */
+function resultLocaleToPromote(result: HistoryClassification | undefined): string | undefined {
+  const fromResult = (result as { locale?: unknown } | undefined)?.locale
+  return typeof fromResult === 'string' && fromResult.length > 0 ? fromResult : undefined
+}
+
+/**
+ * True when soft-migrate would add fields not present on the raw entry.
+ * Must stay aligned with migrateHistoryEntry so empty/corrupt locale never causes
+ * a perpetual write-back loop (JSON omits undefined).
+ */
 function needsMigrate(raw: HistoryEntry): boolean {
   if (!isClassifyMode(raw.mode)) return true
   if (raw.gate_summary === undefined) return true
-  // locale may legitimately stay undefined for very old entries with no result.locale
-  if (raw.locale === undefined && typeof (raw.result as { locale?: unknown })?.locale === 'string') {
+  // Only when migrate would actually stamp a non-empty locale (empty string is a no-op)
+  if (raw.locale === undefined && resultLocaleToPromote(raw.result) !== undefined) {
     return true
   }
   return false

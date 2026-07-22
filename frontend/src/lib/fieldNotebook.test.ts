@@ -134,6 +134,15 @@ describe('history mode/gate/locale (B-38)', () => {
         decision: 'rejected',
         predictions: [],
         is_mock_stack: true,
+        locale: 'ca',
+        quality_gate: {
+          species_id_allowed: false,
+          metrics_acceptable: false,
+          block_enabled: true,
+          reason: 'map low',
+          reason_code: 'map_below',
+          verdict: 'UNACCEPTABLE',
+        } as HistoryEntry['result']['quality_gate'],
       },
     }
     storage.setItem('visionsetil_history', JSON.stringify([legacy]))
@@ -141,9 +150,51 @@ describe('history mode/gate/locale (B-38)', () => {
     expect(loaded).toHaveLength(1)
     expect(loaded[0].mode).toBe('mock')
     expect(entryMode(loaded[0])).toBe('mock')
-    // write-back persists migrated shape
+    expect(loaded[0].locale).toBe('ca')
+    expect(loaded[0].gate_summary).toEqual({
+      species_id_allowed: false,
+      metrics_acceptable: false,
+      block_enabled: true,
+      reason_code: 'map_below',
+      verdict: 'UNACCEPTABLE',
+    })
+    // write-back persists migrated shape (mode + gate_summary + locale)
     const reloaded = JSON.parse(storage.store['visionsetil_history']) as HistoryEntry[]
     expect(reloaded[0].mode).toBe('mock')
+    expect(reloaded[0].locale).toBe('ca')
+    expect(reloaded[0].gate_summary?.reason_code).toBe('map_below')
+    expect(reloaded[0].gate_summary?.species_id_allowed).toBe(false)
+
+    // second load is stable (no perpetual remigrate)
+    const snapshot = storage.store['visionsetil_history']
+    loadHistory(storage)
+    expect(storage.store['visionsetil_history']).toBe(snapshot)
+  })
+
+  it('empty result.locale does not cause perpetual migrate write-back', () => {
+    const storage = memStorage()
+    const legacy: HistoryEntry = {
+      id: 'legacy-empty-locale',
+      timestamp: 2,
+      previews: [],
+      // pre-migrated mode + gate_summary null, but empty-string locale on result only
+      mode: 'real',
+      gate_summary: null,
+      result: {
+        request_id: 'legacy-empty-locale',
+        decision: 'accepted',
+        predictions: [],
+        is_mock_stack: false,
+        locale: '',
+      },
+    }
+    storage.setItem('visionsetil_history', JSON.stringify([legacy]))
+    const before = storage.store['visionsetil_history']
+    const loaded = loadHistory(storage)
+    expect(loaded[0].mode).toBe('real')
+    expect(loaded[0].locale).toBeUndefined()
+    // no rewrite when migrate would be a no-op for empty locale
+    expect(storage.store['visionsetil_history']).toBe(before)
   })
 
   it('filters by mode and summarizes by_mode', () => {
