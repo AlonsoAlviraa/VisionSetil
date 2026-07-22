@@ -1,5 +1,6 @@
 /**
  * Identify page: guided multi-view + classify + history.
+ * B-11: PreflightBanner + offline-only submit disable (never gate-block submit).
  */
 import { useState, useCallback, useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
@@ -7,6 +8,7 @@ import { useDropzone } from 'react-dropzone'
 import { classifyImages, submitFeedback } from '../api/client'
 import type { ClassificationResult, ObservationMetadata } from '../api/types'
 import { ResultCard } from '../components/ResultCard'
+import { PreflightBanner } from '../components/PreflightBanner'
 import { UploadZone } from '../components/UploadZone'
 import { CameraCapture } from '../components/CameraCapture'
 import { MetadataForm } from '../components/MetadataForm'
@@ -14,6 +16,7 @@ import { BatchCompare } from '../components/BatchCompare'
 import { MultiViewWizard } from '../components/MultiViewWizard'
 import { IconClose, IconExpert, IconHistory, IconSearch } from '../components/icons'
 import { MEDIA } from '../data/media'
+import { featureFlags } from '../lib/featureFlags'
 import {
   assessMultiViewReadiness,
   buildViewTypesOrder,
@@ -29,6 +32,13 @@ import {
   type HistoryEntry,
 } from '../lib/observationHistory'
 import { decisionLabelEs } from '../lib/decisionLabels'
+import {
+  canSubmitPreflight,
+  fetchPreflight,
+  initialPreflightState,
+  PREFLIGHT_POLL_MS,
+  type PreflightState,
+} from '../lib/preflight'
 
 interface SelectedImage {
   file: File
@@ -47,10 +57,51 @@ export function IdentifyPage() {
   const [history, setHistory] = useState<HistoryEntry[]>([])
   const [lightbox, setLightbox] = useState<string | null>(null)
   const [showCompare, setShowCompare] = useState(false)
+  const [preflight, setPreflight] = useState<PreflightState>(() =>
+    initialPreflightState(),
+  )
+
+  const preflightEnabled = featureFlags.IDENTIFY_PREFLIGHT
+  /** HARD: only offline/API-down disables submit — never gate blocked. */
+  const submitAllowed = !preflightEnabled || canSubmitPreflight(preflight)
 
   useEffect(() => {
     setHistory(loadHistory())
   }, [])
+
+  useEffect(() => {
+    if (!preflightEnabled) return
+    let cancelled = false
+
+    async function run() {
+      try {
+        const state = await fetchPreflight()
+        if (!cancelled) setPreflight(state)
+      } catch {
+        if (!cancelled) {
+          setPreflight({
+            ...initialPreflightState(),
+            mode: 'offline',
+            ready: false,
+            metrics_warning: false,
+            submit_enabled: false,
+            loading: false,
+            fetched_at: Date.now(),
+            error: 'preflight_throw',
+          })
+        }
+      }
+    }
+
+    void run()
+    const id = window.setInterval(() => {
+      void run()
+    }, PREFLIGHT_POLL_MS)
+    return () => {
+      cancelled = true
+      window.clearInterval(id)
+    }
+  }, [preflightEnabled])
 
   const readiness = useMemo(() => assessMultiViewReadiness(assignments), [assignments])
   const historySummary = useMemo(() => summarizeHistory(history), [history])
@@ -108,6 +159,12 @@ export function IdentifyPage() {
   }, [assignments])
 
   const handleClassify = useCallback(async () => {
+    // Defense-in-depth: never POST while offline (HARD B-11).
+    if (preflightEnabled && !canSubmitPreflight(preflight)) {
+      setError('API no disponible. Conecta el backend para identificar.')
+      return
+    }
+
     let files: File[]
     let viewTypes: string[] | undefined
     let previews: string[]
@@ -146,7 +203,7 @@ export function IdentifyPage() {
     } finally {
       setLoading(false)
     }
-  }, [useWizard, collectWizardFiles, selectedImages, metadata])
+  }, [useWizard, collectWizardFiles, selectedImages, metadata, preflight, preflightEnabled])
 
   const handleFeedback = useCallback(
     async (isCorrect: boolean, species?: string) => {
@@ -224,6 +281,10 @@ export function IdentifyPage() {
         </div>
       </div>
 
+      {preflightEnabled && !showResult && (
+        <PreflightBanner state={preflight} />
+      )}
+
       {showCamera && (
         <CameraCapture
           onCapture={(file) => {
@@ -250,10 +311,18 @@ export function IdentifyPage() {
                   type="button"
                   className="btn-atelier btn-atelier--primary"
                   onClick={handleClassify}
-                  disabled={loading || !readiness.canSubmit}
+                  disabled={loading || !readiness.canSubmit || !submitAllowed}
+                  data-testid="identify-submit"
+                  title={
+                    !submitAllowed
+                      ? 'API no disponible — identificación deshabilitada'
+                      : undefined
+                  }
                 >
                   {loading ? (
                     'Analizando…'
+                  ) : !submitAllowed ? (
+                    'API desconectada'
                   ) : (
                     <>
                       <IconSearch size={18} />
@@ -306,10 +375,18 @@ export function IdentifyPage() {
               type="button"
               className="btn-atelier btn-atelier--primary"
               onClick={handleClassify}
-              disabled={loading}
+              disabled={loading || !submitAllowed}
+              data-testid="identify-submit"
+              title={
+                !submitAllowed
+                  ? 'API no disponible — identificación deshabilitada'
+                  : undefined
+              }
             >
               {loading ? (
                 'Analizando…'
+              ) : !submitAllowed ? (
+                'API desconectada'
               ) : (
                 <>
                   <IconSearch size={18} />

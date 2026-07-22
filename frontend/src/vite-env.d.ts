@@ -10,6 +10,7 @@ interface ImportMetaEnv {
   readonly VITE_FEATURE_GUIDED_IDENTIFY?: string
   readonly VITE_FEATURE_OFFLINE_PACK?: string
   readonly VITE_FEATURE_FAVORITES?: string
+  readonly VITE_FEATURE_IDENTIFY_PREFLIGHT?: string
 }
 
 interface ImportMeta {
