@@ -11,7 +11,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Annotated
 
-from pydantic import Field, field_validator
+from pydantic import Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 # backend/app/core/config.py → parents[2] = backend package root
@@ -21,6 +21,14 @@ _REPO_ROOT = Path(__file__).resolve().parents[3]
 
 # Emit quality-gate disable warn at most once per process (boot + gate path).
 _gate_disable_warned: bool = False
+
+# ENVIRONMENT values that count as production for guardrails (B-19 / B-23).
+_PRODUCTION_ENV_ALIASES = frozenset({"production", "prod"})
+
+
+def _is_production_env_value(env: str | None) -> bool:
+    """Case-insensitive production check used by Settings + helpers."""
+    return str(env or "").strip().lower() in _PRODUCTION_ENV_ALIASES
 
 
 class Settings(BaseSettings):
@@ -34,8 +42,8 @@ class Settings(BaseSettings):
     )
 
     # --- Runtime environment (ops / guardrails) -----------------------------
-    # Used for prod guardrail logging (D-B3). Disable quality-gate block only
-    # for local/dev; production must keep fail-closed defaults.
+    # Used for prod guardrails (D-B3 / B-19 warn, B-23 hard refuse). Disable
+    # quality-gate block only for local/dev; production must stay fail-closed.
     environment: str = Field(default="development")
 
     # --- Core paths ---------------------------------------------------------
@@ -115,8 +123,9 @@ class Settings(BaseSettings):
     # returns decision=accepted (species ID blocked). v9 is ~0.076 → blocked.
     model_min_acceptable_map_at_3: float = Field(default=0.20)
     # D-B3 fail-closed: when True (default), species ID is blocked if metrics
-    # fail the gate. Setting False is fail-open — local/dev only. Production
-    # must leave this True; see warn_if_quality_gate_block_disabled().
+    # fail the gate. Setting False is fail-open — local/dev only. B-23 refuses
+    # False when ENVIRONMENT is production/prod (Settings construction fails).
+    # Non-prod disable still emits warn_if_quality_gate_block_disabled() (B-19).
     model_block_species_id_when_below_gate: bool = Field(default=True)
     open_set_max_evidence_penalty: float = Field(default=0.3)
     open_set_reject_on_missing_critical_evidence: bool = Field(default=True)
@@ -197,6 +206,25 @@ class Settings(BaseSettings):
             return [item.strip() for item in v.split(",") if item.strip()]
         return v
 
+    @model_validator(mode="after")
+    def _refuse_gate_disable_in_production(self) -> Settings:
+        """B-23: hard-refuse fail-open quality gate when ENVIRONMENT is production.
+
+        Disabling ``model_block_species_id_when_below_gate`` is dev-only.
+        In production/prod, Settings construction raises so the process cannot
+        boot fail-open (B-19 still warns in non-prod).
+        """
+        if (
+            not self.model_block_species_id_when_below_gate
+            and _is_production_env_value(self.environment)
+        ):
+            raise ValueError(
+                "MODEL_BLOCK_SPECIES_ID_WHEN_BELOW_GATE cannot be false when "
+                "ENVIRONMENT is production/prod (B-23 / D-B3: gate disable is "
+                "dev-only; keep fail-closed or set ENVIRONMENT=development)"
+            )
+        return self
+
 
 @lru_cache
 def get_settings() -> Settings:
@@ -210,8 +238,8 @@ settings = get_settings()
 
 def is_production_environment(env: str | None = None) -> bool:
     """True when ENVIRONMENT is production/prod (case-insensitive)."""
-    value = (env if env is not None else getattr(settings, "environment", "development"))
-    return str(value).strip().lower() in {"production", "prod"}
+    value = env if env is not None else getattr(settings, "environment", "development")
+    return _is_production_env_value(value)
 
 
 def warn_if_quality_gate_block_disabled(
@@ -222,8 +250,10 @@ def warn_if_quality_gate_block_disabled(
     """Emit a structured warning if the quality gate is fail-open (disabled).
 
     D-B3 / B-19: default is fail-closed (``model_block_species_id_when_below_gate=True``).
-    Disabling is intended for local/dev only. In production this is a critical
-    ops signal (page/warn). Logs at most once per process unless ``force=True``.
+    Disabling is intended for local/dev only. B-23 hard-refuses disable at
+    Settings construction when ``ENVIRONMENT`` is production/prod, so this
+    path should only fire for non-prod fail-open (or tests that monkeypatch).
+    Logs at most once per process unless ``force=True``.
 
     Returns True if a warning was emitted (or would be: gate is disabled).
     """

@@ -128,9 +128,10 @@ def test_warn_if_quality_gate_block_disabled_structured(caplog):
     closed = Settings(model_block_species_id_when_below_gate=True)
     assert warn_if_quality_gate_block_disabled(settings_obj=closed) is False
 
+    # Disable only allowed outside production (B-23 refuses prod+false).
     open_s = Settings(
         model_block_species_id_when_below_gate=False,
-        environment="production",
+        environment="development",
     )
     with caplog.at_level(logging.WARNING, logger="app.core.config"):
         assert warn_if_quality_gate_block_disabled(settings_obj=open_s) is True
@@ -148,6 +149,41 @@ def test_warn_if_quality_gate_block_disabled_structured(caplog):
     assert is_production_environment("production") is True
     assert is_production_environment("prod") is True
     assert is_production_environment("development") is False
+
+
+def test_refuse_gate_disable_in_production():
+    """B-23: Settings refuse fail-open gate when ENVIRONMENT is production/prod."""
+    from pydantic import ValidationError
+
+    # production still OK when fail-closed
+    ok = Settings(
+        model_block_species_id_when_below_gate=True,
+        environment="production",
+    )
+    assert ok.model_block_species_id_when_below_gate is True
+
+    with pytest.raises(ValidationError) as exc_prod:
+        Settings(
+            model_block_species_id_when_below_gate=False,
+            environment="production",
+        )
+    assert "MODEL_BLOCK_SPECIES_ID_WHEN_BELOW_GATE" in str(exc_prod.value)
+
+    with pytest.raises(ValidationError) as exc_alias:
+        Settings(
+            model_block_species_id_when_below_gate=False,
+            environment="prod",
+        )
+    assert "dev-only" in str(exc_alias.value).lower() or "MODEL_BLOCK" in str(
+        exc_alias.value
+    )
+
+    # Non-prod disable remains allowed
+    dev_open = Settings(
+        model_block_species_id_when_below_gate=False,
+        environment="development",
+    )
+    assert dev_open.model_block_species_id_when_below_gate is False
 
 
 def test_metrics_ssot_sibling_not_max_map(monkeypatch, tmp_path):
