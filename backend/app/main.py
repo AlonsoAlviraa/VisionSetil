@@ -25,7 +25,7 @@ from app.api.routes_metrics import router as metrics_router
 from app.api.routes_models import router as models_router
 from app.api.routes_observations import router as observations_router
 from app.api.routes_species import router as species_router
-from app.core.config import get_settings
+from app.core.config import get_settings, warn_if_quality_gate_block_disabled
 from app.core.logging import configure_logging
 from app.db.database import init_db
 from app.middleware.api_key_auth import APIKeyMiddleware
@@ -40,6 +40,9 @@ settings.upload_dir.mkdir(parents=True, exist_ok=True)
 Path(settings.species_media_root).mkdir(parents=True, exist_ok=True)
 init_db()
 ensure_seed_data()
+
+# B-19 / D-B3: structured prod guardrail if quality gate is fail-open.
+warn_if_quality_gate_block_disabled()
 
 # Validate CDN host allowlist at boot (PR-03)
 if settings.species_media_cdn_base:

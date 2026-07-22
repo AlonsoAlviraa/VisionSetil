@@ -19,6 +19,9 @@ _BASE_DIR = Path(__file__).resolve().parents[2]
 # monorepo root (…/VisionSetil) — kaggle weights live here, not under backend/
 _REPO_ROOT = Path(__file__).resolve().parents[3]
 
+# Emit quality-gate disable warn at most once per process (boot + gate path).
+_gate_disable_warned: bool = False
+
 
 class Settings(BaseSettings):
     """Strongly-typed, env-driven configuration for VisionSetil."""
@@ -29,6 +32,11 @@ class Settings(BaseSettings):
         extra="ignore",
         case_sensitive=False,
     )
+
+    # --- Runtime environment (ops / guardrails) -----------------------------
+    # Used for prod guardrail logging (D-B3). Disable quality-gate block only
+    # for local/dev; production must keep fail-closed defaults.
+    environment: str = Field(default="development")
 
     # --- Core paths ---------------------------------------------------------
     base_dir: Path = Field(default=_BASE_DIR)
@@ -106,6 +114,9 @@ class Settings(BaseSettings):
     # Hard product gate: if on-disk test MAP@3 is below this, classify NEVER
     # returns decision=accepted (species ID blocked). v9 is ~0.076 → blocked.
     model_min_acceptable_map_at_3: float = Field(default=0.20)
+    # D-B3 fail-closed: when True (default), species ID is blocked if metrics
+    # fail the gate. Setting False is fail-open — local/dev only. Production
+    # must leave this True; see warn_if_quality_gate_block_disabled().
     model_block_species_id_when_below_gate: bool = Field(default=True)
     open_set_max_evidence_penalty: float = Field(default=0.3)
     open_set_reject_on_missing_critical_evidence: bool = Field(default=True)
@@ -195,6 +206,56 @@ def get_settings() -> Settings:
 
 # Backwards-compatible module-level singleton.
 settings = get_settings()
+
+
+def is_production_environment(env: str | None = None) -> bool:
+    """True when ENVIRONMENT is production/prod (case-insensitive)."""
+    value = (env if env is not None else getattr(settings, "environment", "development"))
+    return str(value).strip().lower() in {"production", "prod"}
+
+
+def warn_if_quality_gate_block_disabled(
+    *,
+    force: bool = False,
+    settings_obj: Settings | None = None,
+) -> bool:
+    """Emit a structured warning if the quality gate is fail-open (disabled).
+
+    D-B3 / B-19: default is fail-closed (``model_block_species_id_when_below_gate=True``).
+    Disabling is intended for local/dev only. In production this is a critical
+    ops signal (page/warn). Logs at most once per process unless ``force=True``.
+
+    Returns True if a warning was emitted (or would be: gate is disabled).
+    """
+    global _gate_disable_warned
+    s = settings_obj if settings_obj is not None else settings
+    block_enabled = bool(getattr(s, "model_block_species_id_when_below_gate", True))
+    if block_enabled:
+        return False
+
+    if _gate_disable_warned and not force:
+        return True
+
+    _gate_disable_warned = True
+    from app.core.logging import get_logger
+
+    env = str(getattr(s, "environment", "development") or "development")
+    prod = is_production_environment(env)
+    logger = get_logger(__name__)
+    logger.warning(
+        "quality_gate block DISABLED (fail-open) — species ID allowed despite bad metrics; "
+        "intended for local/dev only",
+        extra={
+            "event": "quality_gate_block_disabled",
+            "block_enabled": False,
+            "model_block_species_id_when_below_gate": False,
+            "environment": env,
+            "is_production": prod,
+            "severity": "critical" if prod else "warning",
+            "setting": "model_block_species_id_when_below_gate",
+        },
+    )
+    return True
 
 
 def is_cuda_really_compatible() -> bool:
