@@ -2,8 +2,11 @@ import { describe, expect, it } from 'vitest'
 import type { ClassificationResult } from '../api/types'
 import {
   isClassifyMode,
+  isOpenSetRejected,
   isQualityGatePayload,
   resolveMode,
+  shouldShowConfidence,
+  shouldShowEducationalShell,
 } from './classifyMode'
 
 function baseResult(
@@ -189,5 +192,79 @@ describe('resolveMode (D-B20)', () => {
       is_mock_stack: false,
     })
     expect(resolveMode(r)).toBe('real')
+  })
+})
+
+describe('shouldShowConfidence (D-B9)', () => {
+  it('shows only for real + metrics_acceptable', () => {
+    expect(
+      shouldShowConfidence(
+        baseResult({
+          mode: 'real',
+          quality_gate: {
+            species_id_allowed: true,
+            metrics_acceptable: true,
+            block_enabled: true,
+            reason: 'ok',
+            reason_code: 'gates_passed',
+            verdict: 'ACCEPTABLE',
+          },
+        }),
+      ),
+    ).toBe(true)
+  })
+
+  it('hides for mock / blocked / real without metrics_acceptable', () => {
+    expect(shouldShowConfidence(baseResult({ mode: 'mock' }))).toBe(false)
+    expect(shouldShowConfidence(baseResult({ mode: 'blocked' }))).toBe(false)
+    expect(
+      shouldShowConfidence(
+        baseResult({
+          mode: 'real',
+          quality_gate: {
+            species_id_allowed: true,
+            metrics_acceptable: false,
+            block_enabled: false,
+            reason: 'gate_disabled',
+            reason_code: 'gate_disabled',
+            verdict: 'UNACCEPTABLE',
+          },
+        }),
+      ),
+    ).toBe(false)
+    expect(
+      shouldShowConfidence(baseResult({ mode: 'real', is_mock_stack: false })),
+    ).toBe(false)
+  })
+})
+
+describe('shouldShowEducationalShell / isOpenSetRejected', () => {
+  it('blocked mode → educational shell', () => {
+    const r = baseResult({
+      mode: 'blocked',
+      decision: 'rejected',
+      predictions: [],
+    })
+    expect(shouldShowEducationalShell(r)).toBe(true)
+    expect(isOpenSetRejected(r)).toBe(false)
+  })
+
+  it('real + rejected open-set → not educational shell', () => {
+    const r = baseResult({
+      mode: 'real',
+      decision: 'rejected',
+      predictions: [],
+      rejection_reason: 'open_set_uncertain',
+      quality_gate: {
+        species_id_allowed: true,
+        metrics_acceptable: true,
+        block_enabled: true,
+        reason: 'ok',
+        reason_code: 'gates_passed',
+        verdict: 'ACCEPTABLE',
+      },
+    })
+    expect(shouldShowEducationalShell(r)).toBe(false)
+    expect(isOpenSetRejected(r)).toBe(true)
   })
 })

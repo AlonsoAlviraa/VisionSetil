@@ -1,8 +1,13 @@
 /**
  * ML transparency panel — honest mock/real stack, margin, views.
- * Used on Identify results (and can mount on Expert).
+ * Confidence margin only when D-B9 gate passes (real + metrics_acceptable).
  */
+import { useTranslation } from 'react-i18next'
 import type { ClassificationResult } from '../api/types'
+import {
+  resolveMode,
+  shouldShowConfidence,
+} from '../lib/classifyMode'
 import { stackBadgeEs } from '../lib/modelStackLabel'
 import { IconMicroscope, IconInfo, IconAlert } from './icons'
 
@@ -13,6 +18,9 @@ type Props = {
 }
 
 export function ModelInsightsPanel({ result, viewTypes = [], className = '' }: Props) {
+  const { t } = useTranslation()
+  const mode = resolveMode(result)
+  const showConfidence = shouldShowConfidence(result)
   const badge = stackBadgeEs(result.model_stack)
   const isMock =
     result.is_mock_stack !== false &&
@@ -23,10 +31,12 @@ export function ModelInsightsPanel({ result, viewTypes = [], className = '' }: P
 
   const preds = result.predictions || []
   const margin =
-    result.confidence_margin ??
-    (preds.length >= 2
-      ? Math.max(0, preds[0].confidence - preds[1].confidence)
-      : preds[0]?.confidence ?? null)
+    showConfidence
+      ? result.confidence_margin ??
+        (preds.length >= 2
+          ? Math.max(0, preds[0].confidence - preds[1].confidence)
+          : preds[0]?.confidence ?? null)
+      : null
 
   const coverage =
     result.view_coverage && result.view_coverage.length > 0
@@ -36,23 +46,40 @@ export function ModelInsightsPanel({ result, viewTypes = [], className = '' }: P
   const notes = result.ml_notes?.length
     ? result.ml_notes
     : [
-        isMock
-          ? 'Modo demo: sin pesos reales de campo en este entorno.'
-          : 'Backends reales reportados en el stack.',
-        margin != null
+        mode === 'blocked'
+          ? t('honesty.decision.rejected_gate')
+          : isMock || mode === 'mock'
+            ? 'Modo demo: sin pesos reales de campo en este entorno.'
+            : 'Backends reales reportados en el stack.',
+        showConfidence && margin != null
           ? `Margen entre pistas: ${(margin * 100).toFixed(1)} puntos.`
-          : 'Sin margen calculable.',
+          : t('honesty.confidence_hidden'),
       ]
 
   return (
     <section
-      className={`model-insights ${isMock ? 'model-insights--mock' : 'model-insights--live'} ${className}`.trim()}
+      className={`model-insights model-insights--mode-${mode} ${
+        mode === 'blocked'
+          ? 'model-insights--blocked'
+          : isMock || mode === 'mock'
+            ? 'model-insights--mock'
+            : 'model-insights--live'
+      } ${className}`.trim()}
       aria-label="Información del modelo"
+      data-testid="model-insights-panel"
+      data-mode={mode}
+      data-show-confidence={showConfidence ? 'true' : 'false'}
     >
       <header className="model-insights__head">
         <IconMicroscope size={18} />
         <h3>Cómo decide el modelo</h3>
         <span className={`stack-badge stack-badge--${badge.mode}`}>{badge.label}</span>
+        <span
+          className={`result-mode-banner__chip result-mode-banner__chip--${mode}`}
+          data-testid="model-insights-mode"
+        >
+          {mode}
+        </span>
       </header>
 
       <p className="model-insights__hint">{badge.hint}</p>
@@ -62,15 +89,23 @@ export function ModelInsightsPanel({ result, viewTypes = [], className = '' }: P
           <span className="model-insights__label">Tiempo</span>
           <strong>{result.processing_time_ms} ms</strong>
         </div>
-        <div className="model-insights__card">
+        <div className="model-insights__card" data-testid="model-insights-margin">
           <span className="model-insights__label">Margen top-1/2</span>
           <strong>
-            {margin != null ? `${(margin * 100).toFixed(1)} pts` : '—'}
+            {showConfidence && margin != null
+              ? `${(margin * 100).toFixed(1)} pts`
+              : '—'}
           </strong>
         </div>
         <div className="model-insights__card">
           <span className="model-insights__label">Decisión</span>
-          <strong>{result.decision === 'rejected' ? 'Abstención' : 'Pista tentativa'}</strong>
+          <strong>
+            {result.decision === 'rejected'
+              ? mode === 'blocked'
+                ? t('honesty.decision.rejected_gate')
+                : t('honesty.decision.rejected_open_set')
+              : 'Pista tentativa'}
+          </strong>
         </div>
         <div className="model-insights__card">
           <span className="model-insights__label">Vistas</span>

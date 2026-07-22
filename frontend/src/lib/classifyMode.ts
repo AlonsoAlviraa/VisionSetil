@@ -76,3 +76,36 @@ export function resolveMode(result: ClassificationResult): ClassifyMode {
   if (result.is_mock_stack !== false) return 'mock'
   return 'real'
 }
+
+/**
+ * Confidence UI gate (D-B9): only when mode is real AND metrics_acceptable.
+ * Missing quality_gate → hide (fail-closed; never invent metrics truth).
+ */
+export function shouldShowConfidence(result: ClassificationResult): boolean {
+  if (resolveMode(result) !== 'real') return false
+  return result.quality_gate?.metrics_acceptable === true
+}
+
+/**
+ * Educational blocked shell: mode=blocked, or empty preds with species ID
+ * disallowed by gate policy (gate fail path).
+ * Open-set real+rejected with empty preds is NOT educational-blocked.
+ */
+export function shouldShowEducationalShell(
+  result: ClassificationResult,
+): boolean {
+  const mode = resolveMode(result)
+  if (mode === 'blocked') return true
+  const empty = (result.predictions?.length ?? 0) === 0
+  if (empty && result.quality_gate?.species_id_allowed === false) return true
+  return false
+}
+
+/** Open-set abstention: live stack allowed but model rejects (not gate-blocked). */
+export function isOpenSetRejected(result: ClassificationResult): boolean {
+  return (
+    result.decision === 'rejected' &&
+    resolveMode(result) !== 'blocked' &&
+    !shouldShowEducationalShell(result)
+  )
+}
