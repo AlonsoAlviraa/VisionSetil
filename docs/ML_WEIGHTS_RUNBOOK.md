@@ -28,10 +28,15 @@ Production should set `READYZ_FAIL_ON_MOCK_MODELS=true` only when real weights a
 
 ## Packaging checklist
 
-1. Copy approved checkpoint into `backend/app/ml/weights/` (git-lfs or object storage — **not** large blobs in git without LFS).
-2. Point `MULTI_VIEW_WEIGHTS_PATH` (or settings field) at the file.
-3. Confirm `/readyz` → `classifier_mode: real`.
-4. Never claim production accuracy metrics without matching `eval/reports` baseline table (PR-18 gate).
+1. **Never commit weights to GitHub.** `*.pt` / `*.pth` / `*.onnx` / `*.safetensors` are gitignored (local only).
+2. Copy approved checkpoint into a local path, e.g. `backend/app/ml/weights/` or `kaggle/kernel_output_*/models/`.
+3. Point `MULTI_VIEW_WEIGHTS_PATH` (or settings / weight_discovery) at the file.
+4. Confirm `/readyz` → `classifier_mode: real`.
+5. Never claim production accuracy metrics without matching `eval/reports` baseline table (PR-18 gate).
+
+### Optional: purge weights already on GitHub history
+
+This commit only stops **future** tracking. Old LFS blobs may still exist in remote history until cleaned (BFG / `git filter-repo` + force-push). Coordinate with the team before rewriting `main`.
 
 ## Fallback behaviour
 
