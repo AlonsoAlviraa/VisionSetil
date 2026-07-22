@@ -5,9 +5,9 @@
 | **Título** | Phase B: Identify honesto de extremo a extremo |
 | **Autor** | Engineering / Architecture (borrador) |
 | **Fecha** | 2026-07-22 |
-| **Estado** | Draft (rev 1.1.2 — user decisions closed) |
+| **Estado** | Closeout ready (rev 1.1.3 — B-52 rollout checklist + kill-switches) |
 | **Repo** | `C:\Users\Mariano\Documents\ALONSOO\VISIONSETIL` |
-| **Versión del plan** | **1.1.2** |
+| **Versión del plan** | **1.1.3** |
 | **Audiencia** | Senior engineers (full-stack + ML), product |
 | **Precedente** | Phase A (catálogo v2 ~520 spp, media `/media` + `SpeciesImage`, i18n ES/CA/EU/EN, pesos gitignored) |
 | **Docs relacionados** | `docs/QUALITY_GATE.md`, `docs/SAFETY_POLICY.md`, `docs/ML_WEIGHTS_RUNBOOK.md`, `docs/MEGA_PLAN_PROFESSIONAL_UPGRADE.md` |
@@ -475,26 +475,8 @@ POST /classify
 | `GET /readyz` | `quality_gate` nested, `weights_present` |
 | `POST /classify/async` | view_types, locale; worker → simple contract |
 | `GET /jobs/{id}/result` | `{schema_version, simple, raw}` — `raw` always present when available (D-B18/D-B24) |
-| `classify-advanced` | **No** path producto; admin/internal only (D-B17 / §Product policy) |
+| `classify-advanced` | **No** path producto; doc only en Phase B (D-B17) |
 | `/metrics` | mode/gate counters; **admin-scoped** — FE no scrapea |
-
-### Product policy — Identify vs `classify-advanced` (D-B17 / B-47)
-
-**Normative product split** (no schema sprinkling on advanced in Phase B):
-
-| Surface | Endpoint(s) | Schema family | Audience |
-| --- | --- | --- | --- |
-| **Identify product** (FE `/identificar`, public clients) | `POST /classify` and optional `POST /classify/async` → job `simple` | `SimpleClassificationResult` (+ honesty: `mode`, `quality_gate`, `locale`, …) | End users |
-| **Admin / internal / eval** | `POST /observations/{id}/classify-advanced` | `ClassificationResponse` (candidates, open_set, human_review, trace, …) | Ops, eval harness, expert tools |
-| **Legacy observation mock** | `POST /observations/{id}/classify` | `ClassificationResponse` via `MockMushroomClassifier` | Dev / legacy only — not Identify |
-
-Rules:
-
-1. **Identify MUST call only** `POST /classify` (sync) or the async path that returns the **same simple honesty contract** via job `simple` (D-B10 / D-B18). Never call `classify-advanced` from the Identify UI or product FE client.
-2. **`classify-advanced` is admin/internal.** It returns a **different schema family** (`ClassificationResponse`). It is **not** the product honesty contract; do **not** add fake `mode` / `quality_gate` fields to advanced “to match Identify” in Phase B (no field-sprinkle PR).
-3. Optional post-MVP: thin adapter/wrapper that maps advanced → simple honesty (out of Phase B critical path; does not block MVP).
-4. Eval scripts (`eval/scripts/run_eval.py`, pipeline tests) may keep using advanced for full-trace inspection; that does not change product policy.
-5. OpenAPI / route docstrings on advanced must state admin-only + product path = `/classify` (see `routes_classification.py`).
 
 ### FE client (sin zod)
 
@@ -612,12 +594,6 @@ classification_rejections_total{kind="gate|open_set|other"}
 | Error rate 5xx `/classify` > 5% / 5m | page |
 | Spike `mode=real` con `weights_present=false` | investigar mentira de mode |
 
-### Rollback / kill-switches
-
-1. Revert PR individual.
-2. `VITE_FEATURE_IDENTIFY_PREFLIGHT=false` / `VITE_FEATURE_RESULT_MODE_BANNER=false` — oculta banners **sin** quitar campos API.
-3. API fields permanecen (fail-closed serve intacto).
-
 ### Preflight rate limits
 
 - Poll Identify: montaje + cada **60s**.
@@ -676,6 +652,98 @@ B-14  async worker uses classify_to_simple (gate+mode) + dual-write job result
 - [ ] Preflight banner; submit OK en blocked; **submit off offline (B-11 hard)**
 - [ ] Legacy FE resolveMode documentado y testeado
 - [ ] Open-set real+rejected no usa copy de gate-blocked
+
+---
+
+## Phase B Closeout — Rollout checklist & kill-switches (B-52)
+
+> **Host PR:** B-52 (docs-primary). Scope: publicar este documento en main, checklist operativo de rollout, y kill-switches accionables. Residual QA solo si B-12/B-48…B-51 dejaron gaps; no reabrir features.
+
+### Rollout checklist (ops)
+
+Usar en orden al cerrar el tren B-01…B-52 o un deploy que active honesty Identify.
+
+#### Pre-merge / pre-deploy
+
+- [ ] **Doc en tree:** `docs/PHASE_B_HONEST_IDENTIFY.md` presente en la rama a desplegar (este archivo).
+- [ ] **MVP B-01…B-13** mergeados (o equivalentes en monorepo) y CI verde en BE honesty tests (B-12) + OpenAPI note (B-13).
+- [ ] **Async safety B-14** mergeado si `POST /classify/async` o jobs están expuestos en el entorno (no dejar window ungated).
+- [ ] **Gate defaults:** `model_block_species_id_when_below_gate=true` en prod; disable **no** presente en `.env` de producción.
+- [ ] **Pesos:** no embebidos en GitHub; path de serve + sibling `metrics.json` documentados en `ML_WEIGHTS_RUNBOOK.md` (B-23).
+- [ ] **FE flags post-MVP** (ver tabla Feature flags): preflight + result mode banner **on**; hard view min **off**; async FE **off** hasta B-45/B-46 verdes.
+- [ ] **Safety surface:** Identify sin `FoodQualityChip` / chrome edible-green (D-B16); scan i18n 4 locales sin «safe to eat».
+- [ ] **Rate limits:** `/readyz` y `/models/quality-gate` exentos o bucket alto (≥120 req/min/IP) — B-17.
+
+#### Smoke deploy (staging → prod)
+
+- [ ] `GET /readyz` → JSON con `classifier_mode`, nested `quality_gate` (dual: `metrics_acceptable` + `species_id_allowed`), `weights_present`.
+- [ ] `GET /models/quality-gate` → `reason_code`, `block_enabled`, `metrics_path` **full path** (D-B23) cuando hay métricas.
+- [ ] `POST /classify` (1 imagen mínima):
+  - [ ] Body siempre incluye `mode` ∈ {`real`,`mock`,`blocked`} y `quality_gate` (pass y fail).
+  - [ ] Gate fail → `mode=blocked`, `predictions=[]`, `decision=rejected`.
+  - [ ] `is_mock_stack` coherente con pesos, **no** derivado de `mode`.
+  - [ ] `locale` echo; invalid locale → **400**.
+- [ ] Identify UI:
+  - [ ] PreflightBanner visible; submit **disabled solo offline**.
+  - [ ] ResultModeBanner por mode; shell educativa en blocked.
+  - [ ] Confidence **solo** `mode=real` **y** `metrics_acceptable` (D-B9).
+  - [ ] Sin FoodQualityChip en `/identificar`.
+- [ ] Async (si habilitado): job result `{schema_version:2, simple, raw}`; `simple` gated igual que sync.
+- [ ] Metrics (admin): contadores `classify_mode_total` / `gate_blocked_total` o path cableado (B-51); **no** scrapear `/metrics` desde FE público.
+
+#### Post-deploy watch (primeras 24–48 h)
+
+- [ ] Alertas activas: `block_enabled=false` en prod; spike `mode=real` con `weights_present=false`; 5xx `/classify` > 5%/5m.
+- [ ] Logs `classify_decision` con `mode`, dual gate, `metrics_path`, `request_id`.
+- [ ] Sin regresiones de copy: open-set real+rejected ≠ copy de gate-blocked.
+- [ ] Playwright blocked (B-48) / mock (B-49) verdes en CI o smoke manual equivalente.
+
+#### Phase B “done” sign-off (Appendix C + T8)
+
+- [ ] Preflight + result mode coherentes con BE.
+- [ ] Gate fail: ninguna UI Identify presenta top-1 de campo ni food chip.
+- [ ] Sync y async `simple` gated.
+- [ ] Playwright blocked verde (o waiver documentado).
+- [ ] Docs/runbooks + safety CI presentes.
+- [ ] Open-set real+rejected copy distinto de blocked.
+- [ ] Este closeout (checklist + kill-switches) revisado por ops/eng owner.
+
+### Kill-switches (accionables)
+
+Kill-switches **no** quitan el contrato honesty del API: sirven para degradar UX o política sin reintroducir mentiras de especie.
+
+| # | Interruptor | Dónde | Efecto | Cuándo usarlo | No hace |
+| --- | ---: | --- | --- | --- | --- |
+| K1 | Revert PR individual / train slice | git | Quita el cambio concreto | Bug acotado a un PR | No deja API a medias si se revierte solo FE |
+| K2 | `VITE_FEATURE_IDENTIFY_PREFLIGHT=false` | FE build env | Oculta PreflightBanner | Banner ruidoso / 429 preflight / copy roto | **No** desactiva gate ni offline-submit logic del API; re-check Identify si B-11 amarra submit solo al flag |
+| K3 | `VITE_FEATURE_RESULT_MODE_BANNER=false` | FE build env | Oculta ResultModeBanner | Banner confunde / a11y regresión | **No** quita `mode`/`quality_gate` del body; ResultCard debe seguir empty en blocked |
+| K4 | `VITE_FEATURE_ASYNC_CLASSIFY=false` | FE build env | FE no usa async path | Jobs inestables post B-46 | Sync `/classify` sigue; jobs BE si expuestos deben seguir gated (B-14) |
+| K5 | `VITE_FEATURE_HARD_VIEW_MIN=false` | FE build env | Vuelve soft min views (default) | Hard min bloquea explore | No afecta mode/gate |
+| K6 | `model_block_species_id_when_below_gate=false` | BE settings / env | `species_id_allowed=true` aunque métricas malas; `reason_code=gate_disabled`; `metrics_acceptable` **sigue false** | **Solo dev/debug** | **Prohibido en prod** sin page+waiver; confidence UI sigue gated por D-B9 |
+| K7 | Quitar / no montar pesos reales | ops pesos | Fuerza stack mock → `mode=mock` si gate permite ID | Incidente de modelo / pesos corruptos | No “fake real”; banner mock obligatorio |
+| K8 | Mantener gate fail (métricas malas o sin sibling) | metrics/weights | `mode=blocked`, preds `[]` | Sospecha de serve metrics wrong | Fail-closed es el estado seguro por defecto |
+
+**Reglas de kill-switch:**
+
+1. **Fail-closed serve intacto:** K2–K5 solo tocan UX/feature flags. El mapper sigue enviando `mode` + `quality_gate` dual.
+2. **Nunca** “arreglar” un incidente de honesty poniendo `mode=real` a mano o strip de `quality_gate`.
+3. **Prod + K6:** si `block_enabled=false` en readiness prod → alerta inmediata (ver Observability); rollback a `true` o sacar tráfico Identify.
+4. **Orden de contención recomendado en incidente “Identify miente”:**
+   1. Confirmar respuesta API (`mode`, preds, gate) vs UI.
+   2. Si UI miente y API honesta → K2/K3 o hotfix FE; API se queda.
+   3. Si API sirve preds con gate fail → **no** es kill-switch FE: revert B-03/B-05 path o forzar K7/K8 (blocked/mock), page on-call.
+   4. Si async ungated → deshabilitar FE async (K4) **y** hotfix worker B-14; no dejar jobs públicos.
+5. **Documentar** en el ticket de incidente: interruptor usado, env, commit/tag, hora UTC, owner.
+
+### Residual QA gaps (solo si no cubiertos antes)
+
+Checklist residual B-52 — marcar N/A si el PR anfitrión ya cerró el ítem:
+
+- [ ] Structured `classify_decision` logs (si no en B-51).
+- [ ] Vitest preflight / banner / `resolveMode` verdes.
+- [ ] Golden JSON blocked (`mode=blocked`, preds `[]`, gate present).
+- [ ] OpenAPI↔FE field contract (script o checklist manual: `mode`, `quality_gate.*`, `locale`, `is_mock_stack`, `in_catalog`).
+- [ ] Si residual + docs > ~400 LOC o mezcla BE/FE ownership → split **B-52a** (BE logs/goldens) / **B-52b** (FE vitest + este checklist).
 
 ---
 
@@ -1056,9 +1124,9 @@ flowchart TB
 - **Desc:** mode_total, gate_blocked_total; **call** existing record_classification; document admin scope /metrics.
 
 #### B-52 — Honesty closeout: docs checklist + residual QA
-- **Files:** `docs/PHASE_B_HONEST_IDENTIFY.md`, rollout checklist, kill-switches; residual: structured logs if not in B-51, vitest preflight/banner if not already green, golden blocked JSON, OpenAPI↔FE field contract script
+- **Files:** `docs/PHASE_B_HONEST_IDENTIFY.md` (§Phase B Closeout — Rollout checklist & kill-switches), residual QA only if gaps
 - **Deps:** B-05, B-06, B-12, B-13, B-51 (preferred for counters/logs first)
-- **Desc:** **Scope primario = docs/rollout checklist** (T8 host). Residual QA only for gaps not covered by B-12/B-48…B-51. **Escape hatch:** if diff &gt;400 LOC or mixed BE/FE/docs ownership, split same train: **B-52a** BE logs+goldens, **B-52b** FE vitest+docs/checklist. Not a second mega-feature PR.
+- **Desc:** **Scope primario = docs/rollout checklist + kill-switches K1–K8** (T8 host). Residual QA only for gaps not covered by B-12/B-48…B-51. **Escape hatch:** if diff &gt;400 LOC or mixed BE/FE/docs ownership, split same train: **B-52a** BE logs+goldens, **B-52b** FE vitest+docs/checklist. Not a second mega-feature PR. **Delivered in-tree as v1.1.3 closeout section.**
 
 ---
 
@@ -1120,7 +1188,8 @@ Acceptance T8: los cinco bullets de docs/runbooks/CI/hints existen en main al ce
 3. Sync y async `simple` gated.  
 4. Playwright blocked verde.  
 5. Docs/runbooks + safety CI.  
-6. Open-set real+rejected copy distinto de blocked.
+6. Open-set real+rejected copy distinto de blocked.  
+7. **B-52:** rollout checklist + kill-switches (K1–K8) en este documento; sign-off ops en §Phase B Closeout.
 
 ## Appendix D — Implementer’s crib sheet
 
@@ -1188,7 +1257,7 @@ assert pred.in_catalog is True
 | 1.1.0 | Post-review: D-B1 fix, dual gate signals, open-set matrix, MVP complete, async sequencing, FoodQualityChip ban, no zod, metrics algorithm, OQ→decisions, 52 solid PRs, single MVP DAG |
 | 1.1.1 | Re-review: global B-ID consistency; D-B12 metrics path folded into B-03; offline hard in B-11; Appendix D.1 closed; DAG B-05→B-14 only; B-52 scoped docs+escape hatch |
 | 1.1.2 | User decisions: D-B23 full metrics_path always; D-B24 raw job field permanent; D-B25 join nightly+on-demand; Open Questions closed |
-| 1.1.3 | B-47: product policy section Identify=`/classify` only; `classify-advanced` admin/internal (D-B17); route docstrings |
+| 1.1.3 | **B-52 closeout:** publish doc + ops **Rollout checklist** + expanded **Kill-switches** (K1–K8) + residual QA gaps; brief observability rollback bullets folded into closeout |
 
 ---
 
