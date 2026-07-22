@@ -1,9 +1,13 @@
 /**
- * Result card — 3-layer hierarchy (Wave A) + Phase B honesty (B-08):
+ * Result card — 3-layer hierarchy (Wave A) + Phase B honesty (B-08 / B-35):
  * 0) ResultModeBanner + educational blocked shell
  * 1) Safety + decision + top predictions (no FoodQualityChip — D-B16)
  * 2) Confidence (gated D-B9) + lookalikes
  * 3) Accordion: quality, evidence, questions, feedback, technical
+ *
+ * Safety-by-surface: Identify only — risk chips + orientation copy.
+ * See docs/SAFETY_POLICY.md § Safety-by-surface (D16 / D-B16).
+ * Encyclopedia may use FoodQualityChip; this surface must not.
  */
 import { useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
