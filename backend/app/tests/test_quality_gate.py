@@ -217,3 +217,181 @@ def test_gates_passed_dual_signals(tmp_path):
     assert gate["reason_code"] == "gates_passed"
     assert gate["verdict"] == "ACCEPTABLE"
     assert gate["block_enabled"] is True
+
+
+def test_discovery_no_weights_picks_mtime_newest_not_max_map(monkeypatch, tmp_path):
+    """D-B12 discovery-only: mtime-newest among kernels, never max-MAP."""
+    import os
+    import time
+
+    root = tmp_path / "repo"
+    # Older file with high MAP (must NOT win)
+    old = root / "kaggle" / "kernel_output_old" / "models"
+    old.mkdir(parents=True)
+    old_metrics = old / "metrics.json"
+    old_metrics.write_text(
+        json.dumps(
+            {
+                "test_map_at_3": 0.99,
+                "safety_recall_deadly": 1.0,
+                "version": "old-high",
+            }
+        ),
+        encoding="utf-8",
+    )
+    # Newer file with low MAP (must win under mtime ranking)
+    new = root / "kaggle" / "kernel_output_new" / "models"
+    new.mkdir(parents=True)
+    new_metrics = new / "metrics.json"
+    new_metrics.write_text(
+        json.dumps(
+            {
+                "test_map_at_3": 0.05,
+                "safety_recall_deadly": 0.0,
+                "version": "new-low",
+            }
+        ),
+        encoding="utf-8",
+    )
+    # Force mtime order: old older, new newer
+    now = time.time()
+    os.utime(old_metrics, (now - 1000, now - 1000))
+    os.utime(new_metrics, (now, now))
+
+    # Point configured weights at a missing path so no conf-sibling short-circuit
+    monkeypatch.setattr(
+        settings, "multi_view_weights_path", root / "missing" / "best.pt"
+    )
+    # No weights file anywhere under root → discovery path
+    monkeypatch.setattr(
+        "app.ml.quality_gate._resolve_serve_weights_path",
+        lambda loaded_weights_path=None: None,
+    )
+    clear_metrics_cache()
+
+    metrics = load_primary_metrics(str(root))
+    assert metrics is not None
+    assert metrics["test_map_at_3"] == pytest.approx(0.05)
+    assert metrics["version"] == "new-low"
+    assert "kernel_output_new" in metrics["_metrics_path"]
+
+
+def test_map_to_simple_retains_quality_gate_and_mode(monkeypatch, tmp_path):
+    """Regression: _map_to_simple must not strip quality_gate; mode matches derive."""
+    from app.api.routes_classify import _map_to_simple
+    from app.db.schemas import (
+        CandidateResult,
+        ClassificationResponse,
+        HumanReviewResponse,
+        ModelStackResponse,
+        OpenSetResponse,
+        QualityAssessmentResponse,
+        TraceResponse,
+    )
+    from app.ml.classify_mode import derive_classify_mode
+
+    models = tmp_path / "models"
+    models.mkdir()
+    weights = models / "best.pt"
+    weights.write_bytes(b"w")
+    (models / "metrics.json").write_text(
+        json.dumps(
+            {
+                "test_map_at_3": 0.05,
+                "safety_recall_deadly": 0.0,
+                "version": "map-test",
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    cand = CandidateResult(
+        taxon="Amanita muscaria",
+        rank="species",
+        confidence=0.4,
+        danger_notes=[],
+        lookalikes=[],
+        edibility_label="toxic",
+    )
+    resp = ClassificationResponse(
+        observation_id=1,
+        status="orientation_only",
+        safety_level="unsafe_to_consume",
+        risk_state="unknown",
+        message="test",
+        model_stack=ModelStackResponse(
+            detector="mock",
+            visual_embedder="mock",
+            image_text_embedder="mock",
+            metadata_encoder="mock",
+        ),
+        candidates=[cand],
+        top_candidates=[cand],
+        missing_evidence=[],
+        explanation="",
+        questions_for_user=[],
+        warnings=[],
+        dangerous_lookalikes=[],
+        quality_assessment=QualityAssessmentResponse(
+            sharpness_ok=True,
+            lighting_ok=True,
+            mushroom_large_enough=True,
+            has_lower_view=False,
+            has_base_view=False,
+            has_environment_view=False,
+            possible_multiple_species=False,
+            obstruction_detected=False,
+            heavy_compression_or_blur=False,
+        ),
+        trace=TraceResponse(
+            pipeline_version="test",
+            classifier_strategy="mock",
+            segmentation_strategy="none",
+            visual_backbone_plan=[],
+            metadata_fusion_plan="none",
+            open_set_strategy="none",
+            human_review_path="none",
+        ),
+        final_warning="test",
+        open_set=OpenSetResponse(
+            is_unknown_or_uncertain=False,
+            reason="ok",
+            decision="accept",
+        ),
+        human_review=HumanReviewResponse(
+            recommended=False, priority="low", reason="none"
+        ),
+    )
+
+    class _FakeClf:
+        is_real = False
+        last_view_coverage: list = []
+        last_ml_notes: list = []
+        last_confidence_margin = None
+        resolved_weights_path = str(weights)
+
+    result = _map_to_simple(
+        resp,
+        "req-strip",
+        12,
+        classifier=_FakeClf(),
+        loaded_weights_path=str(weights),
+    )
+
+    # Not the fail-closed schema default
+    assert result.quality_gate is not None
+    assert result.quality_gate.reason_code != "unset"
+    assert result.quality_gate.reason != "unset_fail_closed"
+    assert result.quality_gate.metrics_acceptable is False
+    assert result.quality_gate.species_id_allowed is False
+    assert result.quality_gate.verdict == "UNACCEPTABLE"
+
+    expected_mode = derive_classify_mode(
+        is_mock_stack=True,
+        species_id_allowed=result.quality_gate.species_id_allowed,
+    )
+    assert result.mode == expected_mode
+    assert result.is_mock_stack is True  # not overwritten from mode
+    assert result.locale == "es"
+    assert result.decision == "rejected"
+    assert result.predictions == []
