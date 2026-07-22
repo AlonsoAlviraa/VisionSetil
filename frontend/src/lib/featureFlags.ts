@@ -30,6 +30,11 @@ export const featureFlags = {
    * Kill-switch hides banner; offline submit disable stays active when true (default).
    */
   IDENTIFY_PREFLIGHT: envBool('VITE_FEATURE_IDENTIFY_PREFLIGHT', true),
+  /**
+   * D-B14 / B-25: hard minimum views (gills+front required to submit).
+   * Default **false** = soft readiness (warnings only; submit with ≥1 view).
+   */
+  HARD_VIEW_MIN: envBool('VITE_FEATURE_HARD_VIEW_MIN', false),
 } as const
 
 export type FeatureFlagKey = keyof typeof featureFlags

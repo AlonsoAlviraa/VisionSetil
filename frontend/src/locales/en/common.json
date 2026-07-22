@@ -82,7 +82,7 @@
   "identify": {
     "title": "Identify mushroom",
     "subtitle": "Upload photos from multiple views for more reliable identification",
-    "wizardTitle": "4-view guide",
+    "wizardTitle": "Four field views",
     "views": {
       "gills": "Gills / pores",
       "front": "Front / cap",
@@ -110,7 +110,25 @@
       "detail": "🔍"
     },
     "takePhoto": "Take photo",
-    "uploadPhotos": "Upload photos"
+    "uploadPhotos": "Upload photos",
+    "wizardSubtitle": "Gills, profile, habitat and detail. Complete the critical ones before analyzing.",
+    "wizardAriaLabel": "Guided multi-view capture",
+    "progressAria": "Progress {{filled}} of {{total}}",
+    "progressCount": "{{filled}}/{{total}}",
+    "progressViewsLabel": "views",
+    "missingCritical": "missing critical: {{views}}",
+    "badgeCritical": "critical",
+    "badgeOptional": "optional",
+    "gallery": "Gallery",
+    "camera": "Camera",
+    "remove": "Remove",
+    "viewAlt": "View {{view}}",
+    "readiness": {
+      "missing_habitat": "Missing habitat view: improves ecological evidence (recommended).",
+      "missing_detail": "Missing stem/ring/volva detail: reduces lookalike confusion.",
+      "missing_required": "Critical views pending: {{views}}. You can submit with a warning, but open-set may reject.",
+      "hard_blocked": "Strict mode: add critical views (gills and front) before analyzing."
+    }
   },
   "empty": {
     "defaultTitle": "Nothing here",

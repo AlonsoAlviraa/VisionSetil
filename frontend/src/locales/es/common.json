@@ -103,7 +103,7 @@
   "identify": {
     "title": "Identificar seta",
     "subtitle": "Sube fotos desde varias vistas para una identificación más fiable",
-    "wizardTitle": "Guía de 4 vistas",
+    "wizardTitle": "Cuatro vistas de campo",
     "coachTitle": "Cómo hacer buenas fotos",
     "coachTip1": "Luz natural frontal; evita contraluz fuerte",
     "coachTip2": "Rellena el encuadre con la seta (no demasiada distancia)",
@@ -129,7 +129,25 @@
     },
     "history": "Historial local",
     "clearHistory": "Vaciar historial",
-    "missingViews": "Vistas recomendadas que faltan"
+    "missingViews": "Vistas recomendadas que faltan",
+    "wizardSubtitle": "Láminas, perfil, hábitat y detalle. Completa las críticas antes de analizar.",
+    "wizardAriaLabel": "Captura multi-vista guiada",
+    "progressAria": "Progreso {{filled}} de {{total}}",
+    "progressCount": "{{filled}}/{{total}}",
+    "progressViewsLabel": "vistas",
+    "missingCritical": "faltan críticas: {{views}}",
+    "badgeCritical": "crítica",
+    "badgeOptional": "opcional",
+    "gallery": "Galería",
+    "camera": "Cámara",
+    "remove": "Quitar",
+    "viewAlt": "Vista {{view}}",
+    "readiness": {
+      "missing_habitat": "Falta vista de hábitat: mejora la evidencia ecológica (recomendado).",
+      "missing_detail": "Falta detalle de pie/anillo/volva: reduce confusión con lookalikes.",
+      "missing_required": "Vistas críticas pendientes: {{views}}. Puedes enviar con advertencia, pero el open-set puede rechazar.",
+      "hard_blocked": "Modo estricto: añade las vistas críticas (láminas y frontal) antes de analizar."
+    }
   },
   "empty": {
     "defaultTitle": "Nada por aquí",
