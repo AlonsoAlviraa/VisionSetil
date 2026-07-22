@@ -18,6 +18,7 @@ from app.db.schemas import SimpleSpeciesPrediction
 from app.services.unified_catalog import (
     DEFAULT_LOCALE,
     get_by_scientific_name,
+    load_catalog,
     resolve_vernaculars,
     scientific_to_slug,
 )
@@ -111,17 +112,32 @@ def _parse_synonyms_yaml(text: str) -> dict[str, list[str]]:
 
 @lru_cache(maxsize=1)
 def load_synonym_reverse_map() -> dict[str, str]:
-    """Map casefolded scientific name (preferred or alt) → preferred scientific name."""
+    """Map casefolded scientific name (preferred or alt) → preferred scientific name.
+
+    Safety (join-parity): never rewrite an alias that is already a first-class
+    catalog scientific name (e.g. *Lactarius sanguifluus* must not collapse into
+    *L. deliciosus* even if listed under it in ``synonyms.yaml``).
+    """
     reverse: dict[str, str] = {}
+    catalog_keys = {
+        str(k).casefold() for k in (load_catalog().get("_by_name") or {})
+    }
     for path in _synonyms_path_candidates():
         try:
             if not path.exists():
                 continue
             groups = _parse_synonyms_yaml(path.read_text(encoding="utf-8"))
             for preferred, alts in groups.items():
-                reverse[_taxon_key(preferred)] = preferred
+                pref_key = _taxon_key(preferred)
+                reverse[pref_key] = preferred
                 for alt in alts:
-                    reverse[_taxon_key(alt)] = preferred
+                    alt_key = _taxon_key(alt)
+                    if not alt_key or alt_key == pref_key:
+                        continue
+                    # Distinct catalog taxon → keep its own identity
+                    if alt_key in catalog_keys:
+                        continue
+                    reverse[alt_key] = preferred
             return reverse
         except OSError:
             continue
@@ -137,12 +153,22 @@ def reload_synonyms() -> dict[str, str]:
 def normalize_to_preferred_scientific_name(name: str | None) -> str:
     """Resolve historical/ML synonym to preferred scientific name when known.
 
-    Order: clean whitespace → synonym reverse map → original cleaned name.
+    Order:
+    1. clean whitespace
+    2. if already a catalog scientific name → keep that catalog name (no collapse)
+    3. synonym reverse map (alts not present in catalog)
+    4. original cleaned name
+
     Does not invent names; unknown taxa pass through cleaned.
     """
     cleaned = _clean_taxon(name)
     if not cleaned:
         return ""
+    # First-class catalog taxa must not be synonym-collapsed into another preferred.
+    hit = get_by_scientific_name(cleaned)
+    if hit:
+        sci = str(hit.get("scientific_name") or cleaned).strip()
+        return sci or cleaned
     preferred = load_synonym_reverse_map().get(_taxon_key(cleaned))
     return preferred if preferred else cleaned
 

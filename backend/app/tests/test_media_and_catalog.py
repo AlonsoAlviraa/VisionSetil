@@ -277,6 +277,39 @@ def test_hydrate_unknown_taxon_not_forced_into_catalog():
     assert pred.slug == "completely-unknown-fungus"
 
 
+def test_synonym_does_not_collapse_distinct_catalog_taxa():
+    """B-41 fix: catalog first-class taxa must not be rewritten via synonyms.yaml.
+
+    ``Lactarius sanguifluus`` is listed under ``Lactarius deliciosus`` in
+    synonyms.yaml (lookalike note) but is its own row in catalog_v2.
+    """
+    from app.services.prediction_hydrate import (
+        hydrate_prediction,
+        load_synonym_reverse_map,
+        normalize_to_preferred_scientific_name,
+        reload_synonyms,
+    )
+    from app.services.unified_catalog import get_by_scientific_name
+
+    reload_synonyms()
+    assert get_by_scientific_name("Lactarius sanguifluus") is not None
+    assert get_by_scientific_name("Lactarius deliciosus") is not None
+
+    assert (
+        normalize_to_preferred_scientific_name("Lactarius sanguifluus")
+        == "Lactarius sanguifluus"
+    )
+    # Reverse map must not map sanguifluus → deliciosus
+    rev = load_synonym_reverse_map()
+    assert rev.get("lactarius sanguifluus") in (None, "Lactarius sanguifluus")
+
+    pred = hydrate_prediction("Lactarius sanguifluus", 0.77, "unknown", "es")
+    assert pred.species == "Lactarius sanguifluus"
+    assert pred.in_catalog is True
+    assert pred.slug == "lactarius-sanguifluus"
+    assert pred.slug != "lactarius-deliciosus"
+
+
 def test_safety_i18n_all_locales():
     for loc in ("es", "ca", "eu", "en"):
         b = get_safety_bundle(loc)
