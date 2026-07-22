@@ -82,7 +82,7 @@
   "identify": {
     "title": "Identificar bolet",
     "subtitle": "Puja fotos des de diverses vistes per a una identificació més fiable",
-    "wizardTitle": "Guia de 4 vistes",
+    "wizardTitle": "Quatre vistes de camp",
     "views": {
       "gills": "Làmines / porus",
       "front": "Front / barret",
@@ -110,7 +110,25 @@
       "detail": "🔍"
     },
     "takePhoto": "Fer foto",
-    "uploadPhotos": "Pujar fotos"
+    "uploadPhotos": "Pujar fotos",
+    "wizardSubtitle": "Làmines, perfil, hàbitat i detall. Completa les crítiques abans d'analitzar.",
+    "wizardAriaLabel": "Captura multi-vista guiada",
+    "progressAria": "Progrés {{filled}} de {{total}}",
+    "progressCount": "{{filled}}/{{total}}",
+    "progressViewsLabel": "vistes",
+    "missingCritical": "falten crítiques: {{views}}",
+    "badgeCritical": "crítica",
+    "badgeOptional": "opcional",
+    "gallery": "Galeria",
+    "camera": "Càmera",
+    "remove": "Treure",
+    "viewAlt": "Vista {{view}}",
+    "readiness": {
+      "missing_habitat": "Falta la vista d'hàbitat: millora l'evidència ecològica (recomanat).",
+      "missing_detail": "Falta detall de peu/anell/volva: redueix confusió amb lookalikes.",
+      "missing_required": "Vistes crítiques pendents: {{views}}. Pots enviar amb avís, però l'open-set pot rebutjar.",
+      "hard_blocked": "Mode estricte: afegeix les vistes crítiques (làmines i frontal) abans d'analitzar."
+    }
   },
   "empty": {
     "defaultTitle": "Res per aquí",
@@ -118,7 +136,26 @@
   },
   "error": {
     "defaultTitle": "Alguna cosa ha fallat",
-    "defaultDescription": "Torna-ho a provar d'aquí a uns moments."
+    "defaultDescription": "Torna-ho a provar d'aquí a uns moments.",
+    "networkTitle": "Sense connexió",
+    "network": "No s'ha pogut contactar amb el servidor. Comprova la xarxa o que el backend estigui en marxa.",
+    "timeoutTitle": "Temps d'espera esgotat",
+    "timeout": "La identificació ha trigat massa. Prova amb menys fotos o torna-ho a intentar.",
+    "viewTypesTitle": "Vistes no vàlides",
+    "viewTypes": "Les etiquetes de vista no són vàlides. Usa només: gills, front, habitat, detail.",
+    "badRequestTitle": "Sol·licitud no vàlida",
+    "badRequest": "El servidor ha rebutjat la sol·licitud. Revisa les fotos i torna-ho a provar.",
+    "unauthorizedTitle": "No autoritzat",
+    "unauthorized": "No tens permís per identificar. Comprova l'API key.",
+    "rateLimitedTitle": "Massa peticions",
+    "rateLimited": "Has superat el límit d'ús. Espera un moment i reintenta.",
+    "clientTitle": "Error de sol·licitud",
+    "client": "La sol·licitud no s'ha pogut completar (error del client).",
+    "serverTitle": "Error del servidor",
+    "server": "El servidor ha fallat en processar la identificació. Reintenta d'aquí a uns moments.",
+    "retry": "Reintentar",
+    "dismiss": "Entès",
+    "detail": "Detall"
   },
   "share": {
     "title": "Resultat VisionSetil",
@@ -173,12 +210,17 @@
     "humanReviewTitle": "Recomanada revisió humana",
     "humanReviewBody": "Aquest cas presenta baixa confiança. Un expert l'hauria de revisar.",
     "predictions": "Prediccions",
+    "outOfCatalog": "Fora del catàleg",
+    "outOfCatalogHint": "El model suggereix aquest tàxon, però no és al catàleg de l'app (sense fitxa ni mèdia curada).",
     "dangerTitle": "ESPÈCIE POTENCIALMENT PERILLOSA DETECTADA",
     "dangerBody": "La coincidència més probable pertany a la categoria {{category}}. Mantingueu-la lluny de nens i mascotes.",
     "lookalikesTitle": "Espècies perilloses similars:",
     "qualityTitle": "Avisos de qualitat d'imatge:",
     "missingEvidenceTitle": "Per millorar la identificació:",
     "questionsTitle": "Preguntes per millorar el resultat:",
+    "evidencePanelTitle": "Evidència i preguntes",
+    "addViewCta": "Afegir vista",
+    "addViewCtaHint": "Anar a l'espai de l'assistent multi-vista",
     "feedbackQuestion": "És correcta aquesta identificació?",
     "feedbackYes": "Sí",
     "feedbackNo": "No",
@@ -232,5 +274,51 @@
   "education": {
     "title": "Apren micologia",
     "subtitle": "Guies de camp amb seguretat"
+  },
+  "honesty": {
+    "mode": {
+      "blocked": "Identificació bloquejada: model per sota del llindar",
+      "mock": "Mode demo — sense pesos de camp",
+      "real": "Model en viu — només orientació"
+    },
+    "gate": {
+      "no_metrics": "Sense mètriques del model al disc",
+      "map_below": "MAP@3 per sota del llindar mínim",
+      "deadly_below": "Recall d'espècies mortals per sota del llindar",
+      "gates_passed": "Llindars de qualitat superats",
+      "gate_disabled": "Gate de qualitat deshabilitat (només desenvolupament)"
+    },
+    "preflight": {
+      "offline": "API no disponible. No es pot identificar ara.",
+      "blocked": "Identificació d'espècie no permesa: el model no supera el llindar de qualitat.",
+      "mock": "Mode demo: prediccions de demostració, no identificació de camp.",
+      "real": "Model en viu. Identificació només orientativa.",
+      "metrics_warning": "Mètriques del model per sota del llindar (gate deshabilitat). No es mostra confiança.",
+      "submit_offline": "Sense resposta de xarxa de l'API. Connecta el backend per enviar fotos.",
+      "submit_offline_empty": "L'API ha respost sense un payload de readiness usable (p. ex. 503). Identificació deshabilitada fins que el backend estigui llest.",
+      "retry": "Tornar-ho a provar",
+      "retrying": "Comprovant…",
+      "unknown": "Estat del model desconegut. Identificació només orientativa."
+    },
+    "decision": {
+      "rejected_open_set": "El model s'absté (incertesa / open-set)",
+      "rejected_gate": "Identificació bloquejada pel llindar de qualitat del model"
+    },
+    "confidence_hidden": "Confiança no disponible en aquest mode",
+    "educational_blocked_title": "Identificació no disponible",
+    "educational_blocked_body": "El model actual no supera el llindar de qualitat per identificar espècies. Usa l'enciclopèdia i consulta un micòleg expert. Aquesta app és només orientativa i educativa.",
+    "cta": {
+      "encyclopedia": "Enciclopèdia",
+      "education": "Aprèn",
+      "expert": "Expert"
+    },
+    "loading": {
+      "upload": "Pujant fotos",
+      "analyze": "Analitzant",
+      "apply_policy": "Aplicant política de qualitat",
+      "hint": "Etapes reals de l'enviament — sense percentatge de model inventat.",
+      "stages_label": "Etapes d'identificació",
+      "aria_label": "Identificació en curs"
+    }
   }
 }

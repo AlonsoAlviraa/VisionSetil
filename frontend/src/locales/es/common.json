@@ -103,7 +103,7 @@
   "identify": {
     "title": "Identificar seta",
     "subtitle": "Sube fotos desde varias vistas para una identificación más fiable",
-    "wizardTitle": "Guía de 4 vistas",
+    "wizardTitle": "Cuatro vistas de campo",
     "coachTitle": "Cómo hacer buenas fotos",
     "coachTip1": "Luz natural frontal; evita contraluz fuerte",
     "coachTip2": "Rellena el encuadre con la seta (no demasiada distancia)",
@@ -129,7 +129,25 @@
     },
     "history": "Historial local",
     "clearHistory": "Vaciar historial",
-    "missingViews": "Vistas recomendadas que faltan"
+    "missingViews": "Vistas recomendadas que faltan",
+    "wizardSubtitle": "Láminas, perfil, hábitat y detalle. Completa las críticas antes de analizar.",
+    "wizardAriaLabel": "Captura multi-vista guiada",
+    "progressAria": "Progreso {{filled}} de {{total}}",
+    "progressCount": "{{filled}}/{{total}}",
+    "progressViewsLabel": "vistas",
+    "missingCritical": "faltan críticas: {{views}}",
+    "badgeCritical": "crítica",
+    "badgeOptional": "opcional",
+    "gallery": "Galería",
+    "camera": "Cámara",
+    "remove": "Quitar",
+    "viewAlt": "Vista {{view}}",
+    "readiness": {
+      "missing_habitat": "Falta vista de hábitat: mejora la evidencia ecológica (recomendado).",
+      "missing_detail": "Falta detalle de pie/anillo/volva: reduce confusión con lookalikes.",
+      "missing_required": "Vistas críticas pendientes: {{views}}. Puedes enviar con advertencia, pero el open-set puede rechazar.",
+      "hard_blocked": "Modo estricto: añade las vistas críticas (láminas y frontal) antes de analizar."
+    }
   },
   "empty": {
     "defaultTitle": "Nada por aquí",
@@ -137,7 +155,26 @@
   },
   "error": {
     "defaultTitle": "Algo salió mal",
-    "defaultDescription": "Inténtalo de nuevo en unos momentos."
+    "defaultDescription": "Inténtalo de nuevo en unos momentos.",
+    "networkTitle": "Sin conexión",
+    "network": "No se pudo contactar con el servidor. Comprueba la red o que el backend esté en marcha.",
+    "timeoutTitle": "Tiempo de espera agotado",
+    "timeout": "La identificación tardó demasiado. Prueba con menos fotos o reintenta.",
+    "viewTypesTitle": "Vistas no válidas",
+    "viewTypes": "Las etiquetas de vista no son válidas. Usa solo: gills, front, habitat, detail.",
+    "badRequestTitle": "Solicitud no válida",
+    "badRequest": "El servidor rechazó la solicitud. Revisa las fotos e inténtalo de nuevo.",
+    "unauthorizedTitle": "No autorizado",
+    "unauthorized": "No tienes permiso para identificar. Comprueba la API key.",
+    "rateLimitedTitle": "Demasiadas peticiones",
+    "rateLimited": "Has superado el límite de uso. Espera un momento y reintenta.",
+    "clientTitle": "Error de solicitud",
+    "client": "La solicitud no pudo completarse (error del cliente).",
+    "serverTitle": "Error del servidor",
+    "server": "El servidor falló al procesar la identificación. Reintenta en unos momentos.",
+    "retry": "Reintentar",
+    "dismiss": "Entendido",
+    "detail": "Detalle"
   },
   "share": {
     "title": "Resultado VisionSetil",
@@ -192,12 +229,17 @@
     "humanReviewTitle": "Recomendada revisión humana",
     "humanReviewBody": "Este caso presenta baja confianza. Un experto debería revisarlo.",
     "predictions": "Predicciones",
+    "outOfCatalog": "Fuera del catálogo",
+    "outOfCatalogHint": "El modelo sugiere este taxón, pero no está en el catálogo de la app (sin ficha ni media curada).",
     "dangerTitle": "ESPECIE POTENCIALMENTE PELIGROSA DETECTADA",
     "dangerBody": "La coincidencia más probable pertenece a una categoría {{category}}. Mantenla lejos de niños y mascotas.",
     "lookalikesTitle": "Especies peligrosas similares:",
     "qualityTitle": "Avisos de calidad de imagen:",
     "missingEvidenceTitle": "Para mejorar la identificación:",
     "questionsTitle": "Preguntas para mejorar el resultado:",
+    "evidencePanelTitle": "Evidencia y preguntas",
+    "addViewCta": "Añadir vista",
+    "addViewCtaHint": "Ir al slot del asistente multi-vista",
     "feedbackQuestion": "¿Es correcta esta identificación?",
     "feedbackYes": "Sí",
     "feedbackNo": "No",
@@ -226,5 +268,51 @@
     "verano": "Verano",
     "otono": "Otoño",
     "invierno": "Invierno"
+  },
+  "honesty": {
+    "mode": {
+      "blocked": "Identificación bloqueada: modelo bajo umbral",
+      "mock": "Modo demo — sin pesos de campo",
+      "real": "Modelo en vivo — solo orientación"
+    },
+    "gate": {
+      "no_metrics": "Sin métricas del modelo en disco",
+      "map_below": "MAP@3 por debajo del umbral mínimo",
+      "deadly_below": "Recall de especies mortales por debajo del umbral",
+      "gates_passed": "Umbrales de calidad superados",
+      "gate_disabled": "Gate de calidad deshabilitado (solo desarrollo)"
+    },
+    "preflight": {
+      "offline": "API no disponible. No se puede identificar ahora.",
+      "blocked": "Identificación de especie no permitida: el modelo no supera el umbral de calidad.",
+      "mock": "Modo demo: predicciones de demostración, no identificación de campo.",
+      "real": "Modelo en vivo. Identificación solo orientativa.",
+      "metrics_warning": "Métricas del modelo por debajo del umbral (gate deshabilitado). No se muestra confianza.",
+      "submit_offline": "Sin respuesta de red de la API. Conecta el backend para enviar fotos.",
+      "submit_offline_empty": "La API respondió sin un payload de readiness usable (p. ej. 503). Identificación deshabilitada hasta que el backend esté listo.",
+      "retry": "Reintentar",
+      "retrying": "Comprobando…",
+      "unknown": "Estado del modelo desconocido. Identificación solo orientativa."
+    },
+    "decision": {
+      "rejected_open_set": "El modelo se abstiene (incertidumbre / open-set)",
+      "rejected_gate": "Identificación bloqueada por el umbral de calidad del modelo"
+    },
+    "confidence_hidden": "Confianza no disponible en este modo",
+    "educational_blocked_title": "Identificación no disponible",
+    "educational_blocked_body": "El modelo actual no supera el umbral de calidad para identificar especies. Usa la enciclopedia y consulta a un micólogo experto. Esta app es solo orientativa y educativa.",
+    "cta": {
+      "encyclopedia": "Enciclopedia",
+      "education": "Aprende",
+      "expert": "Experto"
+    },
+    "loading": {
+      "upload": "Subiendo fotos",
+      "analyze": "Analizando",
+      "apply_policy": "Aplicando política de calidad",
+      "hint": "Etapas reales del envío — sin porcentaje de modelo inventado.",
+      "stages_label": "Etapas de identificación",
+      "aria_label": "Identificación en curso"
+    }
   }
 }

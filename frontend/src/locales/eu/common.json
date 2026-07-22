@@ -82,7 +82,7 @@
   "identify": {
     "title": "Perretxikoa identifikatu",
     "subtitle": "Igo hainbat ikuspegitako argazkiak identifikazio fidagarriago baterako",
-    "wizardTitle": "4 ikuspegiko gida",
+    "wizardTitle": "Lau ikuspegi landa",
     "views": {
       "gills": "Orriak / poroak",
       "front": "Aurrealdea / txapela",
@@ -110,7 +110,25 @@
       "detail": "🔍"
     },
     "takePhoto": "Argazkia atera",
-    "uploadPhotos": "Argazkiak igo"
+    "uploadPhotos": "Argazkiak igo",
+    "wizardSubtitle": "Orriak, profila, habitata eta xehetasuna. Osatu kritikoak aztertu aurretik.",
+    "wizardAriaLabel": "Ikuspegi anitzeko gida-harrapaketa",
+    "progressAria": "Aurrerapena {{filled}} / {{total}}",
+    "progressCount": "{{filled}}/{{total}}",
+    "progressViewsLabel": "ikuspegi",
+    "missingCritical": "kritikoak falta: {{views}}",
+    "badgeCritical": "kritikoa",
+    "badgeOptional": "aukerakoa",
+    "gallery": "Galeria",
+    "camera": "Kamera",
+    "remove": "Kendu",
+    "viewAlt": "Ikuspegia {{view}}",
+    "readiness": {
+      "missing_habitat": "Habitata falta da: ebidentzia ekologikoa hobetzen du (gomendatua).",
+      "missing_detail": "Oin/eraztun/volva xehetasuna falta: lookalike nahasketa murrizten du.",
+      "missing_required": "Ikuspegi kritikoak falta: {{views}}. Abisuarekin bidali dezakezu, baina open-set-ek errefusatu dezake.",
+      "hard_blocked": "Modu zorrotza: gehitu ikuspegi kritikoak (orriak eta aurrealdea) aztertu aurretik."
+    }
   },
   "empty": {
     "defaultTitle": "Ezer ez hemen",
@@ -118,7 +136,26 @@
   },
   "error": {
     "defaultTitle": "Zerbait gaizki atera da",
-    "defaultDescription": "Saiatu berriro une batzuk barru."
+    "defaultDescription": "Saiatu berriro une batzuk barru.",
+    "networkTitle": "Konexiorik ez",
+    "network": "Ezin izan da zerbitzariarekin harremanetan jarri. Egiaztatu sarea edo backend-a martxan dagoela.",
+    "timeoutTitle": "Denbora-muga gainditu da",
+    "timeout": "Identifikazioak luzeegi hartu du. Saiatu argazki gutxiagorekin edo berriro saiatu.",
+    "viewTypesTitle": "Ikuspegi baliogabeak",
+    "viewTypes": "Ikuspegi etiketak ez dira baliozkoak. Erabili soilik: gills, front, habitat, detail.",
+    "badRequestTitle": "Eskaera baliogabea",
+    "badRequest": "Zerbitzariak eskaera baztertu du. Egiaztatu argazkiak eta saiatu berriro.",
+    "unauthorizedTitle": "Baimenik gabe",
+    "unauthorized": "Ez duzu identifikatzeko baimenik. Egiaztatu API gakoa.",
+    "rateLimitedTitle": "Eskaera gehiegi",
+    "rateLimited": "Erabilera-muga gainditu duzu. Itxaron une bat eta saiatu berriro.",
+    "clientTitle": "Eskaera errorea",
+    "client": "Eskaera ezin izan da osatu (bezeroaren errorea).",
+    "serverTitle": "Zerbitzari errorea",
+    "server": "Zerbitzariak huts egin du identifikazioa prozesatzean. Saiatu berriro une batzuk barru.",
+    "retry": "Saiatu berriro",
+    "dismiss": "Ulertuta",
+    "detail": "Xehetasuna"
   },
   "share": {
     "title": "VisionSetil emaitza",
@@ -173,12 +210,17 @@
     "humanReviewTitle": "Giza berrikuspena gomendatzen da",
     "humanReviewBody": "Kasu honek konfiantza baxua du. Aditu batek berrikusi beharko luke.",
     "predictions": "Iragarpenak",
+    "outOfCatalog": "Katalogotik kanpo",
+    "outOfCatalogHint": "Ereduak taxon hau iradokitzen du, baina ez dago app-aren katalogoan (fitxarik edo media kuraturik gabe).",
     "dangerTitle": "ESPEZIE ARRISKUTSUA DETEKTATU DA",
     "dangerBody": "Bat-etortze nagusia {{category}} kategorian dago. Mantendu haur eta maskotetatik urrun.",
     "lookalikesTitle": "Antzeko espezie arriskutsuak:",
     "qualityTitle": "Irudiaren kalitate oharrak:",
     "missingEvidenceTitle": "Identifikazioa hobetzeko:",
     "questionsTitle": "Emaitza hobetzeko galderak:",
+    "evidencePanelTitle": "Froga eta galderak",
+    "addViewCta": "Ikuspegia gehitu",
+    "addViewCtaHint": "Joan multi-ikuspegi laguntzailearen zirrikira",
     "feedbackQuestion": "Identifikazio hau zuzena da?",
     "feedbackYes": "Bai",
     "feedbackNo": "Ez",
@@ -232,5 +274,51 @@
   "education": {
     "title": "Mikologia ikasi",
     "subtitle": "Guies de camp amb seguretat"
+  },
+  "honesty": {
+    "mode": {
+      "blocked": "Identifikazioa blokeatuta: modeloa atalasearen azpitik",
+      "mock": "Demo modua — landa-pisurik gabe",
+      "real": "Zuzeneko modeloa — orientazioa soilik"
+    },
+    "gate": {
+      "no_metrics": "Ez dago modeloaren metrikarik diskoan",
+      "map_below": "MAP@3 gutxieneko atalasearen azpitik",
+      "deadly_below": "Espezie hilgarrien recall-a atalasearen azpitik",
+      "gates_passed": "Kalitate-atalaseak gainditu dira",
+      "gate_disabled": "Kalitate-gate desgaituta (garapenerako soilik)"
+    },
+    "preflight": {
+      "offline": "API ez dago erabilgarri. Ezin da orain identifikatu.",
+      "blocked": "Espezie-identifikazioa ez dago baimenduta: modeloak ez du kalitate-atalasea gainditzen.",
+      "mock": "Demo modua: demostrazio-iragarpenak, ez landa-identifikazioa.",
+      "real": "Zuzeneko modeloa. Identifikazioa orientagarria soilik.",
+      "metrics_warning": "Modeloaren metrikak atalasearen azpitik (gate desgaituta). Konfiantza ezkutatuta dago.",
+      "submit_offline": "Ez dago APIaren sare-erantzunik. Konektatu backend-a argazkiak bidaltzeko.",
+      "submit_offline_empty": "APIak erantzun du, baina readiness payload erabilgarririk gabe (adib. 503). Identifikazioa desgaituta backend-a prest egon arte.",
+      "retry": "Saiatu berriro",
+      "retrying": "Egiaztatzen…",
+      "unknown": "Modeloaren egoera ezezaguna. Identifikazioa orientagarria soilik."
+    },
+    "decision": {
+      "rejected_open_set": "Modeloak abstenitu egiten da (ziurgabetasuna / open-set)",
+      "rejected_gate": "Identifikazioa modeloaren kalitate-atalaseak blokeatu du"
+    },
+    "confidence_hidden": "Konfiantza ez dago erabilgarri modu honetan",
+    "educational_blocked_title": "Identifikazioa ez dago erabilgarri",
+    "educational_blocked_body": "Uneko modeloak ez du espezieak identifikatzeko kalitate-atalasea gainditzen. Erabili entziklopedia eta kontsultatu mikologo aditu bati. App hau orientagarria eta hezigarria da soilik.",
+    "cta": {
+      "encyclopedia": "Entziklopedia",
+      "education": "Ikasi",
+      "expert": "Aditua"
+    },
+    "loading": {
+      "upload": "Argazkiak igotzen",
+      "analyze": "Analizatzen",
+      "apply_policy": "Kalitate-politika aplikatzen",
+      "hint": "Eskaeraren benetako etapak — asmatutako modelo-ehunekorik gabe.",
+      "stages_label": "Identifikazio-etapak",
+      "aria_label": "Identifikazioa abian"
+    }
   }
 }

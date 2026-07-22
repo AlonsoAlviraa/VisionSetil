@@ -1,6 +1,8 @@
 from datetime import date, datetime
+from enum import Enum
+from typing import Literal, Self
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 class ObservationCreate(BaseModel):
@@ -219,6 +221,67 @@ class ImageUploadResponse(BaseModel):
 # ─── Simple classification schema (for the /classify convenience endpoint) ────
 
 
+class ClassifyMode(str, Enum):
+    """Product honesty mode (D-B1). Independent of is_mock_stack (stack truth)."""
+
+    real = "real"
+    mock = "mock"
+    blocked = "blocked"
+
+
+class QualityGatePayload(BaseModel):
+    """Dual-signal quality gate (D-B15): metrics_acceptable vs species_id_allowed.
+
+    - metrics_acceptable: raw MAP/deadly thresholds only — never forced by disable
+    - species_id_allowed: serve policy (respects block_enabled)
+    - verdict: tracks metrics only (ACCEPTABLE/UNACCEPTABLE), not gate-disable bypass
+    - metrics_path: always full path (D-B23), never basename-only
+    """
+
+    species_id_allowed: bool
+    metrics_acceptable: bool
+    block_enabled: bool
+    reason: str
+    reason_code: str = Field(
+        description=(
+            "Stable machine code: no_metrics | map_below | deadly_below | "
+            "gates_passed | gate_disabled | unset"
+        ),
+    )
+    test_map_at_3: float | None = None
+    safety_recall_deadly: float | None = None
+    min_map_at_3: float = 0.20
+    min_deadly_recall: float = 0.90
+    metrics_path: str | None = None  # full path always (D-B23)
+    version: str | None = None
+    verdict: Literal["ACCEPTABLE", "UNACCEPTABLE"]
+
+    @model_validator(mode="after")
+    def _verdict_tracks_metrics_acceptable(self) -> Self:
+        """D-B15: verdict is metrics-only; never forced ACCEPTABLE by policy/disable."""
+        expected: Literal["ACCEPTABLE", "UNACCEPTABLE"] = (
+            "ACCEPTABLE" if self.metrics_acceptable else "UNACCEPTABLE"
+        )
+        if self.verdict != expected:
+            self.verdict = expected
+        return self
+
+
+def _fail_closed_quality_gate() -> QualityGatePayload:
+    """Fail-closed schema default for incomplete constructors/tests only.
+
+    Live mapper (`_map_to_simple`) always overwrites with dual-signal gate status.
+    """
+    return QualityGatePayload(
+        species_id_allowed=False,
+        metrics_acceptable=False,
+        block_enabled=True,
+        reason="unset_fail_closed",
+        reason_code="unset",
+        verdict="UNACCEPTABLE",
+    )
+
+
 class SimpleSpeciesPrediction(BaseModel):
     """Simplified species prediction for the quick-classify endpoint."""
 
@@ -226,6 +289,12 @@ class SimpleSpeciesPrediction(BaseModel):
     common_name: str | None = None
     confidence: float
     edibility: str | None = None
+    slug: str | None = None
+    risk_level: str | None = None
+    image_card_url: str | None = None
+    image_thumb_url: str | None = None
+    # Default false until hydrate succeeds (D-B21); no out_of_catalog twin
+    in_catalog: bool = False
 
 
 class SimpleClassificationResult(BaseModel):
@@ -250,6 +319,27 @@ class SimpleClassificationResult(BaseModel):
     # ML transparency (optional for older clients)
     confidence_margin: float | None = None
     view_coverage: list[str] = Field(default_factory=list)
+    # Stack truth (weights/backends); independent of mode (D-B1) — never derived from mode
     is_mock_stack: bool = True
     ml_notes: list[str] = Field(default_factory=list)
+    # Phase B honesty (D-B1, D-B2, D-B5, D-B22). Mapper (/classify `_map_to_simple`)
+    # always sets mode + quality_gate explicitly from dual-signal gate + stack truth.
+    # Fail-closed defaults below are only for incomplete test constructors — not
+    # product truth on live responses (B-03 stops stripping quality_gate).
+    mode: ClassifyMode = ClassifyMode.blocked
+    quality_gate: QualityGatePayload = Field(default_factory=_fail_closed_quality_gate)
+    locale: str = "es"
+
+
+class JobResultEnvelope(BaseModel):
+    """Async job result dual-write envelope (B-14 / D-B18 / D-B24).
+
+    Product clients must read ``simple`` only (always quality-gated via
+    ``classify_to_simple``). ``raw`` is the full ClassificationResponse for
+    admin/debug and is kept indefinitely (no deprecation).
+    """
+
+    schema_version: Literal[2] = 2
+    simple: SimpleClassificationResult
+    raw: dict | None = None
 

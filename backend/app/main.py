@@ -25,7 +25,7 @@ from app.api.routes_metrics import router as metrics_router
 from app.api.routes_models import router as models_router
 from app.api.routes_observations import router as observations_router
 from app.api.routes_species import router as species_router
-from app.core.config import get_settings
+from app.core.config import get_settings, warn_if_quality_gate_block_disabled
 from app.core.logging import configure_logging
 from app.db.database import init_db
 from app.middleware.api_key_auth import APIKeyMiddleware
@@ -40,6 +40,9 @@ settings.upload_dir.mkdir(parents=True, exist_ok=True)
 Path(settings.species_media_root).mkdir(parents=True, exist_ok=True)
 init_db()
 ensure_seed_data()
+
+# B-19 / D-B3: structured prod guardrail if quality gate is fail-open.
+warn_if_quality_gate_block_disabled()
 
 # Validate CDN host allowlist at boot (PR-03)
 if settings.species_media_cdn_base:
@@ -74,8 +77,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Rate limiting (Sprint N+2)
-# Exempt public media/species GETs so encyclopedia grids (N cards × variants) don't trip 60/min.
+# Rate limiting (Sprint N+2 + B-17 preflight)
+# Exempt:
+#   - public media/species GETs so encyclopedia grids (N cards × variants) don't trip 60/min
+#   - Identify preflight cheap paths (/readyz, /models/quality-gate): FE polls on mount + every 60s;
+#     multi-tab (≈5) must not 429 status probes. Prefer full exempt over a high bucket (≥120/min).
 _rate_limit_requests = int(os.getenv("RATE_LIMIT_REQUESTS", "60"))
 _rate_limit_window = int(os.getenv("RATE_LIMIT_WINDOW_SECONDS", "60"))
 app.add_middleware(
@@ -84,12 +90,15 @@ app.add_middleware(
     window_seconds=_rate_limit_window,
     exempt_paths={
         "/health",
+        "/healthz",
         "/readyz",
         "/docs",
         "/openapi.json",
         "/redoc",
         "/media",
         "/species",
+        # B-17: Identify preflight (mount + 60s poll); cached metrics, no GPU
+        "/models/quality-gate",
     },
 )
 

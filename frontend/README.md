@@ -53,6 +53,27 @@ npm run build
 Specs in `e2e/`:
 - catalog count ≥ 319 on home + encyclopedia
 - identify coach visible on `/identificar`
+- media smoke for species/placeholder assets
+- **honesty (Phase B):**
+  - `identify-blocked.spec.ts` — mocked `mode=blocked` (no live backend)
+  - `identify-real.spec.ts` — **live real path**; conditional skip unless gate pass
+
+#### Real identify path (B-50) — conditional skip
+
+`identify-real.spec.ts` hits the live API via Vite `/api` → FastAPI `:8000`.
+It probes `GET /api/readyz` (and falls back to `/api/models/quality-gate`) and
+**skips** (does not fail) unless **both**:
+
+1. `weights_present === true`
+2. `quality_gate.metrics_acceptable === true`
+
+Default CI and local runs without packaged field weights / acceptable metrics
+will report the test as **skipped**. To exercise the real path:
+
+1. Start backend with a multi-view checkpoint + sibling metrics that pass the gate  
+   (see `docs/ML_WEIGHTS_RUNBOOK.md`, `docs/QUALITY_GATE.md`)
+2. `npm run dev` (or let Playwright start Vite)
+3. `npx playwright test identify-real.spec.ts`
 
 ```bash
 npx playwright install chromium

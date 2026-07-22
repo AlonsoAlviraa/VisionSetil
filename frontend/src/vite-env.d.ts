@@ -10,6 +10,8 @@ interface ImportMetaEnv {
   readonly VITE_FEATURE_GUIDED_IDENTIFY?: string
   readonly VITE_FEATURE_OFFLINE_PACK?: string
   readonly VITE_FEATURE_FAVORITES?: string
+  /** B-46: optional async classify + polling (default off). */
+  readonly VITE_FEATURE_ASYNC_CLASSIFY?: string
 }
 
 interface ImportMeta {

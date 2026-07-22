@@ -11,6 +11,9 @@ Design goals
 * **Graceful degradation** – if the background worker fails, the job status
   is updated to ``failed`` with the error message.
 * **Thread-safe** – each worker thread uses its own ``SessionLocal()``.
+* **Safety parity (B-14)** – worker uses the same ``classify_to_simple`` gate
+  as sync ``POST /classify``; job.result is dual-write envelope
+  ``{schema_version:2, simple, raw}`` (raw permanent per D-B18/D-B24).
 """
 
 from __future__ import annotations
@@ -25,6 +28,10 @@ from sqlalchemy.orm import Session
 
 from app.db.database import SessionLocal
 from app.db.models import ClassificationJob, Observation
+from app.services.classify_simple import (
+    build_job_result_envelope,
+    classify_to_simple_with_raw,
+)
 from app.services.multi_view_classifier import get_multi_view_classifier
 
 logger = logging.getLogger(__name__)
@@ -52,10 +59,20 @@ def get_job(db: Session, job_id: str) -> ClassificationJob | None:
     return db.get(ClassificationJob, job_id)
 
 
-def run_classification_job(job_id: str) -> None:
+def run_classification_job(
+    job_id: str,
+    *,
+    view_types: list[str] | None = None,
+    locale: str = "es",
+) -> None:
     """Worker function executed in a background thread.
 
-    Opens its own DB session, runs the classifier, and updates the job row.
+    Opens its own DB session, runs the classifier via shared
+    ``classify_to_simple`` (gate + mode + locale), and dual-writes the job
+    result envelope ``{schema_version: 2, simple, raw}``.
+
+    ``view_types`` may remain ``None`` temporarily (auto-label); product FE
+    must read ``simple`` only — never ungated ``raw`` predictions.
     """
     db = SessionLocal()
     try:
@@ -80,27 +97,37 @@ def run_classification_job(job_id: str) -> None:
 
             images = list(observation.images)
             classifier = get_multi_view_classifier()
+            request_id = f"job-{job_id[:12]}"
 
-            if (
-                hasattr(classifier, "classify")
-                and "view_types" in classifier.classify.__code__.co_varnames
-            ):
-                result = classifier.classify(observation, images, view_types=None)
-            else:
-                result = classifier.classify(observation, images)
+            # B-14: same classify_to_simple path as sync (gate+mode). view_types=None OK for now.
+            simple, raw = classify_to_simple_with_raw(
+                observation=observation,
+                images=images,
+                view_types=None,
+                locale="es",
+                request_id=request_id,
+                classifier=classifier,
+                loaded_weights_path=getattr(classifier, "resolved_weights_path", None),
+            )
 
-            # Serialize result
-            job.result = _serialize_result(result)
+            # Dual-write envelope (D-B18/D-B24): simple always gated; raw permanent
+            envelope = build_job_result_envelope(simple, raw)
+            job.result = envelope
             job.status = "completed"
             job.completed_at = datetime.now(UTC)
 
-            # Also store on the observation
-            observation.last_classification = job.result
+            # Product-facing simple on observation (parity with POST /classify)
+            observation.last_classification = envelope["simple"]
             db.add(job)
             db.add(observation)
             db.commit()
 
-            logger.info("Job %s completed successfully", job_id)
+            logger.info(
+                "Job %s completed (mode=%s, species_id_allowed=%s)",
+                job_id,
+                getattr(simple.mode, "value", simple.mode),
+                bool(simple.quality_gate and simple.quality_gate.species_id_allowed),
+            )
 
         except Exception as exc:
             logger.exception("Job %s failed", job_id)
@@ -112,15 +139,6 @@ def run_classification_job(job_id: str) -> None:
 
     finally:
         db.close()
-
-
-def _serialize_result(result: Any) -> dict[str, Any]:
-    """Serialize a ClassificationResponse (or similar) to a dict for DB storage."""
-    if hasattr(result, "model_dump"):
-        return result.model_dump()
-    if isinstance(result, dict):
-        return result
-    return {"raw": str(result)}
 
 
 def get_queue_stats(db: Session) -> dict[str, Any]:

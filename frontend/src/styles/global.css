@@ -1107,6 +1107,23 @@ button { font-family: inherit; }
   animation: shake 0.4s ease;
 }
 
+.error-banner__body {
+  flex: 1 1 12rem;
+  min-width: 0;
+}
+
+.error-banner__body p {
+  margin: 0.35rem 0 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.error-banner__detail {
+  font-size: 0.8rem !important;
+  opacity: 0.9;
+  word-break: break-word;
+}
+
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
   25% { transform: translateX(-6px); }
@@ -1364,6 +1381,15 @@ button { font-family: inherit; }
 .prediction-thumb {
   flex-shrink: 0;
   margin-top: 0.1rem;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #e8e2d6;
+  box-shadow: 0 1px 4px rgba(12, 20, 16, 0.08);
+  border: 1px solid var(--line, var(--border));
+}
+
+.prediction-thumb .species-image {
+  min-height: 0;
 }
 
 .rank-badge {
@@ -1443,6 +1469,36 @@ button { font-family: inherit; }
   background: var(--surface-alt);
   color: var(--text-muted);
   border: 1px solid var(--border);
+}
+
+/* B-40 / D-B21: honest out-of-catalog badge on predictions */
+.catalog-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 100px;
+  width: fit-content;
+}
+
+.catalog-badge--out {
+  background: color-mix(in srgb, #a16207 12%, var(--surface, #fff));
+  border: 1px solid color-mix(in srgb, #a16207 35%, var(--border, #e2e8f0));
+  color: #854d0e;
+}
+
+.prediction-item--out-of-catalog {
+  border-left: 3px solid color-mix(in srgb, #a16207 55%, transparent);
+}
+
+[data-theme='dark'] .catalog-badge--out {
+  background: color-mix(in srgb, #fbbf24 12%, var(--surface, #1e293b));
+  border-color: color-mix(in srgb, #fbbf24 30%, var(--border, #334155));
+  color: #fbbf24;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════

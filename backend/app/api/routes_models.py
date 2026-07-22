@@ -4,10 +4,11 @@ from __future__ import annotations
 
 from fastapi import APIRouter
 
+from app.core.config import settings
+from app.db.schemas import QualityGatePayload
 from app.ml.model_registry import get_model_status
 from app.ml.training_metrics import describe_training_metrics
 from app.ml.weight_discovery import describe_weight_discovery
-from app.core.config import settings
 
 router = APIRouter(tags=["models"])
 
@@ -85,12 +86,45 @@ def models_data_sources() -> dict:
     }
 
 
-@router.get("/models/quality-gate")
-def models_quality_gate() -> dict:
-    """Hard product gate: is species ID allowed given on-disk metrics?"""
-    from app.ml.quality_gate import quality_gate_status
+@router.get("/models/quality-gate", response_model=QualityGatePayload)
+def models_quality_gate() -> QualityGatePayload:
+    """Dual-signal product quality gate for preflight / dashboard (D-B15).
 
-    return quality_gate_status()
+    Stable ``QualityGatePayload``:
+    - ``metrics_acceptable`` — raw MAP@3 / deadly recall vs thresholds (never
+      forced by disable)
+    - ``species_id_allowed`` — serve policy (respects ``block_enabled``)
+    - ``reason_code`` — machine code: no_metrics | map_below | deadly_below |
+      gates_passed | gate_disabled
+    - ``verdict`` — tracks **metrics only** (ACCEPTABLE/UNACCEPTABLE)
+
+    No GPU / weight load — metrics read is cached. Safe for Identify preflight
+    polling.
+
+    B-17 rate limits: this path is **rate-limit exempt** (cheap status). The
+    Identify client polls on mount and every **60s** (``PREFLIGHT_POLL_MS``);
+    multi-tab traffic must not compete with the general 60/min bucket. Other
+    ``/models/*`` routes remain rate-limited.
+    """
+    from app.ml.quality_gate import quality_gate_payload
+
+    return quality_gate_payload()
+
+
+@router.get("/models/catalog-join")
+def models_catalog_join() -> dict:
+    """label2idx ↔ catalog_v2 join coverage for ML dashboard tile (B-43).
+
+    Reads the committed join report from B-39
+    (``data/species_catalog/species_index_join_report.json``). Primary field
+    ``coverage_pct`` is % of model taxa present in the product catalog
+    (allowlist). Incomplete coverage is **informational** (D-B25) — never a
+    serve / quality-gate block. No GPU.
+    """
+    from app.ml.species_index_join import catalog_join_payload
+
+    repo_root = getattr(settings, "repo_root", None) or settings.base_dir.parent
+    return catalog_join_payload(repo_root=repo_root)
 
 
 @router.get("/models/industrial-progress")
@@ -111,10 +145,11 @@ def models_industrial_progress() -> dict:
         data = json.loads(progress_path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
         return {"available": False, "error": str(exc)}
-    from app.ml.quality_gate import quality_gate_status
+    from app.ml.quality_gate import quality_gate_payload
 
     data["available"] = True
-    data["quality_gate_live"] = quality_gate_status()
+    # Same dual-signal shape as GET /models/quality-gate
+    data["quality_gate_live"] = quality_gate_payload().model_dump()
     data["policy"] = "orientation_only_never_consume"
     return data
 

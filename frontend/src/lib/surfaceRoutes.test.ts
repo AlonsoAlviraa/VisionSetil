@@ -88,4 +88,13 @@ describe('product surfaces routes', () => {
     expect(read('components/SeasonRadar.tsx')).toMatch(/SeasonRadar/)
     expect(read('components/ResultCard.tsx')).toMatch(/handleExpertHandoff|buildExpertHandoff/)
   })
+
+  it('B-42: deadly/poisonous join visibility on real results (RiskChip boost + resolveJoinRisk)', () => {
+    expect(read('lib/riskLabels.ts')).toMatch(/resolveJoinRisk/)
+    expect(read('lib/riskLabels.ts')).toMatch(/isSevereRisk/)
+    expect(read('components/RiskChip.tsx')).toMatch(/risk-chip--boost|boost/)
+    expect(read('components/ResultCard.tsx')).toMatch(/resolveJoinRisk/)
+    expect(read('components/ResultCard.tsx')).toMatch(/boostJoinRisk|mode === 'real'/)
+    expect(read('components/ResultCard.tsx')).toMatch(/prediction-item--join-severe|risk-chip--boost|boost=/)
+  })
 })

@@ -1,17 +1,22 @@
 /**
  * Field notebook + observation history (S6 enrichment: notes, tags, JSON export).
+ * B-38: mode/gate/locale on entries + optional filter by honesty mode.
  */
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   clearHistoryStore,
   entriesNeedingReview,
+  entryMode,
   exportHistoryJson,
+  filterHistoryByMode,
+  historyModeLabelEs,
   loadHistory,
   parseTagsInput,
   saveNotebookFields,
   summarizeHistory,
   type HistoryEntry,
+  type HistoryModeFilter,
 } from '../lib/observationHistory'
 import { EmptyState } from '../components/EmptyState'
 import { SpeciesNameBlock } from '../components/SpeciesNameBlock'
@@ -25,12 +30,16 @@ import {
   saveHandoffDraft,
 } from '../lib/expertHandoff'
 import { decisionLabelEs } from '../lib/decisionLabels'
+import type { ClassifyMode } from '../api/types'
+
+const MODE_FILTERS: HistoryModeFilter[] = ['all', 'real', 'mock', 'blocked']
 
 export function HistoryPage() {
   const [entries, setEntries] = useState<HistoryEntry[]>([])
   const [editingId, setEditingId] = useState<string | null>(null)
   const [noteDraft, setNoteDraft] = useState('')
   const [tagsDraft, setTagsDraft] = useState('')
+  const [modeFilter, setModeFilter] = useState<HistoryModeFilter>('all')
 
   useEffect(() => {
     setEntries(loadHistory())
@@ -38,6 +47,10 @@ export function HistoryPage() {
 
   const summary = useMemo(() => summarizeHistory(entries), [entries])
   const needsReview = useMemo(() => entriesNeedingReview(entries), [entries])
+  const visible = useMemo(
+    () => filterHistoryByMode(entries, modeFilter),
+    [entries, modeFilter],
+  )
 
   const clear = () => {
     clearHistoryStore()
@@ -74,6 +87,11 @@ export function HistoryPage() {
     const draft = buildHandoffFromHistory(e, e.notes || '')
     saveHandoffDraft(draft)
     window.location.href = expertReviewPath(draft.id)
+  }
+
+  const modeCount = (m: HistoryModeFilter): number => {
+    if (m === 'all') return summary.total
+    return summary.by_mode[m as ClassifyMode] ?? 0
   }
 
   return (
@@ -133,6 +151,27 @@ export function HistoryPage() {
         </div>
       </div>
 
+      {entries.length > 0 && (
+        <div
+          className="history-mode-filter"
+          role="group"
+          aria-label="Filtrar por modo de identificación"
+        >
+          {MODE_FILTERS.map((m) => (
+            <button
+              key={m}
+              type="button"
+              className={`history-mode-filter__btn${modeFilter === m ? ' is-active' : ''}`}
+              aria-pressed={modeFilter === m}
+              onClick={() => setModeFilter(m)}
+            >
+              {historyModeLabelEs(m)}
+              <span className="history-mode-filter__count">{modeCount(m)}</span>
+            </button>
+          ))}
+        </div>
+      )}
+
       {entries.length === 0 ? (
         <EmptyState
           title="Sin observaciones aún"
@@ -140,13 +179,22 @@ export function HistoryPage() {
           actionLabel="Identificar seta"
           actionTo="/identificar"
         />
+      ) : visible.length === 0 ? (
+        <EmptyState
+          title="Sin entradas en este modo"
+          description={`No hay observaciones con modo «${historyModeLabelEs(modeFilter)}». Prueba otro filtro.`}
+          actionLabel="Ver todas"
+          onAction={() => setModeFilter('all')}
+        />
       ) : (
         <div className="history-card-grid">
-          {entries.map((e) => {
+          {visible.map((e) => {
             const top = e.result.predictions?.[0]
             const look = rankLookalikes(e.result.dangerous_lookalikes || [])
             const topRisk = look[0] ? getRiskMeta(look[0].risk_label) : null
             const isEditing = editingId === e.id
+            const mode = entryMode(e)
+            const gate = e.gate_summary
             return (
               <article key={e.id} className="history-card-atelier">
                 {e.previews[0] && (
@@ -161,9 +209,26 @@ export function HistoryPage() {
                   <p className="history-card-atelier__time">
                     {new Date(e.timestamp).toLocaleString()}
                   </p>
+                  <p className="history-card-atelier__meta">
+                    <span className={`history-mode-chip history-mode-chip--${mode}`}>
+                      {historyModeLabelEs(mode)}
+                    </span>
+                    {e.locale ? (
+                      <span className="history-card-atelier__locale">{e.locale.toUpperCase()}</span>
+                    ) : null}
+                  </p>
                   <p className="history-card-atelier__decision">
                     Resultado: <strong>{decisionLabelEs(e.result.decision)}</strong>
                   </p>
+                  {gate && (
+                    <p className="history-card-atelier__gate">
+                      Gate:{' '}
+                      {gate.metrics_acceptable ? 'métricas OK' : 'métricas bajas'}
+                      {' · '}
+                      ID {gate.species_id_allowed ? 'permitido' : 'bloqueado'}
+                      {gate.reason_code ? ` (${gate.reason_code})` : ''}
+                    </p>
+                  )}
                   {top && (
                     <SpeciesNameBlock
                       taxon={top.species}

@@ -1,3 +1,21 @@
+"""Observation-scoped classification routes (admin / internal / eval).
+
+Product policy (Phase B D-B17 / B-47)
+-------------------------------------
+**Identify product** (frontend ``/identificar`` and public clients) uses **only**
+``POST /classify`` (and optional async simple job result). See
+``routes_classify.py`` for the honesty contract
+(``SimpleClassificationResult``: ``mode``, ``quality_gate``, ``locale``, …).
+
+These observation routes return ``ClassificationResponse`` (candidates, open_set,
+human_review, trace) — a **different schema family**. They are **admin / internal
+/ eval**, not the Identify product path.
+
+Do **not** sprinkle fake honesty fields onto advanced responses to “match”
+Identify; optional post-MVP wrapper mapping advanced → simple is out of Phase B
+critical path.
+"""
+
 import logging
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -31,10 +49,22 @@ router = APIRouter()
 logger = logging.getLogger(__name__)
 
 
-@router.post("/observations/{observation_id}/classify")
+@router.post(
+    "/observations/{observation_id}/classify",
+    summary="Classify observation (legacy mock; not Identify product)",
+    response_description=(
+        "ClassificationResponse from MockMushroomClassifier. Not the Identify "
+        "product path — use POST /classify for SimpleClassificationResult."
+    ),
+)
 def classify_observation(
     observation_id: int, db: Session = Depends(get_db)
 ) -> ClassificationResponse:
+    """Legacy mock classifier on a stored observation.
+
+    Admin/dev/legacy only. **Not** the Identify product endpoint (D-B17).
+    Product Identify must call ``POST /classify``.
+    """
     observation = db.get(Observation, observation_id)
     if observation is None:
         raise HTTPException(status_code=404, detail="Observation not found")
@@ -47,11 +77,29 @@ def classify_observation(
 
 
 @router.post(
-    "/observations/{observation_id}/classify-advanced", response_model=ClassificationResponse
+    "/observations/{observation_id}/classify-advanced",
+    response_model=ClassificationResponse,
+    summary="Advanced classify (admin/internal; not Identify product)",
+    response_description=(
+        "Full ClassificationResponse (candidates, open_set, human_review, trace). "
+        "Admin/internal/eval only. Identify product uses POST /classify only "
+        "(SimpleClassificationResult honesty contract)."
+    ),
 )
 def classify_observation_advanced(
     observation_id: int, db: Session = Depends(get_db)
 ) -> ClassificationResponse:
+    """Run the full multi-view pipeline on a stored observation.
+
+    **Product policy (D-B17 / B-47):** this endpoint is **admin / internal / eval**.
+    It returns ``ClassificationResponse`` — not the Identify honesty contract.
+
+    * **Identify product path:** ``POST /classify`` (and optional async simple).
+    * **Do not** call this from the Identify FE or product clients.
+    * **Do not** add fake ``mode`` / ``quality_gate`` fields here in Phase B;
+      optional advanced→simple wrapper is post-MVP, out of critical path.
+    * Eval harnesses may use this for full-trace inspection.
+    """
     observation = db.get(Observation, observation_id)
     if observation is None:
         raise HTTPException(status_code=404, detail="Observation not found")

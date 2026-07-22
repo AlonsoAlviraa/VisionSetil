@@ -1,30 +1,47 @@
 /** API client for VisionSetil backend. */
 
 import axios from 'axios'
-import type { ClassificationResult, ObservationMetadata } from './types'
+import {
+  DEFAULT_JOB_POLL_MS,
+  DEFAULT_JOB_TIMEOUT_MS,
+  pollJobUntilSimple,
+} from '../lib/asyncClassify'
+import type {
+  ClassificationJob,
+  ClassificationResult,
+  JobResultEnvelope,
+  ObservationMetadata,
+} from './types'
+
+export {
+  classifyApiError,
+  extractServerDetail,
+  isViewTypesValidationDetail,
+  type ApiErrorKind,
+  type ClassifiedApiError,
+} from './classifyErrors'
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api'
 const API_KEY = import.meta.env.VITE_API_KEY || ''
 
+/** Sync classify timeout (ms). Surfaced as taxonomy kind `timeout` when exceeded. */
+export const CLASSIFY_TIMEOUT_MS = 60_000
+
 const client = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 60000,
+  timeout: CLASSIFY_TIMEOUT_MS,
   headers: {
     ...(API_KEY && { 'X-API-Key': API_KEY }),
   },
 })
 
-/**
- * Classify one or more images against the VisionSetil backend.
- *
- * Supports optional observation metadata (habitat, substrate, etc.) which
- * improves classification accuracy through multi-modal fusion.
- */
-export async function classifyImages(
+/** Build multipart body shared by sync /classify and async /classify/async. */
+export function buildClassifyFormData(
   files: File[],
   metadata?: ObservationMetadata,
   viewTypes?: string[],
-): Promise<ClassificationResult> {
+  locale?: string,
+): FormData {
   const formData = new FormData()
 
   for (const file of files) {
@@ -34,6 +51,10 @@ export async function classifyImages(
   if (viewTypes && viewTypes.length > 0) {
     // Backend expects comma-separated canonical views (gills,front,habitat,detail).
     formData.append('view_types', viewTypes.join(','))
+  }
+
+  if (locale) {
+    formData.append('locale', locale)
   }
 
   if (metadata) {
@@ -46,13 +67,41 @@ export async function classifyImages(
     if (metadata.smell) formData.append('smell', metadata.smell)
   }
 
+  return formData
+}
+
+/**
+ * Classify one or more images against the VisionSetil backend (sync).
+ *
+ * Supports optional observation metadata (habitat, substrate, etc.) which
+ * improves classification accuracy through multi-modal fusion.
+ * Optional `locale` (es|ca|eu|en) is echoed by the backend for safety/i18n.
+ */
+export async function classifyImages(
+  files: File[],
+  metadata?: ObservationMetadata,
+  viewTypes?: string[],
+  locale?: string,
+): Promise<ClassificationResult> {
+  const formData = buildClassifyFormData(files, metadata, viewTypes, locale)
+
   const response = await client.post<ClassificationResult>(
     '/classify',
     formData,
     {
       headers: { 'Content-Type': 'multipart/form-data' },
+      onUploadProgress: (event) => {
+        // Real XHR upload completion only — never invent a model %.
+        if (event.total != null && event.total > 0 && event.loaded >= event.total) {
+          markAnalyze()
+        }
+      },
     },
   )
+
+  // Some runtimes omit upload progress; ensure we leave "upload" before policy.
+  markAnalyze()
+  onStage?.('apply_policy')
 
   return response.data
 }
@@ -60,6 +109,98 @@ export async function classifyImages(
 /** Backwards-compatible single-image wrapper. */
 export async function classifyImage(file: File): Promise<ClassificationResult> {
   return classifyImages([file])
+}
+
+/**
+ * Submit images for async classification (POST /classify/async → 202 + job).
+ * Caller should poll status / fetch result (or use {@link classifyImagesAsync}).
+ */
+export async function submitClassifyJob(
+  files: File[],
+  metadata?: ObservationMetadata,
+  viewTypes?: string[],
+  locale?: string,
+): Promise<ClassificationJob> {
+  const formData = buildClassifyFormData(files, metadata, viewTypes, locale)
+
+  const response = await client.post<ClassificationJob>(
+    '/classify/async',
+    formData,
+    {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      // Async accept is fast; keep a modest timeout separate from poll budget.
+      timeout: 60000,
+    },
+  )
+
+  return response.data
+}
+
+/** Poll job status: GET /jobs/{id}. */
+export async function getJobStatus(jobId: string): Promise<ClassificationJob> {
+  const response = await client.get<ClassificationJob>(`/jobs/${jobId}`)
+  return response.data
+}
+
+/**
+ * Fetch dual-write job result envelope: GET /jobs/{id}/result.
+ * Product clients must read `simple` only (D-B18 / D-B24).
+ */
+export async function getJobResult(jobId: string): Promise<JobResultEnvelope> {
+  const response = await client.get<JobResultEnvelope>(`/jobs/${jobId}/result`)
+  return response.data
+}
+
+export type ClassifyAsyncOptions = {
+  intervalMs?: number
+  timeoutMs?: number
+  signal?: AbortSignal
+}
+
+/**
+ * Full async product path (B-46):
+ * POST /classify/async → poll GET /jobs/{id} → GET /jobs/{id}/result → simple.
+ *
+ * Returns the same ClassificationResult shape as sync so ResultModeBanner /
+ * ResultCard honesty path is identical (mode + quality_gate from simple).
+ */
+export async function classifyImagesAsync(
+  files: File[],
+  metadata?: ObservationMetadata,
+  viewTypes?: string[],
+  locale?: string,
+  options?: ClassifyAsyncOptions,
+): Promise<ClassificationResult> {
+  const job = await submitClassifyJob(files, metadata, viewTypes, locale)
+  if (!job?.id) {
+    throw new Error('Async classify did not return a job id')
+  }
+
+  return pollJobUntilSimple(job.id, {
+    getStatus: getJobStatus,
+    getResult: getJobResult,
+    intervalMs: options?.intervalMs ?? DEFAULT_JOB_POLL_MS,
+    timeoutMs: options?.timeoutMs ?? DEFAULT_JOB_TIMEOUT_MS,
+    signal: options?.signal,
+  })
+}
+
+/**
+ * Prefer async when `useAsync` is true; otherwise sync POST /classify.
+ * Never runs sync and async concurrently for the same images.
+ */
+export async function classifyImagesMaybeAsync(
+  files: File[],
+  metadata?: ObservationMetadata,
+  viewTypes?: string[],
+  locale?: string,
+  useAsync = false,
+  options?: ClassifyAsyncOptions,
+): Promise<ClassificationResult> {
+  if (useAsync) {
+    return classifyImagesAsync(files, metadata, viewTypes, locale, options)
+  }
+  return classifyImages(files, metadata, viewTypes, locale)
 }
 
 export async function checkHealth(): Promise<boolean> {

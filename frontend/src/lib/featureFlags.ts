@@ -25,6 +25,12 @@ export const featureFlags = {
   OFFLINE_PACK: envBool('VITE_FEATURE_OFFLINE_PACK', true),
   /** Favorites UI (PR-12) */
   FAVORITES: envBool('VITE_FEATURE_FAVORITES', true),
+  /**
+   * Optional async classify + job polling (B-46).
+   * Default OFF — only enable after job envelope contract is green (B-45).
+   * Product path still uses envelope.simple only (same ResultModeBanner as sync).
+   */
+  ASYNC_CLASSIFY: envBool('VITE_FEATURE_ASYNC_CLASSIFY', false),
 } as const
 
 export type FeatureFlagKey = keyof typeof featureFlags

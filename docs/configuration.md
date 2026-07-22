@@ -55,6 +55,22 @@ cp .env.example .env
 | `OPEN_SET_REJECT_ON_MISSING_CRITICAL_EVIDENCE` | `True` | Reject when required views are missing. |
 | `OPEN_SET_REJECT_ON_DEADLY_LOOKALIKES` | `True` | Reject when a deadly lookalike is near. |
 
+### Runtime environment & quality gate (D-B3 / B-19 / B-23)
+
+| Variable | Default | Description |
+|---|---|---|
+| `ENVIRONMENT` | `development` | Ops environment label. `production` / `prod` enable production guardrails. |
+| `MODEL_MIN_ACCEPTABLE_MAP_AT_3` | `0.20` | Min on-disk test MAP@3 before species ID is allowed. |
+| `MODEL_BLOCK_SPECIES_ID_WHEN_BELOW_GATE` | `True` | **Fail-closed.** When `True`, bad/missing metrics block species ID. |
+
+**Gate disable is dev-only:**
+
+- Default is always fail-closed (`MODEL_BLOCK_SPECIES_ID_WHEN_BELOW_GATE=true`).
+- Setting it `false` is fail-open (species ID allowed despite bad metrics) — **local/dev only**.
+- **B-23:** if `ENVIRONMENT` is `production` or `prod` and the block flag is `false`, `Settings` construction **raises** (`ValidationError`) and the process will not boot.
+- **B-19:** in non-production, a structured warning (`event=quality_gate_block_disabled`) is emitted at boot and on gate evaluation when the block is disabled.
+- Dual signals still apply: disable may set `species_id_allowed=true` but never forces `metrics_acceptable=true` (see `docs/QUALITY_GATE.md`, `docs/ML_WEIGHTS_RUNBOOK.md`).
+
 ### Security / runtime
 
 | Variable | Default | Description |
@@ -64,6 +80,23 @@ cp .env.example .env
 | `LOG_FORMAT` | `text` | `text` (dev) or `json` (production). |
 | `REQUEST_ID_HEADER` | `X-Request-ID` | Header name used for correlation ids. |
 | `READYZ_FAIL_ON_MOCK_MODELS` | `False` | If `True`, `/readyz` returns 503 when all models are mock. |
+
+### Rate limiting
+
+| Variable | Default | Description |
+|---|---|---|
+| `RATE_LIMIT_REQUESTS` | `60` | Max requests per IP per window for the **general** bucket. |
+| `RATE_LIMIT_WINDOW_SECONDS` | `60` | Sliding window size in seconds. |
+| `RATE_LIMIT_CLASSIFY_REQUESTS` | `20` | Stricter budget for `/classify*` only. |
+| `REDIS_URL` | *(empty)* | Optional shared store for multi-instance limits. |
+
+**Exempt paths (no budget):** `/health`, `/healthz`, `/readyz`, `/docs`,
+`/openapi.json`, `/redoc`, `/media`, `/species`, and **`/models/quality-gate`**.
+
+**Identify preflight (B-17):** the FE polls `/readyz` + `/models/quality-gate`
+on mount and every **60s**. Those routes stay exempt so multi-tab use does not
+return 429. Alternative policy if exemption is undesirable: dedicated high
+limit **≥120 req/min/IP** (never the classify bucket).
 
 ## Overriding in tests
 
@@ -78,6 +111,8 @@ get_settings.cache_clear()
 
 ## Production checklist
 
+- [ ] Set `ENVIRONMENT=production` (or `prod`).
+- [ ] Keep `MODEL_BLOCK_SPECIES_ID_WHEN_BELOW_GATE=true` (B-23 refuses otherwise).
 - [ ] Set `CORS_ORIGINS` to the exact frontend origin(s).
 - [ ] Set `LOG_FORMAT=json`.
 - [ ] Set `READYZ_FAIL_ON_MOCK_MODELS=True` once real models are required.

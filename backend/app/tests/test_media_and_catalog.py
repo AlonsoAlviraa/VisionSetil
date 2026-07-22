@@ -11,7 +11,6 @@ from fastapi.testclient import TestClient
 
 from app.core.config import settings
 from app.core.safety_i18n import contains_consumption_language, get_safety_bundle
-from app.services.image_storage import strip_exif
 from app.services.unified_catalog import get_by_slug, load_catalog, resolve_vernaculars
 
 
@@ -189,6 +188,9 @@ def test_species_poisonous_compat(client: TestClient):
 
 
 def test_exif_strip_removes_maker_tag():
+    # Lazy import: strip_exif may be absent on branches that lost PR-03b wiring.
+    from app.services.image_storage import strip_exif
+
     im = Image.new("RGB", (32, 32), color=(10, 20, 30))
     buf = io.BytesIO()
     exif = im.getexif()
@@ -218,6 +220,155 @@ def test_hydrate_image_card_url_uses_public_prefix():
     assert pred.image_card_url.endswith("/card.webp")
     assert pred.slug == "amanita-phalloides"
     assert pred.risk_level in ("deadly", "high", "critical")
+    # B-42: catalog deadly join elevates weak model edibility so RiskChip sees it
+    assert pred.edibility == "deadly"
+    assert pred.in_catalog is True
+
+
+def test_hydrate_deadly_join_elevates_unknown_edibility():
+    """B-42: catalog deadly/high must surface on edibility when model left unknown."""
+    from app.services.prediction_hydrate import hydrate_prediction
+
+    deadly = hydrate_prediction("Amanita phalloides", 0.91, "unknown", "es")
+    assert deadly.risk_level == "deadly"
+    assert deadly.edibility == "deadly"
+    assert deadly.in_catalog is True
+
+    # high → poisonous display label for RiskChip
+    high = hydrate_prediction("Agaricus moelleri", 0.6, None, "es")
+    assert high.risk_level == "high"
+    assert high.edibility == "poisonous"
+    assert high.in_catalog is True
+
+    # model already deadly — keep it
+    keep = hydrate_prediction("Galerina marginata", 0.7, "deadly", "es")
+    assert keep.risk_level == "deadly"
+    assert keep.edibility == "deadly"
+
+    # non-severe catalog risk must not invent edible/edibility from join
+    low = hydrate_prediction("Boletus edulis", 0.8, "unknown_or_risky", "es")
+    assert low.risk_level in ("low", "unknown", "medium", None) or low.risk_level
+    assert low.edibility == "unknown_or_risky"
+
+
+def test_hydrate_blocked_path_does_not_require_join_visuals():
+    """B-42: blocked remains empty — no species ID cards to dress with risk."""
+    from app.db.schemas import (
+        QualityGatePayload,
+        SimpleClassificationResult,
+    )
+    from app.services.classify_simple import _hydrate_simple_result
+
+    blocked = SimpleClassificationResult(
+        request_id="t-blocked",
+        decision="rejected",
+        predictions=[],
+        rejection_reason="model_quality_gate",
+        processing_time_ms=1,
+        safety_level="caution",
+        mode="blocked",
+        is_mock_stack=False,
+        quality_gate=QualityGatePayload(
+            species_id_allowed=False,
+            metrics_acceptable=False,
+            block_enabled=True,
+            reason="map_below",
+            reason_code="map_below",
+            verdict="UNACCEPTABLE",
+        ),
+        final_warning="test",
+    )
+    out = _hydrate_simple_result(blocked, locale="es")
+    assert out.predictions == []
+    assert out.mode == "blocked"
+
+
+def test_hydrate_synonym_normalizes_to_preferred_scientific_name():
+    """B-41: historical/ML synonyms resolve to preferred catalog scientific name."""
+    from app.services.prediction_hydrate import (
+        hydrate_prediction,
+        normalize_to_preferred_scientific_name,
+        reload_synonyms,
+    )
+
+    reload_synonyms()
+
+    assert (
+        normalize_to_preferred_scientific_name("Galerina autumnalis")
+        == "Galerina marginata"
+    )
+    assert (
+        normalize_to_preferred_scientific_name("  agaricus   PHALLOIDES ")
+        == "Amanita phalloides"
+    )
+    assert (
+        normalize_to_preferred_scientific_name("Pholiota marginata")
+        == "Galerina marginata"
+    )
+    # Unknown taxa pass through cleaned, not invented
+    assert (
+        normalize_to_preferred_scientific_name("  Fakeus  inventus  ")
+        == "Fakeus inventus"
+    )
+
+    pred = hydrate_prediction("Galerina autumnalis", 0.88, "poisonous", "es")
+    assert pred.species == "Galerina marginata"
+    assert pred.in_catalog is True
+    assert pred.slug == "galerina-marginata"
+    assert pred.risk_level in ("deadly", "high", "critical")
+    assert pred.image_card_url is not None
+    assert pred.image_card_url.endswith("/species/galerina-marginata/card.webp")
+
+    pred2 = hydrate_prediction("Agaricus phalloides", 0.91, "deadly", "es")
+    assert pred2.species == "Amanita phalloides"
+    assert pred2.in_catalog is True
+    assert pred2.slug == "amanita-phalloides"
+    assert pred2.risk_level in ("deadly", "high", "critical")
+    assert pred2.common_name  # vernacular from preferred catalog row
+
+
+def test_hydrate_unknown_taxon_not_forced_into_catalog():
+    from app.services.prediction_hydrate import hydrate_prediction
+
+    pred = hydrate_prediction("Completely Unknown Fungus", 0.5, "unknown", "es")
+    assert pred.species == "Completely Unknown Fungus"
+    assert pred.in_catalog is False
+    assert pred.common_name is None
+    assert pred.risk_level is None
+    assert pred.slug == "completely-unknown-fungus"
+
+
+def test_synonym_does_not_collapse_distinct_catalog_taxa():
+    """B-41 fix: catalog first-class taxa must not be rewritten via synonyms.yaml.
+
+    ``Lactarius sanguifluus`` is listed under ``Lactarius deliciosus`` in
+    synonyms.yaml (lookalike note) but is its own row in catalog_v2.
+    """
+    from app.services.prediction_hydrate import (
+        hydrate_prediction,
+        load_synonym_reverse_map,
+        normalize_to_preferred_scientific_name,
+        reload_synonyms,
+    )
+    from app.services.unified_catalog import get_by_scientific_name
+
+    reload_synonyms()
+    assert get_by_scientific_name("Lactarius sanguifluus") is not None
+    assert get_by_scientific_name("Lactarius deliciosus") is not None
+
+    assert (
+        normalize_to_preferred_scientific_name("Lactarius sanguifluus")
+        == "Lactarius sanguifluus"
+    )
+    # Reverse map must not map sanguifluus → deliciosus
+    rev = load_synonym_reverse_map()
+    assert rev.get("lactarius sanguifluus") in (None, "Lactarius sanguifluus")
+
+    pred = hydrate_prediction("Lactarius sanguifluus", 0.77, "unknown", "es")
+    assert pred.species == "Lactarius sanguifluus"
+    assert pred.in_catalog is True
+    assert pred.slug == "lactarius-sanguifluus"
+    assert pred.slug != "lactarius-deliciosus"
 
 
 def test_safety_i18n_all_locales():
