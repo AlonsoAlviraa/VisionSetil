@@ -1,5 +1,5 @@
-/**
- * Guided multi-view capture — 4-step ritual (Wave C/D).
+﻿/**
+ * Guided multi-view capture ÔÇö 4-step ritual (Wave C/D).
  * Field-ready icons, camera per slot, no dev jargon.
  * B-25: soft readiness (D-B14) + i18n slot labels.
  */
@@ -19,12 +19,7 @@ type Props = {
   assignments: SlotAssignment
   onAssign: (view: CanonicalView, file: File, previewUrl: string) => void
   onClear: (view: CanonicalView) => void
-  /**
-   * Open device camera for wizard capture (B-27).
-   * When provided with a view, parent may prefer that empty slot — still
-   * assigns missing required first via resolveCameraTargetSlot.
-   */
-  onOpenCamera?: (view?: CanonicalView) => void
+  onOpenCamera?: () => void
 }
 
 function slotLabel(
@@ -68,7 +63,6 @@ export function MultiViewWizard({ assignments, onAssign, onClear, onOpenCamera }
     [assignments, hardMinViews],
   )
   const inputRefs = useRef<Partial<Record<CanonicalView, HTMLInputElement | null>>>({})
-  const slotElRefs = useRef<Partial<Record<CanonicalView, HTMLDivElement | null>>>({})
 
   const onFile = useCallback(
     (view: CanonicalView, fileList: FileList | null) => {
@@ -113,7 +107,7 @@ export function MultiViewWizard({ assignments, onAssign, onClear, onOpenCamera }
         <p>
           {t('identify.wizardSubtitle', {
             defaultValue:
-              'Láminas, perfil, hábitat y detalle. Completa las críticas antes de analizar.',
+              'L├íminas, perfil, h├íbitat y detalle. Completa las cr├¡ticas antes de analizar.',
           })}
         </p>
 
@@ -129,7 +123,7 @@ export function MultiViewWizard({ assignments, onAssign, onClear, onOpenCamera }
                 className={`mv-ritual__step ${filled ? 'is-done' : ''} ${isNext ? 'is-next' : ''}`}
               >
                 <span className="mv-ritual__dot" aria-hidden="true">
-                  {filled ? '✓' : i + 1}
+                  {filled ? 'Ô£ô' : i + 1}
                 </span>
                 <span className="mv-ritual__label">{label}</span>
               </li>
@@ -149,10 +143,10 @@ export function MultiViewWizard({ assignments, onAssign, onClear, onOpenCamera }
           {readiness.missingRequired.length > 0 && (
             <span className="mv-warn">
               {' '}
-              ·{' '}
+              ┬À{' '}
               {t('identify.missingCritical', {
                 views: readiness.missingRequired.map(labelOf).join(', '),
-                defaultValue: `faltan críticas: ${readiness.missingRequired.map(labelOf).join(', ')}`,
+                defaultValue: `faltan cr├¡ticas: ${readiness.missingRequired.map(labelOf).join(', ')}`,
               })}
             </span>
           )}
@@ -162,7 +156,7 @@ export function MultiViewWizard({ assignments, onAssign, onClear, onOpenCamera }
           <p className="mv-warn mv-hard-block" data-testid="mv-hard-block" role="status">
             {t('identify.readiness.hard_blocked', {
               defaultValue:
-                'Modo estricto: añade las vistas críticas (láminas y frontal) antes de analizar.',
+                'Modo estricto: a├▒ade las vistas cr├¡ticas (l├íminas y frontal) antes de analizar.',
             })}
           </p>
         )}
@@ -187,7 +181,7 @@ export function MultiViewWizard({ assignments, onAssign, onClear, onOpenCamera }
                 <span>{label}</span>
                 {slot.required ? (
                   <span className="mv-badge">
-                    {t('identify.badgeCritical', { defaultValue: 'crítica' })}
+                    {t('identify.badgeCritical', { defaultValue: 'cr├¡tica' })}
                   </span>
                 ) : (
                   <span className="mv-badge mv-badge--opt">
@@ -220,18 +214,17 @@ export function MultiViewWizard({ assignments, onAssign, onClear, onOpenCamera }
                     <span className="mv-add-icon" aria-hidden="true">
                       <ViewIcon view={slot.view} size={28} />
                     </span>
-                    {t('identify.gallery', { defaultValue: 'Galería' })}
+                    {t('identify.gallery', { defaultValue: 'Galer├¡a' })}
                   </button>
                   {onOpenCamera && (
                     <button
                       type="button"
                       className="btn-atelier btn-atelier--ghost mv-camera-btn"
-                      data-testid={`mv-camera-${slot.view}`}
-                      onClick={() => onOpenCamera(slot.view)}
+                      onClick={onOpenCamera}
                     >
                       <IconCamera size={16} />
                       {t('identify.camera', {
-                        defaultValue: t('identify.takePhoto', { defaultValue: 'Cámara' }),
+                        defaultValue: t('identify.takePhoto', { defaultValue: 'C├ímara' }),
                       })}
                     </button>
                   )}

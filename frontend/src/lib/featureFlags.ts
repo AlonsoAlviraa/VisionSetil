@@ -1,6 +1,6 @@
 /**
- * Feature flags (PR-00).
- * Read from Vite env: VITE_FEATURE_* — defaults align with mega-plan §5.5.
+ * Feature flags (PR-00 + Phase B).
+ * Read from Vite env: VITE_FEATURE_* — defaults align with mega-plan + Phase B.
  */
 
 function envBool(key: string, defaultValue: boolean): boolean {
@@ -26,8 +26,16 @@ export const featureFlags = {
   /** Favorites UI (PR-12) */
   FAVORITES: envBool('VITE_FEATURE_FAVORITES', true),
   /**
-   * Optional async classify + job polling (B-46).
-   * Default OFF — only enable after job envelope contract is green (B-45).
+   * Identify PreflightBanner + offline submit disable (B-11).
+   * Kill-switch hides banner; offline submit disable stays active when true (default).
+   */
+  IDENTIFY_PREFLIGHT: envBool('VITE_FEATURE_IDENTIFY_PREFLIGHT', true),
+  /**
+   * Hard minimum views gills+front before submit (B-25 / D-B14). Default OFF.
+   */
+  HARD_VIEW_MIN: envBool('VITE_FEATURE_HARD_VIEW_MIN', false),
+  /**
+   * Optional async classify + job polling (B-46). Default OFF.
    * Product path still uses envelope.simple only (same ResultModeBanner as sync).
    */
   ASYNC_CLASSIFY: envBool('VITE_FEATURE_ASYNC_CLASSIFY', false),

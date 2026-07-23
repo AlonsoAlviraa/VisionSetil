@@ -1,9 +1,12 @@
-/**
- * ML transparency panel — honest mock/real stack, margin, views.
- * Confidence margin only when D-B9 gate passes (real + metrics_acceptable).
+﻿/**
+ * ML transparency panel ÔÇö fully mode/gate-aware (B-22).
+ *
+ * - Display chrome from resolveDisplayMode / dual-signal gate (not stack-string heuristics)
+ * - Surfaces quality_gate metrics (MAP@3, deadly recall, dual signals, reason_code)
+ * - Confidence margin only when D-B9 passes (real + metrics_acceptable) ÔÇö never inflated
  */
 import { useTranslation } from 'react-i18next'
-import type { ClassificationResult } from '../api/types'
+import type { ClassificationResult, QualityGateReasonCode } from '../api/types'
 import {
   isOpenSetRejected,
   resolveDisplayMode,
@@ -30,7 +33,7 @@ function gateReasonI18nKey(code: string | undefined): string | null {
 }
 
 function fmtMetric(value: number | null | undefined, digits = 3): string {
-  if (value == null || Number.isNaN(value)) return '—'
+  if (value == null || Number.isNaN(value)) return 'ÔÇö'
   return value.toFixed(digits)
 }
 
@@ -42,11 +45,16 @@ type Props = {
 
 export function ModelInsightsPanel({ result, viewTypes = [], className = '' }: Props) {
   const { t } = useTranslation()
+  // Product honesty mode (D-B4 display): dual-signal overrides stack/legacy
   const mode = resolveDisplayMode(result)
   const showConfidence = shouldShowConfidence(result)
   const gateOrShell =
     shouldShowEducationalShell(result) || mode === 'blocked'
   const openSet = isOpenSetRejected(result)
+  const gate = result.quality_gate
+  const reasonKey = gateReasonI18nKey(gate?.reason_code)
+
+  // Stack badge is technical detail only ÔÇö panel chrome must NOT derive mode from it
   const badge = stackBadgeEs(result.model_stack)
   // Stack truth (D-B1): explicit field only; never infer from stack-string badge
   const isMockStack = result.is_mock_stack === true
@@ -58,7 +66,7 @@ export function ModelInsightsPanel({ result, viewTypes = [], className = '' }: P
       ? result.confidence_margin ??
         (preds.length >= 2
           ? Math.max(0, preds[0].confidence - preds[1].confidence)
-          : preds[0]?.confidence ?? null)
+          : null)
       : null
 
   const coverage =
@@ -75,15 +83,15 @@ export function ModelInsightsPanel({ result, viewTypes = [], className = '' }: P
     : [
         gateOrShell
           ? t('honesty.decision.rejected_gate')
-          : isMock || mode === 'mock'
-            ? 'Modo demo: sin pesos reales de campo en este entorno.'
-            : 'Backends reales reportados en el stack.',
+          : mode === 'mock'
+            ? t('honesty.mode.mock')
+            : t('honesty.mode.real'),
         showConfidence && margin != null
           ? `Margen entre pistas: ${(margin * 100).toFixed(1)} puntos.`
           : t('honesty.confidence_hidden'),
       ]
 
-  // Rejected + not open-set → gate/shell copy (mirrors ResultCard)
+  // Rejected + not open-set ÔåÆ gate/shell copy (mirrors ResultCard)
   const decisionLabel =
     result.decision === 'rejected'
       ? openSet
@@ -91,30 +99,37 @@ export function ModelInsightsPanel({ result, viewTypes = [], className = '' }: P
         : t('honesty.decision.rejected_gate')
       : 'Pista tentativa'
 
+  const showMetricsWarning =
+    mode === 'real' && gate != null && gate.metrics_acceptable === false
+
   return (
     <section
-      className={`model-insights model-insights--mode-${mode} ${
-        mode === 'blocked'
-          ? 'model-insights--blocked'
-          : isMock || mode === 'mock'
-            ? 'model-insights--mock'
-            : 'model-insights--live'
-      } ${className}`.trim()}
-      aria-label="Información del modelo"
+      className={`model-insights model-insights--mode-${mode} model-insights--${modeTone} ${className}`.trim()}
+      aria-label="Informaci├│n del modelo"
       data-testid="model-insights-panel"
       data-mode={mode}
       data-show-confidence={showConfidence ? 'true' : 'false'}
+      data-mock-stack={isMockStack ? 'true' : 'false'}
     >
       <header className="model-insights__head">
         <IconMicroscope size={18} />
-        <h3>Cómo decide el modelo</h3>
-        <span className={`stack-badge stack-badge--${badge.mode}`}>{badge.label}</span>
+        <h3>C├│mo decide el modelo</h3>
         <span
           className={`result-mode-banner__chip result-mode-banner__chip--${mode}`}
           data-testid="model-insights-mode"
         >
           {mode}
         </span>
+        {/* Stack badge: technical weights label only (not product mode) */}
+        {result.model_stack && (
+          <span
+            className={`stack-badge stack-badge--${badge.mode}`}
+            title={badge.hint}
+            data-testid="model-insights-stack-badge"
+          >
+            {badge.label}
+          </span>
+        )}
       </header>
 
       <p className="model-insights__hint" data-testid="model-insights-mode-hint">
@@ -126,19 +141,18 @@ export function ModelInsightsPanel({ result, viewTypes = [], className = '' }: P
           <span className="model-insights__label">Tiempo</span>
           <strong>{result.processing_time_ms} ms</strong>
         </div>
-        <div className="model-insights__card" data-testid="model-insights-margin">
-          <span className="model-insights__label">Margen top-1/2</span>
-          <strong>
-            {showConfidence && margin != null
-              ? `${(margin * 100).toFixed(1)} pts`
-              : '—'}
-          </strong>
-        </div>
+        {/* Margin only when D-B9 allows confidence ÔÇö hide inflated top-1/2 gap */}
+        {showConfidence && (
+          <div className="model-insights__card" data-testid="model-insights-margin">
+            <span className="model-insights__label">Margen top-1/2</span>
+            <strong>
+              {margin != null ? `${(margin * 100).toFixed(1)} pts` : 'ÔÇö'}
+            </strong>
+          </div>
+        )}
         <div className="model-insights__card">
-          <span className="model-insights__label">Decisión</span>
-          <strong data-testid="model-insights-decision">
-            {decisionLabel}
-          </strong>
+          <span className="model-insights__label">Decisi├│n</span>
+          <strong data-testid="model-insights-decision">{decisionLabel}</strong>
         </div>
         <div className="model-insights__card">
           <span className="model-insights__label">Vistas</span>
@@ -146,7 +160,7 @@ export function ModelInsightsPanel({ result, viewTypes = [], className = '' }: P
         </div>
       </div>
 
-      {/* Dual-signal gate metrics (B-22) — independent of stack strings */}
+      {/* Dual-signal gate metrics (B-22) ÔÇö independent of stack strings */}
       {gate && (
         <div
           className="model-insights__gate"
@@ -183,9 +197,9 @@ export function ModelInsightsPanel({ result, viewTypes = [], className = '' }: P
               </strong>
             </div>
             <div className="model-insights__card">
-              <span className="model-insights__label">Métricas OK</span>
+              <span className="model-insights__label">M├®tricas OK</span>
               <strong data-testid="model-insights-metrics-ok">
-                {gate.metrics_acceptable ? 'sí' : 'no'}
+                {gate.metrics_acceptable ? 's├¡' : 'no'}
               </strong>
             </div>
             <div className="model-insights__card">
@@ -212,7 +226,7 @@ export function ModelInsightsPanel({ result, viewTypes = [], className = '' }: P
             >
               {reasonKey ? t(reasonKey) : gate.reason}
               {gate.reason_code ? (
-                <span className="model-insights__code"> · {gate.reason_code}</span>
+                <span className="model-insights__code"> ┬À {gate.reason_code}</span>
               ) : null}
             </p>
           )}
@@ -230,7 +244,7 @@ export function ModelInsightsPanel({ result, viewTypes = [], className = '' }: P
 
       {coverage.length > 0 && (
         <p className="model-insights__views">
-          <IconInfo size={14} /> Cobertura: {coverage.join(' · ')}
+          <IconInfo size={14} /> Cobertura: {coverage.join(' ┬À ')}
         </p>
       )}
 
@@ -242,7 +256,7 @@ export function ModelInsightsPanel({ result, viewTypes = [], className = '' }: P
 
       {result.model_stack && (
         <details className="model-insights__stack">
-          <summary>Stack técnico</summary>
+          <summary>Stack t├®cnico</summary>
           <ul>
             <li>Detector: {result.model_stack.detector}</li>
             <li>Visual: {result.model_stack.visual_embedder}</li>
@@ -259,7 +273,7 @@ export function ModelInsightsPanel({ result, viewTypes = [], className = '' }: P
 
       {result.recommend_human_review && (
         <p className="model-insights__review" role="status">
-          <IconAlert size={14} /> Se recomienda revisión humana.
+          <IconAlert size={14} /> Se recomienda revisi├│n humana.
         </p>
       )}
     </section>

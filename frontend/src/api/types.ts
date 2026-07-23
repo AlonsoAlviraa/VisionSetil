@@ -1,4 +1,4 @@
-/** API type definitions matching the FastAPI backend /classify endpoint. */
+﻿/** API type definitions matching the FastAPI backend /classify endpoint. */
 
 /** Product honesty mode (D-B1). Independent of is_mock_stack (stack truth). */
 export type ClassifyMode = 'real' | 'mock' | 'blocked'
@@ -15,7 +15,7 @@ export type QualityGateReasonCode =
 
 /**
  * Dual-signal quality gate (D-B15): metrics_acceptable vs species_id_allowed.
- * - metrics_acceptable: raw MAP/deadly thresholds only — never forced by disable
+ * - metrics_acceptable: raw MAP/deadly thresholds only ÔÇö never forced by disable
  * - species_id_allowed: serve policy (respects block_enabled)
  * - verdict: tracks metrics only (ACCEPTABLE/UNACCEPTABLE), not gate-disable bypass
  * - metrics_path: always full path (D-B23), never basename-only
@@ -33,7 +33,7 @@ export interface QualityGatePayload {
   /** Full path always (D-B23); never basename-only. */
   metrics_path?: string | null
   version?: string | null
-  /** Tracks metrics_acceptable only — ACCEPTABLE | UNACCEPTABLE. */
+  /** Tracks metrics_acceptable only ÔÇö ACCEPTABLE | UNACCEPTABLE. */
   verdict: 'ACCEPTABLE' | 'UNACCEPTABLE'
 }
 
@@ -42,16 +42,12 @@ export interface SpeciesPrediction {
   common_name: string | null
   confidence: number
   edibility: string | null
-  /** Catalog slug when hydrate finds a hit (Phase B). */
+  /** Hydrate fields (B-01 / D-B21); optional for legacy responses. */
   slug?: string | null
-  /**
-   * Risk level from catalog hydrate (Phase B / B-42).
-   * Prefer with edibility via resolveJoinRisk for RiskChip visibility.
-   */
   risk_level?: string | null
   image_card_url?: string | null
   image_thumb_url?: string | null
-  /** True only when server hydrate joined this taxon to catalog_v2. */
+  /** true when species resolved in catalog; default false until hydrate (D-B21). */
   in_catalog?: boolean
 }
 
@@ -61,9 +57,6 @@ export interface ModelStack {
   image_text_embedder: string
   metadata_encoder: string
 }
-
-/** Product honesty mode (Phase B). Optional for legacy responses. */
-export type ClassifyMode = 'real' | 'mock' | 'blocked'
 
 export interface ClassificationResult {
   request_id: string
@@ -89,19 +82,23 @@ export interface ClassificationResult {
   is_mock_stack?: boolean
   ml_notes?: string[]
   /**
-   * Phase B honesty mode. B-42 boosts deadly/poisonous join chrome only when
-   * `real` (or mode absent / legacy). Blocked keeps predictions empty.
+   * Product honesty mode (D-B1 / D-B22). Required on new BE; optional for legacy
+   * partial-deploy responses ÔÇö use resolveMode() (D-B20), never invent defaults.
    */
   mode?: ClassifyMode
+  /**
+   * Dual-signal gate payload (D-B2 / D-B15). Required on new BE; optional for
+   * legacy responses that still strip quality_gate.
+   */
+  quality_gate?: QualityGatePayload
+  /** Echo of request locale (D-B5); default BE "es". */
+  locale?: string
 }
 
 export interface ApiError {
   error: string
   message: string
 }
-
-/** Re-export classify error taxonomy (B-29). Prefer `classifyApiError` from `./client`. */
-export type { ApiErrorKind, ClassifiedApiError } from './classifyErrors'
 
 /** Metadata that can be optionally submitted with images for better accuracy. */
 export interface ObservationMetadata {
