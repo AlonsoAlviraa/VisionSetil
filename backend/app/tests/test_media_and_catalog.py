@@ -125,6 +125,52 @@ def test_fallback_zero_missing_returns_404(client: TestClient):
         _restore_species_media(hidden, original)
 
 
+def test_stub_card_rewrites_to_placeholder_with_short_cache(client: TestClient, tmp_path, monkeypatch):
+    """C-05: tiny card (<8KB) → placeholder rewrite, X-Media-Quality=stub_fallback, max-age=300."""
+    from app.services import species_media as sm
+
+    media_root = tmp_path / "media"
+    species_dir = media_root / "species" / "stub-test-taxon"
+    species_dir.mkdir(parents=True)
+    # Tiny invalid-as-photo webp-like payload under floor
+    tiny = b"RIFF" + (100).to_bytes(4, "little") + b"WEBP" + b"\x00" * 80
+    (species_dir / "card.webp").write_bytes(tiny)
+
+    # Brand placeholders
+    ph = media_root / "placeholders"
+    ph.mkdir(parents=True)
+    # Minimal real-ish webp from PIL
+    buf = io.BytesIO()
+    Image.new("RGB", (32, 32), color=(58, 90, 64)).save(buf, format="WEBP", quality=80)
+    ph_bytes = buf.getvalue()
+    (ph / "default.webp").write_bytes(ph_bytes)
+    (ph / "unknown.webp").write_bytes(ph_bytes)
+    (ph / "toxic.webp").write_bytes(ph_bytes)
+    (ph / "deadly.webp").write_bytes(ph_bytes)
+
+    monkeypatch.setattr(settings, "species_media_root", str(media_root))
+    sm.load_slim_manifest.cache_clear()
+    sm.load_full_manifest.cache_clear()
+
+    # force is_valid_slug true path: use real catalog slug if possible
+    slug = "amanita-phalloides"
+    # write stub under real media root temporarily
+    root = Path(settings.species_media_root)
+    # settings already monkeypatched — write stub under tmp media for real slug
+    d = media_root / "species" / slug
+    d.mkdir(parents=True, exist_ok=True)
+    (d / "card.webp").write_bytes(tiny)
+
+    r = client.get(f"/media/species/{slug}/card.webp?fallback=1")
+    assert r.status_code == 200
+    assert r.headers.get("X-Media-Quality") == "stub_fallback"
+    assert "max-age=300" in (r.headers.get("Cache-Control") or "")
+    assert r.content == ph_bytes
+
+    r0 = client.get(f"/media/species/{slug}/card.webp?fallback=0")
+    assert r0.status_code == 404
+
+
 def test_media_invalid_slug_rejected(client: TestClient):
     r = client.get("/media/species/Not_A_Valid_Slug/card")
     assert r.status_code == 400

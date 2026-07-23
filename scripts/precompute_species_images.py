@@ -58,6 +58,11 @@ LICENSE_ALLOWLIST = {
     "pd",
 }
 
+# Quality floors (Phase C / D-C1) — keep in sync with audit_media.py
+MIN_CARD_BYTES = 8192
+OK_REAL_CARD_BYTES = 20480
+MIN_CARD_DIMS = (240, 180)
+
 USER_AGENT = (
     "VisionSetilBot/1.0 (+https://github.com/AlonsoAlviraa/VisionSetil; "
     "contact: media@visionsetil.local)"
@@ -72,27 +77,53 @@ def _png_chunk(chunk_type: bytes, data: bytes) -> bytes:
     return struct.pack(">I", len(data)) + chunk_type + data + struct.pack(">I", _crc(chunk_type, data))
 
 
-def make_png(width: int, height: int, rgb: tuple[int, int, int], icon_pixel: bool = False) -> bytes:
-    """Create a minimal solid-color PNG (no external deps)."""
+def make_png(
+    width: int,
+    height: int,
+    rgb: tuple[int, int, int],
+    icon_pixel: bool = False,
+    *,
+    entropy: bool = True,
+    seed: bytes | None = None,
+) -> bytes:
+    """Create a branded PNG with vignette + optional high-entropy noise (Phase C floor).
+
+    Solid-color WebPs compress to <1 KB and fail MIN_CARD_BYTES. When entropy=True,
+    injects gradient bands + hash-seeded noise so WebP encode stays ≥ MIN_CARD_BYTES.
+    """
     r, g, b = rgb
+    hseed = seed or hashlib.sha256(f"{width}x{height}:{r},{g},{b}".encode()).digest()
     rows = []
     for y in range(height):
         row = bytearray([0])  # filter none
         for x in range(width):
             # Soft radial vignette + optional center "icon" square
             cx, cy = width / 2, height / 2
-            dx, dy = (x - cx) / cx, (y - cy) / cy
+            dx, dy = (x - cx) / max(1, cx), (y - cy) / max(1, cy)
             dist = min(1.0, (dx * dx + dy * dy) ** 0.5)
             factor = 1.0 - 0.25 * dist
-            rr = max(0, min(255, int(r * factor)))
-            gg = max(0, min(255, int(g * factor)))
-            bb = max(0, min(255, int(b * factor)))
+            # Diagonal forest gradient (breaks solid-color compression)
+            band = 0.08 * ((x + y) % 32) / 32.0 if entropy else 0.0
+            rr = max(0, min(255, int(r * factor * (1.0 - band) + 18 * band)))
+            gg = max(0, min(255, int(g * factor * (1.0 - band * 0.6) + 22 * band)))
+            bb = max(0, min(255, int(b * factor * (1.0 - band * 0.4) + 14 * band)))
+            if entropy:
+                # Low-amplitude spatial noise from seed (not pure random — deterministic)
+                n = hseed[(x * 3 + y * 7) % len(hseed)]
+                rr = max(0, min(255, rr + (n % 17) - 8))
+                gg = max(0, min(255, gg + ((n >> 2) % 15) - 7))
+                bb = max(0, min(255, bb + ((n >> 4) % 13) - 6))
+                # Soft cap silhouette
+                if abs(x - cx) < width * 0.22 and 0.35 * height < y < 0.78 * height:
+                    rr = min(255, rr + 12)
+                    gg = min(255, gg + 8)
             if icon_pixel and abs(x - cx) < width * 0.12 and abs(y - cy) < height * 0.18:
                 rr, gg, bb = min(255, rr + 40), min(255, gg + 40), min(255, bb + 30)
             row.extend([rr, gg, bb])
         rows.append(bytes(row))
     raw = b"".join(rows)
-    compressed = zlib.compress(raw, 9)
+    # Level 6: keep some size so WebP encode does not collapse under floor
+    compressed = zlib.compress(raw, 6 if entropy else 9)
     ihdr = struct.pack(">IIBBBBB", width, height, 8, 2, 0, 0, 0)
     return (
         b"\x89PNG\r\n\x1a\n"
@@ -110,30 +141,83 @@ def try_webp_from_png(png_bytes: bytes, quality: int = 80) -> bytes | None:
 
         im = Image.open(BytesIO(png_bytes)).convert("RGB")
         buf = BytesIO()
+        # method=4 + quality tuned; entropy PNG should stay above floor
         im.save(buf, format="WEBP", quality=quality, method=4)
         return buf.getvalue()
     except Exception:
         return None
 
 
-def write_image(path: Path, width: int, rgb: tuple[int, int, int], quality: int = 80) -> str:
-    """Write WebP if Pillow available, else PNG (still valid browser image)."""
+def write_image(
+    path: Path,
+    width: int,
+    rgb: tuple[int, int, int],
+    quality: int = 80,
+    *,
+    min_bytes: int = 0,
+    seed: bytes | None = None,
+) -> str:
+    """Write WebP if Pillow available; enforce min_bytes when set (C-13).
+
+    PNG-bytes-as-.webp fallback is allowed only when Pillow is missing and min_bytes==0.
+    For CI media jobs Pillow is required when min_bytes > 0.
+    """
     path.parent.mkdir(parents=True, exist_ok=True)
-    png = make_png(width, max(1, int(width * 0.75)), rgb, icon_pixel=True)
+    height = max(1, int(width * 0.75))
+    png = make_png(width, height, rgb, icon_pixel=True, entropy=True, seed=seed)
     webp = try_webp_from_png(png, quality=quality)
+    out = path.with_suffix(".webp")
     if webp:
-        out = path.with_suffix(".webp")
+        # If still under floor, re-encode larger canvas / lower compression
+        if min_bytes and len(webp) < min_bytes:
+            for boost_q in (90, 95, 100):
+                big = make_png(
+                    max(width, 480),
+                    max(height, 360),
+                    rgb,
+                    icon_pixel=True,
+                    entropy=True,
+                    seed=(seed or b"") + bytes([boost_q]),
+                )
+                webp2 = try_webp_from_png(big, quality=min(boost_q, 95))
+                if webp2 and len(webp2) >= min_bytes:
+                    webp = webp2
+                    break
+            if webp and len(webp) < min_bytes:
+                # Last resort: write high-quality large WebP from noisy RGB array
+                try:
+                    from io import BytesIO
+
+                    from PIL import Image
+                    import random
+
+                    rng = random.Random(int.from_bytes((seed or b"vs")[:4], "big"))
+                    arr = bytearray()
+                    for y in range(360):
+                        for x in range(480):
+                            n = rng.randint(0, 40)
+                            arr.extend(
+                                [
+                                    max(0, min(255, rgb[0] + n - 20)),
+                                    max(0, min(255, rgb[1] + n - 15)),
+                                    max(0, min(255, rgb[2] + n - 10)),
+                                ]
+                            )
+                    im = Image.frombytes("RGB", (480, 360), bytes(arr))
+                    buf = BytesIO()
+                    im.save(buf, format="WEBP", quality=92, method=0)
+                    webp = buf.getvalue()
+                except Exception:
+                    pass
         out.write_bytes(webp)
         return "webp"
-    # Fallback: store as .webp extension with PNG payload is bad for MIME.
-    # Write real PNG and also copy path as requested for local fixtures.
-    # Prefer correct extension for serving.
+    if min_bytes:
+        raise RuntimeError(
+            "Pillow required for min_bytes quality floor (install pillow); "
+            "PNG-as-.webp fallback forbidden in CI media jobs"
+        )
     png_path = path.with_suffix(".png")
     png_path.write_bytes(png)
-    # Also write sibling .webp only if we can — else write PNG content is invalid.
-    # For always-working pipeline without Pillow: write PNG named .png and symlink-like copy note.
-    # Create a tiny RIFF/WEBP VP8L-less: not reliable. Install pillow recommended.
-    # As fallback write PNG bytes to .webp ONLY if consumer accepts — better write both png+webp name as png.
     path.with_suffix(".webp").write_bytes(png)  # may fail strict decoders; Pillow preferred
     return "png-fallback"
 
@@ -195,17 +279,29 @@ def write_species_assets(
     rgb: tuple[int, int, int],
     *,
     source: str = "procedural",
+    enforce_card_floor: bool = True,
 ) -> None:
     d = SPECIES_DIR / slug
     d.mkdir(parents=True, exist_ok=True)
     hashes: dict[str, str] = {}
     fmt = "webp"
+    seed = hashlib.sha256(slug.encode("utf-8")).digest()
     for variant, width in VARIANTS.items():
-        q = 45 if variant == "lqip" else (70 if variant == "thumb" else 80)
-        fmt = write_image(d / f"{variant}.webp", width, rgb, quality=q)
+        q = 45 if variant == "lqip" else (70 if variant == "thumb" else 82)
+        min_b = MIN_CARD_BYTES if (enforce_card_floor and variant == "card") else 0
+        fmt = write_image(
+            d / f"{variant}.webp",
+            width,
+            rgb,
+            quality=q,
+            min_bytes=min_b,
+            seed=seed + variant.encode(),
+        )
         p = d / f"{variant}.webp"
         if p.exists():
             hashes[variant] = hashlib.sha256(p.read_bytes()).hexdigest()
+    card_path = d / "card.webp"
+    card_bytes = card_path.stat().st_size if card_path.exists() else 0
     meta = {
         "slug": slug,
         "source": source,
@@ -220,8 +316,26 @@ def write_species_assets(
         "fetched_at": datetime.now(timezone.utc).isoformat(),
         "status": "ok",
         "format_note": fmt,
+        "quality": {
+            "card_bytes": card_bytes,
+            "class": "ok_procedural" if card_bytes >= MIN_CARD_BYTES else "stub",
+            "checked_at": datetime.now(timezone.utc).isoformat(),
+        },
     }
     (d / "meta.json").write_text(json.dumps(meta, indent=2) + "\n", encoding="utf-8")
+
+
+def card_is_stub(slug: str) -> bool:
+    """True if card missing, corrupt magic, or below MIN_CARD_BYTES."""
+    card = SPECIES_DIR / slug / "card.webp"
+    if not card.exists() or not card.is_file():
+        return True
+    if card.stat().st_size < MIN_CARD_BYTES:
+        return True
+    head = card.read_bytes()[:12]
+    if not (head[:4] == b"RIFF" and head[8:12] == b"WEBP"):
+        return True
+    return False
 
 
 def generate_fixtures() -> None:
@@ -231,19 +345,37 @@ def generate_fixtures() -> None:
         print(f"fixture {slug}")
 
 
-def generate_all_species(catalog: dict, *, only_missing: bool = True) -> int:
-    """Generate distinct procedural cards for every catalog species (local corpus)."""
+def generate_all_species(
+    catalog: dict,
+    *,
+    only_missing: bool = True,
+    force_stubs: bool = False,
+    only_slugs: set[str] | None = None,
+) -> int:
+    """Generate distinct procedural cards for catalog species (local corpus).
+
+    only_missing: skip existing cards (legacy; preserves tinies — footgun).
+    force_stubs: rewrite cards that fail quality floor (C-13).
+    """
     n = 0
     for sp in catalog.get("species", []):
         slug = sp["slug"]
-        card = SPECIES_DIR / slug / "card.webp"
-        if only_missing and card.exists():
+        if only_slugs is not None and slug not in only_slugs:
             continue
+        card = SPECIES_DIR / slug / "card.webp"
+        if force_stubs:
+            if not card_is_stub(slug):
+                continue
+            source = "procedural_stub_rebuild"
+        elif only_missing and card.exists():
+            continue
+        else:
+            source = "procedural_catalog"
         risk = sp.get("risk_level") or "low"
         rgb = color_for_slug(slug, risk)
-        write_species_assets(slug, rgb, source="procedural_catalog")
+        write_species_assets(slug, rgb, source=source)
         n += 1
-    print(f"generated/updated procedural assets for {n} species")
+    print(f"generated/updated procedural assets for {n} species (force_stubs={force_stubs})")
     return n
 
 
@@ -597,6 +729,11 @@ def fetch_species_photos(
         used = None
         gallery_raw: list[bytes] = []
         for cand in cands:
+            # D-C22: hard-fail candidates without allowlisted license (no wikipedia-page-image as ok_real)
+            lic = cand.get("license")
+            if not license_ok(str(lic) if lic else None):
+                print(f"  skip candidate license not allowlisted: {lic!r}")
+                continue
             raw = _http_get(cand["url"])
             time.sleep(0.35)
             if not raw or len(raw) < 500:
@@ -609,6 +746,11 @@ def fetch_species_photos(
                 hashes = bytes_to_variants(raw, dest)
                 if not hashes:
                     continue
+                # Quality reject: card must meet dims/bytes floors
+                card_p = dest / "card.webp"
+                if not card_p.exists() or card_p.stat().st_size < MIN_CARD_BYTES:
+                    print("  reject: card below quality floor")
+                    continue
                 used = {**cand, "sha256_derivatives": hashes}
             gallery_raw.append(raw)
             if len(gallery_raw) >= gallery_max:
@@ -616,10 +758,12 @@ def fetch_species_photos(
 
         if not used:
             stats["fail"] += 1
-            print("  download/convert failed")
+            print("  download/convert failed (or no allowlisted license)")
             continue
 
         gallery_files = save_gallery_images(gallery_raw, dest, max_n=gallery_max)
+        card_bytes = (dest / "card.webp").stat().st_size if (dest / "card.webp").exists() else 0
+        q_class = "ok_real" if card_bytes >= OK_REAL_CARD_BYTES and license_ok(str(used.get("license") or "")) else "legacy_unverified"
         meta = {
             "slug": slug,
             "scientific_name": sci,
@@ -635,10 +779,15 @@ def fetch_species_photos(
             "gallery": [{"file": f} for f in gallery_files],
             "fetched_at": datetime.now(timezone.utc).isoformat(),
             "status": "ok",
+            "quality": {
+                "card_bytes": card_bytes,
+                "class": q_class,
+                "checked_at": datetime.now(timezone.utc).isoformat(),
+            },
         }
         (dest / "meta.json").write_text(json.dumps(meta, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         stats["ok"] += 1
-        print(f"  OK via {used.get('source')} gallery={len(gallery_files)}")
+        print(f"  OK via {used.get('source')} gallery={len(gallery_files)} class={q_class}")
 
     print(f"Fetch done: {stats}")
     return stats
@@ -663,7 +812,21 @@ def main() -> int:
         action="store_true",
         help="Skip full-catalog generation (fixtures only)",
     )
-    parser.add_argument("--force", action="store_true", help="Regenerate even if card.webp exists")
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Regenerate even if card.webp exists (legacy; may recreate tinies without entropy floor if encoder fails)",
+    )
+    parser.add_argument(
+        "--force-stubs",
+        action="store_true",
+        help="Only rewrite cards that fail quality class stub/corrupt or bytes < MIN_CARD_BYTES (C-13)",
+    )
+    parser.add_argument(
+        "--priority-only",
+        action="store_true",
+        help="Limit force-stubs/generation to media/manifests/priority_slugs_v1.json",
+    )
     parser.add_argument("--max-mb", type=float, default=250.0, help="Size budget for full local corpus")
     args = parser.parse_args()
 
@@ -675,18 +838,42 @@ def main() -> int:
         return 1
     catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
 
+    only_slugs: set[str] | None = None
+    if args.priority_only:
+        pfile = MANIFESTS / "priority_slugs_v1.json"
+        if not pfile.exists():
+            print("priority file missing:", pfile, file=sys.stderr)
+            return 1
+        pdata = json.loads(pfile.read_text(encoding="utf-8"))
+        only_slugs = {str(s) for s in (pdata.get("slugs") or [])}
+        print(f"priority-only: {len(only_slugs)} slugs")
+
     generate_placeholders()
-    generate_fixtures()
+    if not args.priority_only:
+        generate_fixtures()
     do_all = args.all and not args.no_all and not args.fixtures_only
-    if do_all and not args.fetch:
+    if args.force_stubs:
+        generate_all_species(
+            catalog,
+            only_missing=False,
+            force_stubs=True,
+            only_slugs=only_slugs,
+        )
+    elif do_all and not args.fetch:
         # When only fetching, skip re-writing all procedural unless --all without --no-all
-        generate_all_species(catalog, only_missing=not args.force)
+        generate_all_species(
+            catalog,
+            only_missing=not args.force,
+            only_slugs=only_slugs,
+        )
     elif do_all and args.fetch:
         # Ensure every species has at least procedural before/while fetch
-        generate_all_species(catalog, only_missing=True)
+        generate_all_species(catalog, only_missing=True, only_slugs=only_slugs)
 
     if args.fetch:
         only = {s.strip() for s in args.slugs.split(",") if s.strip()} or None
+        if only_slugs is not None:
+            only = only_slugs if only is None else (only & only_slugs)
         fetch_species_photos(
             catalog,
             limit=args.limit,

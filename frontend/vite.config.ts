@@ -9,8 +9,22 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const MEDIA_ROOT = path.resolve(__dirname, '../media')
 
 /**
+ * Stub size floors (Phase C / D-C1) — keep in sync with:
+ * scripts/audit_media.py MIN_*_BYTES and backend species_media.MIN_BYTES_BY_VARIANT
+ */
+const MIN_BYTES_BY_VARIANT: Record<string, number> = {
+  card: 8192,
+  thumb: 1500,
+  detail: 15000,
+  lqip: 200,
+}
+
+let stubFallbackLogged = false
+
+/**
  * Serve monorepo media/ at /media/* in dev so species photos work
  * even when FastAPI is down or the /api proxy fails.
+ * Tiny/stub species assets are rewritten to risk placeholders (C-04).
  */
 function serveRepoMediaPlugin(): Plugin {
   const mime: Record<string, string> = {
@@ -32,6 +46,17 @@ function serveRepoMediaPlugin(): Plugin {
     return file
   }
 
+  const placeholderKindFromRel = (rel: string): string => {
+    if (/deadly|mort|virosa|phalloides|proxima|filaris|brunneo/i.test(rel)) return 'deadly'
+    if (/toxic|toxico|xanthoderma|omphalotus/i.test(rel)) return 'toxic'
+    return 'default'
+  }
+
+  const variantFromRel = (rel: string): string | null => {
+    const m = rel.match(/\/(thumb|card|detail|lqip)\.(webp|png)$/i)
+    return m ? m[1].toLowerCase() : null
+  }
+
   return {
     name: 'serve-repo-media',
     configureServer(server) {
@@ -49,20 +74,37 @@ function serveRepoMediaPlugin(): Plugin {
             next()
             return
           }
+
           let file = safeResolve(rel)
-          // Fallback: missing species card → brand placeholder
-          if (!file || !fs.existsSync(file) || !fs.statSync(file).isFile()) {
-            if (rel.includes('/placeholder/')) {
+          let stubFallback = false
+          const isPlaceholderPath = rel.startsWith('placeholders/') || rel.includes('/placeholder/')
+          const variant = variantFromRel(rel)
+          const minBytes = variant ? MIN_BYTES_BY_VARIANT[variant] ?? 0 : 0
+
+          const missing =
+            !file || !fs.existsSync(file) || !fs.statSync(file).isFile()
+          const tooSmall =
+            !missing &&
+            minBytes > 0 &&
+            !isPlaceholderPath &&
+            fs.statSync(file!).size < minBytes
+
+          // Fallback: missing or stub-tiny species asset → brand placeholder
+          if (missing || tooSmall) {
+            if (isPlaceholderPath) {
               res.statusCode = 404
               res.end('placeholder missing')
               return
             }
-            const kind = /deadly|mort|virosa|phalloides|proxima|filaris|brunneo/i.test(rel)
-              ? 'deadly'
-              : /toxic|toxico|xanthoderma|omphalotus/i.test(rel)
-                ? 'toxic'
-                : 'default'
+            const kind = placeholderKindFromRel(rel)
             file = safeResolve(`placeholders/${kind}.webp`)
+            stubFallback = true
+            if (!stubFallbackLogged) {
+              stubFallbackLogged = true
+              console.info(
+                `[serve-repo-media] stub/missing → placeholder (e.g. ${rel}); Cache-Control max-age=300`,
+              )
+            }
           }
           if (!file || !fs.existsSync(file)) {
             res.statusCode = 404
@@ -72,7 +114,15 @@ function serveRepoMediaPlugin(): Plugin {
           const ext = path.extname(file).toLowerCase()
           res.statusCode = 200
           res.setHeader('Content-Type', mime[ext] || 'application/octet-stream')
-          res.setHeader('Cache-Control', 'public, max-age=86400')
+          // Short cache on stub rewrite so SW is not poisoned for 30d (D-C8)
+          res.setHeader(
+            'Cache-Control',
+            stubFallback ? 'public, max-age=300' : 'public, max-age=86400',
+          )
+          res.setHeader(
+            'X-Media-Quality',
+            stubFallback ? 'stub_fallback' : 'ok',
+          )
           fs.createReadStream(file).pipe(res)
         } catch {
           res.statusCode = 500

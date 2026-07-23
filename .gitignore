@@ -10,8 +10,13 @@ backend/*.db
 frontend/node_modules/
 frontend/dist/
 
-# Local full species media corpus (regenerate: python scripts/precompute_species_images.py --all)
-# Keep only a few fixtures committed for CI smoke.
+# ── Phase C / C-20: media git budget ──────────────────────────────────────
+# Full local corpus (~520 trees) is artifact/local only — NOT the CDN.
+# Rebuild: python scripts/precompute_species_images.py --all
+# Priority stubs: python scripts/precompute_species_images.py --force-stubs --priority-only
+# Audit: python scripts/audit_media.py --priority --fail-priority
+# Priority slug list (committed): media/manifests/priority_slugs_v1.json
+# Keep only fixtures committed for CI smoke (real photos stay local/artifact).
 media/species/**
 !media/species/amanita-phalloides/
 !media/species/amanita-phalloides/**

@@ -21,6 +21,15 @@ from app.services.unified_catalog import (
 VARIANTS = frozenset({"thumb", "card", "detail", "lqip"})
 PLACEHOLDER_KINDS = frozenset({"default", "toxic", "deadly", "unknown"})
 
+# Stub size floors (Phase C / D-C1) — keep in sync with scripts/audit_media.py
+# and frontend/vite.config.ts MIN_BYTES_BY_VARIANT.
+MIN_BYTES_BY_VARIANT: dict[str, int] = {
+    "card": 8192,
+    "thumb": 1500,
+    "detail": 15000,
+    "lqip": 200,
+}
+
 # Minimal 1x1 PNG used as last-resort inline body if placeholders missing on disk.
 _MIN_PNG = (
     b"\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01"
@@ -109,12 +118,29 @@ def resolve_placeholder_kind_for_slug(slug: str) -> str:
     return risk_to_placeholder_kind(rec.get("risk_level"), rec.get("edibility_code"))
 
 
-def _file_response(path: Path, cache_seconds: int = 604800) -> FileResponse:
+def _file_response(
+    path: Path,
+    cache_seconds: int = 604800,
+    *,
+    quality: str | None = None,
+) -> FileResponse:
     media_type = "image/webp" if path.suffix.lower() == ".webp" else "image/png"
-    headers = {
+    headers: dict[str, str] = {
         "Cache-Control": f"public, max-age={cache_seconds}",
     }
+    if quality:
+        headers["X-Media-Quality"] = quality
     return FileResponse(path, media_type=media_type, headers=headers)
+
+
+def is_stub_asset(path: Path, variant: str) -> bool:
+    """True if file is missing, tiny (below MIN floor), or non-file."""
+    if path is None or not path.exists() or not path.is_file():
+        return True
+    floor = MIN_BYTES_BY_VARIANT.get(variant, 0)
+    if floor and path.stat().st_size < floor:
+        return True
+    return False
 
 
 def serve_species_variant(
@@ -146,29 +172,49 @@ def serve_species_variant(
                 return RedirectResponse(url, status_code=302)
 
     path = species_variant_path(slug, variant)
-    if path is not None:
-        return _file_response(path, cache_seconds=604800 if v else 86400)
+    if path is not None and not is_stub_asset(path, variant):
+        return _file_response(
+            path,
+            cache_seconds=604800 if v else 86400,
+            quality="ok",
+        )
 
+    # Stub or missing
     if not fallback:
         raise HTTPException(status_code=404, detail="Media not found")
 
     kind = resolve_placeholder_kind_for_slug(slug)
-    return serve_placeholder(kind)
+    return serve_placeholder(kind, quality="stub_fallback", cache_seconds=300)
 
 
-def serve_placeholder(kind: str) -> Response:
+def serve_placeholder(
+    kind: str,
+    *,
+    quality: str | None = None,
+    cache_seconds: int = 86400 * 30,
+) -> Response:
     # Accept optional .webp/.png suffix from FE URLs
     kind = kind.replace(".webp", "").replace(".png", "")
     if kind not in PLACEHOLDER_KINDS:
         kind = "default"
     try:
         path = placeholder_path(kind)
-        return _file_response(path, cache_seconds=86400 * 30)
+        return _file_response(
+            path,
+            cache_seconds=cache_seconds,
+            quality=quality or "ok_procedural",
+        )
     except FileNotFoundError:
+        headers = {
+            "Cache-Control": "public, max-age=3600",
+            "X-Placeholder": kind,
+        }
+        if quality:
+            headers["X-Media-Quality"] = quality
         return Response(
             content=_MIN_PNG,
             media_type="image/png",
-            headers={"Cache-Control": "public, max-age=3600", "X-Placeholder": kind},
+            headers=headers,
         )
 
 
