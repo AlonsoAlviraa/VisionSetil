@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { alertFromScore, mapPool } from './zoneAlerts'
+import {
+  alertFromScore,
+  hotspotRadiusMeters,
+  isHotspotActive,
+  mapPool,
+  mapPoolChunked,
+} from './zoneAlerts'
 
 describe('zoneAlerts weather board', () => {
   it('maps low scores to red extreme / desfavorable', () => {
@@ -23,5 +29,32 @@ describe('zoneAlerts weather board', () => {
     const items = [1, 2, 3, 4, 5]
     const out = await mapPool(items, 2, async (n) => n * 10)
     expect(out).toEqual([10, 20, 30, 40, 50])
+  })
+
+  it('hotspot radius grows with score and abundance', () => {
+    const low = hotspotRadiusMeters('baja', 20)
+    const high = hotspotRadiusMeters('alta', 90)
+    expect(high).toBeGreaterThan(low)
+    expect(hotspotRadiusMeters('media', null)).toBeGreaterThan(0)
+    expect(isHotspotActive('good')).toBe(true)
+    expect(isHotspotActive('extreme')).toBe(false)
+  })
+
+  it('mapPoolChunked preserves order and reports chunks', async () => {
+    const items = [1, 2, 3, 4, 5]
+    const seen: number[] = []
+    const out = await mapPoolChunked(
+      items,
+      {
+        concurrency: 2,
+        chunkSize: 2,
+        onChunk: (partial) => {
+          for (const p of partial) seen.push(p.index)
+        },
+      },
+      async (n) => n * 3,
+    )
+    expect(out).toEqual([3, 6, 9, 12, 15])
+    expect(seen.sort((a, b) => a - b)).toEqual([0, 1, 2, 3, 4])
   })
 })

@@ -49,15 +49,14 @@ class SafetyExplanationService:
         self, observation: Observation, images: list[ObservationImage]
     ) -> list[str]:
         present = {image.view_type for image in images if image.view_type}
-        missing_map = {
-            "cap_top": "Foto del sombrero desde arriba",
-            "gills_or_pores": "Foto clara de laminas o poros",
-            "stem": "Foto del pie completo",
-            "base": "Foto de la base del pie",
-            "cross_section": "Foto de corte o seccion",
-            "environment": "Foto del entorno o sustrato",
-        }
-        missing = [label for key, label in missing_map.items() if key not in present]
+        # D5b: each row satisfied by canonical OR legacy labels
+        evidence_groups = [
+            ({"cap_top", "front", "stem"}, "Foto del sombrero/frente"),
+            ({"gills_or_pores", "gills"}, "Foto clara de laminas o poros"),
+            ({"base", "detail", "cross_section"}, "Foto de la base del pie o detalle"),
+            ({"environment", "habitat"}, "Foto del entorno o sustrato"),
+        ]
+        missing = [label for keys, label in evidence_groups if present.isdisjoint(keys)]
         if not observation.nearby_trees:
             missing.append("Informacion de arboles cercanos")
         if not observation.substrate:
@@ -66,7 +65,8 @@ class SafetyExplanationService:
 
     def _questions(self, observation: Observation, images: list[ObservationImage]) -> list[str]:
         questions = []
-        if not any(image.view_type == "base" for image in images):
+        present = {image.view_type for image in images if image.view_type}
+        if present.isdisjoint({"base", "detail", "cross_section"}):
             questions.append("Puedes anadir una foto de la base para revisar volva o bulbo?")
         if not observation.nearby_trees:
             questions.append("Que arboles habia cerca del ejemplar?")

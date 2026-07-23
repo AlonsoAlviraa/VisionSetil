@@ -176,6 +176,71 @@ def test_classify_without_view_types_still_works(client):
 
 
 # --------------------------------------------------------------------------- #
+# /classify locale form field (B-04 / D-B5)
+# --------------------------------------------------------------------------- #
+def test_classify_locale_omitted_defaults_to_es(client):
+    """Omitting locale defaults to es and echoes result.locale."""
+    png = _make_png_bytes()
+    response = client.post(
+        "/classify",
+        files=[("images", ("a.png", io.BytesIO(png), "image/png"))],
+    )
+    assert response.status_code == 200, response.text
+    assert response.json()["locale"] == "es"
+
+
+def test_classify_locale_valid_echoed(client):
+    """Valid locale is accepted and echoed on result.locale."""
+    png = _make_png_bytes()
+    for loc in ("es", "ca", "eu", "en"):
+        response = client.post(
+            "/classify",
+            data={"locale": loc},
+            files=[("images", ("a.png", io.BytesIO(png), "image/png"))],
+        )
+        assert response.status_code == 200, response.text
+        assert response.json()["locale"] == loc
+
+
+def test_classify_locale_bcp47_normalized(client):
+    """BCP-47 tags like ca-ES normalize to primary subtag."""
+    png = _make_png_bytes()
+    response = client.post(
+        "/classify",
+        data={"locale": "ca-ES"},
+        files=[("images", ("a.png", io.BytesIO(png), "image/png"))],
+    )
+    assert response.status_code == 200, response.text
+    assert response.json()["locale"] == "ca"
+
+
+def test_classify_locale_invalid_returns_400(client):
+    """Invalid locale → HTTP 400 with error + supported list (species API parity)."""
+    png = _make_png_bytes()
+    response = client.post(
+        "/classify",
+        data={"locale": "fr"},
+        files=[("images", ("a.png", io.BytesIO(png), "image/png"))],
+    )
+    assert response.status_code == 400
+    body = response.json()
+    assert body["error"] == "invalid_locale"
+    assert body["supported"] == ["es", "ca", "eu", "en"]
+
+
+def test_classify_locale_blank_defaults_to_es(client):
+    """Blank locale form value is treated as omitted → es."""
+    png = _make_png_bytes()
+    response = client.post(
+        "/classify",
+        data={"locale": "   "},
+        files=[("images", ("a.png", io.BytesIO(png), "image/png"))],
+    )
+    assert response.status_code == 200, response.text
+    assert response.json()["locale"] == "es"
+
+
+# --------------------------------------------------------------------------- #
 # /readyz model status
 # --------------------------------------------------------------------------- #
 def test_readyz_reports_multi_view_classifier(client):

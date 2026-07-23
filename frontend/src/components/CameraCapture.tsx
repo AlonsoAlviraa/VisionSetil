@@ -46,6 +46,11 @@ interface CameraCaptureProps {
   onClose: () => void
   multiView?: boolean
   onMultiViewCapture?: (views: CapturedView[]) => void
+  /**
+   * B-27: optional label of the wizard slot this capture will fill
+   * (e.g. "Láminas / himenio"). Shown in simple-mode header only.
+   */
+  slotLabel?: string
 }
 
 export function CameraCapture({
@@ -53,6 +58,7 @@ export function CameraCapture({
   onClose,
   multiView = false,
   onMultiViewCapture,
+  slotLabel,
 }: CameraCaptureProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
   const streamRef = useRef<MediaStream | null>(null)
@@ -174,7 +180,9 @@ export function CameraCapture({
           <h3>
             {guidedMode
               ? `Vista ${currentStep + 1}/${VIEW_STEPS.length}: ${step.label}`
-              : 'Capturar con cámara'}
+              : slotLabel
+                ? `Capturar: ${slotLabel}`
+                : 'Capturar con cámara'}
           </h3>
           <button className="btn-camera-close" onClick={onClose} aria-label="Cerrar cámara">
             <IconClose size={18} />

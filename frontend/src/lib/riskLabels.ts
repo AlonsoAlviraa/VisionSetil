@@ -66,6 +66,40 @@ export function toRiskLabel(raw: string | null | undefined): RiskLabel {
   return 'dangerous_or_unknown'
 }
 
+/** Severity for max(model edibility, catalog risk_level) join visibility (B-42). */
+const RISK_SEVERITY: Record<RiskLabel, number> = {
+  deadly: 100,
+  poisonous: 80,
+  toxic: 80,
+  not_for_consumption_guidance: 40,
+  dangerous_or_unknown: 30,
+  unknown_or_risky: 20,
+}
+
+export function riskSeverity(raw: string | null | undefined): number {
+  return RISK_SEVERITY[toRiskLabel(raw)] ?? 0
+}
+
+/**
+ * Prefer the more severe of model edibility vs catalog hydrate risk_level (B-42).
+ * Catalog join must not stay invisible when model left edibility=unknown.
+ */
+export function resolveJoinRisk(
+  edibility?: string | null,
+  riskLevel?: string | null,
+): RiskLabel {
+  const fromEd = toRiskLabel(edibility)
+  if (!riskLevel) return fromEd
+  const fromCatalog = toRiskLabel(riskLevel)
+  return riskSeverity(fromCatalog) > riskSeverity(fromEd) ? fromCatalog : fromEd
+}
+
+/** Deadly / poisonous / toxic — candidates for visual boost on real results. */
+export function isSevereRisk(raw: string | null | undefined): boolean {
+  const k = toRiskLabel(raw)
+  return k === 'deadly' || k === 'poisonous' || k === 'toxic'
+}
+
 export function getRiskMeta(raw: string | null | undefined) {
   return RISK_META[toRiskLabel(raw)]
 }

@@ -35,36 +35,59 @@ if (-not (Test-Path "$ROOT\frontend\node_modules")) {
     Pop-Location
 }
 
-# Start backend
-Write-Host "[3/3] Launching services..." -ForegroundColor Yellow
+# Media audit (non-blocking)
+Write-Host "[3/4] Auditing species media..." -ForegroundColor Yellow
+Push-Location $ROOT
+python scripts/audit_media.py 2>$null
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "  WARN: media audit found issues — run: python scripts/precompute_species_images.py" -ForegroundColor DarkYellow
+} else {
+    Write-Host "  Media audit OK" -ForegroundColor Green
+}
+Pop-Location
+
+# Start backend from backend/ so imports resolve
+Write-Host "[4/4] Launching services..." -ForegroundColor Yellow
 Write-Host "  Backend:  http://localhost:8000  (Swagger: /docs)" -ForegroundColor Green
-Write-Host "  Frontend: http://localhost:5173" -ForegroundColor Green
+Write-Host "  Frontend: http://localhost:5173  (photos via /media)" -ForegroundColor Green
+Write-Host "  Enciclopedia works with FE only; Identify needs backend." -ForegroundColor DarkGray
 Write-Host ""
 
 $backendJob = Start-Job -ScriptBlock {
     param($r)
-    Set-Location $r
-    python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    Set-Location "$r\backend"
+    python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
 } -ArgumentList $ROOT
 
 $frontendJob = Start-Job -ScriptBlock {
     param($r)
     Set-Location "$r\frontend"
-    npm run dev -- --host
+    npm run dev -- --host 127.0.0.1 --port 5173
 } -ArgumentList $ROOT
 
 Write-Host "Services started (Job IDs: Backend=$($backendJob.Id), Frontend=$($frontendJob.Id))" -ForegroundColor Cyan
-Write-Host "Waiting 5s for services to initialize..." -ForegroundColor Yellow
-Start-Sleep -Seconds 5
+Write-Host "Waiting for health..." -ForegroundColor Yellow
+$healthy = $false
+for ($i = 0; $i -lt 20; $i++) {
+    Start-Sleep -Seconds 1
+    try {
+        $r = Invoke-WebRequest -Uri "http://127.0.0.1:8000/health" -UseBasicParsing -TimeoutSec 1
+        if ($r.StatusCode -eq 200) { $healthy = $true; break }
+    } catch { }
+}
+if ($healthy) {
+    Write-Host "  Backend health: OK" -ForegroundColor Green
+} else {
+    Write-Host "  Backend health: not ready yet (identify may fail until it is)" -ForegroundColor DarkYellow
+}
 
-# Show status
-Write-Host "`n--- Backend logs (first lines) ---" -ForegroundColor Cyan
-Receive-Job $backendJob -ErrorAction SilentlyContinue | Select-Object -First 10
-Write-Host "`n--- Frontend logs (first lines) ---" -ForegroundColor Cyan
-Receive-Job $frontendJob -ErrorAction SilentlyContinue | Select-Object -First 10
+Write-Host "`n--- Backend logs ---" -ForegroundColor Cyan
+Receive-Job $backendJob -ErrorAction SilentlyContinue | Select-Object -First 8
+Write-Host "`n--- Frontend logs ---" -ForegroundColor Cyan
+Receive-Job $frontendJob -ErrorAction SilentlyContinue | Select-Object -First 8
 
-Write-Host "`n=== Services running. Press Ctrl+C to stop. ===" -ForegroundColor Green
-Write-Host "=== Para ver logs en vivo: Get-Job | Receive-Job -Keep ===" -ForegroundColor Green
+Write-Host "`n=== Open http://localhost:5173  |  Ctrl+C to stop ===" -ForegroundColor Green
+Write-Host "=== Logs: Get-Job | Receive-Job -Keep ===" -ForegroundColor Green
 
 try {
     while ($true) {

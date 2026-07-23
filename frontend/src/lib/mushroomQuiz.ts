@@ -18,8 +18,14 @@ import {
 
 export const QUIZ_SECONDS = 30
 export const QUIZ_OPTION_COUNT = 4
+/** Daily challenge: fewer rounds so a full session is comfortably <3 min. */
+export const DAILY_QUIZ_SECONDS = 20
+export const DAILY_MATCH_ROUNDS = 6
+export const QUIZ_BEST_KEY = 'visionsetil_quiz_best'
+export const QUIZ_DAILY_BEST_KEY = 'visionsetil_quiz_daily_best'
 
 export type QuizMode = 'name' | 'photo' | 'food'
+export type QuizPlayKind = 'daily' | 'free'
 
 /** Food-quality buckets for the game (A–D). No "sin datos". */
 export type QuizFoodBucket = FoodClass
@@ -36,7 +42,8 @@ export const QUIZ_FOOD_OPTIONS: Array<{
     label: FOOD_CLASS_META.comestible.label,
     hint: FOOD_CLASS_META.comestible.hint,
     letter: 'A',
-    color: 'green',
+    // D16: educational teal tint class — not food-safe green
+    color: 'teal',
   },
   {
     id: 'no_comestible',
@@ -115,6 +122,137 @@ function shuffle<T>(arr: T[], rng: () => number = Math.random): T[] {
     ;[a[i], a[j]] = [a[j], a[i]]
   }
   return a
+}
+
+/** Local calendar day key YYYY-MM-DD (deterministic per device timezone). */
+export function dayKey(date: Date = new Date()): string {
+  const y = date.getFullYear()
+  const m = String(date.getMonth() + 1).padStart(2, '0')
+  const d = String(date.getDate()).padStart(2, '0')
+  return `${y}-${m}-${d}`
+}
+
+/**
+ * Integer seed for the daily challenge (same civil day → same seed).
+ * Stable across reloads; not crypto — educational shuffle only.
+ */
+export function dailySeed(date: Date = new Date()): number {
+  const key = dayKey(date)
+  let h = 2166136261
+  for (let i = 0; i < key.length; i++) {
+    h ^= key.charCodeAt(i)
+    h = Math.imul(h, 16777619)
+  }
+  // mix product salt so seeds differ from raw date hashes elsewhere
+  h = Math.imul(h ^ (h >>> 16), 0x45d9f3b)
+  h = Math.imul(h ^ (h >>> 16), 0x45d9f3b)
+  return (h ^ (h >>> 16)) >>> 0
+}
+
+/** Mulberry32 PRNG — deterministic [0,1) sequence from a 32-bit seed. */
+export function mulberry32(seed: number): () => number {
+  let a = seed >>> 0
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0
+    let t = a
+    t = Math.imul(t ^ (t >>> 15), t | 1)
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61)
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+  }
+}
+
+export function rngFromDaily(date: Date = new Date()): () => number {
+  return mulberry32(dailySeed(date))
+}
+
+/** Rotate modes for daily rounds: food → name → photo (educational mix). */
+export function dailyModeForRound(roundIndex: number): QuizMode {
+  const modes: QuizMode[] = ['food', 'name', 'photo']
+  return modes[roundIndex % modes.length]
+}
+
+/**
+ * Build a full daily challenge: fixed number of rounds from a day seed.
+ * Same day + same pool → same subjects/options order (deterministic).
+ */
+export function buildDailyChallenge(
+  pool: QuizSpecies[],
+  date: Date = new Date(),
+  rounds: number = DAILY_MATCH_ROUNDS,
+): QuizRound[] {
+  if (pool.length < QUIZ_OPTION_COUNT) throw new Error('Quiz pool too small')
+  const rng = rngFromDaily(date)
+  const out: QuizRound[] = []
+  for (let i = 0; i < rounds; i++) {
+    out.push(buildRound(dailyModeForRound(i), pool, rng))
+  }
+  return out
+}
+
+export type DailyBestRecord = {
+  day: string
+  score: number
+}
+
+export function readDailyBest(
+  storage: { getItem(k: string): string | null } = localStorage,
+): DailyBestRecord {
+  try {
+    const raw = storage.getItem(QUIZ_DAILY_BEST_KEY)
+    if (!raw) return { day: '', score: 0 }
+    const parsed = JSON.parse(raw) as DailyBestRecord
+    if (!parsed || typeof parsed.day !== 'string' || typeof parsed.score !== 'number') {
+      return { day: '', score: 0 }
+    }
+    return { day: parsed.day, score: Number.isFinite(parsed.score) ? parsed.score : 0 }
+  } catch {
+    return { day: '', score: 0 }
+  }
+}
+
+/** Persist best score for a civil day (only upgrades same-day record). */
+export function writeDailyBest(
+  day: string,
+  score: number,
+  storage: {
+    getItem(k: string): string | null
+    setItem(k: string, v: string): void
+  } = localStorage,
+): DailyBestRecord {
+  const prev = readDailyBest(storage)
+  const nextScore = prev.day === day ? Math.max(prev.score, score) : score
+  const next = { day, score: nextScore }
+  try {
+    storage.setItem(QUIZ_DAILY_BEST_KEY, JSON.stringify(next))
+  } catch {
+    /* quota */
+  }
+  return next
+}
+
+export function readAllTimeBest(
+  storage: { getItem(k: string): string | null } = localStorage,
+): number {
+  try {
+    const n = Number(storage.getItem(QUIZ_BEST_KEY) || '0')
+    return Number.isFinite(n) ? n : 0
+  } catch {
+    return 0
+  }
+}
+
+export function writeAllTimeBest(
+  score: number,
+  storage: { getItem(k: string): string | null; setItem(k: string, v: string): void } = localStorage,
+): number {
+  const prev = readAllTimeBest(storage)
+  const next = Math.max(prev, score)
+  try {
+    storage.setItem(QUIZ_BEST_KEY, String(next))
+  } catch {
+    /* quota */
+  }
+  return next
 }
 
 function slugify(taxon: string): string {

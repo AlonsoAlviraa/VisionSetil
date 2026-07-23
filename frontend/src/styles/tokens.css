@@ -1,0 +1,425 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   VisionSetil Design Tokens (PR-00 + Phase D-01)
+   Primitives for spacing, type scale, D16 edibility, skeleton/empty chrome.
+
+   Cascade (see main.tsx): tokens load before atelier.css.
+   Atelier is product SSOT for atmosphere (forest/cream, buttons, cards).
+   These vars remain the shared scale; atelier may override color aliases.
+
+   D16: no food-safe green for edibility "excelente" — use teal/info instead.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Spacing scale (4px base) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+
+  /* Radii — soft product defaults; atelier may tighten large radii on cards */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.25rem;
+  --radius-full: 9999px;
+
+  /* Typography — aligned with atelier Inter stack (atelier may re-declare) */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-display: 'Instrument Serif', 'Times New Roman', Georgia, serif;
+  --font-mono: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, monospace;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+  --leading-tight: 1.25;
+  --leading-normal: 1.6;
+  --tracking-tight: -0.01em;
+
+  /* Elevation */
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.12);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 400ms;
+
+  /* Edibility continuum (D16) — educational surfaces only; no food-safe green */
+  --edibility-excelente: #0e7490; /* teal/info, NOT green */
+  --edibility-buen: #0284c7;
+  --edibility-cautela: #d97706;
+  --edibility-no-recomendado: #b45309;
+  --edibility-toxico: #dc2626;
+  --edibility-mortifero: #7f1d1d;
+  --edibility-desconocido: #64748b;
+
+  /* Risk (identify / result surfaces) */
+  --risk-deadly: #7f1d1d;
+  --risk-high: #dc2626;
+  --risk-medium: #d97706;
+  --risk-low: #64748b;
+  --risk-unknown: #94a3b8;
+
+  /* UI state surfaces */
+  --skeleton-base: #e2e8f0;
+  --skeleton-shine: #f8fafc;
+  --empty-icon-bg: #f1f5f9;
+  --error-surface: var(--danger-bg, #fef2f2);
+  --error-border: var(--danger-border, #fecaca);
+  --error-text: var(--danger-text, #991b1b);
+}
+
+[data-theme='dark'] {
+  --skeleton-base: #334155;
+  --skeleton-shine: #475569;
+  --empty-icon-bg: #1e293b;
+  --error-surface: #450a0a;
+  --error-border: #7f1d1d;
+  --error-text: #fecaca;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.5);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration-normal: 0ms;
+    --duration-slow: 0ms;
+  }
+}
+
+/* ─── UI kit surfaces (Phase D-01/D-02) — used by components/ui/* ─── */
+.vs-card {
+  background: var(--surface, #fff);
+  border: 1px solid var(--border, var(--line, rgba(13, 18, 16, 0.12)));
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.vs-card--padded {
+  padding: var(--space-4);
+}
+
+.vs-card--interactive {
+  transition:
+    transform var(--duration-normal) var(--ease-out),
+    box-shadow var(--duration-normal) var(--ease-out);
+}
+
+.vs-card--interactive:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vs-card--interactive,
+  .vs-card--interactive:hover {
+    transition: none;
+    transform: none;
+  }
+}
+
+/* Bridge: Button component emits both vs-btn and btn-atelier (atelier styles win). */
+.vs-btn.btn-atelier {
+  /* sizes override default atelier min-height when compact */
+}
+.vs-btn--sm.btn-atelier {
+  min-height: 2.15rem;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.85rem;
+}
+.vs-btn--lg.btn-atelier {
+  min-height: 3.1rem;
+  padding: 0.85rem 1.5rem;
+  font-size: 1.05rem;
+}
+
+/* ─── Skeleton ─── */
+.ui-skeleton {
+  display: block;
+  background: linear-gradient(
+    90deg,
+    var(--skeleton-base) 0%,
+    var(--skeleton-shine) 50%,
+    var(--skeleton-base) 100%
+  );
+  background-size: 200% 100%;
+  animation: ui-skeleton-shimmer 1.2s ease-in-out infinite;
+  border-radius: var(--radius-md);
+}
+
+.ui-skeleton--title {
+  border-radius: var(--radius-sm, 6px);
+}
+
+.ui-skeleton--block {
+  border-radius: var(--radius-md);
+}
+
+.ui-skeleton--card {
+  border-radius: 12px;
+  min-height: 5.5rem;
+}
+
+@keyframes ui-skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-skeleton {
+    animation: none;
+    background: var(--skeleton-base);
+  }
+}
+
+/* ─── Empty / Error states ─── */
+.ui-empty-state,
+.ui-error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-8) var(--space-4);
+  gap: var(--space-3);
+}
+
+.ui-empty-state__icon,
+.ui-error-state__icon {
+  width: 4rem;
+  height: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  background: var(--empty-icon-bg);
+  font-size: 1.75rem;
+}
+
+.ui-error-state {
+  background: var(--error-surface);
+  border: 1px solid var(--error-border);
+  border-radius: var(--radius-lg);
+  color: var(--error-text);
+}
+
+.ui-empty-state__title,
+.ui-error-state__title {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  margin: 0;
+}
+
+.ui-empty-state__description,
+.ui-error-state__description {
+  font-size: var(--text-sm);
+  color: var(--text-muted, #64748b);
+  max-width: 28rem;
+  margin: 0;
+}
+
+.ui-error-state__description {
+  color: var(--error-text);
+  opacity: 0.9;
+}
+
+/* ─── SpeciesImage ─── */
+.species-image {
+  position: relative;
+  overflow: hidden;
+  background: var(--empty-icon-bg, #dfe8df);
+  width: 100%;
+  height: 100%;
+  min-height: 80px;
+}
+
+/* C-06: list thumbs must not force minHeight 80 */
+.species-image[data-layout='fixed'] {
+  min-height: 0;
+}
+
+.species-thumb .species-image,
+.species-thumb .species-image[data-layout='fixed'] {
+  min-height: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+}
+
+.species-image__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: opacity 0.25s ease;
+}
+
+.species-image__img--loading {
+  opacity: 0.35;
+}
+
+.species-image__img--loaded {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .species-image__img {
+    transition: none;
+  }
+}
+
+@keyframes species-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.species-image__attribution {
+  font-size: var(--text-xs);
+  color: var(--text-muted, #64748b);
+  margin-top: var(--space-1);
+}
+
+/* Phase D-05 — honest media badge (foto vs ilustración de marca) */
+.species-image__media-badge {
+  position: absolute;
+  left: 0.4rem;
+  bottom: 0.4rem;
+  z-index: 2;
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-full);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1.2;
+  pointer-events: none;
+  backdrop-filter: blur(8px);
+}
+
+.species-image__media-badge--illustration {
+  background: rgba(15, 23, 42, 0.72);
+  color: #f8fafc;
+}
+
+.species-image__media-badge--photo {
+  background: rgba(247, 244, 237, 0.88);
+  color: var(--ink, #0d1210);
+  border: 1px solid rgba(13, 18, 16, 0.12);
+}
+
+.species-image[data-layout='fixed'] .species-image__media-badge {
+  left: 0.2rem;
+  bottom: 0.2rem;
+  font-size: 0.55rem;
+  padding: 0.1rem 0.3rem;
+}
+
+/* ─── Language switcher ─── */
+.lang-switcher {
+  display: inline-flex;
+  gap: 0.15rem;
+  align-items: center;
+}
+
+.lang-switcher__btn {
+  border: 1px solid transparent;
+  background: transparent;
+  color: inherit;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 0.2rem 0.4rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  opacity: 0.7;
+  text-transform: uppercase;
+}
+
+.lang-switcher__btn:hover,
+.lang-switcher__btn:focus-visible {
+  opacity: 1;
+  outline: 2px solid var(--primary, #3a5a40);
+  outline-offset: 1px;
+}
+
+.lang-switcher__btn--active {
+  opacity: 1;
+  border-color: var(--border-strong, #cbd5e1);
+  background: var(--surface-hover, #f1f5f9);
+}
+
+/* ─── Guided identify wizard ─── */
+.identify-wizard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.identify-wizard__steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-2);
+}
+
+.identify-wizard__step {
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  text-align: center;
+  background: var(--surface, #fff);
+  cursor: pointer;
+}
+
+.identify-wizard__step--active {
+  border-color: var(--primary, #3a5a40);
+  box-shadow: 0 0 0 2px var(--primary-glow, rgba(90, 129, 87, 0.3));
+}
+
+.identify-wizard__step--done {
+  border-color: var(--primary-light, #588157);
+}
+
+/* ─── Share card ─── */
+.share-card {
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  background: var(--surface, #fff);
+}
+
+/* ─── Favorites star ─── */
+.fav-toggle {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 1.25rem;
+  line-height: 1;
+  padding: 0.25rem;
+}
+
+.fav-toggle[aria-pressed='true'] {
+  filter: none;
+}
+
+.fav-toggle[aria-pressed='false'] {
+  opacity: 0.55;
+}

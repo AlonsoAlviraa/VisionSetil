@@ -1,0 +1,36 @@
+{
+  "slug": "amanita-muscaria",
+  "scientific_name": "Amanita muscaria",
+  "source": "gbif",
+  "source_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/604828386/original.jpg",
+  "license": "http://creativecommons.org/licenses/by/4.0/",
+  "license_url": "http://creativecommons.org/licenses/by/4.0/",
+  "creator": "Chris Sulots",
+  "attribution_text": "Chris Sulots — http://creativecommons.org/licenses/by/4.0/",
+  "gbif_occurrence_id": 5938036492,
+  "sha256_source": "fa4ab1178d2dd8846d20f80c96facfa684715f18361cee4b98fb66d5bc83cf14",
+  "sha256_derivatives": {
+    "lqip": "71f5f35684db1e3c1fab906757540bc6e83ead8fb9a054eb86dc473a8557f92d",
+    "thumb": "078541f13e822b89fcc6ce5f0ed6811c3c31e0b11ba786f9e7bedd690d26f543",
+    "card": "9cc2b6a0cbab4bb50c3132a5c2cb8ce3bc761780325230927fb26022f0928694",
+    "detail": "fa4ab1178d2dd8846d20f80c96facfa684715f18361cee4b98fb66d5bc83cf14"
+  },
+  "gallery": [
+    {
+      "file": "gallery/01.webp"
+    },
+    {
+      "file": "gallery/02.webp"
+    },
+    {
+      "file": "gallery/03.webp"
+    }
+  ],
+  "fetched_at": "2026-07-23T16:26:02.997579+00:00",
+  "status": "ok",
+  "quality": {
+    "card_bytes": 86944,
+    "class": "ok_real",
+    "checked_at": "2026-07-23T16:26:02.997579+00:00"
+  }
+}

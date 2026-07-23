@@ -190,6 +190,39 @@ async def store_observation_images(
     return saved_images
 
 
+def strip_exif(content: bytes, extension: str) -> bytes:
+    """Return image bytes with EXIF/metadata stripped when possible.
+
+    Best-effort: uses Pillow when available; otherwise returns original bytes
+    for non-JPEG/PNG/WebP or when re-encode fails. Used for privacy on uploads.
+    """
+    ext = (extension or "").lower().lstrip(".")
+    if ext not in {"jpg", "jpeg", "png", "webp"} or not content:
+        return content
+    try:
+        from io import BytesIO
+
+        from PIL import Image  # type: ignore
+
+        img = Image.open(BytesIO(content))
+        # Drop EXIF by re-encoding without info
+        data = list(img.getdata())
+        clean = Image.new(img.mode, img.size)
+        clean.putdata(data)
+        out = BytesIO()
+        fmt = "JPEG" if ext in {"jpg", "jpeg"} else ext.upper()
+        save_kwargs: dict = {}
+        if fmt == "JPEG":
+            save_kwargs["quality"] = 92
+            if clean.mode not in ("RGB", "L"):
+                clean = clean.convert("RGB")
+        clean.save(out, format=fmt, **save_kwargs)
+        result = out.getvalue()
+        return result if result else content
+    except Exception:  # noqa: BLE001 — best-effort privacy helper
+        return content
+
+
 def _guess_view_type(name: str) -> str | None:
     if "top" in name or "cap" in name or "sombrero" in name:
         return "cap_top"

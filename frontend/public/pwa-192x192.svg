@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" role="img" aria-label="VisionSetil">
+  <rect width="192" height="192" rx="40" fill="#0c1410"/>
+  <circle cx="96" cy="84" r="42" fill="#6b8f71"/>
+  <rect x="84" y="108" width="24" height="48" rx="6" fill="#ebe5d8"/>
+  <text x="96" y="178" text-anchor="middle" font-family="system-ui,sans-serif" font-size="18" fill="#a8b4ac">VS</text>
+</svg>

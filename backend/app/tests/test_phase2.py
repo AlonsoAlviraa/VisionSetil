@@ -214,6 +214,35 @@ def test_classification_safety_labels(client: TestClient):
 
 
 def test_human_review_safe_to_eat_blocking(client: TestClient):
+    from app.db.database import get_db
+    from app.db.models import User
+    from app.main import app
+
+    # E-05: patch requires reviewer/admin session (same test DB as client)
+    reg = client.post(
+        "/auth/register",
+        json={
+            "email": "reviewer@test.local",
+            "username": "reviewer1",
+            "password": "password123",
+        },
+    )
+    assert reg.status_code == 201, reg.text
+    token = reg.json()["token"]
+    gen = app.dependency_overrides[get_db]()
+    db = next(gen)
+    try:
+        user = db.query(User).filter(User.username == "reviewer1").first()
+        assert user is not None
+        user.role = "reviewer"
+        db.commit()
+    finally:
+        try:
+            next(gen)
+        except StopIteration:
+            pass
+    headers = {"Authorization": f"Bearer {token}"}
+
     obs_res = client.post("/observations", json={"title": "Test Amanita"})
     obs_id = obs_res.json()["id"]
 
@@ -224,7 +253,9 @@ def test_human_review_safe_to_eat_blocking(client: TestClient):
     rev_id = rev_res.json()["id"]
 
     update_res = client.patch(
-        f"/human-reviews/{rev_id}", json={"reviewer_notes": "Esta seta es comestible"}
+        f"/human-reviews/{rev_id}",
+        json={"reviewer_notes": "Esta seta es comestible"},
+        headers=headers,
     )
     assert update_res.status_code == 400
     assert "Safety policy violation" in update_res.json()["detail"]

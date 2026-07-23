@@ -27,6 +27,7 @@ const SURFACES: Array<{ name: string; path: string; pageHint: string }> = [
   { name: 'Register', path: '/registro', pageHint: 'RegisterPage' },
   { name: 'Lookalike Studio', path: '/lookalikes', pageHint: 'LookalikeStudioPage' },
   { name: 'Quiz game', path: '/reto', pageHint: 'QuizGamePage' },
+  { name: 'Setadle hub', path: '/setadle', pageHint: 'SetadlePage' },
   { name: 'ML dashboard', path: '/ml', pageHint: 'MlDashboardPage' },
   { name: 'Not found', path: '*', pageHint: 'NotFoundPage' },
 ]
@@ -53,7 +54,7 @@ describe('product surfaces routes', () => {
     for (const p of [
       '/identificar',
       '/enciclopedia',
-      '/reto',
+      '/setadle',
       '/historial',
       '/mapa',
       '/educacion',
@@ -61,6 +62,7 @@ describe('product surfaces routes', () => {
       '/revision-experta',
       '/lookalikes',
       '/comunidad',
+      '/reto',
     ]) {
       expect(header).toContain(`to: '${p}'`)
     }
@@ -72,10 +74,10 @@ describe('product surfaces routes', () => {
     expect(header).toContain('Más')
     expect(header).toContain('nav-more')
     expect(header).toMatch(
-      /primaryNav\s*=\s*\[[\s\S]*?to: '\/identificar'[\s\S]*?to: '\/enciclopedia'[\s\S]*?to: '\/reto'[\s\S]*?to: '\/mapa'[\s\S]*?\]/,
+      /primaryNav\s*=\s*\[[\s\S]*?to: '\/identificar'[\s\S]*?to: '\/enciclopedia'[\s\S]*?to: '\/setadle'[\s\S]*?to: '\/mapa'[\s\S]*?\]/,
     )
     expect(header).toMatch(
-      /moreNav\s*=\s*\[[\s\S]*?to: '\/historial'[\s\S]*?to: '\/lookalikes'[\s\S]*?to: '\/offline'[\s\S]*?to: '\/educacion'[\s\S]*?to: '\/comunidad'[\s\S]*?to: '\/revision-experta'[\s\S]*?to: '\/ml'[\s\S]*?\]/,
+      /moreNav\s*=\s*\[[\s\S]*?to: '\/reto'[\s\S]*?to: '\/lookalikes'[\s\S]*?to: '\/historial'[\s\S]*?to: '\/offline'[\s\S]*?to: '\/educacion'[\s\S]*?to: '\/comunidad'[\s\S]*?to: '\/revision-experta'[\s\S]*?to: '\/ml'[\s\S]*?\]/,
     )
   })
 
@@ -87,5 +89,14 @@ describe('product surfaces routes', () => {
     expect(read('pages/LookalikeStudioPage.tsx')).toMatch(/Lookalike Studio/)
     expect(read('components/SeasonRadar.tsx')).toMatch(/SeasonRadar/)
     expect(read('components/ResultCard.tsx')).toMatch(/handleExpertHandoff|buildExpertHandoff/)
+  })
+
+  it('B-42: deadly/poisonous join visibility on real results (RiskChip boost + resolveJoinRisk)', () => {
+    expect(read('lib/riskLabels.ts')).toMatch(/resolveJoinRisk/)
+    expect(read('lib/riskLabels.ts')).toMatch(/isSevereRisk/)
+    expect(read('components/RiskChip.tsx')).toMatch(/risk-chip--boost|boost/)
+    expect(read('components/ResultCard.tsx')).toMatch(/resolveJoinRisk/)
+    expect(read('components/ResultCard.tsx')).toMatch(/boostJoinRisk|mode === 'real'/)
+    expect(read('components/ResultCard.tsx')).toMatch(/prediction-item--join-severe|risk-chip--boost|boost=/)
   })
 })

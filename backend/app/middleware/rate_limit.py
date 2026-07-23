@@ -1,10 +1,21 @@
-"""Rate limiting middleware with path-aware limits (S4).
+"""Rate limiting middleware with path-aware limits (S4 + B-17).
 
 Env:
     RATE_LIMIT_REQUESTS — default max requests per window (60)
     RATE_LIMIT_WINDOW_SECONDS — window size (60)
     RATE_LIMIT_CLASSIFY_REQUESTS — stricter limit for /classify* (default 20)
     REDIS_URL — optional distributed store
+
+Preflight (B-17 / Phase B Honest Identify)
+------------------------------------------
+Identify polls ``/readyz`` and ``/models/quality-gate`` on mount and every
+**60s** (``PREFLIGHT_POLL_MS = 60_000`` on the FE). With several open tabs that
+traffic would share the general bucket and risk 429s; both endpoints are
+cheap (cached metrics / readiness checks, no GPU) and are **rate-limit
+exempt** by default (same policy as public media/species GETs).
+
+If a deployment must rate-limit them instead of exempting, use a dedicated
+high limit of **≥120 req/min/IP** — never the classify bucket.
 """
 
 from __future__ import annotations
@@ -25,9 +36,39 @@ logger = logging.getLogger(__name__)
 # Paths that use the stricter classify budget
 CLASSIFY_PATH_PREFIXES = ("/classify",)
 
+# Auth abuse surface — tighter than general (login stuffing / mass register)
+AUTH_PATH_PREFIXES = ("/auth/login", "/auth/register")
+
+# Cheap ops / preflight status paths — never share the general or classify budget.
+# Keep in sync with ``app.main`` middleware wiring.
+DEFAULT_EXEMPT_PATHS: frozenset[str] = frozenset(
+    {
+        "/health",
+        "/healthz",
+        "/readyz",
+        "/docs",
+        "/openapi.json",
+        "/redoc",
+        # Identify preflight (B-17): mount + 60s poll; multi-tab safe
+        "/models/quality-gate",
+    }
+)
+
 
 def _is_classify_path(path: str) -> bool:
     return any(path == p or path.startswith(p + "/") for p in CLASSIFY_PATH_PREFIXES)
+
+
+def _is_auth_path(path: str) -> bool:
+    return any(path == p or path.startswith(p + "/") for p in AUTH_PATH_PREFIXES)
+
+
+def _bucket_for_path(path: str) -> str:
+    if _is_classify_path(path):
+        return "classify"
+    if _is_auth_path(path):
+        return "auth"
+    return "general"
 
 
 class RateLimitMiddleware(BaseHTTPMiddleware):
@@ -39,8 +80,10 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         max_requests: int = 60,
         window_seconds: int = 60,
         classify_max_requests: int | None = None,
+        auth_max_requests: int | None = None,
         exempt_paths: set[str] | None = None,
         redis_url: str | None = None,
+        trust_proxy: bool | None = None,
     ):
         super().__init__(app)
         self.max_requests = max_requests
@@ -48,13 +91,19 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         self.classify_max_requests = classify_max_requests or int(
             os.getenv("RATE_LIMIT_CLASSIFY_REQUESTS", "20")
         )
-        self.exempt_paths = exempt_paths or {
-            "/health",
-            "/readyz",
-            "/docs",
-            "/openapi.json",
-            "/redoc",
-        }
+        self.auth_max_requests = auth_max_requests or int(
+            os.getenv("RATE_LIMIT_AUTH_REQUESTS", "10")
+        )
+        self.exempt_paths = set(exempt_paths) if exempt_paths is not None else set(DEFAULT_EXEMPT_PATHS)
+        # Trust X-Forwarded-For only when explicitly enabled (reverse proxy).
+        if trust_proxy is None:
+            trust_proxy = os.getenv("TRUST_PROXY", "").strip().lower() in {
+                "1",
+                "true",
+                "yes",
+                "on",
+            }
+        self.trust_proxy = bool(trust_proxy)
         self._requests: dict[str, list[float]] = defaultdict(list)
         self._redis = None
 
@@ -77,19 +126,24 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
                 )
                 self._redis = None
 
+    def _client_ip(self, request: Request) -> str:
+        if self.trust_proxy:
+            forwarded = request.headers.get("X-Forwarded-For", "")
+            if forwarded:
+                return forwarded.split(",")[0].strip() or "unknown"
+        return request.client.host if request.client else "unknown"
+
     def _get_client_key(self, request: Request) -> str:
-        forwarded = request.headers.get("X-Forwarded-For", "")
-        if forwarded:
-            ip = forwarded.split(",")[0].strip()
-        else:
-            ip = request.client.host if request.client else "unknown"
-        # Separate buckets for classify vs general traffic
-        bucket = "classify" if _is_classify_path(request.url.path) else "general"
+        ip = self._client_ip(request)
+        bucket = _bucket_for_path(request.url.path)
         return f"{bucket}:{ip}"
 
     def _limit_for_request(self, request: Request) -> int:
-        if _is_classify_path(request.url.path):
+        bucket = _bucket_for_path(request.url.path)
+        if bucket == "classify":
             return self.classify_max_requests
+        if bucket == "auth":
+            return self.auth_max_requests
         return self.max_requests
 
     def _is_exempt(self, path: str) -> bool:
@@ -161,5 +215,6 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         remaining = max(limit - count - 1, 0)
         response.headers["X-RateLimit-Limit"] = str(limit)
         response.headers["X-RateLimit-Remaining"] = str(remaining)
+        response.headers["X-RateLimit-Bucket"] = _bucket_for_path(request.url.path)
 
         return response

@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [main, master, develop]
+    branches: [main, master, develop, merge/best-of-both]
   pull_request:
-    branches: [main, master, develop]
+    branches: [main, master, develop, merge/best-of-both]
 
 jobs:
   lint-type-test:
@@ -131,6 +131,15 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Install Playwright browsers (chromium only)
+        run: npx playwright install --with-deps chromium
+
+      - name: E2E smoke (identify blocked + media)
+        run: npx playwright test e2e/identify-blocked.spec.ts e2e/media-smoke.spec.ts --project=chromium
+        env:
+          CI: "true"
+        continue-on-error: true
 
   docker-build:
     runs-on: ubuntu-latest

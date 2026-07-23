@@ -1,5 +1,5 @@
 /** Encyclopedia — family browse, ranked search, photo grid (async catalog code-split). */
-import { lazy, Suspense, useMemo, useState } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
 import { countByRisk } from '../data/speciesCatalog'
 import { useSpeciesCatalog } from '../hooks/useSpeciesCatalog'
 import { listFamilies, searchCatalogRanked } from '../lib/catalogSearch'
@@ -10,6 +10,7 @@ import { MUSHROOM_HERO_SHOTS } from '../data/mushroomPhotos'
 import { ENCYCLOPEDIA_FIRST_PAGE_SIZE } from '../data/photoTiers'
 import { EmptyState } from '../components/EmptyState'
 import { IconMushroom } from '../components/icons'
+import { Skeleton } from '../components/ui/Skeleton'
 
 const PhotoSpinViewer = lazy(() =>
   import('../components/PhotoSpinViewer').then((m) => ({ default: m.PhotoSpinViewer })),
@@ -40,12 +41,20 @@ export function EncyclopediaPage() {
   const { catalog: speciesCatalog, meta: speciesCatalogMeta, loading: catalogLoading } =
     useSpeciesCatalog()
   const [query, setQuery] = useState('')
+  /** E-09: debounced query for ranked search (150ms) — fewer main-thread spikes. */
+  const [debouncedQuery, setDebouncedQuery] = useState('')
   const [risk, setRisk] = useState<'all' | RiskLabel>('all')
   const [food, setFood] = useState<'all' | FoodClass | 'documented'>('all')
   const [family, setFamily] = useState<string>('all')
   const [page, setPage] = useState(0)
   const [studioOpen, setStudioOpen] = useState(false)
   const [moreFamilies, setMoreFamilies] = useState(false)
+
+  useEffect(() => {
+    const t = window.setTimeout(() => setDebouncedQuery(query), 150)
+    return () => window.clearTimeout(t)
+  }, [query])
+
   const counts = useMemo(() => countByRisk(), [speciesCatalog])
   const foodStats = useMemo(() => foodQualityStats(), [])
 
@@ -55,11 +64,12 @@ export function EncyclopediaPage() {
   )
 
   const allResults = useMemo(() => {
+    // Cap ranked results for grid (windowed pages via page * PAGE_SIZE)
     let list = searchCatalogRanked(speciesCatalog, {
-      query,
+      query: debouncedQuery,
       risk,
       family,
-      limit: 800,
+      limit: 200,
       boostHighRisk: true,
     })
     if (food !== 'all') {
@@ -70,7 +80,7 @@ export function EncyclopediaPage() {
       })
     }
     return list
-  }, [speciesCatalog, query, risk, family, food])
+  }, [speciesCatalog, debouncedQuery, risk, family, food])
 
   const results = useMemo(
     () => allResults.slice(0, (page + 1) * PAGE_SIZE),
@@ -113,15 +123,31 @@ export function EncyclopediaPage() {
         <div className="atelier-banner__copy">
           <h1>Enciclopedia de setas</h1>
           <p>
-            {catalogLoading ? 'Cargando catálogo…' : `${speciesCatalogMeta.count} taxones`} ·{' '}
+            {catalogLoading ? (
+              'Cargando catálogo…'
+            ) : (
+              <span data-testid="encyclopedia-count">{speciesCatalogMeta.count} taxones</span>
+            )}{' '}
+            ·{' '}
             {foodStats.total_documented} con calidad documentada. Solo orientación.
           </p>
         </div>
       </div>
 
       {catalogLoading && (
-        <div className="skeleton-atelier" style={{ minHeight: 180, marginBottom: '1rem' }}>
-          <div className="skeleton-atelier__shimmer" />
+        <div
+          className="species-photo-grid ency-skeleton-grid"
+          aria-busy="true"
+          aria-label="Cargando especies"
+          data-testid="ency-skeleton-grid"
+        >
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div key={i} className="ency-skeleton-card">
+              <Skeleton variant="card" height="11rem" borderRadius="16px" aria-hidden />
+              <Skeleton variant="title" width="70%" height="0.9rem" aria-hidden />
+              <Skeleton variant="line" width="45%" height="0.7rem" aria-hidden />
+            </div>
+          ))}
         </div>
       )}
 
@@ -194,7 +220,7 @@ export function EncyclopediaPage() {
         </div>
       )}
 
-      <div className="encyclopedia-toolbar ency-toolbar">
+      <div className="encyclopedia-toolbar ency-toolbar ency-toolbar--sticky" data-testid="ency-toolbar">
         <div className="search-box" style={{ flex: 1, minWidth: 200 }}>
           <input
             type="search"

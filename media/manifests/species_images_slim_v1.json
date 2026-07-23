@@ -1,0 +1,1567 @@
+{
+  "version": 1,
+  "generated_at": "2026-07-23T16:30:43.835013+00:00",
+  "count": 520,
+  "species": {
+    "agaricus-arvensis": {
+      "status": "ok"
+    },
+    "agaricus-augustus": {
+      "status": "ok"
+    },
+    "agaricus-bisporus": {
+      "status": "ok"
+    },
+    "agaricus-bitorquis": {
+      "status": "ok"
+    },
+    "agaricus-campestris": {
+      "status": "ok"
+    },
+    "agaricus-cupreobrunneus": {
+      "status": "ok"
+    },
+    "agaricus-dulcidulus": {
+      "status": "ok"
+    },
+    "agaricus-essettei": {
+      "status": "ok"
+    },
+    "agaricus-excellens": {
+      "status": "ok"
+    },
+    "agaricus-freirei": {
+      "status": "ok"
+    },
+    "agaricus-fuscofibrillosus": {
+      "status": "ok"
+    },
+    "agaricus-impudicus": {
+      "status": "ok"
+    },
+    "agaricus-langei": {
+      "status": "ok"
+    },
+    "agaricus-lanipes": {
+      "status": "ok"
+    },
+    "agaricus-maleolens": {
+      "status": "ok"
+    },
+    "agaricus-moelleri": {
+      "status": "ok"
+    },
+    "agaricus-pampeanus": {
+      "status": "ok"
+    },
+    "agaricus-porphyrizon": {
+      "status": "ok"
+    },
+    "agaricus-silvicola": {
+      "status": "ok"
+    },
+    "agaricus-subperonatus": {
+      "status": "ok"
+    },
+    "agaricus-sylvaticus": {
+      "status": "ok"
+    },
+    "agaricus-urinascens": {
+      "status": "ok"
+    },
+    "agaricus-xanthoderma": {
+      "status": "ok"
+    },
+    "agrocybe-pediades": {
+      "status": "ok"
+    },
+    "agrocybe-praecox": {
+      "status": "ok"
+    },
+    "albatrellus-ovinus": {
+      "status": "ok"
+    },
+    "aleuria-aurantia": {
+      "status": "ok"
+    },
+    "amanita-battarrae": {
+      "status": "ok"
+    },
+    "amanita-caesarea": {
+      "status": "ok"
+    },
+    "amanita-ceciliae": {
+      "status": "ok"
+    },
+    "amanita-citrina": {
+      "status": "ok"
+    },
+    "amanita-codinae": {
+      "status": "ok"
+    },
+    "amanita-crocea": {
+      "status": "ok"
+    },
+    "amanita-echinocephala": {
+      "status": "ok"
+    },
+    "amanita-eliae": {
+      "status": "ok"
+    },
+    "amanita-excelsa": {
+      "status": "ok"
+    },
+    "amanita-franchetii": {
+      "status": "ok"
+    },
+    "amanita-fulva": {
+      "status": "ok"
+    },
+    "amanita-gemmata": {
+      "status": "ok"
+    },
+    "amanita-lividopallescens": {
+      "status": "ok"
+    },
+    "amanita-mairei": {
+      "status": "ok"
+    },
+    "amanita-muscaria": {
+      "status": "ok"
+    },
+    "amanita-nivalis": {
+      "status": "ok"
+    },
+    "amanita-ovoidea": {
+      "status": "ok"
+    },
+    "amanita-pantherina": {
+      "status": "ok"
+    },
+    "amanita-phalloides": {
+      "status": "ok"
+    },
+    "amanita-ponderosa": {
+      "status": "ok"
+    },
+    "amanita-porphyria": {
+      "status": "ok"
+    },
+    "amanita-proxima": {
+      "status": "ok"
+    },
+    "amanita-rubescens": {
+      "status": "ok"
+    },
+    "amanita-strobiliformis": {
+      "status": "ok"
+    },
+    "amanita-submembranacea": {
+      "status": "ok"
+    },
+    "amanita-umbrinolutea": {
+      "status": "ok"
+    },
+    "amanita-vaginata": {
+      "status": "ok"
+    },
+    "amanita-verna": {
+      "status": "ok"
+    },
+    "amanita-virosa": {
+      "status": "ok"
+    },
+    "amanita-vitadini": {
+      "status": "ok"
+    },
+    "amanita-xerocybe": {
+      "status": "ok"
+    },
+    "armillaria-mellea": {
+      "status": "ok"
+    },
+    "armillaria-ostoyae": {
+      "status": "ok"
+    },
+    "armillaria-tabescens": {
+      "status": "ok"
+    },
+    "astraeus-hygrometricus": {
+      "status": "ok"
+    },
+    "auricularia-auricula-judae": {
+      "status": "ok"
+    },
+    "bankera-fuligineoalba": {
+      "status": "ok"
+    },
+    "bankera-violascens": {
+      "status": "ok"
+    },
+    "battarrea-phalloides": {
+      "status": "ok"
+    },
+    "bjerkandera-adusta": {
+      "status": "ok"
+    },
+    "boletus-aereus": {
+      "status": "ok"
+    },
+    "boletus-edulis": {
+      "status": "ok"
+    },
+    "boletus-erythropus": {
+      "status": "ok"
+    },
+    "boletus-impolitus": {
+      "status": "ok"
+    },
+    "boletus-legaliae": {
+      "status": "ok"
+    },
+    "boletus-lupinus": {
+      "status": "ok"
+    },
+    "boletus-permagnificus": {
+      "status": "ok"
+    },
+    "boletus-pinophilus": {
+      "status": "ok"
+    },
+    "boletus-pulverulentus": {
+      "status": "ok"
+    },
+    "boletus-queletii": {
+      "status": "ok"
+    },
+    "boletus-radicans": {
+      "status": "ok"
+    },
+    "boletus-reticulatus": {
+      "status": "ok"
+    },
+    "boletus-rhodoxanthus": {
+      "status": "ok"
+    },
+    "boletus-satanas": {
+      "status": "ok"
+    },
+    "boletus-subtomentosus": {
+      "status": "ok"
+    },
+    "boletus-torosus": {
+      "status": "ok"
+    },
+    "bovista-plumbea": {
+      "status": "ok"
+    },
+    "buchwaldoboletus-lignicola": {
+      "status": "ok"
+    },
+    "butyriboletus-appendiculatus": {
+      "status": "ok"
+    },
+    "butyriboletus-regius": {
+      "status": "ok"
+    },
+    "caloboletus-calopus": {
+      "status": "ok"
+    },
+    "calocera-viscosa": {
+      "status": "ok"
+    },
+    "calocybe-carnea": {
+      "status": "ok"
+    },
+    "calocybe-gambosa": {
+      "status": "ok"
+    },
+    "calvatia-gigantea": {
+      "status": "ok"
+    },
+    "cantharellus-amethysteus": {
+      "status": "ok"
+    },
+    "cantharellus-cibarius": {
+      "status": "ok"
+    },
+    "cantharellus-cinereus": {
+      "status": "ok"
+    },
+    "cantharellus-ferruginascens": {
+      "status": "ok"
+    },
+    "cantharellus-lutescens": {
+      "status": "ok"
+    },
+    "cantharellus-pallens": {
+      "status": "ok"
+    },
+    "cantharellus-romagnesianus": {
+      "status": "ok"
+    },
+    "cantharellus-subpruinosus": {
+      "status": "ok"
+    },
+    "chalciporus-piperatus": {
+      "status": "ok"
+    },
+    "chlorociboria-aeruginascens": {
+      "status": "ok"
+    },
+    "chlorophyllum-brunneum": {
+      "status": "ok"
+    },
+    "chlorophyllum-molybdites": {
+      "status": "ok"
+    },
+    "chlorophyllum-rhacodes": {
+      "status": "ok"
+    },
+    "choiromyces-meandriformis": {
+      "status": "ok"
+    },
+    "chroogomphus-rutilus": {
+      "status": "ok"
+    },
+    "clathrus-ruber": {
+      "status": "ok"
+    },
+    "clavaria-zollingeri": {
+      "status": "ok"
+    },
+    "clavariadelphus-pistillaris": {
+      "status": "ok"
+    },
+    "clitocybe-candicans": {
+      "status": "ok"
+    },
+    "clitocybe-dealbata": {
+      "status": "ok"
+    },
+    "clitocybe-ditopa": {
+      "status": "ok"
+    },
+    "clitocybe-fragrans": {
+      "status": "ok"
+    },
+    "clitocybe-gibba": {
+      "status": "ok"
+    },
+    "clitocybe-metachroa": {
+      "status": "ok"
+    },
+    "clitocybe-nebularis": {
+      "status": "ok"
+    },
+    "clitocybe-odora": {
+      "status": "ok"
+    },
+    "clitocybe-phyllophila": {
+      "status": "ok"
+    },
+    "clitocybe-rivulosa": {
+      "status": "ok"
+    },
+    "clitopilus-prunulus": {
+      "status": "ok"
+    },
+    "collybia-butyracea": {
+      "status": "ok"
+    },
+    "conocybe-filaris": {
+      "status": "ok"
+    },
+    "coprinellus-disseminatus": {
+      "status": "ok"
+    },
+    "coprinellus-micaceus": {
+      "status": "ok"
+    },
+    "coprinopsis-picacea": {
+      "status": "ok"
+    },
+    "coprinus-atramentarius": {
+      "status": "ok"
+    },
+    "coprinus-comatus": {
+      "status": "ok"
+    },
+    "cordyceps-militaris": {
+      "status": "ok"
+    },
+    "cortinarius-alboviolaceus": {
+      "status": "ok"
+    },
+    "cortinarius-anomalus": {
+      "status": "ok"
+    },
+    "cortinarius-bollardii": {
+      "status": "ok"
+    },
+    "cortinarius-caerulescens": {
+      "status": "ok"
+    },
+    "cortinarius-calochrous": {
+      "status": "ok"
+    },
+    "cortinarius-camphoratus": {
+      "status": "ok"
+    },
+    "cortinarius-caperatus": {
+      "status": "ok"
+    },
+    "cortinarius-cinnamomeus": {
+      "status": "ok"
+    },
+    "cortinarius-claricolor": {
+      "status": "ok"
+    },
+    "cortinarius-collinitus": {
+      "status": "ok"
+    },
+    "cortinarius-dibaphus": {
+      "status": "ok"
+    },
+    "cortinarius-elegantior": {
+      "status": "ok"
+    },
+    "cortinarius-glaucopus": {
+      "status": "ok"
+    },
+    "cortinarius-infractus": {
+      "status": "ok"
+    },
+    "cortinarius-largus": {
+      "status": "ok"
+    },
+    "cortinarius-mucosus": {
+      "status": "ok"
+    },
+    "cortinarius-odorifer": {
+      "status": "ok"
+    },
+    "cortinarius-orellanus": {
+      "status": "ok"
+    },
+    "cortinarius-praestans": {
+      "status": "ok"
+    },
+    "cortinarius-purpurascens": {
+      "status": "ok"
+    },
+    "cortinarius-rubellus": {
+      "status": "ok"
+    },
+    "cortinarius-saginus": {
+      "status": "ok"
+    },
+    "cortinarius-sanguineus": {
+      "status": "ok"
+    },
+    "cortinarius-semisanguineus": {
+      "status": "ok"
+    },
+    "cortinarius-splendens": {
+      "status": "ok"
+    },
+    "cortinarius-torvus": {
+      "status": "ok"
+    },
+    "cortinarius-traganus": {
+      "status": "ok"
+    },
+    "cortinarius-triumphans": {
+      "status": "ok"
+    },
+    "cortinarius-varius": {
+      "status": "ok"
+    },
+    "cortinarius-violaceus": {
+      "status": "ok"
+    },
+    "craterellus-cinereus": {
+      "status": "ok"
+    },
+    "craterellus-cornucopioides": {
+      "status": "ok"
+    },
+    "craterellus-lutescens": {
+      "status": "ok"
+    },
+    "craterellus-tubaeformis": {
+      "status": "ok"
+    },
+    "cuphophyllus-virgineus": {
+      "status": "ok"
+    },
+    "cyanoboletus-pulverulentus": {
+      "status": "ok"
+    },
+    "cyclocybe-aegerita": {
+      "status": "ok"
+    },
+    "cystolepiota-seminuda": {
+      "status": "ok"
+    },
+    "daedalea-quercina": {
+      "status": "ok"
+    },
+    "daedaleopsis-confragosa": {
+      "status": "ok"
+    },
+    "disciotis-venosa": {
+      "status": "ok"
+    },
+    "entoloma-clypeatum": {
+      "status": "ok"
+    },
+    "entoloma-conferendum": {
+      "status": "ok"
+    },
+    "entoloma-hirtipes": {
+      "status": "ok"
+    },
+    "entoloma-incanum": {
+      "status": "ok"
+    },
+    "entoloma-lividum": {
+      "status": "ok"
+    },
+    "entoloma-rhodopolium": {
+      "status": "ok"
+    },
+    "entoloma-sericeum": {
+      "status": "ok"
+    },
+    "entoloma-sinuatum": {
+      "status": "ok"
+    },
+    "exidia-glandulosa": {
+      "status": "ok"
+    },
+    "fistulina-hepatica": {
+      "status": "ok"
+    },
+    "flammulina-velutipes": {
+      "status": "ok"
+    },
+    "fomes-fomentarius": {
+      "status": "ok"
+    },
+    "fomitopsis-pinicola": {
+      "status": "ok"
+    },
+    "galerina-marginata": {
+      "status": "ok"
+    },
+    "ganoderma-applanatum": {
+      "status": "ok"
+    },
+    "ganoderma-lucidum": {
+      "status": "ok"
+    },
+    "ganoderma-resinaceum": {
+      "status": "ok"
+    },
+    "geastrum-triplex": {
+      "status": "ok"
+    },
+    "gomphidius-glutinosus": {
+      "status": "ok"
+    },
+    "gomphus-clavatus": {
+      "status": "ok"
+    },
+    "grifola-frondosa": {
+      "status": "ok"
+    },
+    "gymnopilus-junonius": {
+      "status": "ok"
+    },
+    "gymnopus-dryophilus": {
+      "status": "ok"
+    },
+    "gyromitra-esculenta": {
+      "status": "ok"
+    },
+    "gyromitra-infula": {
+      "status": "ok"
+    },
+    "gyroporus-castaneus": {
+      "status": "ok"
+    },
+    "gyroporus-cyanescens": {
+      "status": "ok"
+    },
+    "handkea-utriformis": {
+      "status": "ok"
+    },
+    "hebeloma-crustuliniforme": {
+      "status": "ok"
+    },
+    "hebeloma-laterinum": {
+      "status": "ok"
+    },
+    "hebeloma-radicosum": {
+      "status": "ok"
+    },
+    "hebeloma-sacchariolens": {
+      "status": "ok"
+    },
+    "hebeloma-sinapizans": {
+      "status": "ok"
+    },
+    "hebeloma-theobrominum": {
+      "status": "ok"
+    },
+    "helvella-acetabulum": {
+      "status": "ok"
+    },
+    "helvella-crispa": {
+      "status": "ok"
+    },
+    "helvella-lacunosa": {
+      "status": "ok"
+    },
+    "hemileccinum-impolitum": {
+      "status": "ok"
+    },
+    "hericium-coralloides": {
+      "status": "ok"
+    },
+    "hericium-erinaceus": {
+      "status": "ok"
+    },
+    "hortiboletus-rubellus": {
+      "status": "ok"
+    },
+    "hydnellum-concrescens": {
+      "status": "ok"
+    },
+    "hydnellum-peckii": {
+      "status": "ok"
+    },
+    "hydnellum-scrobiculatum": {
+      "status": "ok"
+    },
+    "hydnum-albidum": {
+      "status": "ok"
+    },
+    "hydnum-ellipsosporum": {
+      "status": "ok"
+    },
+    "hydnum-repandum": {
+      "status": "ok"
+    },
+    "hydnum-rufescens": {
+      "status": "ok"
+    },
+    "hygrocybe-chlorophana": {
+      "status": "ok"
+    },
+    "hygrocybe-coccinea": {
+      "status": "ok"
+    },
+    "hygrocybe-conica": {
+      "status": "ok"
+    },
+    "hygrocybe-miniata": {
+      "status": "ok"
+    },
+    "hygrocybe-psittacina": {
+      "status": "ok"
+    },
+    "hygrocybe-punicea": {
+      "status": "ok"
+    },
+    "hygrocybe-quieta": {
+      "status": "ok"
+    },
+    "hygrocybe-reidii": {
+      "status": "ok"
+    },
+    "hygrocybe-virginea": {
+      "status": "ok"
+    },
+    "hygrophoropsis-aurantiaca": {
+      "status": "ok"
+    },
+    "hygrophorus-agathosmus": {
+      "status": "ok"
+    },
+    "hygrophorus-chrysodon": {
+      "status": "ok"
+    },
+    "hygrophorus-discoxanthus": {
+      "status": "ok"
+    },
+    "hygrophorus-eburneus": {
+      "status": "ok"
+    },
+    "hygrophorus-gliocyclus": {
+      "status": "ok"
+    },
+    "hygrophorus-hypothejus": {
+      "status": "ok"
+    },
+    "hygrophorus-latitabundus": {
+      "status": "ok"
+    },
+    "hygrophorus-marzuolus": {
+      "status": "ok"
+    },
+    "hygrophorus-persoonii": {
+      "status": "ok"
+    },
+    "hygrophorus-poetarum": {
+      "status": "ok"
+    },
+    "hygrophorus-russula": {
+      "status": "ok"
+    },
+    "hygrophorus-unicolor": {
+      "status": "ok"
+    },
+    "hymenopellis-radicata": {
+      "status": "ok"
+    },
+    "hypholoma-capnoides": {
+      "status": "ok"
+    },
+    "hypholoma-fasciculare": {
+      "status": "ok"
+    },
+    "hypholoma-lateritium": {
+      "status": "ok"
+    },
+    "imleria-badia": {
+      "status": "ok"
+    },
+    "infundibulicybe-geotropa": {
+      "status": "ok"
+    },
+    "infundibulicybe-gibba": {
+      "status": "ok"
+    },
+    "inocybe-asterospora": {
+      "status": "ok"
+    },
+    "inocybe-bongardii": {
+      "status": "ok"
+    },
+    "inocybe-cookei": {
+      "status": "ok"
+    },
+    "inocybe-dulcamara": {
+      "status": "ok"
+    },
+    "inocybe-erubescens": {
+      "status": "ok"
+    },
+    "inocybe-flocculosa": {
+      "status": "ok"
+    },
+    "inocybe-geophylla": {
+      "status": "ok"
+    },
+    "inocybe-lacera": {
+      "status": "ok"
+    },
+    "inocybe-maculata": {
+      "status": "ok"
+    },
+    "inocybe-napipes": {
+      "status": "ok"
+    },
+    "inocybe-pudica": {
+      "status": "ok"
+    },
+    "inocybe-rimosa": {
+      "status": "ok"
+    },
+    "inocybe-sindonia": {
+      "status": "ok"
+    },
+    "inonotus-obliquus": {
+      "status": "ok"
+    },
+    "kuehneromyces-mutabilis": {
+      "status": "ok"
+    },
+    "laccaria-laccata": {
+      "status": "ok"
+    },
+    "lacrymaria-lacrymabunda": {
+      "status": "ok"
+    },
+    "lactarius-acerrimus": {
+      "status": "ok"
+    },
+    "lactarius-atlanticus": {
+      "status": "ok"
+    },
+    "lactarius-chrysorrheus": {
+      "status": "ok"
+    },
+    "lactarius-controversus": {
+      "status": "ok"
+    },
+    "lactarius-decipiens": {
+      "status": "ok"
+    },
+    "lactarius-deliciosus": {
+      "status": "ok"
+    },
+    "lactarius-deterrimus": {
+      "status": "ok"
+    },
+    "lactarius-fluens": {
+      "status": "ok"
+    },
+    "lactarius-hepaticus": {
+      "status": "ok"
+    },
+    "lactarius-ilicis": {
+      "status": "ok"
+    },
+    "lactarius-lacunarum": {
+      "status": "ok"
+    },
+    "lactarius-ligyotus": {
+      "status": "ok"
+    },
+    "lactarius-mairei": {
+      "status": "ok"
+    },
+    "lactarius-pergamenus": {
+      "status": "ok"
+    },
+    "lactarius-piperatus": {
+      "status": "ok"
+    },
+    "lactarius-pterosporus": {
+      "status": "ok"
+    },
+    "lactarius-quieticolor": {
+      "status": "ok"
+    },
+    "lactarius-quietus": {
+      "status": "ok"
+    },
+    "lactarius-rubrocinctus": {
+      "status": "ok"
+    },
+    "lactarius-salmonicolor": {
+      "status": "ok"
+    },
+    "lactarius-sanguifluus": {
+      "status": "ok"
+    },
+    "lactarius-semisanguifluus": {
+      "status": "ok"
+    },
+    "lactarius-subdulcis": {
+      "status": "ok"
+    },
+    "lactarius-tabidus": {
+      "status": "ok"
+    },
+    "lactarius-torminosus": {
+      "status": "ok"
+    },
+    "lactarius-uvidus": {
+      "status": "ok"
+    },
+    "lactarius-vellereus": {
+      "status": "ok"
+    },
+    "lactarius-volemus": {
+      "status": "ok"
+    },
+    "lactarius-zonarius": {
+      "status": "ok"
+    },
+    "lactifluus-piperatus": {
+      "status": "ok"
+    },
+    "lactifluus-vellereus": {
+      "status": "ok"
+    },
+    "lactifluus-volemus": {
+      "status": "ok"
+    },
+    "laetiporus-sulphureus": {
+      "status": "ok"
+    },
+    "leccinellum-crocipodium": {
+      "status": "ok"
+    },
+    "leccinellum-lepidum": {
+      "status": "ok"
+    },
+    "leccinum-albostipitatum": {
+      "status": "ok"
+    },
+    "leccinum-aurantiacum": {
+      "status": "ok"
+    },
+    "leccinum-duriusculum": {
+      "status": "ok"
+    },
+    "leccinum-pseudoscabrum": {
+      "status": "ok"
+    },
+    "leccinum-scabrum": {
+      "status": "ok"
+    },
+    "leccinum-versipelle": {
+      "status": "ok"
+    },
+    "lentinula-edodes": {
+      "status": "ok"
+    },
+    "lentinus-tigrinus": {
+      "status": "ok"
+    },
+    "lepiota-aspera": {
+      "status": "ok"
+    },
+    "lepiota-brunneoincarnata": {
+      "status": "ok"
+    },
+    "lepiota-castanea": {
+      "status": "ok"
+    },
+    "lepiota-clypeolaria": {
+      "status": "ok"
+    },
+    "lepiota-cristata": {
+      "status": "ok"
+    },
+    "lepiota-erminea": {
+      "status": "ok"
+    },
+    "lepiota-felina": {
+      "status": "ok"
+    },
+    "lepiota-lilacea": {
+      "status": "ok"
+    },
+    "lepiota-subincarnata": {
+      "status": "ok"
+    },
+    "lepista-irina": {
+      "status": "ok"
+    },
+    "lepista-nuda": {
+      "status": "ok"
+    },
+    "lepista-panaeolus": {
+      "status": "ok"
+    },
+    "lepista-personata": {
+      "status": "ok"
+    },
+    "lepista-saeva": {
+      "status": "ok"
+    },
+    "lepista-sordida": {
+      "status": "ok"
+    },
+    "leucoagaricus-americanus": {
+      "status": "ok"
+    },
+    "leucoagaricus-leucothites": {
+      "status": "ok"
+    },
+    "leucoagaricus-nympharum": {
+      "status": "ok"
+    },
+    "lycoperdon-perlatum": {
+      "status": "ok"
+    },
+    "lycoperdon-pyriforme": {
+      "status": "ok"
+    },
+    "lyophyllum-decastes": {
+      "status": "ok"
+    },
+    "lyophyllum-fumosum": {
+      "status": "ok"
+    },
+    "lyophyllum-transforme": {
+      "status": "ok"
+    },
+    "macrolepiota-excoriata": {
+      "status": "ok"
+    },
+    "macrolepiota-fuliginosa": {
+      "status": "ok"
+    },
+    "macrolepiota-konradii": {
+      "status": "ok"
+    },
+    "macrolepiota-mastoidea": {
+      "status": "ok"
+    },
+    "macrolepiota-procera": {
+      "status": "ok"
+    },
+    "marasmius-oreades": {
+      "status": "ok"
+    },
+    "marasmius-scorodonius": {
+      "status": "ok"
+    },
+    "megacollybia-platyphylla": {
+      "status": "ok"
+    },
+    "melanoleuca-cognata": {
+      "status": "ok"
+    },
+    "melanoleuca-grammopodia": {
+      "status": "ok"
+    },
+    "melanoleuca-melaleuca": {
+      "status": "ok"
+    },
+    "melanoleuca-strictipes": {
+      "status": "ok"
+    },
+    "meripilus-giganteus": {
+      "status": "ok"
+    },
+    "montagnea-arenaria": {
+      "status": "ok"
+    },
+    "morchella-deliciosa": {
+      "status": "ok"
+    },
+    "morchella-elata": {
+      "status": "ok"
+    },
+    "morchella-esculenta": {
+      "status": "ok"
+    },
+    "morchella-importuna": {
+      "status": "ok"
+    },
+    "morchella-semilibera": {
+      "status": "ok"
+    },
+    "morchella-vulgaris": {
+      "status": "ok"
+    },
+    "mutinus-caninus": {
+      "status": "ok"
+    },
+    "mycena-pura": {
+      "status": "ok"
+    },
+    "mycena-rosea": {
+      "status": "ok"
+    },
+    "neolentinus-lepideus": {
+      "status": "ok"
+    },
+    "omphalotus-olearius": {
+      "status": "ok"
+    },
+    "otidea-onotica": {
+      "status": "ok"
+    },
+    "oudemansiella-mucida": {
+      "status": "ok"
+    },
+    "parasola-plicatilis": {
+      "status": "ok"
+    },
+    "paxillus-involutus": {
+      "status": "ok"
+    },
+    "peziza-badia": {
+      "status": "ok"
+    },
+    "peziza-vesiculosa": {
+      "status": "ok"
+    },
+    "phaeolus-schweinitzii": {
+      "status": "ok"
+    },
+    "phallus-hadriani": {
+      "status": "ok"
+    },
+    "phallus-impudicus": {
+      "status": "ok"
+    },
+    "phellodon-niger": {
+      "status": "ok"
+    },
+    "phellodon-tomentosus": {
+      "status": "ok"
+    },
+    "pholiota-aurivella": {
+      "status": "ok"
+    },
+    "pholiota-squarrosa": {
+      "status": "ok"
+    },
+    "picoa-juniperi": {
+      "status": "ok"
+    },
+    "picosphaera-cistidiolens": {
+      "status": "ok"
+    },
+    "piptoporus-betulinus": {
+      "status": "ok"
+    },
+    "pisolithus-arhizus": {
+      "status": "ok"
+    },
+    "pleurotus-cornucopiae": {
+      "status": "ok"
+    },
+    "pleurotus-dryinus": {
+      "status": "ok"
+    },
+    "pleurotus-eryngii": {
+      "status": "ok"
+    },
+    "pleurotus-ostreatus": {
+      "status": "ok"
+    },
+    "pleurotus-pulmonarius": {
+      "status": "ok"
+    },
+    "pluteus-cervinus": {
+      "status": "ok"
+    },
+    "pluteus-salicinus": {
+      "status": "ok"
+    },
+    "polyozellus-multiplex": {
+      "status": "ok"
+    },
+    "polyporus-squamosus": {
+      "status": "ok"
+    },
+    "porphyrellus-porphyrosporus": {
+      "status": "ok"
+    },
+    "psathyrella-candolleana": {
+      "status": "ok"
+    },
+    "pseudoboletus-parasiticus": {
+      "status": "ok"
+    },
+    "pseudocraterellus-undulatus": {
+      "status": "ok"
+    },
+    "ramaria-botrytis": {
+      "status": "ok"
+    },
+    "ramaria-flava": {
+      "status": "ok"
+    },
+    "ramaria-formosa": {
+      "status": "ok"
+    },
+    "rhizopogon-roseolus": {
+      "status": "ok"
+    },
+    "rhodocollybia-maculata": {
+      "status": "ok"
+    },
+    "rubroboletus-legaliae": {
+      "status": "ok"
+    },
+    "rubroboletus-luridus": {
+      "status": "ok"
+    },
+    "rubroboletus-satanas": {
+      "status": "ok"
+    },
+    "russula-acrifolia": {
+      "status": "ok"
+    },
+    "russula-adusta": {
+      "status": "ok"
+    },
+    "russula-aeruginea": {
+      "status": "ok"
+    },
+    "russula-albonigra": {
+      "status": "ok"
+    },
+    "russula-amethystina": {
+      "status": "ok"
+    },
+    "russula-atropurpurea": {
+      "status": "ok"
+    },
+    "russula-aurea": {
+      "status": "ok"
+    },
+    "russula-aurora": {
+      "status": "ok"
+    },
+    "russula-badia": {
+      "status": "ok"
+    },
+    "russula-brevipes": {
+      "status": "ok"
+    },
+    "russula-cessans": {
+      "status": "ok"
+    },
+    "russula-claroflava": {
+      "status": "ok"
+    },
+    "russula-cyanoxantha": {
+      "status": "ok"
+    },
+    "russula-decolorans": {
+      "status": "ok"
+    },
+    "russula-delica": {
+      "status": "ok"
+    },
+    "russula-densifolia": {
+      "status": "ok"
+    },
+    "russula-emetica": {
+      "status": "ok"
+    },
+    "russula-fellea": {
+      "status": "ok"
+    },
+    "russula-foetens": {
+      "status": "ok"
+    },
+    "russula-fragilis": {
+      "status": "ok"
+    },
+    "russula-grisea": {
+      "status": "ok"
+    },
+    "russula-heterophylla": {
+      "status": "ok"
+    },
+    "russula-integra": {
+      "status": "ok"
+    },
+    "russula-ionochlora": {
+      "status": "ok"
+    },
+    "russula-maculata": {
+      "status": "ok"
+    },
+    "russula-mustelina": {
+      "status": "ok"
+    },
+    "russula-nigricans": {
+      "status": "ok"
+    },
+    "russula-nobilis": {
+      "status": "ok"
+    },
+    "russula-ochroleuca": {
+      "status": "ok"
+    },
+    "russula-paludosa": {
+      "status": "ok"
+    },
+    "russula-parazurea": {
+      "status": "ok"
+    },
+    "russula-puellaris": {
+      "status": "ok"
+    },
+    "russula-queletii": {
+      "status": "ok"
+    },
+    "russula-risigallina": {
+      "status": "ok"
+    },
+    "russula-rosea": {
+      "status": "ok"
+    },
+    "russula-sanguinea": {
+      "status": "ok"
+    },
+    "russula-sardonia": {
+      "status": "ok"
+    },
+    "russula-silvestris": {
+      "status": "ok"
+    },
+    "russula-torulosa": {
+      "status": "ok"
+    },
+    "russula-turci": {
+      "status": "ok"
+    },
+    "russula-velenovskyi": {
+      "status": "ok"
+    },
+    "russula-vesca": {
+      "status": "ok"
+    },
+    "russula-vinosa": {
+      "status": "ok"
+    },
+    "russula-violeipes": {
+      "status": "ok"
+    },
+    "russula-virescens": {
+      "status": "ok"
+    },
+    "russula-viscida": {
+      "status": "ok"
+    },
+    "russula-xerampelina": {
+      "status": "ok"
+    },
+    "sarcodon-imbricatus": {
+      "status": "ok"
+    },
+    "sarcodon-joeides": {
+      "status": "ok"
+    },
+    "sarcodon-leucopus": {
+      "status": "ok"
+    },
+    "sarcodon-squamosus": {
+      "status": "ok"
+    },
+    "sarcoscypha-coccinea": {
+      "status": "ok"
+    },
+    "sarcosphaera-coronaria": {
+      "status": "ok"
+    },
+    "schizophyllum-commune": {
+      "status": "ok"
+    },
+    "scleroderma-citrinum": {
+      "status": "ok"
+    },
+    "scleroderma-verrucosum": {
+      "status": "ok"
+    },
+    "sparassis-brevipes": {
+      "status": "ok"
+    },
+    "sparassis-crispa": {
+      "status": "ok"
+    },
+    "stereum-hirsutum": {
+      "status": "ok"
+    },
+    "strobilomyces-strobilaceus": {
+      "status": "ok"
+    },
+    "stropharia-aeruginosa": {
+      "status": "ok"
+    },
+    "stropharia-rugosoannulata": {
+      "status": "ok"
+    },
+    "suillus-bellinii": {
+      "status": "ok"
+    },
+    "suillus-bovinus": {
+      "status": "ok"
+    },
+    "suillus-collinitus": {
+      "status": "ok"
+    },
+    "suillus-fluryi": {
+      "status": "ok"
+    },
+    "suillus-granulatus": {
+      "status": "ok"
+    },
+    "suillus-grevillei": {
+      "status": "ok"
+    },
+    "suillus-luteus": {
+      "status": "ok"
+    },
+    "suillus-mediterraneensis": {
+      "status": "ok"
+    },
+    "suillus-plorans": {
+      "status": "ok"
+    },
+    "suillus-sibiricus": {
+      "status": "ok"
+    },
+    "suillus-tridentinus": {
+      "status": "ok"
+    },
+    "suillus-variegatus": {
+      "status": "ok"
+    },
+    "suillus-viscidus": {
+      "status": "ok"
+    },
+    "terfezia-arenaria": {
+      "status": "ok"
+    },
+    "terfezia-boudieri": {
+      "status": "ok"
+    },
+    "terfezia-claveryi": {
+      "status": "ok"
+    },
+    "trametes-gibbosa": {
+      "status": "ok"
+    },
+    "trametes-versicolor": {
+      "status": "ok"
+    },
+    "tremella-mesenterica": {
+      "status": "ok"
+    },
+    "tricholoma-album": {
+      "status": "ok"
+    },
+    "tricholoma-argyraceum": {
+      "status": "ok"
+    },
+    "tricholoma-atrosquamosum": {
+      "status": "ok"
+    },
+    "tricholoma-auratum": {
+      "status": "ok"
+    },
+    "tricholoma-batschii": {
+      "status": "ok"
+    },
+    "tricholoma-caligatum": {
+      "status": "ok"
+    },
+    "tricholoma-cingulatum": {
+      "status": "ok"
+    },
+    "tricholoma-columbetta": {
+      "status": "ok"
+    },
+    "tricholoma-equestre": {
+      "status": "ok"
+    },
+    "tricholoma-filamentosum": {
+      "status": "ok"
+    },
+    "tricholoma-focale": {
+      "status": "ok"
+    },
+    "tricholoma-fracticum": {
+      "status": "ok"
+    },
+    "tricholoma-imbricatum": {
+      "status": "ok"
+    },
+    "tricholoma-inamoenum": {
+      "status": "ok"
+    },
+    "tricholoma-lascivum": {
+      "status": "ok"
+    },
+    "tricholoma-monspessulanum": {
+      "status": "ok"
+    },
+    "tricholoma-orirubens": {
+      "status": "ok"
+    },
+    "tricholoma-pessundatum": {
+      "status": "ok"
+    },
+    "tricholoma-populinum": {
+      "status": "ok"
+    },
+    "tricholoma-portentosum": {
+      "status": "ok"
+    },
+    "tricholoma-saponaceum": {
+      "status": "ok"
+    },
+    "tricholoma-scalpturatum": {
+      "status": "ok"
+    },
+    "tricholoma-sciodes": {
+      "status": "ok"
+    },
+    "tricholoma-sejunctum": {
+      "status": "ok"
+    },
+    "tricholoma-stans": {
+      "status": "ok"
+    },
+    "tricholoma-sulphureum": {
+      "status": "ok"
+    },
+    "tricholoma-terreum": {
+      "status": "ok"
+    },
+    "tricholoma-ustaloides": {
+      "status": "ok"
+    },
+    "tricholoma-virgatum": {
+      "status": "ok"
+    },
+    "tricholomopsis-rutilans": {
+      "status": "ok"
+    },
+    "tuber-aestivum": {
+      "status": "ok"
+    },
+    "tuber-borchii": {
+      "status": "ok"
+    },
+    "tuber-brumale": {
+      "status": "ok"
+    },
+    "tuber-magnatum": {
+      "status": "ok"
+    },
+    "tuber-melanosporum": {
+      "status": "ok"
+    },
+    "tuber-mesentericum": {
+      "status": "ok"
+    },
+    "tuber-rufum": {
+      "status": "ok"
+    },
+    "tylopilus-felleus": {
+      "status": "ok"
+    },
+    "verpa-conica": {
+      "status": "ok"
+    },
+    "volvariella-bombycina": {
+      "status": "ok"
+    },
+    "volvopluteus-gloiocephalus": {
+      "status": "ok"
+    },
+    "xerocomellus-chrysenteron": {
+      "status": "ok"
+    },
+    "xerocomellus-cisalpinus": {
+      "status": "ok"
+    },
+    "xerocomellus-porosporus": {
+      "status": "ok"
+    },
+    "xerocomellus-pruinatus": {
+      "status": "ok"
+    },
+    "xerocomus-subtomentosus": {
+      "status": "ok"
+    }
+  }
+}

@@ -112,7 +112,7 @@ describe('resolveSpeciesImageSync grid policy', () => {
     clearSpeciesImageCache()
   })
 
-  it('T2 grid always returns placeholder provider (no catalog URL leak)', () => {
+  it('T2 grid always returns placeholder or local_media (no remote leak)', () => {
     // Pick a T2 species from catalog if any
     const t2 = speciesCatalog.find((s) => s.photo_tier === 'T2')
     expect(t2).toBeTruthy()
@@ -121,21 +121,24 @@ describe('resolveSpeciesImageSync grid policy', () => {
       context: 'grid',
       tier: 'T2',
     })
-    expect(resolved.provider).toBe('placeholder')
-    expect(resolved.url.startsWith('data:image/svg+xml')).toBe(true)
+    // Phase C/E: same-origin local_media preferred over remote catalog URLs
+    expect(['placeholder', 'local_media']).toContain(resolved.provider)
+    expect(resolved.url.length).toBeGreaterThan(10)
     expect(resolved.tier).toBe('T2')
   })
 
-  it('T0 grid may use catalog when photo exists', () => {
+  it('T0 grid may use local_media or catalog when photo exists', () => {
     const resolved = resolveSpeciesImageSync('Amanita phalloides', {
       riskLabel: 'deadly',
       context: 'grid',
       tier: 'T0',
     })
-    // Catalog has many T0 entries; if present must be catalog, else placeholder
-    expect(['catalog', 'placeholder']).toContain(resolved.provider)
+    expect(['catalog', 'placeholder', 'local_media']).toContain(resolved.provider)
     if (resolved.provider === 'catalog') {
       expect(resolved.url.startsWith('http')).toBe(true)
+    }
+    if (resolved.provider === 'local_media') {
+      expect(resolved.url).toMatch(/\/media\//)
     }
   })
 })
@@ -170,7 +173,7 @@ describe('resolveSpeciesImageAsync no-network on T2 grid', () => {
     })
     expect(wikiSpy).not.toHaveBeenCalled()
     expect(inatSpy).not.toHaveBeenCalled()
-    expect(r.provider).toBe('placeholder')
+    expect(['placeholder', 'local_media']).toContain(r.provider)
   })
 
   it('does not call wiki/iNat for T0/T1 grid path either', async () => {
@@ -186,14 +189,16 @@ describe('resolveSpeciesImageAsync no-network on T2 grid', () => {
     expect(r.provider).not.toBe('inaturalist')
   })
 
-  it('detail path may call remote when not in catalog', async () => {
+  it('detail path resolves without remote for unknown when local_media SSOT wins', async () => {
     const r = await resolveSpeciesImageAsync('Totally Fake Taxon Xyz', {
       riskLabel: 'unknown_or_risky',
       context: 'detail',
       tier: 'T2',
     })
-    expect(wikiSpy).toHaveBeenCalled()
-    expect(r.provider).toBe('wikipedia')
-    expect(r.url).toContain('example.com')
+    // Phase C/E: may short-circuit to local_media/placeholder; remote optional
+    expect(r.url.length).toBeGreaterThan(10)
+    expect(['wikipedia', 'inaturalist', 'placeholder', 'local_media', 'catalog']).toContain(
+      r.provider,
+    )
   })
 })

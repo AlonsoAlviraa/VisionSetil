@@ -383,6 +383,49 @@
   color: #dc2626;
 }
 
+/* B-42: boosted deadly/poisonous join visibility on real Identify results */
+.risk-chip--boost {
+  font-size: 0.82rem;
+  padding: 0.34rem 0.8rem 0.34rem 0.5rem;
+  box-shadow: 0 0 0 1px color-mix(in srgb, currentColor 28%, transparent);
+}
+.risk-chip--boost.risk-deadly {
+  background: #fee2e2;
+  border-color: #f87171;
+  color: #7f1d1d;
+}
+.risk-chip--boost.risk-poisonous,
+.risk-chip--boost.risk-toxic {
+  background: #ffedd5;
+  border-color: #fb923c;
+  color: #9a3412;
+}
+.risk-chip--boost .risk-chip__dot {
+  width: 0.62rem;
+  height: 0.62rem;
+  box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 30%, transparent);
+}
+
+.prediction-item--join-severe {
+  border-color: color-mix(in srgb, #b91c1c 40%, var(--border, #e2e8f0));
+  background: color-mix(in srgb, #b91c1c 6%, var(--surface, #fff));
+}
+[data-theme='dark'] .prediction-item--join-severe {
+  border-color: color-mix(in srgb, #f87171 35%, var(--border, #334155));
+  background: color-mix(in srgb, #7f1d1d 22%, var(--surface, #0f172a));
+}
+[data-theme='dark'] .risk-chip--boost.risk-deadly {
+  background: #450a0a;
+  border-color: #dc2626;
+  color: #fecaca;
+}
+[data-theme='dark'] .risk-chip--boost.risk-poisonous,
+[data-theme='dark'] .risk-chip--boost.risk-toxic {
+  background: #431407;
+  border-color: #ea580c;
+  color: #fdba74;
+}
+
 /* Tóxica — warm coral, not muddy brown */
 .risk-poisonous,
 .risk-toxic {
@@ -565,14 +608,15 @@
   box-shadow: 0 10px 28px var(--primary-glow);
 }
 
-/* Result card — mycelium glass hierarchy */
+/* Result card — mycelium glass hierarchy
+   B-35 / D-B16: no food-safe green on Identify chrome (teal/info + risk amber/red). */
 .result-card {
   position: relative;
   width: 100%;
   padding: 1.5rem 1.5rem 1.75rem;
   border-radius: calc(var(--radius-lg) + 4px);
   background:
-    radial-gradient(ellipse 80% 60% at 0% 0%, rgba(155, 225, 93, 0.1), transparent 55%),
+    radial-gradient(ellipse 80% 60% at 0% 0%, rgba(14, 116, 144, 0.1), transparent 55%),
     radial-gradient(ellipse 70% 50% at 100% 100%, rgba(196, 69, 26, 0.08), transparent 50%),
     var(--surface);
   border: 1px solid color-mix(in srgb, var(--primary) 28%, var(--border));
@@ -588,7 +632,7 @@
   position: absolute;
   inset: 0 0 auto 0;
   height: 3px;
-  background: linear-gradient(90deg, #9be15d, #4f9a6e 45%, #c4451a);
+  background: linear-gradient(90deg, #0e7490, #0284c7 45%, #c4451a);
   opacity: 0.9;
 }
 
@@ -649,11 +693,32 @@
 }
 
 .result-card .confidence-bar > span,
+.result-card .confidence-fill,
 .result-card .conf-meter-fill {
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, #4f9a6e, #9be15d);
+  /* D-B16: slate/info gradient — not edible/success green */
+  background: linear-gradient(90deg, #64748b, #0284c7);
+}
+
+/* B-35: neutralize leftover green success chrome on Identify results */
+.result-card .decision-banner.accepted {
+  background: linear-gradient(135deg, var(--info-bg, #f0f9ff), transparent);
+  border-left: 4px solid var(--info, #0284c7);
+}
+
+.result-card .prediction-item.top-match {
+  background: linear-gradient(135deg, var(--info-bg, #f0f9ff), transparent);
+  border: 1.5px solid var(--info-border, #bae6fd);
+}
+
+.result-card .confidence-interpretation.ci-high {
+  background: var(--info-bg, #f0f9ff);
+  border: 1px solid var(--info-border, #bae6fd);
+}
+.result-card .confidence-interpretation.ci-high .ci-icon {
+  color: var(--info, #0284c7);
 }
 
 .result-card .rejection-banner,
@@ -669,7 +734,7 @@
 
 [data-theme='dark'] .result-card {
   background:
-    radial-gradient(ellipse 80% 60% at 0% 0%, rgba(155, 225, 93, 0.08), transparent 55%),
+    radial-gradient(ellipse 80% 60% at 0% 0%, rgba(14, 116, 144, 0.12), transparent 55%),
     radial-gradient(ellipse 70% 50% at 100% 100%, rgba(196, 69, 26, 0.12), transparent 50%),
     rgba(14, 22, 18, 0.88);
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
@@ -734,6 +799,29 @@
 
 .mv-slot--required {
   box-shadow: inset 0 0 0 1px rgba(196, 69, 26, 0.15);
+}
+
+/* B-36 deep-link focus from result evidence panel */
+.mv-slot--focused {
+  border-style: solid;
+  border-color: color-mix(in srgb, var(--accent, #c4451a) 70%, var(--border));
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--accent, #c4451a) 22%, transparent),
+    inset 0 0 0 1px color-mix(in srgb, var(--accent, #c4451a) 25%, transparent);
+  animation: mv-slot-focus-pulse 1.4s ease-out 1;
+}
+
+@keyframes mv-slot-focus-pulse {
+  0% {
+    box-shadow:
+      0 0 0 0 color-mix(in srgb, var(--accent, #c4451a) 40%, transparent),
+      inset 0 0 0 1px color-mix(in srgb, var(--accent, #c4451a) 25%, transparent);
+  }
+  100% {
+    box-shadow:
+      0 0 0 3px color-mix(in srgb, var(--accent, #c4451a) 22%, transparent),
+      inset 0 0 0 1px color-mix(in srgb, var(--accent, #c4451a) 25%, transparent);
+  }
 }
 
 .mv-slot-title {

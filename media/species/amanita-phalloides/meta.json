@@ -1,0 +1,39 @@
+{
+  "slug": "amanita-phalloides",
+  "scientific_name": "Amanita phalloides",
+  "source": "gbif",
+  "source_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/604710581/original.jpg",
+  "license": "http://creativecommons.org/licenses/by/4.0/",
+  "license_url": "http://creativecommons.org/licenses/by/4.0/",
+  "creator": "Damon H",
+  "attribution_text": "Damon H — http://creativecommons.org/licenses/by/4.0/",
+  "gbif_occurrence_id": 5938093597,
+  "sha256_source": "873d71a4aa792eb081a7bd54fff8ff27ab4fc03142fbba03b24febffd1fb0faf",
+  "sha256_derivatives": {
+    "lqip": "32013a32ffd5c05cb254910c6eeda5781b23a053497af5b21a3c1280b556bced",
+    "thumb": "f7b6d7a39836b9402abeb94ee9e3128777bc08d33f6e80e8c97d42ffea4429fe",
+    "card": "bd9933d997e332d2e77d3dfd009ea0d6de0b99c575d26bb796d5e64ada1a2ed1",
+    "detail": "873d71a4aa792eb081a7bd54fff8ff27ab4fc03142fbba03b24febffd1fb0faf"
+  },
+  "gallery": [
+    {
+      "file": "gallery/01.webp"
+    },
+    {
+      "file": "gallery/02.webp"
+    },
+    {
+      "file": "gallery/03.webp"
+    },
+    {
+      "file": "gallery/04.webp"
+    }
+  ],
+  "fetched_at": "2026-07-23T16:26:24.692154+00:00",
+  "status": "ok",
+  "quality": {
+    "card_bytes": 131474,
+    "class": "ok_real",
+    "checked_at": "2026-07-23T16:26:24.692154+00:00"
+  }
+}

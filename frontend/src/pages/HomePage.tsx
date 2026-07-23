@@ -1,13 +1,15 @@
-import { lazy, Suspense, useEffect, useState } from 'react'
+import { lazy, Suspense, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { HOME_FEATURES, MEDIA } from '../data/media'
-import { useSpeciesImage } from '../hooks/useSpeciesImage'
 import { SeasonRadar } from '../components/SeasonRadar'
-import { loadSpeciesCatalog, type CatalogSpecies } from '../data/speciesCatalog'
+import { SpeciesThumb } from '../components/SpeciesThumb'
 
 const PhotoSpinViewer = lazy(() =>
   import('../components/PhotoSpinViewer').then((m) => ({ default: m.PhotoSpinViewer })),
 )
+
+/** SSOT catalog size for first paint — avoid hydrating 520 taxa on Home (audit P1/P4). */
+const HOME_CATALOG_COUNT = 520
 
 /** Lightweight deadly taxa for first paint — full catalog loads async (code-split). */
 const HOME_DEADLY_SEED: Array<{ taxon: string; slug: string; name: string; risk: string }> = [
@@ -41,6 +43,7 @@ function seasonLabel(): string {
   return 'Otoño'
 }
 
+/** Phase D-03: single media path via SpeciesThumb → SpeciesImage (no raw useSpeciesImage). */
 function DeadlyThumb({
   taxon,
   slug,
@@ -52,10 +55,18 @@ function DeadlyThumb({
   name: string
   risk: string
 }) {
-  const { url } = useSpeciesImage(taxon, { riskLabel: risk, context: 'eager' })
   return (
     <Link to={`/enciclopedia/${slug}`} className="home-deadly-chip" title={`${name} — ${taxon}`}>
-      <img src={url} alt={`${name} (${taxon})`} loading="lazy" decoding="async" />
+      <SpeciesThumb
+        taxon={taxon}
+        slug={slug}
+        riskLabel={risk}
+        alt={`${name} (${taxon})`}
+        size={56}
+        variant="thumb"
+        priority={slug === 'amanita-phalloides'}
+        className="home-deadly-chip__thumb"
+      />
       <span>
         <small>{name}</small>
         <em>{taxon}</em>
@@ -65,32 +76,9 @@ function DeadlyThumb({
 }
 
 export function HomePage() {
-  const [catalogCount, setCatalogCount] = useState<number | null>(null)
-  const [deadlyPreview, setDeadlyPreview] = useState(HOME_DEADLY_SEED)
-  const [seasonOpen, setSeasonOpen] = useState(false)
-
-  useEffect(() => {
-    let cancelled = false
-    void loadSpeciesCatalog().then((list: CatalogSpecies[]) => {
-      if (cancelled) return
-      setCatalogCount(list.length)
-      const deadly = list
-        .filter((s) => s.risk_label === 'deadly')
-        .slice(0, 5)
-        .map((s) => ({
-          taxon: s.taxon,
-          slug: s.slug,
-          name: s.common_names[0] || s.taxon,
-          risk: s.risk_label,
-        }))
-      if (deadly.length > 0) setDeadlyPreview(deadly)
-    })
-    return () => {
-      cancelled = true
-    }
-  }, [])
-
-  const displayCount = catalogCount ?? '…'
+  // Seed only — full catalog loads on encyclopedia/identify when needed.
+  const [deadlyPreview] = useState(HOME_DEADLY_SEED)
+  const displayCount = HOME_CATALOG_COUNT
 
   return (
     <div className="home-page home-atelier">
@@ -117,13 +105,16 @@ export function HomePage() {
             <Link to="/identificar" className="btn-atelier btn-atelier--primary">
               Identificar seta
             </Link>
+            <Link to="/enciclopedia" className="btn-atelier btn-atelier--ghost">
+              Enciclopedia
+            </Link>
             <Link to="/reto" className="btn-atelier btn-atelier--ghost">
-              Jugar al reto
+              Reto del día
             </Link>
           </div>
           <div className="atelier-stats">
             <div className="atelier-stat">
-              <strong>{displayCount}</strong>
+              <strong data-testid="home-species-count">{displayCount}</strong>
               <span>Taxones</span>
             </div>
             <div className="atelier-stat">
@@ -162,10 +153,12 @@ export function HomePage() {
           >
             <PhotoSpinViewer
               taxon="Amanita phalloides"
+              maxFrames={6}
+              autoPlay={false}
+              preferSameOrigin
               height={400}
               riskLabel="deadly"
               label="Oronja verde — fotos reales"
-              autoPlay
             />
           </Suspense>
         </div>
@@ -213,24 +206,17 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="atelier-section">
-        <button
-          type="button"
-          className="home-season-toggle"
-          aria-expanded={seasonOpen}
-          onClick={() => setSeasonOpen((v) => !v)}
-        >
-          <span>
-            <strong>Esta temporada</strong>
-            <em>Vista educativa de lo que suele fructificar</em>
-          </span>
-          <span aria-hidden="true">{seasonOpen ? '−' : '+'}</span>
-        </button>
-        {seasonOpen && (
-          <div className="home-season-body">
-            <SeasonRadar />
-          </div>
-        )}
+      <section className="atelier-section home-season-section" data-testid="home-season">
+        <div className="home-season-head">
+          <p className="atelier-kicker">Esta temporada</p>
+          <h2 className="home-season-title">Vista educativa de lo que suele fructificar</h2>
+          <p className="home-season-sub">
+            Radar de orientación — no es guía de recolección ni permiso de consumo.
+          </p>
+        </div>
+        <div className="home-season-body home-season-body--always">
+          <SeasonRadar />
+        </div>
       </section>
     </div>
   )

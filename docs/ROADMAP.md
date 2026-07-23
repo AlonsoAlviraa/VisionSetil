@@ -4,6 +4,46 @@
 
 ---
 
+## Phase E — Quality + AuthZ + depth (active)
+
+| Campo | Valor |
+| --- | --- |
+| **Estado** | **En curso / closeout en árbol** (post audit + Phase D) |
+| **Doc** | [`docs/PHASE_E_QUALITY_AUTHZ.md`](./PHASE_E_QUALITY_AUTHZ.md) |
+| **Horizonte** | ~3–4 semanas · E-00…E-18 |
+| **Foco** | CI verde, AuthZ observations/reviews/uploads, token hash, encyc perf, media honesty |
+| **Rama** | `merge/best-of-both` |
+
+| Track | Entrega | Estado |
+| --- | --- | --- |
+| **T0–T1** | Audit ship + vitest/CI | ✅ |
+| **T2** | AuthZ observations + review roles + auth uploads + token hash | ✅ |
+| **T3** | HttpOnly cookies | ⏳ deferred |
+| **T4** | Encyc debounce + page 12 + catalog v2-only | ✅ |
+| **T5–T7** | Media residual / ML ops / product polish | 🔄 partial |
+
+---
+
+## Phase D — Funciones + belleza visual (shipped MVP mes)
+
+| Campo | Valor |
+| --- | --- |
+| **Estado** | **W1–W4 entregado** (post A/B/C MVP) — closeout en doc |
+| **Doc** | [`docs/PHASE_D_30D_FEATURES_AND_BEAUTY.md`](./PHASE_D_30D_FEATURES_AND_BEAUTY.md) |
+| **Horizonte** | 30 días · ~18 PRs (D-01…D-18) |
+| **Foco** | Design system unificado, polish top surfaces, notebook/quiz/mapa/offline, PWA/a11y |
+| **Fuera de foco residual** | Crawl masivo `ok_real` (opcional); D-13 community light |
+| **Rama** | `merge/best-of-both` |
+
+| Semana | Entrega | Estado |
+| --- | --- | --- |
+| **W1** | Tokens, UI kit, Home media path, Encyc skeletons, media badges | ✅ |
+| **W2** | Detail tabs, lookalikes, Identify density, i18n chrome | ✅ |
+| **W3** | Notebook v2, Quiz daily, Mapa hotspots | ✅ |
+| **W4** | Offline season pack, PWA install/icons, perf routes, a11y skip, docs | ✅ |
+
+---
+
 ## Estado Actual — Fase 7 (Frontend MVP + Mega Training + Seguridad)
 
 ### ✅ Logros del sprint

@@ -1,8 +1,14 @@
-/** App shell — lazy routes for faster first paint. */
+/** App shell — colleague product routes + local i18n / media reliability. */
 import { lazy, Suspense } from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { AuthProvider } from './auth/AuthContext'
 import { Header } from './components/Header'
+import { ApiStatusBanner } from './components/ApiStatusBanner'
+import { DocumentTitle } from './components/DocumentTitle'
+import { PwaInstallHint } from './components/PwaInstallHint'
+import { ErrorBoundary } from './components/ErrorBoundary'
+/** D-16: Home stays eager for FCP; all other product routes are lazy. */
 import { HomePage } from './pages/HomePage'
 
 const IdentifyPage = lazy(() =>
@@ -42,6 +48,9 @@ const LookalikeStudioPage = lazy(() =>
 const QuizGamePage = lazy(() =>
   import('./pages/QuizGamePage').then((m) => ({ default: m.QuizGamePage })),
 )
+const SetadlePage = lazy(() =>
+  import('./pages/SetadlePage').then((m) => ({ default: m.SetadlePage })),
+)
 const NotFoundPage = lazy(() =>
   import('./pages/NotFoundPage').then((m) => ({ default: m.NotFoundPage })),
 )
@@ -66,42 +75,64 @@ function PageFallback() {
 }
 
 function App() {
+  const { t } = useTranslation()
+
   return (
     <AuthProvider>
       <BrowserRouter>
+        <DocumentTitle />
+        <a href="#main-content" className="skip-link">
+          {t('a11y.skipToContent', { defaultValue: 'Saltar al contenido' })}
+        </a>
         <div className="app bg-aurora">
           <Header />
-          <main className="container">
-            <Suspense fallback={<PageFallback />}>
-              <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/identificar" element={<IdentifyPage />} />
-                <Route path="/historial" element={<HistoryPage />} />
-                <Route path="/revision-experta" element={<ExpertReviewPage />} />
-                <Route path="/comunidad" element={<CommunityPage />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/registro" element={<RegisterPage />} />
-                <Route path="/enciclopedia" element={<EncyclopediaPage />} />
-                <Route path="/enciclopedia/:slug" element={<SpeciesDetailPage />} />
-                <Route path="/mapa" element={<SpainMapPage />} />
-                <Route path="/educacion" element={<EducationPage />} />
-                <Route path="/offline" element={<OfflinePackPage />} />
-                <Route path="/lookalikes" element={<LookalikeStudioPage />} />
-                <Route path="/reto" element={<QuizGamePage />} />
-                <Route path="/ml" element={<MlDashboardPage />} />
-                <Route path="*" element={<NotFoundPage />} />
-              </Routes>
-            </Suspense>
+          <ApiStatusBanner />
+          <PwaInstallHint />
+          <main className="container" id="main-content" tabIndex={-1}>
+            <ErrorBoundary surface="routes">
+              <Suspense fallback={<PageFallback />}>
+                <Routes>
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/identificar" element={<IdentifyPage />} />
+                  <Route path="/historial" element={<HistoryPage />} />
+                  <Route path="/revision-experta" element={<ExpertReviewPage />} />
+                  <Route path="/comunidad" element={<CommunityPage />} />
+                  <Route path="/login" element={<LoginPage />} />
+                  <Route path="/registro" element={<RegisterPage />} />
+                  <Route path="/enciclopedia" element={<EncyclopediaPage />} />
+                  <Route path="/enciclopedia/:slug" element={<SpeciesDetailPage />} />
+                  <Route path="/mapa" element={<SpainMapPage />} />
+                  <Route path="/educacion" element={<EducationPage />} />
+                  <Route path="/offline" element={<OfflinePackPage />} />
+                  <Route path="/lookalikes" element={<LookalikeStudioPage />} />
+                  <Route path="/reto" element={<QuizGamePage />} />
+                  <Route path="/setadle" element={<SetadlePage />} />
+                  <Route path="/setadle/:mode" element={<SetadlePage />} />
+                  <Route path="/ml" element={<MlDashboardPage />} />
+                  <Route path="*" element={<NotFoundPage />} />
+                </Routes>
+              </Suspense>
+            </ErrorBoundary>
           </main>
           <footer className="footer">
             <div className="footer-content">
-              <p className="footer-brand">VisionSetil</p>
+              <p className="footer-brand">{t('app.name', { defaultValue: 'VisionSetil' })}</p>
               <p>
-                Orientación de campo, no permiso de consumo. Ante la duda, un micólogo de carne y
-                hueso.
+                {t('app.footerDisclaimer', {
+                  defaultValue:
+                    'Orientación de campo, no permiso de consumo. Ante la duda, un micólogo de carne y hueso.',
+                })}
               </p>
+              <nav className="footer-links" aria-label="Footer">
+                <Link to="/enciclopedia">{t('nav.encyclopedia', { defaultValue: 'Enciclopedia' })}</Link>
+                <Link to="/identificar">{t('nav.identify', { defaultValue: 'Identificar' })}</Link>
+                <Link to="/reto">{t('nav.quiz', { defaultValue: 'Reto' })}</Link>
+                <Link to="/comunidad">{t('nav.community', { defaultValue: 'Comunidad' })}</Link>
+                <Link to="/ml">{t('nav.ml', { defaultValue: 'ML' })}</Link>
+              </nav>
               <p className="footer-meta">
-                Micología · Riesgo · Comunidad · {new Date().getFullYear()}
+                {t('app.poweredBy', { defaultValue: 'Micología · Riesgo · Comunidad' })} ·
+                v1.0.0-web · Phase D · {new Date().getFullYear()}
               </p>
             </div>
           </footer>

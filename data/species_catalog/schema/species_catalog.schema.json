@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://visionsetil.local/schemas/species_catalog_v2.json",
+  "title": "VisionSetil species_catalog_v2",
+  "type": "object",
+  "required": ["catalog_version", "species", "supported_locales"],
+  "properties": {
+    "catalog_version": { "type": "string" },
+    "generated_at": { "type": "string" },
+    "locale_default": { "type": "string" },
+    "supported_locales": {
+      "type": "array",
+      "items": { "type": "string", "enum": ["es", "ca", "eu", "en"] }
+    },
+    "count": { "type": "integer", "minimum": 0 },
+    "species": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/species" }
+    }
+  },
+  "$defs": {
+    "localeStringMap": {
+      "type": "object",
+      "additionalProperties": { "type": "string", "minLength": 1 }
+    },
+    "localeStringArrayMap": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": { "type": "string", "minLength": 1 }
+      }
+    },
+    "species": {
+      "type": "object",
+      "required": [
+        "id",
+        "scientific_name",
+        "slug",
+        "risk_level",
+        "edibility_code",
+        "vernacular_names"
+      ],
+      "properties": {
+        "id": { "type": "string" },
+        "scientific_name": { "type": "string", "minLength": 3 },
+        "slug": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "family": { "type": "string" },
+        "genus": { "type": "string" },
+        "risk_level": {
+          "type": "string",
+          "enum": [
+            "deadly",
+            "high",
+            "medium",
+            "low",
+            "unknown",
+            "risky_lookalikes"
+          ]
+        },
+        "edibility_code": {
+          "type": "string",
+          "enum": [
+            "excelente",
+            "buen_comestible",
+            "comestible_con_cautela",
+            "no_recomendado",
+            "toxico",
+            "mortifero",
+            "desconocido"
+          ]
+        },
+        "categories": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "featured": { "type": "boolean" },
+        "icon": { "type": "string" },
+        "image_slug": { "type": "string" },
+        "ml_taxon_key": { "type": ["string", "null"] },
+        "vernacular_names": {
+          "type": "object",
+          "required": ["es", "ca", "eu", "en"],
+          "properties": {
+            "es": {
+              "type": "array",
+              "items": { "type": "string", "minLength": 1 }
+            },
+            "ca": {
+              "type": "array",
+              "items": { "type": "string", "minLength": 1 }
+            },
+            "eu": {
+              "type": "array",
+              "items": { "type": "string", "minLength": 1 }
+            },
+            "en": {
+              "type": "array",
+              "items": { "type": "string", "minLength": 1 }
+            }
+          },
+          "additionalProperties": false
+        },
+        "tagline": { "$ref": "#/$defs/localeStringMap" },
+        "description": { "$ref": "#/$defs/localeStringMap" },
+        "lookalikes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["scientific_name"],
+            "properties": {
+              "scientific_name": { "type": "string" },
+              "note_key": { "type": ["string", "null"] }
+            }
+          }
+        }
+      }
+    }
+  }
+}

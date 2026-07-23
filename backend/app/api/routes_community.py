@@ -117,6 +117,11 @@ async def _save_community_image(upload: UploadFile) -> tuple[str, str]:
     if not (is_jpeg or is_png or is_webp):
         raise HTTPException(status_code=400, detail="Archivo no es una imagen válida")
 
+    # Reuse observation upload dimension guard (DoS via huge pixel buffers)
+    from app.services.image_storage import validate_image_dimensions
+
+    validate_image_dimensions(data, ext.lstrip("."))
+
     community_dir = settings.upload_dir / "community"
     community_dir.mkdir(parents=True, exist_ok=True)
     stored_name = f"{uuid.uuid4().hex}{ext}"

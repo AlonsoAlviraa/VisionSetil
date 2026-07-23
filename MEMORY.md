@@ -105,19 +105,20 @@ Cada entrada sigue este formato:
 
 ## 📌 Contexto Activo
 
-> **Última actualización:** 2026-07-14 — Kaggle Kernel Push Engineering
+> **Última actualización:** 2026-07-23 — Phase E Quality/AuthZ + audit security/perf
 
-**Sprint actual:** N+1 — Robustez de Modelos y Data Pipeline
+**Sprint actual:** Phase E — CI verde, AuthZ residual, perf enciclopedia
 
-**Kernel de Kaggle en curso:** `visionsetil-v11` (gen_notebook_v11.py)
-- Push: ✅ v1 pushed sin GPU (código guardado en Kaggle), pendiente v2 con GPU
-- URL: https://www.kaggle.com/code/alonsoalvira/visionsetil-v11
-- Versión: v11 (top-50 species, ALL images, ConvNeXtV2-Tiny, linear head, 20 epochs)
-- Estado: v1 processing (sin GPU), esperando para push v2 con GPU
-- Bloqueo: "Maximum batch GPU session count of 2 reached" — otros kernels (wildfire?) usando GPU slots
+**Rama:** `merge/best-of-both` (PR #1 a main abierto)
 
-**v9 Results (baseline):** MAP@3=0.076, 500 clases, Safety Recall Deadly=0%, ECE=0.11
-- Problema: 500 clases × 5 imgs/class, center loss dominated, ArcFace demasiado agresivo
+**Hecho (2026-07-23):**
+- Audit security/perf remediated (scopes API, prod guardrails, jobs org, PWA, Home, async view_types)
+- Phase E: vitest setup, AuthZ observations/reviews/uploads, token hash, encyc perf, CI
+- Identify sigue **blocked** por quality gate (MAP@3 / deadly recall)
+
+**ML baseline:** MAP@3 ~0.07–0.09, deadly recall insuficiente — gate FAIL intentional
+
+**Próximo residual:** E-08 cookies opt-in; media P0 ok_real crawl; Kaggle E15/E16 eval
 
 ---
 

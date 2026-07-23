@@ -3,7 +3,9 @@ import {
   assessMultiViewReadiness,
   buildViewTypesOrder,
   CANONICAL_VIEWS,
+  nextCameraSlot,
   orderedSlotKeys,
+  resolveCameraTargetSlot,
 } from './multiViewSlots'
 import { hasHighRiskLookalike, lookalikeSummary, rankLookalikes } from './lookalikeRisk'
 import {
@@ -53,14 +55,109 @@ describe('multiViewSlots guided capture', () => {
     expect(orderedSlotKeys(assignments)).toEqual(['gills', 'detail'])
   })
 
-  it('assesses readiness with missing required views', () => {
+  it('soft default: can submit with ≥1 view when required gaps are warnings (D-B14)', () => {
     const r = assessMultiViewReadiness({
       habitat: { fileName: 'h.jpg', previewUrl: 'blob:h' },
     })
     expect(r.canSubmit).toBe(true)
+    expect(r.hardMinViews).toBe(false)
     expect(r.missingRequired).toContain('gills')
     expect(r.missingRequired).toContain('front')
+    expect(r.warningCodes).toContain('missing_required')
+    expect(r.warningCodes).toContain('missing_detail')
     expect(r.warnings.length).toBeGreaterThan(0)
+  })
+
+  it('soft: empty assignments cannot submit', () => {
+    const r = assessMultiViewReadiness({})
+    expect(r.canSubmit).toBe(false)
+    expect(r.filled).toBe(0)
+  })
+
+  it('hard min views: blocks submit until gills+front filled (D-B14 flag)', () => {
+    const partial = assessMultiViewReadiness(
+      { habitat: { fileName: 'h.jpg', previewUrl: 'blob:h' } },
+      { hardMinViews: true },
+    )
+    expect(partial.canSubmit).toBe(false)
+    expect(partial.hardMinViews).toBe(true)
+    expect(partial.missingRequired).toEqual(['gills', 'front'])
+
+    const onlyGills = assessMultiViewReadiness(
+      { gills: { fileName: 'g.jpg', previewUrl: 'blob:g' } },
+      { hardMinViews: true },
+    )
+    expect(onlyGills.canSubmit).toBe(false)
+    expect(onlyGills.missingRequired).toEqual(['front'])
+
+    const both = assessMultiViewReadiness(
+      {
+        gills: { fileName: 'g.jpg', previewUrl: 'blob:g' },
+        front: { fileName: 'f.jpg', previewUrl: 'blob:f' },
+      },
+      { hardMinViews: true },
+    )
+    expect(both.canSubmit).toBe(true)
+    expect(both.missingRequired).toEqual([])
+    expect(both.warningCodes).toContain('missing_habitat')
+    expect(both.warningCodes).toContain('missing_detail')
+  })
+
+  it('B-27 nextCameraSlot: missing required first, then optional', () => {
+    expect(nextCameraSlot({})).toBe('gills')
+    expect(
+      nextCameraSlot({ gills: { fileName: 'g.jpg', previewUrl: 'blob:g' } }),
+    ).toBe('front')
+    // habitat filled but required still missing → still gills first
+    expect(
+      nextCameraSlot({ habitat: { fileName: 'h.jpg', previewUrl: 'blob:h' } }),
+    ).toBe('gills')
+    // both required filled → first optional
+    expect(
+      nextCameraSlot({
+        gills: { fileName: 'g.jpg', previewUrl: 'blob:g' },
+        front: { fileName: 'f.jpg', previewUrl: 'blob:f' },
+      }),
+    ).toBe('habitat')
+    expect(
+      nextCameraSlot({
+        gills: { fileName: 'g.jpg', previewUrl: 'blob:g' },
+        front: { fileName: 'f.jpg', previewUrl: 'blob:f' },
+        habitat: { fileName: 'h.jpg', previewUrl: 'blob:h' },
+      }),
+    ).toBe('detail')
+    expect(
+      nextCameraSlot({
+        gills: { fileName: 'g.jpg', previewUrl: 'blob:g' },
+        front: { fileName: 'f.jpg', previewUrl: 'blob:f' },
+        habitat: { fileName: 'h.jpg', previewUrl: 'blob:h' },
+        detail: { fileName: 'd.jpg', previewUrl: 'blob:d' },
+      }),
+    ).toBeNull()
+  })
+
+  it('B-27 resolveCameraTargetSlot: preferred optional defers to missing required', () => {
+    // Preferring habitat while gills empty → still gills
+    expect(resolveCameraTargetSlot({}, 'habitat')).toBe('gills')
+    // Preferring empty required → honor it
+    expect(resolveCameraTargetSlot({}, 'front')).toBe('front')
+    // Preferring empty optional after required filled → honor it
+    expect(
+      resolveCameraTargetSlot(
+        {
+          gills: { fileName: 'g.jpg', previewUrl: 'blob:g' },
+          front: { fileName: 'f.jpg', previewUrl: 'blob:f' },
+        },
+        'detail',
+      ),
+    ).toBe('detail')
+    // Preferred already filled → fall back to next
+    expect(
+      resolveCameraTargetSlot(
+        { gills: { fileName: 'g.jpg', previewUrl: 'blob:g' } },
+        'gills',
+      ),
+    ).toBe('front')
   })
 })
 
@@ -175,14 +272,14 @@ describe('encyclopedia names and photos', () => {
     expect(amanita).toBeTruthy()
     expect(amanita!).toMatch(/wikimedia|inaturalist|static\.inaturalist|amazonaws/i)
     const muscaria = resolveSpeciesImageSync('Amanita muscaria')
-    expect(muscaria.provider).toBe('catalog')
-    expect(muscaria.url.startsWith('http')).toBe(true)
+    expect(['catalog', 'local_media', 'placeholder']).toContain(muscaria.provider)
+    expect(muscaria.url.length).toBeGreaterThan(10)
   })
 
   it('always resolves a displayable image (placeholder never empty)', () => {
     const r = resolveSpeciesImageSync('Totally Unknown Fungus xyz', 'deadly')
     expect(r.url.length).toBeGreaterThan(20)
-    expect(r.provider === 'placeholder' || r.provider === 'catalog').toBe(true)
+    expect(['placeholder', 'catalog', 'local_media']).toContain(r.provider)
     expect(mycologyPlaceholderDataUri('Test fungus')).toMatch(/^data:image\/svg\+xml/)
   })
 

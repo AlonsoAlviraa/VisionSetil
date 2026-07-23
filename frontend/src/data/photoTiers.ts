@@ -177,7 +177,8 @@ export function shouldUseCatalogUrlOnGrid(tier: PhotoTier): boolean {
 }
 
 /** Bound for concurrent remote upgrades / catalog img loads on first encyclopedia paint. */
-export const ENCYCLOPEDIA_FIRST_PAGE_SIZE = 16
+/** E-09: first paint ≤12 thumbs (was 16) for faster encyclopedia grid. */
+export const ENCYCLOPEDIA_FIRST_PAGE_SIZE = 12
 
 export function photoTierStats(taxons: Array<{ taxon: string; risk_label?: string }>) {
   let t0 = 0

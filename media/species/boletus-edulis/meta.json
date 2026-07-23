@@ -1,0 +1,39 @@
+{
+  "slug": "boletus-edulis",
+  "scientific_name": "Boletus edulis",
+  "source": "gbif",
+  "source_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/605242970/original.jpg",
+  "license": "http://creativecommons.org/publicdomain/zero/1.0/",
+  "license_url": "http://creativecommons.org/publicdomain/zero/1.0/",
+  "creator": "George Cox",
+  "attribution_text": "George Cox — http://creativecommons.org/publicdomain/zero/1.0/",
+  "gbif_occurrence_id": 5938118644,
+  "sha256_source": "a56fdee6530bae7ce3b2e29aea90f96c2e5563132fdeac6cd59008297c893cb6",
+  "sha256_derivatives": {
+    "lqip": "8388d3158815292742f3cf2feb484b51e45075b28ad93b151155672df033e00c",
+    "thumb": "02dc91c5902ee8527ad9a07b70f172830a76a5f6ed2625026eb5610950d4766e",
+    "card": "1d3af008118c7ddd79ef04b1fc0c628887a1e160c95037aec3e63fbf627b08a7",
+    "detail": "a56fdee6530bae7ce3b2e29aea90f96c2e5563132fdeac6cd59008297c893cb6"
+  },
+  "gallery": [
+    {
+      "file": "gallery/01.webp"
+    },
+    {
+      "file": "gallery/02.webp"
+    },
+    {
+      "file": "gallery/03.webp"
+    },
+    {
+      "file": "gallery/04.webp"
+    }
+  ],
+  "fetched_at": "2026-07-23T16:26:58.602792+00:00",
+  "status": "ok",
+  "quality": {
+    "card_bytes": 121390,
+    "class": "ok_real",
+    "checked_at": "2026-07-23T16:26:58.602792+00:00"
+  }
+}

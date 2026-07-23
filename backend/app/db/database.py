@@ -1,17 +1,29 @@
 from collections.abc import Generator
 from pathlib import Path
 
-from sqlalchemy import create_engine, inspect, text
+from sqlalchemy import create_engine, event, inspect, text
 from sqlalchemy.orm import Session, declarative_base, sessionmaker
 
 from app.core.config import settings
 
 engine = create_engine(
     f"sqlite:///{settings.database_path}",
-    connect_args={"check_same_thread": False},
+    connect_args={"check_same_thread": False, "timeout": 30},
 )
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 Base = declarative_base()
+
+
+@event.listens_for(engine, "connect")
+def _sqlite_on_connect(dbapi_connection, connection_record) -> None:  # noqa: ARG001
+    """Enable WAL + busy timeout for concurrent classify/upload writers."""
+    cursor = dbapi_connection.cursor()
+    try:
+        cursor.execute("PRAGMA journal_mode=WAL")
+        cursor.execute("PRAGMA busy_timeout=5000")
+        cursor.execute("PRAGMA synchronous=NORMAL")
+    finally:
+        cursor.close()
 
 
 def _run_lightweight_migrations() -> None:
@@ -35,6 +47,8 @@ def _run_lightweight_migrations() -> None:
         ("human_review_requests", "reviewer_notes", "TEXT"),
         ("human_review_requests", "reviewer_taxon", "VARCHAR(160)"),
         ("human_review_requests", "reviewer_confidence", "FLOAT"),
+        # E-05 user roles
+        ("users", "role", "VARCHAR(40) DEFAULT 'user'"),
     ]
 
     try:
