@@ -20,8 +20,8 @@ export default defineConfig({
   webServer: {
     command: 'npm run dev -- --host 127.0.0.1 --port 5173 --strictPort',
     url: 'http://127.0.0.1:5173',
-    // Always start a fresh Vite so media middleware from vite.config is loaded
-    reuseExistingServer: false,
+    // Prefer fresh Vite so media middleware from vite.config is loaded; reuse when busy locally
+    reuseExistingServer: !process.env.CI,
     timeout: 120_000,
   },
 })

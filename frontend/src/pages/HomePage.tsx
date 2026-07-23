@@ -67,7 +67,6 @@ function DeadlyThumb({
 export function HomePage() {
   const [catalogCount, setCatalogCount] = useState<number | null>(null)
   const [deadlyPreview, setDeadlyPreview] = useState(HOME_DEADLY_SEED)
-  const [seasonOpen, setSeasonOpen] = useState(false)
 
   useEffect(() => {
     let cancelled = false
@@ -213,24 +212,17 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="atelier-section">
-        <button
-          type="button"
-          className="home-season-toggle"
-          aria-expanded={seasonOpen}
-          onClick={() => setSeasonOpen((v) => !v)}
-        >
-          <span>
-            <strong>Esta temporada</strong>
-            <em>Vista educativa de lo que suele fructificar</em>
-          </span>
-          <span aria-hidden="true">{seasonOpen ? '−' : '+'}</span>
-        </button>
-        {seasonOpen && (
-          <div className="home-season-body">
-            <SeasonRadar />
-          </div>
-        )}
+      <section className="atelier-section home-season-section" data-testid="home-season">
+        <div className="home-season-head">
+          <p className="atelier-kicker">Esta temporada</p>
+          <h2 className="home-season-title">Vista educativa de lo que suele fructificar</h2>
+          <p className="home-season-sub">
+            Radar de orientación — no es guía de recolección ni permiso de consumo.
+          </p>
+        </div>
+        <div className="home-season-body home-season-body--always">
+          <SeasonRadar />
+        </div>
       </section>
     </div>
   )

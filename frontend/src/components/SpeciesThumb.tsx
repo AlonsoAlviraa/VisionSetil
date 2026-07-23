@@ -1,6 +1,10 @@
-/** Small professional species photo for lists / predictions. */
-import { useSpeciesImage } from '../hooks/useSpeciesImage'
-import { speciesPhotoErrorFallback } from '../lib/speciesPhotoFallback'
+/** Small professional species photo for lists / predictions.
+ * Thin wrapper over SpeciesImage with layout="fixed" (Phase C / C-06).
+ * Parent sets the box; no minHeight:80 on list sizes.
+ */
+import { SpeciesImage } from './SpeciesImage'
+import { riskToPlaceholder } from '../lib/edibility'
+import type { PlaceholderKind } from '../lib/speciesImageUrl'
 
 type Props = {
   taxon: string
@@ -8,6 +12,8 @@ type Props = {
   alt?: string
   className?: string
   size?: number
+  slug?: string
+  priority?: boolean
 }
 
 export function SpeciesThumb({
@@ -16,29 +22,30 @@ export function SpeciesThumb({
   alt,
   className = '',
   size = 48,
+  slug,
+  priority = false,
 }: Props) {
-  const { url, loading } = useSpeciesImage(taxon, {
-    riskLabel: riskLabel || undefined,
-    context: 'eager',
-  })
-  const placeholder = speciesPhotoErrorFallback(taxon, riskLabel)
-
+  const kind: PlaceholderKind = riskToPlaceholder(riskLabel)
   const isLarge = size >= 120
 
   return (
     <span
-      className={`species-thumb ${loading ? 'species-thumb--loading' : ''} ${isLarge ? 'species-thumb--lg' : ''} ${className}`}
-      style={{ width: size, height: size, maxWidth: '100%' }}
+      className={`species-thumb ${isLarge ? 'species-thumb--lg' : ''} ${className}`.trim()}
+      style={{ width: size, height: size, maxWidth: '100%', display: 'inline-block' }}
+      data-testid="species-thumb"
     >
-      <img
-        src={url}
+      <SpeciesImage
+        scientificName={taxon}
+        slug={slug}
+        variant="thumb"
+        layout="fixed"
+        width={size}
+        height={size}
+        riskLevel={kind}
         alt={alt ?? taxon}
-        loading="lazy"
-        decoding="async"
-        onError={(e) => {
-          const img = e.currentTarget
-          if (img.src !== placeholder) img.src = placeholder
-        }}
+        className="species-thumb__img"
+        priority={priority}
+        minNaturalWidth={8}
       />
     </span>
   )

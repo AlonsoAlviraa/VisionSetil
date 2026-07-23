@@ -39,6 +39,13 @@ export const featureFlags = {
    * Product path still uses envelope.simple only (same ResultModeBanner as sync).
    */
   ASYNC_CLASSIFY: envBool('VITE_FEATURE_ASYNC_CLASSIFY', false),
+  /**
+   * Season pack static path (Phase C). Default true when pack ships.
+   * Off → legacy ensureSeasonCatalog + full catalog hydrate.
+   */
+  SEASON_PACK: envBool('VITE_FEATURE_SEASON_PACK', true),
+  /** Home immersive season strip beauty (C-30). */
+  HOME_SEASON_IMMERSE: envBool('VITE_FEATURE_HOME_SEASON_IMMERSE', true),
 } as const
 
 export type FeatureFlagKey = keyof typeof featureFlags

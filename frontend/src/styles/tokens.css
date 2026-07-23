@@ -192,6 +192,19 @@
   min-height: 80px;
 }
 
+/* C-06: list thumbs must not force minHeight 80 */
+.species-image[data-layout='fixed'] {
+  min-height: 0;
+}
+
+.species-thumb .species-image,
+.species-thumb .species-image[data-layout='fixed'] {
+  min-height: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+}
+
 .species-image__img {
   width: 100%;
   height: 100%;
@@ -206,6 +219,12 @@
 
 .species-image__img--loaded {
   opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .species-image__img {
+    transition: none;
+  }
 }
 
 @keyframes species-shimmer {

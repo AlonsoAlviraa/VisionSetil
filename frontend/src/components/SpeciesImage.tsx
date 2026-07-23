@@ -1,8 +1,10 @@
 /**
  * SpeciesImage — always show a photo (or branded fallback).
  * Cascade: primary variant → card → thumb → risk placeholder → inline SVG.
+ * layout="fill" (default): card/grid with minHeight 80.
+ * layout="fixed": list thumbs — NO minHeight; parent sets box (C-06).
  */
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, type CSSProperties, type SyntheticEvent } from 'react'
 import {
   INLINE_PLACEHOLDER_SVG,
   placeholderImageUrl,
@@ -14,6 +16,8 @@ import { scientificNameToSlug } from '../lib/slug'
 import { featureFlags } from '../lib/featureFlags'
 import { ImageAttribution, type ImageAttributionMeta } from './ui/ImageAttribution'
 
+export type SpeciesImageLayout = 'fill' | 'fixed'
+
 export interface SpeciesImageProps {
   scientificName: string
   slug?: string
@@ -22,8 +26,18 @@ export interface SpeciesImageProps {
   alt: string
   className?: string
   priority?: boolean
+  sizes?: string
+  aspectRatio?: string
+  /** fill = card/grid (default): minHeight 80 OK. fixed = list thumbs: NO minHeight; parent sets box. */
+  layout?: SpeciesImageLayout
+  width?: number
+  height?: number
+  lqip?: boolean
+  /** If naturalWidth < min (default 8) → treat as error, advance cascade. Does NOT detect solid stubs. */
+  minNaturalWidth?: number
   showAttribution?: boolean
   attribution?: ImageAttributionMeta | null
+  onStageChange?: (stage: string) => void
 }
 
 function riskFromProps(riskLevel?: PlaceholderKind): PlaceholderKind {
@@ -63,8 +77,15 @@ export function SpeciesImage({
   alt,
   className = '',
   priority = false,
+  sizes,
+  aspectRatio,
+  layout = 'fill',
+  width,
+  height,
+  minNaturalWidth = 8,
   showAttribution = false,
   attribution = null,
+  onStageChange,
 }: SpeciesImageProps) {
   const slug = (slugProp || scientificNameToSlug(scientificName) || '').toLowerCase()
   const kind = riskFromProps(riskLevel)
@@ -83,14 +104,16 @@ export function SpeciesImage({
       setStage('inline')
       setSrc(INLINE_PLACEHOLDER_SVG)
       setLoaded(true)
+      onStageChange?.('inline')
       return
     }
     setStage('primary')
     setSrc(urlForStage(slug, variant, 'primary', kind))
     setLoaded(false)
-  }, [slug, variant, kind, mediaOn])
+    onStageChange?.('primary')
+  }, [slug, variant, kind, mediaOn]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleError = () => {
+  const advanceFrom = (current: Stage) => {
     const order: Stage[] =
       variant === 'card'
         ? ['primary', 'thumb', 'placeholder', 'inline']
@@ -98,27 +121,38 @@ export function SpeciesImage({
           ? ['primary', 'card', 'placeholder', 'inline']
           : ['primary', 'card', 'thumb', 'placeholder', 'inline']
 
-    const idx = order.indexOf(stage)
-    const next = order[idx + 1] || 'inline'
+    const idx = order.indexOf(current)
+    let next = order[idx + 1] || 'inline'
     // skip duplicate primary→card when already on card
     if (next === 'card' && variant === 'card') {
-      setStage('thumb')
-      setSrc(urlForStage(slug, variant, 'thumb', kind))
-      setLoaded(false)
-      return
+      next = 'thumb'
     }
     if (next === 'primary') {
-      setStage('card')
-      setSrc(urlForStage(slug, variant, 'card', kind))
-      setLoaded(false)
-      return
+      next = 'card'
     }
     setStage(next)
     setSrc(urlForStage(slug, variant, next, kind))
     setLoaded(next === 'inline')
+    onStageChange?.(next)
   }
 
-  const handleLoad = () => setLoaded(true)
+  const handleError = () => advanceFrom(stage)
+
+  const handleLoad = (e: SyntheticEvent<HTMLImageElement>) => {
+    const img = e.currentTarget
+    // Client last-line only: broken/zero-dim (NOT solid-color full-dim stubs — C-04/C-05)
+    if (
+      minNaturalWidth > 0 &&
+      stage !== 'inline' &&
+      stage !== 'placeholder' &&
+      img.naturalWidth > 0 &&
+      img.naturalWidth < minNaturalWidth
+    ) {
+      advanceFrom(stage)
+      return
+    }
+    setLoaded(true)
+  }
 
   const style = useMemo(
     () => ({
@@ -131,20 +165,35 @@ export function SpeciesImage({
     [],
   )
 
+  const wrapperStyle: CSSProperties =
+    layout === 'fixed'
+      ? {
+          position: 'relative',
+          width: width ?? '100%',
+          height: height ?? '100%',
+          minHeight: 0,
+          overflow: 'hidden',
+          background: 'linear-gradient(135deg, #dfe8df, #c5d4c5)',
+          aspectRatio: aspectRatio,
+        }
+      : {
+          position: 'relative',
+          width: '100%',
+          height: '100%',
+          minHeight: 80,
+          overflow: 'hidden',
+          background: 'linear-gradient(135deg, #dfe8df, #c5d4c5)',
+          aspectRatio: aspectRatio,
+        }
+
   return (
     <div
       className={`species-image ${className}`.trim()}
       data-testid="species-image"
       data-slug={slug}
       data-stage={stage}
-      style={{
-        position: 'relative',
-        width: '100%',
-        height: '100%',
-        minHeight: 80,
-        overflow: 'hidden',
-        background: 'linear-gradient(135deg, #dfe8df, #c5d4c5)',
-      }}
+      data-layout={layout}
+      style={wrapperStyle}
     >
       {!loaded && stage !== 'inline' ? (
         <div
@@ -166,6 +215,9 @@ export function SpeciesImage({
         alt={alt}
         className={`species-image__img ${loaded ? 'species-image__img--loaded' : 'species-image__img--loading'}`}
         style={style}
+        sizes={sizes}
+        width={width}
+        height={height}
         loading={priority ? 'eager' : 'lazy'}
         decoding="async"
         onError={handleError}

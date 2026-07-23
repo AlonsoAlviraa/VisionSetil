@@ -1,9 +1,14 @@
 import { describe, expect, it } from 'vitest'
 import {
   currentSeason,
+  isSeasonPackEnabled,
   seasonFromMonth,
   seasonRadarSnapshot,
+  seasonRadarSnapshotSync,
+  SEASON_PACK,
+  SEASON_TAXON_SEEDS,
   taxaForSeason,
+  taxaForSeasonFromPack,
 } from './seasonRadar'
 
 describe('season radar', () => {
@@ -28,6 +33,9 @@ describe('season radar', () => {
       for (const t of taxa) {
         expect(t.taxon.length).toBeGreaterThan(2)
         expect(t.common_name.toLowerCase()).not.toMatch(/safe to eat|segura para comer/)
+        expect(`${t.common_name} ${t.taxon}`.toLowerCase()).not.toMatch(
+          /permiso de recolect|seguro recolect/,
+        )
       }
     }
   })
@@ -35,7 +43,33 @@ describe('season radar', () => {
   it('snapshot includes disclaimer', () => {
     const snap = seasonRadarSnapshot(new Date('2026-03-01'))
     expect(snap.season.id).toBe('primavera')
-    expect(snap.disclaimer.toLowerCase()).toMatch(/orientaci|educativ|consumo/)
+    expect(snap.disclaimer.toLowerCase()).toMatch(/orientaci|educativ|consumo|recolecci/)
     expect(snap.taxa.length).toBeGreaterThan(0)
+  })
+
+  it('pack is present and enables pack path by default', () => {
+    expect(SEASON_PACK.version).toBe(1)
+    expect(isSeasonPackEnabled()).toBe(true)
+    expect(Object.keys(SEASON_PACK.seasons)).toEqual(
+      expect.arrayContaining(['primavera', 'verano', 'otono', 'invierno']),
+    )
+  })
+
+  it('pack seeds include Verpa conica (not bohemica) and resolve slugs', () => {
+    expect(SEASON_TAXON_SEEDS.primavera).toContain('Verpa conica')
+    expect(SEASON_TAXON_SEEDS.primavera).not.toContain('Verpa bohemica')
+    const spring = taxaForSeasonFromPack('primavera')
+    expect(spring.some((t) => t.slug === 'verpa-conica')).toBe(true)
+    for (const t of spring) {
+      expect(t.slug.length).toBeGreaterThan(2)
+      expect(t.in_catalog).toBe(true)
+    }
+  })
+
+  it('sync snapshot does not require catalog hydrate', () => {
+    const snap = seasonRadarSnapshotSync(new Date('2026-10-01'))
+    expect(snap.season.id).toBe('otono')
+    expect(snap.taxa.length).toBeGreaterThan(0)
+    expect(snap.disclaimer.toLowerCase()).toMatch(/educativ|recolecci|consumo/)
   })
 })

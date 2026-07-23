@@ -1,0 +1,316 @@
+{
+  "version": 1,
+  "generated_at": "2026-07-23T08:46:47.967791+00:00",
+  "seasons": {
+    "primavera": {
+      "id": "primavera",
+      "labelEs": "Primavera",
+      "months": "Marzo – Mayo",
+      "note": "Temporada corta; colmenillas y setas de prado. Solo orientación educativa.",
+      "moodImage": "/media/placeholders/default.webp",
+      "taxa": [
+        {
+          "taxon": "Morchella esculenta",
+          "slug": "morchella-esculenta",
+          "common_name": "Colmena",
+          "risk_label": "low",
+          "placeholder_kind": "default",
+          "urls": {
+            "thumb": "/media/species/morchella-esculenta/thumb.webp",
+            "card": "/media/species/morchella-esculenta/card.webp",
+            "lqip": "/media/species/morchella-esculenta/lqip.webp"
+          },
+          "media_status": "ok_procedural"
+        },
+        {
+          "taxon": "Calocybe gambosa",
+          "slug": "calocybe-gambosa",
+          "common_name": "Seta de San Juan",
+          "risk_label": "low",
+          "placeholder_kind": "default",
+          "urls": {
+            "thumb": "/media/species/calocybe-gambosa/thumb.webp",
+            "card": "/media/species/calocybe-gambosa/card.webp",
+            "lqip": "/media/species/calocybe-gambosa/lqip.webp"
+          },
+          "media_status": "ok_procedural"
+        },
+        {
+          "taxon": "Agaricus campestris",
+          "slug": "agaricus-campestris",
+          "common_name": "Champiñón silvestre",
+          "risk_label": "low",
+          "placeholder_kind": "default",
+          "urls": {
+            "thumb": "/media/species/agaricus-campestris/thumb.webp",
+            "card": "/media/species/agaricus-campestris/card.webp",
+            "lqip": "/media/species/agaricus-campestris/lqip.webp"
+          },
+          "media_status": "legacy_unverified"
+        },
+        {
+          "taxon": "Verpa conica",
+          "slug": "verpa-conica",
+          "common_name": "Verpa",
+          "risk_label": "medium",
+          "placeholder_kind": "toxic",
+          "urls": {
+            "thumb": "/media/species/verpa-conica/thumb.webp",
+            "card": "/media/species/verpa-conica/card.webp",
+            "lqip": "/media/species/verpa-conica/lqip.webp"
+          },
+          "media_status": "ok_procedural"
+        },
+        {
+          "taxon": "Sarcoscypha coccinea",
+          "slug": "sarcoscypha-coccinea",
+          "common_name": "Copa escarlata",
+          "risk_label": "medium",
+          "placeholder_kind": "toxic",
+          "urls": {
+            "thumb": "/media/species/sarcoscypha-coccinea/thumb.webp",
+            "card": "/media/species/sarcoscypha-coccinea/card.webp",
+            "lqip": "/media/species/sarcoscypha-coccinea/lqip.webp"
+          },
+          "media_status": "ok_procedural"
+        }
+      ]
+    },
+    "verano": {
+      "id": "verano",
+      "labelEs": "Verano",
+      "months": "Junio – Agosto",
+      "note": "Depende de tormentas estivales. Observa rebozuelos y oronjas en zonas cálidas.",
+      "moodImage": "/media/placeholders/default.webp",
+      "taxa": [
+        {
+          "taxon": "Cantharellus cibarius",
+          "slug": "cantharellus-cibarius",
+          "common_name": "Rebollón",
+          "risk_label": "low",
+          "placeholder_kind": "default",
+          "urls": {
+            "thumb": "/media/species/cantharellus-cibarius/thumb.webp",
+            "card": "/media/species/cantharellus-cibarius/card.webp",
+            "lqip": "/media/species/cantharellus-cibarius/lqip.webp"
+          },
+          "media_status": "legacy_unverified"
+        },
+        {
+          "taxon": "Amanita caesarea",
+          "slug": "amanita-caesarea",
+          "common_name": "Oronja",
+          "risk_label": "low",
+          "placeholder_kind": "default",
+          "urls": {
+            "thumb": "/media/species/amanita-caesarea/thumb.webp",
+            "card": "/media/species/amanita-caesarea/card.webp",
+            "lqip": "/media/species/amanita-caesarea/lqip.webp"
+          },
+          "media_status": "legacy_unverified"
+        },
+        {
+          "taxon": "Russula virescens",
+          "slug": "russula-virescens",
+          "common_name": "Hongo verde",
+          "risk_label": "low",
+          "placeholder_kind": "default",
+          "urls": {
+            "thumb": "/media/species/russula-virescens/thumb.webp",
+            "card": "/media/species/russula-virescens/card.webp",
+            "lqip": "/media/species/russula-virescens/lqip.webp"
+          },
+          "media_status": "ok_procedural"
+        },
+        {
+          "taxon": "Boletus aereus",
+          "slug": "boletus-aereus",
+          "common_name": "Hongo negro",
+          "risk_label": "low",
+          "placeholder_kind": "default",
+          "urls": {
+            "thumb": "/media/species/boletus-aereus/thumb.webp",
+            "card": "/media/species/boletus-aereus/card.webp",
+            "lqip": "/media/species/boletus-aereus/lqip.webp"
+          },
+          "media_status": "ok_procedural"
+        },
+        {
+          "taxon": "Amanita phalloides",
+          "slug": "amanita-phalloides",
+          "common_name": "Oronja verde",
+          "risk_label": "deadly",
+          "placeholder_kind": "deadly",
+          "urls": {
+            "thumb": "/media/species/amanita-phalloides/thumb.webp",
+            "card": "/media/species/amanita-phalloides/card.webp",
+            "lqip": "/media/species/amanita-phalloides/lqip.webp"
+          },
+          "media_status": "legacy_unverified"
+        }
+      ]
+    },
+    "otono": {
+      "id": "otono",
+      "labelEs": "Otoño",
+      "months": "Septiembre – Noviembre",
+      "note": "Mayor diversidad. Incluye taxones de alto riesgo: no es permiso de recolección.",
+      "moodImage": "/media/placeholders/default.webp",
+      "taxa": [
+        {
+          "taxon": "Boletus edulis",
+          "slug": "boletus-edulis",
+          "common_name": "Hongo blanco",
+          "risk_label": "low",
+          "placeholder_kind": "default",
+          "urls": {
+            "thumb": "/media/species/boletus-edulis/thumb.webp",
+            "card": "/media/species/boletus-edulis/card.webp",
+            "lqip": "/media/species/boletus-edulis/lqip.webp"
+          },
+          "media_status": "legacy_unverified"
+        },
+        {
+          "taxon": "Lactarius deliciosus",
+          "slug": "lactarius-deliciosus",
+          "common_name": "Nízcalo",
+          "risk_label": "low",
+          "placeholder_kind": "default",
+          "urls": {
+            "thumb": "/media/species/lactarius-deliciosus/thumb.webp",
+            "card": "/media/species/lactarius-deliciosus/card.webp",
+            "lqip": "/media/species/lactarius-deliciosus/lqip.webp"
+          },
+          "media_status": "legacy_unverified"
+        },
+        {
+          "taxon": "Amanita phalloides",
+          "slug": "amanita-phalloides",
+          "common_name": "Oronja verde",
+          "risk_label": "deadly",
+          "placeholder_kind": "deadly",
+          "urls": {
+            "thumb": "/media/species/amanita-phalloides/thumb.webp",
+            "card": "/media/species/amanita-phalloides/card.webp",
+            "lqip": "/media/species/amanita-phalloides/lqip.webp"
+          },
+          "media_status": "legacy_unverified"
+        },
+        {
+          "taxon": "Hydnum repandum",
+          "slug": "hydnum-repandum",
+          "common_name": "Lengua de gato",
+          "risk_label": "low",
+          "placeholder_kind": "default",
+          "urls": {
+            "thumb": "/media/species/hydnum-repandum/thumb.webp",
+            "card": "/media/species/hydnum-repandum/card.webp",
+            "lqip": "/media/species/hydnum-repandum/lqip.webp"
+          },
+          "media_status": "ok_procedural"
+        },
+        {
+          "taxon": "Macrolepiota procera",
+          "slug": "macrolepiota-procera",
+          "common_name": "Apagador",
+          "risk_label": "low",
+          "placeholder_kind": "default",
+          "urls": {
+            "thumb": "/media/species/macrolepiota-procera/thumb.webp",
+            "card": "/media/species/macrolepiota-procera/card.webp",
+            "lqip": "/media/species/macrolepiota-procera/lqip.webp"
+          },
+          "media_status": "ok_procedural"
+        },
+        {
+          "taxon": "Galerina marginata",
+          "slug": "galerina-marginata",
+          "common_name": "Galerina de los márgenes",
+          "risk_label": "deadly",
+          "placeholder_kind": "deadly",
+          "urls": {
+            "thumb": "/media/species/galerina-marginata/thumb.webp",
+            "card": "/media/species/galerina-marginata/card.webp",
+            "lqip": "/media/species/galerina-marginata/lqip.webp"
+          },
+          "media_status": "legacy_unverified"
+        },
+        {
+          "taxon": "Hypholoma fasciculare",
+          "slug": "hypholoma-fasciculare",
+          "common_name": "Galerina amarilla",
+          "risk_label": "high",
+          "placeholder_kind": "toxic",
+          "urls": {
+            "thumb": "/media/species/hypholoma-fasciculare/thumb.webp",
+            "card": "/media/species/hypholoma-fasciculare/card.webp",
+            "lqip": "/media/species/hypholoma-fasciculare/lqip.webp"
+          },
+          "media_status": "legacy_unverified"
+        }
+      ]
+    },
+    "invierno": {
+      "id": "invierno",
+      "labelEs": "Invierno",
+      "months": "Diciembre – Febrero",
+      "note": "Pocas especies; trufas y ostras en contexto educativo.",
+      "moodImage": "/media/placeholders/default.webp",
+      "taxa": [
+        {
+          "taxon": "Tuber melanosporum",
+          "slug": "tuber-melanosporum",
+          "common_name": "Trufa negra",
+          "risk_label": "low",
+          "placeholder_kind": "default",
+          "urls": {
+            "thumb": "/media/species/tuber-melanosporum/thumb.webp",
+            "card": "/media/species/tuber-melanosporum/card.webp",
+            "lqip": "/media/species/tuber-melanosporum/lqip.webp"
+          },
+          "media_status": "ok_procedural"
+        },
+        {
+          "taxon": "Pleurotus ostreatus",
+          "slug": "pleurotus-ostreatus",
+          "common_name": "Seta de ostra",
+          "risk_label": "low",
+          "placeholder_kind": "default",
+          "urls": {
+            "thumb": "/media/species/pleurotus-ostreatus/thumb.webp",
+            "card": "/media/species/pleurotus-ostreatus/card.webp",
+            "lqip": "/media/species/pleurotus-ostreatus/lqip.webp"
+          },
+          "media_status": "ok_procedural"
+        },
+        {
+          "taxon": "Flammulina velutipes",
+          "slug": "flammulina-velutipes",
+          "common_name": "Cola de faiso",
+          "risk_label": "low",
+          "placeholder_kind": "default",
+          "urls": {
+            "thumb": "/media/species/flammulina-velutipes/thumb.webp",
+            "card": "/media/species/flammulina-velutipes/card.webp",
+            "lqip": "/media/species/flammulina-velutipes/lqip.webp"
+          },
+          "media_status": "ok_procedural"
+        },
+        {
+          "taxon": "Hygrophorus marzuolus",
+          "slug": "hygrophorus-marzuolus",
+          "common_name": "Marzuelo",
+          "risk_label": "low",
+          "placeholder_kind": "default",
+          "urls": {
+            "thumb": "/media/species/hygrophorus-marzuolus/thumb.webp",
+            "card": "/media/species/hygrophorus-marzuolus/card.webp",
+            "lqip": "/media/species/hygrophorus-marzuolus/lqip.webp"
+          },
+          "media_status": "legacy_unverified"
+        }
+      ]
+    }
+  },
+  "disclaimer": "Radar educativo de temporada. No es guía de recolección ni permiso de consumo."
+}
