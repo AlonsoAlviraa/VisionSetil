@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated_at": "2026-07-23T09:03:51.505048+00:00",
+  "generated_at": "2026-07-23T16:30:43.835013+00:00",
   "count": 520,
   "species": {
     "agaricus-arvensis": {
@@ -196,19 +196,19 @@
       "meta": {
         "slug": "agaricus-campestris",
         "scientific_name": "Agaricus campestris",
-        "source": "wikipedia_es",
-        "source_url": "https://upload.wikimedia.org/wikipedia/commons/3/3a/Agaricus_campestris.jpg",
-        "license": "wikipedia-page-image",
-        "license_url": "https://es.wikipedia.org/wiki/Agaricus_campestris",
-        "creator": "Wikipedia/es",
-        "attribution_text": "Wikipedia/es — wikipedia-page-image",
-        "gbif_occurrence_id": null,
-        "sha256_source": "5280b5a9c371b73c97290d6171d34ca6bc0158c094136f7a8aeb142e1a314a76",
+        "source": "gbif",
+        "source_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/613392795/original.jpg",
+        "license": "http://creativecommons.org/licenses/by/4.0/",
+        "license_url": "http://creativecommons.org/licenses/by/4.0/",
+        "creator": "victor laborde",
+        "attribution_text": "victor laborde — http://creativecommons.org/licenses/by/4.0/",
+        "gbif_occurrence_id": 6159370314,
+        "sha256_source": "d159715ccd5fe4b34665aa1e063ba3760af88b610b4256cf74b3a11ec7ce86f6",
         "sha256_derivatives": {
-          "lqip": "54e0f9e76eb998f4b965cb2acc2eed7428cf676f66f1715ba14f49aeaefe9d84",
-          "thumb": "f09ada4c8e045d2b385a04d845804a0c8e151cca62d2872f91c3081738f3815a",
-          "card": "ba901e99ae3e1ff823bbdbcaa23eb123c26a808f19f6b09af907eadc044d6b50",
-          "detail": "5280b5a9c371b73c97290d6171d34ca6bc0158c094136f7a8aeb142e1a314a76"
+          "lqip": "25bce507e435fc2371628482c4e1958ef9b604cc63560272c61f7069cf111e8c",
+          "thumb": "cf5574a501d8b01a875203c0aac597ee65b86411952743473e46fe91d2c5be2d",
+          "card": "b30852206aff7fc68d0c4cda774f72d8978475e7dfb887faf37f734972805084",
+          "detail": "d159715ccd5fe4b34665aa1e063ba3760af88b610b4256cf74b3a11ec7ce86f6"
         },
         "gallery": [
           {
@@ -224,8 +224,13 @@
             "file": "gallery/04.webp"
           }
         ],
-        "fetched_at": "2026-07-22T14:37:17.057114+00:00",
-        "status": "ok"
+        "fetched_at": "2026-07-23T16:25:45.607231+00:00",
+        "status": "ok",
+        "quality": {
+          "card_bytes": 85858,
+          "class": "ok_real",
+          "checked_at": "2026-07-23T16:25:45.607231+00:00"
+        }
       }
     },
     "agaricus-cupreobrunneus": {
@@ -1239,36 +1244,32 @@
       "meta": {
         "slug": "amanita-caesarea",
         "scientific_name": "Amanita caesarea",
-        "source": "wikipedia_es",
-        "source_url": "https://upload.wikimedia.org/wikipedia/commons/5/51/Bresadola_-_Amanita_caesarea.png",
-        "license": "wikipedia-page-image",
-        "license_url": "https://es.wikipedia.org/wiki/Amanita_caesarea",
-        "creator": "Wikipedia/es",
-        "attribution_text": "Wikipedia/es — wikipedia-page-image",
-        "gbif_occurrence_id": null,
-        "sha256_source": "bdfb9c1ddfee7c4c31e13bd07850c71666fbce953a8e5a7d5d17ab10a6448d7a",
+        "source": "gbif",
+        "source_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/673503189/original.jpg",
+        "license": "http://creativecommons.org/licenses/by/4.0/",
+        "license_url": "http://creativecommons.org/licenses/by/4.0/",
+        "creator": "Dimitǎr Boevski",
+        "attribution_text": "Dimitǎr Boevski — http://creativecommons.org/licenses/by/4.0/",
+        "gbif_occurrence_id": 6423079740,
+        "sha256_source": "a9ef7e77bcc49b10e77fa6614a4963834e08e29c16fd8cffac488c582792bd61",
         "sha256_derivatives": {
-          "lqip": "413c0027f8bfdcb22b2fbfc14d9cfd742401b789d5f94997da5a5583ed066f2a",
-          "thumb": "68e5135361128d5ec3e916f02fa869020c839d5564d7b41cf6c2608ded5fee25",
-          "card": "e5ba785acc5efe89f040bee976facdea667e9b2233d215107607ad8135eb3d50",
-          "detail": "bdfb9c1ddfee7c4c31e13bd07850c71666fbce953a8e5a7d5d17ab10a6448d7a"
+          "lqip": "aad9c369649efa7d570c9a3772add9469369e5d6f8db8ba35b2fc92a6877e91b",
+          "thumb": "40f727ddbec088f73ca0838104bcf075f69b86867fe624e9626502ec9eaca4c0",
+          "card": "02d764b768a33cada12abd77cfea0045564fc214e943ba63310620cbdefc5bc1",
+          "detail": "a9ef7e77bcc49b10e77fa6614a4963834e08e29c16fd8cffac488c582792bd61"
         },
         "gallery": [
           {
             "file": "gallery/01.webp"
-          },
-          {
-            "file": "gallery/02.webp"
-          },
-          {
-            "file": "gallery/03.webp"
-          },
-          {
-            "file": "gallery/04.webp"
           }
         ],
-        "fetched_at": "2026-07-22T14:05:00.341406+00:00",
-        "status": "ok"
+        "fetched_at": "2026-07-23T16:25:51.416488+00:00",
+        "status": "ok",
+        "quality": {
+          "card_bytes": 44018,
+          "class": "ok_real",
+          "checked_at": "2026-07-23T16:25:51.416488+00:00"
+        }
       }
     },
     "amanita-ceciliae": {
@@ -1768,19 +1769,19 @@
       "meta": {
         "slug": "amanita-muscaria",
         "scientific_name": "Amanita muscaria",
-        "source": "wikipedia_es",
-        "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/fa/Amanita_muscaria_%281%29_%288692325426%29.jpg",
-        "license": "wikipedia-page-image",
-        "license_url": "https://es.wikipedia.org/wiki/Amanita_muscaria",
-        "creator": "Wikipedia/es",
-        "attribution_text": "Wikipedia/es — wikipedia-page-image",
-        "gbif_occurrence_id": null,
-        "sha256_source": "d90713e94810d7fbd583fefd1f9d609869cf5941671ab1a7433509beb27fcb49",
+        "source": "gbif",
+        "source_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/604828386/original.jpg",
+        "license": "http://creativecommons.org/licenses/by/4.0/",
+        "license_url": "http://creativecommons.org/licenses/by/4.0/",
+        "creator": "Chris Sulots",
+        "attribution_text": "Chris Sulots — http://creativecommons.org/licenses/by/4.0/",
+        "gbif_occurrence_id": 5938036492,
+        "sha256_source": "fa4ab1178d2dd8846d20f80c96facfa684715f18361cee4b98fb66d5bc83cf14",
         "sha256_derivatives": {
-          "lqip": "764afb0eb12ac859959e53d5b61d54116c57993c3e4ce41f6ea81c9458460475",
-          "thumb": "1d9f97cea234ffcf5e0803156621510b611689a85fa874f629b9f62d9c8536cb",
-          "card": "4b648b5dc23a96dd543c45b89089b3a6ca66b5ea83b04120faa6d869964b3fda",
-          "detail": "d90713e94810d7fbd583fefd1f9d609869cf5941671ab1a7433509beb27fcb49"
+          "lqip": "71f5f35684db1e3c1fab906757540bc6e83ead8fb9a054eb86dc473a8557f92d",
+          "thumb": "078541f13e822b89fcc6ce5f0ed6811c3c31e0b11ba786f9e7bedd690d26f543",
+          "card": "9cc2b6a0cbab4bb50c3132a5c2cb8ce3bc761780325230927fb26022f0928694",
+          "detail": "fa4ab1178d2dd8846d20f80c96facfa684715f18361cee4b98fb66d5bc83cf14"
         },
         "gallery": [
           {
@@ -1791,13 +1792,15 @@
           },
           {
             "file": "gallery/03.webp"
-          },
-          {
-            "file": "gallery/04.webp"
           }
         ],
-        "fetched_at": "2026-07-22T14:12:51.847429+00:00",
-        "status": "ok"
+        "fetched_at": "2026-07-23T16:26:02.997579+00:00",
+        "status": "ok",
+        "quality": {
+          "card_bytes": 86944,
+          "class": "ok_real",
+          "checked_at": "2026-07-23T16:26:02.997579+00:00"
+        }
       }
     },
     "amanita-nivalis": {
@@ -1894,19 +1897,19 @@
       "meta": {
         "slug": "amanita-pantherina",
         "scientific_name": "Amanita pantherina",
-        "source": "wikipedia_es",
-        "source_url": "https://upload.wikimedia.org/wikipedia/commons/d/dd/Amanita_pantherina_2013_G1.jpg",
-        "license": "wikipedia-page-image",
-        "license_url": "https://es.wikipedia.org/wiki/Amanita_pantherina",
-        "creator": "Wikipedia/es",
-        "attribution_text": "Wikipedia/es — wikipedia-page-image",
-        "gbif_occurrence_id": null,
-        "sha256_source": "16e95f634bb82cd9687c42d9387d2f1c3d85c902d5dd8ef2ae1c08da43edd058",
+        "source": "gbif",
+        "source_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/654330124/original.jpg",
+        "license": "http://creativecommons.org/publicdomain/zero/1.0/",
+        "license_url": "http://creativecommons.org/publicdomain/zero/1.0/",
+        "creator": "Jean-Max Van Pul",
+        "attribution_text": "Jean-Max Van Pul — http://creativecommons.org/publicdomain/zero/1.0/",
+        "gbif_occurrence_id": 6273199361,
+        "sha256_source": "ec06b1750b006844da3b88e1ce88a3b575ce49681a5fde984869a4056300f859",
         "sha256_derivatives": {
-          "lqip": "9243fc24331c30ea22269e9ea6a99f3b8fa7de1b8ce3664bfea2609616e3a8c9",
-          "thumb": "39c2d3d6944327cb7b08073b058ff1ee2d1a68a257175b7eb764d806d59ada55",
-          "card": "3c7d74bee97d88573a187bb00273588764a5d32c513fa17debf8a4b5148b7710",
-          "detail": "16e95f634bb82cd9687c42d9387d2f1c3d85c902d5dd8ef2ae1c08da43edd058"
+          "lqip": "478f4216eb7787e4be34c126fae799867e60f427e1c373260025cec62511db47",
+          "thumb": "ffa37bbd7aff2491bd86c5b6d5eb3fe7e3d04ad6fec000e443f3dd770fdd5c9e",
+          "card": "fdae584fc91c0d1506df4eaaef11cee6a714eccb869683b8b3da0f628a0c066f",
+          "detail": "ec06b1750b006844da3b88e1ce88a3b575ce49681a5fde984869a4056300f859"
         },
         "gallery": [
           {
@@ -1922,8 +1925,13 @@
             "file": "gallery/04.webp"
           }
         ],
-        "fetched_at": "2026-07-22T14:14:15.345809+00:00",
-        "status": "ok"
+        "fetched_at": "2026-07-23T16:26:11.640757+00:00",
+        "status": "ok",
+        "quality": {
+          "card_bytes": 14158,
+          "class": "legacy_unverified",
+          "checked_at": "2026-07-23T16:26:11.640757+00:00"
+        }
       }
     },
     "amanita-phalloides": {
@@ -1939,19 +1947,19 @@
       "meta": {
         "slug": "amanita-phalloides",
         "scientific_name": "Amanita phalloides",
-        "source": "wikipedia_es",
-        "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/99/Amanita_phalloides_1.JPG",
-        "license": "wikipedia-page-image",
-        "license_url": "https://es.wikipedia.org/wiki/Amanita_phalloides",
-        "creator": "Wikipedia/es",
-        "attribution_text": "Wikipedia/es — wikipedia-page-image",
-        "gbif_occurrence_id": null,
-        "sha256_source": "608a192f015e5eb0374351893c2143f99d0055419475d2d0609a76730c069020",
+        "source": "gbif",
+        "source_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/604710581/original.jpg",
+        "license": "http://creativecommons.org/licenses/by/4.0/",
+        "license_url": "http://creativecommons.org/licenses/by/4.0/",
+        "creator": "Damon H",
+        "attribution_text": "Damon H — http://creativecommons.org/licenses/by/4.0/",
+        "gbif_occurrence_id": 5938093597,
+        "sha256_source": "873d71a4aa792eb081a7bd54fff8ff27ab4fc03142fbba03b24febffd1fb0faf",
         "sha256_derivatives": {
-          "lqip": "6227191f5cd9f33dd696eb0f52c58ec7050e4920319dcb0c4dac15a898e3b0a2",
-          "thumb": "620360db035a6def3290a924d29783899bd0936ca167086ae3f515cba192d90b",
-          "card": "b64e29806b8a889333a2c65c85bdb03d92666db93280c7b74674af1ed8a640a3",
-          "detail": "608a192f015e5eb0374351893c2143f99d0055419475d2d0609a76730c069020"
+          "lqip": "32013a32ffd5c05cb254910c6eeda5781b23a053497af5b21a3c1280b556bced",
+          "thumb": "f7b6d7a39836b9402abeb94ee9e3128777bc08d33f6e80e8c97d42ffea4429fe",
+          "card": "bd9933d997e332d2e77d3dfd009ea0d6de0b99c575d26bb796d5e64ada1a2ed1",
+          "detail": "873d71a4aa792eb081a7bd54fff8ff27ab4fc03142fbba03b24febffd1fb0faf"
         },
         "gallery": [
           {
@@ -1967,8 +1975,13 @@
             "file": "gallery/04.webp"
           }
         ],
-        "fetched_at": "2026-07-22T14:12:33.356866+00:00",
-        "status": "ok"
+        "fetched_at": "2026-07-23T16:26:24.692154+00:00",
+        "status": "ok",
+        "quality": {
+          "card_bytes": 131474,
+          "class": "ok_real",
+          "checked_at": "2026-07-23T16:26:24.692154+00:00"
+        }
       }
     },
     "amanita-ponderosa": {
@@ -2709,27 +2722,32 @@
       },
       "meta": {
         "slug": "boletus-aereus",
-        "source": "procedural_stub_rebuild",
-        "source_url": null,
-        "license": "CC0",
-        "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
-        "creator": "VisionSetil",
-        "attribution_text": "VisionSetil procedural species art (CC0) — replace with licensed photo via --fetch",
-        "gbif_occurrence_id": null,
-        "sha256_source": "95b50d622b67b5cfce55ad31fe4e5a5da664bc3d1143fb3c2564b9eac6f60d9d",
+        "scientific_name": "Boletus aereus",
+        "source": "gbif",
+        "source_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/621149268/original.jpg",
+        "license": "http://creativecommons.org/licenses/by/4.0/",
+        "license_url": "http://creativecommons.org/licenses/by/4.0/",
+        "creator": "biogeek",
+        "attribution_text": "biogeek — http://creativecommons.org/licenses/by/4.0/",
+        "gbif_occurrence_id": 6188274691,
+        "sha256_source": "f698d4ec3f22006525d2d5f1a02c1ea2198dbeaad6ade841ad4966d0a7eb996e",
         "sha256_derivatives": {
-          "lqip": "99c60d33b4b090f986f54f2ef71906bbb661e7bb8ed69ae82cb21912a21e46bc",
-          "thumb": "b29b449cbe069f2073fb7b4f7bc449e37dabec91b04d86c9b4beab1683eaf187",
-          "card": "8a661d3a68c9efd751d49375bd19e0986d2a8c6463ec8451fe5a8c4e65fcc744",
-          "detail": "95b50d622b67b5cfce55ad31fe4e5a5da664bc3d1143fb3c2564b9eac6f60d9d"
+          "lqip": "56501beb6070ee3acc5f6af2a4e072ae0bdfd3a6ee2f01e34655620f68ded362",
+          "thumb": "a0c12020b589d2e1f63764cccb0a0135d0b0562cfbeb72cf0ddb871a97d5d123",
+          "card": "535d92a8a1a85a12cd518427a37b1866250e51a00ea0467b079d2303df20acef",
+          "detail": "f698d4ec3f22006525d2d5f1a02c1ea2198dbeaad6ade841ad4966d0a7eb996e"
         },
-        "fetched_at": "2026-07-23T08:43:11.265783+00:00",
+        "gallery": [
+          {
+            "file": "gallery/01.webp"
+          }
+        ],
+        "fetched_at": "2026-07-23T16:26:45.856066+00:00",
         "status": "ok",
-        "format_note": "webp",
         "quality": {
-          "card_bytes": 29836,
-          "class": "ok_procedural",
-          "checked_at": "2026-07-23T08:43:11.265783+00:00"
+          "card_bytes": 21522,
+          "class": "ok_real",
+          "checked_at": "2026-07-23T16:26:45.856066+00:00"
         }
       }
     },
@@ -2746,19 +2764,19 @@
       "meta": {
         "slug": "boletus-edulis",
         "scientific_name": "Boletus edulis",
-        "source": "wikipedia_es",
-        "source_url": "https://upload.wikimedia.org/wikipedia/commons/b/b0/Boletus_edulis_EtgHollande_041031_091.jpg",
-        "license": "wikipedia-page-image",
-        "license_url": "https://es.wikipedia.org/wiki/Boletus_edulis",
-        "creator": "Wikipedia/es",
-        "attribution_text": "Wikipedia/es — wikipedia-page-image",
-        "gbif_occurrence_id": null,
-        "sha256_source": "1fbd2c537e7661e9dca50ba746ccd6a19e5c777453afc55315e632e9d2c2c325",
+        "source": "gbif",
+        "source_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/605242970/original.jpg",
+        "license": "http://creativecommons.org/publicdomain/zero/1.0/",
+        "license_url": "http://creativecommons.org/publicdomain/zero/1.0/",
+        "creator": "George Cox",
+        "attribution_text": "George Cox — http://creativecommons.org/publicdomain/zero/1.0/",
+        "gbif_occurrence_id": 5938118644,
+        "sha256_source": "a56fdee6530bae7ce3b2e29aea90f96c2e5563132fdeac6cd59008297c893cb6",
         "sha256_derivatives": {
-          "lqip": "fcce3d9f3c68d12f338f5c254f9513b8b189252818918c937c0066f99df49ebe",
-          "thumb": "0f68c7a7be9cce517f6dc2b8f8831926ee0574f6c70810d420d3c0898d60c3ea",
-          "card": "f080558ed8c82d5b9f3bb0ac3af9519f9f21b4784fd13146db99343c8df66a88",
-          "detail": "1fbd2c537e7661e9dca50ba746ccd6a19e5c777453afc55315e632e9d2c2c325"
+          "lqip": "8388d3158815292742f3cf2feb484b51e45075b28ad93b151155672df033e00c",
+          "thumb": "02dc91c5902ee8527ad9a07b70f172830a76a5f6ed2625026eb5610950d4766e",
+          "card": "1d3af008118c7ddd79ef04b1fc0c628887a1e160c95037aec3e63fbf627b08a7",
+          "detail": "a56fdee6530bae7ce3b2e29aea90f96c2e5563132fdeac6cd59008297c893cb6"
         },
         "gallery": [
           {
@@ -2774,8 +2792,13 @@
             "file": "gallery/04.webp"
           }
         ],
-        "fetched_at": "2026-07-22T14:13:15.505735+00:00",
-        "status": "ok"
+        "fetched_at": "2026-07-23T16:26:58.602792+00:00",
+        "status": "ok",
+        "quality": {
+          "card_bytes": 121390,
+          "class": "ok_real",
+          "checked_at": "2026-07-23T16:26:58.602792+00:00"
+        }
       }
     },
     "boletus-erythropus": {
@@ -3502,27 +3525,41 @@
       },
       "meta": {
         "slug": "calocybe-gambosa",
-        "source": "procedural_stub_rebuild",
-        "source_url": null,
-        "license": "CC0",
-        "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
-        "creator": "VisionSetil",
-        "attribution_text": "VisionSetil procedural species art (CC0) — replace with licensed photo via --fetch",
-        "gbif_occurrence_id": null,
-        "sha256_source": "65d4771200b112105b6f1440de0d2c46d9b44b504a22a6a43fcbcf997ce64618",
+        "scientific_name": "Calocybe gambosa",
+        "source": "gbif",
+        "source_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/626052744/original.jpg",
+        "license": "http://creativecommons.org/publicdomain/zero/1.0/",
+        "license_url": "http://creativecommons.org/publicdomain/zero/1.0/",
+        "creator": "Rosie",
+        "attribution_text": "Rosie — http://creativecommons.org/publicdomain/zero/1.0/",
+        "gbif_occurrence_id": 6184835569,
+        "sha256_source": "196afa33086bb3c85d762fc617042a3accfb25231d66d1f04d093c77f6a82108",
         "sha256_derivatives": {
-          "lqip": "922c5e184ce31f1e60c9eb9272b0a01f2c101982da122a0efce7a811c40035cc",
-          "thumb": "fa99885481aacd8c19609cc8b82e617cbea3aaec810b9ef713e702bd97e11648",
-          "card": "132ee4cf2d626290ac24282edb257c3808d68c70e93b4bab0d2dd9209cb72362",
-          "detail": "65d4771200b112105b6f1440de0d2c46d9b44b504a22a6a43fcbcf997ce64618"
+          "lqip": "f2944c20ec4ef50c05c3e45fe7ccde1da7d758d8474c124e693c44d1d96b8e9e",
+          "thumb": "68c807ec83fb60b96f591d3bc738305f98ac20cdf36bca11bd509742d56e347a",
+          "card": "3d0ebb2ce03fd1c21b857e4d893283c599c666b798c5348e4ef7a67ffcf2091d",
+          "detail": "196afa33086bb3c85d762fc617042a3accfb25231d66d1f04d093c77f6a82108"
         },
-        "fetched_at": "2026-07-23T08:43:20.084573+00:00",
+        "gallery": [
+          {
+            "file": "gallery/01.webp"
+          },
+          {
+            "file": "gallery/02.webp"
+          },
+          {
+            "file": "gallery/03.webp"
+          },
+          {
+            "file": "gallery/04.webp"
+          }
+        ],
+        "fetched_at": "2026-07-23T16:27:09.834689+00:00",
         "status": "ok",
-        "format_note": "webp",
         "quality": {
-          "card_bytes": 12546,
-          "class": "ok_procedural",
-          "checked_at": "2026-07-23T08:43:20.084573+00:00"
+          "card_bytes": 69880,
+          "class": "ok_real",
+          "checked_at": "2026-07-23T16:27:09.834689+00:00"
         }
       }
     },
@@ -4599,19 +4636,19 @@
       "meta": {
         "slug": "conocybe-filaris",
         "scientific_name": "Conocybe filaris",
-        "source": "wikipedia_en",
-        "source_url": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Pholiotina_rugosa_62373.jpg",
-        "license": "wikipedia-page-image",
-        "license_url": "https://en.wikipedia.org/wiki/Conocybe_rugosa",
-        "creator": "Wikipedia/en",
-        "attribution_text": "Wikipedia/en — wikipedia-page-image",
-        "gbif_occurrence_id": null,
-        "sha256_source": "652dca5cca700b9517a41dc48461f9d417d3d8763589a9f248ffe690482a3bca",
+        "source": "gbif",
+        "source_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/675075762/original.jpg",
+        "license": "http://creativecommons.org/licenses/by/4.0/",
+        "license_url": "http://creativecommons.org/licenses/by/4.0/",
+        "creator": "Beau Meister",
+        "attribution_text": "Beau Meister — http://creativecommons.org/licenses/by/4.0/",
+        "gbif_occurrence_id": 6423181314,
+        "sha256_source": "08fe87386052fd49ddecfc6081e1c4be38440008f8a39e344737fce70f378d34",
         "sha256_derivatives": {
-          "lqip": "f840201b37fe7b003f6109c67519dceb76095045f78fa27bf0b5e90cee8066df",
-          "thumb": "377d166abdfbe934a05aec70cfd72b5af4a2ca1cc47acbbc6f7c8ec74a230ba5",
-          "card": "05268247010fc2a7cc90249e1539343780258ccd2e5135e70f63fab3c540fad0",
-          "detail": "652dca5cca700b9517a41dc48461f9d417d3d8763589a9f248ffe690482a3bca"
+          "lqip": "d4e38bdea98b86cf9a17af50dddf8a47ce88ea3cb800f8a00985685b078b07b5",
+          "thumb": "58e933e1b9fd5b66682ac933647e9fbe7b1c01f69c53d6f0181fb41b48f3650e",
+          "card": "248f1274ea3ff6fee7a9b9c24fc11514b7f124c3327c75789a2f863dab0f42a7",
+          "detail": "08fe87386052fd49ddecfc6081e1c4be38440008f8a39e344737fce70f378d34"
         },
         "gallery": [
           {
@@ -4619,16 +4656,15 @@
           },
           {
             "file": "gallery/02.webp"
-          },
-          {
-            "file": "gallery/03.webp"
-          },
-          {
-            "file": "gallery/04.webp"
           }
         ],
-        "fetched_at": "2026-07-22T14:09:16.316666+00:00",
-        "status": "ok"
+        "fetched_at": "2026-07-23T16:27:29.539327+00:00",
+        "status": "ok",
+        "quality": {
+          "card_bytes": 22212,
+          "class": "ok_real",
+          "checked_at": "2026-07-23T16:27:29.539327+00:00"
+        }
       }
     },
     "coprinellus-disseminatus": {
@@ -4795,27 +4831,32 @@
       },
       "meta": {
         "slug": "coprinus-comatus",
-        "source": "procedural_stub_rebuild",
-        "source_url": null,
-        "license": "CC0",
-        "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
-        "creator": "VisionSetil",
-        "attribution_text": "VisionSetil procedural species art (CC0) — replace with licensed photo via --fetch",
-        "gbif_occurrence_id": null,
-        "sha256_source": "564cd84dbac8ebd03364b5efff3148430741799195c33cf5f536d65c935f3f4e",
+        "scientific_name": "Coprinus comatus",
+        "source": "gbif",
+        "source_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/605678872/original.jpg",
+        "license": "http://creativecommons.org/licenses/by/4.0/",
+        "license_url": "http://creativecommons.org/licenses/by/4.0/",
+        "creator": "kdcs",
+        "attribution_text": "kdcs — http://creativecommons.org/licenses/by/4.0/",
+        "gbif_occurrence_id": 5938031941,
+        "sha256_source": "ee0f47adc6e9455484fea7f674160a9c2a642ee5f095af39c8f88373e68c5e2b",
         "sha256_derivatives": {
-          "lqip": "e0784c85ceba980ed1b1b9f47b8d10c92bf2d7578c280eadc5fe721ff3c3c880",
-          "thumb": "04fe3dfbe2495c6c897c535afa6da649bedfc2e22d2859329c11e1fbd60481ad",
-          "card": "dc71b7c69c4689a6998369d565ff99836808bbde1a61360845e2772ab1210a52",
-          "detail": "564cd84dbac8ebd03364b5efff3148430741799195c33cf5f536d65c935f3f4e"
+          "lqip": "03a756f9335b2dbde708924903cfee71a4a968f97d47d9577be4e19e0b6ea41d",
+          "thumb": "3b9cbb75591ac89f91c4330c867aa064b630fab0c1408f9d55222cc23b3a3ba3",
+          "card": "a5bc77d89d21b27273485af36ab8898f80737e23cd96e5ce9b4c84d0cdd619ec",
+          "detail": "ee0f47adc6e9455484fea7f674160a9c2a642ee5f095af39c8f88373e68c5e2b"
         },
-        "fetched_at": "2026-07-23T08:43:30.519446+00:00",
+        "gallery": [
+          {
+            "file": "gallery/01.webp"
+          }
+        ],
+        "fetched_at": "2026-07-23T16:27:35.322791+00:00",
         "status": "ok",
-        "format_note": "webp",
         "quality": {
-          "card_bytes": 28272,
-          "class": "ok_procedural",
-          "checked_at": "2026-07-23T08:43:30.519446+00:00"
+          "card_bytes": 47468,
+          "class": "ok_real",
+          "checked_at": "2026-07-23T16:27:35.322791+00:00"
         }
       }
     },
@@ -5873,27 +5914,32 @@
       },
       "meta": {
         "slug": "craterellus-cornucopioides",
-        "source": "procedural_stub_rebuild",
-        "source_url": null,
-        "license": "CC0",
-        "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
-        "creator": "VisionSetil",
-        "attribution_text": "VisionSetil procedural species art (CC0) — replace with licensed photo via --fetch",
-        "gbif_occurrence_id": null,
-        "sha256_source": "df3e6a679fe224c4b2ee214dd3555b463a763ff6adb75d4ffe4b4b539d888b77",
+        "scientific_name": "Craterellus cornucopioides",
+        "source": "gbif",
+        "source_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/609426859/original.jpg",
+        "license": "http://creativecommons.org/licenses/by/4.0/",
+        "license_url": "http://creativecommons.org/licenses/by/4.0/",
+        "creator": "victor laborde",
+        "attribution_text": "victor laborde — http://creativecommons.org/licenses/by/4.0/",
+        "gbif_occurrence_id": 6130672557,
+        "sha256_source": "eeaa77edb48aac964c372980c05e1b0acb738d4f39972e87f104f1b94b8c577d",
         "sha256_derivatives": {
-          "lqip": "9a428dbc0605e43c06b249b324b31e9eb0181f7c25f8eb422db5aa1dd45f2c05",
-          "thumb": "81f15761b7d805f690636fb7e64f9e54de19e440cb9009fc025ecac3f6687083",
-          "card": "ae499bcab057788daea2dec33d7646abb358e2d1bf556149146a46d65741e314",
-          "detail": "df3e6a679fe224c4b2ee214dd3555b463a763ff6adb75d4ffe4b4b539d888b77"
+          "lqip": "ef0402fa6140c7d04e21a8c0928c2345f7d6fd0936ea9fe3caa05bcc0287e176",
+          "thumb": "f6df7e989ac1e47c56496f6537df5243dfecd4e4293c3460429a9ab3b1947748",
+          "card": "456841e25e04826dc095ae16a88e83d16db75eb9e3636b8d1ce6ae9036dc92e0",
+          "detail": "eeaa77edb48aac964c372980c05e1b0acb738d4f39972e87f104f1b94b8c577d"
         },
-        "fetched_at": "2026-07-23T08:43:40.939810+00:00",
+        "gallery": [
+          {
+            "file": "gallery/01.webp"
+          }
+        ],
+        "fetched_at": "2026-07-23T16:27:55.400061+00:00",
         "status": "ok",
-        "format_note": "webp",
         "quality": {
-          "card_bytes": 31094,
-          "class": "ok_procedural",
-          "checked_at": "2026-07-23T08:43:40.939810+00:00"
+          "card_bytes": 110440,
+          "class": "ok_real",
+          "checked_at": "2026-07-23T16:27:55.400061+00:00"
         }
       }
     },
@@ -6991,19 +7037,19 @@
       "meta": {
         "slug": "gyromitra-esculenta",
         "scientific_name": "Gyromitra esculenta",
-        "source": "wikipedia_es",
-        "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/97/Fr%C3%BChjahrslorchel.JPG",
-        "license": "wikipedia-page-image",
-        "license_url": "https://es.wikipedia.org/wiki/Gyromitra_esculenta",
-        "creator": "Wikipedia/es",
-        "attribution_text": "Wikipedia/es — wikipedia-page-image",
-        "gbif_occurrence_id": null,
-        "sha256_source": "1b9a0a096d83c84c3d588ed1368abd749143f77fcf0c414f03f293954d0b8e5e",
+        "source": "gbif",
+        "source_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/622947680/original.jpg",
+        "license": "http://creativecommons.org/licenses/by/4.0/",
+        "license_url": "http://creativecommons.org/licenses/by/4.0/",
+        "creator": "Patrick Bayan",
+        "attribution_text": "Patrick Bayan — http://creativecommons.org/licenses/by/4.0/",
+        "gbif_occurrence_id": 6178757950,
+        "sha256_source": "50484dcdb3499c67701c09c66c93c13b38c28e6e44c1fccaec3ba21529ace1cc",
         "sha256_derivatives": {
-          "lqip": "a216cf3e9b73bfb3e408f853847b3e7f3b95909fe8a23a6361d6777f8e51f3b0",
-          "thumb": "00061c84d197cafb94171492decf624180049139731ea63a5d7624deab0e7f47",
-          "card": "f2330a8dc8f04f0a23b1016fdcb4c8e049c911d830206e17c29a4651ee983fe7",
-          "detail": "1b9a0a096d83c84c3d588ed1368abd749143f77fcf0c414f03f293954d0b8e5e"
+          "lqip": "4b13c2609d7a7b2fbb69d2b5a115b410dfc96c026e9bba5f9eef397786410811",
+          "thumb": "dbfe9469d283733f7254b862ed555bf37b2339c48f9640e9df440701aec30a36",
+          "card": "7a438f107108602ab1f47b514126ba216c0e7a3b3a8dd0be05a9369b5916d6c3",
+          "detail": "50484dcdb3499c67701c09c66c93c13b38c28e6e44c1fccaec3ba21529ace1cc"
         },
         "gallery": [
           {
@@ -7019,8 +7065,13 @@
             "file": "gallery/04.webp"
           }
         ],
-        "fetched_at": "2026-07-22T14:17:41.548894+00:00",
-        "status": "ok"
+        "fetched_at": "2026-07-23T16:28:13.143395+00:00",
+        "status": "ok",
+        "quality": {
+          "card_bytes": 28432,
+          "class": "ok_real",
+          "checked_at": "2026-07-23T16:28:13.143395+00:00"
+        }
       }
     },
     "gyromitra-infula": {
@@ -7778,27 +7829,41 @@
       },
       "meta": {
         "slug": "hydnum-repandum",
-        "source": "procedural_stub_rebuild",
-        "source_url": null,
-        "license": "CC0",
-        "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
-        "creator": "VisionSetil",
-        "attribution_text": "VisionSetil procedural species art (CC0) — replace with licensed photo via --fetch",
-        "gbif_occurrence_id": null,
-        "sha256_source": "8a7ef8af176cbecf19679227039f890695259621812a8089850054f950f8849e",
+        "scientific_name": "Hydnum repandum",
+        "source": "gbif",
+        "source_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/609651828/original.jpg",
+        "license": "http://creativecommons.org/publicdomain/zero/1.0/",
+        "license_url": "http://creativecommons.org/publicdomain/zero/1.0/",
+        "creator": "Chuck Wilson",
+        "attribution_text": "Chuck Wilson — http://creativecommons.org/publicdomain/zero/1.0/",
+        "gbif_occurrence_id": 6130627729,
+        "sha256_source": "e644198812eb9fa85d5f6ff1a6bdc58536c08cf94e2211dd87aae819bc54e0f9",
         "sha256_derivatives": {
-          "lqip": "5e2998a32dce8074c2877e0feed10a2d5364552bbf99f36d0df1cbac702d7985",
-          "thumb": "5a15894b88ac804291e5f9b9996ba4efe01a4bf6c91f0b3bdb0bbee03c4f88b6",
-          "card": "0b0766d110272011c797a532941e75900116210d65c313902a3847683e6cc0d8",
-          "detail": "8a7ef8af176cbecf19679227039f890695259621812a8089850054f950f8849e"
+          "lqip": "1adb3c44d8b153a279969f62149c7952b61acbda809b8862b4c427e6affaff2e",
+          "thumb": "a6d5b64d73b7d80e138d74c762c3e85102c2287d002be190e93ad63a6c242d66",
+          "card": "731b42389260aaf5baeedfcf19ee990da560dd5ed403c6288d1395513d812b85",
+          "detail": "e644198812eb9fa85d5f6ff1a6bdc58536c08cf94e2211dd87aae819bc54e0f9"
         },
-        "fetched_at": "2026-07-23T08:44:02.787278+00:00",
+        "gallery": [
+          {
+            "file": "gallery/01.webp"
+          },
+          {
+            "file": "gallery/02.webp"
+          },
+          {
+            "file": "gallery/03.webp"
+          },
+          {
+            "file": "gallery/04.webp"
+          }
+        ],
+        "fetched_at": "2026-07-23T16:28:24.758538+00:00",
         "status": "ok",
-        "format_note": "webp",
         "quality": {
-          "card_bytes": 8594,
-          "class": "ok_procedural",
-          "checked_at": "2026-07-23T08:44:02.787278+00:00"
+          "card_bytes": 43588,
+          "class": "ok_real",
+          "checked_at": "2026-07-23T16:28:24.758538+00:00"
         }
       }
     },
@@ -8609,36 +8674,32 @@
       "meta": {
         "slug": "hypholoma-fasciculare",
         "scientific_name": "Hypholoma fasciculare",
-        "source": "wikipedia_es",
-        "source_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/2014_Hypholoma_fasciculare.jpg/3840px-2014_Hypholoma_fasciculare.jpg",
-        "license": "wikipedia-page-image",
-        "license_url": "https://es.wikipedia.org/wiki/Hypholoma_fasciculare",
-        "creator": "Wikipedia/es",
-        "attribution_text": "Wikipedia/es — wikipedia-page-image",
-        "gbif_occurrence_id": null,
-        "sha256_source": "bfaed9f7ac0eb87402fc5416f02246c5046d3fa2e50da14d47c2c54775cf1892",
+        "source": "gbif",
+        "source_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/605425393/original.jpg",
+        "license": "http://creativecommons.org/licenses/by/4.0/",
+        "license_url": "http://creativecommons.org/licenses/by/4.0/",
+        "creator": "kdcs",
+        "attribution_text": "kdcs — http://creativecommons.org/licenses/by/4.0/",
+        "gbif_occurrence_id": 5938126913,
+        "sha256_source": "5ffa533f71377f8af0ec71339490aa534ab4c429d76447927853cdb6e26e3993",
         "sha256_derivatives": {
-          "lqip": "ac567cfd8d02d039d2b8d11bb63df933629d006cd4b4d5d27cfa057751dea997",
-          "thumb": "2dcab958a6662aa0dce9440e93aebff27b90cfecdaae5cd31781f21a9ac22af2",
-          "card": "adfecd32326e97b9a4320cd40c7dad86fb3d422682fb8dc7ac826e946e3e83b7",
-          "detail": "bfaed9f7ac0eb87402fc5416f02246c5046d3fa2e50da14d47c2c54775cf1892"
+          "lqip": "41acc41cb925259ec4c0a16c5bcf2a43b478968409d889120860e287a06ba978",
+          "thumb": "528df5a5354be485f2632852cac81641b42040913e3c04d41cb0c51e1199780c",
+          "card": "ab99208c41f8c5b1b32fa34dbe8f3ef1523d8f64d08cd5d4a7226f61044b5001",
+          "detail": "5ffa533f71377f8af0ec71339490aa534ab4c429d76447927853cdb6e26e3993"
         },
         "gallery": [
           {
             "file": "gallery/01.webp"
-          },
-          {
-            "file": "gallery/02.webp"
-          },
-          {
-            "file": "gallery/03.webp"
-          },
-          {
-            "file": "gallery/04.webp"
           }
         ],
-        "fetched_at": "2026-07-22T14:18:49.896582+00:00",
-        "status": "ok"
+        "fetched_at": "2026-07-23T16:28:39.745426+00:00",
+        "status": "ok",
+        "quality": {
+          "card_bytes": 95184,
+          "class": "ok_real",
+          "checked_at": "2026-07-23T16:28:39.746372+00:00"
+        }
       }
     },
     "hypholoma-lateritium": {
@@ -8902,30 +8963,32 @@
       "meta": {
         "slug": "inocybe-erubescens",
         "scientific_name": "Inocybe erubescens",
-        "source": "wikipedia_en",
-        "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/fc/2010-04-27_Inocybe_erubescens.jpg",
-        "license": "wikipedia-page-image",
-        "license_url": "https://en.wikipedia.org/wiki/Inosperma_erubescens",
-        "creator": "Wikipedia/en",
-        "attribution_text": "Wikipedia/en — wikipedia-page-image",
-        "gbif_occurrence_id": null,
-        "sha256_source": "80470df3ca12065587d771fdfc4e8f70078bd3ff3084c395b72959bcd266701b",
+        "source": "gbif",
+        "source_url": "https://s3.hpc.ut.ee/plutof-public/large/a5ef86ef-1cab-4d60-9369-6a8a0770cd55.jpg",
+        "license": "http://creativecommons.org/licenses/by-sa/4.0/",
+        "license_url": "http://creativecommons.org/licenses/by-sa/4.0/",
+        "creator": "Inga Freimane",
+        "attribution_text": "Inga Freimane — http://creativecommons.org/licenses/by-sa/4.0/",
+        "gbif_occurrence_id": 4927408465,
+        "sha256_source": "34a1e281bd23c71f2c0955ee77397e7c2ed42c33fb527d4c196e1ede854a1528",
         "sha256_derivatives": {
-          "lqip": "0a1aa62ddc2c4a0a7cef00eab0a3f12c2451e8d5aaf503eb9c2c764a256a3a65",
-          "thumb": "f37094e2f222a4d3487cdb6236d94bade60a19abc12296a4f55c14616a7b1f6f",
-          "card": "3f1ad5597d26cb516d2727b6c1ba558a4bbc661642627bb95b0c81cb4965d8fe",
-          "detail": "80470df3ca12065587d771fdfc4e8f70078bd3ff3084c395b72959bcd266701b"
+          "lqip": "4eff23256099aee81ac0bbe83e9f0a115c8820bbfd4122cb7aba6314d5e0f4c6",
+          "thumb": "fc6c010fe382a6b3e6d840030a03d7a444f6a2f444352633d575b55a15c8380e",
+          "card": "b22f2a3f955350ccf33aa0486cd10286120074703646962002abcf2fa16a86fa",
+          "detail": "34a1e281bd23c71f2c0955ee77397e7c2ed42c33fb527d4c196e1ede854a1528"
         },
         "gallery": [
           {
             "file": "gallery/01.webp"
-          },
-          {
-            "file": "gallery/02.webp"
           }
         ],
-        "fetched_at": "2026-07-22T14:10:01.721351+00:00",
-        "status": "ok"
+        "fetched_at": "2026-07-23T16:28:47.128421+00:00",
+        "status": "ok",
+        "quality": {
+          "card_bytes": 69436,
+          "class": "ok_real",
+          "checked_at": "2026-07-23T16:28:47.128421+00:00"
+        }
       }
     },
     "inocybe-flocculosa": {
@@ -10568,19 +10631,19 @@
       "meta": {
         "slug": "leccinellum-lepidum",
         "scientific_name": "Leccinellum lepidum",
-        "source": "wikipedia_en",
-        "source_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Leccinellum_lepidum_490735.jpg/3840px-Leccinellum_lepidum_490735.jpg",
-        "license": "wikipedia-page-image",
-        "license_url": "https://en.wikipedia.org/wiki/Leccinellum_lepidum",
-        "creator": "Wikipedia/en",
-        "attribution_text": "Wikipedia/en — wikipedia-page-image",
-        "gbif_occurrence_id": null,
-        "sha256_source": "dbd63ae01969183ee604a842ae03c4ea1f38aa009e4db47dc70adc3bd259fe12",
+        "source": "gbif",
+        "source_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/607930932/original.jpg",
+        "license": "http://creativecommons.org/licenses/by/4.0/",
+        "license_url": "http://creativecommons.org/licenses/by/4.0/",
+        "creator": "Lucian Clanet",
+        "attribution_text": "Lucian Clanet — http://creativecommons.org/licenses/by/4.0/",
+        "gbif_occurrence_id": 6129985166,
+        "sha256_source": "f0b30a6dadad9689d8affa5ef5934ceed650f34c9ad760c682b5a1b932488af7",
         "sha256_derivatives": {
-          "lqip": "9c9624ca0072a77fd73f0fb9058533575fb85ea6e85a617204d1b6d378d00599",
-          "thumb": "7dfb69381cb7a2e915f1fddecb459ce26e17f851b46e115e062f58701fb688c3",
-          "card": "a8e5ef756074d4610f748d348e6efe39eb83986768cb74c1c6dfda900effd5dc",
-          "detail": "dbd63ae01969183ee604a842ae03c4ea1f38aa009e4db47dc70adc3bd259fe12"
+          "lqip": "ccb42fafebcb572c93e3a667d18f3007fdb10416a0986ae2740bc48b338925bc",
+          "thumb": "68875478bc4f6b39587372e9c5b8c9898c22b1ccb36ffda2b4ccc0d27ce5cf7c",
+          "card": "65d0ac4327dfe669a80d768e7aac50b6759300980e811b5ddea950093bafbd78",
+          "detail": "f0b30a6dadad9689d8affa5ef5934ceed650f34c9ad760c682b5a1b932488af7"
         },
         "gallery": [
           {
@@ -10596,8 +10659,13 @@
             "file": "gallery/04.webp"
           }
         ],
-        "fetched_at": "2026-07-22T14:03:53.803001+00:00",
-        "status": "ok"
+        "fetched_at": "2026-07-23T16:29:07.261666+00:00",
+        "status": "ok",
+        "quality": {
+          "card_bytes": 52910,
+          "class": "ok_real",
+          "checked_at": "2026-07-23T16:29:07.261666+00:00"
+        }
       }
     },
     "leccinum-albostipitatum": {
@@ -10736,27 +10804,35 @@
       },
       "meta": {
         "slug": "leccinum-scabrum",
-        "source": "procedural_stub_rebuild",
-        "source_url": null,
-        "license": "CC0",
-        "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
-        "creator": "VisionSetil",
-        "attribution_text": "VisionSetil procedural species art (CC0) — replace with licensed photo via --fetch",
-        "gbif_occurrence_id": null,
-        "sha256_source": "182f0b88034fcf3068ea9ced7a0e2c3b3acce4ee42bc3c525b53cc841b9efea3",
+        "scientific_name": "Leccinum scabrum",
+        "source": "gbif",
+        "source_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/611965300/original.jpg",
+        "license": "http://creativecommons.org/licenses/by/4.0/",
+        "license_url": "http://creativecommons.org/licenses/by/4.0/",
+        "creator": "eyrezer",
+        "attribution_text": "eyrezer — http://creativecommons.org/licenses/by/4.0/",
+        "gbif_occurrence_id": 6133281187,
+        "sha256_source": "f2109702831a15d2e5b3593a050a2dc4a737b0b80e4530943e77a9fe1de9d1e8",
         "sha256_derivatives": {
-          "lqip": "6fea8e7acb236fb08d578f01db7a2d79b62f6ca2ca4945c0bc2911d5fb045c8a",
-          "thumb": "e9c8ccfdf331d1c898f0489ae36818ed956d41c725d16299454d5ab6bc945d44",
-          "card": "48a9cd07f7b27baa238b4d39884827e400eda0ab2d064c69dcdbb0e00dc536dd",
-          "detail": "182f0b88034fcf3068ea9ced7a0e2c3b3acce4ee42bc3c525b53cc841b9efea3"
+          "lqip": "aac827ea17b40ad1dd1f3126127736dc6f44751f8e511a623ec9834cd06f1d0e",
+          "thumb": "43d9a0cb1cdb381cada44f1d819c5dbfb1f41909b57f61f2331cef11cd459623",
+          "card": "5ff915611ab75b7047070a69d3b702404f7a6b985f1e586aed14b4ad067545b6",
+          "detail": "f2109702831a15d2e5b3593a050a2dc4a737b0b80e4530943e77a9fe1de9d1e8"
         },
-        "fetched_at": "2026-07-23T08:44:13.239773+00:00",
+        "gallery": [
+          {
+            "file": "gallery/01.webp"
+          },
+          {
+            "file": "gallery/02.webp"
+          }
+        ],
+        "fetched_at": "2026-07-23T16:29:15.608971+00:00",
         "status": "ok",
-        "format_note": "webp",
         "quality": {
-          "card_bytes": 29354,
-          "class": "ok_procedural",
-          "checked_at": "2026-07-23T08:44:13.239773+00:00"
+          "card_bytes": 33854,
+          "class": "ok_real",
+          "checked_at": "2026-07-23T16:29:15.608971+00:00"
         }
       }
     },
@@ -10897,19 +10973,19 @@
       "meta": {
         "slug": "lepiota-brunneoincarnata",
         "scientific_name": "Lepiota brunneoincarnata",
-        "source": "wikipedia_es",
-        "source_url": "https://upload.wikimedia.org/wikipedia/commons/b/b0/Lepiota_brunneoincarnata_060823w.jpg",
-        "license": "wikipedia-page-image",
-        "license_url": "https://es.wikipedia.org/wiki/Lepiota_brunneoincarnata",
-        "creator": "Wikipedia/es",
-        "attribution_text": "Wikipedia/es — wikipedia-page-image",
-        "gbif_occurrence_id": null,
-        "sha256_source": "de49a7ee37a958ff8487b8765b926c3838fafdca37ba2977db1afb72011a8d62",
+        "source": "gbif",
+        "source_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/607279441/original.jpg",
+        "license": "http://creativecommons.org/licenses/by-sa/4.0/",
+        "license_url": "http://creativecommons.org/licenses/by-sa/4.0/",
+        "creator": "Chaym Turak",
+        "attribution_text": "Chaym Turak — http://creativecommons.org/licenses/by-sa/4.0/",
+        "gbif_occurrence_id": 6184911763,
+        "sha256_source": "41a8af624da4f48a859e43fab282769a8bd0053173b2c33eee32a9135fd17fd2",
         "sha256_derivatives": {
-          "lqip": "b968fbee0cebcef010f75ab010eead7afe320970e9e0a015ea75babf9cd57a29",
-          "thumb": "76b671223669b9ba34498cd856fe55c00fed435319d137d2662b319cbbe7ab54",
-          "card": "7003dbcabf47dfa09561efdfc9f5a5343b2e6bb245a546617ebf4497d4bf426a",
-          "detail": "de49a7ee37a958ff8487b8765b926c3838fafdca37ba2977db1afb72011a8d62"
+          "lqip": "0070398ff85c60bf87ed1f1e3c7e02a0a5c18f9d614442f0ed2135dcd04dee97",
+          "thumb": "266acc05b4759f04bcf6fefa919ee922410970c89b6a76c3d907a77105febdcc",
+          "card": "a5247b8f47ff7fb778aa0f35cd241fc5c5010e638381dac787fe1fc7ba11797b",
+          "detail": "41a8af624da4f48a859e43fab282769a8bd0053173b2c33eee32a9135fd17fd2"
         },
         "gallery": [
           {
@@ -10925,8 +11001,13 @@
             "file": "gallery/04.webp"
           }
         ],
-        "fetched_at": "2026-07-22T14:10:13.792370+00:00",
-        "status": "ok"
+        "fetched_at": "2026-07-23T16:29:27.754441+00:00",
+        "status": "ok",
+        "quality": {
+          "card_bytes": 29494,
+          "class": "ok_real",
+          "checked_at": "2026-07-23T16:29:27.754441+00:00"
+        }
       }
     },
     "lepiota-castanea": {
@@ -11749,27 +11830,38 @@
       },
       "meta": {
         "slug": "macrolepiota-procera",
-        "source": "procedural_stub_rebuild",
-        "source_url": null,
-        "license": "CC0",
-        "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
-        "creator": "VisionSetil",
-        "attribution_text": "VisionSetil procedural species art (CC0) — replace with licensed photo via --fetch",
-        "gbif_occurrence_id": null,
-        "sha256_source": "7f85d005f7c6f3c9a89cdcd5ca43615dff6096ce7fed16726227c8bf5fec55b4",
+        "scientific_name": "Macrolepiota procera",
+        "source": "gbif",
+        "source_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/650351338/original.jpg",
+        "license": "http://creativecommons.org/licenses/by/4.0/",
+        "license_url": "http://creativecommons.org/licenses/by/4.0/",
+        "creator": "Gijs Romijn",
+        "attribution_text": "Gijs Romijn — http://creativecommons.org/licenses/by/4.0/",
+        "gbif_occurrence_id": 6253098852,
+        "sha256_source": "ff9d9652537592f573a7a79370ec0b1bb2f156fbf0ad18343fcb2610a965403f",
         "sha256_derivatives": {
-          "lqip": "0c213e96a9391ba5f79db5a5ecbfe2e151df87f2ae1427117dbef7b188e39bcf",
-          "thumb": "7478dd7152a17195d70c7c5ec36309bc5118b076d485c92117f72e30e863860b",
-          "card": "9c34147a9556b124927e05bb7c6d2b3914dcc96d3c1c38a7bdbdbc521bbaaa55",
-          "detail": "7f85d005f7c6f3c9a89cdcd5ca43615dff6096ce7fed16726227c8bf5fec55b4"
+          "lqip": "8ab60aa34352917af58dfbb150cc06481f00189bc73b31000d2300f0a26eb319",
+          "thumb": "04c03becbf98a2006c342bc8a7e68e2dcc4626fa7d3ba7d74fdf5eb505381eff",
+          "card": "f3d0e77d441e7e70e4f5223ce2585895b58e344f411e8e173b63fc5a1a266660",
+          "detail": "ff9d9652537592f573a7a79370ec0b1bb2f156fbf0ad18343fcb2610a965403f"
         },
-        "fetched_at": "2026-07-23T08:44:23.660642+00:00",
+        "gallery": [
+          {
+            "file": "gallery/01.webp"
+          },
+          {
+            "file": "gallery/02.webp"
+          },
+          {
+            "file": "gallery/03.webp"
+          }
+        ],
+        "fetched_at": "2026-07-23T16:29:42.593463+00:00",
         "status": "ok",
-        "format_note": "webp",
         "quality": {
-          "card_bytes": 27828,
-          "class": "ok_procedural",
-          "checked_at": "2026-07-23T08:44:23.660642+00:00"
+          "card_bytes": 98850,
+          "class": "ok_real",
+          "checked_at": "2026-07-23T16:29:42.593463+00:00"
         }
       }
     },
@@ -13128,23 +13220,39 @@
       },
       "meta": {
         "slug": "pleurotus-ostreatus",
-        "source": "procedural_catalog",
-        "source_url": null,
-        "license": "CC0",
-        "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
-        "creator": "VisionSetil",
-        "attribution_text": "VisionSetil procedural species art (CC0) — replace with licensed photo via --fetch",
-        "gbif_occurrence_id": null,
-        "sha256_source": "34c7c014eb03ebc3705e988fbabf6fa8ef2171c6eb6e70440ee75fd30eeda970",
+        "scientific_name": "Pleurotus ostreatus",
+        "source": "gbif",
+        "source_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/605179412/original.jpg",
+        "license": "http://creativecommons.org/licenses/by/4.0/",
+        "license_url": "http://creativecommons.org/licenses/by/4.0/",
+        "creator": "Dan Vickers",
+        "attribution_text": "Dan Vickers — http://creativecommons.org/licenses/by/4.0/",
+        "gbif_occurrence_id": 5938048318,
+        "sha256_source": "01946c79e110f595ffb7a90526e55cbf22459d4d9ff7acffe3c0acc4c1d7ed68",
         "sha256_derivatives": {
-          "lqip": "218702090fc45f36ad90a4b018ec96f42bff3ba2c4b324ec2da0f40df6fe294b",
-          "thumb": "874ef5accacb6de7c160538fd4f70cfe499d8791e240e42bbdc3e481685071e8",
-          "card": "18ecd050fbee0617d4e15bf69b1881652ad6e343637dd2c8d46afee719508182",
-          "detail": "34c7c014eb03ebc3705e988fbabf6fa8ef2171c6eb6e70440ee75fd30eeda970"
+          "lqip": "9ad1e8218d7b439b0c1c7a5110c1c8cb29171279f3e4925585172cbe58c8a83c",
+          "thumb": "9176c75b02b956bbc1a9e71b8d5a35d4a0f6a80294ccdb1b8619ad64129592a7",
+          "card": "60dc3065fd4946b43cbf84cca196082fe65c34c8d15bb3a22774256a21f954b8",
+          "detail": "01946c79e110f595ffb7a90526e55cbf22459d4d9ff7acffe3c0acc4c1d7ed68"
         },
-        "fetched_at": "2026-07-22T13:49:48.656495+00:00",
+        "gallery": [
+          {
+            "file": "gallery/01.webp"
+          },
+          {
+            "file": "gallery/02.webp"
+          },
+          {
+            "file": "gallery/03.webp"
+          }
+        ],
+        "fetched_at": "2026-07-23T16:29:57.277541+00:00",
         "status": "ok",
-        "format_note": "webp"
+        "quality": {
+          "card_bytes": 29918,
+          "class": "ok_real",
+          "checked_at": "2026-07-23T16:29:57.277541+00:00"
+        }
       }
     },
     "pleurotus-pulmonarius": {
@@ -15750,19 +15858,19 @@
       "meta": {
         "slug": "suillus-bellinii",
         "scientific_name": "Suillus bellinii",
-        "source": "wikipedia_en",
-        "source_url": "https://upload.wikimedia.org/wikipedia/commons/8/80/2011-11-21_Suillus_bellinii_%28Inzenga%29_Kuntze_183888_crop.jpg",
-        "license": "wikipedia-page-image",
-        "license_url": "https://en.wikipedia.org/wiki/Suillus_bellinii",
-        "creator": "Wikipedia/en",
-        "attribution_text": "Wikipedia/en — wikipedia-page-image",
-        "gbif_occurrence_id": null,
-        "sha256_source": "25db821f612b80e63e1ba2d20bd64118b46227d065e99e6d8d461e143dfa51fb",
+        "source": "gbif",
+        "source_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/607930619/original.jpg",
+        "license": "http://creativecommons.org/licenses/by/4.0/",
+        "license_url": "http://creativecommons.org/licenses/by/4.0/",
+        "creator": "Lucian Clanet",
+        "attribution_text": "Lucian Clanet — http://creativecommons.org/licenses/by/4.0/",
+        "gbif_occurrence_id": 6131479485,
+        "sha256_source": "cc3cc083f9285da0e1c0069bc6ae0f634a22ffccda65fa8985487d7672ddbe8a",
         "sha256_derivatives": {
-          "lqip": "f58f3f79ae6b24d4c8fa5e9d95a0459d5f61e77992f90604f805888178155c53",
-          "thumb": "96fbf5aade8f92651af1544cf1e2d53a6e6321dbefa352c7704cfdd8ab53e229",
-          "card": "f38427b7a96f5bc5ec01749e3606b2230af0f7e3a6b03be254ae3387262a58e3",
-          "detail": "25db821f612b80e63e1ba2d20bd64118b46227d065e99e6d8d461e143dfa51fb"
+          "lqip": "14331a32eec7df958746f34350f51d8888dc9dead120e95349af7b56fb922749",
+          "thumb": "f694f0c42ac8feda0a5db8749f37fcda78c9ea11a22ae47bc8fd93242ee408d2",
+          "card": "7de6f9c7dbf381a6a6e56c0fbf414d76e622724c4144d171d78f5fe7f950afbe",
+          "detail": "cc3cc083f9285da0e1c0069bc6ae0f634a22ffccda65fa8985487d7672ddbe8a"
         },
         "gallery": [
           {
@@ -15770,16 +15878,15 @@
           },
           {
             "file": "gallery/02.webp"
-          },
-          {
-            "file": "gallery/03.webp"
-          },
-          {
-            "file": "gallery/04.webp"
           }
         ],
-        "fetched_at": "2026-07-22T14:04:09.915915+00:00",
-        "status": "ok"
+        "fetched_at": "2026-07-23T16:30:18.102915+00:00",
+        "status": "ok",
+        "quality": {
+          "card_bytes": 65042,
+          "class": "ok_real",
+          "checked_at": "2026-07-23T16:30:18.102915+00:00"
+        }
       }
     },
     "suillus-bovinus": {
@@ -16201,18 +16308,18 @@
         "slug": "terfezia-arenaria",
         "scientific_name": "Terfezia arenaria",
         "source": "gbif",
-        "source_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/642642284/original.jpg",
-        "license": "http://creativecommons.org/licenses/by-nc/4.0/",
-        "license_url": "http://creativecommons.org/licenses/by-nc/4.0/",
-        "creator": "Fatima Carrasco",
-        "attribution_text": "Fatima Carrasco — http://creativecommons.org/licenses/by-nc/4.0/",
-        "gbif_occurrence_id": 6235226788,
-        "sha256_source": "fc9b74836fe3ca56d84a744548924a0058b3edb3f720020c9a81d07d0dae219d",
+        "source_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/15848201/original.jpg",
+        "license": "http://creativecommons.org/licenses/by/4.0/",
+        "license_url": "http://creativecommons.org/licenses/by/4.0/",
+        "creator": "Davide Puddu",
+        "attribution_text": "Davide Puddu — http://creativecommons.org/licenses/by/4.0/",
+        "gbif_occurrence_id": 1949977136,
+        "sha256_source": "f2bbf72be6e2c725e0cbe164e7bdc2b914987c6bec1fc59339463d7ad478116d",
         "sha256_derivatives": {
-          "lqip": "759bfa9654b5ae9a92d870f5b12f17b236c1a9832b8a4e964ad700fad48be3fc",
-          "thumb": "a7c3c7bcb01c40ca3c58ca5170df6e4a706c3ef95ba69e2396d277476356ddda",
-          "card": "a3eebf7b36a2043e8599ee66ef75f81213a7c3ece2380e0809645608673d4bd9",
-          "detail": "fc9b74836fe3ca56d84a744548924a0058b3edb3f720020c9a81d07d0dae219d"
+          "lqip": "7374c424e9b6eee35d6b9d97cd114cffb6d2ae3047853b28180e7cb78fc6d43a",
+          "thumb": "2caccf53c26616255523d0894cb62e37d5177f99307c8595c49c76a8b0e6ad55",
+          "card": "1e007509f7092c4a58467ab2177e6a57a509f012ae324e5b6d9e2303771e01bc",
+          "detail": "f2bbf72be6e2c725e0cbe164e7bdc2b914987c6bec1fc59339463d7ad478116d"
         },
         "gallery": [
           {
@@ -16220,16 +16327,15 @@
           },
           {
             "file": "gallery/02.webp"
-          },
-          {
-            "file": "gallery/03.webp"
-          },
-          {
-            "file": "gallery/04.webp"
           }
         ],
-        "fetched_at": "2026-07-22T14:04:28.587948+00:00",
-        "status": "ok"
+        "fetched_at": "2026-07-23T16:30:29.835100+00:00",
+        "status": "ok",
+        "quality": {
+          "card_bytes": 64246,
+          "class": "ok_real",
+          "checked_at": "2026-07-23T16:30:29.835100+00:00"
+        }
       }
     },
     "terfezia-boudieri": {
@@ -17666,27 +17772,35 @@
       },
       "meta": {
         "slug": "verpa-conica",
-        "source": "procedural_stub_rebuild",
-        "source_url": null,
-        "license": "CC0",
-        "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
-        "creator": "VisionSetil",
-        "attribution_text": "VisionSetil procedural species art (CC0) — replace with licensed photo via --fetch",
-        "gbif_occurrence_id": null,
-        "sha256_source": "85a1498aab43a801b2b5287422e246d50961655e3b46bb1e7a7a691737640502",
+        "scientific_name": "Verpa conica",
+        "source": "gbif",
+        "source_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/629274349/original.jpg",
+        "license": "http://creativecommons.org/licenses/by/4.0/",
+        "license_url": "http://creativecommons.org/licenses/by/4.0/",
+        "creator": "Stuart Fraser",
+        "attribution_text": "Stuart Fraser — http://creativecommons.org/licenses/by/4.0/",
+        "gbif_occurrence_id": 6184725779,
+        "sha256_source": "bb718cc9bf48c5646754be8bc8df3453d6a7acd25e64705142782a1fc15a1c0e",
         "sha256_derivatives": {
-          "lqip": "18522afc7510d9f3dc355ecc1f9c44a91a20ad7c3ccce787ee23acf216402fc6",
-          "thumb": "75f37be1969ba8596dea02f34d70fb220cc45acff5eb57c8c616983afec2f146",
-          "card": "85944d554dff52257e87ed8d097b3a64569d1b3fef594c4edd5c8eaca9336b20",
-          "detail": "85a1498aab43a801b2b5287422e246d50961655e3b46bb1e7a7a691737640502"
+          "lqip": "bbd8aaa1316f0a97f30a45bf12d74d4f3e8b5629dd880f5565126a434dc66cfd",
+          "thumb": "c442ba00269410ccbb9035685aabec022ac1932dadf46c85830713670efd3544",
+          "card": "3b35cb21ab0f13da3daaa3b349524907fd2a2deb0f26c6c47b399870a4e4cebf",
+          "detail": "bb718cc9bf48c5646754be8bc8df3453d6a7acd25e64705142782a1fc15a1c0e"
         },
-        "fetched_at": "2026-07-23T08:45:14.073842+00:00",
+        "gallery": [
+          {
+            "file": "gallery/01.webp"
+          },
+          {
+            "file": "gallery/02.webp"
+          }
+        ],
+        "fetched_at": "2026-07-23T16:30:42.662994+00:00",
         "status": "ok",
-        "format_note": "webp",
         "quality": {
-          "card_bytes": 32866,
-          "class": "ok_procedural",
-          "checked_at": "2026-07-23T08:45:14.073842+00:00"
+          "card_bytes": 96528,
+          "class": "ok_real",
+          "checked_at": "2026-07-23T16:30:42.662994+00:00"
         }
       }
     },

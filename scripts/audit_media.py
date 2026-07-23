@@ -75,19 +75,24 @@ def is_webp_magic(path: Path) -> bool:
 
 
 def license_ok(text: str | None) -> bool:
+    """Accept CC0 / CC-BY / CC-BY-SA / PD; reject NC/ND (aligned with precompute)."""
     if not text:
         return False
-    t = text.lower().replace("_", " ").replace("/", " ")
+    raw = text.lower().strip()
+    if "by-nc" in raw or "by-nd" in raw or "by-nc-nd" in raw or "by-nc-sa" in raw:
+        return False
+    if "wikipedia-page-image" in raw or "commons-unknown" in raw:
+        return False
+    if "creativecommons.org/publicdomain" in raw:
+        return True
+    if "creativecommons.org/licenses/by" in raw:
+        return True
+    t = raw.replace("_", " ").replace("/", " ")
     for allowed in LICENSE_ALLOWLIST:
         if allowed in t:
             return True
-    if "creativecommons.org/publicdomain" in t:
+    if "public domain" in t or "cc0" in t.replace(" ", ""):
         return True
-    if "creativecommons.org/licenses/by" in t:
-        return True
-    # Explicit non-allowlist page summary marker (never ok_real)
-    if "wikipedia-page-image" in t or "commons-unknown" in t:
-        return False
     return False
 
 

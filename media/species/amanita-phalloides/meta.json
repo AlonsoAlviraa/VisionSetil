@@ -1,19 +1,19 @@
 {
   "slug": "amanita-phalloides",
   "scientific_name": "Amanita phalloides",
-  "source": "wikipedia_es",
-  "source_url": "https://upload.wikimedia.org/wikipedia/commons/9/99/Amanita_phalloides_1.JPG",
-  "license": "wikipedia-page-image",
-  "license_url": "https://es.wikipedia.org/wiki/Amanita_phalloides",
-  "creator": "Wikipedia/es",
-  "attribution_text": "Wikipedia/es — wikipedia-page-image",
-  "gbif_occurrence_id": null,
-  "sha256_source": "608a192f015e5eb0374351893c2143f99d0055419475d2d0609a76730c069020",
+  "source": "gbif",
+  "source_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/604710581/original.jpg",
+  "license": "http://creativecommons.org/licenses/by/4.0/",
+  "license_url": "http://creativecommons.org/licenses/by/4.0/",
+  "creator": "Damon H",
+  "attribution_text": "Damon H — http://creativecommons.org/licenses/by/4.0/",
+  "gbif_occurrence_id": 5938093597,
+  "sha256_source": "873d71a4aa792eb081a7bd54fff8ff27ab4fc03142fbba03b24febffd1fb0faf",
   "sha256_derivatives": {
-    "lqip": "6227191f5cd9f33dd696eb0f52c58ec7050e4920319dcb0c4dac15a898e3b0a2",
-    "thumb": "620360db035a6def3290a924d29783899bd0936ca167086ae3f515cba192d90b",
-    "card": "b64e29806b8a889333a2c65c85bdb03d92666db93280c7b74674af1ed8a640a3",
-    "detail": "608a192f015e5eb0374351893c2143f99d0055419475d2d0609a76730c069020"
+    "lqip": "32013a32ffd5c05cb254910c6eeda5781b23a053497af5b21a3c1280b556bced",
+    "thumb": "f7b6d7a39836b9402abeb94ee9e3128777bc08d33f6e80e8c97d42ffea4429fe",
+    "card": "bd9933d997e332d2e77d3dfd009ea0d6de0b99c575d26bb796d5e64ada1a2ed1",
+    "detail": "873d71a4aa792eb081a7bd54fff8ff27ab4fc03142fbba03b24febffd1fb0faf"
   },
   "gallery": [
     {
@@ -29,6 +29,11 @@
       "file": "gallery/04.webp"
     }
   ],
-  "fetched_at": "2026-07-22T14:12:33.356866+00:00",
-  "status": "ok"
+  "fetched_at": "2026-07-23T16:26:24.692154+00:00",
+  "status": "ok",
+  "quality": {
+    "card_bytes": 131474,
+    "class": "ok_real",
+    "checked_at": "2026-07-23T16:26:24.692154+00:00"
+  }
 }

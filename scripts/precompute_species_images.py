@@ -560,16 +560,30 @@ def _http_get_json(url: str) -> dict | list | None:
 
 
 def license_ok(text: str | None) -> bool:
+    """Accept CC0 / CC-BY / CC-BY-SA / PD; reject NC/ND and unknown page markers."""
     if not text:
         return False
-    t = text.lower().replace("_", " ").replace("/", " ")
+    raw = text.lower().strip()
+    # Reject non-commercial / no-derivatives before any allow match
+    if "by-nc" in raw or "by-nd" in raw or "by-nc-nd" in raw or "by-nc-sa" in raw:
+        return False
+    if "wikipedia-page-image" in raw or "commons-unknown" in raw:
+        return False
+    # URL form (preserve slashes for substring match)
+    if "creativecommons.org/publicdomain" in raw:
+        return True
+    if "creativecommons.org/licenses/by" in raw and "nc" not in raw.split("by", 1)[-1][:6]:
+        # by, by-sa, by/4.0 — not by-nc*
+        return True
+    t = raw.replace("_", " ").replace("/", " ")
     for allowed in LICENSE_ALLOWLIST:
         if allowed in t:
             return True
-    if "creativecommons.org/publicdomain" in t:
+    if "public domain" in t or "cc0" in t.replace(" ", ""):
         return True
-    if "creativecommons.org/licenses/by" in t:
-        return True
+    if " cc by " in f" {t} " or t.startswith("cc by") or "cc-by" in raw:
+        if "nc" not in raw and "nd" not in raw.replace("and", ""):
+            return True
     return False
 
 

@@ -1,19 +1,19 @@
 {
   "slug": "amanita-muscaria",
   "scientific_name": "Amanita muscaria",
-  "source": "wikipedia_es",
-  "source_url": "https://upload.wikimedia.org/wikipedia/commons/f/fa/Amanita_muscaria_%281%29_%288692325426%29.jpg",
-  "license": "wikipedia-page-image",
-  "license_url": "https://es.wikipedia.org/wiki/Amanita_muscaria",
-  "creator": "Wikipedia/es",
-  "attribution_text": "Wikipedia/es — wikipedia-page-image",
-  "gbif_occurrence_id": null,
-  "sha256_source": "d90713e94810d7fbd583fefd1f9d609869cf5941671ab1a7433509beb27fcb49",
+  "source": "gbif",
+  "source_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/604828386/original.jpg",
+  "license": "http://creativecommons.org/licenses/by/4.0/",
+  "license_url": "http://creativecommons.org/licenses/by/4.0/",
+  "creator": "Chris Sulots",
+  "attribution_text": "Chris Sulots — http://creativecommons.org/licenses/by/4.0/",
+  "gbif_occurrence_id": 5938036492,
+  "sha256_source": "fa4ab1178d2dd8846d20f80c96facfa684715f18361cee4b98fb66d5bc83cf14",
   "sha256_derivatives": {
-    "lqip": "764afb0eb12ac859959e53d5b61d54116c57993c3e4ce41f6ea81c9458460475",
-    "thumb": "1d9f97cea234ffcf5e0803156621510b611689a85fa874f629b9f62d9c8536cb",
-    "card": "4b648b5dc23a96dd543c45b89089b3a6ca66b5ea83b04120faa6d869964b3fda",
-    "detail": "d90713e94810d7fbd583fefd1f9d609869cf5941671ab1a7433509beb27fcb49"
+    "lqip": "71f5f35684db1e3c1fab906757540bc6e83ead8fb9a054eb86dc473a8557f92d",
+    "thumb": "078541f13e822b89fcc6ce5f0ed6811c3c31e0b11ba786f9e7bedd690d26f543",
+    "card": "9cc2b6a0cbab4bb50c3132a5c2cb8ce3bc761780325230927fb26022f0928694",
+    "detail": "fa4ab1178d2dd8846d20f80c96facfa684715f18361cee4b98fb66d5bc83cf14"
   },
   "gallery": [
     {
@@ -24,11 +24,13 @@
     },
     {
       "file": "gallery/03.webp"
-    },
-    {
-      "file": "gallery/04.webp"
     }
   ],
-  "fetched_at": "2026-07-22T14:12:51.847429+00:00",
-  "status": "ok"
+  "fetched_at": "2026-07-23T16:26:02.997579+00:00",
+  "status": "ok",
+  "quality": {
+    "card_bytes": 86944,
+    "class": "ok_real",
+    "checked_at": "2026-07-23T16:26:02.997579+00:00"
+  }
 }
