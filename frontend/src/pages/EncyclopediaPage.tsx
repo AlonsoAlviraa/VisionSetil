@@ -10,6 +10,7 @@ import { MUSHROOM_HERO_SHOTS } from '../data/mushroomPhotos'
 import { ENCYCLOPEDIA_FIRST_PAGE_SIZE } from '../data/photoTiers'
 import { EmptyState } from '../components/EmptyState'
 import { IconMushroom } from '../components/icons'
+import { Skeleton } from '../components/ui/Skeleton'
 
 const PhotoSpinViewer = lazy(() =>
   import('../components/PhotoSpinViewer').then((m) => ({ default: m.PhotoSpinViewer })),
@@ -120,8 +121,19 @@ export function EncyclopediaPage() {
       </div>
 
       {catalogLoading && (
-        <div className="skeleton-atelier" style={{ minHeight: 180, marginBottom: '1rem' }}>
-          <div className="skeleton-atelier__shimmer" />
+        <div
+          className="species-photo-grid ency-skeleton-grid"
+          aria-busy="true"
+          aria-label="Cargando especies"
+          data-testid="ency-skeleton-grid"
+        >
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div key={i} className="ency-skeleton-card">
+              <Skeleton variant="card" height="11rem" borderRadius="16px" aria-hidden />
+              <Skeleton variant="title" width="70%" height="0.9rem" aria-hidden />
+              <Skeleton variant="line" width="45%" height="0.7rem" aria-hidden />
+            </div>
+          ))}
         </div>
       )}
 
@@ -194,7 +206,7 @@ export function EncyclopediaPage() {
         </div>
       )}
 
-      <div className="encyclopedia-toolbar ency-toolbar">
+      <div className="encyclopedia-toolbar ency-toolbar ency-toolbar--sticky" data-testid="ency-toolbar">
         <div className="search-box" style={{ flex: 1, minWidth: 200 }}>
           <input
             type="search"

@@ -27,10 +27,26 @@ describe('quizMatch 10-round state machine', () => {
     const idle = createMatchState()
     expect(idle.phase).toBe('idle')
     expect(idle.resolvedCount).toBe(0)
+    expect(idle.totalRounds).toBe(MATCH_ROUNDS)
     const m = startMatch()
     expect(m.phase).toBe('playing')
     expect(matchProgress(m).total).toBe(MATCH_ROUNDS)
     expect(MATCH_ROUNDS).toBe(10)
+  })
+
+  it('supports shorter daily match length', () => {
+    let m = startMatch(createMatchState(6), 6)
+    expect(matchProgress(m).total).toBe(6)
+    let score = 0
+    for (let i = 0; i < 6; i++) {
+      score += 10
+      m = applyMatchRoundResult(m, res(true), score)
+      if (!isMatchComplete(m)) m = continueMatch(m)
+    }
+    expect(isMatchComplete(m)).toBe(true)
+    m = continueMatch(m)
+    expect(m.phase).toBe('finished')
+    expect(m.resolvedCount).toBe(6)
   })
 
   it('accumulates score across rounds and finishes after 10', () => {

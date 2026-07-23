@@ -4,6 +4,26 @@
 
 ---
 
+## Phase D — Funciones + belleza visual (shipped MVP mes)
+
+| Campo | Valor |
+| --- | --- |
+| **Estado** | **W1–W4 entregado** (post A/B/C MVP) — closeout en doc |
+| **Doc** | [`docs/PHASE_D_30D_FEATURES_AND_BEAUTY.md`](./PHASE_D_30D_FEATURES_AND_BEAUTY.md) |
+| **Horizonte** | 30 días · ~18 PRs (D-01…D-18) |
+| **Foco** | Design system unificado, polish top surfaces, notebook/quiz/mapa/offline, PWA/a11y |
+| **Fuera de foco residual** | Crawl masivo `ok_real` (opcional); D-13 community light |
+| **Rama** | `merge/best-of-both` |
+
+| Semana | Entrega | Estado |
+| --- | --- | --- |
+| **W1** | Tokens, UI kit, Home media path, Encyc skeletons, media badges | ✅ |
+| **W2** | Detail tabs, lookalikes, Identify density, i18n chrome | ✅ |
+| **W3** | Notebook v2, Quiz daily, Mapa hotspots | ✅ |
+| **W4** | Offline season pack, PWA install/icons, perf routes, a11y skip, docs | ✅ |
+
+---
+
 ## Estado Actual — Fase 7 (Frontend MVP + Mega Training + Seguridad)
 
 ### ✅ Logros del sprint

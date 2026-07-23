@@ -1,12 +1,13 @@
-﻿/**
- * Result card ÔÇö 3-layer hierarchy (Wave A) + Phase B honesty (B-08):
+/**
+ * Result card — 3-layer hierarchy (Wave A) + Phase B honesty (B-08):
  * 0) ResultModeBanner + educational blocked shell
- * 1) Safety + decision + top predictions (no FoodQualityChip ÔÇö D-B16)
- * 2) Confidence (gated D-B9) + lookalikes
+ * 1) Safety + decision + top predictions (no FoodQualityChip — D-B16)
+ * Policy: docs/SAFETY_POLICY.md Safety-by-surface (D16 / D-B16).
+ * 2) Confidence (gated D-B9) + lookalikes (collapsed default — D-08)
  * 2.5) B-36: missing evidence + questions_for_user panel (deep-link wizard slots)
  * 3) Accordion: quality, feedback, technical
  */
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { ClassificationResult, SpeciesPrediction } from '../api/types'
@@ -68,7 +69,7 @@ function getConfidenceInterpretation(confidence: number): {
     return {
       label: 'Baja confianza',
       level: 'low',
-      description: 'Pista floja. Mejor no te f├¡es solo de esto.',
+      description: 'Pista floja. Mejor no te fíes solo de esto.',
     }
   }
   if (confidence < 0.7) {
@@ -81,17 +82,17 @@ function getConfidenceInterpretation(confidence: number): {
   return {
     label: 'Alta confianza',
     level: 'high',
-    description: 'El modelo se atreveÔÇª y aun as├¡ conviene un humano.',
+    description: 'El modelo se atreve… y aun así conviene un humano.',
   }
 }
 
 const SAFETY_LEVEL_META: Record<string, { label: string; class: string }> = {
-  safe: { label: 'Solo orientaci├│n', class: 'sl-caution' },
+  safe: { label: 'Solo orientación', class: 'sl-caution' },
   unsafe_to_consume: { label: 'No apta para consumo', class: 'sl-danger' },
-  caution: { label: 'Precauci├│n', class: 'sl-caution' },
+  caution: { label: 'Precaución', class: 'sl-caution' },
   warning: { label: 'Advertencia', class: 'sl-warning' },
   danger: { label: 'Peligro', class: 'sl-danger' },
-  critical: { label: 'Cr├¡tico', class: 'sl-critical' },
+  critical: { label: 'Crítico', class: 'sl-critical' },
 }
 
 export function ResultCard({
@@ -104,8 +105,9 @@ export function ResultCard({
   const { t } = useTranslation()
   const navigate = useNavigate()
   const [feedbackSent, setFeedbackSent] = useState(false)
-  const [layer2Open, setLayer2Open] = useState(true)
+  const [layer2Open, setLayer2Open] = useState(false)
   const [layer3Open, setLayer3Open] = useState(false)
+  const [showMorePredictions, setShowMorePredictions] = useState(false)
   const [handoffSaved, setHandoffSaved] = useState(false)
 
   const mode = resolveDisplayMode(result)
@@ -152,6 +154,17 @@ export function ResultCard({
     (isDangerous && !showBlockedShell)
   const hasLayer3 = true /* always show ML insights accordion */
 
+  // D-08 density + safety: auto-open lookalikes when deadly/high-risk confusions exist
+  useEffect(() => {
+    if (lookalikeStats.deadly > 0 || lookalikeStats.high > 0) {
+      setLayer2Open(true)
+    } else {
+      setLayer2Open(false)
+    }
+    setShowMorePredictions(false)
+    setLayer3Open(false)
+  }, [result.request_id, lookalikeStats.deadly, lookalikeStats.high])
+
   const handleFeedback = (correct: boolean) => {
     onFeedback?.(correct, topPrediction?.species)
     setFeedbackSent(true)
@@ -168,14 +181,14 @@ export function ResultCard({
 
   return (
     <div
-      className={`result-card result-card--layered result-card--mode-${mode} ${isDeadly && !isRejected && !showBlockedShell ? 'result-card--deadly' : ''}`}
+      className={`result-card result-card--layered result-card--scan result-card--mode-${mode} ${isDeadly && !isRejected && !showBlockedShell ? 'result-card--deadly' : ''}`}
       data-testid="result-card"
       data-mode={mode}
       data-show-confidence={showConfidence ? 'true' : 'false'}
     >
       <ResultModeBanner result={result} />
 
-      {/* ÔöÇÔöÇ Layer 1: safety + decision + top predictions ÔöÇÔöÇ */}
+      {/* ── Layer 1: safety + decision + top predictions ── */}
       <section className="result-layer result-layer--1" aria-label="Resultado principal">
         <div className="result-meta-row">
           <span
@@ -188,9 +201,9 @@ export function ResultCard({
         </div>
 
         <div className="safety-disclaimer" role="alert">
-          <strong>Solo orientaci├│n</strong>
+          <strong>Solo orientación</strong>
           <p>
-            Puede fallar. <strong>No comas por lo que diga la app</strong> ÔÇö un mic├│logo manda.
+            Puede fallar. <strong>No comas por lo que diga la app</strong> — un micólogo manda.
           </p>
           <p className={`safety-disclaimer__level ${sl.class}`}>
             <IconAlert size={14} /> {sl.label}
@@ -233,7 +246,7 @@ export function ResultCard({
                       <>
                         {((topPrediction.confidence ?? 0) * 100).toFixed(1)}% de confianza del modelo
                         {result.predictions.length >= 2
-                          ? ' ┬À el modelo duda entre varias especies'
+                          ? ' · el modelo duda entre varias especies'
                           : ''}
                       </>
                     ) : (
@@ -247,11 +260,11 @@ export function ResultCard({
             {isDeadly && !isRejected && (
               <div className="danger-callout danger-callout--deadly" role="alert">
                 <strong>
-                  <IconAlert size={18} /> Posible confusi├│n mortal
+                  <IconAlert size={18} /> Posible confusión mortal
                 </strong>
                 <p>
-                  {topEdibility.label}. Mant├®n distancia de ni├▒os y mascotas. No toques ni pruebes.
-                  Confirma con un mic├│logo.
+                  {topEdibility.label}. Mantén distancia de niños y mascotas. No toques ni pruebes.
+                  Confirma con un micólogo.
                 </p>
               </div>
             )}
@@ -261,17 +274,17 @@ export function ResultCard({
                 <strong>
                   <IconAlert size={16} /> Posible riesgo alto
                 </strong>
-                <span> ÔÇö {topEdibility.label}. Mant├®n distancia de ni├▒os y mascotas.</span>
+                <span> — {topEdibility.label}. Mantén distancia de niños y mascotas.</span>
               </div>
             )}
 
-            {/* D-B16: FoodQualityChip banned on Identify ÔÇö risk chips only */}
+            {/* D-B16: FoodQualityChip banned on Identify — risk chips only */}
 
             {result.predictions.length > 0 && (
               <div className="predictions" data-testid="predictions-list">
-                <h3>Mejores pistas</h3>
+                <h3 className="result-predictions-title">{t('result.topHints', { defaultValue: 'Mejores pistas' })}</h3>
                 <ul>
-                  {result.predictions.slice(0, 3).map((pred: SpeciesPrediction, idx: number) => {
+                  {result.predictions.slice(0, showMorePredictions ? 3 : 1).map((pred: SpeciesPrediction, idx: number) => {
                     const meta = getEdibilityMeta(pred.edibility)
                     return (
                       <li
@@ -330,6 +343,22 @@ export function ResultCard({
                     )
                   })}
                 </ul>
+                {result.predictions.length > 1 && (
+                  <button
+                    type="button"
+                    className="result-more-toggle btn-atelier btn-atelier--ghost"
+                    data-testid="predictions-more-toggle"
+                    aria-expanded={showMorePredictions}
+                    onClick={() => setShowMorePredictions((v) => !v)}
+                  >
+                    {showMorePredictions
+                      ? t('result.showLessPredictions', { defaultValue: 'Menos pistas' })
+                      : t('result.showMorePredictions', {
+                          defaultValue: 'Más pistas ({{count}})',
+                          count: Math.min(result.predictions.length, 3) - 1,
+                        })}
+                  </button>
+                )}
               </div>
             )}
           </>
@@ -344,7 +373,7 @@ export function ResultCard({
               data-testid="cta-expert-handoff"
             >
               <IconExpert size={16} />
-              {needsExpert ? 'Revisi├│n experta' : 'Segunda opini├│n'}
+              {needsExpert ? 'Revisión experta' : 'Segunda opinión'}
             </button>
             <Link className="btn-atelier btn-atelier--ghost" to="/lookalikes">
               Lookalikes
@@ -367,7 +396,7 @@ export function ResultCard({
         </div>
       </section>
 
-      {/* ÔöÇÔöÇ Layer 2: confidence + lookalikes ÔöÇÔöÇ */}
+      {/* ── Layer 2: confidence + lookalikes ── */}
       {hasLayer2 && (
         <section className="result-layer result-layer--2">
           <button
@@ -378,8 +407,13 @@ export function ResultCard({
           >
             <span>
               {showConfidence ? 'Confianza y confusiones' : 'Confusiones de riesgo'}
+              {lookalikeStats.deadly > 0
+                ? ` · ${lookalikeStats.deadly} mortal${lookalikeStats.deadly === 1 ? '' : 'es'}`
+                : lookalikeStats.high > 0
+                  ? ` · ${lookalikeStats.high} alto riesgo`
+                  : ''}
             </span>
-            <span aria-hidden="true">{layer2Open ? 'ÔêÆ' : '+'}</span>
+            <span aria-hidden="true">{layer2Open ? '−' : '+'}</span>
           </button>
           {layer2Open && (
             <div className="result-layer__body">
@@ -412,7 +446,7 @@ export function ResultCard({
                   <strong className="lookalikes-warning__title">
                     <IconAlert size={16} />
                     Confusiones de riesgo ({lookalikeStats.total}
-                    {lookalikeStats.deadly > 0 ? ` ┬À ${lookalikeStats.deadly} mortales` : ''}
+                    {lookalikeStats.deadly > 0 ? ` · ${lookalikeStats.deadly} mortales` : ''}
                     )
                   </strong>
                   <ul className="lookalike-list">
@@ -446,7 +480,7 @@ export function ResultCard({
         </section>
       )}
 
-      {/* ÔöÇÔöÇ B-36: Missing evidence + questions panel (promoted, always open) ÔöÇÔöÇ */}
+      {/* ── B-36: Missing evidence + questions panel (promoted, always open) ── */}
       {hasEvidencePanel && (
         <section
           className="result-layer result-layer--evidence result-evidence-panel"
@@ -519,7 +553,7 @@ export function ResultCard({
         </section>
       )}
 
-      {/* ÔöÇÔöÇ Layer 3: details accordion ÔöÇÔöÇ */}
+      {/* ── Layer 3: details accordion ── */}
       {hasLayer3 && (
         <section className="result-layer result-layer--3">
           <button
@@ -528,8 +562,8 @@ export function ResultCard({
             aria-expanded={layer3Open}
             onClick={() => setLayer3Open((v) => !v)}
           >
-            <span>M├ís detalle</span>
-            <span aria-hidden="true">{layer3Open ? 'ÔêÆ' : '+'}</span>
+            <span>Más detalle</span>
+            <span aria-hidden="true">{layer3Open ? '−' : '+'}</span>
           </button>
           {layer3Open && (
             <div className="result-layer__body">
@@ -549,14 +583,14 @@ export function ResultCard({
 
               {onFeedback && !feedbackSent && !isRejected && !showBlockedShell && (
                 <div className="feedback-section">
-                  <p className="feedback-question">┬┐La pista te encaja?</p>
+                  <p className="feedback-question">¿La pista te encaja?</p>
                   <div className="feedback-buttons">
                     <button
                       type="button"
                       className="btn-atelier btn-atelier--ghost"
                       onClick={() => handleFeedback(true)}
                     >
-                      <IconThumbsUp size={16} /> S├¡
+                      <IconThumbsUp size={16} /> Sí
                     </button>
                     <button
                       type="button"
@@ -570,7 +604,7 @@ export function ResultCard({
               )}
               {feedbackSent && (
                 <div className="feedback-sent">
-                  <IconCheck size={16} /> Gracias ÔÇö ayuda a mejorar el modelo.
+                  <IconCheck size={16} /> Gracias — ayuda a mejorar el modelo.
                 </div>
               )}
 
@@ -579,7 +613,7 @@ export function ResultCard({
               {result.model_stack && (
                 <div className="technical-details">
                   <p>
-                    <strong>ID:</strong> {result.request_id} ┬À {result.processing_time_ms} ms
+                    <strong>ID:</strong> {result.request_id} · {result.processing_time_ms} ms
                   </p>
                 </div>
               )}

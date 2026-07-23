@@ -3,14 +3,23 @@
     "name": "VisionSetil",
     "tagline": "Tu guía inteligente del mundo de las setas",
     "footerDisclaimer": "Herramienta orientativa y educativa. No sustituye el consejo de un micólogo experto. Una identificación incorrecta puede costar una vida.",
-    "poweredBy": "Powered by FungiCLEF 2025"
+    "poweredBy": "Powered by FungiCLEF 2025",
+    "fieldSubtitle": "Micología de campo"
   },
   "nav": {
     "home": "Inicio",
     "identify": "Identificar",
     "encyclopedia": "Enciclopedia",
     "map": "Mapa",
-    "education": "Aprende"
+    "education": "Aprende",
+    "quiz": "Reto",
+    "notebook": "Cuaderno",
+    "lookalikes": "Lookalikes",
+    "offline": "Offline",
+    "community": "Comunidad",
+    "experts": "Expertos",
+    "ml": "Dashboard ML",
+    "more": "Más"
   },
   "actions": {
     "search": "Buscar",
@@ -62,7 +71,30 @@
     "keyFeatures": "Características clave",
     "deadlySpecies": "ESPECIE MORTAL",
     "toxicSpecies": "Especie tóxica",
-    "dangerDefault": "Esta seta es peligrosa. No consumir bajo ningún concepto."
+    "dangerDefault": "Esta seta es peligrosa. No consumir bajo ningún concepto.",
+    "tabs": {
+      "morphology": "Morfología",
+      "habitat": "Hábitat",
+      "lookalikes": "Lookalikes"
+    },
+    "tabsLabel": "Secciones de la ficha",
+    "orientationOnly": "Solo orientación · no consumo",
+    "galleryAlt": "Fotos de {{name}}",
+    "notFoundBody": "No hay ficha para «{{slug}}».",
+    "foodQualityLabel": "Calidad documentada",
+    "foodQualitySource": "Fuente: {{sources}} — no es permiso de consumo.",
+    "curatedLevel": "Nivel curado",
+    "foodQualityUnknown": "Sin calidad alimenticia documentada en nuestras fuentes.",
+    "foodQualityUnknownHint": "No inventamos comestibilidad. Solo base curada Iberia + lista tóxicas.",
+    "toxicityTitle": "Toxicidad (educativa)",
+    "emptyMorphology": "Sin caracteres detallados",
+    "emptyMorphologyBody": "Aún no hay morfo curada para esta ficha. Usa la galería y el hábitat como pistas educativas.",
+    "emptyHabitat": "Sin hábitat documentado",
+    "emptyHabitatBody": "No hay nota de hábitat curada para esta especie en el catálogo local.",
+    "lookalikesTitle": "Lookalikes de riesgo",
+    "openStudio": "Abrir Lookalike Studio",
+    "emptyLookalikes": "Sin confusiones listadas",
+    "emptyLookalikesBody": "No hay lookalikes curados en la ficha. Prueba el estudio de comparación."
   },
   "home": {
     "heroTitle": "Guía de setas de España",
@@ -147,6 +179,17 @@
       "missing_detail": "Falta detalle de pie/anillo/volva: reduce confusión con lookalikes.",
       "missing_required": "Vistas críticas pendientes: {{views}}. Puedes enviar con advertencia, pero el open-set puede rechazar.",
       "hard_blocked": "Modo estricto: añade las vistas críticas (láminas y frontal) antes de analizar."
+    },
+    "bannerLead": "Multi-vista guiada. Si no está seguro, se calla. Mejor eso que inventar.",
+    "modeGuided": "Modo guiado",
+    "modeFree": "Modo libre",
+    "newAnalysis": "Nuevo análisis",
+    "showPhotos": "Ver fotos enviadas",
+    "hidePhotos": "Ocultar fotos enviadas",
+    "flow": {
+      "preflight": "Preflight",
+      "capture": "Captura",
+      "result": "Resultado"
     }
   },
   "empty": {
@@ -245,7 +288,10 @@
     "feedbackNo": "No",
     "feedbackThanks": "Gracias por tu feedback. Ayuda a mejorar el modelo.",
     "technicalDetails": "Detalles técnicos",
-    "time": "Tiempo"
+    "time": "Tiempo",
+    "topHints": "Mejores pistas",
+    "showMorePredictions": "Más pistas ({{count}})",
+    "showLessPredictions": "Menos pistas"
   },
   "categories": {
     "todas": "Todas",
@@ -314,5 +360,285 @@
       "stages_label": "Etapas de identificación",
       "aria_label": "Identificación en curso"
     }
+  },
+  "gallery": {
+    "open": "Ampliar imagen",
+    "empty": "Sin galería extra — se muestra la ilustración o foto principal.",
+    "single": "Una imagen disponible"
+  },
+  "lookalike": {
+    "title": "Confusiones posibles",
+    "hint": "Riesgo solo como orientación — no edibilidad comestible.",
+    "pickerLabel": "Elegir confusión",
+    "vs": "VS",
+    "viewDetail": "Ver ficha",
+    "notInCatalog": "No está en el catálogo local.",
+    "kicker": "Educación · Confusiones peligrosas",
+    "studioTitle": "Lookalike Studio",
+    "studioSubtitle": "Coloca hasta tres setas frente a frente. Fotografía, riesgo y familia — para estudiar confusiones, no para decidir qué llevarse a la mesa.",
+    "progressAria": "Progreso de comparación",
+    "ready": "Comparación lista",
+    "needMore": "{{count}} de {{min}} · añade al menos 2",
+    "searchLabel": "Buscar taxón",
+    "searchPlaceholder": "Oronja, níscalo, Galerina marginata…",
+    "add": "Añadir",
+    "emptyTitle": "Elige setas para comparar",
+    "emptyBody": "Busca por nombre común o científico, o toca una sugerencia de alto riesgo.",
+    "tableTitle": "Tabla de comparación",
+    "tableLead": "Lee en horizontal. El riesgo es orientación de seguridad, no edibilidad.",
+    "characterCol": "Carácter",
+    "noLocalName": "Sin nombre local",
+    "suggestTitle": "Sugerencias de estudio",
+    "suggestLead": "Alto riesgo o misma familia — ideales para practicar lookalikes.",
+    "tip": "Tip: añade un lookalike de la misma familia o un taxón mortal para contrastar caracteres.",
+    "remove": "Quitar"
+  },
+  "notebook": {
+    "title": "Cuaderno de campo",
+    "subtitle": "Historial local con notas y etiquetas. Solo orientación — no es un diario de consumo.",
+    "statTotal": "Total",
+    "statHints": "Pistas tentativas",
+    "statRejected": "Sin ID fiable",
+    "statReview": "Para revisión",
+    "reviewCallout": "{{count}} caso(s) merecen revisión experta",
+    "reviewBody": "Rechazos, lookalikes de riesgo o bandera de human-review.",
+    "reviewLink": "Ir a revisión experta",
+    "recentTitle": "Entradas recientes",
+    "newId": "Nueva identificación",
+    "exportJson": "Exportar JSON",
+    "clear": "Limpiar historial",
+    "shareTitle": "Cuaderno VisionSetil",
+    "shareDone": "Compartido",
+    "shareCopied": "Resumen copiado",
+    "shareFailed": "No se pudo compartir",
+    "filterModeAria": "Filtrar por modo de identificación",
+    "filterDateAria": "Filtrar por fecha",
+    "mode": {
+      "all": "Todas",
+      "real": "Real",
+      "mock": "Demo",
+      "blocked": "Bloqueado"
+    },
+    "gate": {
+      "label": "Gate",
+      "metricsOk": "métricas OK",
+      "metricsLow": "métricas bajas",
+      "id": "ID",
+      "idAllowed": "permitido",
+      "idBlocked": "bloqueado"
+    },
+    "clearConfirm": "¿Borrar todo el cuaderno local? Esta acción no se puede deshacer.",
+    "date": {
+      "all": "Cualquier fecha",
+      "today": "Hoy",
+      "7d": "7 días",
+      "30d": "30 días"
+    },
+    "emptyTitle": "Sin observaciones aún",
+    "emptyBody": "Identifica una seta y quedará guardada aquí con espacio para notas de campo.",
+    "emptyAction": "Identificar seta",
+    "emptyFilterTitle": "Sin entradas con estos filtros",
+    "emptyFilterBody": "No hay observaciones con modo «{{mode}}» y fecha «{{date}}». Prueba otros filtros.",
+    "emptyFilterAction": "Ver todas",
+    "openCue": "Abrir observación",
+    "detailTitle": "Observación",
+    "resultLabel": "Resultado",
+    "confidence": "confianza",
+    "views": "Vistas",
+    "notesLabel": "Notas de campo",
+    "notesPlaceholder": "Hábitat, olor, árbol cercano… (sin consejos de consumo)",
+    "tagsLabel": "Etiquetas (coma)",
+    "tagsPlaceholder": "pinar, otoño, dudosa",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "editNotes": "Notas y etiquetas",
+    "viewSpecies": "Ver ficha",
+    "handoff": "Handoff experto",
+    "requestReview": "Solicitar revisión experta",
+    "detailDisclaimer": "Solo orientación local. No autoriza consumo ni certifica la identificación."
+  },
+  "quiz": {
+    "brand": "Reto micológico",
+    "dailySub": "Reto del día · datos documentados",
+    "freeSub": "Partida de {{rounds}} rondas · datos documentados",
+    "record": "Récord",
+    "dailyBest": "Hoy",
+    "points": "Puntos",
+    "streak": "Racha",
+    "round": "Ronda",
+    "kicker": "Educación · no consumo",
+    "dailyTitle": "Reto del día",
+    "dailyBody": "{{rounds}} rondas · {{seconds}} s · mismo desafío para todo el día. Solo calidad alimenticia documentada — no inventamos comestibles.",
+    "coverageAria": "Cobertura documentada",
+    "documented": "documentadas",
+    "ediblesDoc": "comestibles*",
+    "toxicDoc": "tóxicas/mortales",
+    "startDaily": "Jugar reto del día",
+    "dailyMeta": "Hoy {{day}} · mejor del día: {{best}} · teclas A–D",
+    "orFree": "o partida libre",
+    "modeFood": "¿Comestible?",
+    "modeFoodDesc": "Comestible · no comestible · tóxica · mortal",
+    "modePhoto": "¿Cuál es?",
+    "modePhotoDesc": "4 fotos · elige la del nombre",
+    "modeName": "¿Cómo se llama?",
+    "modeNameDesc": "1 foto · 4 nombres",
+    "startFree": "Partida libre ({{rounds}} rondas)",
+    "deckMeta": "Mazo: {{count}} setas documentadas · *referencia educativa, no permiso de consumo",
+    "dailyDone": "¡Reto del día completado!",
+    "freeDone": "¡Partida terminada!",
+    "doneBody": "{{rounds}} rondas resueltas. Solo orientación educativa — no autoriza consumo.",
+    "hits": "aciertos",
+    "accuracy": "acierto",
+    "bestStreak": "Mejor racha en la partida: {{n}}",
+    "dailyBestLine": "mejor del día: {{n}}",
+    "replayDaily": "Repetir reto del día",
+    "another": "Otra partida",
+    "backLobby": "Volver al lobby",
+    "progressAria": "Progreso de partida",
+    "roundOf": "Ronda {{current}} de {{total}}",
+    "kickerPhoto": "Elige la foto",
+    "kickerName": "Elige el nombre",
+    "kickerFood": "Calidad documentada",
+    "timeout": "¡Tiempo!",
+    "was": "Era",
+    "correct": "¡Correcto!",
+    "almost": "Casi…",
+    "correctWas": "Correcta",
+    "source": "Fuente",
+    "seeFinal": "Ver resultado final",
+    "next": "Siguiente ({{n}}/{{total}})",
+    "viewCard": "Ver ficha",
+    "prompt": {
+      "name": "¿Cómo se llama esta seta?",
+      "photo": "¿Cuál es «{{name}}»?",
+      "food": "¿Qué calidad alimenticia documentada tiene?"
+    },
+    "food": {
+      "comestible": {
+        "label": "Comestible",
+        "hint": "Documentada como comestible (educativo)"
+      },
+      "no_comestible": {
+        "label": "No comestible",
+        "hint": "Sin interés culinario documentado"
+      },
+      "toxica": {
+        "label": "Tóxica",
+        "hint": "Tóxica documentada"
+      },
+      "mortal": {
+        "label": "Mortal",
+        "hint": "Mortal documentada"
+      }
+    }
+  },
+  "map": {
+    "title": "Mapa de zonas micológicas",
+    "subtitle": "Hotspots educativos y condiciones en vivo. Rojo = desfavorable. No es permiso de recolección ni de consumo.",
+    "modeSimple": "Simple",
+    "modeAdvanced": "Avanzado",
+    "levelExtreme": "Desfavorable",
+    "levelSevere": "Regular",
+    "levelModerate": "Aceptable",
+    "levelGood": "Favorable",
+    "loading": "Cargando",
+    "noData": "Sin datos",
+    "weatherAllFailed": "No hay datos meteorológicos ahora. El mapa sigue usable con fichas de zona y especies orientativas.",
+    "region": "Comunidad",
+    "allRegions": "Todas",
+    "alertFilter": "Aviso",
+    "allLevels": "Todos los niveles",
+    "zones": "zonas",
+    "loadingWeather": "avisos…",
+    "openCard": "Ver ficha y especies",
+    "legendTitle": "Aviso de condiciones",
+    "hotspotLegend": "Halo = hotspot educativo",
+    "pickZoneTitle": "Selecciona una zona",
+    "pickZoneBody": "Toca un marcador o una tarjeta del tablero. Los halos muestran hotspots de condiciones favorables (educativo).",
+    "feat1": "Aviso meteorológico por zona",
+    "feat2": "Hotspots visuales + ficha lateral",
+    "feat3": "Enlaces a fichas de la enciclopedia",
+    "feat4": "Consejos y hábitat",
+    "hotspots": "hotspots",
+    "disclaimer": "No autoriza recolección ni consumo. Consulta normativa local y un micólogo. El mapa es educativo.",
+    "hotspotActive": "Hotspot activo (condiciones favorables/aceptables)",
+    "habitat": "Hábitat",
+    "season": "Temporada",
+    "abundance": "Producción habitual",
+    "tips": "Consejos de campo",
+    "speciesTitle": "Especies orientativas ({{count}})",
+    "boardTitle": "Tablero de avisos ({{count}})",
+    "emptyFilterTitle": "Sin zonas con estos filtros",
+    "emptyFilterBody": "Prueba otra comunidad o nivel de aviso.",
+    "resetFilters": "Quitar filtros",
+    "hotspotShort": "hotspot",
+    "weatherLoading": "Cargando aviso meteorológico…",
+    "weatherErrorTitle": "Sin datos meteorológicos",
+    "weatherErrorBody": "No se pudieron cargar condiciones en vivo. Puedes seguir explorando la ficha de zona (especies y hábitat).",
+    "weatherSource": "Fuente",
+    "index": "Índice",
+    "liveData": "Datos en tiempo real",
+    "viewMaps": "Ver en mapa",
+    "alert": {
+      "unknown": {
+        "label": "Sin datos",
+        "advisory": "Condiciones no disponibles aún"
+      },
+      "extreme": {
+        "label": "Desfavorable",
+        "advisory": "Suelo seco o condiciones pobres para fructificación"
+      },
+      "severe": {
+        "label": "Regular",
+        "advisory": "Condiciones mediocres; baja probabilidad de setas"
+      },
+      "moderate": {
+        "label": "Aceptable",
+        "advisory": "Condiciones pasables; posibles hallazgos locales"
+      },
+      "good": {
+        "label": "Favorable",
+        "advisory": "Humedad y temperatura favorables a fructificación"
+      }
+    }
+  },
+  "offline": {
+    "kicker": "Campo · PWA",
+    "title": "Pack offline",
+    "subtitle": "Descarga la temporada o el pack prioritario para consultar fichas sin red. No clasifica offline.",
+    "modeLabel": "Tipo de pack",
+    "modeSeason": "Temporada ({{season}})",
+    "modePriority": "Prioritario T0/T1",
+    "taxa": "taxones",
+    "photoUrls": "URLs de media",
+    "lastDownload": "Última descarga: {{when}} · {{photos}} en caché · {{kind}}",
+    "kindSeason": "temporada",
+    "kindPriority": "prioritario",
+    "progressLabel": "Progreso de descarga",
+    "saving": "Guardando…",
+    "download": "Descargar pack",
+    "clear": "Eliminar pack",
+    "confirmClear": "¿Eliminar el pack offline guardado en este dispositivo?",
+    "statusOk": "Guardadas {{cached}} imágenes ({{count}} fichas en el pack).",
+    "statusMetaOnly": "Pack de metadatos listo. Las imágenes no se pudieron cachear (CORS/red).",
+    "statusError": "Error al guardar el pack",
+    "statusCleared": "Pack offline eliminado.",
+    "disclaimer": "Solo consulta de fichas y fotos. No identifica setas sin red ni autoriza consumo.",
+    "all": "Todas ({{count}})",
+    "top": "Vista ({{count}})",
+    "showTop": "Ver menos",
+    "showAll": "Ver todas ({{count}})",
+    "emptyTitle": "Pack vacío",
+    "emptyBody": "No hay taxones disponibles para este pack.",
+    "openCard": "Ficha"
+  },
+  "pwa": {
+    "region": "Instalar app",
+    "hint": "Instala VisionSetil en tu dispositivo para acceso rápido y packs offline.",
+    "install": "Instalar",
+    "later": "Ahora no"
+  },
+  "a11y": {
+    "skipToContent": "Saltar al contenido"
   }
 }

@@ -3,14 +3,23 @@
     "name": "VisionSetil",
     "tagline": "Your smart guide to the world of mushrooms",
     "footerDisclaimer": "Orientation and educational tool. It does not replace expert mycologist advice. A wrong identification can cost a life.",
-    "poweredBy": "Powered by FungiCLEF 2025"
+    "poweredBy": "Powered by FungiCLEF 2025",
+    "fieldSubtitle": "Field mycology"
   },
   "nav": {
     "home": "Home",
     "identify": "Identify",
     "encyclopedia": "Encyclopedia",
     "map": "Map",
-    "education": "Learn"
+    "education": "Learn",
+    "quiz": "Challenge",
+    "notebook": "Notebook",
+    "lookalikes": "Lookalikes",
+    "offline": "Offline",
+    "community": "Community",
+    "experts": "Experts",
+    "ml": "ML Dashboard",
+    "more": "More"
   },
   "actions": {
     "search": "Search",
@@ -128,6 +137,17 @@
       "missing_detail": "Missing stem/ring/volva detail: reduces lookalike confusion.",
       "missing_required": "Critical views pending: {{views}}. You can submit with a warning, but open-set may reject.",
       "hard_blocked": "Strict mode: add critical views (gills and front) before analyzing."
+    },
+    "bannerLead": "Guided multi-view. If unsure, it stays quiet. Better than inventing.",
+    "modeGuided": "Guided mode",
+    "modeFree": "Free mode",
+    "newAnalysis": "New analysis",
+    "showPhotos": "Show submitted photos",
+    "hidePhotos": "Hide submitted photos",
+    "flow": {
+      "preflight": "Preflight",
+      "capture": "Capture",
+      "result": "Result"
     }
   },
   "empty": {
@@ -226,7 +246,10 @@
     "feedbackNo": "No",
     "feedbackThanks": "Thanks for your feedback. It helps improve the model.",
     "technicalDetails": "Technical details",
-    "time": "Time"
+    "time": "Time",
+    "topHints": "Top hints",
+    "showMorePredictions": "More hints ({{count}})",
+    "showLessPredictions": "Fewer hints"
   },
   "categories": {
     "todas": "All",
@@ -269,7 +292,30 @@
     "keyFeatures": "Key features",
     "deadlySpecies": "DEADLY SPECIES",
     "toxicSpecies": "Toxic species",
-    "dangerDefault": "Dangerous. Do not consume."
+    "dangerDefault": "Dangerous. Do not consume.",
+    "tabs": {
+      "morphology": "Morphology",
+      "habitat": "Habitat",
+      "lookalikes": "Lookalikes"
+    },
+    "tabsLabel": "Species sections",
+    "orientationOnly": "Orientation only · not for consumption",
+    "galleryAlt": "Photos of {{name}}",
+    "notFoundBody": "No profile for «{{slug}}».",
+    "foodQualityLabel": "Documented quality",
+    "foodQualitySource": "Source: {{sources}} — not permission to eat.",
+    "curatedLevel": "Curated level",
+    "foodQualityUnknown": "No documented food quality in our sources.",
+    "foodQualityUnknownHint": "We do not invent edibility. Iberian curated base + toxic list only.",
+    "toxicityTitle": "Toxicity (educational)",
+    "emptyMorphology": "No detailed characters",
+    "emptyMorphologyBody": "No curated morphology yet. Use the gallery and habitat as educational cues.",
+    "emptyHabitat": "No habitat documented",
+    "emptyHabitatBody": "No curated habitat note for this species in the local catalog.",
+    "lookalikesTitle": "Risk lookalikes",
+    "openStudio": "Open Lookalike Studio",
+    "emptyLookalikes": "No confusions listed",
+    "emptyLookalikesBody": "No curated lookalikes on this card. Try the comparison studio."
   },
   "education": {
     "title": "Learn mycology",
@@ -320,5 +366,285 @@
       "stages_label": "Identification stages",
       "aria_label": "Identification in progress"
     }
+  },
+  "gallery": {
+    "open": "Enlarge image",
+    "empty": "No extra gallery — showing main photo or illustration.",
+    "single": "One image available"
+  },
+  "lookalike": {
+    "title": "Possible confusions",
+    "hint": "Risk as orientation only — not edible chrome.",
+    "pickerLabel": "Choose a confusion",
+    "vs": "VS",
+    "viewDetail": "View card",
+    "notInCatalog": "Not in the local catalog.",
+    "kicker": "Education · Dangerous confusions",
+    "studioTitle": "Lookalike Studio",
+    "studioSubtitle": "Place up to three mushrooms side by side. Photos, risk and family — to study confusions, not to decide dinner.",
+    "progressAria": "Comparison progress",
+    "ready": "Ready to compare",
+    "needMore": "{{count}} of {{min}} · add at least 2",
+    "searchLabel": "Search taxon",
+    "searchPlaceholder": "Death cap, chanterelle, Galerina marginata…",
+    "add": "Add",
+    "emptyTitle": "Pick mushrooms to compare",
+    "emptyBody": "Search by common or scientific name, or tap a high-risk suggestion.",
+    "tableTitle": "Comparison table",
+    "tableLead": "Read horizontally. Risk is safety orientation, not edibility.",
+    "characterCol": "Trait",
+    "noLocalName": "No local name",
+    "suggestTitle": "Study suggestions",
+    "suggestLead": "High risk or same family — ideal for lookalike practice.",
+    "tip": "Tip: add a same-family lookalike or a deadly taxon to contrast characters.",
+    "remove": "Remove"
+  },
+  "notebook": {
+    "title": "Field notebook",
+    "subtitle": "Local history with notes and tags. Orientation only — not a consumption diary.",
+    "statTotal": "Total",
+    "statHints": "Tentative hints",
+    "statRejected": "No reliable ID",
+    "statReview": "For review",
+    "reviewCallout": "{{count}} case(s) deserve expert review",
+    "reviewBody": "Rejections, risky lookalikes, or human-review flag.",
+    "reviewLink": "Go to expert review",
+    "recentTitle": "Recent entries",
+    "newId": "New identification",
+    "exportJson": "Export JSON",
+    "clear": "Clear history",
+    "shareTitle": "VisionSetil notebook",
+    "shareDone": "Shared",
+    "shareCopied": "Summary copied",
+    "shareFailed": "Could not share",
+    "filterModeAria": "Filter by identification mode",
+    "filterDateAria": "Filter by date",
+    "mode": {
+      "all": "All",
+      "real": "Real",
+      "mock": "Demo",
+      "blocked": "Blocked"
+    },
+    "gate": {
+      "label": "Gate",
+      "metricsOk": "metrics OK",
+      "metricsLow": "metrics low",
+      "id": "ID",
+      "idAllowed": "allowed",
+      "idBlocked": "blocked"
+    },
+    "clearConfirm": "Delete the entire local notebook? This cannot be undone.",
+    "date": {
+      "all": "Any date",
+      "today": "Today",
+      "7d": "7 days",
+      "30d": "30 days"
+    },
+    "emptyTitle": "No observations yet",
+    "emptyBody": "Identify a mushroom and it will be saved here with room for field notes.",
+    "emptyAction": "Identify mushroom",
+    "emptyFilterTitle": "No entries with these filters",
+    "emptyFilterBody": "No observations with mode “{{mode}}” and date “{{date}}”. Try other filters.",
+    "emptyFilterAction": "Show all",
+    "openCue": "Open observation",
+    "detailTitle": "Observation",
+    "resultLabel": "Result",
+    "confidence": "confidence",
+    "views": "Views",
+    "notesLabel": "Field notes",
+    "notesPlaceholder": "Habitat, smell, nearby tree… (no consumption advice)",
+    "tagsLabel": "Tags (comma)",
+    "tagsPlaceholder": "pinewood, autumn, uncertain",
+    "save": "Save",
+    "cancel": "Cancel",
+    "editNotes": "Notes and tags",
+    "viewSpecies": "View species card",
+    "handoff": "Expert handoff",
+    "requestReview": "Request expert review",
+    "detailDisclaimer": "Local orientation only. Does not authorize consumption or certify the ID."
+  },
+  "quiz": {
+    "brand": "Mycology challenge",
+    "dailySub": "Daily challenge · documented data",
+    "freeSub": "{{rounds}}-round match · documented data",
+    "record": "Best",
+    "dailyBest": "Today",
+    "points": "Points",
+    "streak": "Streak",
+    "round": "Round",
+    "kicker": "Education · not for eating",
+    "dailyTitle": "Daily challenge",
+    "dailyBody": "{{rounds}} rounds · {{seconds}} s · same challenge all day. Documented food quality only — we never invent edibles.",
+    "coverageAria": "Documented coverage",
+    "documented": "documented",
+    "ediblesDoc": "edible*",
+    "toxicDoc": "toxic/deadly",
+    "startDaily": "Play daily challenge",
+    "dailyMeta": "Today {{day}} · daily best: {{best}} · keys A–D",
+    "orFree": "or free match",
+    "modeFood": "Edible?",
+    "modeFoodDesc": "Edible · not edible · toxic · deadly",
+    "modePhoto": "Which one?",
+    "modePhotoDesc": "4 photos · pick the named one",
+    "modeName": "What is it called?",
+    "modeNameDesc": "1 photo · 4 names",
+    "startFree": "Free match ({{rounds}} rounds)",
+    "deckMeta": "Deck: {{count}} documented mushrooms · *educational reference, not permission to eat",
+    "dailyDone": "Daily challenge complete!",
+    "freeDone": "Match finished!",
+    "doneBody": "{{rounds}} rounds resolved. Educational orientation only — not permission to consume.",
+    "hits": "correct",
+    "accuracy": "accuracy",
+    "bestStreak": "Best streak this match: {{n}}",
+    "dailyBestLine": "daily best: {{n}}",
+    "replayDaily": "Replay daily challenge",
+    "another": "Another match",
+    "backLobby": "Back to lobby",
+    "progressAria": "Match progress",
+    "roundOf": "Round {{current}} of {{total}}",
+    "kickerPhoto": "Pick the photo",
+    "kickerName": "Pick the name",
+    "kickerFood": "Documented food quality",
+    "timeout": "Time!",
+    "was": "It was",
+    "correct": "Correct!",
+    "almost": "Close…",
+    "correctWas": "Answer",
+    "source": "Source",
+    "seeFinal": "See final result",
+    "next": "Next ({{n}}/{{total}})",
+    "viewCard": "View card",
+    "prompt": {
+      "name": "What is this mushroom called?",
+      "photo": "Which one is “{{name}}”?",
+      "food": "What documented food quality does it have?"
+    },
+    "food": {
+      "comestible": {
+        "label": "Edible",
+        "hint": "Documented as edible (educational)"
+      },
+      "no_comestible": {
+        "label": "Not edible",
+        "hint": "No documented culinary interest"
+      },
+      "toxica": {
+        "label": "Toxic",
+        "hint": "Documented toxic"
+      },
+      "mortal": {
+        "label": "Deadly",
+        "hint": "Documented deadly"
+      }
+    }
+  },
+  "map": {
+    "title": "Mycological zones map",
+    "subtitle": "Educational hotspots and live conditions. Red = unfavorable. Not permission to forage or eat.",
+    "modeSimple": "Simple",
+    "modeAdvanced": "Advanced",
+    "levelExtreme": "Unfavorable",
+    "levelSevere": "Poor",
+    "levelModerate": "Fair",
+    "levelGood": "Favorable",
+    "loading": "Loading",
+    "noData": "No data",
+    "weatherAllFailed": "No weather data right now. The map still works with zone cards and indicative species.",
+    "region": "Region",
+    "allRegions": "All",
+    "alertFilter": "Alert",
+    "allLevels": "All levels",
+    "zones": "zones",
+    "loadingWeather": "alerts…",
+    "openCard": "Open card & species",
+    "legendTitle": "Condition alert",
+    "hotspotLegend": "Halo = educational hotspot",
+    "pickZoneTitle": "Select a zone",
+    "pickZoneBody": "Tap a marker or board card. Halos show favorable condition hotspots (educational).",
+    "feat1": "Weather alert per zone",
+    "feat2": "Visual hotspots + side card",
+    "feat3": "Links to encyclopedia cards",
+    "feat4": "Tips and habitat",
+    "hotspots": "hotspots",
+    "disclaimer": "Does not authorize foraging or consumption. Check local rules and a mycologist. Map is educational.",
+    "hotspotActive": "Active hotspot (favorable/fair conditions)",
+    "habitat": "Habitat",
+    "season": "Season",
+    "abundance": "Usual production",
+    "tips": "Field tips",
+    "speciesTitle": "Indicative species ({{count}})",
+    "boardTitle": "Alert board ({{count}})",
+    "emptyFilterTitle": "No zones with these filters",
+    "emptyFilterBody": "Try another region or alert level.",
+    "resetFilters": "Clear filters",
+    "hotspotShort": "hotspot",
+    "weatherLoading": "Loading weather alert…",
+    "weatherErrorTitle": "No weather data",
+    "weatherErrorBody": "Live conditions could not be loaded. You can still explore the zone card (species and habitat).",
+    "weatherSource": "Source",
+    "index": "Index",
+    "liveData": "Live data",
+    "viewMaps": "Open in maps",
+    "alert": {
+      "unknown": {
+        "label": "No data",
+        "advisory": "Conditions not available yet"
+      },
+      "extreme": {
+        "label": "Unfavorable",
+        "advisory": "Dry soil or poor fruiting conditions"
+      },
+      "severe": {
+        "label": "Poor",
+        "advisory": "Mediocre conditions; low chance of mushrooms"
+      },
+      "moderate": {
+        "label": "Fair",
+        "advisory": "Passable conditions; possible local finds"
+      },
+      "good": {
+        "label": "Favorable",
+        "advisory": "Humidity and temperature favorable for fruiting"
+      }
+    }
+  },
+  "offline": {
+    "kicker": "Field · PWA",
+    "title": "Offline pack",
+    "subtitle": "Download the season or priority pack to browse species cards offline. Does not classify offline.",
+    "modeLabel": "Pack type",
+    "modeSeason": "Season ({{season}})",
+    "modePriority": "Priority T0/T1",
+    "taxa": "taxa",
+    "photoUrls": "media URLs",
+    "lastDownload": "Last download: {{when}} · {{photos}} cached · {{kind}}",
+    "kindSeason": "season",
+    "kindPriority": "priority",
+    "progressLabel": "Download progress",
+    "saving": "Saving…",
+    "download": "Download pack",
+    "clear": "Remove pack",
+    "confirmClear": "Remove the offline pack saved on this device?",
+    "statusOk": "Saved {{cached}} images ({{count}} cards in pack).",
+    "statusMetaOnly": "Metadata pack ready. Images could not be cached (CORS/network).",
+    "statusError": "Error saving pack",
+    "statusCleared": "Offline pack removed.",
+    "disclaimer": "Cards and photos only. Does not identify mushrooms offline or authorize consumption.",
+    "all": "All ({{count}})",
+    "top": "View ({{count}})",
+    "showTop": "Show less",
+    "showAll": "Show all ({{count}})",
+    "emptyTitle": "Empty pack",
+    "emptyBody": "No taxa available for this pack.",
+    "openCard": "Card"
+  },
+  "pwa": {
+    "region": "Install app",
+    "hint": "Install VisionSetil for quick access and offline packs.",
+    "install": "Install",
+    "later": "Not now"
+  },
+  "a11y": {
+    "skipToContent": "Skip to content"
   }
 }

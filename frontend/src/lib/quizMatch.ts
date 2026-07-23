@@ -1,6 +1,7 @@
 /**
- * Pure 10-round match state for Reto (no React).
+ * Pure N-round match state for Reto (no React).
  * Unit-tested independently of the page UI.
+ * D-11: totalRounds configurable (daily = 6, free = 10).
  */
 import type { RoundResult } from './mushroomQuiz'
 
@@ -11,16 +12,19 @@ export type MatchPhase = 'idle' | 'playing' | 'round_reveal' | 'finished'
 export type MatchState = {
   /** 0-based index of the current/active round while playing */
   roundIndex: number
-  /** Number of rounds fully resolved (0..MATCH_ROUNDS) */
+  /** Number of rounds fully resolved (0..totalRounds) */
   resolvedCount: number
   score: number
   streak: number
   bestStreak: number
   phase: MatchPhase
   history: RoundResult[]
+  /** Total rounds in this match (D-11 daily uses fewer). */
+  totalRounds: number
 }
 
-export function createMatchState(): MatchState {
+export function createMatchState(totalRounds: number = MATCH_ROUNDS): MatchState {
+  const n = Math.max(1, Math.floor(totalRounds))
   return {
     roundIndex: 0,
     resolvedCount: 0,
@@ -29,12 +33,20 @@ export function createMatchState(): MatchState {
     bestStreak: 0,
     phase: 'idle',
     history: [],
+    totalRounds: n,
   }
 }
 
-export function startMatch(_state: MatchState = createMatchState()): MatchState {
+export function startMatch(
+  _state: MatchState = createMatchState(),
+  totalRounds?: number,
+): MatchState {
+  const n =
+    totalRounds != null
+      ? Math.max(1, Math.floor(totalRounds))
+      : _state.totalRounds || MATCH_ROUNDS
   return {
-    ...createMatchState(),
+    ...createMatchState(n),
     phase: 'playing',
     roundIndex: 0,
   }
@@ -46,13 +58,14 @@ export function matchProgress(state: MatchState): {
   remaining: number
   finished: boolean
 } {
-  const finished = state.phase === 'finished' || state.resolvedCount >= MATCH_ROUNDS
+  const total = state.totalRounds || MATCH_ROUNDS
+  const finished = state.phase === 'finished' || state.resolvedCount >= total
   return {
     currentDisplay: finished
-      ? MATCH_ROUNDS
-      : Math.min(state.roundIndex + 1, MATCH_ROUNDS),
-    total: MATCH_ROUNDS,
-    remaining: Math.max(0, MATCH_ROUNDS - state.resolvedCount),
+      ? total
+      : Math.min(state.roundIndex + 1, total),
+    total,
+    remaining: Math.max(0, total - state.resolvedCount),
     finished,
   }
 }
@@ -63,19 +76,21 @@ export function isMatchFinished(state: MatchState): boolean {
 
 /** True after the Nth result has been recorded (may still be on reveal UI). */
 export function isMatchComplete(state: MatchState): boolean {
-  return state.resolvedCount >= MATCH_ROUNDS
+  const total = state.totalRounds || MATCH_ROUNDS
+  return state.resolvedCount >= total
 }
 
 /**
  * Apply a completed round result. Advances resolvedCount and score.
- * After MATCH_ROUNDS results, phase becomes finished.
+ * After totalRounds results, phase becomes finished (via continueMatch).
  */
 export function applyMatchRoundResult(
   state: MatchState,
   result: RoundResult,
   nextScore: number,
 ): MatchState {
-  if (state.phase === 'finished' || state.resolvedCount >= MATCH_ROUNDS) {
+  const total = state.totalRounds || MATCH_ROUNDS
+  if (state.phase === 'finished' || state.resolvedCount >= total) {
     return state
   }
   const streak = result.correct ? state.streak + 1 : 0
@@ -84,25 +99,28 @@ export function applyMatchRoundResult(
   const bestStreak = Math.max(state.bestStreak, streak)
   // Always land on round_reveal so the last answer can show feedback before end summary.
   return {
-    roundIndex: Math.min(resolvedCount, MATCH_ROUNDS - 1),
+    roundIndex: Math.min(resolvedCount, total - 1),
     resolvedCount,
     score: nextScore,
     streak,
     bestStreak,
     phase: 'round_reveal',
     history,
+    totalRounds: total,
   }
 }
 
 /** Advance from round_reveal → next playing round, or finished after last reveal. */
 export function continueMatch(state: MatchState): MatchState {
-  if (state.resolvedCount >= MATCH_ROUNDS) {
-    return { ...state, phase: 'finished' }
+  const total = state.totalRounds || MATCH_ROUNDS
+  if (state.resolvedCount >= total) {
+    return { ...state, phase: 'finished', totalRounds: total }
   }
   return {
     ...state,
     phase: 'playing',
     roundIndex: state.resolvedCount,
+    totalRounds: total,
   }
 }
 

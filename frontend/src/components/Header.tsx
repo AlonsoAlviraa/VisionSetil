@@ -2,29 +2,30 @@
 import { useEffect, useRef, useState } from 'react'
 import { NavLink, Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
+import { useTranslation } from 'react-i18next'
 import { LanguageSwitcher } from './LanguageSwitcher'
 
 const THEME_KEY = 'visionsetil_theme'
 
 /** Always visible — product core */
 const primaryNav = [
-  { to: '/', label: 'Inicio' },
-  { to: '/identificar', label: 'Identificar', cta: true },
-  { to: '/enciclopedia', label: 'Enciclopedia' },
-  { to: '/reto', label: 'Reto' },
-  { to: '/mapa', label: 'Mapa' },
-]
+  { to: '/', labelKey: 'nav.home' },
+  { to: '/identificar', labelKey: 'nav.identify', cta: true },
+  { to: '/enciclopedia', labelKey: 'nav.encyclopedia' },
+  { to: '/reto', labelKey: 'nav.quiz' },
+  { to: '/mapa', labelKey: 'nav.map' },
+] as const
 
 /** Overflow “Más” */
 const moreNav = [
-  { to: '/historial', label: 'Cuaderno' },
-  { to: '/lookalikes', label: 'Lookalikes' },
-  { to: '/offline', label: 'Offline' },
-  { to: '/educacion', label: 'Aprende' },
-  { to: '/comunidad', label: 'Comunidad' },
-  { to: '/revision-experta', label: 'Expertos' },
-  { to: '/ml', label: 'Dashboard ML' },
-]
+  { to: '/historial', labelKey: 'nav.notebook' },
+  { to: '/lookalikes', labelKey: 'nav.lookalikes' },
+  { to: '/offline', labelKey: 'nav.offline' },
+  { to: '/educacion', labelKey: 'nav.education' },
+  { to: '/comunidad', labelKey: 'nav.community' },
+  { to: '/revision-experta', labelKey: 'nav.experts' },
+  { to: '/ml', labelKey: 'nav.ml' },
+] as const
 
 function IconSun() {
   return (
@@ -112,6 +113,7 @@ function LogoMark() {
 }
 
 export function Header() {
+  const { t } = useTranslation()
   const { user, isAuthenticated, logout, loading } = useAuth()
   const location = useLocation()
   const [theme, setTheme] = useState<'light' | 'dark'>('light')
@@ -174,7 +176,7 @@ export function Header() {
           <LogoMark />
           <div className="header-brand-text">
             <h1>VisionSetil</h1>
-            <p className="subtitle">Micología de campo</p>
+            <p className="subtitle">{t('app.fieldSubtitle', { defaultValue: 'Micologia de campo' })}</p>
           </div>
         </Link>
 
@@ -187,12 +189,12 @@ export function Header() {
               key={item.to}
               to={item.to}
               className={({ isActive }) =>
-                `nav-link ${isActive ? 'nav-link--active' : ''} ${item.cta ? 'nav-link--cta' : ''}`
+                `nav-link ${isActive ? 'nav-link--active' : ''} ${'cta' in item && item.cta ? 'nav-link--cta' : ''}`
               }
               onClick={closeAll}
               end={item.to === '/'}
             >
-              <span>{item.label}</span>
+              <span>{t(item.labelKey)}</span>
             </NavLink>
           ))}
 
@@ -204,7 +206,7 @@ export function Header() {
               aria-haspopup="true"
               onClick={() => setMoreOpen((v) => !v)}
             >
-              <span>Más</span>
+              <span>{t('nav.more', { defaultValue: 'Mas' })}</span>
               <IconChevron open={moreOpen} />
             </button>
             {moreOpen && (
@@ -219,7 +221,7 @@ export function Header() {
                     }
                     onClick={closeAll}
                   >
-                    {item.label}
+                    {t(item.labelKey)}
                   </NavLink>
                 ))}
               </div>
@@ -260,7 +262,7 @@ export function Header() {
             className="btn-icon"
             type="button"
             onClick={toggleTheme}
-            aria-label={theme === 'light' ? 'Activar modo oscuro' : 'Activar modo claro'}
+            aria-label={theme === 'light' ? t('actions.darkMode') : t('actions.lightMode')}
             title={theme === 'light' ? 'Modo oscuro' : 'Modo claro'}
           >
             {theme === 'light' ? <IconMoon /> : <IconSun />}

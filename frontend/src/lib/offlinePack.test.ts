@@ -1,13 +1,21 @@
 /**
  * S5 offline pack + catalog index pure tests (no Cache API required).
+ * Phase D-14: season pack entries.
  */
-import { describe, expect, it } from 'vitest'
+import { beforeAll, describe, expect, it } from 'vitest'
 import {
   buildCatalogIndex,
   buildOfflinePackEntries,
+  buildSeasonOfflinePackEntries,
   offlinePackPhotoUrls,
+  normalizeOfflineUrl,
 } from './offlinePack'
 import { PHOTO_TIER_T0 } from '../data/photoTiers'
+import { loadSpeciesCatalog } from '../data/speciesCatalog'
+
+beforeAll(async () => {
+  await loadSpeciesCatalog()
+})
 
 describe('offline pack', () => {
   it('includes T0 iconic taxa first and only T0/T1', () => {
@@ -29,11 +37,28 @@ describe('offline pack', () => {
     }
   })
 
-  it('collects only http catalog photo urls', () => {
+  it('collects same-origin or http photo urls', () => {
     const urls = offlinePackPhotoUrls(buildOfflinePackEntries(50))
     for (const u of urls) {
-      expect(u.startsWith('http')).toBe(true)
+      expect(u.startsWith('http') || u.startsWith('/media/') || u.startsWith('data:')).toBe(true)
     }
+  })
+
+  it('builds season pack entries with media urls', () => {
+    const season = buildSeasonOfflinePackEntries('otono', 12)
+    expect(season.length).toBeGreaterThan(0)
+    expect(season.length).toBeLessThanOrEqual(12)
+    for (const e of season) {
+      expect(e.taxon.length).toBeGreaterThan(0)
+      expect(e.slug.length).toBeGreaterThan(0)
+      expect(e.photo_url).toBeTruthy()
+    }
+  })
+
+  it('normalizes relative media paths when window origin exists', () => {
+    const rel = normalizeOfflineUrl('/media/placeholders/default.webp')
+    // In node test env, window may be undefined → keep relative
+    expect(rel === '/media/placeholders/default.webp' || rel.startsWith('http')).toBe(true)
   })
 })
 

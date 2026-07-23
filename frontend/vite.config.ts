@@ -190,24 +190,27 @@ export default defineConfig({
         categories: ['education', 'lifestyle'],
         icons: [
           {
-            src: 'pwa-192x192.png',
+            src: 'pwa-192x192.svg',
             sizes: '192x192',
-            type: 'image/png',
+            type: 'image/svg+xml',
+            purpose: 'any',
           },
           {
-            src: 'pwa-512x512.png',
+            src: 'pwa-512x512.svg',
             sizes: '512x512',
-            type: 'image/png',
+            type: 'image/svg+xml',
+            purpose: 'any',
           },
           {
-            src: 'pwa-512x512.png',
+            src: 'pwa-512x512.svg',
             sizes: '512x512',
-            type: 'image/png',
-            purpose: 'any maskable',
+            type: 'image/svg+xml',
+            purpose: 'maskable',
           },
         ],
       },
       workbox: {
+        // D-15/D-16: precache app shell; media stays runtime NetworkFirst
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,webp,json}'],
         runtimeCaching: [
           {

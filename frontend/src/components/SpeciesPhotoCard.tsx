@@ -31,6 +31,7 @@ export function SpeciesPhotoCard({ species }: Props) {
           variant="card"
           riskLevel={riskToPlaceholder(species.risk_label, species.food_class || undefined)}
           alt={alt}
+          showMediaBadge="auto"
         />
         <span className="species-photo-card__chips">
           {food ? (

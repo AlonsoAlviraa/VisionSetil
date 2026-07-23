@@ -1,8 +1,8 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { HOME_FEATURES, MEDIA } from '../data/media'
-import { useSpeciesImage } from '../hooks/useSpeciesImage'
 import { SeasonRadar } from '../components/SeasonRadar'
+import { SpeciesThumb } from '../components/SpeciesThumb'
 import { loadSpeciesCatalog, type CatalogSpecies } from '../data/speciesCatalog'
 
 const PhotoSpinViewer = lazy(() =>
@@ -41,6 +41,7 @@ function seasonLabel(): string {
   return 'Otoño'
 }
 
+/** Phase D-03: single media path via SpeciesThumb → SpeciesImage (no raw useSpeciesImage). */
 function DeadlyThumb({
   taxon,
   slug,
@@ -52,10 +53,18 @@ function DeadlyThumb({
   name: string
   risk: string
 }) {
-  const { url } = useSpeciesImage(taxon, { riskLabel: risk, context: 'eager' })
   return (
     <Link to={`/enciclopedia/${slug}`} className="home-deadly-chip" title={`${name} — ${taxon}`}>
-      <img src={url} alt={`${name} (${taxon})`} loading="lazy" decoding="async" />
+      <SpeciesThumb
+        taxon={taxon}
+        slug={slug}
+        riskLabel={risk}
+        alt={`${name} (${taxon})`}
+        size={56}
+        variant="thumb"
+        priority={slug === 'amanita-phalloides'}
+        className="home-deadly-chip__thumb"
+      />
       <span>
         <small>{name}</small>
         <em>{taxon}</em>
@@ -116,8 +125,11 @@ export function HomePage() {
             <Link to="/identificar" className="btn-atelier btn-atelier--primary">
               Identificar seta
             </Link>
+            <Link to="/enciclopedia" className="btn-atelier btn-atelier--ghost">
+              Enciclopedia
+            </Link>
             <Link to="/reto" className="btn-atelier btn-atelier--ghost">
-              Jugar al reto
+              Reto del día
             </Link>
           </div>
           <div className="atelier-stats">

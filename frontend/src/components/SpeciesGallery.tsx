@@ -1,11 +1,13 @@
-/** Multi-photo gallery with lightbox — works from static /media files. */
-import { useCallback, useEffect, useState } from 'react'
+/** Multi-photo gallery with lightbox — SpeciesImage cascade + a11y (D-06). */
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   galleryImageUrl,
   mediaPublicPrefix,
   speciesImageUrl,
+  type PlaceholderKind,
 } from '../lib/speciesImageUrl'
+import { SpeciesImage } from './SpeciesImage'
 import { ImageAttribution, type ImageAttributionMeta } from './ui/ImageAttribution'
 
 export interface GalleryItem {
@@ -21,7 +23,7 @@ interface SpeciesGalleryProps {
   slug: string
   scientificName: string
   alt: string
-  riskLevel?: 'default' | 'toxic' | 'deadly' | 'unknown'
+  riskLevel?: PlaceholderKind
 }
 
 function probeImage(url: string): Promise<boolean> {
@@ -37,14 +39,16 @@ async function buildStaticGallery(slug: string): Promise<GalleryItem[]> {
   const items: GalleryItem[] = []
   const detail = speciesImageUrl(slug, 'detail')
   const card = speciesImageUrl(slug, 'card')
-  const heroOk = await probeImage(detail)
-  const heroUrl = heroOk ? detail : card
+  const thumb = speciesImageUrl(slug, 'thumb')
+  const detailOk = await probeImage(detail)
+  const cardOk = detailOk ? true : await probeImage(card)
+  const heroUrl = detailOk ? detail : cardOk ? card : thumb
+  // Always provide a hero URL — SpeciesImage cascade handles missing media.
   items.push({
     role: 'hero',
     url: heroUrl,
-    thumb_url: speciesImageUrl(slug, 'thumb'),
+    thumb_url: thumb,
   })
-  // Probe gallery/01..04.webp
   for (let i = 1; i <= 4; i++) {
     const url = galleryImageUrl(slug, i)
     if (await probeImage(url)) {
@@ -57,11 +61,12 @@ async function buildStaticGallery(slug: string): Promise<GalleryItem[]> {
 async function fetchGallery(
   slug: string,
 ): Promise<{ items: GalleryItem[]; meta: ImageAttributionMeta | null }> {
-  // Try API gallery JSON first (attribution + ordered list)
   try {
     const base = mediaPublicPrefix()
-    // Gallery JSON only on FastAPI — try /api first then /media
-    const urls = [`/api/media/species/${encodeURIComponent(slug)}/gallery`, `${base}/species/${encodeURIComponent(slug)}/gallery`]
+    const urls = [
+      `/api/media/species/${encodeURIComponent(slug)}/gallery`,
+      `${base}/species/${encodeURIComponent(slug)}/gallery`,
+    ]
     for (const u of urls) {
       try {
         const res = await fetch(u)
@@ -92,31 +97,32 @@ async function fetchGallery(
   return { items: staticItems, meta: null }
 }
 
-export function SpeciesGallery({ slug, scientificName, alt }: SpeciesGalleryProps) {
+export function SpeciesGallery({
+  slug,
+  scientificName,
+  alt,
+  riskLevel = 'default',
+}: SpeciesGalleryProps) {
   const { t } = useTranslation()
   const [items, setItems] = useState<GalleryItem[]>([])
   const [meta, setMeta] = useState<ImageAttributionMeta | null>(null)
   const [active, setActive] = useState(0)
   const [lightbox, setLightbox] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const heroBtnRef = useRef<HTMLButtonElement>(null)
+  const closeBtnRef = useRef<HTMLButtonElement>(null)
+  const dialogRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     let cancelled = false
     setItems([])
     setActive(0)
+    setLoading(true)
     void fetchGallery(slug).then((g) => {
       if (cancelled) return
-      setItems(
-        g.items.length
-          ? g.items
-          : [
-              {
-                role: 'hero',
-                url: speciesImageUrl(slug, 'detail'),
-                thumb_url: speciesImageUrl(slug, 'thumb'),
-              },
-            ],
-      )
+      setItems(g.items)
       setMeta(g.meta)
+      setLoading(false)
     })
     return () => {
       cancelled = true
@@ -132,33 +138,68 @@ export function SpeciesGallery({ slug, scientificName, alt }: SpeciesGalleryProp
     [items.length],
   )
 
+  const closeLightbox = useCallback(() => {
+    setLightbox(false)
+    // restore focus to opener on next paint
+    window.setTimeout(() => heroBtnRef.current?.focus(), 0)
+  }, [])
+
   useEffect(() => {
     if (!lightbox) return
+    closeBtnRef.current?.focus()
+
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setLightbox(false)
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        closeLightbox()
+      }
       if (e.key === 'ArrowRight') go(1)
       if (e.key === 'ArrowLeft') go(-1)
+      // simple focus trap
+      if (e.key === 'Tab' && dialogRef.current) {
+        const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+        )
+        if (!focusable.length) return
+        const first = focusable[0]
+        const last = focusable[focusable.length - 1]
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault()
+          last.focus()
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault()
+          first.focus()
+        }
+      }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [lightbox, go])
+  }, [lightbox, go, closeLightbox])
 
-  if (!current) {
-    return (
-      <div className="species-gallery species-gallery--empty" data-testid="species-gallery">
-        <div className="species-gallery__hero" style={{ minHeight: 200 }} />
-      </div>
-    )
-  }
-
-  return (
-    <div className="species-gallery" data-testid="species-gallery">
-      <button
-        type="button"
-        className="species-gallery__hero"
-        onClick={() => setLightbox(true)}
-        aria-label={t('gallery.open', { defaultValue: 'Ampliar imagen' })}
-      >
+  // Main surface uses SpeciesImage cascade (no broken-img). Extra gallery
+  // frames (thumbs idx>0) use URL + onError chain back to card/thumb.
+  const useCascadeHero = !current || active === 0 || current.role === 'hero'
+  const hero = (
+    <button
+      ref={heroBtnRef}
+      type="button"
+      className="species-gallery__hero species-gallery__hero--fill"
+      onClick={() => setLightbox(true)}
+      aria-label={t('gallery.open', { defaultValue: 'Ampliar imagen' })}
+    >
+      {useCascadeHero || loading ? (
+        <SpeciesImage
+          scientificName={scientificName}
+          slug={slug}
+          variant="detail"
+          riskLevel={riskLevel}
+          alt={alt}
+          layout="fill"
+          aspectRatio="4/3"
+          showMediaBadge="auto"
+          priority
+        />
+      ) : (
         <img
           src={current.url}
           alt={alt}
@@ -169,10 +210,39 @@ export function SpeciesGallery({ slug, scientificName, alt }: SpeciesGalleryProp
             if (!el.dataset.fallback) {
               el.dataset.fallback = '1'
               el.src = speciesImageUrl(slug, 'card')
+            } else if (el.dataset.fallback === '1') {
+              el.dataset.fallback = '2'
+              el.src = speciesImageUrl(slug, 'thumb')
             }
           }}
         />
-      </button>
+      )}
+    </button>
+  )
+
+  if (loading || !current) {
+    return (
+      <div
+        className="species-gallery species-gallery--empty"
+        data-testid="species-gallery"
+        data-loading={loading ? 'true' : 'false'}
+      >
+        {hero}
+        {!loading && (
+          <p className="species-gallery__empty-hint muted">
+            {t('gallery.empty', {
+              defaultValue:
+                'Sin galería extra — se muestra la ilustración o foto principal.',
+            })}
+          </p>
+        )}
+      </div>
+    )
+  }
+
+  return (
+    <div className="species-gallery" data-testid="species-gallery">
+      {hero}
       {meta?.attribution_text || meta?.license ? <ImageAttribution meta={meta} /> : null}
 
       {items.length > 1 ? (
@@ -187,23 +257,44 @@ export function SpeciesGallery({ slug, scientificName, alt }: SpeciesGalleryProp
               aria-label={`${scientificName} ${idx + 1}`}
               aria-current={idx === active}
             >
-              <img src={item.thumb_url || item.url} alt="" loading="lazy" />
+              <img
+                src={item.thumb_url || item.url}
+                alt=""
+                loading="lazy"
+                onError={(e) => {
+                  const el = e.currentTarget
+                  if (!el.dataset.fallback) {
+                    el.dataset.fallback = '1'
+                    el.src = speciesImageUrl(slug, 'thumb')
+                  }
+                }}
+              />
             </button>
           ))}
         </div>
-      ) : null}
+      ) : (
+        <p className="species-gallery__empty-hint muted">
+          {t('gallery.single', {
+            defaultValue: 'Una imagen disponible',
+          })}
+        </p>
+      )}
 
       {lightbox ? (
         <div
+          ref={dialogRef}
           className="species-gallery__lightbox"
           role="dialog"
           aria-modal="true"
-          onClick={() => setLightbox(false)}
+          aria-label={alt}
+          onClick={closeLightbox}
         >
           <button
+            ref={closeBtnRef}
             type="button"
             className="species-gallery__lightbox-close"
-            onClick={() => setLightbox(false)}
+            onClick={closeLightbox}
+            aria-label={t('actions.clear', { defaultValue: 'Cerrar' })}
           >
             ✕
           </button>
@@ -216,6 +307,7 @@ export function SpeciesGallery({ slug, scientificName, alt }: SpeciesGalleryProp
                   e.stopPropagation()
                   go(-1)
                 }}
+                aria-label={t('actions.previous', { defaultValue: 'Anterior' })}
               >
                 ‹
               </button>
@@ -226,6 +318,7 @@ export function SpeciesGallery({ slug, scientificName, alt }: SpeciesGalleryProp
                   e.stopPropagation()
                   go(1)
                 }}
+                aria-label={t('actions.next', { defaultValue: 'Siguiente' })}
               >
                 ›
               </button>
@@ -236,6 +329,16 @@ export function SpeciesGallery({ slug, scientificName, alt }: SpeciesGalleryProp
             alt={alt}
             className="species-gallery__lightbox-img"
             onClick={(e) => e.stopPropagation()}
+            onError={(e) => {
+              const el = e.currentTarget
+              if (!el.dataset.fallback) {
+                el.dataset.fallback = '1'
+                el.src = speciesImageUrl(slug, 'card')
+              } else if (el.dataset.fallback === '1') {
+                el.dataset.fallback = '2'
+                el.src = speciesImageUrl(slug, 'thumb')
+              }
+            }}
           />
         </div>
       ) : null}

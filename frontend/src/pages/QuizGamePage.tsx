@@ -1,19 +1,31 @@
 /**
- * Reto micológico — partida de 10 rondas + modos food/photo/name.
- * Calidad alimenticia solo documentada (sin inventar).
+ * Reto micológico — daily challenge (D-11) + free match.
+ * Food quality only from documented registry; educational framing.
  */
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useSpeciesImage } from '../hooks/useSpeciesImage'
+import { useTranslation } from 'react-i18next'
+import { SpeciesImage } from '../components/SpeciesImage'
+import { SpeciesThumb } from '../components/SpeciesThumb'
 import { foodQualityStats } from '../lib/foodQuality'
+import { riskToPlaceholder } from '../lib/edibility'
 import {
+  DAILY_MATCH_ROUNDS,
+  DAILY_QUIZ_SECONDS,
   QUIZ_SECONDS,
+  buildDailyChallenge,
   buildQuizPool,
   buildRound,
+  dayKey,
   ensureQuizCatalog,
   nextScore,
+  readAllTimeBest,
+  readDailyBest,
   scoreAnswer,
+  writeAllTimeBest,
+  writeDailyBest,
   type QuizMode,
+  type QuizPlayKind,
   type QuizRound,
   type RoundResult,
 } from '../lib/mushroomQuiz'
@@ -32,7 +44,6 @@ import {
 
 const LETTERS = ['A', 'B', 'C', 'D'] as const
 const LETTER_COLORS = ['tri-a', 'tri-b', 'tri-c', 'tri-d'] as const
-const BEST_KEY = 'visionsetil_quiz_best'
 
 function QuizPhoto({
   taxon,
@@ -45,39 +56,70 @@ function QuizPhoto({
   alt: string
   large?: boolean
 }) {
-  const { url, loading } = useSpeciesImage(taxon, { riskLabel: risk, context: 'eager' })
+  const kind = riskToPlaceholder(risk)
+  if (large) {
+    return (
+      <div className="quiz-photo quiz-photo--lg">
+        <SpeciesImage
+          scientificName={taxon}
+          riskLevel={kind}
+          alt={alt}
+          variant="card"
+          layout="fill"
+          priority
+          className="quiz-photo__img"
+        />
+      </div>
+    )
+  }
   return (
-    <div className={`quiz-photo ${large ? 'quiz-photo--lg' : ''} ${loading ? 'is-loading' : ''}`}>
-      <img src={url} alt={alt} loading="eager" decoding="async" />
+    <div className="quiz-photo">
+      <SpeciesThumb taxon={taxon} riskLabel={risk} alt={alt} size={120} fill priority />
     </div>
   )
-}
-
-function readBest(): number {
-  try {
-    const n = Number(localStorage.getItem(BEST_KEY) || '0')
-    return Number.isFinite(n) ? n : 0
-  } catch {
-    return 0
-  }
 }
 
 type UiPhase = 'lobby' | 'playing' | 'reveal' | 'finished'
 
 export function QuizGamePage() {
-  const pool = useMemo(() => buildQuizPool(), [])
+  const { t } = useTranslation()
+  const [pool, setPool] = useState(() => buildQuizPool())
+  const [catalogReady, setCatalogReady] = useState(false)
   const stats = useMemo(() => foodQualityStats(), [])
+  const today = useMemo(() => dayKey(), [])
   const [mode, setMode] = useState<QuizMode>('food')
-  const [match, setMatch] = useState<MatchState>(() => createMatchState())
+  const [playKind, setPlayKind] = useState<QuizPlayKind>('daily')
+  const [match, setMatch] = useState<MatchState>(() => createMatchState(DAILY_MATCH_ROUNDS))
   const [round, setRound] = useState<QuizRound | null>(null)
-  const [seconds, setSeconds] = useState(QUIZ_SECONDS)
+  const [seconds, setSeconds] = useState(DAILY_QUIZ_SECONDS)
   const [result, setResult] = useState<RoundResult | null>(null)
   const [locked, setLocked] = useState(false)
   const [lastGain, setLastGain] = useState(0)
-  const [best, setBest] = useState(readBest)
+  const [best, setBest] = useState(readAllTimeBest)
+  const [dailyBest, setDailyBest] = useState(() => {
+    const rec = readDailyBest()
+    return rec.day === dayKey() ? rec.score : 0
+  })
+  /** Precomputed daily rounds (deterministic seed). */
+  const dailyRoundsRef = useRef<QuizRound[] | null>(null)
+  const [roundTimerMax, setRoundTimerMax] = useState(DAILY_QUIZ_SECONDS)
+  const finishAnswerRef = useRef<
+    ((pickedId: string | null, timedOut: boolean, secsLeft: number) => void) | null
+  >(null)
+  const secondsRef = useRef(seconds)
+  secondsRef.current = seconds
 
   useEffect(() => {
-    void ensureQuizCatalog()
+    let cancelled = false
+    void ensureQuizCatalog().then(() => {
+      if (cancelled) return
+      // Rebuild pool after catalog hydrate so slug/common match encyclopedia (issue 11)
+      setPool(buildQuizPool())
+      setCatalogReady(true)
+    })
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   const progress = matchProgress(match)
@@ -92,11 +134,24 @@ export function QuizGamePage() {
           ? 'reveal'
           : 'playing'
 
-  const dealRound = useCallback(
+  const dealFromDaily = useCallback((matchState: MatchState, index: number) => {
+    const pack = dailyRoundsRef.current
+    if (!pack || !pack[index]) return
+    setRound(pack[index])
+    setSeconds(DAILY_QUIZ_SECONDS)
+    setRoundTimerMax(DAILY_QUIZ_SECONDS)
+    setResult(null)
+    setLocked(false)
+    setLastGain(0)
+    setMatch(matchState)
+  }, [])
+
+  const dealFreeRound = useCallback(
     (m: QuizMode, matchState: MatchState) => {
       const r = buildRound(m, pool)
       setRound(r)
       setSeconds(QUIZ_SECONDS)
+      setRoundTimerMax(QUIZ_SECONDS)
       setResult(null)
       setLocked(false)
       setLastGain(0)
@@ -105,12 +160,22 @@ export function QuizGamePage() {
     [pool],
   )
 
-  const startMatchPlay = useCallback(
+  const startDaily = useCallback(() => {
+    if (pool.length < 4) return
+    setPlayKind('daily')
+    dailyRoundsRef.current = buildDailyChallenge(pool, new Date(), DAILY_MATCH_ROUNDS)
+    const ms = startMatch(createMatchState(DAILY_MATCH_ROUNDS), DAILY_MATCH_ROUNDS)
+    dealFromDaily(ms, 0)
+  }, [pool, dealFromDaily])
+
+  const startFree = useCallback(
     (m: QuizMode = mode) => {
-      const ms = startMatch()
-      dealRound(m, ms)
+      setPlayKind('free')
+      dailyRoundsRef.current = null
+      const ms = startMatch(createMatchState(MATCH_ROUNDS), MATCH_ROUNDS)
+      dealFreeRound(m, ms)
     },
-    [mode, dealRound],
+    [mode, dealFreeRound],
   )
 
   const finishAnswer = useCallback(
@@ -123,44 +188,59 @@ export function QuizGamePage() {
       setLastGain(after - match.score)
       const next = applyMatchRoundResult(match, res, after)
       setMatch(next)
-      if (after > best) {
-        setBest(after)
-        try {
-          localStorage.setItem(BEST_KEY, String(after))
-        } catch {
-          /* ignore */
-        }
+      const newBest = writeAllTimeBest(after)
+      setBest(newBest)
+      if (playKind === 'daily') {
+        const rec = writeDailyBest(today, after)
+        setDailyBest(rec.score)
       }
     },
-    [round, locked, match, best],
+    [round, locked, match, playKind, today],
   )
+  finishAnswerRef.current = finishAnswer
 
   useEffect(() => {
     if (uiPhase !== 'playing' || !round) return
     if (seconds <= 0) {
-      finishAnswer(null, true, 0)
+      finishAnswerRef.current?.(null, true, 0)
       return
     }
     const id = window.setTimeout(() => setSeconds((s) => s - 1), 1000)
     return () => clearTimeout(id)
-  }, [uiPhase, seconds, round, finishAnswer])
+  }, [uiPhase, seconds, round])
 
-  const onPick = (id: string) => {
-    if (uiPhase !== 'playing' || locked) return
-    finishAnswer(id, false, seconds)
-  }
+  const onPick = useCallback(
+    (id: string) => {
+      if (uiPhase !== 'playing' || locked) return
+      finishAnswer(id, false, secondsRef.current)
+    },
+    [uiPhase, locked, finishAnswer],
+  )
 
   const goNext = () => {
     if (isMatchFinished(match)) return
     const cont = continueMatch(match)
-    dealRound(mode, cont)
+    // Issue 8: do not deal a throwaway round after match ends
+    if (cont.phase === 'finished') {
+      setMatch(cont)
+      setRound(null)
+      setResult(null)
+      setLocked(false)
+      return
+    }
+    if (playKind === 'daily') {
+      dealFromDaily(cont, cont.roundIndex)
+    } else {
+      dealFreeRound(mode, cont)
+    }
   }
 
   const backToLobby = () => {
-    setMatch(createMatchState())
+    setMatch(createMatchState(playKind === 'daily' ? DAILY_MATCH_ROUNDS : MATCH_ROUNDS))
     setRound(null)
     setResult(null)
     setLocked(false)
+    dailyRoundsRef.current = null
   }
 
   useEffect(() => {
@@ -181,10 +261,11 @@ export function QuizGamePage() {
     }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
-  }, [uiPhase, round, locked, seconds])
+  }, [uiPhase, round, locked, onPick])
 
-  const timerPct = (seconds / QUIZ_SECONDS) * 100
+  const timerPct = (seconds / roundTimerMax) * 100
   const timerHot = seconds <= 8
+  const totalRounds = progress.total
 
   return (
     <div className="page-quiz">
@@ -195,27 +276,40 @@ export function QuizGamePage() {
           <div className="quiz-brand">
             <span className="quiz-brand__badge">VS</span>
             <div>
-              <strong>Reto micológico</strong>
-              <em>Partida de {MATCH_ROUNDS} rondas · datos documentados</em>
+              <strong>{t('quiz.brand', { defaultValue: 'Reto micológico' })}</strong>
+              <em>
+                {playKind === 'daily' && uiPhase !== 'lobby'
+                  ? t('quiz.dailySub', {
+                      defaultValue: 'Reto del día · datos documentados',
+                    })
+                  : t('quiz.freeSub', {
+                      rounds: totalRounds,
+                      defaultValue: 'Partida de {{rounds}} rondas · datos documentados',
+                    })}
+              </em>
             </div>
           </div>
           <div className="quiz-topbar__stats">
             <div className="quiz-pill">
-              <span>Récord</span>
+              <span>{t('quiz.record', { defaultValue: 'Récord' })}</span>
               <strong>{best}</strong>
+            </div>
+            <div className="quiz-pill" title={today}>
+              <span>{t('quiz.dailyBest', { defaultValue: 'Hoy' })}</span>
+              <strong>{dailyBest}</strong>
             </div>
             {uiPhase !== 'lobby' && (
               <>
                 <div className="quiz-pill">
-                  <span>Puntos</span>
+                  <span>{t('quiz.points', { defaultValue: 'Puntos' })}</span>
                   <strong>{match.score}</strong>
                 </div>
                 <div className="quiz-pill">
-                  <span>Racha</span>
+                  <span>{t('quiz.streak', { defaultValue: 'Racha' })}</span>
                   <strong>{match.streak}</strong>
                 </div>
                 <div className="quiz-pill">
-                  <span>Ronda</span>
+                  <span>{t('quiz.round', { defaultValue: 'Ronda' })}</span>
                   <strong>
                     {progress.currentDisplay}/{progress.total}
                   </strong>
@@ -228,26 +322,54 @@ export function QuizGamePage() {
         {uiPhase === 'lobby' && (
           <section className="quiz-lobby-card">
             <div className="quiz-lobby-card__hero">
-              <h1>Partida de {MATCH_ROUNDS}</h1>
+              <p className="quiz-lobby-kicker">
+                {t('quiz.kicker', { defaultValue: 'Educación · no consumo' })}
+              </p>
+              <h1>{t('quiz.dailyTitle', { defaultValue: 'Reto del día' })}</h1>
               <p>
-                {MATCH_ROUNDS} rondas · {QUIZ_SECONDS} s cada una · 4 respuestas. Solo calidad
-                documentada — no inventamos comestibles.
+                {t('quiz.dailyBody', {
+                  rounds: DAILY_MATCH_ROUNDS,
+                  seconds: DAILY_QUIZ_SECONDS,
+                  defaultValue:
+                    '{{rounds}} rondas · {{seconds}} s · mismo desafío para todo el día. Solo calidad alimenticia documentada — no inventamos comestibles.',
+                })}
               </p>
             </div>
 
-            <div className="quiz-stats-bar" aria-label="Cobertura documentada">
+            <div className="quiz-stats-bar" aria-label={t('quiz.coverageAria', { defaultValue: 'Cobertura documentada' })}>
               <div>
                 <strong>{stats.total_documented}</strong>
-                <span>documentadas</span>
+                <span>{t('quiz.documented', { defaultValue: 'documentadas' })}</span>
               </div>
               <div>
                 <strong>{stats.by_class.comestible}</strong>
-                <span>comestibles</span>
+                <span>{t('quiz.ediblesDoc', { defaultValue: 'comestibles*' })}</span>
               </div>
               <div>
                 <strong>{stats.by_class.toxica + stats.by_class.mortal}</strong>
-                <span>tóxicas/mortales</span>
+                <span>{t('quiz.toxicDoc', { defaultValue: 'tóxicas/mortales' })}</span>
               </div>
+            </div>
+
+            <button
+              type="button"
+              className="quiz-play-btn"
+              onClick={startDaily}
+              disabled={pool.length < 4 || !catalogReady}
+              data-testid="quiz-start-daily"
+            >
+              {t('quiz.startDaily', { defaultValue: 'Jugar reto del día' })}
+            </button>
+            <p className="quiz-lobby-meta">
+              {t('quiz.dailyMeta', {
+                day: today,
+                best: dailyBest,
+                defaultValue: 'Hoy {{day}} · mejor del día: {{best}} · teclas A–D',
+              })}
+            </p>
+
+            <div className="quiz-lobby-divider">
+              <span>{t('quiz.orFree', { defaultValue: 'o partida libre' })}</span>
             </div>
 
             <div className="quiz-modes">
@@ -255,20 +377,26 @@ export function QuizGamePage() {
                 [
                   {
                     id: 'food' as const,
-                    title: '¿Comestible?',
-                    desc: 'Comestible · no comestible · tóxica · mortal',
+                    title: t('quiz.modeFood', { defaultValue: '¿Comestible?' }),
+                    desc: t('quiz.modeFoodDesc', {
+                      defaultValue: 'Comestible · no comestible · tóxica · mortal',
+                    }),
                     icon: '1',
                   },
                   {
                     id: 'photo' as const,
-                    title: '¿Cuál es?',
-                    desc: '4 fotos · elige la del nombre',
+                    title: t('quiz.modePhoto', { defaultValue: '¿Cuál es?' }),
+                    desc: t('quiz.modePhotoDesc', {
+                      defaultValue: '4 fotos · elige la del nombre',
+                    }),
                     icon: '2',
                   },
                   {
                     id: 'name' as const,
-                    title: '¿Cómo se llama?',
-                    desc: '1 foto · 4 nombres',
+                    title: t('quiz.modeName', { defaultValue: '¿Cómo se llama?' }),
+                    desc: t('quiz.modeNameDesc', {
+                      defaultValue: '1 foto · 4 nombres',
+                    }),
                     icon: '3',
                   },
                 ] as const
@@ -288,14 +416,21 @@ export function QuizGamePage() {
 
             <button
               type="button"
-              className="quiz-play-btn"
-              onClick={() => startMatchPlay(mode)}
-              disabled={pool.length < 4}
+              className="quiz-play-btn quiz-play-btn--ghost"
+              onClick={() => startFree(mode)}
+              disabled={pool.length < 4 || !catalogReady}
+              data-testid="quiz-start-free"
             >
-              Empezar partida
+              {t('quiz.startFree', {
+                rounds: MATCH_ROUNDS,
+                defaultValue: 'Partida libre ({{rounds}} rondas)',
+              })}
             </button>
             <p className="quiz-lobby-meta">
-              Mazo: {pool.length} setas documentadas · teclas A–D
+              {t('quiz.deckMeta', {
+                count: pool.length,
+                defaultValue: 'Mazo: {{count}} setas documentadas · *referencia educativa, no permiso de consumo',
+              })}
             </p>
           </section>
         )}
@@ -303,34 +438,59 @@ export function QuizGamePage() {
         {uiPhase === 'finished' && (
           <section className="quiz-lobby-card quiz-finished">
             <div className="quiz-lobby-card__hero">
-              <h1>¡Partida terminada!</h1>
+              <h1>
+                {playKind === 'daily'
+                  ? t('quiz.dailyDone', { defaultValue: '¡Reto del día completado!' })
+                  : t('quiz.freeDone', { defaultValue: '¡Partida terminada!' })}
+              </h1>
               <p>
-                {MATCH_ROUNDS} rondas resueltas. Solo orientación educativa — no autoriza consumo.
+                {t('quiz.doneBody', {
+                  rounds: totalRounds,
+                  defaultValue:
+                    '{{rounds}} rondas resueltas. Solo orientación educativa — no autoriza consumo.',
+                })}
               </p>
             </div>
             <div className="quiz-stats-bar">
               <div>
                 <strong>{summary.score}</strong>
-                <span>puntos</span>
+                <span>{t('quiz.points', { defaultValue: 'puntos' })}</span>
               </div>
               <div>
                 <strong>
                   {summary.correctCount}/{summary.resolved}
                 </strong>
-                <span>aciertos</span>
+                <span>{t('quiz.hits', { defaultValue: 'aciertos' })}</span>
               </div>
               <div>
                 <strong>{Math.round(summary.accuracy * 100)}%</strong>
-                <span>acierto</span>
+                <span>{t('quiz.accuracy', { defaultValue: 'acierto' })}</span>
               </div>
             </div>
-            <p className="quiz-lobby-meta">Mejor racha en la partida: {summary.bestStreak}</p>
+            <p className="quiz-lobby-meta">
+              {t('quiz.bestStreak', {
+                n: summary.bestStreak,
+                defaultValue: 'Mejor racha en la partida: {{n}}',
+              })}
+              {playKind === 'daily'
+                ? ` · ${t('quiz.dailyBestLine', {
+                    n: dailyBest,
+                    defaultValue: 'mejor del día: {{n}}',
+                  })}`
+                : ''}
+            </p>
             <div className="quiz-feedback__actions" style={{ justifyContent: 'center' }}>
-              <button type="button" className="quiz-play-btn" onClick={() => startMatchPlay(mode)}>
-                Otra partida
-              </button>
+              {playKind === 'daily' ? (
+                <button type="button" className="quiz-play-btn" onClick={startDaily}>
+                  {t('quiz.replayDaily', { defaultValue: 'Repetir reto del día' })}
+                </button>
+              ) : (
+                <button type="button" className="quiz-play-btn" onClick={() => startFree(mode)}>
+                  {t('quiz.another', { defaultValue: 'Otra partida' })}
+                </button>
+              )}
               <button type="button" className="quiz-link-btn" onClick={backToLobby}>
-                Cambiar modo
+                {t('quiz.backLobby', { defaultValue: 'Volver al lobby' })}
               </button>
             </div>
           </section>
@@ -338,13 +498,17 @@ export function QuizGamePage() {
 
         {(uiPhase === 'playing' || uiPhase === 'reveal') && round && (
           <section className="quiz-match">
-            <div className="quiz-match-progress" aria-label="Progreso de partida">
+            <div className="quiz-match-progress" aria-label={t('quiz.progressAria', { defaultValue: 'Progreso de partida' })}>
               <div
                 className="quiz-match-progress__bar"
-                style={{ width: `${(match.resolvedCount / MATCH_ROUNDS) * 100}%` }}
+                style={{ width: `${(match.resolvedCount / totalRounds) * 100}%` }}
               />
               <span>
-                Ronda {progress.currentDisplay} de {progress.total}
+                {t('quiz.roundOf', {
+                  current: progress.currentDisplay,
+                  total: progress.total,
+                  defaultValue: 'Ronda {{current}} de {{total}}',
+                })}
               </span>
             </div>
 
@@ -360,12 +524,21 @@ export function QuizGamePage() {
             <div className="quiz-question-card">
               <p className="quiz-question-card__kicker">
                 {round.mode === 'photo'
-                  ? 'Elige la foto'
+                  ? t('quiz.kickerPhoto', { defaultValue: 'Elige la foto' })
                   : round.mode === 'name'
-                    ? 'Elige el nombre'
-                    : 'Calidad documentada'}
+                    ? t('quiz.kickerName', { defaultValue: 'Elige el nombre' })
+                    : t('quiz.kickerFood', { defaultValue: 'Calidad documentada' })}
               </p>
-              <h2>{round.prompt}</h2>
+              <h2>
+                {round.mode === 'photo'
+                  ? t('quiz.prompt.photo', {
+                      name: round.subject.common,
+                      defaultValue: round.prompt,
+                    })
+                  : round.mode === 'name'
+                    ? t('quiz.prompt.name', { defaultValue: round.prompt })
+                    : t('quiz.prompt.food', { defaultValue: round.prompt })}
+              </h2>
 
               {(round.mode === 'name' || round.mode === 'food') && (
                 <div className="quiz-question-card__media">
@@ -475,8 +648,12 @@ export function QuizGamePage() {
                     >
                       <span className={`quiz-answer__letter ${tri}`}>{letter}</span>
                       <span className="quiz-answer__body">
-                        <strong>{opt.label}</strong>
-                        <em>{opt.hint}</em>
+                        <strong>
+                          {t(`quiz.food.${opt.id}.label`, { defaultValue: opt.label })}
+                        </strong>
+                        <em>
+                          {t(`quiz.food.${opt.id}.hint`, { defaultValue: opt.hint })}
+                        </em>
                       </span>
                     </button>
                   )
@@ -493,34 +670,56 @@ export function QuizGamePage() {
                   {result.correct ? '+' + lastGain : result.timedOut ? '⏱' : '·'}
                 </div>
                 <div className="quiz-feedback__copy">
-                  {result.timedOut ? (
-                    <p>
-                      <strong>¡Tiempo!</strong> Era: {result.correctLabel}
-                    </p>
-                  ) : result.correct ? (
-                    <p>
-                      <strong>¡Correcto!</strong>
-                    </p>
-                  ) : (
-                    <p>
-                      <strong>Casi…</strong> Correcta: {result.correctLabel}
-                    </p>
-                  )}
+                  {(() => {
+                    const correctShown =
+                      round.mode === 'food'
+                        ? t(`quiz.food.${round.correctId}.label`, {
+                            defaultValue: result.correctLabel,
+                          })
+                        : result.correctLabel
+                    if (result.timedOut) {
+                      return (
+                        <p>
+                          <strong>{t('quiz.timeout', { defaultValue: '¡Tiempo!' })}</strong>{' '}
+                          {t('quiz.was', { defaultValue: 'Era' })}: {correctShown}
+                        </p>
+                      )
+                    }
+                    if (result.correct) {
+                      return (
+                        <p>
+                          <strong>{t('quiz.correct', { defaultValue: '¡Correcto!' })}</strong>
+                        </p>
+                      )
+                    }
+                    return (
+                      <p>
+                        <strong>{t('quiz.almost', { defaultValue: 'Casi…' })}</strong>{' '}
+                        {t('quiz.correctWas', { defaultValue: 'Correcta' })}: {correctShown}
+                      </p>
+                    )
+                  })()}
                   <p className="quiz-feedback__species">
                     {round.subject.common} · <em>{round.subject.taxon}</em>
                   </p>
                   {round.mode === 'food' && (
-                    <p className="quiz-feedback__source">Fuente: {round.sourceNote}</p>
+                    <p className="quiz-feedback__source">
+                      {t('quiz.source', { defaultValue: 'Fuente' })}: {round.sourceNote}
+                    </p>
                   )}
                 </div>
                 <div className="quiz-feedback__actions">
                   <button type="button" className="quiz-play-btn quiz-play-btn--sm" onClick={goNext}>
                     {isMatchComplete(match)
-                      ? 'Ver resultado final'
-                      : `Siguiente (${match.resolvedCount + 1}/${MATCH_ROUNDS})`}
+                      ? t('quiz.seeFinal', { defaultValue: 'Ver resultado final' })
+                      : t('quiz.next', {
+                          n: match.resolvedCount + 1,
+                          total: totalRounds,
+                          defaultValue: 'Siguiente ({{n}}/{{total}})',
+                        })}
                   </button>
                   <Link to={`/enciclopedia/${round.subject.slug}`} className="quiz-link-btn">
-                    Ver ficha
+                    {t('quiz.viewCard', { defaultValue: 'Ver ficha' })}
                   </Link>
                 </div>
               </div>

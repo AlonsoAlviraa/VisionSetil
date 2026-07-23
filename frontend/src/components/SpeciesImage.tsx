@@ -14,6 +14,11 @@ import {
 } from '../lib/speciesImageUrl'
 import { scientificNameToSlug } from '../lib/slug'
 import { featureFlags } from '../lib/featureFlags'
+import {
+  isIllustrationMedia,
+  mediaBadgeLabel,
+  shouldShowMediaBadge,
+} from '../lib/mediaBadge'
 import { ImageAttribution, type ImageAttributionMeta } from './ui/ImageAttribution'
 
 export type SpeciesImageLayout = 'fill' | 'fixed'
@@ -38,6 +43,15 @@ export interface SpeciesImageProps {
   showAttribution?: boolean
   attribution?: ImageAttributionMeta | null
   onStageChange?: (stage: string) => void
+  /**
+   * Phase D-05: honest media chrome.
+   * - "auto": badge only when fallback (placeholder/inline) → "Ilustración"
+   * - "always": also show "Foto" on real cascade stages
+   * - false: off (default)
+   */
+  showMediaBadge?: boolean | 'auto' | 'always'
+  /** Optional external KPI status from season pack / audit */
+  mediaStatus?: string | null
 }
 
 function riskFromProps(riskLevel?: PlaceholderKind): PlaceholderKind {
@@ -86,6 +100,8 @@ export function SpeciesImage({
   showAttribution = false,
   attribution = null,
   onStageChange,
+  showMediaBadge = false,
+  mediaStatus = null,
 }: SpeciesImageProps) {
   const slug = (slugProp || scientificNameToSlug(scientificName) || '').toLowerCase()
   const kind = riskFromProps(riskLevel)
@@ -186,6 +202,11 @@ export function SpeciesImage({
           aspectRatio: aspectRatio,
         }
 
+  const isIllustration = isIllustrationMedia(stage, mediaStatus)
+  const badgeMode = showMediaBadge === true ? 'auto' : showMediaBadge
+  const showBadge = shouldShowMediaBadge(badgeMode, isIllustration, loaded)
+  const badgeLabel = mediaBadgeLabel(stage, mediaStatus)
+
   return (
     <div
       className={`species-image ${className}`.trim()}
@@ -193,6 +214,7 @@ export function SpeciesImage({
       data-slug={slug}
       data-stage={stage}
       data-layout={layout}
+      data-media-kind={isIllustration ? 'illustration' : 'photo'}
       style={wrapperStyle}
     >
       {!loaded && stage !== 'inline' ? (
@@ -225,6 +247,14 @@ export function SpeciesImage({
         data-slug={slug}
         data-stage={stage}
       />
+      {showBadge ? (
+        <span
+          className={`species-image__media-badge species-image__media-badge--${isIllustration ? 'illustration' : 'photo'}`}
+          data-testid="species-media-badge"
+        >
+          {badgeLabel}
+        </span>
+      ) : null}
       {showAttribution && stage !== 'inline' && stage !== 'placeholder' ? (
         <ImageAttribution meta={attribution} />
       ) : null}

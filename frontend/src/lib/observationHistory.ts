@@ -77,6 +77,9 @@ export const MAX_HISTORY = 30
 
 export type HistoryModeFilter = 'all' | ClassifyMode
 
+/** Local calendar window for notebook filters (D-10). */
+export type HistoryDateFilter = 'all' | 'today' | '7d' | '30d'
+
 export type StorageLike = {
   getItem(key: string): string | null
   setItem(key: string, value: string): void
@@ -309,6 +312,99 @@ export function filterHistoryByMode(
 ): HistoryEntry[] {
   if (mode === 'all') return entries
   return entries.filter((e) => entryMode(e) === mode)
+}
+
+/** Start of local calendar day for `now` (ms). */
+export function startOfLocalDay(now: number = Date.now()): number {
+  const d = new Date(now)
+  d.setHours(0, 0, 0, 0)
+  return d.getTime()
+}
+
+/**
+ * Filter notebook entries by local date window (D-10).
+ * `now` injectable for unit tests.
+ */
+export function filterHistoryByDate(
+  entries: HistoryEntry[],
+  dateFilter: HistoryDateFilter,
+  now: number = Date.now(),
+): HistoryEntry[] {
+  if (dateFilter === 'all') return entries
+  const dayStart = startOfLocalDay(now)
+  let minTs = dayStart
+  if (dateFilter === '7d') minTs = dayStart - 6 * 24 * 60 * 60 * 1000
+  if (dateFilter === '30d') minTs = dayStart - 29 * 24 * 60 * 60 * 1000
+  return entries.filter((e) => e.timestamp >= minTs && e.timestamp <= now + 60_000)
+}
+
+/** Compose mode + date filters (stable order: mode then date). */
+export function filterHistoryEntries(
+  entries: HistoryEntry[],
+  opts: { mode?: HistoryModeFilter; date?: HistoryDateFilter; now?: number } = {},
+): HistoryEntry[] {
+  const byMode = filterHistoryByMode(entries, opts.mode ?? 'all')
+  return filterHistoryByDate(byMode, opts.date ?? 'all', opts.now)
+}
+
+/** Find one entry by id (after soft-migrate load path). */
+export function getHistoryEntry(
+  id: string,
+  storage: StorageLike = localStorage,
+): HistoryEntry | null {
+  return loadHistory(storage).find((e) => e.id === id) ?? null
+}
+
+/**
+ * Portable plain-text summary for Web Share / clipboard (no huge data-URLs).
+ * Educational only — not a consumption certificate.
+ */
+export function shareHistoryText(
+  entries: HistoryEntry[],
+  options: { maxEntries?: number } = {},
+): string {
+  const max = options.maxEntries ?? 20
+  const slice = entries.slice(0, max)
+  const lines: string[] = [
+    'VisionSetil — Cuaderno de campo (local)',
+    'Solo orientación educativa. No es permiso de consumo ni certificado de ID.',
+    `Entradas: ${entries.length}${entries.length > max ? ` (mostrando ${max})` : ''}`,
+    '',
+  ]
+  for (const e of slice) {
+    const top = e.result.predictions?.[0]
+    const when = new Date(e.timestamp).toISOString()
+    const species = top?.species || '—'
+    const conf =
+      top && typeof top.confidence === 'number'
+        ? ` · ${(top.confidence * 100).toFixed(0)}%`
+        : ''
+    const mode = entryMode(e)
+    lines.push(`• ${when} · ${e.result.decision} · ${mode}`)
+    lines.push(`  ${species}${conf}`)
+    if (e.tags?.length) lines.push(`  tags: ${e.tags.join(', ')}`)
+    if (e.notes?.trim()) {
+      const note = e.notes.trim().slice(0, 160)
+      lines.push(`  notas: ${note}${e.notes.trim().length > 160 ? '…' : ''}`)
+    }
+  }
+  return lines.join('\n')
+}
+
+/** Spanish labels for date filter chips (HistoryPage). */
+export function historyDateLabelEs(filter: HistoryDateFilter): string {
+  switch (filter) {
+    case 'all':
+      return 'Cualquier fecha'
+    case 'today':
+      return 'Hoy'
+    case '7d':
+      return '7 días'
+    case '30d':
+      return '30 días'
+    default:
+      return '—'
+  }
 }
 
 /** Update notebook fields on an existing history entry (immutable). */

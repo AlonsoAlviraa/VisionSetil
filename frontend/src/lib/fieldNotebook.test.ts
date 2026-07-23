@@ -4,9 +4,13 @@ import {
   buildHistoryEntry,
   entryMode,
   exportHistoryJson,
+  filterHistoryByDate,
   filterHistoryByMode,
+  filterHistoryEntries,
   loadHistory,
   parseTagsInput,
+  shareHistoryText,
+  startOfLocalDay,
   summarizeHistory,
   toGateSummary,
   updateHistoryNotebook,
@@ -76,6 +80,70 @@ describe('field notebook', () => {
     // B-38: export includes honesty fields (soft-migrated)
     expect(parsed.entries[0].mode).toBeTruthy()
     expect('gate_summary' in parsed.entries[0]).toBe(true)
+  })
+
+  it('filters by date window (today / 7d / 30d)', () => {
+    const now = new Date('2026-07-23T15:00:00').getTime()
+    const day0 = startOfLocalDay(now)
+    const entries: HistoryEntry[] = [
+      { ...sampleEntry(), id: 'today', timestamp: day0 + 3_600_000 },
+      { ...sampleEntry(), id: '3d', timestamp: day0 - 3 * 24 * 60 * 60 * 1000 },
+      { ...sampleEntry(), id: '20d', timestamp: day0 - 20 * 24 * 60 * 60 * 1000 },
+      { ...sampleEntry(), id: 'old', timestamp: day0 - 60 * 24 * 60 * 60 * 1000 },
+    ]
+    expect(filterHistoryByDate(entries, 'all', now).map((e) => e.id)).toEqual([
+      'today',
+      '3d',
+      '20d',
+      'old',
+    ])
+    expect(filterHistoryByDate(entries, 'today', now).map((e) => e.id)).toEqual(['today'])
+    expect(filterHistoryByDate(entries, '7d', now).map((e) => e.id)).toEqual(['today', '3d'])
+    expect(filterHistoryByDate(entries, '30d', now).map((e) => e.id)).toEqual([
+      'today',
+      '3d',
+      '20d',
+    ])
+  })
+
+  it('composes mode + date filters and builds share text', () => {
+    const now = new Date('2026-07-23T12:00:00').getTime()
+    const realToday = buildHistoryEntry({
+      result: {
+        request_id: 'rt',
+        decision: 'accepted',
+        predictions: [{ species: 'Boletus edulis', confidence: 0.8, common_name: null, edibility: null }],
+        mode: 'real',
+        is_mock_stack: false,
+      } as unknown as ClassificationResult,
+      previews: [],
+      id: 'rt',
+      timestamp: now - 1000,
+      notes: 'Bajo pino',
+      tags: ['pinar'],
+    })
+    const mockOld = buildHistoryEntry({
+      result: {
+        request_id: 'mo',
+        decision: 'rejected',
+        predictions: [],
+        mode: 'mock',
+        is_mock_stack: true,
+      } as unknown as ClassificationResult,
+      previews: [],
+      id: 'mo',
+      timestamp: now - 40 * 24 * 60 * 60 * 1000,
+    })
+    const visible = filterHistoryEntries([realToday, mockOld], {
+      mode: 'real',
+      date: '7d',
+      now,
+    })
+    expect(visible.map((e) => e.id)).toEqual(['rt'])
+    const text = shareHistoryText([realToday])
+    expect(text.toLowerCase()).toMatch(/orientaci[oó]n|consumo/)
+    expect(text).toMatch(/Boletus edulis/)
+    expect(text).toMatch(/pinar/)
   })
 })
 

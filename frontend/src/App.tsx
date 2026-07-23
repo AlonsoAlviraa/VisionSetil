@@ -6,6 +6,8 @@ import { AuthProvider } from './auth/AuthContext'
 import { Header } from './components/Header'
 import { ApiStatusBanner } from './components/ApiStatusBanner'
 import { DocumentTitle } from './components/DocumentTitle'
+import { PwaInstallHint } from './components/PwaInstallHint'
+/** D-16: Home stays eager for FCP; all other product routes are lazy. */
 import { HomePage } from './pages/HomePage'
 
 const IdentifyPage = lazy(() =>
@@ -75,10 +77,14 @@ function App() {
     <AuthProvider>
       <BrowserRouter>
         <DocumentTitle />
+        <a href="#main-content" className="skip-link">
+          {t('a11y.skipToContent', { defaultValue: 'Saltar al contenido' })}
+        </a>
         <div className="app bg-aurora">
           <Header />
           <ApiStatusBanner />
-          <main className="container" id="main-content">
+          <PwaInstallHint />
+          <main className="container" id="main-content" tabIndex={-1}>
             <Suspense fallback={<PageFallback />}>
               <Routes>
                 <Route path="/" element={<HomePage />} />
@@ -102,7 +108,7 @@ function App() {
           </main>
           <footer className="footer">
             <div className="footer-content">
-              <p className="footer-brand">🍄 {t('app.name', { defaultValue: 'VisionSetil' })}</p>
+              <p className="footer-brand">{t('app.name', { defaultValue: 'VisionSetil' })}</p>
               <p>
                 {t('app.footerDisclaimer', {
                   defaultValue:
@@ -118,7 +124,7 @@ function App() {
               </nav>
               <p className="footer-meta">
                 {t('app.poweredBy', { defaultValue: 'Micología · Riesgo · Comunidad' })} ·
-                v1.0.0-unified · {new Date().getFullYear()}
+                v1.0.0-web · Phase D · {new Date().getFullYear()}
               </p>
             </div>
           </footer>
