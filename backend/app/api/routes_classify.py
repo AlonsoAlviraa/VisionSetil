@@ -56,6 +56,7 @@ echoed on ``result.locale``.
 
 from __future__ import annotations
 
+import asyncio
 import time
 import uuid
 from typing import Any
@@ -612,8 +613,12 @@ async def classify_images(
     if not images:
         raise HTTPException(status_code=400, detail="At least one image is required")
 
-    if len(images) > 10:
-        raise HTTPException(status_code=400, detail="Maximum 10 images per request")
+    max_images = int(getattr(settings, "max_images_per_request", 10) or 10)
+    if len(images) > max_images:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Maximum {max_images} images per request",
+        )
 
     # Check extension early for a better error
     for img in images:
@@ -641,9 +646,12 @@ async def classify_images(
             db.commit()
         raise
 
-    # Shared mapper: classify → map → gate → mode → locale (B-05)
+    # Shared mapper: classify → map → gate → mode → locale (B-05).
+    # Run sync torch / DB fusion off the event loop so concurrent /health,
+    # /media and preflight stay responsive under load (audit P2).
     classifier = get_multi_view_classifier()
-    simple_result = classify_to_simple(
+    simple_result = await asyncio.to_thread(
+        classify_to_simple,
         observation=observation,
         images=saved_images,
         view_types=parsed_view_types,

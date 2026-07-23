@@ -35,6 +35,7 @@ class UserOut(BaseModel):
     email: str
     username: str
     display_name: str
+    role: str = "user"
 
     model_config = {"from_attributes": True}
 

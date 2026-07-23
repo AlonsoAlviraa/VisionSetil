@@ -20,6 +20,10 @@ export type PhotoSpinViewerProps = {
   className?: string
   label?: string
   riskLabel?: string
+  /** Cap remote/catalog frames (Home should use 4–6). Default 24 for detail. */
+  maxFrames?: number
+  /** Prefer same-origin /media cards only (no iNat multi-MB). */
+  preferSameOrigin?: boolean
 }
 
 export function PhotoSpinViewer({
@@ -29,35 +33,65 @@ export function PhotoSpinViewer({
   className = '',
   label,
   riskLabel,
+  maxFrames = 24,
+  preferSameOrigin = false,
 }: PhotoSpinViewerProps) {
   const stageRef = useRef<HTMLDivElement>(null)
   const [set, setSet] = useState<SpinPhotoSet | null>(null)
   const [index, setIndex] = useState(0)
   const [loading, setLoading] = useState(true)
-  const [playing, setPlaying] = useState(autoPlay)
+  const [playing, setPlaying] = useState(false)
   const [hint, setHint] = useState(true)
   const [dragging, setDragging] = useState(false)
+  const [inView, setInView] = useState(false)
   const dragRef = useRef({ active: false, startX: 0, startIndex: 0 })
 
   const reduced =
     typeof window !== 'undefined' &&
     window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
 
+  // Load frames only when near viewport (Home critical path)
   useEffect(() => {
+    const el = stageRef.current
+    if (!el || typeof IntersectionObserver === 'undefined') {
+      setInView(true)
+      return
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setInView(true)
+          io.disconnect()
+        }
+      },
+      { rootMargin: '120px' },
+    )
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
+
+  useEffect(() => {
+    if (!inView) return
     let cancelled = false
     setLoading(true)
     setIndex(0)
-    void resolveSpinPhotoSet(taxon).then(async (s) => {
+    void resolveSpinPhotoSet(taxon, {
+      maxFrames,
+      sameOriginOnly: preferSameOrigin,
+    }).then(async (s) => {
       if (cancelled) return
       setSet(s)
-      await preloadImages(s.frames.map((f) => f.url))
+      // Preload current + next only (not entire multi-MB set)
+      const urls = s.frames.slice(0, Math.min(2, s.frames.length)).map((f) => f.url)
+      await preloadImages(urls)
       if (cancelled) return
       setLoading(false)
+      if (autoPlay && !reduced) setPlaying(true)
     })
     return () => {
       cancelled = true
     }
-  }, [taxon])
+  }, [taxon, maxFrames, preferSameOrigin, inView, autoPlay, reduced])
 
   // Autoplay — very slow product turntable (fichas / detalle)
   useEffect(() => {

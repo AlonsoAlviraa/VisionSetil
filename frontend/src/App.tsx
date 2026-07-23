@@ -7,6 +7,7 @@ import { Header } from './components/Header'
 import { ApiStatusBanner } from './components/ApiStatusBanner'
 import { DocumentTitle } from './components/DocumentTitle'
 import { PwaInstallHint } from './components/PwaInstallHint'
+import { ErrorBoundary } from './components/ErrorBoundary'
 /** D-16: Home stays eager for FCP; all other product routes are lazy. */
 import { HomePage } from './pages/HomePage'
 
@@ -85,26 +86,28 @@ function App() {
           <ApiStatusBanner />
           <PwaInstallHint />
           <main className="container" id="main-content" tabIndex={-1}>
-            <Suspense fallback={<PageFallback />}>
-              <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/identificar" element={<IdentifyPage />} />
-                <Route path="/historial" element={<HistoryPage />} />
-                <Route path="/revision-experta" element={<ExpertReviewPage />} />
-                <Route path="/comunidad" element={<CommunityPage />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/registro" element={<RegisterPage />} />
-                <Route path="/enciclopedia" element={<EncyclopediaPage />} />
-                <Route path="/enciclopedia/:slug" element={<SpeciesDetailPage />} />
-                <Route path="/mapa" element={<SpainMapPage />} />
-                <Route path="/educacion" element={<EducationPage />} />
-                <Route path="/offline" element={<OfflinePackPage />} />
-                <Route path="/lookalikes" element={<LookalikeStudioPage />} />
-                <Route path="/reto" element={<QuizGamePage />} />
-                <Route path="/ml" element={<MlDashboardPage />} />
-                <Route path="*" element={<NotFoundPage />} />
-              </Routes>
-            </Suspense>
+            <ErrorBoundary surface="routes">
+              <Suspense fallback={<PageFallback />}>
+                <Routes>
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/identificar" element={<IdentifyPage />} />
+                  <Route path="/historial" element={<HistoryPage />} />
+                  <Route path="/revision-experta" element={<ExpertReviewPage />} />
+                  <Route path="/comunidad" element={<CommunityPage />} />
+                  <Route path="/login" element={<LoginPage />} />
+                  <Route path="/registro" element={<RegisterPage />} />
+                  <Route path="/enciclopedia" element={<EncyclopediaPage />} />
+                  <Route path="/enciclopedia/:slug" element={<SpeciesDetailPage />} />
+                  <Route path="/mapa" element={<SpainMapPage />} />
+                  <Route path="/educacion" element={<EducationPage />} />
+                  <Route path="/offline" element={<OfflinePackPage />} />
+                  <Route path="/lookalikes" element={<LookalikeStudioPage />} />
+                  <Route path="/reto" element={<QuizGamePage />} />
+                  <Route path="/ml" element={<MlDashboardPage />} />
+                  <Route path="*" element={<NotFoundPage />} />
+                </Routes>
+              </Suspense>
+            </ErrorBoundary>
           </main>
           <footer className="footer">
             <div className="footer-content">

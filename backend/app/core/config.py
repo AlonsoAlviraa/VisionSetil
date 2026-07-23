@@ -39,6 +39,8 @@ class Settings(BaseSettings):
         env_file_encoding="utf-8",
         extra="ignore",
         case_sensitive=False,
+        # Allow both field names and env aliases in constructors/tests
+        populate_by_name=True,
     )
 
     # --- Runtime environment (ops / guardrails) -----------------------------
@@ -176,6 +178,12 @@ class Settings(BaseSettings):
     log_format: str = Field(default="text")  # "text" | "json"
     request_id_header: str = Field(default="X-Request-ID")
     readyz_fail_on_mock_models: bool = Field(default=False)
+    # When true, rate limiter trusts first X-Forwarded-For hop (only behind a
+    # reverse proxy that strips/forges client XFF). Default false = use socket IP.
+    trust_proxy: bool = Field(default=False, validation_alias="TRUST_PROXY")
+    # Comma-separated API keys (key | key:org | key:org:scopes). Empty = auth off
+    # in development; production requires non-empty (see model_validator).
+    api_keys: str = Field(default="", validation_alias="API_KEYS")
 
     # --- Validators ---------------------------------------------------------
     @field_validator("log_format")
@@ -222,6 +230,38 @@ class Settings(BaseSettings):
                 "MODEL_BLOCK_SPECIES_ID_WHEN_BELOW_GATE cannot be false when "
                 "ENVIRONMENT is production/prod (B-23 / D-B3: gate disable is "
                 "dev-only; keep fail-closed or set ENVIRONMENT=development)"
+            )
+        return self
+
+    @model_validator(mode="after")
+    def _production_security_defaults(self) -> Settings:
+        """Refuse insecure production boots: empty API_KEYS, mock fallbacks, CORS *.
+
+        Development may keep open API for local SPA work. Production/prod must
+        set API_KEYS and keep mock inference off.
+        """
+        if not _is_production_env_value(self.environment):
+            return self
+        keys = (self.api_keys or "").strip()
+        if not keys:
+            raise ValueError(
+                "API_KEYS is required when ENVIRONMENT is production/prod "
+                "(open API surface is development-only)"
+            )
+        if self.allow_mock_fallbacks:
+            raise ValueError(
+                "ALLOW_MOCK_FALLBACKS cannot be true when ENVIRONMENT is "
+                "production/prod (R3: no mocks in production)"
+            )
+        if self.model_fallback_to_mock:
+            raise ValueError(
+                "MODEL_FALLBACK_TO_MOCK cannot be true when ENVIRONMENT is "
+                "production/prod"
+            )
+        if any(o.strip() == "*" for o in self.cors_origins):
+            raise ValueError(
+                "CORS_ORIGINS cannot include '*' when ENVIRONMENT is production/prod; "
+                "set explicit frontend origins"
             )
         return self
 

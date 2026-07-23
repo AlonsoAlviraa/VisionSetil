@@ -117,6 +117,8 @@ class User(Base):
     username: Mapped[str] = mapped_column(String(80), unique=True)
     password_hash: Mapped[str] = mapped_column(String(255))
     display_name: Mapped[str] = mapped_column(String(120))
+    # E-05: user | reviewer | admin — gates human-review write APIs
+    role: Mapped[str] = mapped_column(String(40), default="user")
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
 
@@ -139,6 +141,7 @@ class AuthSession(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    # E-07: store only SHA-256 hex of bearer token (never plaintext)
     token: Mapped[str] = mapped_column(String(64), unique=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
     expires_at: Mapped[datetime] = mapped_column(DateTime)

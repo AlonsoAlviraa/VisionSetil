@@ -7,7 +7,7 @@
  * Visual order (result):  result mode chrome → card / images
  * Preflight is always advisory; only offline disables submit.
  */
-import { useState, useCallback, useEffect, useMemo } from 'react'
+import { useState, useCallback, useEffect, useMemo, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useDropzone } from 'react-dropzone'
 import { useTranslation } from 'react-i18next'
@@ -94,6 +94,8 @@ export function IdentifyPage() {
   const preflightEnabled = featureFlags.IDENTIFY_PREFLIGHT
   /** HARD: only offline/API-down disables submit — never gate blocked. */
   const submitAllowed = !preflightEnabled || canSubmitPreflight(preflight)
+  /** Ignore stale classify responses when user re-submits (audit Q11). */
+  const classifyGenRef = useRef(0)
 
   useEffect(() => {
     setHistory(loadHistory())
@@ -104,6 +106,10 @@ export function IdentifyPage() {
     let cancelled = false
 
     async function run() {
+      // Skip background polls when tab is hidden (audit P10)
+      if (typeof document !== 'undefined' && document.visibilityState === 'hidden') {
+        return
+      }
       try {
         const state = await fetchPreflight()
         if (!cancelled) setPreflight(state)
@@ -127,9 +133,14 @@ export function IdentifyPage() {
     const id = window.setInterval(() => {
       void run()
     }, PREFLIGHT_POLL_MS)
+    const onVis = () => {
+      if (document.visibilityState === 'visible') void run()
+    }
+    document.addEventListener('visibilitychange', onVis)
     return () => {
       cancelled = true
       window.clearInterval(id)
+      document.removeEventListener('visibilitychange', onVis)
     }
   }, [preflightEnabled])
 
@@ -212,6 +223,7 @@ export function IdentifyPage() {
       viewTypes = undefined
     }
 
+    const myGen = ++classifyGenRef.current
     setLoading(true)
     setShowResultPhotos(false)
     setLoadingStage('upload')
@@ -220,13 +232,12 @@ export function IdentifyPage() {
 
     try {
       const data = await classifyImages(files, metadata, viewTypes, {
-        onStage: (stage) => setLoadingStage(stage),
+        onStage: (stage) => {
+          if (classifyGenRef.current === myGen) setLoadingStage(stage)
+        },
       })
-      // Stage already advanced to apply_policy inside client; keep it visible briefly.
+      if (classifyGenRef.current !== myGen) return
       setLoadingStage('apply_policy')
-      await new Promise<void>((resolve) => {
-        window.setTimeout(resolve, 280)
-      })
       setResult(data)
 
       const entry: HistoryEntry = {
@@ -238,10 +249,13 @@ export function IdentifyPage() {
       }
       setHistory(appendHistory(entry))
     } catch (err) {
+      if (classifyGenRef.current !== myGen) return
       setError(err instanceof Error ? err.message : 'Error desconocido')
     } finally {
-      setLoading(false)
-      setLoadingStage('upload')
+      if (classifyGenRef.current === myGen) {
+        setLoading(false)
+        setLoadingStage('upload')
+      }
     }
   }, [useWizard, collectWizardFiles, selectedImages, metadata, preflight, preflightEnabled])
 

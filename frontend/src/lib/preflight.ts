@@ -299,30 +299,52 @@ function catalogCountFromReadyz(data: Record<string, unknown> | null): number | 
 }
 
 /**
- * Fetch /readyz + /models/quality-gate and map to PreflightState.
- * Prefer nested quality_gate from readyz when present (B-10); fall back to
- * dedicated quality-gate endpoint.
+ * Fetch /readyz (and optionally /models/quality-gate) and map to PreflightState.
+ * Prefer nested quality_gate from readyz when present (B-10) — single request.
+ * Fall back to dedicated quality-gate endpoint only if nested gate missing.
  */
 export async function fetchPreflight(): Promise<PreflightState> {
   const fetchedAt = Date.now()
-  const [readyz, gateEndpoint] = await Promise.all([
-    fetchJson('/readyz'),
-    fetchJson('/models/quality-gate'),
-  ])
+  const readyz = await fetchJson('/readyz')
 
-  const anyReached = readyz.reached || gateEndpoint.reached
-  if (!anyReached) {
+  if (!readyz.reached) {
+    // Last chance: dedicated gate may still be up on a partial deploy
+    const gateOnly = await fetchJson('/models/quality-gate')
+    if (!gateOnly.reached) {
+      return buildPreflightState({
+        offline: true,
+        ready: false,
+        fetched_at: fetchedAt,
+        loading: false,
+        error: 'api_unreachable',
+      })
+    }
+    if (!gateOnly.data) {
+      return buildPreflightState({
+        offline: true,
+        ready: false,
+        fetched_at: fetchedAt,
+        loading: false,
+        error: 'api_empty',
+      })
+    }
+    const gate = parseGate(gateOnly.data)
     return buildPreflightState({
-      offline: true,
+      offline: false,
       ready: false,
+      species_id_allowed: gate?.species_id_allowed ?? null,
+      metrics_acceptable: gate?.metrics_acceptable ?? null,
+      block_enabled: gate?.block_enabled ?? null,
+      gate_reason: gate?.reason ?? null,
+      reason_code: gate?.reason_code ?? null,
+      map_at_3: gate?.test_map_at_3 ?? null,
+      deadly_recall: gate?.safety_recall_deadly ?? null,
       fetched_at: fetchedAt,
       loading: false,
-      error: 'api_unreachable',
     })
   }
 
-  // Reachable but no usable JSON from either → treat as offline for submit.
-  if (!readyz.data && !gateEndpoint.data) {
+  if (!readyz.data) {
     return buildPreflightState({
       offline: true,
       ready: false,
@@ -332,15 +354,17 @@ export async function fetchPreflight(): Promise<PreflightState> {
     })
   }
 
-  const nestedGate = parseGate(readyz.data?.quality_gate)
-  const endpointGate = parseGate(gateEndpoint.data)
-  const gate = nestedGate ?? endpointGate
+  let gate = parseGate(readyz.data.quality_gate)
+  if (!gate) {
+    const gateEndpoint = await fetchJson('/models/quality-gate')
+    gate = parseGate(gateEndpoint.data)
+  }
 
   const classifierMode =
-    (typeof readyz.data?.classifier_mode === 'string'
+    (typeof readyz.data.classifier_mode === 'string'
       ? readyz.data.classifier_mode
       : null) ??
-    (readyz.data?.checks &&
+    (readyz.data.checks &&
     typeof readyz.data.checks === 'object' &&
     typeof (readyz.data.checks as Record<string, unknown>).classifier_mode ===
       'string'
@@ -349,9 +373,9 @@ export async function fetchPreflight(): Promise<PreflightState> {
         )
       : null)
 
-  const ready = readyz.data?.ready === true
+  const ready = readyz.data.ready === true
   const weightsPresent =
-    typeof readyz.data?.weights_present === 'boolean'
+    typeof readyz.data.weights_present === 'boolean'
       ? readyz.data.weights_present
       : undefined
 

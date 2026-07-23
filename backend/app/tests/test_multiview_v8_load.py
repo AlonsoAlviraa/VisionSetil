@@ -30,6 +30,7 @@ def test_detect_v8_from_synthetic_keys():
 
 @pytest.mark.skipif(not _best_pt().is_file(), reason="best.pt not in workspace")
 def test_load_best_pt_is_real():
+    pytest.importorskip("timm")  # E-14: CI without timm stays green
     import torch
 
     from app.ml.multiview_v8 import load_v8_from_checkpoint

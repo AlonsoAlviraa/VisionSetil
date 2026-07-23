@@ -170,6 +170,20 @@ function serveRepoMediaPlugin(): Plugin {
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('react-dom') || id.includes('/react/')) return 'react-vendor'
+            if (id.includes('i18next') || id.includes('react-i18next')) return 'i18n'
+            if (id.includes('leaflet') || id.includes('react-leaflet')) return 'map'
+            if (id.includes('axios')) return 'http'
+          }
+        },
+      },
+    },
+  },
   plugins: [
     serveRepoMediaPlugin(),
     react(),
@@ -210,8 +224,9 @@ export default defineConfig({
         ],
       },
       workbox: {
-        // D-15/D-16: precache app shell; media stays runtime NetworkFirst
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,webp,json}'],
+        // App shell only — catalog JSON / species webp stay runtime (audit P3/P5)
+        globPatterns: ['**/*.{js,css,html,ico,svg,woff2}'],
+        globIgnores: ['**/species_catalog*.json', '**/*catalog*', '**/*.map'],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
@@ -270,5 +285,15 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
+    // E-01: hydrate catalog before unit tests that read speciesCatalog live export
+    setupFiles: ['./src/test/setupCatalog.ts'],
+    // Playwright specs live under e2e/ — never run them via vitest
+    exclude: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/e2e/**',
+      '**/*.spec.ts',
+    ],
+    include: ['src/**/*.{test,spec}.{ts,tsx}'],
   },
 })

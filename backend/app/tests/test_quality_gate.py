@@ -249,10 +249,19 @@ def test_refuse_gate_disable_in_production():
     """B-23: Settings refuse fail-open gate when ENVIRONMENT is production/prod."""
     from pydantic import ValidationError
 
-    # production still OK when fail-closed
+    # Production security baseline (API keys + no mocks + explicit CORS)
+    prod_secure = dict(
+        api_keys="vs_test:default:admin",
+        allow_mock_fallbacks=False,
+        model_fallback_to_mock=False,
+        cors_origins=["https://app.example.com"],
+    )
+
+    # production still OK when fail-closed + secure defaults
     ok = Settings(
         model_block_species_id_when_below_gate=True,
         environment="production",
+        **prod_secure,
     )
     assert ok.model_block_species_id_when_below_gate is True
 
@@ -260,6 +269,7 @@ def test_refuse_gate_disable_in_production():
         Settings(
             model_block_species_id_when_below_gate=False,
             environment="production",
+            **prod_secure,
         )
     assert "MODEL_BLOCK_SPECIES_ID_WHEN_BELOW_GATE" in str(exc_prod.value)
 
@@ -267,6 +277,7 @@ def test_refuse_gate_disable_in_production():
         Settings(
             model_block_species_id_when_below_gate=False,
             environment="prod",
+            **prod_secure,
         )
     assert "dev-only" in str(exc_alias.value).lower() or "MODEL_BLOCK" in str(
         exc_alias.value

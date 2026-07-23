@@ -33,3 +33,23 @@ def get_current_user(
     if not user:
         raise HTTPException(status_code=401, detail="Login requerido")
     return user
+
+
+_REVIEWER_ROLES = frozenset({"reviewer", "admin"})
+
+
+def get_reviewer_user(
+    request: Request,
+    db: Session = Depends(get_db),
+) -> User:
+    """E-05: require logged-in user with reviewer or admin role."""
+    user = get_user_by_token(db, _extract_bearer(request))
+    if not user:
+        raise HTTPException(status_code=401, detail="Login requerido")
+    role = (getattr(user, "role", None) or "user").lower()
+    if role not in _REVIEWER_ROLES:
+        raise HTTPException(
+            status_code=403,
+            detail="Se requiere rol reviewer o admin para la cola de revisión",
+        )
+    return user

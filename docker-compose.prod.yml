@@ -1,5 +1,10 @@
 # Production-grade compose stack for VisionSetil v0.3.0+
-# Usage: docker compose -f docker-compose.prod.yml up -d
+# Usage:
+#   export POSTGRES_PASSWORD=... API_KEYS=vs_...:default:admin CORS_ORIGINS=https://app.example.com
+#   docker compose -f docker-compose.prod.yml up -d
+#
+# Required secrets (no weak defaults):
+#   POSTGRES_PASSWORD, API_KEYS, CORS_ORIGINS (explicit origins, never *)
 #
 # Services:
 #   - postgresql: Primary database (replaces SQLite)
@@ -14,9 +19,11 @@ services:
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-visionsetil}
       POSTGRES_USER: ${POSTGRES_USER:-visionsetil}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
-    ports:
-      - "${POSTGRES_PORT:-5432}:5432"
+      # Fail-closed: require explicit password (no "changeme")
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+    # Not published to host by default — attach to internal network only
+    expose:
+      - "5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -24,20 +31,28 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - internal
 
   redis:
     image: redis:7-alpine
     restart: unless-stopped
-    command: redis-server --maxmemory 512mb --maxmemory-policy allkeys-lru
-    ports:
-      - "${REDIS_PORT:-6379}:6379"
+    command: >
+      redis-server
+      --maxmemory 512mb
+      --maxmemory-policy allkeys-lru
+      --requirepass ${REDIS_PASSWORD:?Set REDIS_PASSWORD}
+    expose:
+      - "6379"
     volumes:
       - redisdata:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - internal
 
   backend:
     build:
@@ -51,24 +66,38 @@ services:
         condition: service_healthy
     environment:
       # ── Database ──
-      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-visionsetil}:${POSTGRES_PASSWORD:-changeme}@postgres:5432/${POSTGRES_DB:-visionsetil}
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-visionsetil}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-visionsetil}
       # ── Redis ──
-      REDIS_URL: redis://redis:6379/0
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
       # ── Runtime / quality gate (B-23 fail-closed) ──
-      ENVIRONMENT: ${ENVIRONMENT:-production}
-      MODEL_BLOCK_SPECIES_ID_WHEN_BELOW_GATE: ${MODEL_BLOCK_SPECIES_ID_WHEN_BELOW_GATE:-true}
-      # ── ML Config ──
+      ENVIRONMENT: production
+      MODEL_BLOCK_SPECIES_ID_WHEN_BELOW_GATE: "true"
+      # ── ML Config (R3: no mocks in production) ──
       USE_REAL_YOLOE: ${USE_REAL_YOLOE:-false}
       USE_REAL_DINOV3: ${USE_REAL_DINOV3:-false}
-      ALLOW_MOCK_FALLBACKS: ${ALLOW_MOCK_FALLBACKS:-true}
-      # ── Security ──
-      API_KEYS: ${API_KEYS:-}
-      CORS_ORIGINS: ${CORS_ORIGINS:-*}
+      ALLOW_MOCK_FALLBACKS: "false"
+      MODEL_FALLBACK_TO_MOCK: "false"
+      READYZ_FAIL_ON_MOCK_MODELS: "true"
+      # ── Security (required) ──
+      API_KEYS: ${API_KEYS:?Set API_KEYS e.g. vs_key:default:admin}
+      CORS_ORIGINS: ${CORS_ORIGINS:?Set CORS_ORIGINS to explicit origins}
+      TRUST_PROXY: ${TRUST_PROXY:-true}
+      RATE_LIMIT_CLASSIFY_REQUESTS: ${RATE_LIMIT_CLASSIFY_REQUESTS:-20}
+      RATE_LIMIT_AUTH_REQUESTS: ${RATE_LIMIT_AUTH_REQUESTS:-10}
     ports:
       - "${BACKEND_PORT:-8000}:8000"
     volumes:
       - model_weights:/app/backend/app/ml/weights
       - upload_data:/app/backend/uploads
+    networks:
+      - internal
+      - edge
+
+networks:
+  internal:
+    driver: bridge
+  edge:
+    driver: bridge
 
 volumes:
   pgdata:

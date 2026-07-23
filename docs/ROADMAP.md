@@ -4,6 +4,26 @@
 
 ---
 
+## Phase E — Quality + AuthZ + depth (active)
+
+| Campo | Valor |
+| --- | --- |
+| **Estado** | **En curso / closeout en árbol** (post audit + Phase D) |
+| **Doc** | [`docs/PHASE_E_QUALITY_AUTHZ.md`](./PHASE_E_QUALITY_AUTHZ.md) |
+| **Horizonte** | ~3–4 semanas · E-00…E-18 |
+| **Foco** | CI verde, AuthZ observations/reviews/uploads, token hash, encyc perf, media honesty |
+| **Rama** | `merge/best-of-both` |
+
+| Track | Entrega | Estado |
+| --- | --- | --- |
+| **T0–T1** | Audit ship + vitest/CI | ✅ |
+| **T2** | AuthZ observations + review roles + auth uploads + token hash | ✅ |
+| **T3** | HttpOnly cookies | ⏳ deferred |
+| **T4** | Encyc debounce + page 12 + catalog v2-only | ✅ |
+| **T5–T7** | Media residual / ML ops / product polish | 🔄 partial |
+
+---
+
 ## Phase D — Funciones + belleza visual (shipped MVP mes)
 
 | Campo | Valor |

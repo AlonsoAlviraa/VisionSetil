@@ -138,17 +138,19 @@ function fromV2Record(rec: Record<string, unknown>): CatalogSpecies {
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-|-$/g, '')
   const vern = (rec.vernacular_names || {}) as Record<string, string[]>
-  const common_names = [
+  const fromVern = [
     ...(vern.es || []),
     ...(vern.en || []),
     ...(vern.ca || []),
     ...(vern.eu || []),
   ].filter(Boolean)
-  const unique = Array.from(new Set(common_names))
+  const unique = Array.from(new Set(fromVern))
   const risk_level = String(rec.risk_level || 'unknown')
   const edibility_code = String(rec.edibility_code || 'desconocido')
   const risk_label = riskFromV2(risk_level, edibility_code)
-  const family = rec.family ? String(rec.family) : null
+  // Enrich missing family + Spanish commons (parity with hydrateSpecies / tests)
+  const family = familyForTaxon(taxon, rec.family ? String(rec.family) : null)
+  const common_names = enrichCommonNames(taxon, unique.length ? unique : [taxon])
   const descMap = (rec.description || {}) as Record<string, string>
   const description = descMap.es || descMap.en || ''
   const photo_tier = getPhotoTier(taxon, risk_label)
@@ -156,13 +158,13 @@ function fromV2Record(rec: Record<string, unknown>): CatalogSpecies {
     taxon,
     slug,
     rank: 'species',
-    common_names: unique.length ? unique : [taxon],
+    common_names,
     risk_label,
     family,
     family_es: family ? familyNameEs(family) : familyNameEs(null),
     description,
     source: String(rec.source || 'species_catalog_v2'),
-    display_name: unique[0] || taxon,
+    display_name: common_names[0] || taxon,
     photo_hint: undefined,
     photo_tier,
     food_class: edibility_code,
@@ -188,25 +190,15 @@ export async function loadSpeciesCatalog(): Promise<CatalogSpecies[]> {
           species?: Record<string, unknown>[]
         }
         if (v2.species?.length) {
+          // E-10: SSOT v2 only — skip dual merge of legacy speciesCatalog.json
+          // (saves parse/hydrate of ~347 extra taxa on every first open).
           const list = v2.species.map(fromV2Record)
-          // Merge any colleague-only taxa not in v2
-          try {
-            const leg = await import('./speciesCatalog.json')
-            const data = leg.default as SpeciesCatalogFile
-            const hydrated = hydrateSpecies(data)
-            const have = new Set(list.map((s) => s.taxon.toLowerCase()))
-            for (const s of hydrated) {
-              if (!have.has(s.taxon.toLowerCase())) list.push(s)
-            }
-          } catch {
-            /* optional */
-          }
           speciesCatalog = list
           speciesCatalogMeta = {
             version: v2.catalog_version || 'v2',
             count: list.length,
             policy: 'orientation_only; unsafe_to_consume; ssot_v2',
-            sources: ['species_catalog_v2', 'speciesCatalog.json'],
+            sources: ['species_catalog_v2'],
             with_family: list.filter((s) => Boolean(s.family)).length,
             with_family_es: list.filter(
               (s) => Boolean(s.family_es && s.family_es !== 'Sin familia'),

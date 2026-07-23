@@ -135,29 +135,59 @@ export async function fetchInatSpinFrames(
   }
 }
 
-/** Build spin set: catalog first, then iNat multi-angle. */
+function slugFromTaxon(taxon: string): string {
+  return taxon
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+}
+
+/** Build spin set: catalog first, then optional iNat multi-angle. */
 export async function resolveSpinPhotoSet(
   taxon: string,
-  options: { maxFrames?: number; useCache?: boolean } = {},
+  options: {
+    maxFrames?: number
+    useCache?: boolean
+    /** Prefer same-origin /media cards only (Home critical path). */
+    sameOriginOnly?: boolean
+  } = {},
 ): Promise<SpinPhotoSet> {
   const name = taxon.trim() || 'Fungi'
   const maxFrames = options.maxFrames ?? 24
   const useCache = options.useCache !== false
-  const key = name.toLowerCase()
+  const sameOriginOnly = Boolean(options.sameOriginOnly)
+  const key = `${name.toLowerCase()}|m${maxFrames}|so${sameOriginOnly ? 1 : 0}`
 
   if (useCache && memoryCache.has(key)) {
     return memoryCache.get(key)!
   }
 
   const frames: SpinPhoto[] = []
-  const catalog = getCatalogPhotoUrl(name)
-  if (catalog) {
-    frames.push({ url: catalog, source: 'catalog', attribution: 'Catálogo VisionSetil' })
-  }
-
-  const inat = await fetchInatSpinFrames(name, maxFrames)
-  for (const f of inat) {
-    frames.push(f)
+  if (sameOriginOnly) {
+    // Same-origin product media — no multi-MB iNat on Home
+    const slug = slugFromTaxon(name)
+    if (slug) {
+      frames.push({
+        url: `/media/species/${slug}/card.webp`,
+        source: 'catalog',
+        attribution: 'VisionSetil media',
+      })
+      frames.push({
+        url: `/media/species/${slug}/detail.webp`,
+        source: 'catalog',
+        attribution: 'VisionSetil media',
+      })
+    }
+  } else {
+    const catalog = getCatalogPhotoUrl(name)
+    if (catalog) {
+      frames.push({ url: catalog, source: 'catalog', attribution: 'Catálogo VisionSetil' })
+    }
+    const inat = await fetchInatSpinFrames(name, maxFrames)
+    for (const f of inat) {
+      frames.push(f)
+    }
   }
 
   const unique = uniqueUrls(frames).slice(0, maxFrames)

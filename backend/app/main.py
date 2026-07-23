@@ -8,7 +8,6 @@ from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from app.api.routes_auth import router as auth_router
@@ -25,6 +24,7 @@ from app.api.routes_metrics import router as metrics_router
 from app.api.routes_models import router as models_router
 from app.api.routes_observations import router as observations_router
 from app.api.routes_species import router as species_router
+from app.api.routes_uploads import router as uploads_router
 from app.core.config import get_settings, warn_if_quality_gate_block_disabled
 from app.core.logging import configure_logging
 from app.db.database import init_db
@@ -50,7 +50,17 @@ if settings.species_media_cdn_base:
 
     validate_cdn_config_at_boot()
 
-app = FastAPI(title="mushroom-photo-id")
+# Hide OpenAPI UI in production (attack surface map); keep for local/dev.
+_is_prod = str(getattr(settings, "environment", "") or "").strip().lower() in {
+    "production",
+    "prod",
+}
+app = FastAPI(
+    title="mushroom-photo-id",
+    docs_url=None if _is_prod else "/docs",
+    redoc_url=None if _is_prod else "/redoc",
+    openapi_url=None if _is_prod else "/openapi.json",
+)
 
 
 class RequestIDMiddleware(BaseHTTPMiddleware):
@@ -108,7 +118,9 @@ app.add_middleware(APIKeyMiddleware)
 # Security headers — OWASP best practices (HSTS, CSP, X-Frame-Options, etc.)
 app.add_middleware(SecurityHeadersMiddleware)
 
-app.mount("/uploads", StaticFiles(directory=str(settings.upload_dir)), name="uploads")
+# E-06: no public StaticFiles for user uploads — authenticated route instead.
+# Species photos remain public via /media (species_media).
+app.include_router(uploads_router)
 app.include_router(health_router)
 app.include_router(auth_router)
 app.include_router(community_router)

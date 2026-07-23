@@ -99,12 +99,12 @@ def run_classification_job(
             classifier = get_multi_view_classifier()
             request_id = f"job-{job_id[:12]}"
 
-            # B-14: same classify_to_simple path as sync (gate+mode). view_types=None OK for now.
+            # B-14: same classify_to_simple path as sync (gate+mode+locale+views).
             simple, raw = classify_to_simple_with_raw(
                 observation=observation,
                 images=images,
-                view_types=None,
-                locale="es",
+                view_types=view_types,
+                locale=locale or "es",
                 request_id=request_id,
                 classifier=classifier,
                 loaded_weights_path=getattr(classifier, "resolved_weights_path", None),

@@ -7,6 +7,7 @@ export type AuthUser = {
   email: string
   username: string
   display_name: string
+  role?: string
 }
 
 export type AuthResponse = {
@@ -50,10 +51,19 @@ export async function login(loginId: string, password: string): Promise<AuthResp
 }
 
 export async function fetchMe(token: string): Promise<AuthUser> {
-  const res = await fetch(`${API_BASE}/auth/me`, {
-    headers: { Authorization: `Bearer ${token}` },
-  })
-  if (!res.ok) throw new Error(await parseError(res))
+  let res: Response
+  try {
+    res = await fetch(`${API_BASE}/auth/me`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+  } catch {
+    // Network down — do not treat as logout
+    throw new Error('network_error')
+  }
+  if (!res.ok) {
+    // Include status so AuthContext can distinguish 401 vs 5xx
+    throw new Error(`${res.status} ${await parseError(res)}`)
+  }
   return res.json()
 }
 

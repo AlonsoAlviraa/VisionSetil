@@ -52,11 +52,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         const me = await fetchMe(token)
         if (!cancelled) setUser(me)
-      } catch {
-        localStorage.removeItem(TOKEN_KEY)
-        if (!cancelled) {
-          setToken(null)
-          setUser(null)
+      } catch (err) {
+        // Only wipe session on hard auth failure (401/403). Transient network
+        // errors keep the token so a brief offline blip does not log the user out.
+        const msg = err instanceof Error ? err.message : String(err)
+        const isAuthFail =
+          /\b401\b|\b403\b|unauthorized|credenciales|inválid|invalid|forbidden/i.test(
+            msg,
+          )
+        if (isAuthFail) {
+          localStorage.removeItem(TOKEN_KEY)
+          if (!cancelled) {
+            setToken(null)
+            setUser(null)
+          }
         }
       } finally {
         if (!cancelled) setLoading(false)

@@ -6,8 +6,9 @@ from pydantic import BaseModel
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
+from app.api.deps_auth import get_reviewer_user
 from app.db.database import get_db
-from app.db.models import HumanReviewRequest, Observation
+from app.db.models import HumanReviewRequest, Observation, User
 from app.db.schemas import (
     HumanReviewRequestCreate,
     HumanReviewRequestRead,
@@ -79,8 +80,9 @@ def list_human_reviews(
     limit: int = Query(default=100, le=500),
     offset: int = 0,
     db: Session = Depends(get_db),
+    _reviewer: User = Depends(get_reviewer_user),
 ) -> list[HumanReviewRequest]:
-    """List human review requests with optional filters (Sprint N+3 MO-6)."""
+    """List human review requests (E-05: reviewer/admin only)."""
     stmt = select(HumanReviewRequest)
     if status:
         stmt = stmt.where(HumanReviewRequest.status == status)
@@ -93,7 +95,11 @@ def list_human_reviews(
 
 
 @router.get("/human-reviews/{review_id}", response_model=HumanReviewRequestRead)
-def get_human_review(review_id: int, db: Session = Depends(get_db)) -> HumanReviewRequest:
+def get_human_review(
+    review_id: int,
+    db: Session = Depends(get_db),
+    _reviewer: User = Depends(get_reviewer_user),
+) -> HumanReviewRequest:
     request = db.get(HumanReviewRequest, review_id)
     if request is None:
         raise HTTPException(status_code=404, detail="Human review request not found")
@@ -102,7 +108,10 @@ def get_human_review(review_id: int, db: Session = Depends(get_db)) -> HumanRevi
 
 @router.patch("/human-reviews/{review_id}", response_model=HumanReviewRequestRead)
 def update_human_review(
-    review_id: int, payload: HumanReviewRequestUpdate, db: Session = Depends(get_db)
+    review_id: int,
+    payload: HumanReviewRequestUpdate,
+    db: Session = Depends(get_db),
+    _reviewer: User = Depends(get_reviewer_user),
 ) -> HumanReviewRequest:
     request = db.get(HumanReviewRequest, review_id)
     if request is None:
@@ -146,9 +155,11 @@ class BatchAssignResponse(BaseModel):
 
 @router.post("/human-reviews/batch-assign", response_model=BatchAssignResponse)
 def batch_assign_reviews(
-    payload: BatchAssignRequest, db: Session = Depends(get_db)
+    payload: BatchAssignRequest,
+    db: Session = Depends(get_db),
+    _reviewer: User = Depends(get_reviewer_user),
 ) -> dict[str, Any]:
-    """Assign multiple review requests to a single reviewer (Sprint N+3 MO-6)."""
+    """Assign multiple review requests to a single reviewer (E-05: reviewer only)."""
     assigned_count = 0
     skipped_ids: list[int] = []
     for rid in payload.review_ids:
@@ -169,8 +180,11 @@ def batch_assign_reviews(
 
 
 @router.get("/human-reviews/stats/summary")
-def get_review_stats(db: Session = Depends(get_db)) -> dict[str, Any]:
-    """Aggregate statistics about the review queue (Sprint N+3 MO-6)."""
+def get_review_stats(
+    db: Session = Depends(get_db),
+    _reviewer: User = Depends(get_reviewer_user),
+) -> dict[str, Any]:
+    """Aggregate statistics about the review queue (E-05: reviewer only)."""
     total = db.scalar(select(func.count(HumanReviewRequest.id)))
     by_status = dict(
         db.execute(
@@ -212,9 +226,11 @@ def get_review_stats(db: Session = Depends(get_db)) -> dict[str, Any]:
 
 @router.get("/human-reviews/export/json")
 def export_reviews_json(
-    status: str | None = None, db: Session = Depends(get_db)
+    status: str | None = None,
+    db: Session = Depends(get_db),
+    _reviewer: User = Depends(get_reviewer_user),
 ) -> list[dict[str, Any]]:
-    """Export review requests as JSON (Sprint N+3 MO-6)."""
+    """Export review requests as JSON (E-05: reviewer only)."""
     stmt = select(HumanReviewRequest)
     if status:
         stmt = stmt.where(HumanReviewRequest.status == status)

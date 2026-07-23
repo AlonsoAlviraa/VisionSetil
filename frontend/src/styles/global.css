@@ -24,9 +24,10 @@
   --warning-bg: #fffbeb;
   --warning-border: #fde68a;
   --warning-text: #92400e;
-  --safe: #16a34a;
-  --safe-bg: #f0fdf4;
-  --safe-border: #bbf7d0;
+  /* D16: educational teal — never food-safe green for "seguro" (audit Q2) */
+  --safe: #0f766e;
+  --safe-bg: #f0fdfa;
+  --safe-border: #99f6e4;
   --info: #0284c7;
   --info-bg: #f0f9ff;
   --info-border: #bae6fd;
@@ -1963,6 +1964,7 @@ button { font-family: inherit; }
 
 .sl-icon { font-size: 1.1rem; }
 
+/* sl-safe uses educational teal tokens (--safe), not food green */
 .safety-level-badge.sl-safe {
   background: var(--safe-bg);
   border: 1px solid var(--safe-border);

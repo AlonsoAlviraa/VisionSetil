@@ -19,7 +19,7 @@ import {
 } from '../lib/classifyMode'
 import { linkEvidenceItems } from '../lib/evidenceSlotMap'
 import type { CanonicalView } from '../lib/multiViewSlots'
-import { getRiskMeta } from '../lib/riskLabels'
+import { getRiskMeta, isSevereRisk, resolveJoinRisk } from '../lib/riskLabels'
 import { lookalikeSummary, rankLookalikes } from '../lib/lookalikeRisk'
 import { SpeciesThumb } from './SpeciesThumb'
 import { SpeciesNameBlock } from './SpeciesNameBlock'
@@ -285,16 +285,19 @@ export function ResultCard({
                 <h3 className="result-predictions-title">{t('result.topHints', { defaultValue: 'Mejores pistas' })}</h3>
                 <ul>
                   {result.predictions.slice(0, showMorePredictions ? 3 : 1).map((pred: SpeciesPrediction, idx: number) => {
-                    const meta = getEdibilityMeta(pred.edibility)
+                    // B-42: join model edibility with catalog risk_level; boost severe on real mode
+                    const joinRisk = resolveJoinRisk(pred.edibility, pred.risk_level)
+                    const boostJoinRisk = mode === 'real' && isSevereRisk(joinRisk)
+                    const meta = getEdibilityMeta(joinRisk)
                     return (
                       <li
                         key={`${pred.species}-${idx}`}
-                        className={`prediction-item ${meta.class} ${idx === 0 ? 'top-match' : ''}`}
+                        className={`prediction-item ${meta.class} ${idx === 0 ? 'top-match' : ''} ${boostJoinRisk ? 'prediction-item--join-severe' : ''}`}
                         data-testid={`prediction-item-${idx}`}
                       >
                         <SpeciesThumb
                           taxon={pred.species}
-                          riskLabel={pred.edibility}
+                          riskLabel={joinRisk}
                           size={idx === 0 ? 56 : 44}
                           className="prediction-thumb"
                         />
@@ -307,7 +310,8 @@ export function ResultCard({
                             showFamily
                           />
                           <RiskChip
-                            risk={pred.edibility}
+                            risk={joinRisk}
+                            boost={boostJoinRisk}
                             className={`edibility-badge ${meta.class}`}
                           />
                           {showConfidence ? (

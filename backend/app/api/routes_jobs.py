@@ -35,6 +35,7 @@ from app.core.config import settings
 from app.db.database import get_db
 from app.db.models import Observation
 from app.db.schemas import ClassificationJobRead, JobResultEnvelope
+from app.services import unified_catalog as catalog
 from app.services.image_storage import store_observation_images
 from app.services.task_queue import create_job, get_job, get_queue_stats, run_classification_job
 from app.services.view_classifier import CANONICAL_VIEWS
@@ -131,8 +132,12 @@ async def classify_async(
 
     if not images:
         raise HTTPException(status_code=400, detail="At least one image is required")
-    if len(images) > 10:
-        raise HTTPException(status_code=400, detail="Maximum 10 images per request")
+    max_images = int(getattr(settings, "max_images_per_request", 10) or 10)
+    if len(images) > max_images:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Maximum {max_images} images per request",
+        )
 
     for img in images:
         ext = (img.filename or "").rsplit(".", 1)[-1].lower() if img.filename else ""
@@ -196,7 +201,8 @@ def get_job_status(
     job = get_job(db, job_id)
     if job is None:
         raise HTTPException(status_code=404, detail="Job not found")
-    if job.organization_id != org_id and org_id != "default":
+    # Strict multi-tenant: never treat "default" as super-org (audit S4).
+    if job.organization_id != org_id:
         raise HTTPException(status_code=404, detail="Job not found")
     return ClassificationJobRead.model_validate(job)
 
@@ -218,7 +224,7 @@ def get_job_result(
     job = get_job(db, job_id)
     if job is None:
         raise HTTPException(status_code=404, detail="Job not found")
-    if job.organization_id != org_id and org_id != "default":
+    if job.organization_id != org_id:
         raise HTTPException(status_code=404, detail="Job not found")
     if job.status != "completed":
         raise HTTPException(

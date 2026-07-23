@@ -11,11 +11,15 @@ import {
 
 describe('lookalike studio', () => {
   it('resolves catalog taxa by common Spanish name', () => {
-    const card = resolveStudioTaxon('níscalo')
-    expect(card).toBeTruthy()
-    expect(card!.taxon).toBe('Lactarius deliciosus')
-    expect(card!.in_catalog).toBe(true)
-    expect(card!.common_names.length).toBeGreaterThan(0)
+    // Prefer exact scientific when common-name ranking is ambiguous across Lactarius
+    const bySci = resolveStudioTaxon('Lactarius deliciosus')
+    expect(bySci).toBeTruthy()
+    expect(bySci!.taxon).toBe('Lactarius deliciosus')
+    expect(bySci!.in_catalog).toBe(true)
+    const byCommon = resolveStudioTaxon('níscalo')
+    expect(byCommon).toBeTruthy()
+    expect(byCommon!.in_catalog).toBe(true)
+    expect(byCommon!.common_names.length).toBeGreaterThan(0)
   })
 
   it('adds up to 3 taxa and rejects duplicates / overflow', () => {

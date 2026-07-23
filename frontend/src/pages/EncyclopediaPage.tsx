@@ -1,5 +1,5 @@
 /** Encyclopedia — family browse, ranked search, photo grid (async catalog code-split). */
-import { lazy, Suspense, useMemo, useState } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
 import { countByRisk } from '../data/speciesCatalog'
 import { useSpeciesCatalog } from '../hooks/useSpeciesCatalog'
 import { listFamilies, searchCatalogRanked } from '../lib/catalogSearch'
@@ -41,12 +41,20 @@ export function EncyclopediaPage() {
   const { catalog: speciesCatalog, meta: speciesCatalogMeta, loading: catalogLoading } =
     useSpeciesCatalog()
   const [query, setQuery] = useState('')
+  /** E-09: debounced query for ranked search (150ms) — fewer main-thread spikes. */
+  const [debouncedQuery, setDebouncedQuery] = useState('')
   const [risk, setRisk] = useState<'all' | RiskLabel>('all')
   const [food, setFood] = useState<'all' | FoodClass | 'documented'>('all')
   const [family, setFamily] = useState<string>('all')
   const [page, setPage] = useState(0)
   const [studioOpen, setStudioOpen] = useState(false)
   const [moreFamilies, setMoreFamilies] = useState(false)
+
+  useEffect(() => {
+    const t = window.setTimeout(() => setDebouncedQuery(query), 150)
+    return () => window.clearTimeout(t)
+  }, [query])
+
   const counts = useMemo(() => countByRisk(), [speciesCatalog])
   const foodStats = useMemo(() => foodQualityStats(), [])
 
@@ -56,11 +64,12 @@ export function EncyclopediaPage() {
   )
 
   const allResults = useMemo(() => {
+    // Cap ranked results for grid (windowed pages via page * PAGE_SIZE)
     let list = searchCatalogRanked(speciesCatalog, {
-      query,
+      query: debouncedQuery,
       risk,
       family,
-      limit: 800,
+      limit: 200,
       boostHighRisk: true,
     })
     if (food !== 'all') {
@@ -71,7 +80,7 @@ export function EncyclopediaPage() {
       })
     }
     return list
-  }, [speciesCatalog, query, risk, family, food])
+  }, [speciesCatalog, debouncedQuery, risk, family, food])
 
   const results = useMemo(
     () => allResults.slice(0, (page + 1) * PAGE_SIZE),
@@ -114,7 +123,12 @@ export function EncyclopediaPage() {
         <div className="atelier-banner__copy">
           <h1>Enciclopedia de setas</h1>
           <p>
-            {catalogLoading ? 'Cargando catálogo…' : `${speciesCatalogMeta.count} taxones`} ·{' '}
+            {catalogLoading ? (
+              'Cargando catálogo…'
+            ) : (
+              <span data-testid="encyclopedia-count">{speciesCatalogMeta.count} taxones</span>
+            )}{' '}
+            ·{' '}
             {foodStats.total_documented} con calidad documentada. Solo orientación.
           </p>
         </div>

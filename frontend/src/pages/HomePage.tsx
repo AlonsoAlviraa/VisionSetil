@@ -1,13 +1,15 @@
-import { lazy, Suspense, useEffect, useState } from 'react'
+import { lazy, Suspense, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { HOME_FEATURES, MEDIA } from '../data/media'
 import { SeasonRadar } from '../components/SeasonRadar'
 import { SpeciesThumb } from '../components/SpeciesThumb'
-import { loadSpeciesCatalog, type CatalogSpecies } from '../data/speciesCatalog'
 
 const PhotoSpinViewer = lazy(() =>
   import('../components/PhotoSpinViewer').then((m) => ({ default: m.PhotoSpinViewer })),
 )
+
+/** SSOT catalog size for first paint — avoid hydrating 520 taxa on Home (audit P1/P4). */
+const HOME_CATALOG_COUNT = 520
 
 /** Lightweight deadly taxa for first paint — full catalog loads async (code-split). */
 const HOME_DEADLY_SEED: Array<{ taxon: string; slug: string; name: string; risk: string }> = [
@@ -74,31 +76,9 @@ function DeadlyThumb({
 }
 
 export function HomePage() {
-  const [catalogCount, setCatalogCount] = useState<number | null>(null)
-  const [deadlyPreview, setDeadlyPreview] = useState(HOME_DEADLY_SEED)
-
-  useEffect(() => {
-    let cancelled = false
-    void loadSpeciesCatalog().then((list: CatalogSpecies[]) => {
-      if (cancelled) return
-      setCatalogCount(list.length)
-      const deadly = list
-        .filter((s) => s.risk_label === 'deadly')
-        .slice(0, 5)
-        .map((s) => ({
-          taxon: s.taxon,
-          slug: s.slug,
-          name: s.common_names[0] || s.taxon,
-          risk: s.risk_label,
-        }))
-      if (deadly.length > 0) setDeadlyPreview(deadly)
-    })
-    return () => {
-      cancelled = true
-    }
-  }, [])
-
-  const displayCount = catalogCount ?? '…'
+  // Seed only — full catalog loads on encyclopedia/identify when needed.
+  const [deadlyPreview] = useState(HOME_DEADLY_SEED)
+  const displayCount = HOME_CATALOG_COUNT
 
   return (
     <div className="home-page home-atelier">
@@ -134,7 +114,7 @@ export function HomePage() {
           </div>
           <div className="atelier-stats">
             <div className="atelier-stat">
-              <strong>{displayCount}</strong>
+              <strong data-testid="home-species-count">{displayCount}</strong>
               <span>Taxones</span>
             </div>
             <div className="atelier-stat">
@@ -173,10 +153,12 @@ export function HomePage() {
           >
             <PhotoSpinViewer
               taxon="Amanita phalloides"
+              maxFrames={6}
+              autoPlay={false}
+              preferSameOrigin
               height={400}
               riskLabel="deadly"
               label="Oronja verde — fotos reales"
-              autoPlay
             />
           </Suspense>
         </div>
