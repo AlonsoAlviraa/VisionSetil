@@ -185,6 +185,19 @@ class Settings(BaseSettings):
     # in development; production requires non-empty (see model_validator).
     api_keys: str = Field(default="", validation_alias="API_KEYS")
 
+    # --- E-08 session cookie (opt-in; bearer still works) --------------------
+    # When true: Set-Cookie HttpOnly on login/register; accept cookie as session.
+    auth_cookie_enabled: bool = Field(default=False, validation_alias="AUTH_COOKIE_ENABLED")
+    auth_cookie_name: str = Field(default="visionsetil_session", validation_alias="AUTH_COOKIE_NAME")
+    # Secure flag: default True in production, False in development unless forced.
+    auth_cookie_secure: bool | None = Field(default=None, validation_alias="AUTH_COOKIE_SECURE")
+    # lax | strict | none
+    auth_cookie_samesite: str = Field(default="lax", validation_alias="AUTH_COOKIE_SAMESITE")
+    # When cookies enabled, omit raw token from JSON body (FE uses cookie only).
+    auth_cookie_omit_token_body: bool = Field(
+        default=True, validation_alias="AUTH_COOKIE_OMIT_TOKEN_BODY"
+    )
+
     # --- Validators ---------------------------------------------------------
     @field_validator("log_format")
     @classmethod

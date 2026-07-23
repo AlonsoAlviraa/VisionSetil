@@ -46,6 +46,12 @@ export const featureFlags = {
   SEASON_PACK: envBool('VITE_FEATURE_SEASON_PACK', true),
   /** Home immersive season strip beauty (C-30). */
   HOME_SEASON_IMMERSE: envBool('VITE_FEATURE_HOME_SEASON_IMMERSE', true),
+  /**
+   * E-08: HttpOnly cookie sessions (opt-in).
+   * Requires backend AUTH_COOKIE_ENABLED=true and CORS credentials (no *).
+   * FE uses credentials:include and never stores token in localStorage.
+   */
+  AUTH_COOKIE: envBool('VITE_FEATURE_AUTH_COOKIE', false),
 } as const
 
 export type FeatureFlagKey = keyof typeof featureFlags

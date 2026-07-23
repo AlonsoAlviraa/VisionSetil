@@ -42,7 +42,8 @@ export function CommunityPage() {
 
   const onPost = async (e: FormEvent) => {
     e.preventDefault()
-    if (!token) return
+    // E-08: cookie mode may have no JS token — isAuthenticated is enough
+    if (!isAuthenticated) return
     setPosting(true)
     setError(null)
     try {
@@ -58,7 +59,7 @@ export function CommunityPage() {
   }
 
   const onComment = async (postId: number) => {
-    if (!token) return
+    if (!isAuthenticated) return
     const text = (commentDrafts[postId] || '').trim()
     if (!text) return
     try {

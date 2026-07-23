@@ -1,5 +1,7 @@
 /** Community feed API */
 
+import { isAuthCookieMode } from './auth'
+
 const API_BASE = import.meta.env.VITE_API_URL || '/api'
 
 export type CommunityAuthor = {
@@ -26,8 +28,16 @@ export type CommunityPost = {
   safety_note: string
 }
 
-function authHeaders(token: string | null): HeadersInit {
+function authHeaders(token: string | null | undefined): HeadersInit {
+  if (isAuthCookieMode()) return {}
   return token ? { Authorization: `Bearer ${token}` } : {}
+}
+
+function fetchOpts(init: RequestInit = {}): RequestInit {
+  if (isAuthCookieMode()) {
+    return { ...init, credentials: 'include' }
+  }
+  return init
 }
 
 function resolveMediaUrl(url: string | null): string | null {
@@ -38,27 +48,33 @@ function resolveMediaUrl(url: string | null): string | null {
 }
 
 export async function listPosts(token?: string | null): Promise<CommunityPost[]> {
-  const res = await fetch(`${API_BASE}/community/posts`, {
-    headers: { ...authHeaders(token || null) },
-  })
+  const res = await fetch(
+    `${API_BASE}/community/posts`,
+    fetchOpts({
+      headers: { ...authHeaders(token || null) },
+    }),
+  )
   if (!res.ok) throw new Error('No se pudo cargar el feed')
   const data = (await res.json()) as CommunityPost[]
   return data.map((p) => ({ ...p, image_url: resolveMediaUrl(p.image_url) }))
 }
 
 export async function createPost(
-  token: string,
+  token: string | null,
   body: string,
   image?: File | null,
 ): Promise<CommunityPost> {
   const form = new FormData()
   form.append('body', body)
   if (image) form.append('image', image)
-  const res = await fetch(`${API_BASE}/community/posts`, {
-    method: 'POST',
-    headers: { ...authHeaders(token) },
-    body: form,
-  })
+  const res = await fetch(
+    `${API_BASE}/community/posts`,
+    fetchOpts({
+      method: 'POST',
+      headers: { ...authHeaders(token) },
+      body: form,
+    }),
+  )
   if (!res.ok) {
     let msg = 'Error al publicar'
     try {
@@ -74,18 +90,21 @@ export async function createPost(
 }
 
 export async function createComment(
-  token: string,
+  token: string | null,
   postId: number,
   body: string,
 ): Promise<CommunityComment> {
-  const res = await fetch(`${API_BASE}/community/posts/${postId}/comments`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      ...authHeaders(token),
-    },
-    body: JSON.stringify({ body }),
-  })
+  const res = await fetch(
+    `${API_BASE}/community/posts/${postId}/comments`,
+    fetchOpts({
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...authHeaders(token),
+      },
+      body: JSON.stringify({ body }),
+    }),
+  )
   if (!res.ok) {
     let msg = 'Error al comentar'
     try {

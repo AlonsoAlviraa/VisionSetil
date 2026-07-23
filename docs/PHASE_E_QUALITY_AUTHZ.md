@@ -18,7 +18,7 @@
 | E-05 | Human-review reviewer role | ✅ |
 | E-06 | Authenticated /uploads | ✅ |
 | E-07 | Session token hash + 7d TTL | ✅ |
-| E-08 | HttpOnly cookies | deferred (opt-in later) |
+| E-08 | HttpOnly cookies | ✅ opt-in (`AUTH_COOKIE_ENABLED` + `VITE_FEATURE_AUTH_COOKIE`) |
 | E-09 | Encyc page size 12 + debounce | ✅ |
 | E-10 | Catalog v2-only load (no dual JSON) | ✅ |
 | E-11 | Media P0 crawl | residual (scripts exist; manual ops) |

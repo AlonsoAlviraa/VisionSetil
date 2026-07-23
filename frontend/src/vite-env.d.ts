@@ -12,6 +12,8 @@ interface ImportMetaEnv {
   readonly VITE_FEATURE_FAVORITES?: string
   /** B-46: optional async classify + polling (default off). */
   readonly VITE_FEATURE_ASYNC_CLASSIFY?: string
+  /** E-08: HttpOnly cookie sessions (opt-in; pair with AUTH_COOKIE_ENABLED). */
+  readonly VITE_FEATURE_AUTH_COOKIE?: string
 }
 
 interface ImportMeta {
