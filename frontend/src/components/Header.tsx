@@ -12,14 +12,15 @@ const primaryNav = [
   { to: '/', labelKey: 'nav.home' },
   { to: '/identificar', labelKey: 'nav.identify', cta: true },
   { to: '/enciclopedia', labelKey: 'nav.encyclopedia' },
-  { to: '/reto', labelKey: 'nav.quiz' },
+  { to: '/setadle', labelKey: 'nav.setadle' },
   { to: '/mapa', labelKey: 'nav.map' },
 ] as const
 
-/** Overflow “Más” */
+/** Overflow “Más” — grouped experience */
 const moreNav = [
-  { to: '/historial', labelKey: 'nav.notebook' },
+  { to: '/reto', labelKey: 'nav.quiz' },
   { to: '/lookalikes', labelKey: 'nav.lookalikes' },
+  { to: '/historial', labelKey: 'nav.notebook' },
   { to: '/offline', labelKey: 'nav.offline' },
   { to: '/educacion', labelKey: 'nav.education' },
   { to: '/comunidad', labelKey: 'nav.community' },

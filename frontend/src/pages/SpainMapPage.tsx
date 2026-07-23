@@ -88,6 +88,13 @@ function speciesSlug(sciName: string): string {
   return sciName.toLowerCase().replace(/\s+/g, '-')
 }
 
+/** Compact board labels: first segment, max ~22 chars */
+export function shortZoneLabel(name: string, max = 22): string {
+  const base = name.split(/[&·|,/]/)[0]?.trim() || name
+  if (base.length <= max) return base
+  return `${base.slice(0, max - 1).trim()}…`
+}
+
 function ZoneWeatherPanel({
   lat,
   lng,
@@ -286,6 +293,10 @@ export default function SpainMapPage() {
   const [weatherFailedAll, setWeatherFailedAll] = useState(false)
   /** Wave B: simple = map + panel; advanced = radar + strip + full filters */
   const [mapMode, setMapMode] = useState<'simple' | 'advanced'>('simple')
+  /** Interactive layers */
+  const [showHotspots, setShowHotspots] = useState(true)
+  const [showMarkers, setShowMarkers] = useState(true)
+  const [onlyHotspots, setOnlyHotspots] = useState(false)
   const cancelledRef = useRef(false)
 
   const regions = useMemo(() => {
@@ -376,15 +387,19 @@ export default function SpainMapPage() {
   const filteredZones = useMemo(() => {
     return mushroomZones.filter((z) => {
       if (filterRegion !== 'todas' && z.region !== filterRegion) return false
+      if (onlyHotspots) {
+        const level = alertFromScore(scores[z.id] ?? null).level
+        if (!isHotspotActive(level) && selectedZone?.id !== z.id) return false
+      }
       // Ignore alert filter in simple mode even if state is stale
-      if (mapMode === 'simple') return true
-      if (filterAlert !== 'todas') {
+      if (mapMode === 'simple' && !onlyHotspots) return true
+      if (mapMode === 'advanced' && filterAlert !== 'todas') {
         const level = alertFromScore(scores[z.id] ?? null).level
         if (level !== filterAlert) return false
       }
       return true
     })
-  }, [filterRegion, filterAlert, scores, mapMode])
+  }, [filterRegion, filterAlert, scores, mapMode, onlyHotspots, selectedZone])
 
   /** Limit hotspot circles on map for pan/zoom fluidness (mid-range mobile). */
   const hotspotZones = useMemo(() => {
@@ -411,14 +426,13 @@ export default function SpainMapPage() {
 
   return (
     <div className={`page-map page-map--${mapMode} page-atelier-shell`}>
-      <div className="page-header">
+      <div className="page-header map-page-header">
         <h1 className="page-title">
-          {t('map.title', { defaultValue: 'Mapa de zonas micológicas' })}
+          {t('map.title', { defaultValue: 'Mapa micológico' })}
         </h1>
-        <p className="page-subtitle">
-          {t('map.subtitle', {
-            defaultValue:
-              'Hotspots educativos y condiciones en vivo. Rojo = desfavorable. No es permiso de recolección ni de consumo.',
+        <p className="page-subtitle map-page-header__lead">
+          {t('map.subtitleShort', {
+            defaultValue: 'Toca zonas · avisos en vivo · solo orientación educativa',
           })}
         </p>
         <div className="identify-mode-toggle map-mode-toggle">
@@ -445,6 +459,67 @@ export default function SpainMapPage() {
             {t('map.modeAdvanced', { defaultValue: 'Avanzado' })}
           </button>
         </div>
+      </div>
+
+      {/* Interactive region chips */}
+      <div className="map-region-chips" role="toolbar" aria-label="Filtrar comunidad">
+        <button
+          type="button"
+          className={`map-chip ${filterRegion === 'todas' ? 'is-active' : ''}`}
+          onClick={() => setFilterRegion('todas')}
+        >
+          Todas
+        </button>
+        {regions
+          .filter((r) => r !== 'todas')
+          .slice(0, 12)
+          .map((r) => (
+            <button
+              key={r}
+              type="button"
+              className={`map-chip ${filterRegion === r ? 'is-active' : ''}`}
+              onClick={() => setFilterRegion(r === filterRegion ? 'todas' : r)}
+            >
+              {r}
+            </button>
+          ))}
+      </div>
+
+      {/* Layer toggles */}
+      <div className="map-layer-toggles" role="group" aria-label="Capas del mapa">
+        <button
+          type="button"
+          className={`map-chip map-chip--toggle ${showMarkers ? 'is-active' : ''}`}
+          onClick={() => setShowMarkers((v) => !v)}
+          aria-pressed={showMarkers}
+        >
+          Marcadores
+        </button>
+        <button
+          type="button"
+          className={`map-chip map-chip--toggle ${showHotspots ? 'is-active' : ''}`}
+          onClick={() => setShowHotspots((v) => !v)}
+          aria-pressed={showHotspots}
+        >
+          Halos
+        </button>
+        <button
+          type="button"
+          className={`map-chip map-chip--toggle ${onlyHotspots ? 'is-active' : ''}`}
+          onClick={() => setOnlyHotspots((v) => !v)}
+          aria-pressed={onlyHotspots}
+        >
+          Solo hotspots
+        </button>
+        {selectedZone && (
+          <button
+            type="button"
+            className="map-chip map-chip--clear"
+            onClick={() => setSelectedZone(null)}
+          >
+            Limpiar selección
+          </button>
+        )}
       </div>
 
       {mapMode === 'advanced' && (
@@ -491,41 +566,27 @@ export default function SpainMapPage() {
         </div>
       )}
 
-      <div className="map-toolbar map-toolbar--sticky">
-        <div className="filter-row">
-          <label>{t('map.region', { defaultValue: 'Comunidad' })}</label>
-          <select value={filterRegion} onChange={(e) => setFilterRegion(e.target.value)}>
-            {regions.map((r) => (
-              <option key={r} value={r}>
-                {r === 'todas' ? t('map.allRegions', { defaultValue: 'Todas' }) : r}
-              </option>
-            ))}
-          </select>
-        </div>
-        {mapMode === 'advanced' && (
+      {mapMode === 'advanced' && (
+        <div className="map-toolbar map-toolbar--sticky map-toolbar--slim">
           <div className="filter-row">
             <label>{t('map.alertFilter', { defaultValue: 'Aviso' })}</label>
             <select value={filterAlert} onChange={(e) => setFilterAlert(e.target.value)}>
-              <option value="todas">{t('map.allLevels', { defaultValue: 'Todos los niveles' })}</option>
-              <option value="extreme">{t('map.levelExtreme', { defaultValue: 'Desfavorable' })} (rojo)</option>
-              <option value="severe">{t('map.levelSevere', { defaultValue: 'Regular' })} (naranja)</option>
-              <option value="moderate">{t('map.levelModerate', { defaultValue: 'Aceptable' })} (ámbar)</option>
+              <option value="todas">{t('map.allLevels', { defaultValue: 'Todos' })}</option>
+              <option value="extreme">{t('map.levelExtreme', { defaultValue: 'Desfavorable' })}</option>
+              <option value="severe">{t('map.levelSevere', { defaultValue: 'Regular' })}</option>
+              <option value="moderate">{t('map.levelModerate', { defaultValue: 'Aceptable' })}</option>
               <option value="good">{t('map.levelGood', { defaultValue: 'Favorable' })}</option>
               <option value="unknown">{t('map.noData', { defaultValue: 'Sin datos' })}</option>
             </select>
           </div>
-        )}
-        <div className="filter-row map-toolbar__meta">
-          <span>
-            {filteredZones.length} {t('map.zones', { defaultValue: 'zonas' })}
-            {loadingAlerts ? ` · ${t('map.loadingWeather', { defaultValue: 'avisos…' })}` : ''}
-            {' · '}
-            <a href="https://open-meteo.com" target="_blank" rel="noopener noreferrer">
-              Open-Meteo
-            </a>
-          </span>
+          <div className="filter-row map-toolbar__meta">
+            <span>
+              {filteredZones.length} {t('map.zones', { defaultValue: 'zonas' })}
+              {loadingAlerts ? ` · …` : ''}
+            </span>
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="map-layout">
         <div className="map-container-wrapper">
@@ -553,25 +614,27 @@ export default function SpainMapPage() {
               updateWhenIdle
               keepBuffer={1}
             />
-            {hotspotZones.map((zone) => {
-              const meta = alertFromScore(scores[zone.id] ?? null)
-              return <ZoneHotspot key={`hs-${zone.id}`} zone={zone} meta={meta} />
-            })}
-            {filteredZones.map((zone) => {
-              const meta = alertFromScore(scores[zone.id] ?? null)
-              return (
-                <ZoneMapMarker
-                  key={zone.id}
-                  zone={zone}
-                  meta={{
-                    ...meta,
-                    label: t(`map.alert.${meta.level}.label`, { defaultValue: meta.label }),
-                  }}
-                  onSelect={handleSelectZone}
-                  openLabel={t('map.openCard', { defaultValue: 'Ver ficha y especies' })}
-                />
-              )
-            })}
+            {showHotspots &&
+              hotspotZones.map((zone) => {
+                const meta = alertFromScore(scores[zone.id] ?? null)
+                return <ZoneHotspot key={`hs-${zone.id}`} zone={zone} meta={meta} />
+              })}
+            {showMarkers &&
+              filteredZones.map((zone) => {
+                const meta = alertFromScore(scores[zone.id] ?? null)
+                return (
+                  <ZoneMapMarker
+                    key={zone.id}
+                    zone={zone}
+                    meta={{
+                      ...meta,
+                      label: t(`map.alert.${meta.level}.label`, { defaultValue: meta.label }),
+                    }}
+                    onSelect={handleSelectZone}
+                    openLabel={t('map.openCard', { defaultValue: 'Abrir' })}
+                  />
+                )
+              })}
             <MapController zone={selectedZone} />
           </MapContainer>
 
@@ -670,11 +733,9 @@ export default function SpainMapPage() {
                 )
               })()}
 
-              <h2 className="zone-detail-name">{selectedZone.name}</h2>
-              <p className="zone-detail-region">
-                {selectedZone.region} · {selectedZone.provinces.join(', ')}
-              </p>
-              <p className="zone-detail-desc">{selectedZone.description}</p>
+              <h2 className="zone-detail-name">{shortZoneLabel(selectedZone.name, 40)}</h2>
+              <p className="zone-detail-region">{selectedZone.region}</p>
+              <p className="zone-detail-desc zone-detail-desc--clamp">{selectedZone.description}</p>
 
               <ZoneWeatherPanel
                 lat={selectedZone.lat}
@@ -793,49 +854,51 @@ export default function SpainMapPage() {
         </div>
       </div>
 
-      <div className="zone-list-section">
-        <h2 className="zone-list-title">
-          {t('map.boardTitle', {
-            count: filteredZones.length,
-            defaultValue: 'Tablero de avisos ({{count}})',
-          })}
-        </h2>
+      <div className="zone-list-section zone-list-section--compact">
+        <div className="zone-list-head">
+          <h2 className="zone-list-title">
+            {t('map.boardTitleShort', {
+              count: filteredZones.length,
+              defaultValue: 'Zonas ({{count}})',
+            })}
+          </h2>
+          <span className="zone-list-hint">
+            {t('map.boardHint', { defaultValue: 'Toca para volar al mapa' })}
+          </span>
+        </div>
         {filteredZones.length === 0 ? (
           <EmptyState
-            title={t('map.emptyFilterTitle', { defaultValue: 'Sin zonas con estos filtros' })}
+            title={t('map.emptyFilterTitle', { defaultValue: 'Sin zonas' })}
             description={t('map.emptyFilterBody', {
-              defaultValue: 'Prueba otra comunidad o nivel de aviso.',
+              defaultValue: 'Quita filtros o elige otra comunidad.',
             })}
-            actionLabel={t('map.resetFilters', { defaultValue: 'Quitar filtros' })}
+            actionLabel={t('map.resetFilters', { defaultValue: 'Reset' })}
             onAction={() => {
               setFilterRegion('todas')
               setFilterAlert('todas')
+              setOnlyHotspots(false)
             }}
           />
         ) : (
-          <div className="zone-list-grid">
+          <div className="zone-list-rail" role="list">
             {filteredZones.map((zone) => {
               const meta = alertFromScore(scores[zone.id] ?? null)
               const hot = isHotspotActive(meta.level)
-              const label = t(`map.alert.${meta.level}.label`, { defaultValue: meta.label })
+              const scoreTxt =
+                meta.score !== null ? String(meta.score) : loadingAlerts ? '…' : '—'
               return (
                 <button
                   key={zone.id}
                   type="button"
-                  className={`zone-card zone-card--alert ${selectedZone?.id === zone.id ? 'active' : ''} ${hot ? 'zone-card--hotspot' : ''}`}
-                  style={{ borderLeftColor: meta.color }}
+                  role="listitem"
+                  title={zone.name}
+                  className={`zone-pill ${selectedZone?.id === zone.id ? 'is-active' : ''} ${hot ? 'is-hot' : ''}`}
+                  style={{ ['--pill' as string]: meta.color }}
                   onClick={() => handleSelectZone(zone)}
                 >
-                  <div className="zone-card-info">
-                    <span className="zone-card-name">{zone.name}</span>
-                    <span className="zone-card-region">{zone.region}</span>
-                    <span className="zone-card-alert" style={{ color: meta.color }}>
-                      {label}
-                      {meta.score !== null ? ` · ${meta.score}` : loadingAlerts ? ' · …' : ''}
-                      {hot ? ` · ${t('map.hotspotShort', { defaultValue: 'hotspot' })}` : ''}
-                    </span>
-                  </div>
-                  <span className="zone-card-dot" style={{ background: meta.color }} />
+                  <span className="zone-pill__dot" aria-hidden />
+                  <span className="zone-pill__name">{shortZoneLabel(zone.name)}</span>
+                  <span className="zone-pill__score">{scoreTxt}</span>
                 </button>
               )
             })}

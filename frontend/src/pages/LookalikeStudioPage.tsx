@@ -1,18 +1,21 @@
 /**
- * Lookalike Studio — side-by-side compare polish (Phase D-07).
- * Photography-first, risk-honest (RiskChip only), mobile 1-gesture.
+ * Lookalike Studio — classic confusions + side-by-side compare.
+ * Photography-first, risk-honest (RiskChip only), one-tap classic pairs.
  */
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
   addToStudioSelection,
+  availableClassicPairs,
   buildCompareRows,
   canCompare,
+  loadClassicPair,
   LOOKALIKE_STUDIO_MAX,
-  removeFromStudioSelection,
   LOOKALIKE_STUDIO_MIN,
+  removeFromStudioSelection,
   suggestStudioPeers,
+  type ClassicLookalikePair,
   type StudioTaxonCard,
 } from '../lib/lookalikeStudio'
 import { searchCatalogRanked } from '../lib/catalogSearch'
@@ -31,8 +34,14 @@ export function LookalikeStudioPage() {
   const [selection, setSelection] = useState<StudioTaxonCard[]>([])
   const [error, setError] = useState<string | null>(null)
   const [focused, setFocused] = useState(false)
+  const [activePairId, setActivePairId] = useState<string | null>(null)
 
   const rows = useMemo(() => buildCompareRows(selection), [selection])
+  const classics = useMemo(() => {
+    if (catalogLoading || speciesCatalog.length === 0) return []
+    return availableClassicPairs()
+  }, [catalogLoading, speciesCatalog.length])
+
   const suggestions = useMemo(() => {
     if (catalogLoading || speciesCatalog.length === 0) return []
     if (selection.length === 0) return suggestStudioPeers('Amanita phalloides', 8)
@@ -44,7 +53,7 @@ export function LookalikeStudioPage() {
     if (q.length < 2 || speciesCatalog.length === 0) return []
     return searchCatalogRanked(speciesCatalog, {
       query: q,
-      limit: 6,
+      limit: 8,
       boostHighRisk: true,
     }).filter((s) => !selection.some((x) => x.taxon === s.taxon))
   }, [query, selection, speciesCatalog])
@@ -53,10 +62,26 @@ export function LookalikeStudioPage() {
     const { selection: next, error: err } = addToStudioSelection(selection, q)
     setSelection(next)
     setError(err)
+    setActivePairId(null)
     if (!err) {
       setQuery('')
       setFocused(false)
     }
+  }
+
+  const loadPair = (pair: ClassicLookalikePair) => {
+    const { selection: next, missing } = loadClassicPair(pair)
+    setSelection(next)
+    setActivePairId(pair.id)
+    setError(
+      missing.length
+        ? t('lookalike.pairPartial', {
+            defaultValue: 'Par cargado (faltan en catálogo: {{names}})',
+            names: missing.join(', '),
+          })
+        : null,
+    )
+    setQuery('')
   }
 
   const slots = Array.from({ length: LOOKALIKE_STUDIO_MAX }, (_, i) => selection[i] ?? null)
@@ -70,10 +95,9 @@ export function LookalikeStudioPage() {
         <h1 className="page-title">
           {t('lookalike.studioTitle', { defaultValue: 'Lookalike Studio' })}
         </h1>
-        <p className="page-subtitle">
-          {t('lookalike.studioSubtitle', {
-            defaultValue:
-              'Coloca hasta tres setas frente a frente. Fotografía, riesgo y familia — para estudiar confusiones, no para decidir qué llevarse a la mesa.',
+        <p className="page-subtitle lookalike-hero__lead">
+          {t('lookalike.studioSubtitleShort', {
+            defaultValue: 'Compara confusiones clásicas. Solo orientación — nunca consumo.',
           })}
         </p>
         <div
@@ -92,9 +116,9 @@ export function LookalikeStudioPage() {
           ))}
           <span className="lookalike-progress__label">
             {canCompare(selection)
-              ? t('lookalike.ready', { defaultValue: 'Comparación lista' })
+              ? t('lookalike.ready', { defaultValue: 'Lista' })
               : t('lookalike.needMore', {
-                  defaultValue: '{{count}} de {{min}} · añade al menos 2',
+                  defaultValue: '{{count}}/{{min}}',
                   count: selection.length,
                   min: LOOKALIKE_STUDIO_MIN,
                 })}
@@ -102,9 +126,34 @@ export function LookalikeStudioPage() {
         </div>
       </header>
 
+      {/* Classic one-tap confusions */}
+      <section className="lookalike-classics" aria-label="Confusiones clásicas">
+        <h2 className="lookalike-classics__title">
+          {t('lookalike.classicsTitle', { defaultValue: 'Confusiones clásicas' })}
+        </h2>
+        <div className="lookalike-classics__rail">
+          {classics.map((pair) => (
+            <button
+              key={pair.id}
+              type="button"
+              className={`lookalike-classic-card ${activePairId === pair.id ? 'is-active' : ''}`}
+              onClick={() => loadPair(pair)}
+            >
+              <div className="lookalike-classic-card__thumbs" aria-hidden>
+                {pair.taxa.slice(0, 2).map((tx) => (
+                  <SpeciesThumb key={tx} taxon={tx} size={44} className="lookalike-classic-card__thumb" />
+                ))}
+              </div>
+              <span className="lookalike-classic-card__label">{pair.label}</span>
+              <span className="lookalike-classic-card__why">{pair.why}</span>
+            </button>
+          ))}
+        </div>
+      </section>
+
       <div className="lookalike-search-panel atelier-panel">
         <label className="lookalike-search-label" htmlFor="lookalike-search">
-          {t('lookalike.searchLabel', { defaultValue: 'Buscar taxón' })}
+          {t('lookalike.searchLabel', { defaultValue: 'Buscar o añadir' })}
         </label>
         <div className={`lookalike-search ${focused ? 'is-focused' : ''}`}>
           <IconSearch size={18} />
@@ -114,7 +163,7 @@ export function LookalikeStudioPage() {
             value={query}
             autoComplete="off"
             placeholder={t('lookalike.searchPlaceholder', {
-              defaultValue: 'Oronja, níscalo, Galerina marginata…',
+              defaultValue: 'Oronja, níscalo, Galerina…',
             })}
             disabled={selection.length >= LOOKALIKE_STUDIO_MAX}
             onChange={(e) => setQuery(e.target.value)}
@@ -168,11 +217,10 @@ export function LookalikeStudioPage() {
       {selection.length === 0 ? (
         <EmptyState
           title={t('lookalike.emptyTitle', {
-            defaultValue: 'Elige setas para comparar',
+            defaultValue: 'Toca un par clásico o busca',
           })}
           description={t('lookalike.emptyBody', {
-            defaultValue:
-              'Busca por nombre común o científico, o toca una sugerencia de alto riesgo.',
+            defaultValue: 'Empieza por una confusión famosa de arriba, o añade dos taxones a mano.',
           })}
           icon={<IconMushroom size={30} />}
         />
@@ -180,7 +228,6 @@ export function LookalikeStudioPage() {
         <div
           className="lookalike-studio-grid lookalike-studio-grid--scroll"
           style={{
-            // Desktop multi-col; mobile CSS forces horizontal swipe rail
             ['--lookalike-cols' as string]: String(Math.max(selection.length, 1)),
           }}
         >
@@ -196,7 +243,7 @@ export function LookalikeStudioPage() {
                 />
                 <span className="lookalike-studio-card__rank">#{idx + 1}</span>
                 <div className="lookalike-studio-card__risk">
-                  <RiskChip risk={s.risk_label} />
+                  <RiskChip risk={s.risk_label} boost={s.risk_label === 'deadly'} />
                 </div>
               </div>
               <div className="lookalike-studio-card__body">
@@ -209,12 +256,15 @@ export function LookalikeStudioPage() {
                 />
                 <div className="lookalike-studio-card__actions">
                   <Link to={`/enciclopedia/${s.slug}`} className="btn-atelier btn-atelier--ghost">
-                    {t('lookalike.viewDetail', { defaultValue: 'Ver ficha' })}
+                    {t('lookalike.viewDetail', { defaultValue: 'Ficha' })}
                   </Link>
                   <button
                     type="button"
                     className="btn-atelier btn-atelier--ghost"
-                    onClick={() => setSelection(removeFromStudioSelection(selection, s.taxon))}
+                    onClick={() => {
+                      setSelection(removeFromStudioSelection(selection, s.taxon))
+                      setActivePairId(null)
+                    }}
                   >
                     {t('lookalike.remove', { defaultValue: 'Quitar' })}
                   </button>
@@ -229,29 +279,18 @@ export function LookalikeStudioPage() {
         <div className="atelier-panel lookalike-table-panel">
           <div className="lookalike-table-head">
             <h2 className="lookalike-table-title">
-              {t('lookalike.tableTitle', { defaultValue: 'Tabla de comparación' })}
+              {t('lookalike.tableTitle', { defaultValue: 'Diferencias' })}
             </h2>
-            <p className="lookalike-table-lead">
-              {t('lookalike.tableLead', {
-                defaultValue:
-                  'Lee en horizontal. El riesgo es orientación de seguridad, no edibilidad.',
-              })}
-            </p>
           </div>
           <div className="lookalike-table-scroll">
             <table className="lookalike-compare-table">
               <thead>
                 <tr>
-                  <th scope="col">
-                    {t('lookalike.characterCol', { defaultValue: 'Carácter' })}
-                  </th>
+                  <th scope="col">{t('lookalike.characterCol', { defaultValue: 'Carácter' })}</th>
                   {selection.map((s) => (
                     <th key={s.taxon} scope="col">
                       <span className="lookalike-th-common">
-                        {s.common_names[0] ||
-                          t('lookalike.noLocalName', {
-                            defaultValue: 'Sin nombre local',
-                          })}
+                        {s.common_names[0] || s.taxon.split(' ')[0]}
                       </span>
                       <em>{s.taxon}</em>
                     </th>
@@ -260,12 +299,15 @@ export function LookalikeStudioPage() {
               </thead>
               <tbody>
                 {rows.map((row) => (
-                  <tr key={row.field}>
+                  <tr
+                    key={row.field}
+                    className={row.highlight ? 'lookalike-row--diff' : undefined}
+                  >
                     <th scope="row">{row.field}</th>
                     {row.values.map((v, i) => (
                       <td key={`${row.field}-${i}`}>
-                        {row.field === 'Riesgo (orientación)' ? (
-                          <RiskChip risk={v} label={getRiskMeta(v).label} />
+                        {row.field === 'Riesgo' ? (
+                          <RiskChip risk={v} label={getRiskMeta(v).label} boost={v === 'deadly'} />
                         ) : (
                           v
                         )}
@@ -276,21 +318,18 @@ export function LookalikeStudioPage() {
               </tbody>
             </table>
           </div>
+          {activePairId && (
+            <p className="lookalike-pair-note">
+              {classics.find((c) => c.id === activePairId)?.why}
+            </p>
+          )}
         </div>
       )}
 
       <section className="lookalike-suggest-section">
-        <div className="lookalike-table-head">
-          <h2 className="lookalike-table-title">
-            {t('lookalike.suggestTitle', { defaultValue: 'Sugerencias de estudio' })}
-          </h2>
-          <p className="lookalike-table-lead">
-            {t('lookalike.suggestLead', {
-              defaultValue:
-                'Alto riesgo o misma familia — ideales para practicar lookalikes.',
-            })}
-          </p>
-        </div>
+        <h2 className="lookalike-table-title">
+          {t('lookalike.suggestTitle', { defaultValue: 'Añadir lookalike' })}
+        </h2>
         <div className="lookalike-suggest-row">
           {suggestions.map((s) => {
             const disabled = selection.some((x) => x.taxon === s.taxon)
@@ -304,7 +343,7 @@ export function LookalikeStudioPage() {
               >
                 <SpeciesThumb taxon={s.taxon} riskLabel={s.risk_label} size={36} />
                 <span className="lookalike-suggest-chip__text">
-                  <strong>{s.common_names[0] || s.taxon}</strong>
+                  <strong>{s.common_names[0] || s.taxon.split(' ')[0]}</strong>
                   <small>{s.taxon}</small>
                 </span>
                 <RiskChip risk={s.risk_label} />
@@ -312,14 +351,6 @@ export function LookalikeStudioPage() {
             )
           })}
         </div>
-        {selection.length === 1 && (
-          <p className="lookalike-hint">
-            {t('lookalike.tip', {
-              defaultValue:
-                'Tip: añade un lookalike de la misma familia o un taxón mortal para contrastar caracteres.',
-            })}
-          </p>
-        )}
       </section>
     </div>
   )

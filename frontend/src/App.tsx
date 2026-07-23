@@ -48,6 +48,9 @@ const LookalikeStudioPage = lazy(() =>
 const QuizGamePage = lazy(() =>
   import('./pages/QuizGamePage').then((m) => ({ default: m.QuizGamePage })),
 )
+const SetadlePage = lazy(() =>
+  import('./pages/SetadlePage').then((m) => ({ default: m.SetadlePage })),
+)
 const NotFoundPage = lazy(() =>
   import('./pages/NotFoundPage').then((m) => ({ default: m.NotFoundPage })),
 )
@@ -103,6 +106,8 @@ function App() {
                   <Route path="/offline" element={<OfflinePackPage />} />
                   <Route path="/lookalikes" element={<LookalikeStudioPage />} />
                   <Route path="/reto" element={<QuizGamePage />} />
+                  <Route path="/setadle" element={<SetadlePage />} />
+                  <Route path="/setadle/:mode" element={<SetadlePage />} />
                   <Route path="/ml" element={<MlDashboardPage />} />
                   <Route path="*" element={<NotFoundPage />} />
                 </Routes>
