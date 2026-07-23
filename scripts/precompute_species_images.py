@@ -58,14 +58,23 @@ LICENSE_ALLOWLIST = {
     "pd",
 }
 
-# Quality floors (Phase C / D-C1) — keep in sync with audit_media.py
+# Quality floors (Phase C / D-C1) — keep in sync with audit_media.py + vite/BE
 MIN_CARD_BYTES = 8192
+MIN_THUMB_BYTES = 1500
+MIN_DETAIL_BYTES = 15000
 OK_REAL_CARD_BYTES = 20480
 MIN_CARD_DIMS = (240, 180)
+MIN_BYTES_BY_VARIANT = {
+    "card": MIN_CARD_BYTES,
+    "thumb": MIN_THUMB_BYTES,
+    "detail": MIN_DETAIL_BYTES,
+    "lqip": 200,
+}
 
+# Contact: replace with production email before bulk Commons/GBIF crawl (C-18 / Issue 11)
 USER_AGENT = (
     "VisionSetilBot/1.0 (+https://github.com/AlonsoAlviraa/VisionSetil; "
-    "contact: media@visionsetil.local)"
+    "contact: media@visionsetil.local  # TODO C-18: real ops contact)"
 )
 
 
@@ -279,7 +288,7 @@ def write_species_assets(
     rgb: tuple[int, int, int],
     *,
     source: str = "procedural",
-    enforce_card_floor: bool = True,
+    enforce_floors: bool = True,
 ) -> None:
     d = SPECIES_DIR / slug
     d.mkdir(parents=True, exist_ok=True)
@@ -288,7 +297,7 @@ def write_species_assets(
     seed = hashlib.sha256(slug.encode("utf-8")).digest()
     for variant, width in VARIANTS.items():
         q = 45 if variant == "lqip" else (70 if variant == "thumb" else 82)
-        min_b = MIN_CARD_BYTES if (enforce_card_floor and variant == "card") else 0
+        min_b = MIN_BYTES_BY_VARIANT.get(variant, 0) if enforce_floors else 0
         fmt = write_image(
             d / f"{variant}.webp",
             width,
@@ -301,7 +310,9 @@ def write_species_assets(
         if p.exists():
             hashes[variant] = hashlib.sha256(p.read_bytes()).hexdigest()
     card_path = d / "card.webp"
+    thumb_path = d / "thumb.webp"
     card_bytes = card_path.stat().st_size if card_path.exists() else 0
+    thumb_bytes = thumb_path.stat().st_size if thumb_path.exists() else 0
     meta = {
         "slug": slug,
         "source": source,
@@ -318,6 +329,7 @@ def write_species_assets(
         "format_note": fmt,
         "quality": {
             "card_bytes": card_bytes,
+            "thumb_bytes": thumb_bytes,
             "class": "ok_procedural" if card_bytes >= MIN_CARD_BYTES else "stub",
             "checked_at": datetime.now(timezone.utc).isoformat(),
         },
@@ -325,17 +337,82 @@ def write_species_assets(
     (d / "meta.json").write_text(json.dumps(meta, indent=2) + "\n", encoding="utf-8")
 
 
+def _is_webp_magic(path: Path) -> bool:
+    if not path.exists() or not path.is_file():
+        return False
+    head = path.read_bytes()[:12]
+    return head[:4] == b"RIFF" and head[8:12] == b"WEBP"
+
+
 def card_is_stub(slug: str) -> bool:
     """True if card missing, corrupt magic, or below MIN_CARD_BYTES."""
     card = SPECIES_DIR / slug / "card.webp"
-    if not card.exists() or not card.is_file():
+    if not _is_webp_magic(card):
         return True
     if card.stat().st_size < MIN_CARD_BYTES:
         return True
-    head = card.read_bytes()[:12]
-    if not (head[:4] == b"RIFF" and head[8:12] == b"WEBP"):
+    return False
+
+
+def thumb_is_stub(slug: str) -> bool:
+    """True if thumb missing/corrupt/below MIN_THUMB_BYTES."""
+    thumb = SPECIES_DIR / slug / "thumb.webp"
+    if not _is_webp_magic(thumb):
+        return True
+    if thumb.stat().st_size < MIN_THUMB_BYTES:
         return True
     return False
+
+
+def ensure_thumb_from_card(slug: str) -> bool:
+    """If card is non-stub but thumb is stub, re-encode thumb from card (Issue 1).
+
+    Returns True if thumb was rewritten.
+    """
+    from io import BytesIO
+
+    card = SPECIES_DIR / slug / "card.webp"
+    thumb = SPECIES_DIR / slug / "thumb.webp"
+    if card_is_stub(slug) or not thumb_is_stub(slug):
+        return False
+    try:
+        from PIL import Image
+
+        im = Image.open(card).convert("RGB")
+        w = VARIANTS["thumb"]
+        h = max(1, int(im.height * (w / max(1, im.width))))
+        copy = im.resize((w, h), Image.Resampling.LANCZOS)
+        # Keep quality high enough to stay ≥ MIN_THUMB_BYTES
+        for q in (80, 88, 95):
+            buf = BytesIO()
+            copy.save(buf, format="WEBP", quality=q, method=4)
+            data = buf.getvalue()
+            if len(data) >= MIN_THUMB_BYTES:
+                thumb.write_bytes(data)
+                return True
+        # Last resort: larger canvas with noise so encode does not collapse
+        big = copy.resize((max(w, 240), max(h, 180)), Image.Resampling.LANCZOS)
+        buf = BytesIO()
+        big.save(buf, format="WEBP", quality=92, method=0)
+        thumb.write_bytes(buf.getvalue())
+        return True
+    except Exception as exc:  # noqa: BLE001
+        print(f"  ensure_thumb_from_card {slug} failed: {exc}")
+        return False
+
+
+def rebuild_tiny_thumbs(slugs: set[str] | None = None) -> int:
+    """Regenerate stub thumbs from good cards for priority/local corpus."""
+    n = 0
+    targets = slugs
+    if targets is None:
+        targets = {p.parent.name for p in SPECIES_DIR.glob("*/card.webp")}
+    for slug in sorted(targets):
+        if ensure_thumb_from_card(slug):
+            n += 1
+            print(f"  thumb rebuilt from card: {slug}")
+    print(f"rebuilt {n} thumbs from cards")
+    return n
 
 
 def generate_fixtures() -> None:
@@ -355,7 +432,7 @@ def generate_all_species(
     """Generate distinct procedural cards for catalog species (local corpus).
 
     only_missing: skip existing cards (legacy; preserves tinies — footgun).
-    force_stubs: rewrite cards that fail quality floor (C-13).
+    force_stubs: rewrite when card OR thumb fails quality floor (C-13 / Issue 1).
     """
     n = 0
     for sp in catalog.get("species", []):
@@ -364,8 +441,14 @@ def generate_all_species(
             continue
         card = SPECIES_DIR / slug / "card.webp"
         if force_stubs:
-            if not card_is_stub(slug):
+            needs = card_is_stub(slug) or thumb_is_stub(slug)
+            if not needs:
                 continue
+            # Prefer thumb-only repair when card is already good (preserve real photos)
+            if not card_is_stub(slug) and thumb_is_stub(slug):
+                if ensure_thumb_from_card(slug):
+                    n += 1
+                    continue
             source = "procedural_stub_rebuild"
         elif only_missing and card.exists():
             continue
@@ -820,7 +903,12 @@ def main() -> int:
     parser.add_argument(
         "--force-stubs",
         action="store_true",
-        help="Only rewrite cards that fail quality class stub/corrupt or bytes < MIN_CARD_BYTES (C-13)",
+        help="Rewrite cards/thumbs that fail size floors (card <8192 or thumb <1500); thumb repaired from card when possible (C-13)",
+    )
+    parser.add_argument(
+        "--fix-thumbs",
+        action="store_true",
+        help="Only rebuild tiny thumbs from non-stub cards (does not rewrite good cards)",
     )
     parser.add_argument(
         "--priority-only",
@@ -852,6 +940,11 @@ def main() -> int:
     if not args.priority_only:
         generate_fixtures()
     do_all = args.all and not args.no_all and not args.fixtures_only
+    if args.fix_thumbs:
+        rebuild_tiny_thumbs(only_slugs)
+        write_manifests(catalog)
+        budget = 5.0 if args.fixtures_only or args.no_all else args.max_mb
+        return check_media_size(max_mb=budget)
     if args.force_stubs:
         generate_all_species(
             catalog,
@@ -859,6 +952,8 @@ def main() -> int:
             force_stubs=True,
             only_slugs=only_slugs,
         )
+        # Second pass: any remaining tiny thumbs from good cards
+        rebuild_tiny_thumbs(only_slugs)
     elif do_all and not args.fetch:
         # When only fetching, skip re-writing all procedural unless --all without --no-all
         generate_all_species(

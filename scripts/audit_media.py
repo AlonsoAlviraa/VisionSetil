@@ -281,7 +281,11 @@ def main() -> int:
     parser.add_argument(
         "--fail-priority",
         action="store_true",
-        help="Exit 1 if any priority slug is not non-stub (ok_real|ok_procedural)",
+        help=(
+            "Exit 1 if any priority slug is stub/missing/corrupt. "
+            "Non-stub interim = ok_real|ok_procedural|legacy_unverified with card>=8192 "
+            "(ok_real remains separate license-strict KPI; see WEB_PRODUCT_BAR.md)"
+        ),
     )
     parser.add_argument(
         "--strict-stubs",

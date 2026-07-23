@@ -90,6 +90,8 @@ export function SeasonRadar({ seasonId, date, compact, className = '' }: Props) 
                   taxon={t.taxon}
                   slug={t.slug}
                   riskLabel={t.risk_label}
+                  /* Immersive: fill 4:5 cell (no forced 56px). Compact lists keep fixed size. */
+                  fill={immersive}
                   size={compact ? 48 : 56}
                   className="season-radar__thumb"
                 />

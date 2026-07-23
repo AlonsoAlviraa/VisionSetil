@@ -13,6 +13,7 @@ import {
 import { toRiskLabel } from './riskLabels'
 import { featureFlags } from './featureFlags'
 import seasonPack from '../data/generated/season_pack_v1.json'
+import seasonSeeds from '../data/season_taxon_seeds.json'
 
 /** Ensure catalog is hydrated (legacy fallback path only). */
 export async function ensureSeasonCatalog(): Promise<CatalogSpecies[]> {
@@ -56,37 +57,12 @@ export const SEASON_META: Record<SeasonId, SeasonInfo> = {
   },
 }
 
-/** Curated educational taxa per season (scientific names in catalog when possible). */
+/** Curated educational taxa per season — SSOT: `data/season_taxon_seeds.json` (Issue 7). */
 export const SEASON_TAXON_SEEDS: Record<SeasonId, string[]> = {
-  primavera: [
-    'Morchella esculenta',
-    'Calocybe gambosa',
-    'Agaricus campestris',
-    'Verpa conica', // D-C21: was Verpa bohemica (not in catalog v2)
-    'Sarcoscypha coccinea',
-  ],
-  verano: [
-    'Cantharellus cibarius',
-    'Amanita caesarea',
-    'Russula virescens',
-    'Boletus aereus',
-    'Amanita phalloides',
-  ],
-  otono: [
-    'Boletus edulis',
-    'Lactarius deliciosus',
-    'Amanita phalloides',
-    'Hydnum repandum',
-    'Macrolepiota procera',
-    'Galerina marginata',
-    'Hypholoma fasciculare',
-  ],
-  invierno: [
-    'Tuber melanosporum',
-    'Pleurotus ostreatus',
-    'Flammulina velutipes',
-    'Hygrophorus marzuolus',
-  ],
+  primavera: [...(seasonSeeds.seasons.primavera as string[])],
+  verano: [...(seasonSeeds.seasons.verano as string[])],
+  otono: [...(seasonSeeds.seasons.otono as string[])],
+  invierno: [...(seasonSeeds.seasons.invierno as string[])],
 }
 
 export type SeasonPackTaxon = {

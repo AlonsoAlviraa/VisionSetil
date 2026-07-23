@@ -130,16 +130,9 @@ def test_stub_card_rewrites_to_placeholder_with_short_cache(client: TestClient, 
     from app.services import species_media as sm
 
     media_root = tmp_path / "media"
-    species_dir = media_root / "species" / "stub-test-taxon"
-    species_dir.mkdir(parents=True)
-    # Tiny invalid-as-photo webp-like payload under floor
-    tiny = b"RIFF" + (100).to_bytes(4, "little") + b"WEBP" + b"\x00" * 80
-    (species_dir / "card.webp").write_bytes(tiny)
-
     # Brand placeholders
     ph = media_root / "placeholders"
     ph.mkdir(parents=True)
-    # Minimal real-ish webp from PIL
     buf = io.BytesIO()
     Image.new("RGB", (32, 32), color=(58, 90, 64)).save(buf, format="WEBP", quality=80)
     ph_bytes = buf.getvalue()
@@ -152,11 +145,8 @@ def test_stub_card_rewrites_to_placeholder_with_short_cache(client: TestClient, 
     sm.load_slim_manifest.cache_clear()
     sm.load_full_manifest.cache_clear()
 
-    # force is_valid_slug true path: use real catalog slug if possible
     slug = "amanita-phalloides"
-    # write stub under real media root temporarily
-    root = Path(settings.species_media_root)
-    # settings already monkeypatched — write stub under tmp media for real slug
+    tiny = b"RIFF" + (100).to_bytes(4, "little") + b"WEBP" + b"\x00" * 80
     d = media_root / "species" / slug
     d.mkdir(parents=True, exist_ok=True)
     (d / "card.webp").write_bytes(tiny)
@@ -169,6 +159,52 @@ def test_stub_card_rewrites_to_placeholder_with_short_cache(client: TestClient, 
 
     r0 = client.get(f"/media/species/{slug}/card.webp?fallback=0")
     assert r0.status_code == 404
+
+
+def test_tiny_thumb_falls_through_to_non_stub_card(client: TestClient, tmp_path, monkeypatch):
+    """Issue 1: thumb <1500 B + good card → sibling card body, not placeholder."""
+    from app.services import species_media as sm
+
+    media_root = tmp_path / "media"
+    ph = media_root / "placeholders"
+    ph.mkdir(parents=True)
+    ph_buf = io.BytesIO()
+    Image.new("RGB", (16, 16), color=(10, 10, 10)).save(ph_buf, format="WEBP", quality=50)
+    ph_bytes = ph_buf.getvalue()
+    for k in ("default", "unknown", "toxic", "deadly"):
+        (ph / f"{k}.webp").write_bytes(ph_bytes)
+
+    slug = "amanita-phalloides"
+    d = media_root / "species" / slug
+    d.mkdir(parents=True)
+    tiny_thumb = b"RIFF" + (60).to_bytes(4, "little") + b"WEBP" + b"\x00" * 40
+    assert len(tiny_thumb) < 1500
+    (d / "thumb.webp").write_bytes(tiny_thumb)
+
+    # Entropy so WebP stays ≥ card floor (solid color compresses too small)
+    import random
+
+    rng = random.Random(42)
+    arr = bytearray()
+    for _y in range(360):
+        for _x in range(480):
+            n = rng.randint(0, 50)
+            arr.extend([max(0, min(255, 74 + n)), max(0, min(255, 120 + n)), max(0, min(255, 60 + n))])
+    card_buf = io.BytesIO()
+    Image.frombytes("RGB", (480, 360), bytes(arr)).save(card_buf, format="WEBP", quality=90, method=0)
+    card_bytes = card_buf.getvalue()
+    assert len(card_bytes) >= 8192
+    (d / "card.webp").write_bytes(card_bytes)
+
+    monkeypatch.setattr(settings, "species_media_root", str(media_root))
+    sm.load_slim_manifest.cache_clear()
+    sm.load_full_manifest.cache_clear()
+
+    r = client.get(f"/media/species/{slug}/thumb.webp?fallback=1")
+    assert r.status_code == 200
+    assert r.headers.get("X-Media-Quality") == "sibling_fallback"
+    assert r.content == card_bytes
+    assert r.content != ph_bytes
 
 
 def test_media_invalid_slug_rejected(client: TestClient):

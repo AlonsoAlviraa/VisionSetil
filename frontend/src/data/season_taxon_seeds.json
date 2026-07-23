@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "description": "SSOT season educational seeds (D-C21). Consumed by seasonRadar.ts + scripts/build_season_pack.py. Do not reintroduce Verpa bohemica.",
+  "aliases": {
+    "Verpa bohemica": "Verpa conica"
+  },
+  "seasons": {
+    "primavera": [
+      "Morchella esculenta",
+      "Calocybe gambosa",
+      "Agaricus campestris",
+      "Verpa conica",
+      "Sarcoscypha coccinea"
+    ],
+    "verano": [
+      "Cantharellus cibarius",
+      "Amanita caesarea",
+      "Russula virescens",
+      "Boletus aereus",
+      "Amanita phalloides"
+    ],
+    "otono": [
+      "Boletus edulis",
+      "Lactarius deliciosus",
+      "Amanita phalloides",
+      "Hydnum repandum",
+      "Macrolepiota procera",
+      "Galerina marginata",
+      "Hypholoma fasciculare"
+    ],
+    "invierno": [
+      "Tuber melanosporum",
+      "Pleurotus ostreatus",
+      "Flammulina velutipes",
+      "Hygrophorus marzuolus"
+    ]
+  }
+}

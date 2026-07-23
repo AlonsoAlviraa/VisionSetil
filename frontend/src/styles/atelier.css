@@ -2676,13 +2676,27 @@ body {
   background: color-mix(in srgb, var(--moss) 25%, #1a221c);
 }
 .season-radar--immersive .season-radar__thumb,
-.season-radar--immersive .season-radar__photo .species-thumb {
+.season-radar--immersive .season-radar__photo .species-thumb,
+.season-radar--immersive .season-radar__photo .species-thumb--fill {
   width: 100% !important;
   height: 100% !important;
   max-width: none;
   border-radius: 0;
   border: none;
   box-shadow: none;
+  display: block;
+}
+/* Issue 4: fill 4:5 cell — override any residual fixed pixel box on SpeciesImage */
+.season-radar--immersive .season-radar__photo .species-image,
+.season-radar--immersive .season-radar__photo .species-image[data-layout='fixed'] {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  position: absolute;
+  inset: 0;
+}
+.season-radar--immersive .season-radar__photo {
+  position: relative;
 }
 .season-radar--immersive .season-radar__copy {
   padding: 0.55rem 0.65rem 0.7rem;

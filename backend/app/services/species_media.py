@@ -133,7 +133,7 @@ def _file_response(
     return FileResponse(path, media_type=media_type, headers=headers)
 
 
-def is_stub_asset(path: Path, variant: str) -> bool:
+def is_stub_asset(path: Path | None, variant: str) -> bool:
     """True if file is missing, tiny (below MIN floor), or non-file."""
     if path is None or not path.exists() or not path.is_file():
         return True
@@ -141,6 +141,19 @@ def is_stub_asset(path: Path, variant: str) -> bool:
     if floor and path.stat().st_size < floor:
         return True
     return False
+
+
+def _sibling_variants(variant: str) -> list[str]:
+    """Prefer usable sibling when requested variant is stub (thumb→card etc.)."""
+    if variant == "thumb":
+        return ["card", "detail"]
+    if variant == "lqip":
+        return ["thumb", "card"]
+    if variant == "detail":
+        return ["card"]
+    if variant == "card":
+        return ["detail", "thumb"]
+    return []
 
 
 def serve_species_variant(
@@ -173,11 +186,22 @@ def serve_species_variant(
 
     path = species_variant_path(slug, variant)
     if path is not None and not is_stub_asset(path, variant):
+        # MVP: coarse quality label (ok_* taxonomy needs meta resolve — Issue 5)
         return _file_response(
             path,
             cache_seconds=604800 if v else 86400,
             quality="ok",
         )
+
+    # Issue 1: tiny/missing thumb (or other) → try non-stub sibling before placeholder
+    for sib in _sibling_variants(variant):
+        sib_path = species_variant_path(slug, sib)
+        if sib_path is not None and not is_stub_asset(sib_path, sib):
+            return _file_response(
+                sib_path,
+                cache_seconds=300,  # short: URL path still names original variant
+                quality="sibling_fallback",
+            )
 
     # Stub or missing
     if not fallback:

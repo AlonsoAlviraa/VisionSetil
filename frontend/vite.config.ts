@@ -76,10 +76,19 @@ function serveRepoMediaPlugin(): Plugin {
           }
 
           let file = safeResolve(rel)
-          let stubFallback = false
+          // quality: ok | sibling_fallback | stub_fallback
+          // MVP simplification: non-stub files use coarse "ok" (not ok_real/ok_procedural/legacy_unverified)
+          let qualityHeader = 'ok'
           const isPlaceholderPath = rel.startsWith('placeholders/') || rel.includes('/placeholder/')
           const variant = variantFromRel(rel)
           const minBytes = variant ? MIN_BYTES_BY_VARIANT[variant] ?? 0 : 0
+
+          const isUsable = (f: string | null, v: string | null): boolean => {
+            if (!f || !fs.existsSync(f) || !fs.statSync(f).isFile()) return false
+            const floor = v ? MIN_BYTES_BY_VARIANT[v] ?? 0 : 0
+            if (floor > 0 && fs.statSync(f).size < floor) return false
+            return true
+          }
 
           const missing =
             !file || !fs.existsSync(file) || !fs.statSync(file).isFile()
@@ -89,21 +98,49 @@ function serveRepoMediaPlugin(): Plugin {
             !isPlaceholderPath &&
             fs.statSync(file!).size < minBytes
 
-          // Fallback: missing or stub-tiny species asset → brand placeholder
+          // Fallback chain: missing/tiny → sibling variants → brand placeholder
           if (missing || tooSmall) {
             if (isPlaceholderPath) {
               res.statusCode = 404
               res.end('placeholder missing')
               return
             }
-            const kind = placeholderKindFromRel(rel)
-            file = safeResolve(`placeholders/${kind}.webp`)
-            stubFallback = true
-            if (!stubFallbackLogged) {
-              stubFallbackLogged = true
-              console.info(
-                `[serve-repo-media] stub/missing → placeholder (e.g. ${rel}); Cache-Control max-age=300`,
-              )
+            // Issue 1: thumb stub + good card → serve card body (sibling_fallback)
+            const siblings =
+              variant === 'thumb'
+                ? ['card', 'detail']
+                : variant === 'lqip'
+                  ? ['thumb', 'card']
+                  : variant === 'detail'
+                    ? ['card']
+                    : variant === 'card'
+                      ? ['detail', 'thumb']
+                      : []
+            const slugMatch = rel.match(/^species\/([^/]+)\//)
+            let usedSibling = false
+            if (slugMatch) {
+              const slug = slugMatch[1]
+              for (const sib of siblings) {
+                const sibRel = `species/${slug}/${sib}.webp`
+                const sibFile = safeResolve(sibRel)
+                if (isUsable(sibFile, sib)) {
+                  file = sibFile
+                  qualityHeader = 'sibling_fallback'
+                  usedSibling = true
+                  break
+                }
+              }
+            }
+            if (!usedSibling) {
+              const kind = placeholderKindFromRel(rel)
+              file = safeResolve(`placeholders/${kind}.webp`)
+              qualityHeader = 'stub_fallback'
+              if (!stubFallbackLogged) {
+                stubFallbackLogged = true
+                console.info(
+                  `[serve-repo-media] stub/missing → placeholder (e.g. ${rel}); Cache-Control max-age=300`,
+                )
+              }
             }
           }
           if (!file || !fs.existsSync(file)) {
@@ -114,15 +151,13 @@ function serveRepoMediaPlugin(): Plugin {
           const ext = path.extname(file).toLowerCase()
           res.statusCode = 200
           res.setHeader('Content-Type', mime[ext] || 'application/octet-stream')
-          // Short cache on stub rewrite so SW is not poisoned for 30d (D-C8)
+          // Short cache on rewrite so SW is not poisoned for 30d (D-C8)
+          const shortCache = qualityHeader === 'stub_fallback' || qualityHeader === 'sibling_fallback'
           res.setHeader(
             'Cache-Control',
-            stubFallback ? 'public, max-age=300' : 'public, max-age=86400',
+            shortCache ? 'public, max-age=300' : 'public, max-age=86400',
           )
-          res.setHeader(
-            'X-Media-Quality',
-            stubFallback ? 'stub_fallback' : 'ok',
-          )
+          res.setHeader('X-Media-Quality', qualityHeader)
           fs.createReadStream(file).pipe(res)
         } catch {
           res.statusCode = 500
@@ -186,15 +221,16 @@ export default defineConfig({
               },
             },
           },
-          // Static /media and proxied /api/media
+          // Species media: NetworkFirst so stub_fallback rewrites after rebuild are not stuck 30d (Issue 6)
           {
-            urlPattern: /\/(?:api\/)?media\/(species|placeholder)\/.+\.(webp|png|jpe?g)$/i,
-            handler: 'CacheFirst',
+            urlPattern: /\/(?:api\/)?media\/species\/.+\.(webp|png|jpe?g)$/i,
+            handler: 'NetworkFirst',
             options: {
               cacheName: 'species-media',
+              networkTimeoutSeconds: 4,
               expiration: {
                 maxEntries: 800,
-                maxAgeSeconds: 30 * 86400,
+                maxAgeSeconds: 7 * 86400,
               },
             },
           },

@@ -22,8 +22,10 @@ CATALOG = ROOT / "data" / "species_catalog" / "species_catalog_v2.json"
 MEDIA = ROOT / "media" / "species"
 OUT = ROOT / "frontend" / "src" / "data" / "generated" / "season_pack_v1.json"
 PRIORITY = ROOT / "media" / "manifests" / "priority_slugs_v1.json"
+# SSOT seeds (Issue 7) — same file as frontend/src/lib/seasonRadar.ts imports
+SEEDS_FILE = ROOT / "frontend" / "src" / "data" / "season_taxon_seeds.json"
 
-# Mirrors frontend/src/lib/seasonRadar.ts SEASON_TAXON_SEEDS (Verpa conica, D-C21)
+# Labels/notes (stable UI copy; seeds come from SEEDS_FILE)
 SEASON_META = {
     "primavera": {
         "id": "primavera",
@@ -51,42 +53,18 @@ SEASON_META = {
     },
 }
 
-SEASON_TAXON_SEEDS: dict[str, list[str]] = {
-    "primavera": [
-        "Morchella esculenta",
-        "Calocybe gambosa",
-        "Agaricus campestris",
-        "Verpa conica",  # was Verpa bohemica — not in catalog v2
-        "Sarcoscypha coccinea",
-    ],
-    "verano": [
-        "Cantharellus cibarius",
-        "Amanita caesarea",
-        "Russula virescens",
-        "Boletus aereus",
-        "Amanita phalloides",
-    ],
-    "otono": [
-        "Boletus edulis",
-        "Lactarius deliciosus",
-        "Amanita phalloides",
-        "Hydnum repandum",
-        "Macrolepiota procera",
-        "Galerina marginata",
-        "Hypholoma fasciculare",
-    ],
-    "invierno": [
-        "Tuber melanosporum",
-        "Pleurotus ostreatus",
-        "Flammulina velutipes",
-        "Hygrophorus marzuolus",
-    ],
-}
 
-# Optional aliases (prefer replacing seeds directly)
-SEASON_TAXON_ALIASES = {
-    "Verpa bohemica": "Verpa conica",
-}
+def load_season_seeds() -> tuple[dict[str, list[str]], dict[str, str]]:
+    if not SEEDS_FILE.exists():
+        raise SystemExit(f"season seeds SSOT missing: {SEEDS_FILE}")
+    data = json.loads(SEEDS_FILE.read_text(encoding="utf-8"))
+    seasons = data.get("seasons") or {}
+    aliases = {str(k): str(v) for k, v in (data.get("aliases") or {}).items()}
+    out: dict[str, list[str]] = {}
+    for sid in SEASON_META:
+        seeds = seasons.get(sid) or []
+        out[sid] = [str(s) for s in seeds]
+    return out, aliases
 
 MIN_CARD_BYTES = 8192
 OK_REAL_CARD_BYTES = 20480
@@ -165,8 +143,8 @@ def media_status(slug: str) -> str:
     return "legacy_unverified"
 
 
-def resolve_seed(name: str, by_sci: dict[str, dict]) -> dict:
-    resolved = SEASON_TAXON_ALIASES.get(name, name)
+def resolve_seed(name: str, by_sci: dict[str, dict], aliases: dict[str, str]) -> dict:
+    resolved = aliases.get(name, name)
     sp = by_sci.get(resolved.lower())
     if not sp:
         raise KeyError(resolved)
@@ -178,13 +156,14 @@ def build_pack(catalog: dict) -> dict:
     by_sci = {str(s.get("scientific_name") or "").lower(): s for s in species}
     seasons: dict = {}
     unresolved: list[str] = []
+    season_seeds, aliases = load_season_seeds()
 
-    for season_id, seeds in SEASON_TAXON_SEEDS.items():
+    for season_id, seeds in season_seeds.items():
         meta = SEASON_META[season_id]
         taxa = []
         for name in seeds:
             try:
-                sp = resolve_seed(name, by_sci)
+                sp = resolve_seed(name, by_sci, aliases)
             except KeyError:
                 unresolved.append(f"{season_id}:{name}")
                 continue

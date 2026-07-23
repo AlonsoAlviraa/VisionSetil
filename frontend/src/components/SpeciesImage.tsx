@@ -140,13 +140,13 @@ export function SpeciesImage({
 
   const handleLoad = (e: SyntheticEvent<HTMLImageElement>) => {
     const img = e.currentTarget
-    // Client last-line only: broken/zero-dim (NOT solid-color full-dim stubs — C-04/C-05)
+    // Client last-line only: zero-dim / tiny naturalWidth (NOT solid-color full-dim stubs — C-04/C-05)
+    // naturalWidth === 0 counts as failure (broken decode) — Issue 2
     if (
       minNaturalWidth > 0 &&
       stage !== 'inline' &&
       stage !== 'placeholder' &&
-      img.naturalWidth > 0 &&
-      img.naturalWidth < minNaturalWidth
+      (img.naturalWidth < minNaturalWidth || img.naturalHeight < 1)
     ) {
       advanceFrom(stage)
       return
