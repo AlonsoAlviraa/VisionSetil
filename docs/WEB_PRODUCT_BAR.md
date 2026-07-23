@@ -43,10 +43,20 @@ npx playwright test
 | --- | --- |
 | Catálogo UI | ≥520 |
 | Cards con imagen | 100% |
-| Fotos reales | ≥133 (stretch 150+) |
+| Fotos `ok_real` (KPI SSOT) | baseline post-C-01 → soft ≥120; stretch ≥200 license-honest |
+| Priority non-stub | 100% (`ok_real` \|\| `ok_procedural` ≥ 8 KB floor) |
+| Fotos reales (legacy meta) | deprecated — was ≥133; do not mix with `ok_real` |
 | i18n ES/CA/EU/EN chrome | sí |
 | Safety D16 | sí |
 | E2E smoke | 4+ verdes |
+
+### Media quality SSOT (Phase C)
+
+- **`ok_real`**: decode OK ∧ `card_bytes ≥ 20480` ∧ source real (not procedural) ∧ **license ∈ allowlist** (Commons/GBIF; not `wikipedia-page-image`).
+- **`ok_procedural`**: branded procedural ≥ 8192 B (interim; not “foto real”).
+- **`legacy_unverified`**: photo-like / meta ok but license not allowlisted.
+- Audit: `python scripts/audit_media.py --json` · priority: `--priority --fail-priority`.
+- Priority set: `media/manifests/priority_slugs_v1.json` (season ∪ T0 ∪ deadly ∪ featured; catalog slugs only).
 
 ## Versión UI
 
