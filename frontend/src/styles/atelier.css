@@ -5370,6 +5370,368 @@ body {
   border-color: var(--line, #3a403c);
 }
 
+/* ─── M3 fenología + ficha chula ─── */
+.map-month-slider {
+  margin: 0 0 0.65rem;
+  padding: 0.7rem 0.85rem 0.75rem;
+  border-radius: 16px;
+  border: 1px solid var(
+    --glass-border,
+    color-mix(in srgb, var(--forest, #2d5016) 12%, rgba(255, 255, 255, 0.4))
+  );
+  background: var(
+    --glass-bg,
+    color-mix(in srgb, var(--surface, #f6f3ec) 92%, transparent)
+  );
+  backdrop-filter: blur(10px);
+}
+
+.map-month-slider__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.35rem 0.75rem;
+  margin-bottom: 0.4rem;
+}
+
+.map-month-slider__label {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--ink, #1a1a1a);
+}
+
+.map-month-slider__value {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--forest, #2d5016);
+  letter-spacing: -0.01em;
+}
+
+.map-month-slider__range {
+  width: 100%;
+  accent-color: var(--forest, #2d5016);
+  margin: 0.15rem 0 0.35rem;
+  cursor: pointer;
+}
+
+.map-month-slider__ticks {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  gap: 0.1rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.map-month-slider__ticks::-webkit-scrollbar {
+  display: none;
+}
+
+.map-month-slider__tick {
+  flex: 1 1 0;
+  min-width: 1.6rem;
+  border: none;
+  background: transparent;
+  font: inherit;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--ink-soft, #666);
+  padding: 0.2rem 0;
+  cursor: pointer;
+  border-radius: 6px;
+  text-align: center;
+  user-select: none;
+}
+
+.map-month-slider__tick.is-active {
+  color: var(--forest, #2d5016);
+  background: color-mix(in srgb, var(--forest, #2d5016) 12%, transparent);
+}
+
+.map-month-slider__hint {
+  margin: 0.45rem 0 0;
+  font-size: 0.72rem;
+  line-height: 1.35;
+  color: var(--ink-soft, #666);
+}
+
+.map-habitat-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0 0 0.65rem;
+  padding: 0.35rem 0;
+}
+
+.map-habitat-chips__label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--ink-soft, #666);
+  margin-right: 0.25rem;
+}
+
+.map-chip--habitat {
+  font-size: 0.78rem;
+}
+
+.map-chip__count {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.15rem;
+  height: 1.15rem;
+  margin-left: 0.3rem;
+  padding: 0 0.25rem;
+  border-radius: 999px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  background: color-mix(in srgb, var(--forest, #2d5016) 12%, transparent);
+  color: var(--forest, #2d5016);
+}
+
+.map-chip--habitat.is-active .map-chip__count {
+  background: color-mix(in srgb, #fff 70%, transparent);
+  color: inherit;
+}
+
+.map-story {
+  margin: 0 0 0.75rem;
+  padding: 0.7rem 0.85rem 0.75rem;
+  border-radius: 16px;
+  border: 1px solid var(
+    --glass-border,
+    color-mix(in srgb, var(--forest, #2d5016) 12%, rgba(255, 255, 255, 0.4))
+  );
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--forest, #2d5016) 6%, var(--surface, #f6f3ec)),
+    var(--surface, #f6f3ec)
+  );
+}
+
+.map-story__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.map-story__title {
+  margin: 0;
+  font-size: 0.98rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.map-story__lead {
+  margin: 0.35rem 0 0;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--ink-soft, #666);
+}
+
+.map-story__panel {
+  margin-top: 0.65rem;
+}
+
+.map-story__stops {
+  list-style: none;
+  margin: 0 0 0.55rem;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.map-story__stop {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid var(--line, #d4d0c8);
+  background: var(--surface, #fff);
+  border-radius: 999px;
+  padding: 0.3rem 0.7rem 0.3rem 0.3rem;
+  font: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: border-color 0.12s, box-shadow 0.12s;
+}
+
+.map-story__stop.is-active {
+  border-color: var(--forest, #2d5016);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--forest, #2d5016) 22%, transparent);
+}
+
+.map-story__stop-num {
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #fff;
+  background: var(--forest, #2d5016);
+  flex-shrink: 0;
+}
+
+.map-story__stop-name {
+  font-weight: 650;
+  max-width: 12rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.map-story__narration {
+  margin: 0 0 0.55rem;
+  padding: 0.65rem 0.75rem;
+  border-left: 3px solid var(--forest, #2d5016);
+  background: color-mix(in srgb, var(--forest, #2d5016) 6%, transparent);
+  border-radius: 0 12px 12px 0;
+}
+
+.map-story__narration p {
+  margin: 0;
+  font-size: 0.86rem;
+  line-height: 1.45;
+  color: var(--ink, #1a1a1a);
+}
+
+.map-story__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.map-story__safety {
+  margin: 0.5rem 0 0;
+  font-size: 0.72rem;
+  color: var(--ink-soft, #666);
+}
+
+.map-hotspot-chip--in-season {
+  box-shadow: 0 0 0 1px color-mix(in srgb, #15803d 35%, transparent);
+}
+
+.map-hotspot-chip__season {
+  color: #15803d;
+  font-size: 0.55rem;
+  line-height: 1;
+}
+
+.map-popup__chip--season {
+  display: inline-block;
+  margin-top: 0.3rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #15803d;
+  border: 1px solid color-mix(in srgb, #15803d 40%, transparent);
+  background: color-mix(in srgb, #15803d 10%, transparent);
+  border-radius: 999px;
+  padding: 0.15rem 0.5rem;
+}
+
+.zone-hero-strip {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0 0 0.75rem;
+  padding: 0.35rem;
+  border-radius: 14px;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--forest, #2d5016) 8%, transparent),
+    transparent
+  );
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.zone-hero-strip__item {
+  flex-shrink: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.1);
+  transition: transform 0.12s;
+}
+
+.zone-hero-strip__item:hover {
+  transform: translateY(-2px);
+}
+
+.zone-hero-strip__thumb {
+  display: block;
+  border-radius: 12px;
+}
+
+.zone-hero-strip__more {
+  flex-shrink: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--forest, #2d5016);
+  text-decoration: none;
+  padding: 0.35rem 0.5rem;
+  white-space: nowrap;
+}
+
+.zone-hero-strip__more:hover {
+  text-decoration: underline;
+}
+
+.zone-season-badge {
+  margin: 0.35rem 0 0 !important;
+  font-size: 0.78rem !important;
+  font-weight: 700;
+  color: #15803d !important;
+}
+
+.zone-detail-alert__weather-note,
+.alert-banner__weather-note {
+  margin: 0.25rem 0 0;
+  font-size: 0.72rem;
+  font-weight: 650;
+  color: var(--ink-soft, #555);
+}
+
+.zone-pill--in-season {
+  opacity: 1;
+}
+
+.zone-pill--off-season {
+  opacity: 0.72;
+}
+
+.zone-pill__season {
+  color: #15803d;
+  font-size: 0.55rem;
+  line-height: 1;
+  margin-left: 0.15rem;
+}
+
+.zone-hotspot--off-season {
+  filter: saturate(0.75);
+}
+
+[data-theme='dark'] .map-month-slider,
+[data-theme='dark'] .map-story {
+  background: color-mix(in srgb, var(--surface, #1a1f1c) 90%, transparent);
+  border-color: var(--line, #3a403c);
+}
+
+[data-theme='dark'] .map-story__narration {
+  background: color-mix(in srgb, var(--forest, #4a7c3a) 12%, transparent);
+}
+
+[data-theme='dark'] .map-story__stop {
+  background: color-mix(in srgb, var(--surface, #1a1f1c) 95%, #000);
+  border-color: var(--line, #3a403c);
+  color: var(--ink, #e8e6e1);
+}
+
 .zone-card--hotspot {
   box-shadow: inset 0 0 0 1px color-mix(in srgb, #15803d 22%, transparent);
 }

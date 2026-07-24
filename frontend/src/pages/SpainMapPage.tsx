@@ -52,9 +52,27 @@ import {
   replaceMapUrl,
   resolveMapDeepLink,
   stickyRegionAfterSearchChange,
-  topHotspotsByScore,
   type MapCluster,
 } from '../lib/mapInteraction'
+import {
+  currentMonth1to12,
+  filterZonesByHabitat,
+  habitatChipCounts,
+  HABITAT_CHIPS,
+  isInSeason,
+  monthLabel,
+  phenologyOpacity,
+  phenologyScore,
+  rankZonesByPhenology,
+  resolveStoryRoute,
+  SIMPLE_PHENO_HALO_CAP,
+  toggleHabitatChip,
+  topPhenologyHotspots,
+  zoneHeroSpecies,
+  type HabitatChipId,
+  type Month1to12,
+  type ResolvedStoryStop,
+} from '../lib/mapPhenology'
 
 delete (L.Icon.Default.prototype as unknown as { _getIconUrl?: unknown })._getIconUrl
 L.Icon.Default.mergeOptions({
@@ -268,6 +286,11 @@ function ZoneWeatherPanel({
           {t('map.index', { defaultValue: 'Índice' })} {conditions.score}/100
         </span>
       </div>
+      <p className="alert-banner__weather-note">
+        {t('map.weatherIndexNote', {
+          defaultValue: 'Índice de condiciones meteorológicas orientativo',
+        })}
+      </p>
       <p className="alert-banner__advisory">{alertAdvisory}</p>
       <ul className="alert-banner__details">
         {conditions.details.slice(0, 5).map((d) => (
@@ -303,12 +326,18 @@ function ZoneWeatherPanel({
 const ZoneHotspot = memo(function ZoneHotspot({
   zone,
   meta,
+  phenoOpacity = 1,
+  inSeason = true,
 }: {
   zone: MushroomZone
   meta: ZoneAlertMeta
+  /** M3.2 phenology layer opacity blend (season × weather). */
+  phenoOpacity?: number
+  inSeason?: boolean
 }) {
   const radius = hotspotRadiusMeters(zone.abundance, meta.score)
   const active = isHotspotActive(meta.level)
+  const op = Math.min(1, Math.max(0.12, phenoOpacity))
   return (
     <Circle
       center={[zone.lat, zone.lng]}
@@ -316,11 +345,17 @@ const ZoneHotspot = memo(function ZoneHotspot({
       pathOptions={{
         color: meta.color,
         fillColor: meta.color,
-        fillOpacity: active ? 0.18 : 0.06,
+        fillOpacity: (active ? 0.18 : 0.06) * op,
         weight: active ? 1.5 : 0.75,
-        opacity: active ? 0.65 : 0.35,
+        opacity: (active ? 0.65 : 0.35) * op,
         interactive: false,
-        className: active ? 'zone-hotspot zone-hotspot--active' : 'zone-hotspot',
+        className: [
+          'zone-hotspot',
+          active ? 'zone-hotspot--active' : '',
+          inSeason ? 'zone-hotspot--in-season' : 'zone-hotspot--off-season',
+        ]
+          .filter(Boolean)
+          .join(' '),
       }}
     />
   )
@@ -333,22 +368,32 @@ const ZoneMapMarker = memo(function ZoneMapMarker({
   onSelect,
   openLabel,
   locale,
+  phenoOpacity = 1,
+  inSeason = false,
+  inSeasonLabel,
 }: {
   zone: MushroomZone
   meta: ZoneAlertMeta
   onSelect: (z: MushroomZone) => void
   openLabel: string
   locale: string
+  phenoOpacity?: number
+  inSeason?: boolean
+  inSeasonLabel?: string
 }) {
   const onClick = useCallback(() => onSelect(zone), [onSelect, zone])
   const handlers = useMemo(() => ({ click: onClick }), [onClick])
   const scorePart = meta.score !== null ? ` · ${meta.score}/100` : ''
+  const op = Math.min(1, Math.max(0.22, phenoOpacity))
   return (
     <Marker
       position={[zone.lat, zone.lng]}
       icon={makeAlertIcon(meta, locale)}
       eventHandlers={handlers}
-      title={`${zone.name} · ${meta.label}${scorePart}`}
+      opacity={op}
+      title={`${zone.name} · ${meta.label}${scorePart}${
+        inSeason && inSeasonLabel ? ` · ${inSeasonLabel}` : ''
+      }`}
     >
       <Popup className="map-popup-leaflet" maxWidth={260} minWidth={200}>
         <div className="map-popup map-popup--atelier">
@@ -361,6 +406,9 @@ const ZoneMapMarker = memo(function ZoneMapMarker({
             {meta.label}
             {scorePart}
           </span>
+          {inSeason && inSeasonLabel ? (
+            <span className="map-popup__chip map-popup__chip--season">{inSeasonLabel}</span>
+          ) : null}
           {zone.habitat ? (
             <p className="map-popup__habitat">{zone.habitat}</p>
           ) : null}
@@ -403,18 +451,28 @@ function ZoneDetailBody({
   scores,
   conditionsMap,
   onClose,
+  selectedMonth,
 }: {
   zone: MushroomZone
   scores: Record<string, number | null>
   conditionsMap: Record<string, MushroomConditions | null>
   onClose: () => void
+  selectedMonth: Month1to12
 }) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const meta = alertFromScore(scores[zone.id] ?? null)
   const label = t(`map.alert.${meta.level}.label`, { defaultValue: meta.label })
   const advisory = t(`map.alert.${meta.level}.advisory`, {
     defaultValue: meta.advisory,
   })
+  const inSeason = isInSeason(zone.season, selectedMonth)
+  const pheno = phenologyScore(zone.season, selectedMonth, scores[zone.id])
+  const heroTaxa = useMemo(() => zoneHeroSpecies(zone.species, 6), [zone.species])
+  const monthName = monthLabel(
+    selectedMonth,
+    i18n.resolvedLanguage || i18n.language || 'es',
+    'long',
+  )
 
   return (
     <div className="zone-detail zone-detail-card" data-testid="zone-detail-card">
@@ -428,6 +486,41 @@ function ZoneDetailBody({
         {t('actions.back', { defaultValue: 'Cerrar' })}
       </button>
 
+      {/* M3.3 Visual zone card — hero strip of species thumbs */}
+      {heroTaxa.length > 0 && (
+        <div
+          className="zone-hero-strip"
+          data-testid="zone-hero-strip"
+          aria-label={t('map.heroStripLabel', {
+            defaultValue: 'Especies orientativas de la zona',
+          })}
+        >
+          {heroTaxa.map((sciName) => {
+            const cat = getSpeciesByTaxon(sciName)
+            const slug = speciesSlug(sciName)
+            return (
+              <Link
+                key={sciName}
+                to={`/enciclopedia/${slug}`}
+                className="zone-hero-strip__item"
+                title={sciName}
+              >
+                <SpeciesThumb
+                  taxon={sciName}
+                  riskLabel={cat?.risk_label}
+                  alt={sciName}
+                  size={56}
+                  className="zone-hero-strip__thumb"
+                />
+              </Link>
+            )
+          })}
+          <Link to="/enciclopedia" className="zone-hero-strip__more">
+            {t('map.heroStripMore', { defaultValue: 'Enciclopedia' })}
+          </Link>
+        </div>
+      )}
+
       <div
         className="zone-detail-alert"
         style={{ borderColor: meta.border, background: meta.bg }}
@@ -437,10 +530,28 @@ function ZoneDetailBody({
           <span style={{ color: meta.color }}> · {meta.score}/100</span>
         )}
         <p>{advisory}</p>
+        <p className="zone-detail-alert__weather-note">
+          {t('map.weatherIndexNote', {
+            defaultValue: 'Índice de condiciones meteorológicas orientativo',
+          })}
+        </p>
         {isHotspotActive(meta.level) && (
           <p className="zone-hotspot-badge">
             {t('map.hotspotActive', {
               defaultValue: 'Hotspot activo (condiciones favorables/aceptables)',
+            })}
+          </p>
+        )}
+        {inSeason && (
+          <p className="zone-season-badge" data-testid="zone-in-season">
+            {t('map.inSeasonBadge', {
+              defaultValue: 'En temporada ({{month}})',
+              month: monthName,
+            })}
+            {' · '}
+            {t('map.phenologyShort', {
+              defaultValue: 'Fenología {{score}}',
+              score: pheno,
             })}
           </p>
         )}
@@ -598,6 +709,15 @@ export default function SpainMapPage() {
   const [zoneNotFound, setZoneNotFound] = useState<string | null>(
     () => deepLinkBoot.zoneMissing,
   )
+  /** M3.1 month slider (1–12) — phenology re-rank; no weather re-fetch. */
+  const [selectedMonth, setSelectedMonth] = useState<Month1to12>(() =>
+    currentMonth1to12(),
+  )
+  /** M3.4 habitat chip filter (OR). Empty = all. */
+  const [habitatFilter, setHabitatFilter] = useState<HabitatChipId[]>([])
+  /** M3.5 educational story route (not forage). */
+  const [storyOpen, setStoryOpen] = useState(false)
+  const [storyStep, setStoryStep] = useState(0)
   const [scores, setScores] = useState<Record<string, number | null>>({})
   const [conditionsMap, setConditionsMap] = useState<
     Record<string, MushroomConditions | null>
@@ -755,6 +875,15 @@ export default function SpainMapPage() {
     if (mode === 'simple') setFilterAlert('todas')
   }, [])
 
+  const habitatCounts = useMemo(
+    () => habitatChipCounts(mushroomZones),
+    [],
+  )
+
+  const storyStops = useMemo((): ResolvedStoryStop[] => {
+    return resolveStoryRoute(mushroomZones.map((z) => z.id))
+  }, [])
+
   const filteredZones = useMemo(() => {
     const base = mushroomZones.filter((z) => {
       if (filterRegion !== 'todas' && z.region !== filterRegion) return false
@@ -762,14 +891,21 @@ export default function SpainMapPage() {
         const level = alertFromScore(scores[z.id] ?? null).level
         if (!isHotspotActive(level) && selectedZone?.id !== z.id) return false
       }
-      if (mapMode === 'simple' && !onlyHotspots) return true
-      if (mapMode === 'advanced' && filterAlert !== 'todas') {
+      if (mapMode === 'simple' && !onlyHotspots) {
+        /* keep */
+      } else if (mapMode === 'advanced' && filterAlert !== 'todas') {
         const level = alertFromScore(scores[z.id] ?? null).level
         if (level !== filterAlert) return false
       }
       return true
     })
-    return filterZonesByQuery(base, searchQuery)
+    const byQuery = filterZonesByQuery(base, searchQuery)
+    const byHabitat = filterZonesByHabitat(byQuery, habitatFilter)
+    // M3.1 re-rank via shared pure helper (same order as top-5)
+    const byId = new Map(byHabitat.map((z) => [z.id, z]))
+    return rankZonesByPhenology(byHabitat, selectedMonth, scores)
+      .map((row) => byId.get(row.id))
+      .filter((z): z is MushroomZone => z != null)
   }, [
     filterRegion,
     filterAlert,
@@ -778,31 +914,70 @@ export default function SpainMapPage() {
     onlyHotspots,
     selectedZone,
     searchQuery,
+    habitatFilter,
+    selectedMonth,
   ])
 
-  /** Limit hotspot circles on map for pan/zoom fluidness (mid-range mobile). */
+  /**
+   * Simple-mode halos: weather-active + selected always; at most
+   * SIMPLE_PHENO_HALO_CAP extra in-season circles (top phenology) for M3.2
+   * visibility without flooding Leaflet with ~100 autumn circles.
+   */
   const hotspotZones = useMemo(() => {
-    if (mapMode === 'simple') {
-      return filteredZones.filter((z) => {
-        if (selectedZone?.id === z.id) return true
-        const level = alertFromScore(scores[z.id] ?? null).level
-        return isHotspotActive(level)
-      })
-    }
-    return filteredZones
-  }, [filteredZones, mapMode, scores, selectedZone])
+    if (mapMode !== 'simple') return filteredZones
 
-  // M2.1 Top 5 of the day (global scores — not re-filtered by search)
+    const selectedId = selectedZone?.id
+    const weatherActive: MushroomZone[] = []
+    const rest: MushroomZone[] = []
+    for (const z of filteredZones) {
+      if (z.id === selectedId) {
+        weatherActive.push(z)
+        continue
+      }
+      const level = alertFromScore(scores[z.id] ?? null).level
+      if (isHotspotActive(level)) weatherActive.push(z)
+      else rest.push(z)
+    }
+
+    const activeIds = new Set(weatherActive.map((z) => z.id))
+    // Extra in-season by phenology rank (board order already phenology-sorted)
+    const extras: MushroomZone[] = []
+    for (const z of rest) {
+      if (extras.length >= SIMPLE_PHENO_HALO_CAP) break
+      if (!isInSeason(z.season, selectedMonth)) continue
+      if (activeIds.has(z.id)) continue
+      extras.push(z)
+    }
+    return [...weatherActive, ...extras]
+  }, [filteredZones, mapMode, scores, selectedZone, selectedMonth])
+
+  // M3.1 Top 5 by phenology (season × weather) for selected month — no re-fetch
   const topHotspots = useMemo(() => {
     const ids = mushroomZones.map((z) => z.id)
-    return topHotspotsByScore(ids, scores, 5)
+    const seasons: Record<string, string | undefined> = {}
+    for (const z of mushroomZones) seasons[z.id] = z.season
+    return topPhenologyHotspots(ids, seasons, scores, selectedMonth, 5)
       .map((row) => {
         const zone = zoneById.get(row.id)
         if (!zone) return null
-        return { zone, score: row.score }
+        return {
+          zone,
+          score: row.score,
+          inSeason: row.inSeason,
+          weatherScore: scores[row.id] ?? null,
+        }
       })
-      .filter((x): x is { zone: MushroomZone; score: number } => x != null)
-  }, [scores, zoneById])
+      .filter(
+        (
+          x,
+        ): x is {
+          zone: MushroomZone
+          score: number
+          inSeason: boolean
+          weatherScore: number | null
+        } => x != null,
+      )
+  }, [scores, zoneById, selectedMonth])
 
   // M2.2 clustering when zoomed out
   const mapClusters = useMemo(() => {
@@ -1008,6 +1183,52 @@ export default function SpainMapPage() {
     )
   }, [handleSelectZone])
 
+  const handleMonthChange = useCallback((value: number) => {
+    // Client-only phenology re-rank — does not re-fetch weather
+    setSelectedMonth(
+      (Math.min(12, Math.max(1, Math.round(value))) as Month1to12),
+    )
+  }, [])
+
+  const handleHabitatToggle = useCallback((chip: HabitatChipId) => {
+    setHabitatFilter((prev) => toggleHabitatChip(prev, chip))
+  }, [])
+
+  const handleStoryToggle = useCallback(() => {
+    setStoryOpen((open) => {
+      if (!open) setStoryStep(0)
+      return !open
+    })
+  }, [])
+
+  const handleStoryGo = useCallback(
+    (step: number) => {
+      const stop = storyStops[step]
+      if (!stop) return
+      setStoryStep(step)
+      setStoryOpen(true)
+      const zone = zoneById.get(stop.resolvedZoneId)
+      if (zone) handleSelectZone(zone)
+    },
+    [storyStops, zoneById, handleSelectZone],
+  )
+
+  const handleStoryNext = useCallback(() => {
+    if (!storyStops.length) return
+    const next = (storyStep + 1) % storyStops.length
+    handleStoryGo(next)
+  }, [storyStops, storyStep, handleStoryGo])
+
+  const handleStoryPrev = useCallback(() => {
+    if (!storyStops.length) return
+    const prev = (storyStep - 1 + storyStops.length) % storyStops.length
+    handleStoryGo(prev)
+  }, [storyStops, storyStep, handleStoryGo])
+
+  const inSeasonLabel = t('map.inSeasonShort', { defaultValue: 'En temporada' })
+  const monthLocale = mapLocale
+  const selectedMonthLong = monthLabel(selectedMonth, monthLocale, 'long')
+
   const mapHeight =
     mapMode === 'simple' ? 'clamp(420px, 70vh, 720px)' : 'clamp(480px, 75vh, 780px)'
 
@@ -1124,24 +1345,217 @@ export default function SpainMapPage() {
         </div>
       )}
 
-      {/* M2.1 Top 5 hotspots del día */}
+      {/* M3.1 Month slider — phenology re-rank (no weather re-fetch) */}
+      <section
+        className="map-month-slider"
+        data-testid="map-month-slider"
+        aria-label={t('map.monthSliderLabel', {
+          defaultValue: 'Mes de temporada (fenología educativa)',
+        })}
+      >
+        <div className="map-month-slider__head">
+          <label htmlFor="map-month-range" className="map-month-slider__label">
+            {t('map.monthSliderLabel', {
+              defaultValue: 'Mes de temporada (fenología educativa)',
+            })}
+          </label>
+          <strong className="map-month-slider__value" data-testid="map-month-value">
+            {selectedMonthLong}
+          </strong>
+        </div>
+        <input
+          id="map-month-range"
+          type="range"
+          min={1}
+          max={12}
+          step={1}
+          value={selectedMonth}
+          onChange={(e) => handleMonthChange(Number(e.target.value))}
+          className="map-month-slider__range"
+          aria-valuemin={1}
+          aria-valuemax={12}
+          aria-valuenow={selectedMonth}
+          aria-valuetext={selectedMonthLong}
+        />
+        {/* Visual ticks only — range is the accessible control (no focusables under aria-hidden). */}
+        <div className="map-month-slider__ticks" aria-hidden="true">
+          {(
+            [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] as const satisfies readonly Month1to12[]
+          ).map((m) => (
+            <span
+              key={m}
+              className={`map-month-slider__tick ${
+                selectedMonth === m ? 'is-active' : ''
+              }`}
+              onClick={() => handleMonthChange(m)}
+            >
+              {monthLabel(m, monthLocale, 'short')}
+            </span>
+          ))}
+        </div>
+        <p className="map-month-slider__hint">
+          {t('map.monthSliderHint', {
+            defaultValue:
+              'Resalta zonas «en temporada» según su ficha. Índice meteorológico orientativo — no autoriza recolección ni consumo.',
+          })}
+        </p>
+      </section>
+
+      {/* M3.4 Habitat chip row */}
+      <div
+        className="map-habitat-chips"
+        data-testid="map-habitat-chips"
+        role="toolbar"
+        aria-label={t('map.habitatFilterLabel', {
+          defaultValue: 'Filtrar por hábitat',
+        })}
+      >
+        <span className="map-habitat-chips__label">
+          {t('map.habitatFilterLabel', { defaultValue: 'Hábitat' })}
+        </span>
+        {HABITAT_CHIPS.filter((c) => (habitatCounts[c.id] ?? 0) > 0).map((chip) => {
+          const active = habitatFilter.includes(chip.id)
+          const count = habitatCounts[chip.id] ?? 0
+          const label = t(`map.habitatChip.${chip.id}`, {
+            defaultValue: chip.labelEs,
+          })
+          return (
+            <button
+              key={chip.id}
+              type="button"
+              className={`map-chip map-chip--habitat ${active ? 'is-active' : ''}`}
+              aria-pressed={active}
+              data-habitat={chip.id}
+              onClick={() => handleHabitatToggle(chip.id)}
+            >
+              {label}
+              <span className="map-chip__count">{count}</span>
+            </button>
+          )
+        })}
+        {habitatFilter.length > 0 && (
+          <button
+            type="button"
+            className="map-chip map-chip--clear"
+            onClick={() => setHabitatFilter([])}
+          >
+            {t('map.clearHabitatFilter', { defaultValue: 'Quitar hábitat' })}
+          </button>
+        )}
+      </div>
+
+      {/* M3.5 Story mode — educational route (not forage) */}
+      <section
+        className={`map-story ${storyOpen ? 'is-open' : ''}`}
+        data-testid="map-story"
+        aria-label={t('map.storyTitle', { defaultValue: 'Ruta educativa' })}
+      >
+        <div className="map-story__head">
+          <h2 className="map-story__title">
+            {t('map.storyTitle', { defaultValue: 'Ruta educativa' })}
+          </h2>
+          <button
+            type="button"
+            className={`btn-atelier ${
+              storyOpen ? 'btn-atelier--primary' : 'btn-atelier--ghost'
+            } map-story__toggle`}
+            data-testid="map-story-toggle"
+            aria-expanded={storyOpen}
+            onClick={handleStoryToggle}
+          >
+            {storyOpen
+              ? t('map.storyClose', { defaultValue: 'Cerrar ruta' })
+              : t('map.storyOpen', { defaultValue: 'Iniciar ruta' })}
+          </button>
+        </div>
+        <p className="map-story__lead">
+          {t('map.storyLead', {
+            defaultValue:
+              'Tres paisajes clásicos de estudio (Soria, Picos, Pirineo). Solo narración educativa — no es ruta de recolección.',
+          })}
+        </p>
+        {storyOpen && storyStops.length > 0 && (
+          <div className="map-story__panel" data-testid="map-story-panel">
+            <ol className="map-story__stops">
+              {storyStops.map((stop, i) => {
+                const z = zoneById.get(stop.resolvedZoneId)
+                return (
+                  <li key={stop.id}>
+                    <button
+                      type="button"
+                      className={`map-story__stop ${
+                        storyStep === i ? 'is-active' : ''
+                      }`}
+                      onClick={() => handleStoryGo(i)}
+                      data-testid={`map-story-stop-${stop.id}`}
+                    >
+                      <span className="map-story__stop-num">{i + 1}</span>
+                      <span className="map-story__stop-name">
+                        {z ? shortZoneLabel(z.name, 32) : stop.id}
+                      </span>
+                    </button>
+                  </li>
+                )
+              })}
+            </ol>
+            <blockquote className="map-story__narration">
+              <p>
+                {i18n.language?.startsWith('en')
+                  ? storyStops[storyStep]?.narrationEn ||
+                    storyStops[storyStep]?.narrationEs
+                  : storyStops[storyStep]?.narrationEs}
+              </p>
+            </blockquote>
+            <div className="map-story__nav">
+              <button
+                type="button"
+                className="btn-atelier btn-atelier--ghost"
+                onClick={handleStoryPrev}
+              >
+                {t('map.storyPrev', { defaultValue: 'Anterior' })}
+              </button>
+              <button
+                type="button"
+                className="btn-atelier btn-atelier--primary"
+                onClick={handleStoryNext}
+              >
+                {t('map.storyNext', { defaultValue: 'Siguiente' })}
+              </button>
+            </div>
+            <p className="map-story__safety">
+              {t('map.storySafety', {
+                defaultValue:
+                  'Ruta educativa de paisaje. No autoriza recolección ni consumo.',
+              })}
+            </p>
+          </div>
+        )}
+      </section>
+
+      {/* M2.1 / M3.1 Top 5 by phenology for selected month */}
       <section
         className="map-top-hotspots"
         aria-label={t('map.topHotspotsTitle', {
-          defaultValue: 'Top 5 hotspots del día',
+          defaultValue: 'Top 5 por temporada ({{month}})',
+          month: selectedMonthLong,
         })}
       >
         <div className="map-top-hotspots__head">
           <h2 className="map-top-hotspots__title">
-            {t('map.topHotspotsTitle', { defaultValue: 'Top 5 hotspots del día' })}
+            {t('map.topHotspotsTitle', {
+              defaultValue: 'Top 5 por temporada ({{month}})',
+              month: selectedMonthLong,
+            })}
           </h2>
           <span className="map-top-hotspots__hint">
             {loadingAlerts
               ? t('map.topHotspotsLoading', {
                   defaultValue: 'Actualizando con el tiempo…',
                 })
-              : t('map.topHotspotsHint', {
-                  defaultValue: 'Toda Iberia · índice de condiciones · educativo',
+              : t('map.topHotspotsPhenoHint', {
+                  defaultValue:
+                    'Temporada ({{month}}) × índice meteorológico orientativo · educativo',
+                  month: selectedMonthLong,
                 })}
           </span>
         </div>
@@ -1153,15 +1567,15 @@ export default function SpainMapPage() {
           </p>
         ) : (
           <ol className="map-top-hotspots__list">
-            {topHotspots.map(({ zone, score }, i) => {
-              const meta = alertFromScore(score)
+            {topHotspots.map(({ zone, score, inSeason, weatherScore }, i) => {
+              const meta = alertFromScore(weatherScore)
               return (
                 <li key={zone.id}>
                   <button
                     type="button"
                     className={`map-hotspot-chip ${
                       selectedZone?.id === zone.id ? 'is-active' : ''
-                    }`}
+                    } ${inSeason ? 'map-hotspot-chip--in-season' : ''}`}
                     style={{ ['--hot' as string]: meta.color }}
                     onClick={() => handleSelectZone(zone)}
                   >
@@ -1169,7 +1583,17 @@ export default function SpainMapPage() {
                     <span className="map-hotspot-chip__name">
                       {shortZoneLabel(zone.name, 28)}
                     </span>
-                    <span className="map-hotspot-chip__score">{score}</span>
+                    {inSeason ? (
+                      <span className="map-hotspot-chip__season" aria-hidden>
+                        ●
+                      </span>
+                    ) : null}
+                    <span className="map-hotspot-chip__score" title={t('map.phenologyShort', {
+                      defaultValue: 'Fenología {{score}}',
+                      score,
+                    })}>
+                      {score}
+                    </span>
                   </button>
                 </li>
               )
@@ -1419,7 +1843,21 @@ export default function SpainMapPage() {
             {showHotspots &&
               hotspotZones.map((zone) => {
                 const meta = alertFromScore(scores[zone.id] ?? null)
-                return <ZoneHotspot key={`hs-${zone.id}`} zone={zone} meta={meta} />
+                const op = phenologyOpacity(
+                  zone.season,
+                  selectedMonth,
+                  scores[zone.id],
+                )
+                const seasonOn = isInSeason(zone.season, selectedMonth)
+                return (
+                  <ZoneHotspot
+                    key={`hs-${zone.id}`}
+                    zone={zone}
+                    meta={meta}
+                    phenoOpacity={op}
+                    inSeason={seasonOn}
+                  />
+                )
               })}
             {showMarkers &&
               mapClusters.map((item) => {
@@ -1441,6 +1879,12 @@ export default function SpainMapPage() {
                 const zone = zoneById.get(item.zoneId)
                 if (!zone) return null
                 const meta = alertFromScore(scores[zone.id] ?? null)
+                const op = phenologyOpacity(
+                  zone.season,
+                  selectedMonth,
+                  scores[zone.id],
+                )
+                const seasonOn = isInSeason(zone.season, selectedMonth)
                 return (
                   <ZoneMapMarker
                     key={zone.id}
@@ -1454,6 +1898,9 @@ export default function SpainMapPage() {
                     onSelect={handleSelectZone}
                     openLabel={t('map.openCard', { defaultValue: 'Abrir ficha' })}
                     locale={mapLocale}
+                    phenoOpacity={op}
+                    inSeason={seasonOn}
+                    inSeasonLabel={inSeasonLabel}
                   />
                 )
               })}
@@ -1554,6 +2001,7 @@ export default function SpainMapPage() {
               scores={scores}
               conditionsMap={conditionsMap}
               onClose={handleClearZone}
+              selectedMonth={selectedMonth}
             />
           )}
         </div>
@@ -1610,6 +2058,7 @@ export default function SpainMapPage() {
               setFilterAlert('todas')
               setOnlyHotspots(false)
               setSearchQuery('')
+              setHabitatFilter([])
               stickyRegionParamRef.current = null
             }}
           />
@@ -1618,9 +2067,33 @@ export default function SpainMapPage() {
             {filteredZones.map((zone, idx) => {
               const meta = alertFromScore(scores[zone.id] ?? null)
               const hot = isHotspotActive(meta.level)
-              const scoreTxt =
-                meta.score !== null ? String(meta.score) : loadingAlerts ? '…' : '—'
+              const seasonOn = isInSeason(zone.season, selectedMonth)
+              const pheno = phenologyScore(
+                zone.season,
+                selectedMonth,
+                scores[zone.id],
+              )
+              const scoreTxt = String(pheno)
+              const phenoLabel = t('map.phenologyShort', {
+                defaultValue: 'Fenología {{score}}',
+                score: pheno,
+              })
+              const weatherPart =
+                meta.score !== null
+                  ? t('map.weatherScoreShort', {
+                      defaultValue: 'Índice meteo {{score}}',
+                      score: meta.score,
+                    })
+                  : t('map.noData', { defaultValue: 'Sin datos' })
               const focused = boardFocusIdx === idx
+              const pillTitle = [
+                zone.name,
+                phenoLabel,
+                weatherPart,
+                seasonOn ? inSeasonLabel : null,
+              ]
+                .filter(Boolean)
+                .join(' · ')
               return (
                 <button
                   key={zone.id}
@@ -1628,11 +2101,14 @@ export default function SpainMapPage() {
                   type="button"
                   role="option"
                   aria-selected={selectedZone?.id === zone.id || focused}
+                  aria-label={pillTitle}
                   data-board-idx={idx}
-                  title={zone.name}
+                  title={pillTitle}
                   className={`zone-pill ${selectedZone?.id === zone.id ? 'is-active' : ''} ${
                     hot ? 'is-hot' : ''
-                  } ${focused ? 'is-focus' : ''}`}
+                  } ${focused ? 'is-focus' : ''} ${
+                    seasonOn ? 'zone-pill--in-season' : 'zone-pill--off-season'
+                  }`}
                   style={{ ['--pill' as string]: meta.color }}
                   onClick={() => {
                     setBoardFocusIdx(idx)
@@ -1641,7 +2117,18 @@ export default function SpainMapPage() {
                 >
                   <span className="zone-pill__dot" aria-hidden />
                   <span className="zone-pill__name">{shortZoneLabel(zone.name)}</span>
-                  <span className="zone-pill__score">{scoreTxt}</span>
+                  {seasonOn ? (
+                    <span className="zone-pill__season" title={inSeasonLabel} aria-hidden>
+                      ●
+                    </span>
+                  ) : null}
+                  <span
+                    className="zone-pill__score"
+                    title={phenoLabel}
+                    aria-hidden
+                  >
+                    {scoreTxt}
+                  </span>
                 </button>
               )
             })}
