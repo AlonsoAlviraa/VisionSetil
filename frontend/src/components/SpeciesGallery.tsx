@@ -1,5 +1,5 @@
-/** Multi-photo gallery with lightbox — SpeciesImage cascade + a11y (D-06). */
-import { useCallback, useEffect, useRef, useState } from 'react'
+/** Multi-photo gallery with lightbox — SpeciesImage cascade + a11y (D-06). U5: attribution. */
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   galleryImageUrl,
@@ -7,6 +7,13 @@ import {
   speciesImageUrl,
   type PlaceholderKind,
 } from '../lib/speciesImageUrl'
+import {
+  attributionFromCatalog,
+  coalesceAttribution,
+  fetchSpeciesMediaMeta,
+  hasAttributionMeta,
+  normalizeAttributionMeta,
+} from '../lib/speciesAttribution'
 import { SpeciesImage } from './SpeciesImage'
 import { ImageAttribution, type ImageAttributionMeta } from './ui/ImageAttribution'
 
@@ -17,6 +24,8 @@ export interface GalleryItem {
   license?: string | null
   attribution_text?: string | null
   source?: string | null
+  creator?: string | null
+  source_url?: string | null
 }
 
 interface SpeciesGalleryProps {
@@ -58,9 +67,23 @@ async function buildStaticGallery(slug: string): Promise<GalleryItem[]> {
   return items
 }
 
+function itemAttribution(item: GalleryItem | undefined): ImageAttributionMeta | null {
+  if (!item) return null
+  return normalizeAttributionMeta({
+    creator: item.creator,
+    license: item.license,
+    source_url: item.source_url,
+    attribution_text: item.attribution_text,
+  })
+}
+
 async function fetchGallery(
   slug: string,
+  scientificName: string,
 ): Promise<{ items: GalleryItem[]; meta: ImageAttributionMeta | null }> {
+  let apiMeta: ImageAttributionMeta | null = null
+  let apiItems: GalleryItem[] | null = null
+
   try {
     const base = mediaPublicPrefix()
     const urls = [
@@ -73,17 +96,16 @@ async function fetchGallery(
         if (!res.ok) continue
         const data = await res.json()
         if (data.items?.length) {
-          return {
-            items: data.items as GalleryItem[],
-            meta: data.meta
-              ? {
-                  attribution_text: data.meta.attribution_text,
-                  license: data.meta.license,
-                  source_url: data.meta.source_url,
-                  creator: data.meta.creator,
-                }
-              : null,
-          }
+          apiItems = data.items as GalleryItem[]
+          apiMeta = data.meta
+            ? normalizeAttributionMeta({
+                attribution_text: data.meta.attribution_text,
+                license: data.meta.license,
+                source_url: data.meta.source_url,
+                creator: data.meta.creator,
+              })
+            : null
+          break
         }
       } catch {
         /* try next */
@@ -93,8 +115,31 @@ async function fetchGallery(
     /* static fallback */
   }
 
-  const staticItems = await buildStaticGallery(slug)
-  return { items: staticItems, meta: null }
+  // Local meta.json is available via Vite /media without FastAPI — critical for U5 offline/dev.
+  const [fileMeta, staticItems] = await Promise.all([
+    fetchSpeciesMediaMeta(slug),
+    apiItems ? Promise.resolve(null) : buildStaticGallery(slug),
+  ])
+
+  const catalogMeta = attributionFromCatalog(scientificName || slug)
+  const meta = coalesceAttribution(apiMeta, fileMeta, catalogMeta)
+  const items = apiItems ?? staticItems ?? []
+
+  // Stamp hero/gallery items with resolved meta when they lack their own
+  if (meta && items.length) {
+    return {
+      items: items.map((it) => ({
+        ...it,
+        license: it.license ?? meta.license,
+        attribution_text: it.attribution_text ?? meta.attribution_text,
+        creator: it.creator ?? meta.creator,
+        source_url: it.source_url ?? meta.source_url,
+      })),
+      meta,
+    }
+  }
+
+  return { items, meta }
 }
 
 export function SpeciesGallery({
@@ -118,7 +163,9 @@ export function SpeciesGallery({
     setItems([])
     setActive(0)
     setLoading(true)
-    void fetchGallery(slug).then((g) => {
+    // Immediate catalog credit while media meta loads (no empty flash of "Crédito:")
+    setMeta(attributionFromCatalog(scientificName || slug))
+    void fetchGallery(slug, scientificName).then((g) => {
       if (cancelled) return
       setItems(g.items)
       setMeta(g.meta)
@@ -127,9 +174,14 @@ export function SpeciesGallery({
     return () => {
       cancelled = true
     }
-  }, [slug])
+  }, [slug, scientificName])
 
   const current = items[active] || items[0]
+  const displayMeta = useMemo(() => {
+    const fromItem = itemAttribution(current)
+    return coalesceAttribution(fromItem, meta)
+  }, [current, meta])
+
   const go = useCallback(
     (dir: number) => {
       if (!items.length) return
@@ -220,6 +272,9 @@ export function SpeciesGallery({
     </button>
   )
 
+  const creditLabel = t('gallery.credit', { defaultValue: 'Foto' })
+  const showCredit = hasAttributionMeta(displayMeta)
+
   if (loading || !current) {
     return (
       <div
@@ -228,6 +283,13 @@ export function SpeciesGallery({
         data-loading={loading ? 'true' : 'false'}
       >
         {hero}
+        {showCredit ? (
+          <ImageAttribution
+            meta={displayMeta}
+            className="species-gallery__attribution"
+            label={creditLabel}
+          />
+        ) : null}
         {!loading && (
           <p className="species-gallery__empty-hint muted">
             {t('gallery.empty', {
@@ -243,7 +305,13 @@ export function SpeciesGallery({
   return (
     <div className="species-gallery" data-testid="species-gallery">
       {hero}
-      {meta?.attribution_text || meta?.license ? <ImageAttribution meta={meta} /> : null}
+      {showCredit ? (
+        <ImageAttribution
+          meta={displayMeta}
+          className="species-gallery__attribution"
+          label={creditLabel}
+        />
+      ) : null}
 
       {items.length > 1 ? (
         <div className="species-gallery__thumbs" role="list">
@@ -340,6 +408,18 @@ export function SpeciesGallery({
               }
             }}
           />
+          {showCredit ? (
+            <div
+              className="species-gallery__lightbox-attr"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <ImageAttribution
+                meta={displayMeta}
+                className="species-gallery__attribution species-gallery__attribution--lightbox"
+                label={creditLabel}
+              />
+            </div>
+          ) : null}
         </div>
       ) : null}
     </div>

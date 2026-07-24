@@ -126,6 +126,7 @@ function App() {
               <nav className="footer-links" aria-label="Footer">
                 <Link to="/enciclopedia">{t('nav.encyclopedia', { defaultValue: 'Enciclopedia' })}</Link>
                 <Link to="/identificar">{t('nav.identify', { defaultValue: 'Identificar' })}</Link>
+                <Link to="/offline">{t('nav.offline', { defaultValue: 'Offline' })}</Link>
                 <Link to="/reto">{t('nav.quiz', { defaultValue: 'Reto' })}</Link>
                 <Link to="/comunidad">{t('nav.community', { defaultValue: 'Comunidad' })}</Link>
                 <Link to="/ml">{t('nav.ml', { defaultValue: 'ML' })}</Link>

@@ -369,6 +369,7 @@
     }
   },
   "gallery": {
+    "credit": "Argazkia",
     "open": "Handitu irudia",
     "empty": "Galeria gehigarririk gabe — argazki edo ilustrazio nagusia erakusten da.",
     "single": "Irudi bat erabilgarri"
@@ -612,25 +613,28 @@
   "offline": {
     "kicker": "Soroa · PWA",
     "title": "Offline paketea",
-    "subtitle": "Deskargatu denboraldia edo lehentasunezko paketea sarea gabe fitxak ikusteko. Ez du offline sailkatzen.",
+    "subtitle": "Deskargatu denboraldia edo lehentasunezko paketea sarea gabe fitxak eta argazkiak ikasteko. Material hezitzailea — ez ditu perretxikoak offline identifikatu eta ez du kontsumorik baimendu.",
     "modeLabel": "Pakete mota",
     "modeSeason": "Denboraldia ({{season}})",
     "modePriority": "Lehentasuna T0/T1",
     "taxa": "taxoiak",
-    "photoUrls": "media URLak",
+    "photoUrls": "argazki nagusiak",
+    "assetUrls": "cacheatzeko baliabideak",
     "lastDownload": "Azken deskarga: {{when}} · {{photos}} cachean · {{kind}}",
     "kindSeason": "denboraldia",
     "kindPriority": "lehentasuna",
     "progressLabel": "Deskarga aurrerapena",
     "saving": "Gordetzen…",
     "download": "Deskargatu paketea",
+    "redownload": "Berriro deskargatu",
     "clear": "Ezabatu paketea",
     "confirmClear": "Gailu honetako offline paketea ezabatu?",
-    "statusOk": "{{cached}} irudi gorde dira ({{count}} fitxa paketean).",
+    "statusOk": "{{cached}} baliabide gorde dira ({{count}} fitxa paketean).",
     "statusMetaOnly": "Metadatuen paketea prest. Irudiak ezin izan dira cacheatu (CORS/sarea).",
     "statusError": "Errorea paketea gordetzean",
-    "statusCleared": "Offline paketea ezabatu da.",
-    "disclaimer": "Fitxa eta argazkiak soilik. Ez ditu perretxikoak offline identifikatu eta ez du kontsumorik baimendu.",
+    "statusCleared": "Offline paketea ezabatu da (paketeko metadatuak eta media). Paketetik kanpo ikusitako argazkiak nabigatzailearen cachean geratu daitezke.",
+    "disclaimer": "Erabilera hezitzailea: fitxa eta argazkiak ikasteko. Ez ditu perretxikoak offline identifikatu, ez du mikologo bat ordezkatzen eta inoiz ez du kontsumorik baimendu.",
+    "installedBadge": "Paketea gailu honetan instalatuta",
     "all": "Guztiak ({{count}})",
     "top": "Ikuspegia ({{count}})",
     "showTop": "Gutxiago erakutsi",
@@ -641,8 +645,10 @@
   },
   "pwa": {
     "region": "Instalatu app",
-    "hint": "Instalatu VisionSetil sarbide azkarra eta offline paketeak lortzeko.",
+    "hint": "Instalatu VisionSetil sarbide azkarra eta offline ikasketa-paketeak lortzeko (ez du offline identifikatzen).",
+    "iosHint": "iPhone/iPad-en: ukitu Parteka → «Gehitu hasierako pantailara». Gero deskargatu offline paketea sarea gabe ikasteko.",
     "install": "Instalatu",
+    "offlinePack": "Offline paketea",
     "later": "Orain ez"
   },
   "a11y": {

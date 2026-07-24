@@ -5044,6 +5044,40 @@ button { font-family: inherit; }
 .species-gallery__nav--prev { left: 0.5rem; }
 .species-gallery__nav--next { right: 0.5rem; }
 
+/* U5 — visible credit under ficha hero */
+.species-gallery__attribution {
+  margin: 0.4rem 0 0.15rem;
+  font-size: 0.75rem;
+  line-height: 1.35;
+  color: var(--text-muted, #64748b);
+}
+.species-gallery__attribution a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.species-gallery__attribution a:hover {
+  color: var(--moss, #3f6b4a);
+}
+.species-gallery__lightbox-attr {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0.65rem 1rem;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.72));
+  color: #f8fafc;
+  text-align: center;
+}
+.species-gallery__attribution--lightbox,
+.species-gallery__lightbox-attr .species-image__attribution {
+  margin: 0;
+  color: #f1f5f9;
+}
+.species-gallery__lightbox-attr a {
+  color: #e2e8f0;
+}
+
 .lookalike-compare__hint {
   opacity: 0.85;
   font-size: 0.9rem;

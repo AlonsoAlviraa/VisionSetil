@@ -12,6 +12,7 @@ function read(rel: string) {
   return readFileSync(join(root, rel), 'utf8')
 }
 
+/** Primary product surfaces wired in App.tsx (U7 — keep in sync with Routes). */
 const SURFACES: Array<{ name: string; path: string; pageHint: string }> = [
   { name: 'Home', path: '/', pageHint: 'HomePage' },
   { name: 'Identify', path: '/identificar', pageHint: 'IdentifyPage' },
@@ -28,6 +29,7 @@ const SURFACES: Array<{ name: string; path: string; pageHint: string }> = [
   { name: 'Lookalike Studio', path: '/lookalikes', pageHint: 'LookalikeStudioPage' },
   { name: 'Quiz game', path: '/reto', pageHint: 'QuizGamePage' },
   { name: 'Setadle hub', path: '/setadle', pageHint: 'SetadlePage' },
+  { name: 'Setadle mode', path: '/setadle/:mode', pageHint: 'SetadlePage' },
   { name: 'ML dashboard', path: '/ml', pageHint: 'MlDashboardPage' },
   { name: 'Not found', path: '*', pageHint: 'NotFoundPage' },
 ]
@@ -42,13 +44,23 @@ describe('product surfaces routes', () => {
       // detail route uses path pattern
       if (s.path.includes(':') && s.path.includes('slug')) {
         expect(app).toContain('enciclopedia/:slug')
+      } else if (s.path.includes(':') && s.path.includes('mode')) {
+        expect(app).toContain('setadle/:mode')
       } else if (s.path === '*') {
         expect(app).toContain('path="*"')
+      } else if (s.path === '/') {
+        expect(app).toMatch(/path=["']\/["']/)
       } else {
         expect(app).toContain(`path="${s.path}"`)
       }
     })
   }
+
+  it('covers offline pack + PWA install chrome in shell', () => {
+    expect(app).toContain('PwaInstallHint')
+    expect(app).toContain('/offline')
+    expect(app).toContain('OfflinePackPage')
+  })
 
   it('header nav exposes primary discovery links', () => {
     for (const p of [

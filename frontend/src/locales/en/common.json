@@ -369,6 +369,7 @@
     }
   },
   "gallery": {
+    "credit": "Photo",
     "open": "Enlarge image",
     "empty": "No extra gallery — showing main photo or illustration.",
     "single": "One image available"
@@ -612,25 +613,28 @@
   "offline": {
     "kicker": "Field · PWA",
     "title": "Offline pack",
-    "subtitle": "Download the season or priority pack to browse species cards offline. Does not classify offline.",
+    "subtitle": "Download the season or priority pack to study species cards and photos offline. Educational material — does not identify mushrooms offline or authorize consumption.",
     "modeLabel": "Pack type",
     "modeSeason": "Season ({{season}})",
     "modePriority": "Priority T0/T1",
     "taxa": "taxa",
-    "photoUrls": "media URLs",
+    "photoUrls": "main photos",
+    "assetUrls": "assets to cache",
     "lastDownload": "Last download: {{when}} · {{photos}} cached · {{kind}}",
     "kindSeason": "season",
     "kindPriority": "priority",
     "progressLabel": "Download progress",
     "saving": "Saving…",
     "download": "Download pack",
+    "redownload": "Download again",
     "clear": "Remove pack",
     "confirmClear": "Remove the offline pack saved on this device?",
-    "statusOk": "Saved {{cached}} images ({{count}} cards in pack).",
+    "statusOk": "Saved {{cached}} assets ({{count}} cards in pack).",
     "statusMetaOnly": "Metadata pack ready. Images could not be cached (CORS/network).",
     "statusError": "Error saving pack",
-    "statusCleared": "Offline pack removed.",
-    "disclaimer": "Cards and photos only. Does not identify mushrooms offline or authorize consumption.",
+    "statusCleared": "Offline pack removed (pack metadata and media). Photos visited outside the pack may remain in the browser cache.",
+    "disclaimer": "Educational use: study cards and photos only. Does not identify mushrooms offline, does not replace a mycologist, and never authorizes consumption.",
+    "installedBadge": "Pack installed on this device",
     "all": "All ({{count}})",
     "top": "View ({{count}})",
     "showTop": "Show less",
@@ -641,8 +645,10 @@
   },
   "pwa": {
     "region": "Install app",
-    "hint": "Install VisionSetil for quick access and offline packs.",
+    "hint": "Install VisionSetil for quick access and offline study packs (does not identify offline).",
+    "iosHint": "On iPhone/iPad: tap Share → “Add to Home Screen”. Then download the offline pack to study without a network.",
     "install": "Install",
+    "offlinePack": "Offline pack",
     "later": "Not now"
   },
   "a11y": {

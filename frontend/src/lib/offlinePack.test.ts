@@ -1,14 +1,17 @@
 /**
  * S5 offline pack + catalog index pure tests (no Cache API required).
- * Phase D-14: season pack entries.
+ * Phase D-14 / U6: season pack entries + asset URL expansion.
  */
 import { beforeAll, describe, expect, it } from 'vitest'
 import {
   buildCatalogIndex,
   buildOfflinePackEntries,
   buildSeasonOfflinePackEntries,
+  isOfflinePackInstalled,
+  offlinePackAssetUrls,
   offlinePackPhotoUrls,
   normalizeOfflineUrl,
+  type OfflinePackMeta,
 } from './offlinePack'
 import { PHOTO_TIER_T0 } from '../data/photoTiers'
 import { loadSpeciesCatalog } from '../data/speciesCatalog'
@@ -53,6 +56,57 @@ describe('offline pack', () => {
       expect(e.slug.length).toBeGreaterThan(0)
       expect(e.photo_url).toBeTruthy()
     }
+  })
+
+  it('U6: expands season assets to card/detail/thumb/gallery + placeholders + meta', () => {
+    const season = buildSeasonOfflinePackEntries('otono', 8)
+    const assets = offlinePackAssetUrls(season)
+    expect(assets.length).toBeGreaterThan(offlinePackPhotoUrls(season).length)
+    expect(assets.some((u) => u.includes('/detail.webp'))).toBe(true)
+    expect(assets.some((u) => u.includes('/thumb.webp'))).toBe(true)
+    expect(assets.some((u) => u.includes('/gallery/'))).toBe(true)
+    expect(assets.some((u) => u.includes('placeholders/default'))).toBe(true)
+    expect(assets.some((u) => u.includes('meta.json'))).toBe(true)
+    // mediaPublicPrefix-aware (default /media)
+    expect(assets.some((u) => u.includes('/media/') || u.includes('/api/media/'))).toBe(true)
+  })
+
+  it('rebuilds asset URLs from saved meta for clear', async () => {
+    const { offlinePackAssetUrlsFromMeta } = await import('./offlinePack')
+    const season = buildSeasonOfflinePackEntries('otono', 6)
+    const fromEntries = offlinePackAssetUrls(season)
+    const fromMeta = offlinePackAssetUrlsFromMeta({
+      savedAt: Date.now(),
+      count: season.length,
+      withPhotos: 10,
+      taxons: season.map((e) => e.taxon),
+      slugs: season.map((e) => e.slug),
+      kind: 'season',
+      seasonId: 'otono',
+    })
+    expect(fromMeta.length).toBe(fromEntries.length)
+    expect(fromMeta.some((u) => u.includes('meta.json'))).toBe(true)
+  })
+
+  it('isOfflinePackInstalled requires count + savedAt', () => {
+    expect(isOfflinePackInstalled(null)).toBe(false)
+    expect(
+      isOfflinePackInstalled({
+        savedAt: 0,
+        count: 5,
+        withPhotos: 1,
+        taxons: [],
+      } as OfflinePackMeta),
+    ).toBe(false)
+    expect(
+      isOfflinePackInstalled({
+        savedAt: Date.now(),
+        count: 8,
+        withPhotos: 20,
+        taxons: ['Amanita muscaria'],
+        kind: 'season',
+      }),
+    ).toBe(true)
   })
 
   it('normalizes relative media paths when window origin exists', () => {

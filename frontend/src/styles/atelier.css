@@ -7888,6 +7888,23 @@ label,
   flex-wrap: wrap;
 }
 
+.offline-pack-installed {
+  margin-bottom: 1rem;
+  border-left: 3px solid var(--moss, #3f6b4a);
+}
+
+.offline-pack-installed__badge {
+  margin: 0;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--forest-800, #1c3226);
+}
+
+.offline-pack-disclaimer {
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
 .offline-pack-progress {
   position: relative;
   margin-top: 0.85rem;
@@ -8257,4 +8274,5 @@ label,
 .nav-more-panel {
   min-width: min(18rem, 92vw);
 }
+
 
