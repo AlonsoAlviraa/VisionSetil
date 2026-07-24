@@ -49,7 +49,7 @@ class MushroomClassifier(Protocol):
 def _candidate_pool() -> list[dict[str, Any]]:
     """Prefer expanded catalog (risk + food quality); fall back to mock catalog."""
     try:
-        expanded = list_expanded_species(limit=500, offset=0)
+        expanded = list_expanded_species(limit=2000, offset=0)
         if expanded:
             pool: list[dict[str, Any]] = []
             for row in expanded:

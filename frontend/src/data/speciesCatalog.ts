@@ -117,16 +117,48 @@ export let speciesCatalogMeta: SpeciesCatalogMeta = {
 
 let loadPromise: Promise<CatalogSpecies[]> | null = null
 
-/** Map local v2 SSOT → atelier CatalogSpecies shape (unification Phase A). */
-function riskFromV2(risk: string, edib: string): string {
-  const r = (risk || '').toLowerCase()
-  const e = (edib || '').toLowerCase()
-  if (r === 'deadly' || e === 'mortifero') return 'deadly'
+/**
+ * Canonical SSOT risk_label set (parity with scripts/sync_catalog_ssot.py
+ * and backend/app/services/species_catalog.py `_risk_label_from_v2`).
+ * Never maps to consumption permission language.
+ */
+export const CANONICAL_RISK_LABELS = [
+  'deadly',
+  'toxic',
+  'unknown_or_risky',
+  'dangerous_or_unknown',
+] as const
+
+export type CanonicalRiskLabel = (typeof CANONICAL_RISK_LABELS)[number]
+
+/** Map v2 risk/edibility → expanded CatalogSpecies risk_label (D1 SSOT). */
+export function riskFromV2(risk: string, edib: string): CanonicalRiskLabel {
+  const r = (risk || '').toLowerCase().trim()
+  const e = (edib || '').toLowerCase().trim()
+  if (r === 'deadly' || r === 'critical' || e === 'mortifero') return 'deadly'
   if (r === 'high' || e === 'toxico') return 'toxic'
-  if (r === 'risky_lookalikes' || e === 'comestible_con_cautela') return 'risky_lookalikes'
-  if (r === 'medium' || e === 'no_recomendado') return 'caution'
-  if (r === 'low' || e === 'excelente' || e === 'buen_comestible') return 'low'
-  return 'unknown'
+  if (r === 'risky_lookalikes' || e === 'comestible_con_cautela') return 'unknown_or_risky'
+  if (r === 'medium' || e === 'no_recomendado' || e === 'inedible') return 'dangerous_or_unknown'
+  // low / excelente / buen_comestible → never "edible"; educational low-risk bucket
+  if (r === 'low' || e === 'excelente' || e === 'buen_comestible' || e === 'comestible') {
+    return 'unknown_or_risky'
+  }
+  return 'dangerous_or_unknown'
+}
+
+/**
+ * Map v2 edibility_code → FoodClass bucket (or null). Never store praise strings
+ * like "excelente" on food_label (issue 7 / safety).
+ */
+function foodClassFromEdibility(edib: string): string | null {
+  const e = (edib || '').toLowerCase().trim()
+  if (e === 'excelente' || e === 'buen_comestible' || e === 'comestible') return 'comestible'
+  if (e === 'comestible_con_cautela' || e === 'no_recomendado' || e === 'inedible') {
+    return 'no_comestible'
+  }
+  if (e === 'toxico') return 'toxica'
+  if (e === 'mortifero') return 'mortal'
+  return null
 }
 
 function fromV2Record(rec: Record<string, unknown>): CatalogSpecies {
@@ -154,6 +186,7 @@ function fromV2Record(rec: Record<string, unknown>): CatalogSpecies {
   const descMap = (rec.description || {}) as Record<string, string>
   const description = descMap.es || descMap.en || ''
   const photo_tier = getPhotoTier(taxon, risk_label)
+  const foodClass = foodClassFromEdibility(edibility_code)
   return {
     taxon,
     slug,
@@ -167,8 +200,8 @@ function fromV2Record(rec: Record<string, unknown>): CatalogSpecies {
     display_name: common_names[0] || taxon,
     photo_hint: undefined,
     photo_tier,
-    food_class: edibility_code,
-    food_label: edibility_code,
+    food_class: foodClass,
+    food_label: foodClass,
     food_sources: null,
   }
 }
@@ -214,9 +247,9 @@ export async function loadSpeciesCatalog(): Promise<CatalogSpecies[]> {
         /* fall through */
       }
 
-      // 2) Colleague expanded catalog only
+      // 2) Expanded CatalogSpecies JSON (SSOT-synced fallback; photo_tier hydrated below)
       const mod = await import('./speciesCatalog.json')
-      const data = mod.default as SpeciesCatalogFile
+      const data = mod.default as unknown as SpeciesCatalogFile
       speciesCatalog = hydrateSpecies(data)
       speciesCatalogMeta = buildMeta(data, speciesCatalog)
       return speciesCatalog
