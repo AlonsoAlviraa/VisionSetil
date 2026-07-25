@@ -14,7 +14,11 @@ dependencies = [
   "sqlalchemy>=2.0,<3.0",
   "python-multipart>=0.0.9,<1.0",
   "pydantic>=2.7,<3.0",
-  "pydantic-settings>=2.3,<3.0"
+  "pydantic-settings>=2.3,<3.0",
+  # Runtime imports on the default app path (candidate_ranker_v2 / multi_view_classifier /
+  # image tests). Without these, `pip install -e .[dev]` cannot import app.main in CI.
+  "numpy>=1.26,<3.0",
+  "pillow>=10.0,<12.0",
 ]
 
 [project.optional-dependencies]
