@@ -363,6 +363,7 @@
     }
   },
   "gallery": {
+    "credit": "Foto",
     "open": "Ampliar imagen",
     "empty": "Sin galería extra — se muestra la ilustración o foto principal.",
     "single": "Una imagen disponible"
@@ -606,25 +607,28 @@
   "offline": {
     "kicker": "Campo · PWA",
     "title": "Pack offline",
-    "subtitle": "Descarga la temporada o el pack prioritario para consultar fichas sin red. No clasifica offline.",
+    "subtitle": "Descarga la temporada o el pack prioritario para estudiar fichas y fotos sin red. Material educativo — no identifica setas offline ni autoriza consumo.",
     "modeLabel": "Tipo de pack",
     "modeSeason": "Temporada ({{season}})",
     "modePriority": "Prioritario T0/T1",
     "taxa": "taxones",
-    "photoUrls": "URLs de media",
+    "photoUrls": "fotos principales",
+    "assetUrls": "recursos a cachear",
     "lastDownload": "Última descarga: {{when}} · {{photos}} en caché · {{kind}}",
     "kindSeason": "temporada",
     "kindPriority": "prioritario",
     "progressLabel": "Progreso de descarga",
     "saving": "Guardando…",
     "download": "Descargar pack",
+    "redownload": "Volver a descargar",
     "clear": "Eliminar pack",
     "confirmClear": "¿Eliminar el pack offline guardado en este dispositivo?",
-    "statusOk": "Guardadas {{cached}} imágenes ({{count}} fichas en el pack).",
+    "statusOk": "Guardados {{cached}} recursos ({{count}} fichas en el pack).",
     "statusMetaOnly": "Pack de metadatos listo. Las imágenes no se pudieron cachear (CORS/red).",
     "statusError": "Error al guardar el pack",
-    "statusCleared": "Pack offline eliminado.",
-    "disclaimer": "Solo consulta de fichas y fotos. No identifica setas sin red ni autoriza consumo.",
+    "statusCleared": "Pack offline eliminado (metadatos y medios del pack). Fotos visitadas fuera del pack pueden permanecer en caché del navegador.",
+    "disclaimer": "Uso educativo: consulta de fichas y fotos de estudio. No identifica setas sin red, no sustituye a un micólogo y nunca autoriza consumo.",
+    "installedBadge": "Pack instalado en este dispositivo",
     "all": "Todas ({{count}})",
     "top": "Vista ({{count}})",
     "showTop": "Ver menos",
@@ -635,8 +639,10 @@
   },
   "pwa": {
     "region": "Instalar app",
-    "hint": "Instala VisionSetil en tu dispositivo para acceso rápido y packs offline.",
+    "hint": "Instala VisionSetil para acceso rápido y packs offline de estudio (no identifica sin red).",
+    "iosHint": "En iPhone/iPad: toca Compartir → «Añadir a pantalla de inicio». Luego descarga el pack offline para estudiar sin red.",
     "install": "Instalar",
+    "offlinePack": "Pack offline",
     "later": "Ahora no"
   },
   "a11y": {

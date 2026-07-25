@@ -369,6 +369,7 @@
     }
   },
   "gallery": {
+    "credit": "Foto",
     "open": "Ampliar imatge",
     "empty": "Sense galeria extra — es mostra la il·lustració o foto principal.",
     "single": "Una imatge disponible"
@@ -612,25 +613,28 @@
   "offline": {
     "kicker": "Camp · PWA",
     "title": "Pack offline",
-    "subtitle": "Descarrega la temporada o el pack prioritari per consultar fitxes sense xarxa. No classifica offline.",
+    "subtitle": "Descarrega la temporada o el pack prioritari per estudiar fitxes i fotos sense xarxa. Material educatiu — no identifica bolets offline ni autoritza el consum.",
     "modeLabel": "Tipus de pack",
     "modeSeason": "Temporada ({{season}})",
     "modePriority": "Prioritari T0/T1",
     "taxa": "tàxons",
-    "photoUrls": "URLs de media",
+    "photoUrls": "fotos principals",
+    "assetUrls": "recursos a desar",
     "lastDownload": "Última baixada: {{when}} · {{photos}} a la memòria cau · {{kind}}",
     "kindSeason": "temporada",
     "kindPriority": "prioritari",
     "progressLabel": "Progrés de baixada",
     "saving": "Desant…",
     "download": "Descarregar pack",
+    "redownload": "Tornar a descarregar",
     "clear": "Eliminar pack",
     "confirmClear": "Vols eliminar el pack offline d’aquest dispositiu?",
-    "statusOk": "Desades {{cached}} imatges ({{count}} fitxes al pack).",
+    "statusOk": "Desats {{cached}} recursos ({{count}} fitxes al pack).",
     "statusMetaOnly": "Pack de metadades llest. Les imatges no s’han pogut desar (CORS/xarxa).",
     "statusError": "Error en desar el pack",
-    "statusCleared": "Pack offline eliminat.",
-    "disclaimer": "Només consulta de fitxes i fotos. No identifica bolets sense xarxa ni autoritza el consum.",
+    "statusCleared": "Pack offline eliminat (metadades i mitjans del pack). Les fotos visitades fora del pack poden romandre a la memòria cau del navegador.",
+    "disclaimer": "Ús educatiu: consulta de fitxes i fotos d’estudi. No identifica bolets sense xarxa, no substitueix un micòleg i mai autoritza el consum.",
+    "installedBadge": "Pack instal·lat en aquest dispositiu",
     "all": "Totes ({{count}})",
     "top": "Vista ({{count}})",
     "showTop": "Veure’n menys",
@@ -641,8 +645,10 @@
   },
   "pwa": {
     "region": "Instal·lar app",
-    "hint": "Instal·la VisionSetil per a un accés ràpid i packs offline.",
+    "hint": "Instal·la VisionSetil per a un accés ràpid i packs offline d’estudi (no identifica sense xarxa).",
+    "iosHint": "A l’iPhone/iPad: toca Comparteix → «Afegeix a la pantalla d’inici». Després descarrega el pack offline per estudiar sense xarxa.",
     "install": "Instal·lar",
+    "offlinePack": "Pack offline",
     "later": "Ara no"
   },
   "a11y": {

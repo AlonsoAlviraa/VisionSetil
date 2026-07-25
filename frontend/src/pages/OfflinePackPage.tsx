@@ -1,6 +1,6 @@
 /**
- * Offline pack UI — Phase D-14: season pack + priority T0/T1, progress, clear.
- * Educational / PWA shell only — does not classify offline.
+ * Offline pack UI — Phase D-14 / U6: season pack + priority T0/T1, progress, clear.
+ * Educational / PWA shell only — study & reference; does not classify offline.
  */
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
@@ -10,6 +10,8 @@ import {
   buildSeasonOfflinePackEntries,
   cacheOfflinePackPhotos,
   clearOfflinePackCache,
+  isOfflinePackInstalled,
+  offlinePackAssetUrls,
   offlinePackPhotoUrls,
   readOfflinePackMeta,
   writeOfflinePackMeta,
@@ -56,35 +58,30 @@ export function OfflinePackPage() {
   const entries = kind === 'season' ? seasonEntries : priorityEntries
   const visible = showAll ? entries : entries.slice(0, TOP_N)
   const photoCount = offlinePackPhotoUrls(entries).length
+  const assetCount = offlinePackAssetUrls(entries).length
+  const installed = isOfflinePackInstalled(meta)
   const progressPct =
     progress && progress.total > 0 ? Math.round((progress.done / progress.total) * 100) : 0
 
   const download = async () => {
     setBusy(true)
     setStatus(null)
-    setProgress({ done: 0, total: Math.max(photoCount, 1), ok: 0 })
     try {
       if (kind === 'priority' && !catalogReady) {
         await loadSpeciesCatalog()
         setCatalogReady(true)
       }
       const list = kind === 'season' ? seasonEntries : buildOfflinePackEntries(80)
-      const urls = offlinePackPhotoUrls(list)
-      // Always try placeholders so offline shell never has zero assets
-      const withPlaceholders = [
-        ...urls,
-        '/media/placeholders/default.webp',
-        '/media/placeholders/toxic.webp',
-        '/media/placeholders/deadly.webp',
-        '/media/placeholders/unknown.webp',
-      ]
-      const unique = Array.from(new Set(withPlaceholders.map((u) => u)))
+      // U6: card + detail + thumb + meta + placeholders for usable offline fichas
+      const unique = offlinePackAssetUrls(list)
+      setProgress({ done: 0, total: Math.max(unique.length, 1), ok: 0 })
       const cached = await cacheOfflinePackPhotos(unique, undefined, (p) => setProgress(p))
       const next = {
         savedAt: Date.now(),
         count: list.length,
         withPhotos: cached,
         taxons: list.map((e) => e.taxon),
+        slugs: list.map((e) => e.slug),
         kind,
         seasonId: kind === 'season' ? seasonId : null,
       }
@@ -93,7 +90,7 @@ export function OfflinePackPage() {
       setStatus(
         cached > 0
           ? t('offline.statusOk', {
-              defaultValue: 'Guardadas {{cached}} imágenes ({{count}} fichas en el pack).',
+              defaultValue: 'Guardadas {{cached}} recursos ({{count}} fichas en el pack).',
               cached,
               count: list.length,
             })
@@ -124,7 +121,12 @@ export function OfflinePackPage() {
     try {
       await clearOfflinePackCache()
       setMeta(null)
-      setStatus(t('offline.statusCleared', { defaultValue: 'Pack offline eliminado.' }))
+      setStatus(
+        t('offline.statusCleared', {
+          defaultValue:
+            'Pack offline eliminado (metadatos y medios del pack). Fotos visitadas fuera del pack pueden permanecer en caché del navegador.',
+        }),
+      )
     } finally {
       setBusy(false)
     }
@@ -138,10 +140,33 @@ export function OfflinePackPage() {
         <p className="page-subtitle">
           {t('offline.subtitle', {
             defaultValue:
-              'Descarga la temporada o el pack prioritario para consultar fichas sin red. No clasifica offline.',
+              'Descarga la temporada o el pack prioritario para estudiar fichas y fotos sin red. Material educativo — no identifica setas offline ni autoriza consumo.',
           })}
         </p>
       </div>
+
+      {installed && meta ? (
+        <div
+          className="atelier-panel offline-pack-installed"
+          role="status"
+          data-testid="offline-pack-installed"
+        >
+          <p className="offline-pack-installed__badge">
+            {t('offline.installedBadge', { defaultValue: 'Pack instalado en este dispositivo' })}
+          </p>
+          <p className="muted" style={{ margin: '0.35rem 0 0' }}>
+            {t('offline.lastDownload', {
+              defaultValue: 'Última descarga: {{when}} · {{photos}} en caché · {{kind}}',
+              when: new Date(meta.savedAt).toLocaleString(),
+              photos: meta.withPhotos,
+              kind:
+                meta.kind === 'season'
+                  ? t('offline.kindSeason', { defaultValue: 'temporada' })
+                  : t('offline.kindPriority', { defaultValue: 'prioritario' }),
+            })}
+          </p>
+        </div>
+      ) : null}
 
       <div className="offline-pack-modes identify-mode-toggle" role="group" aria-label={t('offline.modeLabel', { defaultValue: 'Tipo de pack' })}>
         <button
@@ -174,24 +199,13 @@ export function OfflinePackPage() {
       <div className="atelier-panel offline-pack-panel" style={{ marginBottom: '1.25rem' }}>
         <p>
           <strong>{entries.length}</strong> {t('offline.taxa', { defaultValue: 'taxones' })} ·{' '}
-          <strong>{photoCount}</strong> {t('offline.photoUrls', { defaultValue: 'URLs de media' })}
+          <strong>{photoCount}</strong> {t('offline.photoUrls', { defaultValue: 'fotos principales' })} ·{' '}
+          <strong>{assetCount}</strong>{' '}
+          {t('offline.assetUrls', { defaultValue: 'recursos a cachear' })}
         </p>
         {kind === 'season' && (
           <p className="muted" style={{ marginTop: '0.35rem' }}>
             {season.note}
-          </p>
-        )}
-        {meta && (
-          <p className="muted" style={{ marginTop: '0.5rem' }}>
-            {t('offline.lastDownload', {
-              defaultValue: 'Última descarga: {{when}} · {{photos}} en caché · {{kind}}',
-              when: new Date(meta.savedAt).toLocaleString(),
-              photos: meta.withPhotos,
-              kind:
-                meta.kind === 'season'
-                  ? t('offline.kindSeason', { defaultValue: 'temporada' })
-                  : t('offline.kindPriority', { defaultValue: 'prioritario' }),
-            })}
           </p>
         )}
 
@@ -217,16 +231,20 @@ export function OfflinePackPage() {
             className="btn-atelier btn-atelier--primary"
             disabled={busy || (kind === 'priority' && !catalogReady && entries.length === 0)}
             onClick={() => void download()}
+            data-testid="offline-pack-download"
           >
             {busy
               ? t('offline.saving', { defaultValue: 'Guardando…' })
-              : t('offline.download', { defaultValue: 'Descargar pack' })}
+              : installed
+                ? t('offline.redownload', { defaultValue: 'Volver a descargar' })
+                : t('offline.download', { defaultValue: 'Descargar pack' })}
           </button>
           <button
             type="button"
             className="btn-atelier btn-atelier--ghost"
             disabled={busy || !meta}
             onClick={() => void clear()}
+            data-testid="offline-pack-clear"
           >
             {t('offline.clear', { defaultValue: 'Eliminar pack' })}
           </button>
@@ -239,10 +257,10 @@ export function OfflinePackPage() {
             {status}
           </p>
         )}
-        <p className="muted offline-pack-disclaimer" style={{ marginTop: '0.85rem' }}>
+        <p className="muted offline-pack-disclaimer" style={{ marginTop: '0.85rem' }} role="note">
           {t('offline.disclaimer', {
             defaultValue:
-              'Solo consulta de fichas y fotos. No identifica setas sin red ni autoriza consumo.',
+              'Uso educativo: consulta de fichas y fotos de estudio. No identifica setas sin red, no sustituye a un micólogo y nunca autoriza consumo.',
           })}
         </p>
       </div>

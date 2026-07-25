@@ -18,7 +18,7 @@ describe('speciesImageUrl', () => {
   })
 
   it('builds placeholder urls with .webp for Workbox', () => {
-    expect(placeholderImageUrl('deadly')).toBe('/media/placeholder/deadly.webp')
+    expect(placeholderImageUrl('deadly')).toBe('/media/placeholders/deadly.webp')
   })
 })
 
