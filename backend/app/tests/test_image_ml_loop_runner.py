@@ -26,6 +26,10 @@ def test_loop_config_wires_runner_and_predictions():
 
 def test_run_image_ml_loop_on_v9_predictions(tmp_path):
     """Drive the shipped runner entrypoint on real v9 kernel predictions."""
+    # Runner → compute_full_metrics needs pandas (eval extra). CI installs .[dev] only.
+    import pytest
+
+    pytest.importorskip("pandas")
     assert PREDS.exists(), "kernel_output_v9 predictions required for honest ML loop"
     assert LABELS.exists()
     out = tmp_path / "ml_loop_out"
