@@ -98,8 +98,20 @@ class Settings(BaseSettings):
     yoloe_model_path: str = Field(default="")
     dino_model_name: str = Field(default="")
     dino_model_path: str = Field(default="")
+    # HF Hub commit pin for facebook/dinov2-base (model upload rev; B615 supply-chain).
+    # Override via DINO_MODEL_REVISION when changing dino_model_name.
+    dino_model_revision: str = Field(
+        default="554d12fdadb8c82be92b10535b04dc22f18180b9",
+        validation_alias="DINO_MODEL_REVISION",
+    )
     siglip_model_name: str = Field(default="")
     siglip_model_path: str = Field(default="")
+    # HF Hub commit pin for google/siglip-base-patch16-224 (main tip at pin time).
+    # Override via SIGLIP_MODEL_REVISION when changing siglip_model_name.
+    siglip_model_revision: str = Field(
+        default="7fd15f0689c79d79e38b1c2e2e2370a7bf2761ed",
+        validation_alias="SIGLIP_MODEL_REVISION",
+    )
 
     # --- Device / dims ------------------------------------------------------
     yoloe_device: str = Field(default="auto")
@@ -147,11 +159,7 @@ class Settings(BaseSettings):
     # Path to the trained MultiViewModel checkpoint (torch .pt).
     # Prefer in-repo Kaggle best.pt when present; else backend/app/ml/weights/.
     multi_view_weights_path: Path = Field(
-        default=_REPO_ROOT
-        / "kaggle"
-        / "kernel_output_v9"
-        / "models"
-        / "best.pt"
+        default=_REPO_ROOT / "kaggle" / "kernel_output_v9" / "models" / "best.pt"
     )
     # Path to the view classifier ONNX weights.
     view_classifier_model_path: str = Field(default="")
@@ -188,7 +196,9 @@ class Settings(BaseSettings):
     # --- E-08 session cookie (opt-in; bearer still works) --------------------
     # When true: Set-Cookie HttpOnly on login/register; accept cookie as session.
     auth_cookie_enabled: bool = Field(default=False, validation_alias="AUTH_COOKIE_ENABLED")
-    auth_cookie_name: str = Field(default="visionsetil_session", validation_alias="AUTH_COOKIE_NAME")
+    auth_cookie_name: str = Field(
+        default="visionsetil_session", validation_alias="AUTH_COOKIE_NAME"
+    )
     # Secure flag: default True in production, False in development unless forced.
     auth_cookie_secure: bool | None = Field(default=None, validation_alias="AUTH_COOKIE_SECURE")
     # lax | strict | none
@@ -219,7 +229,13 @@ class Settings(BaseSettings):
                 return mb * 1024 * 1024
         return v
 
-    @field_validator("cors_origins", "allowed_extensions", "required_views", "canonical_view_types", mode="before")
+    @field_validator(
+        "cors_origins",
+        "allowed_extensions",
+        "required_views",
+        "canonical_view_types",
+        mode="before",
+    )
     @classmethod
     def _split_csv(cls, v):
         """Accept comma-separated string or collection for complex env fields."""
@@ -235,9 +251,8 @@ class Settings(BaseSettings):
         In production/prod, Settings construction raises so the process cannot
         boot fail-open (B-19 still warns in non-prod).
         """
-        if (
-            not self.model_block_species_id_when_below_gate
-            and _is_production_env_value(self.environment)
+        if not self.model_block_species_id_when_below_gate and _is_production_env_value(
+            self.environment
         ):
             raise ValueError(
                 "MODEL_BLOCK_SPECIES_ID_WHEN_BELOW_GATE cannot be false when "
@@ -268,8 +283,7 @@ class Settings(BaseSettings):
             )
         if self.model_fallback_to_mock:
             raise ValueError(
-                "MODEL_FALLBACK_TO_MOCK cannot be true when ENVIRONMENT is "
-                "production/prod"
+                "MODEL_FALLBACK_TO_MOCK cannot be true when ENVIRONMENT is " "production/prod"
             )
         if any(o.strip() == "*" for o in self.cors_origins):
             raise ValueError(

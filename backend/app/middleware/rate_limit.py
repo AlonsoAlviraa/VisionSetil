@@ -94,7 +94,9 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         self.auth_max_requests = auth_max_requests or int(
             os.getenv("RATE_LIMIT_AUTH_REQUESTS", "10")
         )
-        self.exempt_paths = set(exempt_paths) if exempt_paths is not None else set(DEFAULT_EXEMPT_PATHS)
+        self.exempt_paths = (
+            set(exempt_paths) if exempt_paths is not None else set(DEFAULT_EXEMPT_PATHS)
+        )
         # Trust X-Forwarded-For only when explicitly enabled (reverse proxy).
         if trust_proxy is None:
             trust_proxy = os.getenv("TRUST_PROXY", "").strip().lower() in {
@@ -121,9 +123,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
                 self._redis.ping()
                 logger.info("RateLimitMiddleware: using Redis at %s", redis_url)
             except Exception as exc:  # noqa: BLE001
-                logger.warning(
-                    "RateLimitMiddleware: Redis unavailable (%s) — using in-memory", exc
-                )
+                logger.warning("RateLimitMiddleware: Redis unavailable (%s) — using in-memory", exc)
                 self._redis = None
 
     def _client_ip(self, request: Request) -> str:

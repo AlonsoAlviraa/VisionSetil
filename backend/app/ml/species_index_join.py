@@ -143,11 +143,7 @@ def catalog_join_payload(
 
     verdict = overlap_verdict(coverage)
     # True when model/catalog join is incomplete (informational mismatch flag).
-    mismatch: bool | None
-    if coverage is None:
-        mismatch = None
-    else:
-        mismatch = coverage < ALIGN_PCT
+    mismatch: bool | None = None if coverage is None else coverage < ALIGN_PCT
 
     return {
         "available": True,

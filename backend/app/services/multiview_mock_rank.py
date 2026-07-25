@@ -106,9 +106,10 @@ def risk_priority_boost(candidate: dict[str, Any], haystack: str) -> float:
         boost += 0.07
         if "amanita" in taxon and "amanita" in haystack:
             boost += 0.15
-        if any(k in haystack for k in ("volva", "blanco", "laminas blancas", "anillo", "oronja")):
-            if "amanita" in taxon or risk in ("deadly", "mortal", "critical"):
-                boost += 0.09
+        if any(
+            k in haystack for k in ("volva", "blanco", "laminas blancas", "anillo", "oronja")
+        ) and ("amanita" in taxon or risk in ("deadly", "mortal", "critical")):
+            boost += 0.09
         if any(k in haystack for k in ("madera", "tronco", "wood")) and "galerina" in taxon:
             boost += 0.1
     return min(boost, 0.28)

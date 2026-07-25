@@ -1,5 +1,5 @@
-from collections.abc import Generator
 import os
+from collections.abc import Generator
 
 # Raise rate limits before importing the app so full-suite classify tests
 # do not share a 20/min in-memory bucket and flake with 429s.
@@ -20,8 +20,6 @@ from app.middleware.rate_limit import RateLimitMiddleware
 def _clear_rate_limit_buckets() -> None:
     """Reset in-memory rate-limit state between tests (shared process)."""
     # Walk middleware stack for RateLimitMiddleware instances
-    stack = getattr(app, "middleware_stack", None) or getattr(app, "user_middleware", None)
-    # Also scan app.router / ASGI wrappers
     seen: set[int] = set()
 
     def walk(obj) -> None:

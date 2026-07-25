@@ -2,17 +2,18 @@
 
 from __future__ import annotations
 
-import pytest
 from types import SimpleNamespace
 
+import pytest
+
+from app.db.models import Observation, ObservationImage
+from app.services.classifier import MockMushroomClassifier
 from app.services.multiview_mock_rank import (
     multi_view_bonus,
     rank_candidates,
     should_open_set_reject,
     views_present,
 )
-from app.services.classifier import MockMushroomClassifier
-from app.db.models import Observation, ObservationImage
 
 
 def _img(name: str, view: str | None = None) -> SimpleNamespace:

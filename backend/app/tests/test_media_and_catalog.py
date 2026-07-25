@@ -6,8 +6,8 @@ import io
 from pathlib import Path
 
 import pytest
-from PIL import Image
 from fastapi.testclient import TestClient
+from PIL import Image
 
 from app.core.config import settings
 from app.core.safety_i18n import contains_consumption_language, get_safety_bundle
@@ -86,7 +86,9 @@ def test_deadly_taxon_without_asset_returns_deadly_placeholder_body(client: Test
     slug = "amanita-virosa"
     rec = get_by_slug(slug)
     assert rec is not None
-    assert rec.get("risk_level") in ("deadly", "critical") or rec.get("edibility_code") == "mortifero"
+    assert (
+        rec.get("risk_level") in ("deadly", "critical") or rec.get("edibility_code") == "mortifero"
+    )
 
     hidden, original = _hide_species_media(slug)
     try:
@@ -125,7 +127,9 @@ def test_fallback_zero_missing_returns_404(client: TestClient):
         _restore_species_media(hidden, original)
 
 
-def test_stub_card_rewrites_to_placeholder_with_short_cache(client: TestClient, tmp_path, monkeypatch):
+def test_stub_card_rewrites_to_placeholder_with_short_cache(
+    client: TestClient, tmp_path, monkeypatch
+):
     """C-05: tiny card (<8KB) → placeholder rewrite, X-Media-Quality=stub_fallback, max-age=300."""
     from app.services import species_media as sm
 
@@ -189,9 +193,13 @@ def test_tiny_thumb_falls_through_to_non_stub_card(client: TestClient, tmp_path,
     for _y in range(360):
         for _x in range(480):
             n = rng.randint(0, 50)
-            arr.extend([max(0, min(255, 74 + n)), max(0, min(255, 120 + n)), max(0, min(255, 60 + n))])
+            arr.extend(
+                [max(0, min(255, 74 + n)), max(0, min(255, 120 + n)), max(0, min(255, 60 + n))]
+            )
     card_buf = io.BytesIO()
-    Image.frombytes("RGB", (480, 360), bytes(arr)).save(card_buf, format="WEBP", quality=90, method=0)
+    Image.frombytes("RGB", (480, 360), bytes(arr)).save(
+        card_buf, format="WEBP", quality=90, method=0
+    )
     card_bytes = card_buf.getvalue()
     assert len(card_bytes) >= 8192
     (d / "card.webp").write_bytes(card_bytes)
@@ -375,23 +383,13 @@ def test_hydrate_synonym_normalizes_to_preferred_scientific_name():
 
     reload_synonyms()
 
+    assert normalize_to_preferred_scientific_name("Galerina autumnalis") == "Galerina marginata"
     assert (
-        normalize_to_preferred_scientific_name("Galerina autumnalis")
-        == "Galerina marginata"
+        normalize_to_preferred_scientific_name("  agaricus   PHALLOIDES ") == "Amanita phalloides"
     )
-    assert (
-        normalize_to_preferred_scientific_name("  agaricus   PHALLOIDES ")
-        == "Amanita phalloides"
-    )
-    assert (
-        normalize_to_preferred_scientific_name("Pholiota marginata")
-        == "Galerina marginata"
-    )
+    assert normalize_to_preferred_scientific_name("Pholiota marginata") == "Galerina marginata"
     # Unknown taxa pass through cleaned, not invented
-    assert (
-        normalize_to_preferred_scientific_name("  Fakeus  inventus  ")
-        == "Fakeus inventus"
-    )
+    assert normalize_to_preferred_scientific_name("  Fakeus  inventus  ") == "Fakeus inventus"
 
     pred = hydrate_prediction("Galerina autumnalis", 0.88, "poisonous", "es")
     assert pred.species == "Galerina marginata"
@@ -439,8 +437,7 @@ def test_synonym_does_not_collapse_distinct_catalog_taxa():
     assert get_by_scientific_name("Lactarius deliciosus") is not None
 
     assert (
-        normalize_to_preferred_scientific_name("Lactarius sanguifluus")
-        == "Lactarius sanguifluus"
+        normalize_to_preferred_scientific_name("Lactarius sanguifluus") == "Lactarius sanguifluus"
     )
     # Reverse map must not map sanguifluus → deliciosus
     rev = load_synonym_reverse_map()

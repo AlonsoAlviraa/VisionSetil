@@ -52,7 +52,9 @@ def build_multiview_v8(
         vocab.update({k: int(v) for k, v in vocab_sizes.items()})
 
     class VectorizedLoRA(nn.Module):
-        def __init__(self, in_features: int, num_views: int = 4, rank: int = 16, alpha: float = 16.0):
+        def __init__(
+            self, in_features: int, num_views: int = 4, rank: int = 16, alpha: float = 16.0
+        ):
             super().__init__()
             self.num_views = num_views
             self.rank = rank
@@ -151,9 +153,7 @@ def build_multiview_v8(
             self.max_views = 10
             self.meta_proj = nn.Linear(metadata_dim, d_model)
             self.view_pos = nn.Embedding(self.max_views + 1, d_model)
-            self.self_attn = nn.MultiheadAttention(
-                embed_dim=d_model, num_heads=4, batch_first=True
-            )
+            self.self_attn = nn.MultiheadAttention(embed_dim=d_model, num_heads=4, batch_first=True)
             self.norm1 = nn.LayerNorm(d_model)
             self.norm2 = nn.LayerNorm(d_model)
             self.ffn = nn.Sequential(
@@ -165,9 +165,7 @@ def build_multiview_v8(
 
         def forward(self, visual_embeddings, attention_mask, metadata_emb=None):
             B, N, _ = visual_embeddings.shape
-            pos_idx = torch.arange(N, device=visual_embeddings.device).clamp(
-                0, self.max_views - 1
-            )
+            pos_idx = torch.arange(N, device=visual_embeddings.device).clamp(0, self.max_views - 1)
             tokens = visual_embeddings + self.view_pos(pos_idx).unsqueeze(0)
             if metadata_emb is not None:
                 meta_token = self.meta_proj(metadata_emb).unsqueeze(1)
@@ -179,9 +177,7 @@ def build_multiview_v8(
                 key_padding_mask = torch.cat([meta_pad, ~attention_mask], dim=1)
             else:
                 key_padding_mask = ~attention_mask
-            attn_out, _ = self.self_attn(
-                tokens, tokens, tokens, key_padding_mask=key_padding_mask
-            )
+            attn_out, _ = self.self_attn(tokens, tokens, tokens, key_padding_mask=key_padding_mask)
             tokens = self.norm1(tokens + attn_out)
             tokens = self.norm2(tokens + self.ffn(tokens))
             if metadata_emb is not None:
@@ -339,7 +335,9 @@ def load_v8_from_checkpoint(
     if not isinstance(state_dict, dict):
         raise TypeError(f"state_dict is not a dict: {type(state_dict)}")
 
-    hparams = infer_v8_hparams(state_dict, checkpoint.get("config") if isinstance(checkpoint, dict) else None)
+    hparams = infer_v8_hparams(
+        state_dict, checkpoint.get("config") if isinstance(checkpoint, dict) else None
+    )
     model = build_multiview_v8(
         num_classes=hparams["num_classes"],
         d_model=hparams["d_model"],
@@ -352,13 +350,10 @@ def load_v8_from_checkpoint(
     missing, unexpected = model.load_state_dict(state_dict, strict=False)
     # Fail if too many missing core weights (architecture mismatch)
     critical_prefixes = ("backbone.backbone.", "arcface.", "fusion.")
-    missing_critical = [
-        m for m in missing if any(m.startswith(p) for p in critical_prefixes)
-    ]
+    missing_critical = [m for m in missing if any(m.startswith(p) for p in critical_prefixes)]
     if missing_critical:
         raise RuntimeError(
-            f"v8 load missing critical keys ({len(missing_critical)}): "
-            f"{missing_critical[:5]}"
+            f"v8 load missing critical keys ({len(missing_critical)}): " f"{missing_critical[:5]}"
         )
     model.to(device)
     model.eval()

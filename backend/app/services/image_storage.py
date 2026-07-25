@@ -84,15 +84,19 @@ def read_image_dimensions(content: bytes, extension: str) -> tuple[int, int] | N
                 if length < 2:
                     break
                 i += 2 + length
-        if ext == "webp" and content.startswith(b"RIFF") and b"WEBP" in content[:16]:
-            # VP8X or VP8 chunk
-            if b"VP8X" in content[:40] and len(content) >= 30:
-                # canvas size is 24-bit little-endian at offset after chunk header
-                idx = content.find(b"VP8X")
-                if idx != -1 and idx + 14 < len(content):
-                    w = 1 + int.from_bytes(content[idx + 8 : idx + 11], "little")
-                    h = 1 + int.from_bytes(content[idx + 11 : idx + 14], "little")
-                    return w, h
+        if (
+            ext == "webp"
+            and content.startswith(b"RIFF")
+            and b"WEBP" in content[:16]
+            and b"VP8X" in content[:40]
+            and len(content) >= 30
+        ):
+            # canvas size is 24-bit little-endian at offset after chunk header
+            idx = content.find(b"VP8X")
+            if idx != -1 and idx + 14 < len(content):
+                w = 1 + int.from_bytes(content[idx + 8 : idx + 11], "little")
+                h = 1 + int.from_bytes(content[idx + 11 : idx + 14], "little")
+                return w, h
     except Exception:  # noqa: BLE001 — best-effort only
         return None
     return None

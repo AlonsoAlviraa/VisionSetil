@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from pathlib import Path
-
 from app.ml.model_registry import get_model_status
 from app.services.multi_view_classifier import (
     MultiViewMushroomClassifier,

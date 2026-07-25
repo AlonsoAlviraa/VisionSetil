@@ -9,9 +9,11 @@ on:
 jobs:
   lint-type-test:
     runs-on: ubuntu-latest
+    # Monorepo: pyproject.toml + tool configs at repo root (package-dir=backend).
+    # Do not default to backend/ — that broke pip install -e ".[dev]".
     defaults:
       run:
-        working-directory: backend
+        working-directory: .
     steps:
       - uses: actions/checkout@v4
 
@@ -20,21 +22,21 @@ jobs:
         with:
           python-version: "3.11"
           cache: "pip"
+          cache-dependency-path: pyproject.toml
 
       - name: Install backend (dev + runtime)
         run: |
           python -m pip install --upgrade pip
           pip install -e ".[dev]"
-          pip install bandit
 
       - name: Ruff
-        run: ruff check .
+        run: ruff check backend
 
       - name: Black --check
-        run: black --check .
+        run: black --check backend
 
       - name: Mypy (non-blocking baseline)
-        run: mypy app || true
+        run: mypy backend/app || true
 
       - name: Pytest
         run: pytest -q

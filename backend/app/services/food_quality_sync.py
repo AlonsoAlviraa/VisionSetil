@@ -114,8 +114,7 @@ def build_food_quality_index() -> dict[str, dict[str, Any]]:
         merged_class = _worse(index[key].get("food_class"), poison.get("food_class"))
         sources = list(
             dict.fromkeys(
-                list(index[key].get("food_sources") or [])
-                + list(poison.get("food_sources") or [])
+                list(index[key].get("food_sources") or []) + list(poison.get("food_sources") or [])
             )
         )
         index[key] = {
