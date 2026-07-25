@@ -3,11 +3,11 @@
 These tests are designed to run WITHOUT torch/GPU — they validate the data
 structures, configuration validation, and pure-Python logic.
 """
+
 from __future__ import annotations
 
-import json
+import importlib.util
 import sys
-import tempfile
 from pathlib import Path
 
 import pytest
@@ -17,6 +17,8 @@ import pytest
 # so repo root is 4 parents up.
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent.parent
 sys.path.insert(0, str(REPO_ROOT))
+
+_HAS_TORCH = importlib.util.find_spec("torch") is not None
 
 
 # ---------------------------------------------------------------------------
@@ -82,8 +84,8 @@ class TestPrototypeClassifier:
         from kaggle.foundation_ensemble import PrototypeClassifier
 
         clf = PrototypeClassifier(open_set_threshold=0.8)
-        assert clf.is_open_set(0.5) is True   # below threshold → reject
-        assert clf.is_open_set(0.9) is False   # above threshold → accept
+        assert clf.is_open_set(0.5) is True  # below threshold → reject
+        assert clf.is_open_set(0.9) is False  # above threshold → accept
 
     def test_save_and_load(self, tmp_path):
         import numpy as np
@@ -339,9 +341,7 @@ class TestDatasetPreparation:
         )
 
         obs_groups = group_by_observation(records)
-        train, val, test, report = stratified_group_split(
-            obs_groups, min_class_count=3
-        )
+        train, val, test, report = stratified_group_split(obs_groups, min_class_count=3)
 
         # Rare species should only be in train.
         rare_in_train = any(r.species == "Rare species" for r in train)
@@ -355,10 +355,16 @@ class TestDatasetPreparation:
 
 
 # ---------------------------------------------------------------------------
-# Multi-view model config tests (no torch forward pass needed)
+# Multi-view model config tests
 # ---------------------------------------------------------------------------
+# kaggle.multi_view_model imports torch at module top-level. CI installs only
+# .[dev] (no torch); skip this class when torch is absent rather than pull GPU
+# wheels into lint-type-test.
+@pytest.mark.skipif(
+    not _HAS_TORCH, reason="torch not installed (optional ml extra; CI .[dev] only)"
+)
 class TestMultiViewConfigSOTA:
-    """Test the SOTA-upgraded MultiViewConfig."""
+    """Test the SOTA-upgraded MultiViewConfig (requires torch for module import)."""
 
     def test_foundation_ensemble_flag_exists(self):
         from kaggle.multi_view_model import MultiViewConfig
@@ -376,7 +382,7 @@ class TestMultiViewConfigSOTA:
 
     def test_view_constants_unchanged(self):
         """Safety: ensure canonical view order is stable."""
-        from kaggle.multi_view_model import VIEW_TYPES, VIEW_TO_IDX, NUM_VIEWS
+        from kaggle.multi_view_model import NUM_VIEWS, VIEW_TO_IDX, VIEW_TYPES
 
         assert VIEW_TYPES == ("gills", "front", "habitat", "detail")
         assert NUM_VIEWS == 4

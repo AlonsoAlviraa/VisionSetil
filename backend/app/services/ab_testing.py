@@ -25,7 +25,7 @@ from __future__ import annotations
 import hashlib
 import json
 import logging
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -87,9 +87,7 @@ class ABTestRouter:
     """
 
     def __init__(self, experiments_dir: str | Path | None = None) -> None:
-        self.experiments_dir = Path(
-            experiments_dir or settings.upload_dir / "experiments"
-        )
+        self.experiments_dir = Path(experiments_dir or settings.upload_dir / "experiments")
         self._experiments: dict[str, ExperimentConfig] = {}
         self._load_experiments()
 
@@ -105,9 +103,7 @@ class ABTestRouter:
         for config_path in self.experiments_dir.glob("*.json"):
             try:
                 data = json.loads(config_path.read_text(encoding="utf-8"))
-                variants = [
-                    ExperimentVariant(**v) for v in data.get("variants", [])
-                ]
+                variants = [ExperimentVariant(**v) for v in data.get("variants", [])]
                 exp = ExperimentConfig(
                     experiment_id=data["experiment_id"],
                     name=data["name"],
@@ -228,9 +224,7 @@ class ABTestRouter:
             "num_candidates": len(result.get("candidates", [])),
             "safety_level": result.get("safety_level"),
             "primary_taxon": (
-                result.get("candidates", [{}])[0].get("taxon")
-                if result.get("candidates")
-                else None
+                result.get("candidates", [{}])[0].get("taxon") if result.get("candidates") else None
             ),
         }
 

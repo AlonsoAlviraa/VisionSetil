@@ -237,10 +237,10 @@ def test_human_review_safe_to_eat_blocking(client: TestClient):
         user.role = "reviewer"
         db.commit()
     finally:
-        try:
+        import contextlib
+
+        with contextlib.suppress(StopIteration):
             next(gen)
-        except StopIteration:
-            pass
     headers = {"Authorization": f"Bearer {token}"}
 
     obs_res = client.post("/observations", json={"title": "Test Amanita"})

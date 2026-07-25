@@ -1,5 +1,4 @@
 from collections.abc import Generator
-from pathlib import Path
 
 from sqlalchemy import create_engine, event, inspect, text
 from sqlalchemy.orm import Session, declarative_base, sessionmaker

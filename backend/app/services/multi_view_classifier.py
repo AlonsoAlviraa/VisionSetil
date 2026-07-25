@@ -25,7 +25,6 @@ Design constraints (§12 hard rules):
 
 from __future__ import annotations
 
-import json
 import logging
 import time
 from pathlib import Path
@@ -122,7 +121,12 @@ class MultiViewMushroomClassifier:
         try:
             import torch  # type: ignore
 
-            checkpoint = torch.load(weights_path, map_location=self.device, weights_only=False)
+            # Trusted operator-local path (configured multi_view_weights_path or
+            # in-repo weight discovery); never request body / upload path.
+            # Full dict includes label2idx/metadata; weights_only=True cannot load it.
+            checkpoint = torch.load(  # nosec B614
+                weights_path, map_location=self.device, weights_only=False
+            )
             if not isinstance(checkpoint, dict):
                 raise TypeError(f"Unexpected checkpoint type: {type(checkpoint)}")
 
@@ -157,9 +161,7 @@ class MultiViewMushroomClassifier:
             self._torch_model = self._load_torch_model(checkpoint)
             # Real ONLY if torch model bound, labels present, and no load_error
             self.is_real = bool(
-                self._torch_model is not None
-                and self.labels_loaded
-                and not self.load_error
+                self._torch_model is not None and self.labels_loaded and not self.load_error
             )
             if self.is_real:
                 logger.info(
@@ -230,9 +232,7 @@ class MultiViewMushroomClassifier:
         try:
             import sys
 
-            repo_root = Path(
-                getattr(settings, "repo_root", None) or Path(settings.base_dir).parent
-            )
+            repo_root = Path(getattr(settings, "repo_root", None) or Path(settings.base_dir).parent)
             kaggle_dir = repo_root / "kaggle"
             if kaggle_dir.is_dir() and str(repo_root) not in sys.path:
                 sys.path.insert(0, str(repo_root))
@@ -265,9 +265,7 @@ class MultiViewMushroomClassifier:
             )
             # Reject if critical modules missing (wrong arch)
             critical_miss = [
-                m
-                for m in missing
-                if m.startswith(("backbone.backbone.", "head.", "arcface."))
+                m for m in missing if m.startswith(("backbone.backbone.", "head.", "arcface."))
             ]
             if critical_miss:
                 self.load_error = f"v5_load: missing critical {critical_miss[:5]}"
@@ -280,9 +278,7 @@ class MultiViewMushroomClassifier:
         except Exception as exc:  # noqa: BLE001
             logger.warning("v5-style load failed: %s", exc)
             prev = self.load_error or ""
-            self.load_error = (
-                f"{prev}; v5_load: {exc.__class__.__name__}: {exc}".strip("; ")
-            )
+            self.load_error = f"{prev}; v5_load: {exc.__class__.__name__}: {exc}".strip("; ")
             return None
 
     @staticmethod
@@ -292,8 +288,8 @@ class MultiViewMushroomClassifier:
         Uses timm to create a backbone + linear ArcFace head. This supports
         inference even if ``kaggle/multi_view_model.py`` is not importable.
         """
-        import torch.nn as nn  # type: ignore
         import timm  # type: ignore
+        import torch.nn as nn  # type: ignore
 
         class MinimalMultiView(nn.Module):
             def __init__(self):
@@ -326,15 +322,12 @@ class MultiViewMushroomClassifier:
         )
         arch = (self._arch_info or {}).get("arch") if self._arch_info else None
         return {
-            "backend": (
-                f"real_{arch or 'multiview'}" if self.is_real else "mock_fallback"
-            ),
+            "backend": (f"real_{arch or 'multiview'}" if self.is_real else "mock_fallback"),
             "loaded": self.is_real,
             "weights_discovered": self.weights_discovered,
             "labels_loaded": self.labels_loaded,
             "device": self.device,
-            "weights_path": self.resolved_weights_path
-            or str(settings.multi_view_weights_path),
+            "weights_path": self.resolved_weights_path or str(settings.multi_view_weights_path),
             "configured_weights_path": str(settings.multi_view_weights_path),
             "num_classes": len(self.label2idx),
             "view_classifier_real": getattr(self.view_classifier, "is_real", False),
@@ -378,9 +371,7 @@ class MultiViewMushroomClassifier:
         """
         if not self.is_real and self._mock_fallback is not None:
             # Pass view_types so mock multi-view scoring is honest about coverage
-            result = self._mock_fallback.classify(
-                observation, images, view_types=view_types
-            )
+            result = self._mock_fallback.classify(observation, images, view_types=view_types)
             # Never claim real backends when on mock fallback
             result.model_stack = ModelStackResponse(
                 detector="mock_yoloe_fallback",
@@ -419,33 +410,27 @@ class MultiViewMushroomClassifier:
         image_arrays = [self._load_image_array(img) for img in images]
 
         # Step 3–7: Real torch forward when v8/v5 model is bound
-        if self.is_real and self._torch_model is not None and getattr(
-            self._torch_model, "arch", None
-        ) == "multiview_v8":
-            logits, obs_embedding = self._forward_v8(
-                image_arrays, resolved_views, observation
-            )
+        if (
+            self.is_real
+            and self._torch_model is not None
+            and getattr(self._torch_model, "arch", None) == "multiview_v8"
+        ):
+            logits, obs_embedding = self._forward_v8(image_arrays, resolved_views, observation)
             calibrated_probs = self._apply_temperature(logits, resolved_views)
-            is_unknown, cosine_score = self._open_set_check(
-                obs_embedding, probs=calibrated_probs
-            )
+            is_unknown, cosine_score = self._open_set_check(obs_embedding, probs=calibrated_probs)
         else:
             embeddings = self._compute_embeddings(image_arrays, resolved_views)
             metadata_emb = self._encode_metadata(observation)
             obs_embedding = self._fuse(embeddings, resolved_views, metadata_emb)
             logits = self._arcface_logits(obs_embedding)
             calibrated_probs = self._apply_temperature(logits, resolved_views)
-            is_unknown, cosine_score = self._open_set_check(
-                obs_embedding, probs=calibrated_probs
-            )
+            is_unknown, cosine_score = self._open_set_check(obs_embedding, probs=calibrated_probs)
 
         # Safety: surface deadly taxa if they appear in top-K raw ranks
         calibrated_probs = self._boost_deadly_visibility(calibrated_probs)
 
         # Step 8–9: Build candidates + safety layer.
-        candidates = self._build_candidates(
-            calibrated_probs, observation, images, resolved_views
-        )
+        candidates = self._build_candidates(calibrated_probs, observation, images, resolved_views)
         if is_unknown:
             # Degrade: lower confidences, force human review messaging
             candidates = self._degrade_for_open_set(candidates)
@@ -523,9 +508,7 @@ class MultiViewMushroomClassifier:
         meta = self._metadata_indices_torch(observation, device=self.device)
 
         with torch.inference_mode():
-            logits, emb = self._torch_model(
-                batch, view_idx, attention_mask, meta, labels=None
-            )
+            logits, emb = self._torch_model(batch, view_idx, attention_mask, meta, labels=None)
         return (
             logits.squeeze(0).detach().cpu().numpy().astype(np.float32),
             emb.squeeze(0).detach().cpu().numpy().astype(np.float32),
@@ -601,14 +584,14 @@ class MultiViewMushroomClassifier:
         except Exception:  # noqa: BLE001
             return np.zeros((224, 224, 3), dtype=np.uint8)
 
-    def _compute_embeddings(
-        self, images: list[np.ndarray], views: list[str]
-    ) -> list[np.ndarray]:
+    def _compute_embeddings(self, images: list[np.ndarray], views: list[str]) -> list[np.ndarray]:
         """Run the view-conditioned backbone. Returns list of [D] arrays."""
         if not self.is_real or self._torch_model is None:
             # Placeholder embeddings (deterministic from image hash).
             return [
-                np.random.default_rng(abs(hash(views[i])) % (2**32)).standard_normal(1024).astype(np.float32)
+                np.random.default_rng(abs(hash(views[i])) % (2**32))
+                .standard_normal(1024)
+                .astype(np.float32)
                 for i in range(len(images))
             ]
 
@@ -762,8 +745,7 @@ class MultiViewMushroomClassifier:
             or settings.open_set_min_confidence
         )
         margin_thr = float(
-            getattr(settings, "multiview_open_set_margin_thr", None)
-            or settings.open_set_min_margin
+            getattr(settings, "multiview_open_set_margin_thr", None) or settings.open_set_min_margin
         )
 
         score = 0.0
@@ -858,11 +840,13 @@ class MultiViewMushroomClassifier:
         top_indices = np.argsort(probs)[::-1][:top_k]
 
         candidates: list[CandidateResult] = []
-        for rank, idx in enumerate(top_indices):
+        for _rank, idx in enumerate(top_indices):
             # Map to taxon name.
             if self.is_real and self.idx2label:
                 taxon = self.idx2label.get(int(idx), f"species_{idx}")
-                is_deadly = int(idx) in self._deadly_idx or taxon.strip().lower() in self._deadly_names
+                is_deadly = (
+                    int(idx) in self._deadly_idx or taxon.strip().lower() in self._deadly_names
+                )
                 risk = "critical" if is_deadly else "unknown"
                 warning = (
                     "ESPECIE DE ALTO RIESGO / potencialmente mortal. No manipular ni consumir."
@@ -1000,7 +984,11 @@ class MultiViewMushroomClassifier:
         )
         human_review = HumanReviewResponse(
             recommended=True,
-            priority="high" if is_unknown or (primary and primary.risk_level in ("critical", "high", "deadly")) else "medium",
+            priority=(
+                "high"
+                if is_unknown or (primary and primary.risk_level in ("critical", "high", "deadly"))
+                else "medium"
+            ),
             reason=(
                 "Modelo multi-view en régimen few-shot (MAP@3~0.08) — revisión humana obligatoria."
             ),

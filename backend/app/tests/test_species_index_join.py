@@ -14,9 +14,7 @@ SCRIPT = ROOT / "scripts" / "build_species_index_join.py"
 
 
 def _load_join_module():
-    spec = importlib.util.spec_from_file_location(
-        "build_species_index_join", SCRIPT
-    )
+    spec = importlib.util.spec_from_file_location("build_species_index_join", SCRIPT)
     assert spec is not None and spec.loader is not None
     mod = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = mod
@@ -59,9 +57,7 @@ def test_synonym_does_not_collapse_distinct_catalog_taxa():
     assert "lactarius deliciosus" in joined["cat_keys"]
     # both model labels match their own catalog taxa (not collapsed)
     assert joined["intersection_count"] == 3  # deliciosus, sanguifluus, marginata via alias
-    assert any(
-        s["alias"] == "lactarius sanguifluus" for s in joined["synonym_collisions_skipped"]
-    )
+    assert any(s["alias"] == "lactarius sanguifluus" for s in joined["synonym_collisions_skipped"])
     assert any(s["from"] == "Galerina autumnalis" for s in joined["synonyms_applied"])
     assert "Unknown sp" in joined["missing_in_catalog"]
 

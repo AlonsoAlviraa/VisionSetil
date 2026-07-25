@@ -15,7 +15,9 @@ SESSION_COOKIE_NAME = "visionsetil_session"
 
 def cookie_name() -> str:
     s = get_settings()
-    return (getattr(s, "auth_cookie_name", None) or SESSION_COOKIE_NAME).strip() or SESSION_COOKIE_NAME
+    return (
+        getattr(s, "auth_cookie_name", None) or SESSION_COOKIE_NAME
+    ).strip() or SESSION_COOKIE_NAME
 
 
 def extract_session_token(request: Request) -> str | None:

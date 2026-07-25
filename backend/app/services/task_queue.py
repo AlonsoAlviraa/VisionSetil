@@ -40,7 +40,9 @@ logger = logging.getLogger(__name__)
 _job_lock = threading.Lock()
 
 
-def create_job(db: Session, observation_id: int, organization_id: str = "default") -> ClassificationJob:
+def create_job(
+    db: Session, observation_id: int, organization_id: str = "default"
+) -> ClassificationJob:
     """Create a new ``ClassificationJob`` row in ``queued`` status."""
     job = ClassificationJob(
         id=str(uuid.uuid4()),

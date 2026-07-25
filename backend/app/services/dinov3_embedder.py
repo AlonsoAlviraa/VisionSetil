@@ -50,8 +50,11 @@ class DINOv3Embedder(VisualEmbedder):
                 if config.dino_model_path and not Path(config.dino_model_path).exists():
                     raise FileNotFoundError(f"Local model path not found: {config.dino_model_path}")
 
-                processor = AutoImageProcessor.from_pretrained(model_identifier)
-                model = AutoModel.from_pretrained(model_identifier).to(device)
+                # Content-addressed HF Hub pin (Settings.dino_model_revision / DINO_MODEL_REVISION).
+                # Local directories ignore revision; hub ids must use a commit SHA (B615).
+                revision = config.dino_model_revision
+                processor = AutoImageProcessor.from_pretrained(model_identifier, revision=revision)
+                model = AutoModel.from_pretrained(model_identifier, revision=revision).to(device)
                 model.eval()
 
                 logger.info(f"DINOv3Embedder real model successfully loaded on {device}")
@@ -62,8 +65,11 @@ class DINOv3Embedder(VisualEmbedder):
                 try:
                     from transformers import AutoImageProcessor, AutoModel
 
-                    processor = AutoImageProcessor.from_pretrained(model_identifier)
-                    model = AutoModel.from_pretrained(model_identifier).to("cpu")
+                    revision = config.dino_model_revision
+                    processor = AutoImageProcessor.from_pretrained(
+                        model_identifier, revision=revision
+                    )
+                    model = AutoModel.from_pretrained(model_identifier, revision=revision).to("cpu")
                     model.eval()
                     device = "cpu"
                     logger.info("DINOv3Embedder real model successfully loaded on cpu as fallback")
@@ -182,8 +188,9 @@ class DINOv3Embedder(VisualEmbedder):
     def _get_image_hash(self, path: str) -> str:
         import hashlib
 
+        # Content-address cache key only (not security/integrity).
         try:
             with open(path, "rb") as f:
-                return hashlib.md5(f.read()).hexdigest()
+                return hashlib.md5(f.read(), usedforsecurity=False).hexdigest()
         except Exception:
-            return hashlib.md5(path.encode()).hexdigest()
+            return hashlib.md5(path.encode(), usedforsecurity=False).hexdigest()

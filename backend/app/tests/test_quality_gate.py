@@ -140,9 +140,7 @@ def test_apply_gate_blocked_uses_reason_code_and_locale_safety(tmp_path, monkeyp
             "recommend_human_review": False,
             "locale": loc,
         }
-        out = apply_quality_gate_to_simple_result(
-            simple, loaded_weights_path=weights
-        )
+        out = apply_quality_gate_to_simple_result(simple, loaded_weights_path=weights)
         gate = out["quality_gate"]
         assert gate["species_id_allowed"] is False
         code = gate["reason_code"]
@@ -178,9 +176,7 @@ def test_apply_gate_always_sets_quality_gate_on_pass(monkeypatch):
     assert gate["reason_code"] == "gate_disabled"
     # Dual signal: metrics may still be unacceptable under disable
     assert "metrics_acceptable" in gate
-    assert gate["verdict"] == (
-        "ACCEPTABLE" if gate["metrics_acceptable"] else "UNACCEPTABLE"
-    )
+    assert gate["verdict"] == ("ACCEPTABLE" if gate["metrics_acceptable"] else "UNACCEPTABLE")
 
 
 def test_dual_signal_disable_does_not_force_metrics_acceptable(monkeypatch, tmp_path):
@@ -279,9 +275,7 @@ def test_refuse_gate_disable_in_production():
             environment="prod",
             **prod_secure,
         )
-    assert "dev-only" in str(exc_alias.value).lower() or "MODEL_BLOCK" in str(
-        exc_alias.value
-    )
+    assert "dev-only" in str(exc_alias.value).lower() or "MODEL_BLOCK" in str(exc_alias.value)
 
     # Non-prod disable remains allowed
     dev_open = Settings(
@@ -374,23 +368,17 @@ def test_discovery_no_weights_picks_mtime_newest_not_max_map(monkeypatch, tmp_pa
     root = tmp_path / "repo"
     # Older file with high MAP (must NOT win)
     old = root / "kaggle" / "kernel_output_old" / "models"
-    old_metrics = _write_metrics(
-        old / "metrics.json", map3=0.99, deadly=1.0, version="old-high"
-    )
+    old_metrics = _write_metrics(old / "metrics.json", map3=0.99, deadly=1.0, version="old-high")
     # Newer file with low MAP (must win under mtime ranking)
     new = root / "kaggle" / "kernel_output_new" / "models"
-    new_metrics = _write_metrics(
-        new / "metrics.json", map3=0.05, deadly=0.0, version="new-low"
-    )
+    new_metrics = _write_metrics(new / "metrics.json", map3=0.05, deadly=0.0, version="new-low")
     # Force mtime order: old older, new newer
     now = time.time()
     os.utime(old_metrics, (now - 1000, now - 1000))
     os.utime(new_metrics, (now, now))
 
     # Point configured weights at a missing path so no conf-sibling short-circuit
-    monkeypatch.setattr(
-        settings, "multi_view_weights_path", root / "missing" / "best.pt"
-    )
+    monkeypatch.setattr(settings, "multi_view_weights_path", root / "missing" / "best.pt")
     # No weights file anywhere under root → discovery path
     monkeypatch.setattr(
         "app.ml.quality_gate._resolve_serve_weights_path",
@@ -473,9 +461,7 @@ def test_golden_industrial_report_only_preferred_over_kernels(monkeypatch, tmp_p
     now = time.time()
     os.utime(km, (now + 100, now + 100))
 
-    monkeypatch.setattr(
-        settings, "multi_view_weights_path", root / "missing" / "best.pt"
-    )
+    monkeypatch.setattr(settings, "multi_view_weights_path", root / "missing" / "best.pt")
     monkeypatch.setattr(
         "app.ml.quality_gate._resolve_serve_weights_path",
         lambda loaded_weights_path=None: None,
@@ -503,9 +489,7 @@ def test_golden_configured_sibling_preferred_in_discovery(monkeypatch, tmp_path)
     conf_models.mkdir(parents=True)
     conf_w = conf_models / "best.pt"
     # Configured path may point at missing weights file — sibling still preferred
-    _write_metrics(
-        conf_models / "metrics.json", map3=0.11, deadly=0.1, version="configured"
-    )
+    _write_metrics(conf_models / "metrics.json", map3=0.11, deadly=0.1, version="configured")
 
     ind = root / "data" / "industrial_v1"
     _write_metrics(ind / "metrics.json", map3=0.99, deadly=1.0, version="industrial")
@@ -542,7 +526,6 @@ def test_golden_metrics_path_never_basename_only(tmp_path):
 
 def test_map_to_simple_retains_quality_gate_and_mode(monkeypatch, tmp_path):
     """Regression: map_to_simple must not strip quality_gate; mode matches derive."""
-    from app.services.classify_simple import map_to_simple as _map_to_simple
     from app.db.schemas import (
         CandidateResult,
         ClassificationResponse,
@@ -553,6 +536,7 @@ def test_map_to_simple_retains_quality_gate_and_mode(monkeypatch, tmp_path):
         TraceResponse,
     )
     from app.ml.classify_mode import derive_classify_mode
+    from app.services.classify_simple import map_to_simple as _map_to_simple
 
     models = tmp_path / "models"
     models.mkdir()
@@ -622,9 +606,7 @@ def test_map_to_simple_retains_quality_gate_and_mode(monkeypatch, tmp_path):
             reason="ok",
             decision="accept",
         ),
-        human_review=HumanReviewResponse(
-            recommended=False, priority="low", reason="none"
-        ),
+        human_review=HumanReviewResponse(recommended=False, priority="low", reason="none"),
     )
 
     class _FakeClf:
@@ -694,9 +676,7 @@ def test_quality_gate_payload_matches_status():
     assert dumped["metrics_acceptable"] == status["metrics_acceptable"]
     assert dumped["reason_code"] == status["reason_code"]
     assert dumped["reason_code"] in REASON_CODES
-    assert dumped["verdict"] == (
-        "ACCEPTABLE" if dumped["metrics_acceptable"] else "UNACCEPTABLE"
-    )
+    assert dumped["verdict"] == ("ACCEPTABLE" if dumped["metrics_acceptable"] else "UNACCEPTABLE")
 
 
 def test_models_quality_gate_endpoint_dual_signal_contract(client):
@@ -719,9 +699,7 @@ def test_models_quality_gate_endpoint_dual_signal_contract(client):
     assert body["reason_code"] != "unset"
     assert body["verdict"] in {"ACCEPTABLE", "UNACCEPTABLE"}
     # D-B15: verdict tracks metrics only
-    assert body["verdict"] == (
-        "ACCEPTABLE" if body["metrics_acceptable"] else "UNACCEPTABLE"
-    )
+    assert body["verdict"] == ("ACCEPTABLE" if body["metrics_acceptable"] else "UNACCEPTABLE")
     assert isinstance(body["min_map_at_3"], (int, float))
     assert isinstance(body["min_deadly_recall"], (int, float))
 
@@ -750,9 +728,7 @@ def test_models_quality_gate_endpoint_gate_disabled_dual_signal(client, monkeypa
     assert body["reason_code"] == "gate_disabled"
     assert "metrics_acceptable" in body
     # verdict still tracks raw metrics (not forced ACCEPTABLE by disable)
-    assert body["verdict"] == (
-        "ACCEPTABLE" if body["metrics_acceptable"] else "UNACCEPTABLE"
-    )
+    assert body["verdict"] == ("ACCEPTABLE" if body["metrics_acceptable"] else "UNACCEPTABLE")
 
 
 def test_models_quality_gate_endpoint_no_gpu_keys(client):
@@ -800,9 +776,7 @@ def test_readyz_includes_nested_quality_gate_dual_and_weights_present(client):
     assert gate["reason_code"] in REASON_CODES
     assert gate["reason_code"] != "unset"
     assert gate["verdict"] in {"ACCEPTABLE", "UNACCEPTABLE"}
-    assert gate["verdict"] == (
-        "ACCEPTABLE" if gate["metrics_acceptable"] else "UNACCEPTABLE"
-    )
+    assert gate["verdict"] == ("ACCEPTABLE" if gate["metrics_acceptable"] else "UNACCEPTABLE")
     # Nested payload validates as QualityGatePayload
     QualityGatePayload(**gate)
 
@@ -877,9 +851,7 @@ def test_readyz_gate_fail_does_not_force_unready(client, monkeypatch, tmp_path):
 
 def test_readyz_weights_present_false_when_no_checkpoint(client, monkeypatch, tmp_path):
     """weights_present is False when no multi-view checkpoint is on disk."""
-    monkeypatch.setattr(
-        settings, "multi_view_weights_path", tmp_path / "missing" / "best.pt"
-    )
+    monkeypatch.setattr(settings, "multi_view_weights_path", tmp_path / "missing" / "best.pt")
     monkeypatch.setattr(
         "app.ml.weight_discovery.resolve_multiview_weights_path",
         lambda **kwargs: None,
@@ -908,9 +880,7 @@ def test_readyz_fail_on_mock_still_controls_ready(client, monkeypatch):
     resp = client.get("/readyz")
     body = resp.json()
     # When all mock + fail_on_mock: models degraded → unready
-    assert body.get("classifier_mode") == "mock" or "mock" in str(
-        body.get("checks", {})
-    )
+    assert body.get("classifier_mode") == "mock" or "mock" in str(body.get("checks", {}))
     assert body["ready"] is False
     assert resp.status_code == 503
     # Gate still nested even when unready

@@ -106,9 +106,7 @@ def _make_raw_response(
             reason="ok",
             decision="accept",
         ),
-        human_review=HumanReviewResponse(
-            recommended=False, priority="low", reason="none"
-        ),
+        human_review=HumanReviewResponse(recommended=False, priority="low", reason="none"),
     )
 
 
@@ -206,9 +204,7 @@ def test_async_locale_bcp47_accepted(client):
 # --------------------------------------------------------------------------- #
 # Worker forwards kwargs into classify_to_simple
 # --------------------------------------------------------------------------- #
-def test_run_classification_job_forwards_view_types_and_locale(
-    tmp_path, monkeypatch
-):
+def test_run_classification_job_forwards_view_types_and_locale(tmp_path, monkeypatch):
     """Worker passes view_types into classifier and echoes locale on simple."""
     raw = _make_raw_response(taxon="Boletus edulis", confidence=0.7)
     clf = _CapturingClassifier(raw)
@@ -278,9 +274,7 @@ def test_run_classification_job_forwards_view_types_and_locale(
         db.close()
 
 
-def test_run_classification_job_defaults_locale_es_view_types_none(
-    tmp_path, monkeypatch
-):
+def test_run_classification_job_defaults_locale_es_view_types_none(tmp_path, monkeypatch):
     """Legacy call without kwargs keeps locale=es and view_types=None."""
     raw = _make_raw_response()
     clf = _CapturingClassifier(raw)

@@ -9,7 +9,6 @@ Order of preference:
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Iterable
 
 # Repo root: backend/app/ml/weight_discovery.py → parents[3] = repo root
 _REPO_ROOT = Path(__file__).resolve().parents[3]
@@ -81,9 +80,7 @@ def resolve_multiview_weights_path(
     repo_root: Path | None = None,
 ) -> Path | None:
     """First existing multi-view checkpoint, or None."""
-    cands = discover_multiview_weight_candidates(
-        configured=configured, repo_root=repo_root
-    )
+    cands = discover_multiview_weight_candidates(configured=configured, repo_root=repo_root)
     return cands[0] if cands else None
 
 
@@ -94,9 +91,7 @@ def describe_weight_discovery(
 ) -> dict:
     """Status-friendly dict for dashboard / tests."""
     configured_p = _normalize(configured)
-    found = discover_multiview_weight_candidates(
-        configured=configured, repo_root=repo_root
-    )
+    found = discover_multiview_weight_candidates(configured=configured, repo_root=repo_root)
     resolved = found[0] if found else None
     return {
         "configured": str(configured_p) if configured_p else None,

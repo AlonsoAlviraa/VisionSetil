@@ -130,9 +130,7 @@ def readyz() -> JSONResponse:
         checks["models"] = "ok"
         checks["model_details"] = str(status_report)
         any_real = any(
-            "real" in str(v).lower()
-            for v in status_report.values()
-            if isinstance(v, (str, dict))
+            "real" in str(v).lower() for v in status_report.values() if isinstance(v, (str, dict))
         )
         classifier_mode = "real" if any_real else "mock"
         checks["classifier_mode"] = classifier_mode
@@ -169,16 +167,16 @@ def readyz() -> JSONResponse:
     # Readiness: DB + models only. Quality-gate fail does NOT force ready=false
     # (gate is advisory for Identify preflight; only readyz_fail_on_mock_models
     # can degrade models → 503 when stack is all-mock).
-    if checks.get("database") != "ok":
-        ready = False
-    elif str(checks.get("models", "")).startswith("error"):
-        ready = False
-    elif settings.readyz_fail_on_mock_models and checks.get("models") != "ok":
+    if (
+        checks.get("database") != "ok"
+        or str(checks.get("models", "")).startswith("error")
+        or (settings.readyz_fail_on_mock_models and checks.get("models") != "ok")
+    ):
         ready = False
     else:
-        ready = checks.get("database") == "ok" and not str(
-            checks.get("models", "")
-        ).startswith("error")
+        ready = checks.get("database") == "ok" and not str(checks.get("models", "")).startswith(
+            "error"
+        )
 
     code = status.HTTP_200_OK if ready else status.HTTP_503_SERVICE_UNAVAILABLE
     return JSONResponse(
