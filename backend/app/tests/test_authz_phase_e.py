@@ -5,7 +5,7 @@ from __future__ import annotations
 from fastapi.testclient import TestClient
 
 from app.db.database import get_db
-from app.db.models import AuthSession, User
+from app.db.models import AuthSession
 from app.main import app
 from app.services.auth_service import get_user_by_token, hash_session_token
 
@@ -66,10 +66,10 @@ def test_session_token_stored_as_hash(client: TestClient):
         # DB must not store the raw bearer
         assert all(s.token != raw for s in rows)
     finally:
-        try:
+        import contextlib
+
+        with contextlib.suppress(StopIteration):
             next(gen)
-        except StopIteration:
-            pass
 
 
 def test_uploads_without_auth_denied_for_observation_path(client: TestClient):

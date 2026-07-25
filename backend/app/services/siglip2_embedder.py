@@ -51,8 +51,11 @@ class SigLIP2Embedder(ImageTextEmbedder):
                         f"Local model path not found: {config.siglip_model_path}"
                     )
 
-                processor = AutoProcessor.from_pretrained(model_identifier)
-                model = AutoModel.from_pretrained(model_identifier).to(device)
+                # Content-addressed HF Hub pin (Settings.siglip_model_revision / SIGLIP_MODEL_REVISION).
+                # Local directories ignore revision; hub ids must use a commit SHA (B615).
+                revision = config.siglip_model_revision
+                processor = AutoProcessor.from_pretrained(model_identifier, revision=revision)
+                model = AutoModel.from_pretrained(model_identifier, revision=revision).to(device)
                 model.eval()
 
                 logger.info(f"SigLIP2Embedder real model successfully loaded on {device}")
@@ -63,8 +66,9 @@ class SigLIP2Embedder(ImageTextEmbedder):
                 try:
                     from transformers import AutoModel, AutoProcessor
 
-                    processor = AutoProcessor.from_pretrained(model_identifier)
-                    model = AutoModel.from_pretrained(model_identifier).to("cpu")
+                    revision = config.siglip_model_revision
+                    processor = AutoProcessor.from_pretrained(model_identifier, revision=revision)
+                    model = AutoModel.from_pretrained(model_identifier, revision=revision).to("cpu")
                     model.eval()
                     device = "cpu"
                     logger.info("SigLIP2Embedder real model successfully loaded on cpu as fallback")
@@ -234,8 +238,9 @@ class SigLIP2Embedder(ImageTextEmbedder):
     def _get_image_hash(self, path: str) -> str:
         import hashlib
 
+        # Content-address cache key only (not security/integrity).
         try:
             with open(path, "rb") as f:
-                return hashlib.md5(f.read()).hexdigest()
+                return hashlib.md5(f.read(), usedforsecurity=False).hexdigest()
         except Exception:
-            return hashlib.md5(path.encode()).hexdigest()
+            return hashlib.md5(path.encode(), usedforsecurity=False).hexdigest()

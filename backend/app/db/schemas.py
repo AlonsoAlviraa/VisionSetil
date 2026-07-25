@@ -1,5 +1,5 @@
 from datetime import date, datetime
-from enum import Enum
+from enum import StrEnum
 from typing import Literal, Self
 
 from pydantic import BaseModel, Field, model_validator
@@ -221,7 +221,7 @@ class ImageUploadResponse(BaseModel):
 # ─── Simple classification schema (for the /classify convenience endpoint) ────
 
 
-class ClassifyMode(str, Enum):
+class ClassifyMode(StrEnum):
     """Product honesty mode (D-B1). Independent of is_mock_stack (stack truth)."""
 
     real = "real"
@@ -342,4 +342,3 @@ class JobResultEnvelope(BaseModel):
     schema_version: Literal[2] = 2
     simple: SimpleClassificationResult
     raw: dict | None = None
-

@@ -29,7 +29,6 @@ from app.db.schemas import (
 from app.ml.classify_mode import derive_classify_mode
 from app.ml.quality_gate import clear_metrics_cache
 
-
 # --------------------------------------------------------------------------- #
 # Helpers
 # --------------------------------------------------------------------------- #
@@ -182,9 +181,7 @@ class _StackFakeClassifier:
                 reason="ok",
                 decision="accept",
             ),
-            human_review=HumanReviewResponse(
-                recommended=False, priority="low", reason="none"
-            ),
+            human_review=HumanReviewResponse(recommended=False, priority="low", reason="none"),
         )
 
 
@@ -201,12 +198,8 @@ def _patch_http_matrix(
     def _get_clf():
         return fake_clf
 
-    monkeypatch.setattr(
-        "app.api.routes_classify.get_multi_view_classifier", _get_clf
-    )
-    monkeypatch.setattr(
-        "app.services.classify_simple.get_multi_view_classifier", _get_clf
-    )
+    monkeypatch.setattr("app.api.routes_classify.get_multi_view_classifier", _get_clf)
+    monkeypatch.setattr("app.services.classify_simple.get_multi_view_classifier", _get_clf)
 
     gate = _fake_gate(species_id_allowed=species_id_allowed)
 
@@ -251,9 +244,7 @@ def test_classify_json_quality_gate_on_pass_path(
     client: TestClient, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """Pass path (species_id_allowed) still attaches quality_gate — not strip-on-pass."""
-    _patch_http_matrix(
-        monkeypatch, is_mock_stack=True, species_id_allowed=True
-    )
+    _patch_http_matrix(monkeypatch, is_mock_stack=True, species_id_allowed=True)
     response = _post_classify(client)
     assert response.status_code == 200, response.text
     body = response.json()
@@ -270,9 +261,7 @@ def test_classify_json_quality_gate_on_block_path(
     client: TestClient, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """Fail/block path attaches quality_gate and clears species predictions."""
-    _patch_http_matrix(
-        monkeypatch, is_mock_stack=False, species_id_allowed=False
-    )
+    _patch_http_matrix(monkeypatch, is_mock_stack=False, species_id_allowed=False)
     response = _post_classify(client)
     assert response.status_code == 200, response.text
     body = response.json()
@@ -347,9 +336,7 @@ def test_http_blocked_modes_share_mode_but_not_stack(
     """real+blocked and mock+blocked both yield mode=blocked; stack flag free."""
     bodies = []
     for is_mock in (False, True):
-        _patch_http_matrix(
-            monkeypatch, is_mock_stack=is_mock, species_id_allowed=False
-        )
+        _patch_http_matrix(monkeypatch, is_mock_stack=is_mock, species_id_allowed=False)
         response = _post_classify(client)
         assert response.status_code == 200, response.text
         bodies.append(response.json())
@@ -367,9 +354,7 @@ def test_http_mode_not_derived_from_is_mock_stack_alone(
     client: TestClient, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """Gate wins: mock stack + denied species ID → blocked, not mock."""
-    _patch_http_matrix(
-        monkeypatch, is_mock_stack=True, species_id_allowed=False
-    )
+    _patch_http_matrix(monkeypatch, is_mock_stack=True, species_id_allowed=False)
     response = _post_classify(client)
     assert response.status_code == 200, response.text
     body = response.json()

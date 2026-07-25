@@ -7,8 +7,8 @@ import struct
 
 from fastapi.testclient import TestClient
 
-from app.services.image_storage import read_image_dimensions, validate_image_dimensions
 from app.core.config import settings
+from app.services.image_storage import read_image_dimensions, validate_image_dimensions
 
 
 def _minimal_png(width: int, height: int) -> bytes:

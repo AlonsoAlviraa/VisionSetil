@@ -26,7 +26,16 @@ GET /jobs/stats/summary
 
 from __future__ import annotations
 
-from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, HTTPException, Request, UploadFile
+from fastapi import (
+    APIRouter,
+    BackgroundTasks,
+    Depends,
+    File,
+    Form,
+    HTTPException,
+    Request,
+    UploadFile,
+)
 from fastapi.responses import JSONResponse
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -37,7 +46,7 @@ from app.db.models import Observation
 from app.db.schemas import ClassificationJobRead, JobResultEnvelope
 from app.services import unified_catalog as catalog
 from app.services.image_storage import store_observation_images
-from app.services.task_queue import create_job, get_job, get_queue_stats, run_classification_job
+from app.services.task_queue import create_job, get_job, run_classification_job
 from app.services.view_classifier import CANONICAL_VIEWS
 
 router = APIRouter()
@@ -246,8 +255,9 @@ def jobs_stats(
     Scoped to the caller's organization (SC-4).
     """
     org_id = _get_org_id(request)
-    from app.db.models import ClassificationJob
     from sqlalchemy import func
+
+    from app.db.models import ClassificationJob
 
     stmt = (
         select(ClassificationJob.status, func.count(ClassificationJob.id))

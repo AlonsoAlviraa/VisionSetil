@@ -23,12 +23,8 @@ class ImageQualityValidationService:
         sizes = [image.size_bytes for image in images]
         # D5b: accept CANONICAL_VIEWS and legacy storage labels
         present = {image.view_type for image in images if image.view_type}
-        has_lower_view = bool(
-            present & {"gills_or_pores", "gills"}
-        )
-        has_base_view = bool(
-            present & {"base", "detail", "cross_section"}
-        )
+        has_lower_view = bool(present & {"gills_or_pores", "gills"})
+        has_base_view = bool(present & {"base", "detail", "cross_section"})
         has_environment_view = bool(present & {"environment", "habitat"}) or any(
             token in names
             for token in ("context", "environment", "habitat", "entorno", "substrate")

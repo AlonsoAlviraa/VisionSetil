@@ -26,9 +26,7 @@ def test_classification_never_returns_safe_to_eat(client):
     assert "safe_to_eat" not in str(payload)
     assert payload["safety_level"] == "unsafe_to_consume"
     # Strategy may be versioned (…_risk_layer / …_risk_layer_v3); safety is the contract.
-    assert "mock_multimodal_ranker_with_risk_layer" in str(
-        payload["trace"]["classifier_strategy"]
-    )
+    assert "mock_multimodal_ranker_with_risk_layer" in str(payload["trace"]["classifier_strategy"])
 
 
 def test_poisonous_catalog_loads(client):

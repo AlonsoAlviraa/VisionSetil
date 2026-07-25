@@ -3,11 +3,10 @@
 These tests are designed to run WITHOUT torch/GPU — they validate the data
 structures, configuration validation, and pure-Python logic.
 """
+
 from __future__ import annotations
 
-import json
 import sys
-import tempfile
 from pathlib import Path
 
 import pytest
@@ -82,8 +81,8 @@ class TestPrototypeClassifier:
         from kaggle.foundation_ensemble import PrototypeClassifier
 
         clf = PrototypeClassifier(open_set_threshold=0.8)
-        assert clf.is_open_set(0.5) is True   # below threshold → reject
-        assert clf.is_open_set(0.9) is False   # above threshold → accept
+        assert clf.is_open_set(0.5) is True  # below threshold → reject
+        assert clf.is_open_set(0.9) is False  # above threshold → accept
 
     def test_save_and_load(self, tmp_path):
         import numpy as np
@@ -339,9 +338,7 @@ class TestDatasetPreparation:
         )
 
         obs_groups = group_by_observation(records)
-        train, val, test, report = stratified_group_split(
-            obs_groups, min_class_count=3
-        )
+        train, val, test, report = stratified_group_split(obs_groups, min_class_count=3)
 
         # Rare species should only be in train.
         rare_in_train = any(r.species == "Rare species" for r in train)
@@ -376,7 +373,7 @@ class TestMultiViewConfigSOTA:
 
     def test_view_constants_unchanged(self):
         """Safety: ensure canonical view order is stable."""
-        from kaggle.multi_view_model import VIEW_TYPES, VIEW_TO_IDX, NUM_VIEWS
+        from kaggle.multi_view_model import NUM_VIEWS, VIEW_TO_IDX, VIEW_TYPES
 
         assert VIEW_TYPES == ("gills", "front", "habitat", "detail")
         assert NUM_VIEWS == 4

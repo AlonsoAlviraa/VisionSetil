@@ -78,12 +78,13 @@ def serve_upload(
         )
 
     # Dev open mode without session: only community public-ish thumbs
-    if not is_production_environment(settings.environment):
-        if file_path.replace("\\", "/").startswith("community/"):
-            path = _safe_upload_path(file_path)
-            return FileResponse(
-                path,
-                media_type=_MIME.get(path.suffix.lower(), "application/octet-stream"),
-            )
+    if not is_production_environment(settings.environment) and file_path.replace(
+        "\\", "/"
+    ).startswith("community/"):
+        path = _safe_upload_path(file_path)
+        return FileResponse(
+            path,
+            media_type=_MIME.get(path.suffix.lower(), "application/octet-stream"),
+        )
 
     raise HTTPException(status_code=401, detail="Login o API key requerido para /uploads")
