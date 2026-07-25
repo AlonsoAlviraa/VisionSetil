@@ -52,9 +52,7 @@ def test_catalog_join_payload_from_fixture(tmp_path: Path):
         "missing_in_model_count": 80,
         "synonyms_applied_count": 0,
     }
-    (report_dir / "species_index_join_report.json").write_text(
-        json.dumps(report), encoding="utf-8"
-    )
+    (report_dir / "species_index_join_report.json").write_text(json.dumps(report), encoding="utf-8")
 
     payload = catalog_join_payload(repo_root=tmp_path)
     assert payload["available"] is True

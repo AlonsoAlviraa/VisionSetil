@@ -11,7 +11,6 @@ import pytest
 from app.db.schemas import ClassifyMode
 from app.ml.classify_mode import derive_classify_mode
 
-
 # Normative matrix (Appendix A / B-02): is_mock_stack × species_id_allowed → mode
 _MODE_MATRIX = [
     # (is_mock_stack, species_id_allowed, expected_mode)
@@ -52,12 +51,8 @@ def test_is_mock_stack_not_inferred_from_mode() -> None:
 
     real+blocked and mock+blocked both yield blocked — stack flag stays free.
     """
-    mode_real_blocked = derive_classify_mode(
-        is_mock_stack=False, species_id_allowed=False
-    )
-    mode_mock_blocked = derive_classify_mode(
-        is_mock_stack=True, species_id_allowed=False
-    )
+    mode_real_blocked = derive_classify_mode(is_mock_stack=False, species_id_allowed=False)
+    mode_mock_blocked = derive_classify_mode(is_mock_stack=True, species_id_allowed=False)
     assert mode_real_blocked == ClassifyMode.blocked
     assert mode_mock_blocked == ClassifyMode.blocked
     # Same mode, opposite stack inputs → independence
@@ -66,8 +61,7 @@ def test_is_mock_stack_not_inferred_from_mode() -> None:
     # Reconstructing "would is_mock_stack be True?" from mode alone is impossible
     # when mode is blocked: both stacks produce blocked.
     stack_for_blocked = {
-        derive_classify_mode(is_mock_stack=s, species_id_allowed=False)
-        for s in (True, False)
+        derive_classify_mode(is_mock_stack=s, species_id_allowed=False) for s in (True, False)
     }
     assert stack_for_blocked == {ClassifyMode.blocked}
 

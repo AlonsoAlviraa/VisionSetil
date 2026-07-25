@@ -120,27 +120,19 @@ async def metrics() -> Response:
 
     lines.append("# HELP classification_rejections_total Total classification rejections")
     lines.append("# TYPE classification_rejections_total counter")
-    lines.append(
-        f'classification_rejections_total {_metrics["classification_rejections_total"]}'
-    )
+    lines.append(f'classification_rejections_total {_metrics["classification_rejections_total"]}')
 
     # Honesty mode counters (Phase B / B-51)
-    lines.append(
-        "# HELP classify_mode_total Classify honesty mode outcomes (real|mock|blocked)"
-    )
+    lines.append("# HELP classify_mode_total Classify honesty mode outcomes (real|mock|blocked)")
     lines.append("# TYPE classify_mode_total counter")
     for mode, count in sorted(_metrics["classify_mode_total"].items()):
         lines.append(f'classify_mode_total{{mode="{_escape_label(str(mode))}"}} {count}')
 
     # Quality-gate block counters
-    lines.append(
-        "# HELP gate_blocked_total Quality-gate species-id blocks by reason_code"
-    )
+    lines.append("# HELP gate_blocked_total Quality-gate species-id blocks by reason_code")
     lines.append("# TYPE gate_blocked_total counter")
     for code, count in sorted(_metrics["gate_blocked_total"].items()):
-        lines.append(
-            f'gate_blocked_total{{reason_code="{_escape_label(str(code))}"}} {count}'
-        )
+        lines.append(f'gate_blocked_total{{reason_code="{_escape_label(str(code))}"}} {count}')
 
     # Model status
     lines.append("# HELP model_backend_status Model backend status (1=real, 0=mock)")

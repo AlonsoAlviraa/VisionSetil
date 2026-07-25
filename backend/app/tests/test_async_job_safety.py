@@ -8,7 +8,6 @@ for admin/debug (D-B18 / D-B24).
 from __future__ import annotations
 
 import json
-from io import BytesIO
 from unittest.mock import MagicMock
 
 import pytest
@@ -105,9 +104,7 @@ def _make_raw_response(
             reason="ok",
             decision="accept",
         ),
-        human_review=HumanReviewResponse(
-            recommended=False, priority="low", reason="none"
-        ),
+        human_review=HumanReviewResponse(recommended=False, priority="low", reason="none"),
     )
 
 
@@ -201,9 +198,7 @@ def test_classify_to_simple_with_raw_gates_when_metrics_fail(tmp_path, monkeypat
     assert len(raw_cands) >= 1
 
 
-def test_run_classification_job_dual_write_no_ungated_simple(
-    tmp_path, monkeypatch
-):
+def test_run_classification_job_dual_write_no_ungated_simple(tmp_path, monkeypatch):
     """Worker stores schema_version=2 envelope; simple has no preds when gate fails."""
     monkeypatch.setattr(settings, "model_block_species_id_when_below_gate", True)
     weights = _failing_gate_weights(tmp_path)
@@ -281,11 +276,7 @@ def test_run_classification_job_dual_write_no_ungated_simple(
 
         # raw kept indefinitely (D-B24) and may still have candidates
         assert result["raw"] is not None
-        raw_cands = (
-            result["raw"].get("top_candidates")
-            or result["raw"].get("candidates")
-            or []
-        )
+        raw_cands = result["raw"].get("top_candidates") or result["raw"].get("candidates") or []
         assert len(raw_cands) >= 1
         assert raw_cands[0]["taxon"] == "Galerina marginata"
 
@@ -343,6 +334,4 @@ def test_get_job_result_returns_envelope_model(client, monkeypatch, tmp_path):
     assert payload["simple"]["predictions"] == []
     assert payload["simple"]["decision"] == "rejected"
     assert payload["raw"] is not None
-    assert (
-        payload["raw"].get("top_candidates") or payload["raw"].get("candidates")
-    )
+    assert payload["raw"].get("top_candidates") or payload["raw"].get("candidates")

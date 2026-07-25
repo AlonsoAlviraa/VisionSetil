@@ -125,9 +125,7 @@ def _make_raw_response(
             reason="ok",
             decision="accept",
         ),
-        human_review=HumanReviewResponse(
-            recommended=False, priority="low", reason="none"
-        ),
+        human_review=HumanReviewResponse(recommended=False, priority="low", reason="none"),
     )
 
 
@@ -191,18 +189,14 @@ def test_envelope_keys_schema_version_simple_raw():
     JobResultEnvelope.model_validate(envelope)
 
 
-def test_simple_mode_and_gate_present_when_gate_passes_and_fails(
-    tmp_path, monkeypatch
-):
+def test_simple_mode_and_gate_present_when_gate_passes_and_fails(tmp_path, monkeypatch):
     """Mapper always sets mode + quality_gate (pass and fail); envelope keeps both."""
     monkeypatch.setattr(settings, "model_block_species_id_when_below_gate", True)
     raw = _make_raw_response(taxon="Boletus edulis", confidence=0.7)
 
     # Gate fail path (bad metrics next to weights)
     weights_fail = _failing_gate_weights(tmp_path)
-    simple_fail = map_to_simple(
-        raw, "contract-fail", 8, loaded_weights_path=weights_fail
-    )
+    simple_fail = map_to_simple(raw, "contract-fail", 8, loaded_weights_path=weights_fail)
     env_fail = build_job_result_envelope(simple_fail, raw)
     _assert_simple_has_mode_and_gate(env_fail["simple"])
     assert env_fail["simple"]["mode"] in ("blocked", ClassifyMode.blocked)
@@ -213,9 +207,7 @@ def test_simple_mode_and_gate_present_when_gate_passes_and_fails(
     # Gate disabled path still exposes dual signals (metrics may be false)
     monkeypatch.setattr(settings, "model_block_species_id_when_below_gate", False)
     clear_metrics_cache()
-    simple_disabled = map_to_simple(
-        raw, "contract-disabled", 9, loaded_weights_path=weights_fail
-    )
+    simple_disabled = map_to_simple(raw, "contract-disabled", 9, loaded_weights_path=weights_fail)
     env_disabled = build_job_result_envelope(simple_disabled, raw)
     _assert_simple_has_mode_and_gate(env_disabled["simple"])
     gate = env_disabled["simple"]["quality_gate"]
@@ -277,11 +269,7 @@ def test_product_clients_read_simple_not_raw_predictions(tmp_path, monkeypatch):
     # Admin/debug raw still present with model candidates (never the product path)
     _assert_raw_permanent(envelope)
     assert envelope["raw"] is not None
-    raw_cands = (
-        envelope["raw"].get("top_candidates")
-        or envelope["raw"].get("candidates")
-        or []
-    )
+    raw_cands = envelope["raw"].get("top_candidates") or envelope["raw"].get("candidates") or []
     assert len(raw_cands) >= 1
     assert raw_cands[0]["taxon"] == "Amanita phalloides"
 
@@ -289,9 +277,7 @@ def test_product_clients_read_simple_not_raw_predictions(tmp_path, monkeypatch):
 # ─── HTTP: GET /jobs/{id}/result contract ────────────────────────────────────
 
 
-def test_http_job_result_contract_mode_gate_and_permanent_raw(
-    client, monkeypatch, tmp_path
-):
+def test_http_job_result_contract_mode_gate_and_permanent_raw(client, monkeypatch, tmp_path):
     """GET /jobs/{id}/result returns envelope with simple.mode/gate and permanent raw."""
     monkeypatch.setattr(settings, "model_block_species_id_when_below_gate", True)
     weights = _failing_gate_weights(tmp_path)
@@ -331,9 +317,7 @@ def test_http_job_result_contract_mode_gate_and_permanent_raw(
 
     # Permanent raw still carries full ClassificationResponse for admin/debug
     assert payload["raw"] is not None
-    assert (
-        payload["raw"].get("top_candidates") or payload["raw"].get("candidates")
-    )
+    assert payload["raw"].get("top_candidates") or payload["raw"].get("candidates")
 
     # OpenAPI response_model accepts the payload
     JobResultEnvelope.model_validate(payload)
@@ -352,8 +336,4 @@ def test_job_result_docs_contract_product_reads_simple_only():
     assert "simple" in schema_doc
     assert "product" in schema_doc
     # D-B24: raw kept indefinitely for admin/debug (no deprecation plan)
-    assert (
-        "permanent" in schema_doc
-        or "indefinitely" in schema_doc
-        or "admin" in schema_doc
-    )
+    assert "permanent" in schema_doc or "indefinitely" in schema_doc or "admin" in schema_doc

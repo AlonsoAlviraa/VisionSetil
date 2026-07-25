@@ -10,16 +10,16 @@ from __future__ import annotations
 import time
 from typing import Any
 
+from app.api.routes_metrics import (
+    record_classification,
+    record_classify_mode,
+    record_gate_blocked,
+)
 from app.db.models import Observation
 from app.db.schemas import (
     ClassificationResponse,
     SimpleClassificationResult,
     SimpleSpeciesPrediction,
-)
-from app.api.routes_metrics import (
-    record_classification,
-    record_classify_mode,
-    record_gate_blocked,
 )
 from app.ml.classify_mode import derive_classify_mode
 from app.ml.quality_gate import apply_quality_gate_to_simple_result
@@ -78,7 +78,7 @@ def map_to_simple(
         view_coverage = list(getattr(classifier, "last_view_coverage", []) or [])
         ml_notes = list(getattr(classifier, "last_ml_notes", []) or [])
         if getattr(classifier, "last_confidence_margin", None) is not None:
-            margin = getattr(classifier, "last_confidence_margin")
+            margin = classifier.last_confidence_margin  # type: ignore[attr-defined]
         # MultiViewMushroomClassifier sets is_real
         if getattr(classifier, "is_real", False):
             is_mock = False

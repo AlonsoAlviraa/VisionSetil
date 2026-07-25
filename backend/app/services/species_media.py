@@ -138,9 +138,7 @@ def is_stub_asset(path: Path | None, variant: str) -> bool:
     if path is None or not path.exists() or not path.is_file():
         return True
     floor = MIN_BYTES_BY_VARIANT.get(variant, 0)
-    if floor and path.stat().st_size < floor:
-        return True
-    return False
+    return bool(floor and path.stat().st_size < floor)
 
 
 def _sibling_variants(variant: str) -> list[str]:
@@ -280,11 +278,19 @@ def list_gallery(slug: str) -> dict[str, Any]:
     gallery_dir = _safe_under(media_root(), "species", slug, "gallery")
     if gallery_dir.exists() and gallery_dir.is_dir():
         files = sorted(
-            [p for p in gallery_dir.iterdir() if p.suffix.lower() in (".webp", ".png", ".jpg", ".jpeg")]
+            [
+                p
+                for p in gallery_dir.iterdir()
+                if p.suffix.lower() in (".webp", ".png", ".jpg", ".jpeg")
+            ]
         )
         meta_gallery = meta.get("gallery") or []
         for i, p in enumerate(files):
-            extra = meta_gallery[i] if i < len(meta_gallery) and isinstance(meta_gallery[i], dict) else {}
+            extra = (
+                meta_gallery[i]
+                if i < len(meta_gallery) and isinstance(meta_gallery[i], dict)
+                else {}
+            )
             items.append(
                 {
                     "role": "gallery",
@@ -292,7 +298,8 @@ def list_gallery(slug: str) -> dict[str, Any]:
                     "thumb_url": f"{prefix}/species/{slug}/gallery/{p.name}",
                     "file": f"gallery/{p.name}",
                     "license": extra.get("license") or meta.get("license"),
-                    "attribution_text": extra.get("attribution_text") or meta.get("attribution_text"),
+                    "attribution_text": extra.get("attribution_text")
+                    or meta.get("attribution_text"),
                     "source": meta.get("source"),
                 }
             )

@@ -94,9 +94,11 @@ def _synonyms_path_candidates() -> list[Path]:
         candidates.append(Path(repo) / "data" / "species_catalog" / "synonyms.yaml")
     candidates.extend(
         [
-            base.parent / "data" / "species_catalog" / "synonyms.yaml"
-            if base.name == "backend"
-            else base / "data" / "species_catalog" / "synonyms.yaml",
+            (
+                base.parent / "data" / "species_catalog" / "synonyms.yaml"
+                if base.name == "backend"
+                else base / "data" / "species_catalog" / "synonyms.yaml"
+            ),
             base / "data" / "species_catalog" / "synonyms.yaml",
             Path(__file__).resolve().parents[3] / "data" / "species_catalog" / "synonyms.yaml",
             Path(__file__).resolve().parents[4] / "data" / "species_catalog" / "synonyms.yaml",
@@ -261,10 +263,7 @@ def hydrate_prediction(
         vern = resolve_vernaculars(hit, loc)
         common_name = vern[0] if vern else None
         risk_level = hit.get("risk_level")
-        if isinstance(risk_level, str):
-            risk_level = risk_level or None
-        else:
-            risk_level = None
+        risk_level = risk_level or None if isinstance(risk_level, str) else None
         in_catalog = True
         taxon = catalog_name
     else:

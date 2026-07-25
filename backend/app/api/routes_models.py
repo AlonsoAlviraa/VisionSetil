@@ -130,8 +130,8 @@ def models_catalog_join() -> dict:
 @router.get("/models/industrial-progress")
 def models_industrial_progress() -> dict:
     """Plan-30d industrial_v1 progress JSON (read-only, no GPU)."""
-    from pathlib import Path
     import json
+    from pathlib import Path
 
     repo_root = Path(getattr(settings, "repo_root", None) or settings.base_dir.parent)
     progress_path = repo_root / "data" / "industrial_v1" / "PROGRESS.json"
@@ -157,11 +157,13 @@ def models_industrial_progress() -> dict:
 @router.get("/models/experiments")
 def models_experiments() -> dict:
     """Latest offline experiment battery report (if present on disk)."""
-    from pathlib import Path
     import json
+    from pathlib import Path
 
     repo_root = Path(getattr(settings, "repo_root", None) or settings.base_dir.parent)
-    report_path = repo_root / "eval" / "reports" / "ml_experiments" / "experiment_battery_report.json"
+    report_path = (
+        repo_root / "eval" / "reports" / "ml_experiments" / "experiment_battery_report.json"
+    )
     if not report_path.is_file():
         return {
             "available": False,
@@ -178,9 +180,7 @@ def models_experiments() -> dict:
         "generated_at": data.get("generated_at"),
         "executive_summary": data.get("executive_summary"),
         "baseline": (data.get("experiments") or {}).get("baseline"),
-        "recommended_gpu_matrix": (data.get("experiments") or {}).get(
-            "recommended_gpu_matrix"
-        ),
+        "recommended_gpu_matrix": (data.get("experiments") or {}).get("recommended_gpu_matrix"),
         "calibrated_thresholds": {
             "temperature": getattr(settings, "multiview_temperature_recommended", None),
             "open_set_conf": getattr(settings, "multiview_open_set_conf_thr", None),

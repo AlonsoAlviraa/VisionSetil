@@ -99,8 +99,7 @@ def describe_training_metrics(repo_root: Path | str | None = None) -> dict[str, 
         acc = metrics.get("test_accuracy")
         n_cls = metrics.get("num_classes")
         summary_line = (
-            f"MAP@3={map3} · acc={acc} · classes={n_cls} · "
-            f"run={(primary or {}).get('run')}"
+            f"MAP@3={map3} · acc={acc} · classes={n_cls} · " f"run={(primary or {}).get('run')}"
         )
 
     return {
@@ -109,24 +108,24 @@ def describe_training_metrics(repo_root: Path | str | None = None) -> dict[str, 
         "run_count": len(artifacts),
         "summary_line": summary_line,
         "sources_registry_path": str(registry_path) if registry_path.is_file() else None,
-        "sources_registry": {
-            "updated": (registry or {}).get("updated"),
-            "current_checkpoint": (registry or {}).get("current_checkpoint"),
-            "ml_ready_public_ids": [
-                s.get("id") for s in (registry or {}).get("ml_ready_public") or []
-            ],
-            "request_collaboration_ids": [
-                s.get("id") for s in (registry or {}).get("request_collaboration") or []
-            ],
-            "gbif_probe_snapshot": (registry or {}).get("gbif_probe_snapshot"),
-        }
-        if registry
-        else None,
+        "sources_registry": (
+            {
+                "updated": (registry or {}).get("updated"),
+                "current_checkpoint": (registry or {}).get("current_checkpoint"),
+                "ml_ready_public_ids": [
+                    s.get("id") for s in (registry or {}).get("ml_ready_public") or []
+                ],
+                "request_collaboration_ids": [
+                    s.get("id") for s in (registry or {}).get("request_collaboration") or []
+                ],
+                "gbif_probe_snapshot": (registry or {}).get("gbif_probe_snapshot"),
+            }
+            if registry
+            else None
+        ),
         "gbif_probe_live_file": gbif_probe,
         "docs": "docs/DATA_SOURCES_SPAIN_SORIA.md",
         "honesty": (
-            "metrics_from_disk"
-            if primary and not primary.get("error")
-            else "no_metrics_artifact"
+            "metrics_from_disk" if primary and not primary.get("error") else "no_metrics_artifact"
         ),
     }

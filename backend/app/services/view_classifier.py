@@ -18,9 +18,9 @@ the view type so downstream components can choose the right backbone adapter.
 from __future__ import annotations
 
 import logging
+from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Sequence
 
 import numpy as np
 
@@ -65,17 +65,24 @@ class ViewClassifier:
             try:
                 import onnxruntime as ort  # type: ignore
 
-                providers = ["CPUExecutionProvider"] if device == "cpu" else ["CUDAExecutionProvider"]
+                providers = (
+                    ["CPUExecutionProvider"] if device == "cpu" else ["CUDAExecutionProvider"]
+                )
                 self._session = ort.InferenceSession(self.weights_path, providers=providers)
                 self._input_name = self._session.get_inputs()[0].name
                 self.is_real = True
                 logger.info("ViewClassifier loaded real ONNX weights from %s", self.weights_path)
             except Exception as exc:  # noqa: BLE001
-                logger.warning("ViewClassifier failed to load ONNX (%s); using heuristic fallback", exc)
+                logger.warning(
+                    "ViewClassifier failed to load ONNX (%s); using heuristic fallback", exc
+                )
                 self._session = None
                 self.is_real = False
         else:
-            logger.info("ViewClassifier: no weights found at %s; using heuristic fallback", self.weights_path)
+            logger.info(
+                "ViewClassifier: no weights found at %s; using heuristic fallback",
+                self.weights_path,
+            )
 
     # ------------------------------------------------------------------ #
     # Public API
@@ -99,7 +106,7 @@ class ViewClassifier:
     ) -> list[ViewPrediction]:
         """Classify a batch of images (sequential; ONNX handles batching internally)."""
         names = list(filenames) if filenames else [None] * len(images)
-        return [self.predict(img, name) for img, name in zip(images, names)]
+        return [self.predict(img, name) for img, name in zip(images, names, strict=False)]
 
     # ------------------------------------------------------------------ #
     # Real ONNX inference

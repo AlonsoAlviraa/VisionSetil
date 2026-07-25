@@ -30,7 +30,11 @@ def test_known_documented_taxa():
 def test_unknown_taxon_not_invented():
     assert get_food_quality_for_taxon("Fakeus inventus xyz") is None
     row = apply_food_quality_to_species_row(
-        {"taxon": "Fakeus inventus xyz", "slug": "fakeus-inventus", "risk_label": "unknown_or_risky"}
+        {
+            "taxon": "Fakeus inventus xyz",
+            "slug": "fakeus-inventus",
+            "risk_label": "unknown_or_risky",
+        }
     )
     assert "food_class" not in row or row.get("food_class") in (None, "")
 

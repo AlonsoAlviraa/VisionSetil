@@ -102,9 +102,7 @@ def _rows_from_v2(v2: dict) -> list[dict]:
                 "slug": slug,
                 "rank": "species",
                 "common_names": names,
-                "risk_label": _risk_label_from_v2(
-                    rec.get("risk_level"), rec.get("edibility_code")
-                ),
+                "risk_label": _risk_label_from_v2(rec.get("risk_level"), rec.get("edibility_code")),
                 "family": rec.get("family"),
                 "description": description
                 or f"{taxon}. Entrada micológica orientativa. Nunca para orientación de consumo.",
@@ -126,7 +124,10 @@ def list_expanded_species_catalog() -> dict:
     species_catalog_v2 in-memory so FE/BE share the same 520 taxa. Falls back to mock.
     Documented food quality is applied from curated sources only (never invented).
     """
-    from app.services.food_quality_sync import apply_food_quality_to_species_row, build_food_quality_index
+    from app.services.food_quality_sync import (
+        apply_food_quality_to_species_row,
+        build_food_quality_index,
+    )
 
     path = _expanded_catalog_path()
     payload: dict | None = None
