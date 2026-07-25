@@ -48,10 +48,6 @@ def test_list_and_slug_lookup():
 
 
 def test_expanded_json_file_exists():
-    path = (
-        Path(__file__).resolve().parents[1]
-        / "data"
-        / "species_catalog_expanded.json"
-    )
+    path = Path(__file__).resolve().parents[1] / "data" / "species_catalog_expanded.json"
     assert path.exists()
     assert path.stat().st_size > 1000

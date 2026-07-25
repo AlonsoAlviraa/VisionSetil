@@ -95,9 +95,11 @@ def _candidate_pool() -> list[dict[str, Any]]:
                         "taxon": lat,
                         "rank": "species",
                         "common_names": [p.get("common_name")] if p.get("common_name") else [],
-                        "risk_level": "deadly"
-                        if str(p.get("risk_level", "")).lower() == "critical"
-                        else "poisonous",
+                        "risk_level": (
+                            "deadly"
+                            if str(p.get("risk_level", "")).lower() == "critical"
+                            else "poisonous"
+                        ),
                         "keywords": [p.get("common_name") or "", lat],
                         "diagnostic_features": [],
                         "lookalikes": [],
@@ -175,7 +177,9 @@ class MockMushroomClassifier:
                 k in haystack for k in ("verde", "phalloides", "oronja", "volva")
             ):
                 score += 0.14
-            if "virosa" in taxon_l and any(k in haystack for k in ("blanca", "virosa", "ángel", "angel")):
+            if "virosa" in taxon_l and any(
+                k in haystack for k in ("blanca", "virosa", "ángel", "angel")
+            ):
                 score += 0.1
             if "galerina" in taxon_l and any(k in haystack for k in ("madera", "tronco", "wood")):
                 score += 0.12
@@ -197,9 +201,7 @@ class MockMushroomClassifier:
                 evidence_score=round(max(0.1, 1.0 - multi_view_penalty(images)), 4),
                 metadata_score=0.0,
                 visual_score=round(score, 4),
-                risk_level=candidate.get("risk_level")
-                or candidate.get("risk_label")
-                or "unknown",
+                risk_level=candidate.get("risk_level") or candidate.get("risk_label") or "unknown",
                 reasoning=self._reasoning(candidate, observation, images),
                 danger_notes=self._danger_notes(candidate, images),
                 lookalikes=self._lookalikes(candidate),

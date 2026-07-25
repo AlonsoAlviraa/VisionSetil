@@ -18,7 +18,7 @@ import json
 import logging
 import time
 from collections import OrderedDict
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass
 from typing import Any
 
 from app.core.config import settings
@@ -133,7 +133,8 @@ class InferenceCache:
             if metadata.get(k) is not None
         }
         raw = json.dumps(relevant, sort_keys=True, default=str)
-        return hashlib.md5(raw.encode()).hexdigest()[:12]  # noqa: S324
+        # Non-crypto cache key fragment only (not auth/integrity).
+        return hashlib.md5(raw.encode(), usedforsecurity=False).hexdigest()[:12]
 
     # ------------------------------------------------------------------ #
     # Public API

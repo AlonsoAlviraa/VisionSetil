@@ -9,12 +9,14 @@ is policy (respects block_enabled); verdict tracks metrics only.
 from __future__ import annotations
 
 import json
-import logging
 from functools import lru_cache
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 from app.core.config import settings, warn_if_quality_gate_block_disabled
+
+if TYPE_CHECKING:
+    from app.db.schemas import QualityGatePayload
 
 
 def _repo_root() -> Path:
@@ -147,9 +149,7 @@ def quality_gate_status(
 ) -> dict[str, Any]:
     """Return dual-signal gate evaluation for dashboard / classify (D-B15)."""
     if loaded_weights_path is not None or repo_root is not None:
-        metrics = load_primary_metrics(
-            repo_root, loaded_weights_path=loaded_weights_path
-        )
+        metrics = load_primary_metrics(repo_root, loaded_weights_path=loaded_weights_path)
     else:
         metrics = _load_primary_metrics_cached(None)
 

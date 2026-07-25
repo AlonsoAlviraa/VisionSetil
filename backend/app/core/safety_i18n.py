@@ -4,9 +4,7 @@ from __future__ import annotations
 
 from app.core.safety import (
     EXPERT_RECOMMENDATION,
-    FINAL_WARNING,
     ORIENTATION_ONLY_STATUS,
-    PRIMARY_MESSAGE,
     UNSAFE_TO_CONSUME,
 )
 

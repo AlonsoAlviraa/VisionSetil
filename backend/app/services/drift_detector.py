@@ -34,7 +34,6 @@ from __future__ import annotations
 
 import json
 import logging
-import time
 from dataclasses import asdict, dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
@@ -92,9 +91,7 @@ class DriftDetector:
         min_sample_size: int = 100,
         confidence_floor: float = 0.25,
     ) -> None:
-        self.baseline_path = Path(
-            baseline_path or settings.upload_dir / "drift_baseline.npz"
-        )
+        self.baseline_path = Path(baseline_path or settings.upload_dir / "drift_baseline.npz")
         self.mmd_threshold = mmd_threshold
         self.kl_threshold = kl_threshold
         self.min_sample_size = min_sample_size
@@ -180,11 +177,7 @@ class DriftDetector:
                 gamma = 0.1
 
         def _rbf(a: np.ndarray, b: np.ndarray) -> np.ndarray:
-            sq = (
-                np.sum(a**2, axis=1)[:, None]
-                + np.sum(b**2, axis=1)[None, :]
-                - 2.0 * a @ b.T
-            )
+            sq = np.sum(a**2, axis=1)[:, None] + np.sum(b**2, axis=1)[None, :] - 2.0 * a @ b.T
             return np.exp(-gamma * np.maximum(sq, 0))
 
         m = len(x)
@@ -240,9 +233,7 @@ class DriftDetector:
         sample_size = (
             len(recent_embeddings)
             if recent_embeddings is not None
-            else len(recent_predictions)
-            if recent_predictions is not None
-            else 0
+            else len(recent_predictions) if recent_predictions is not None else 0
         )
 
         # MMD on embeddings.
@@ -302,7 +293,9 @@ class DriftDetector:
             mean_confidence=round(mean_conf, 4),
             confidence_floor=self.confidence_floor,
             sample_size=sample_size,
-            baseline_size=len(self._baseline_embeddings) if self._baseline_embeddings is not None else 0,
+            baseline_size=(
+                len(self._baseline_embeddings) if self._baseline_embeddings is not None else 0
+            ),
             drifted_dimensions=drifted_dims,
             recommendation=recommendation,
         )

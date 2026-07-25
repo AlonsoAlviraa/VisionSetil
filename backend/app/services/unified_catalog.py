@@ -30,10 +30,15 @@ def _catalog_candidates() -> list[Path]:
     return [
         Path(settings.species_catalog_v2_path),
         settings.base_dir / "data" / "species_catalog" / "species_catalog_v2.json",
-        settings.base_dir.parent / "data" / "species_catalog" / "species_catalog_v2.json"
-        if settings.base_dir.name == "backend"
-        else settings.base_dir / "data" / "species_catalog" / "species_catalog_v2.json",
-        Path(__file__).resolve().parents[3] / "data" / "species_catalog" / "species_catalog_v2.json",
+        (
+            settings.base_dir.parent / "data" / "species_catalog" / "species_catalog_v2.json"
+            if settings.base_dir.name == "backend"
+            else settings.base_dir / "data" / "species_catalog" / "species_catalog_v2.json"
+        ),
+        Path(__file__).resolve().parents[3]
+        / "data"
+        / "species_catalog"
+        / "species_catalog_v2.json",
     ]
 
 
@@ -124,7 +129,9 @@ def resolve_text(record: dict[str, Any], field: str, locale: str) -> str | None:
         if isinstance(data, str) and data.strip():
             return data
         return None
-    chain = [locale, "es", "en"] + [loc for loc in SUPPORTED_LOCALES if loc not in (locale, "es", "en")]
+    chain = [locale, "es", "en"] + [
+        loc for loc in SUPPORTED_LOCALES if loc not in (locale, "es", "en")
+    ]
     for loc in chain:
         val = data.get(loc)
         if isinstance(val, str) and val.strip():
@@ -153,7 +160,9 @@ def resolve_string_list(record: dict[str, Any], field: str, locale: str) -> list
         return list(data)
     if not isinstance(data, dict):
         return []
-    chain = [locale, "es", "en"] + [loc for loc in SUPPORTED_LOCALES if loc not in (locale, "es", "en")]
+    chain = [locale, "es", "en"] + [
+        loc for loc in SUPPORTED_LOCALES if loc not in (locale, "es", "en")
+    ]
     for loc in chain:
         val = data.get(loc)
         if isinstance(val, list) and val:

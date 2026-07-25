@@ -8,9 +8,7 @@ from app.db.database import Base
 
 class Observation(Base):
     __tablename__ = "observations"
-    __table_args__ = (
-        Index("ix_observations_organization_id", "organization_id"),
-    )
+    __table_args__ = (Index("ix_observations_organization_id", "organization_id"),)
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     organization_id: Mapped[str] = mapped_column(String(80), default="default")
@@ -60,9 +58,7 @@ class ObservationImage(Base):
 
 class HumanReviewRequest(Base):
     __tablename__ = "human_review_requests"
-    __table_args__ = (
-        Index("ix_human_review_requests_organization_id", "organization_id"),
-    )
+    __table_args__ = (Index("ix_human_review_requests_organization_id", "organization_id"),)
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     observation_id: Mapped[int] = mapped_column(ForeignKey("observations.id"))
