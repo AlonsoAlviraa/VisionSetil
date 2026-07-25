@@ -6,6 +6,7 @@ structures, configuration validation, and pure-Python logic.
 
 from __future__ import annotations
 
+import importlib.util
 import sys
 from pathlib import Path
 
@@ -16,6 +17,8 @@ import pytest
 # so repo root is 4 parents up.
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent.parent
 sys.path.insert(0, str(REPO_ROOT))
+
+_HAS_TORCH = importlib.util.find_spec("torch") is not None
 
 
 # ---------------------------------------------------------------------------
@@ -352,10 +355,16 @@ class TestDatasetPreparation:
 
 
 # ---------------------------------------------------------------------------
-# Multi-view model config tests (no torch forward pass needed)
+# Multi-view model config tests
 # ---------------------------------------------------------------------------
+# kaggle.multi_view_model imports torch at module top-level. CI installs only
+# .[dev] (no torch); skip this class when torch is absent rather than pull GPU
+# wheels into lint-type-test.
+@pytest.mark.skipif(
+    not _HAS_TORCH, reason="torch not installed (optional ml extra; CI .[dev] only)"
+)
 class TestMultiViewConfigSOTA:
-    """Test the SOTA-upgraded MultiViewConfig."""
+    """Test the SOTA-upgraded MultiViewConfig (requires torch for module import)."""
 
     def test_foundation_ensemble_flag_exists(self):
         from kaggle.multi_view_model import MultiViewConfig
