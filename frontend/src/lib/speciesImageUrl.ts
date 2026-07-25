@@ -41,7 +41,8 @@ export function placeholderImageUrl(kind: PlaceholderKind = 'default'): string {
   const safe: PlaceholderKind = ['default', 'toxic', 'deadly', 'unknown'].includes(kind)
     ? kind
     : 'default'
-  return `${mediaPublicPrefix()}/placeholder/${safe}.webp`
+  // Repo layout uses media/placeholders/* (plural). Keep singular alias for caches.
+  return `${mediaPublicPrefix()}/placeholders/${safe}.webp`
 }
 
 export function galleryImageUrl(slug: string, index: number): string {
