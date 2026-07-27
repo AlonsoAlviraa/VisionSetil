@@ -24,6 +24,12 @@ import {
   type MushroomZone,
 } from '../data/mushroomZones'
 import { getZoneResourcePack, kindLabelEs } from '../data/zonePermitLinks'
+import {
+  B2B_PARTNER_BLURB_ES,
+  kindLabelEs as regulatedKindLabelEs,
+  listRegulatedZones,
+  regulatedZoneStats,
+} from '../lib/regulatedZones'
 import { getSpeciesByTaxon, loadSpeciesCatalog } from '../data/speciesCatalog'
 import { SpeciesThumb } from '../components/SpeciesThumb'
 import {
@@ -940,6 +946,15 @@ export default function SpainMapPage() {
   // Map-first: no bottom zone-name rail — maximize map area.
   const mapHeight = 'calc(100vh - var(--header-h, 64px) - 6.25rem)'
 
+  const regulatedRows = useMemo(() => listRegulatedZones(), [])
+  const regulatedStats = useMemo(() => regulatedZoneStats(), [])
+  const [showRegulatedDir, setShowRegulatedDir] = useState(false)
+  const [regulatedFilter, setRegulatedFilter] = useState<'all' | 'coto_cyl' | 'parque'>('all')
+  const regulatedVisible = useMemo(() => {
+    if (regulatedFilter === 'all') return regulatedRows.slice(0, 40)
+    return regulatedRows.filter((r) => r.kind === regulatedFilter).slice(0, 40)
+  }, [regulatedRows, regulatedFilter])
+
   return (
     <div
       className={`page-map page-map--immersive page-map--map-first page-atelier-shell${
@@ -955,6 +970,15 @@ export default function SpainMapPage() {
           <span className="map-safety-chip" role="note">
             {t('map.safetyChip', { defaultValue: 'Educativo · no recolección' })}
           </span>
+          <button
+            type="button"
+            className="btn-atelier btn-atelier--ghost map-chrome__b2b"
+            data-testid="map-regulated-toggle"
+            aria-expanded={showRegulatedDir}
+            onClick={() => setShowRegulatedDir((v) => !v)}
+          >
+            Cotos / parques ({regulatedStats.total})
+          </button>
         </div>
 
         <div className="map-chrome__filters" role="search">
@@ -1116,6 +1140,87 @@ export default function SpainMapPage() {
             {t('actions.clear', { defaultValue: 'Cerrar' })}
           </button>
         </div>
+      )}
+
+      {showRegulatedDir && (
+        <section
+          className="map-regulated-dir atelier-panel"
+          data-testid="map-regulated-directory"
+          aria-label="Directorio de cotos y parques micológicos"
+        >
+          <div className="map-regulated-dir__head">
+            <h2 className="map-regulated-dir__title">
+              Cotos y parques micológicos
+            </h2>
+            <p className="map-regulated-dir__stats muted">
+              {regulatedStats.cotos} acotados CyL · {regulatedStats.parks} parques ·{' '}
+              {regulatedStats.withPermit} con enlace de permiso
+            </p>
+            <p className="map-regulated-dir__partner" role="note">
+              {B2B_PARTNER_BLURB_ES}
+            </p>
+            <div className="identify-mode-toggle" role="group" aria-label="Filtro regulado">
+              {(
+                [
+                  ['all', 'Todos'],
+                  ['coto_cyl', 'Acotados CyL'],
+                  ['parque', 'Parques'],
+                ] as const
+              ).map(([id, label]) => (
+                <button
+                  key={id}
+                  type="button"
+                  className={`btn-atelier ${
+                    regulatedFilter === id ? 'btn-atelier--primary' : 'btn-atelier--ghost'
+                  }`}
+                  onClick={() => setRegulatedFilter(id)}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+          <ul className="map-regulated-dir__list">
+            {regulatedVisible.map((row) => {
+              const permit = row.resources.links.find((l) => l.kind === 'permit')
+              return (
+                <li key={row.zone.id} className="map-regulated-dir__item">
+                  <button
+                    type="button"
+                    className="map-regulated-dir__open"
+                    onClick={() => {
+                      handleSelectZone(row.zone)
+                      setShowRegulatedDir(false)
+                    }}
+                  >
+                    <span className="map-regulated-dir__kind">
+                      {regulatedKindLabelEs(row.kind)}
+                    </span>
+                    <strong>{row.zone.name}</strong>
+                    <span className="muted">
+                      {row.zone.region}
+                      {row.zone.provinces?.length
+                        ? ` · ${row.zone.provinces.join(', ')}`
+                        : ''}
+                    </span>
+                  </button>
+                  {permit ? (
+                    <a
+                      href={permit.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="map-regulated-dir__permit"
+                    >
+                      Permiso ↗
+                    </a>
+                  ) : (
+                    <span className="muted map-regulated-dir__permit">Info en ficha</span>
+                  )}
+                </li>
+              )
+            })}
+          </ul>
+        </section>
       )}
 
       {(geoStatus === 'denied' ||

@@ -6,9 +6,11 @@ import { SpeciesNameBlock, NO_LOCAL_COMMON_NAME } from './SpeciesNameBlock'
 import { RiskChip } from './RiskChip'
 import { FoodQualityChip } from './FoodQualityChip'
 import {
-  buildSpeciesMediaStack,
-  uniqueMediaStack,
+  isTerminalMediaUrl,
+  mediaStackWithTerminal,
 } from '../lib/speciesMediaStack'
+import { speciesPhotoErrorFallback } from '../lib/speciesPhotoFallback'
+import { INLINE_PLACEHOLDER_SVG } from '../lib/speciesImageUrl'
 
 export { NO_LOCAL_COMMON_NAME }
 
@@ -20,62 +22,83 @@ type Props = {
 
 /**
  * Encyclopedia grid card — multi-angle when available (best photo first).
- * Safe loads: referrerPolicy no-referrer, cascade on error.
+ * Safe loads: referrerPolicy no-referrer, cascade on error by URL → SVG terminal.
  */
 export function SpeciesPhotoCard({ species, priority = false }: Props) {
   const common = species.common_names[0]?.trim()
   const food = getFoodQuality(species.taxon)
   const alt = `${common || NO_LOCAL_COMMON_NAME} — ${species.taxon}`
+  const terminal = speciesPhotoErrorFallback(species.taxon, species.risk_label)
 
   const stack = useMemo(
     () =>
-      uniqueMediaStack(
-        buildSpeciesMediaStack(species.taxon, {
-          maxGallery: 3,
-          includeCatalog: true,
-        }),
-      ).slice(0, 4),
-    [species.taxon],
+      mediaStackWithTerminal(species.taxon, {
+        maxGallery: 3,
+        includeCatalog: true,
+        riskLabel: species.risk_label,
+        maxCandidates: 4,
+      }),
+    [species.taxon, species.risk_label],
   )
 
   const [idx, setIdx] = useState(0)
   const [alive, setAlive] = useState(stack)
+  const [useInline, setUseInline] = useState(false)
   const current = alive[idx] || alive[0]
 
   useEffect(() => {
     setAlive(stack)
     setIdx(0)
+    setUseInline(false)
   }, [stack])
 
   const onError = () => {
+    const failedUrl = current?.url
     setAlive((prev) => {
-      if (prev.length <= 1) return prev
-      const next = prev.filter((_, i) => i !== idx)
+      if (!failedUrl || prev.length <= 1) {
+        setUseInline(true)
+        return prev
+      }
+      const next = prev.filter((c) => c.url !== failedUrl)
       setIdx(0)
+      if (next.length === 0 || next.every((c) => isTerminalMediaUrl(c.url))) {
+        // still try remaining terminal frames; if only terminal left, show it once
+        if (next.length === 0) {
+          setUseInline(true)
+          return prev
+        }
+      }
       return next
     })
   }
 
+  const src = useInline
+    ? terminal || INLINE_PLACEHOLDER_SVG
+    : current?.url || terminal || INLINE_PLACEHOLDER_SVG
+  const terminalSrc = isTerminalMediaUrl(src)
+
   return (
     <Link to={`/enciclopedia/${species.slug}`} className="species-photo-card">
       <div className="species-photo-card__frame" style={{ aspectRatio: '1/1', overflow: 'hidden' }}>
-        {current ? (
-          <img
-            key={current.url}
-            src={current.url}
-            alt={alt}
-            className="species-photo-card__img"
-            loading={priority ? 'eager' : 'lazy'}
-            decoding="async"
-            referrerPolicy="no-referrer"
-            crossOrigin={current.sameOrigin ? undefined : 'anonymous'}
-            sizes="(max-width: 600px) 45vw, 220px"
-            onError={onError}
-            data-media-kind={current.kind}
-          />
-        ) : (
-          <div className="species-photo-card__fallback" aria-hidden />
-        )}
+        <img
+          key={useInline ? 'inline' : current?.url || 'fb'}
+          src={src}
+          alt={alt}
+          className="species-photo-card__img"
+          loading={priority ? 'eager' : 'lazy'}
+          decoding="async"
+          referrerPolicy="no-referrer"
+          crossOrigin={
+            !useInline && current && !current.sameOrigin && !terminalSrc
+              ? 'anonymous'
+              : undefined
+          }
+          sizes="(max-width: 600px) 45vw, 220px"
+          onError={useInline || terminalSrc ? undefined : onError}
+          data-media-kind={
+            useInline || terminalSrc ? 'illustration' : current?.kind || 'illustration'
+          }
+        />
         <span className="species-photo-card__chips">
           {food ? (
             <FoodQualityChip foodClass={food.food_class} label={food.label} compact />
@@ -83,7 +106,7 @@ export function SpeciesPhotoCard({ species, priority = false }: Props) {
             <RiskChip risk={species.risk_label} />
           )}
         </span>
-        {alive.length > 1 && (
+        {!useInline && alive.length > 1 && (
           <span
             className="species-photo-card__angles"
             onClick={(e) => {

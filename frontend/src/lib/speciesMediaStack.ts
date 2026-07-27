@@ -1,10 +1,17 @@
 /**
  * Ordered media candidates for a taxon — best/safe first.
  * Preference: same-origin WebP (fast + no third-party referrer) → catalog remote HD.
+ * Terminal SVG always available via mediaStackWithTerminal (UI onError defense).
  */
-import { galleryImageUrl, mediaPublicPrefix, speciesImageUrl } from './speciesImageUrl'
+import {
+  galleryImageUrl,
+  INLINE_PLACEHOLDER_SVG,
+  mediaPublicPrefix,
+  speciesImageUrl,
+} from './speciesImageUrl'
 import { getCatalogPhotoUrl } from './speciesImageService'
 import { scientificNameToSlug } from './slug'
+import { speciesPhotoErrorFallback } from './speciesPhotoFallback'
 
 export type MediaCandidate = {
   url: string
@@ -128,4 +135,57 @@ export function uniqueMediaStack(stack: MediaCandidate[]): MediaCandidate[] {
     out.push(c)
   }
   return out
+}
+
+/** Terminal fallback always available for UI (never broken img loop). */
+export function terminalFallbackUrl(taxon: string, risk?: string | null): string {
+  return speciesPhotoErrorFallback(taxon, risk) || INLINE_PLACEHOLDER_SVG
+}
+
+export function isTerminalMediaUrl(url: string): boolean {
+  return (
+    url.startsWith('data:image/') ||
+    url.includes('/placeholders/') ||
+    url.startsWith('data:image/svg')
+  )
+}
+
+/**
+ * Ensure media stack ends with a guaranteed displayable candidate.
+ * Slice **before** terminal so UI maxFrames never drops the SVG.
+ *
+ * @param opts.maxCandidates — max non-terminal entries (terminal always appended after)
+ */
+export function mediaStackWithTerminal(
+  taxon: string,
+  opts?: {
+    maxGallery?: number
+    includeCatalog?: boolean
+    riskLabel?: string | null
+    /** Max non-terminal candidates before appending terminal */
+    maxCandidates?: number
+  },
+): MediaCandidate[] {
+  const base = uniqueMediaStack(
+    buildSpeciesMediaStack(taxon, {
+      maxGallery: opts?.maxGallery ?? 3,
+      includeCatalog: opts?.includeCatalog !== false,
+    }),
+  )
+  const limited =
+    opts?.maxCandidates != null && opts.maxCandidates > 0
+      ? base.slice(0, opts.maxCandidates)
+      : base
+
+  const fb = terminalFallbackUrl(taxon, opts?.riskLabel)
+  const withoutTerminal = limited.filter((c) => !isTerminalMediaUrl(c.url) && c.url !== fb)
+  return [
+    ...withoutTerminal,
+    {
+      url: fb,
+      kind: 'thumb',
+      rank: -100,
+      sameOrigin: true,
+    },
+  ]
 }

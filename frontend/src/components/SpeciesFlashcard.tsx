@@ -6,12 +6,14 @@ import { useCallback, useEffect, useMemo, useState, type MouseEvent } from 'reac
 import { Link } from 'react-router-dom'
 import { RiskChip } from './RiskChip'
 import {
-  buildSpeciesMediaStack,
-  uniqueMediaStack,
+  isTerminalMediaUrl,
+  mediaStackWithTerminal,
   type MediaCandidate,
 } from '../lib/speciesMediaStack'
 import { scientificNameToSlug } from '../lib/slug'
 import { riskToPlaceholder } from '../lib/edibility'
+import { speciesPhotoErrorFallback } from '../lib/speciesPhotoFallback'
+import { INLINE_PLACEHOLDER_SVG } from '../lib/speciesImageUrl'
 
 export type FlashcardSpecies = {
   taxon: string
@@ -39,40 +41,57 @@ export function SpeciesFlashcard({
   onFlip,
 }: Props) {
   const slug = species.slug || scientificNameToSlug(species.taxon)
+  const terminal = speciesPhotoErrorFallback(species.taxon, species.risk)
   const stack = useMemo(
     () =>
-      uniqueMediaStack(
-        buildSpeciesMediaStack(species.taxon, {
-          maxGallery: 4,
-          includeCatalog: true,
-        }),
-      ),
-    [species.taxon],
+      mediaStackWithTerminal(species.taxon, {
+        maxGallery: 4,
+        includeCatalog: true,
+        riskLabel: species.risk,
+        maxCandidates: 6,
+      }),
+    [species.taxon, species.risk],
   )
 
   const [alive, setAlive] = useState<MediaCandidate[]>(stack)
   const [idx, setIdx] = useState(0)
   const [flipped, setFlipped] = useState(startFlipped)
   const [loaded, setLoaded] = useState(false)
+  const [useInline, setUseInline] = useState(false)
 
   useEffect(() => {
     setAlive(stack)
     setIdx(0)
     setLoaded(false)
+    setUseInline(false)
     setFlipped(startFlipped)
   }, [stack, startFlipped, species.taxon])
 
   const current = alive[idx] || alive[0]
+  const photoSrc = useInline
+    ? terminal || INLINE_PLACEHOLDER_SVG
+    : current?.url || terminal || INLINE_PLACEHOLDER_SVG
+  const terminalSrc = isTerminalMediaUrl(photoSrc)
 
   const dropCurrent = useCallback(() => {
+    const failedUrl = current?.url
     setAlive((prev) => {
-      if (prev.length <= 1) return prev
-      const next = prev.filter((_, i) => i !== idx)
+      if (!failedUrl || prev.length <= 1) {
+        setUseInline(true)
+        setLoaded(true)
+        return prev
+      }
+      const next = prev.filter((c) => c.url !== failedUrl)
       setIdx(0)
       setLoaded(false)
-      return next.length ? next : prev
+      if (!next.length) {
+        setUseInline(true)
+        setLoaded(true)
+        return prev
+      }
+      return next
     })
-  }, [idx])
+  }, [current?.url])
 
   const nextPhoto = (e?: MouseEvent) => {
     e?.stopPropagation()
@@ -113,23 +132,29 @@ export function SpeciesFlashcard({
             aria-label={`Estudiar ${species.name}. Toca para revelar.`}
           >
             <div className="flashcard__photo-stage">
-              {!loaded && <div className="flashcard__skeleton" aria-hidden />}
-              {current && (
-                <img
-                  key={current.url}
-                  src={current.url}
-                  alt=""
-                  className={`flashcard__img ${loaded ? 'is-loaded' : ''}`}
-                  loading="eager"
-                  decoding="async"
-                  referrerPolicy="no-referrer"
-                  crossOrigin={current.sameOrigin ? undefined : 'anonymous'}
-                  draggable={false}
-                  onLoad={() => setLoaded(true)}
-                  onError={dropCurrent}
-                  data-media-kind={current.kind}
-                />
-              )}
+              {!loaded && !useInline && <div className="flashcard__skeleton" aria-hidden />}
+              <img
+                key={useInline ? 'inline' : current?.url || 'fb'}
+                src={photoSrc}
+                alt=""
+                className={`flashcard__img ${loaded || useInline ? 'is-loaded' : ''}`}
+                loading="eager"
+                decoding="async"
+                referrerPolicy="no-referrer"
+                crossOrigin={
+                  !useInline && current && !current.sameOrigin && !terminalSrc
+                    ? 'anonymous'
+                    : undefined
+                }
+                draggable={false}
+                onLoad={() => setLoaded(true)}
+                onError={useInline || terminalSrc ? undefined : dropCurrent}
+                data-media-kind={
+                  useInline || terminalSrc
+                    ? 'illustration'
+                    : current?.kind || 'illustration'
+                }
+              />
             </div>
             <span className="flashcard__hint">Toca para revelar · cambia ángulos abajo</span>
           </button>

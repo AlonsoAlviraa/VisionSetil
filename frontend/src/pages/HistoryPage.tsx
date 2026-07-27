@@ -37,6 +37,12 @@ import {
 } from '../lib/expertHandoff'
 import { decisionLabelEs } from '../lib/decisionLabels'
 import { scientificNameToSlug } from '../lib/slug'
+import {
+  historyLimit,
+  planLabelEs,
+  sliceHistoryForPlan,
+  usePlanActions,
+} from '../lib/entitlements'
 
 const MODE_FILTERS: HistoryModeFilter[] = ['all', 'real', 'mock', 'blocked']
 const DATE_FILTERS: HistoryDateFilter[] = ['all', 'today', '7d', '30d']
@@ -61,9 +67,15 @@ export function HistoryPage() {
   const detailPanelRef = useRef<HTMLDivElement>(null)
   const lastFocusRef = useRef<HTMLElement | null>(null)
 
+  const { plan, isPro: planPro, unlock } = usePlanActions()
+
+  const reloadVisible = useCallback(() => {
+    setEntries(sliceHistoryForPlan(loadHistory(), plan))
+  }, [plan])
+
   useEffect(() => {
-    setEntries(loadHistory())
-  }, [])
+    reloadVisible()
+  }, [reloadVisible])
 
   const summary = useMemo(() => summarizeHistory(entries), [entries])
   const needsReview = useMemo(() => entriesNeedingReview(entries), [entries])
@@ -155,7 +167,8 @@ export function HistoryPage() {
       notes: noteDraft,
       tags: parseTagsInput(tagsDraft),
     })
-    setEntries(next)
+    // Re-apply Free/Pro UI depth — store may hold up to MAX_HISTORY
+    setEntries(sliceHistoryForPlan(next, plan))
     setEditingId(null)
   }
 
@@ -227,6 +240,22 @@ export function HistoryPage() {
   return (
     <div className="page-history page-atelier-shell">
       <div className="page-header">
+        <p className="atelier-kicker" data-testid="history-plan-chip">
+          Plan {planLabelEs(plan)} · hasta {historyLimit(plan)} entradas
+          {!planPro && (
+            <>
+              {' · '}
+              <button
+                type="button"
+                className="btn-atelier btn-atelier--ghost"
+                onClick={() => unlock()}
+                data-testid="history-unlock-pro"
+              >
+                Ampliar con Pro
+              </button>
+            </>
+          )}
+        </p>
         <h1 className="page-title">
           {t('notebook.title', { defaultValue: 'Cuaderno de campo' })}
         </h1>

@@ -50,6 +50,15 @@ import {
   PREFLIGHT_POLL_MS,
   type PreflightState,
 } from '../lib/preflight'
+import {
+  canIdentify,
+  recordIdentifyUse,
+  reserveIdentifyUse,
+  rollbackIdentifyUse,
+  sliceHistoryForPlan,
+  usePlanActions,
+  type IdentifyGateResult,
+} from '../lib/entitlements'
 
 interface SelectedImage {
   file: File
@@ -91,14 +100,21 @@ export function IdentifyPage() {
   )
 
   const preflightEnabled = featureFlags.IDENTIFY_PREFLIGHT
-  /** HARD: only offline/API-down disables submit — never gate blocked. */
+  /** HARD: only offline/API-down disables submit — never quality-gate blocked. */
   const submitAllowed = !preflightEnabled || canSubmitPreflight(preflight)
+  const { plan, unlock } = usePlanActions()
+  const [identifyQuota, setIdentifyQuota] = useState<IdentifyGateResult>(() => canIdentify())
+  const quotaBlocked = !identifyQuota.allowed
+  const canClickSubmit = submitAllowed && !quotaBlocked
   /** Ignore stale classify responses when user re-submits (audit Q11). */
   const classifyGenRef = useRef(0)
+  /** Sync lock: prevents double-submit races before loading state re-renders. */
+  const submitLockRef = useRef(false)
 
   useEffect(() => {
-    setHistory(loadHistory())
-  }, [])
+    setHistory(sliceHistoryForPlan(loadHistory(), plan))
+    setIdentifyQuota(canIdentify())
+  }, [plan])
 
   useEffect(() => {
     if (!preflightEnabled) return
@@ -205,6 +221,20 @@ export function IdentifyPage() {
       return
     }
 
+    // Sync lock + atomic Free reserve (client best-effort; server must enforce in prod)
+    if (submitLockRef.current || loading) return
+    submitLockRef.current = true
+
+    const reserved = reserveIdentifyUse()
+    setIdentifyQuota(canIdentify())
+    if (!reserved.allowed && !reserved.reserved) {
+      submitLockRef.current = false
+      setError(
+        `Límite Free de ${reserved.limit} identificaciones/día alcanzado. Activa Pro demo o vuelve mañana. Orientación de campo — no es permiso de consumo.`,
+      )
+      return
+    }
+
     let files: File[]
     let viewTypes: string[] | undefined
     let previews: string[]
@@ -214,9 +244,19 @@ export function IdentifyPage() {
       files = pack.files
       viewTypes = pack.viewTypes
       previews = pack.previews
-      if (files.length === 0) return
+      if (files.length === 0) {
+        if (reserved.reserved) rollbackIdentifyUse()
+        submitLockRef.current = false
+        setIdentifyQuota(canIdentify())
+        return
+      }
     } else {
-      if (selectedImages.length === 0) return
+      if (selectedImages.length === 0) {
+        if (reserved.reserved) rollbackIdentifyUse()
+        submitLockRef.current = false
+        setIdentifyQuota(canIdentify())
+        return
+      }
       files = selectedImages.map((img) => img.file)
       previews = selectedImages.map((img) => img.preview)
       viewTypes = undefined
@@ -238,6 +278,11 @@ export function IdentifyPage() {
       if (classifyGenRef.current !== myGen) return
       setLoadingStage('apply_policy')
       setResult(data)
+      // Free already reserved; Pro tracks success for honesty UI
+      if (!reserved.reserved) {
+        recordIdentifyUse()
+      }
+      setIdentifyQuota(canIdentify())
 
       const entry: HistoryEntry = {
         id: data.request_id,
@@ -246,17 +291,29 @@ export function IdentifyPage() {
         result: data,
         view_types: viewTypes,
       }
-      setHistory(appendHistory(entry))
+      setHistory(sliceHistoryForPlan(appendHistory(entry), plan))
     } catch (err) {
+      if (reserved.reserved) rollbackIdentifyUse()
+      setIdentifyQuota(canIdentify())
       if (classifyGenRef.current !== myGen) return
       setError(err instanceof Error ? err.message : 'Error desconocido')
     } finally {
+      submitLockRef.current = false
       if (classifyGenRef.current === myGen) {
         setLoading(false)
         setLoadingStage('upload')
       }
     }
-  }, [useWizard, collectWizardFiles, selectedImages, metadata, preflight, preflightEnabled])
+  }, [
+    useWizard,
+    collectWizardFiles,
+    selectedImages,
+    metadata,
+    preflight,
+    preflightEnabled,
+    loading,
+    plan,
+  ])
 
   const handleFeedback = useCallback(
     async (isCorrect: boolean, species?: string) => {
@@ -442,6 +499,29 @@ export function IdentifyPage() {
                   Historial ({historySummary.total})
                 </Link>
               </div>
+              {identifyQuota.plan === 'free' && identifyQuota.limit != null && (
+                <p className="identify-quota-chip muted" data-testid="identify-quota" role="status">
+                  Free: {identifyQuota.used}/{identifyQuota.limit} identificaciones hoy
+                  {quotaBlocked ? ' · cupo agotado' : ''}
+                  {quotaBlocked && (
+                    <>
+                      {' · '}
+                      <button
+                        type="button"
+                        className="btn-atelier btn-atelier--ghost"
+                        onClick={() => {
+                          unlock()
+                          setIdentifyQuota(canIdentify())
+                          setError(null)
+                        }}
+                        data-testid="identify-unlock-pro"
+                      >
+                        Activar Pro demo
+                      </button>
+                    </>
+                  )}
+                </p>
+              )}
             </div>
 
             {useWizard && (
@@ -460,18 +540,22 @@ export function IdentifyPage() {
                         type="button"
                         className="btn-atelier btn-atelier--primary"
                         onClick={handleClassify}
-                        disabled={loading || !readiness.canSubmit || !submitAllowed}
+                        disabled={loading || !readiness.canSubmit || !canClickSubmit}
                         data-testid="identify-submit"
                         title={
                           !submitAllowed
                             ? 'API no disponible — identificación deshabilitada'
-                            : undefined
+                            : quotaBlocked
+                              ? 'Cupo Free diario agotado'
+                              : undefined
                         }
                       >
                         {loading ? (
                           'Analizando…'
                         ) : !submitAllowed ? (
                           'API desconectada'
+                        ) : quotaBlocked ? (
+                          'Cupo Free agotado'
                         ) : (
                           <>
                             <IconSearch size={18} />
@@ -532,18 +616,22 @@ export function IdentifyPage() {
                     type="button"
                     className="btn-atelier btn-atelier--primary"
                     onClick={handleClassify}
-                    disabled={loading || !submitAllowed}
+                    disabled={loading || !canClickSubmit}
                     data-testid="identify-submit"
                     title={
                       !submitAllowed
                         ? 'API no disponible — identificación deshabilitada'
-                        : undefined
+                        : quotaBlocked
+                          ? 'Cupo Free diario agotado'
+                          : undefined
                     }
                   >
                     {loading ? (
                       'Analizando…'
                     ) : !submitAllowed ? (
                       'API desconectada'
+                    ) : quotaBlocked ? (
+                      'Cupo Free agotado'
                     ) : (
                       <>
                         <IconSearch size={18} />

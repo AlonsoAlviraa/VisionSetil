@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest'
 import {
   PREMIUM_PHOTO_SLUGS,
   buildSpeciesMediaStack,
+  isTerminalMediaUrl,
+  mediaStackWithTerminal,
   photoPriorityScore,
   uniqueMediaStack,
 } from './speciesMediaStack'
@@ -96,5 +98,14 @@ describe('speciesMediaStack', () => {
         expect(c.url.startsWith('/media/') || c.url.includes('/media/')).toBe(true)
       }
     }
+  })
+
+  it('mediaStackWithTerminal keeps terminal after maxCandidates', () => {
+    const stack = mediaStackWithTerminal('Lactarius deliciosus', {
+      maxCandidates: 2,
+      maxGallery: 4,
+    })
+    expect(stack.length).toBe(3)
+    expect(isTerminalMediaUrl(stack[stack.length - 1].url)).toBe(true)
   })
 })

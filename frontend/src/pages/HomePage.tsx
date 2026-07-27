@@ -1,12 +1,16 @@
 /**
- * Product home — visual-first, less copy, connected CTAs.
+ * Product home — conversion landing: value prop, safety trust,
+ * identify CTA, waitlist temporada, Offline Pack Pro.
  */
 import { Link } from 'react-router-dom'
 import { DeviceFrame } from '../components/marketing/DeviceFrame'
 import { SetadleBoardMock } from '../components/marketing/SetadleBoardMock'
 import { LearnGallery } from '../components/marketing/LearnGallery'
 import { SpeciesImage } from '../components/SpeciesImage'
+import { WaitlistTemporada } from '../components/WaitlistTemporada'
+import { ProPlanBanner } from '../components/ProPlanBanner'
 import { scientificNameToSlug } from '../lib/slug'
+import { FREE_IDENTIFY_PER_DAY } from '../lib/entitlements'
 
 const HOME_CATALOG_COUNT = 520
 
@@ -30,24 +34,31 @@ const ICON_STRIP = [
 export function HomePage() {
   return (
     <div className="home-page home-mkt home-mkt--tight">
-      {/* Hero — short */}
+      {/* Hero — value prop + conversion CTAs */}
       <section className="mkt-hero mkt-mesh mkt-hero--compact" aria-label="Presentación">
         <div className="mkt-hero__copy">
-          <p className="mkt-kicker">VisionSetil</p>
+          <p className="mkt-kicker">VisionSetil · España · Soria · CyL</p>
           <h1 className="mkt-h1">
             Setas con
             <br />
             <em>criterio.</em>
           </h1>
+          <p className="mkt-lead mkt-lead--home">
+            Identificación con honestidad de modelo, enciclopedia y mapa de cotos.
+            Orientación de campo — nunca permiso de consumo.
+          </p>
           <div className="mkt-cta-row">
-            <Link to="/identificar" className="mkt-btn mkt-btn--primary">
+            <Link to="/identificar" className="mkt-btn mkt-btn--primary" data-testid="home-cta-identify">
               Identificar
             </Link>
-            <Link to="/setadle" className="mkt-btn mkt-btn--amber">
-              Setadle
+            <Link to="/offline" className="mkt-btn mkt-btn--amber" data-testid="home-cta-offline">
+              Pack offline Pro
             </Link>
             <Link to="/enciclopedia" className="mkt-btn mkt-btn--ghost">
               Enciclopedia
+            </Link>
+            <Link to="/mapa" className="mkt-btn mkt-btn--ghost">
+              Cotos y mapa
             </Link>
           </div>
           <div className="mkt-hero__stats">
@@ -56,8 +67,12 @@ export function HomePage() {
               <span>Taxones</span>
             </div>
             <div className="mkt-hero__stat">
-              <strong>5</strong>
-              <span>Juegos</span>
+              <strong>{FREE_IDENTIFY_PER_DAY}</strong>
+              <span>ID Free/día</span>
+            </div>
+            <div className="mkt-hero__stat">
+              <strong>Pro</strong>
+              <span>Offline campo</span>
             </div>
           </div>
         </div>
@@ -66,6 +81,28 @@ export function HomePage() {
             <SetadleBoardMock compact caption="Diario · colores" />
           </DeviceFrame>
         </div>
+      </section>
+
+      {/* Trust strip */}
+      <section className="mkt-trust" aria-label="Confianza y seguridad">
+        <ul className="mkt-trust__list">
+          <li>
+            <strong>Open-set</strong>
+            <span>Rechaza lo desconocido en vez de inventar</span>
+          </li>
+          <li>
+            <strong>Mortales visibles</strong>
+            <span>Banderas de riesgo en fichas y resultados</span>
+          </li>
+          <li>
+            <strong>Cotos oficiales</strong>
+            <span>Enlaces a MicologíaCyL / MicoAragón</span>
+          </li>
+          <li>
+            <strong>Sin permiso de consumo</strong>
+            <span>Solo orientación; micólogo humano ante la duda</span>
+          </li>
+        </ul>
       </section>
 
       {/* Photos only — no marketing walls of text */}
@@ -96,6 +133,16 @@ export function HomePage() {
         })}
       </div>
 
+      {/* Freemium packaging */}
+      <section className="mkt-section mkt-section--tight" aria-label="Free y Pro">
+        <ProPlanBanner showTable />
+      </section>
+
+      {/* Waitlist temporada */}
+      <section className="mkt-section mkt-section--tight" aria-label="Waitlist temporada">
+        <WaitlistTemporada source="home" />
+      </section>
+
       {/* Gallery / mini-video flashcards */}
       <section className="mkt-section mkt-section--tight" aria-label="Galería">
         <LearnGallery />
@@ -106,7 +153,7 @@ export function HomePage() {
         <div className="mkt-feature mkt-feature--dark mkt-feature--compact">
           <div>
             <h2 className="mkt-h2">Setadle</h2>
-            <p className="mkt-lead">Juego diario. Cinco modos.</p>
+            <p className="mkt-lead">Juego diario Free. Modos extra e ilimitado en Pro.</p>
             <div className="mkt-cta-row">
               <Link to="/setadle" className="mkt-btn mkt-btn--amber">
                 Jugar
@@ -150,6 +197,28 @@ export function HomePage() {
               </Link>
             )
           })}
+        </div>
+      </section>
+
+      {/* Offline Pro CTA */}
+      <section className="mkt-section mkt-section--tight" aria-label="Offline Pro">
+        <div className="mkt-feature mkt-feature--compact mkt-offline-cta">
+          <div>
+            <p className="mkt-kicker">Pro · Campo sin red</p>
+            <h2 className="mkt-h2">Offline Pack</h2>
+            <p className="mkt-lead">
+              Fichas y fotos de estudio para temporada y prioritarias T0/T1. No identifica
+              offline ni autoriza consumo.
+            </p>
+            <div className="mkt-cta-row">
+              <Link to="/offline" className="mkt-btn mkt-btn--primary">
+                Ver pack Pro
+              </Link>
+              <Link to="/educacion" className="mkt-btn mkt-btn--ghost">
+                Educación de seguridad
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 

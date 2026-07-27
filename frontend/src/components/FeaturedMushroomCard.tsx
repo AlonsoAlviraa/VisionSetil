@@ -1,7 +1,9 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { type MushroomSpecies, EDIBILITY_COLORS, EDIBILITY_LABELS } from '../data/mushroomDatabase'
 import { useSpeciesImage } from '../hooks/useSpeciesImage'
 import { speciesPhotoErrorFallback } from '../lib/speciesPhotoFallback'
+import { INLINE_PLACEHOLDER_SVG } from '../lib/speciesImageUrl'
 import { TiltCard3D } from './TiltCard3D'
 
 interface Props {
@@ -14,6 +16,16 @@ export function FeaturedMushroomCard({ species }: Props) {
   })
   const slug = encodeURIComponent(species.scientificName)
   const placeholder = speciesPhotoErrorFallback(species.scientificName, species.edibility)
+  /** 0 = primary url, 1 = placeholder SVG, 2 = inline brand SVG (stop) */
+  const [stage, setStage] = useState(0)
+
+  // Reset cascade when resolver upgrades URL or species changes
+  useEffect(() => {
+    setStage(0)
+  }, [url, species.scientificName])
+
+  const src =
+    stage === 0 ? url : stage === 1 ? placeholder : INLINE_PLACEHOLDER_SVG
 
   return (
     <TiltCard3D className="featured-mushroom-card">
@@ -23,14 +35,14 @@ export function FeaturedMushroomCard({ species }: Props) {
       >
         <div className="featured-mushroom-image">
           <img
-            src={url}
+            key={`${species.scientificName}-${stage}-${stage === 0 ? url : 'fb'}`}
+            src={src}
             alt={species.commonNames[0] || species.scientificName}
             loading="lazy"
             decoding="async"
-            className={loading ? 'is-loading' : ''}
-            onError={(e) => {
-              const img = e.currentTarget
-              if (img.src !== placeholder) img.src = placeholder
+            className={loading && stage === 0 ? 'is-loading' : ''}
+            onError={() => {
+              setStage((s) => Math.min(2, s + 1))
             }}
           />
           <span

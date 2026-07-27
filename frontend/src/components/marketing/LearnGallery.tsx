@@ -7,10 +7,12 @@ import { Link } from 'react-router-dom'
 import { RiskChip } from '../RiskChip'
 import { scientificNameToSlug } from '../../lib/slug'
 import {
-  buildSpeciesMediaStack,
+  isTerminalMediaUrl,
+  mediaStackWithTerminal,
   photoPriorityScore,
-  uniqueMediaStack,
 } from '../../lib/speciesMediaStack'
+import { speciesPhotoErrorFallback } from '../../lib/speciesPhotoFallback'
+import { INLINE_PLACEHOLDER_SVG } from '../../lib/speciesImageUrl'
 import { LEARN_TAXA, type LearnTaxon } from './learnTaxa'
 import { MiniPhotoReel } from './MiniPhotoReel'
 
@@ -37,21 +39,27 @@ export function LearnGallery({ className = '' }: Props) {
   const active = ordered[activeIdx] ?? ordered[0]
   const slug = scientificNameToSlug(active.taxon)
 
+  const terminal = speciesPhotoErrorFallback(active.taxon, active.risk)
   const stack = useMemo(
     () =>
-      uniqueMediaStack(
-        buildSpeciesMediaStack(active.taxon, { maxGallery: 5, includeCatalog: true }),
-      ).slice(0, 6),
-    [active.taxon],
+      mediaStackWithTerminal(active.taxon, {
+        maxGallery: 5,
+        includeCatalog: true,
+        riskLabel: active.risk,
+        maxCandidates: 5,
+      }),
+    [active.taxon, active.risk],
   )
   const [angleIdx, setAngleIdx] = useState(0)
   const [aliveStack, setAliveStack] = useState(stack)
   const [heroFade, setHeroFade] = useState(true)
+  const [useInline, setUseInline] = useState(false)
 
   useEffect(() => {
     setAliveStack(stack)
     setAngleIdx(0)
     setHeroFade(true)
+    setUseInline(false)
   }, [stack])
 
   const reduced =
@@ -60,15 +68,15 @@ export function LearnGallery({ className = '' }: Props) {
 
   // Featured: auto mini-video every 3s (angles, then next species when loop ends)
   useEffect(() => {
-    if (paused || reduced) return
+    if (paused || reduced || useInline) return
     const n = Math.max(1, aliveStack.length)
+    let fadeTimer: number | undefined
     const t = window.setInterval(() => {
       setHeroFade(false)
-      window.setTimeout(() => {
+      fadeTimer = window.setTimeout(() => {
         setAngleIdx((i) => {
           const next = i + 1
           if (next >= n) {
-            // after full angle loop → next species
             setActiveIdx((si) => (si + 1) % ordered.length)
             return 0
           }
@@ -77,10 +85,17 @@ export function LearnGallery({ className = '' }: Props) {
         setHeroFade(true)
       }, 200)
     }, REEL_MS)
-    return () => window.clearInterval(t)
-  }, [aliveStack.length, ordered.length, paused, reduced])
+    return () => {
+      window.clearInterval(t)
+      if (fadeTimer !== undefined) window.clearTimeout(fadeTimer)
+    }
+  }, [aliveStack.length, ordered.length, paused, reduced, useInline])
 
   const current = aliveStack[angleIdx] || aliveStack[0]
+  const heroSrc = useInline
+    ? terminal || INLINE_PLACEHOLDER_SVG
+    : current?.url || terminal || INLINE_PLACEHOLDER_SVG
+  const terminalSrc = isTerminalMediaUrl(heroSrc)
 
   const go = (dir: -1 | 1) => {
     setActiveIdx((i) => (i + dir + ordered.length) % ordered.length)
@@ -111,26 +126,40 @@ export function LearnGallery({ className = '' }: Props) {
             }
           }}
         >
-          {current ? (
-            <img
-              key={current.url}
-              src={current.url}
-              alt={`${active.name} (${active.taxon})`}
-              className={`mkt-learn__hero-img ${heroFade ? 'is-in' : 'is-out'}`}
-              loading="eager"
-              decoding="async"
-              referrerPolicy="no-referrer"
-              crossOrigin={current.sameOrigin ? undefined : 'anonymous'}
-              onError={() => {
-                setAliveStack((prev) => {
-                  if (prev.length <= 1) return prev
-                  const next = prev.filter((_, i) => i !== angleIdx)
-                  setAngleIdx(0)
-                  return next
-                })
-              }}
-            />
-          ) : null}
+          <img
+            key={useInline ? 'inline' : current?.url || 'fb'}
+            src={heroSrc}
+            alt={`${active.name} (${active.taxon})`}
+            className={`mkt-learn__hero-img ${heroFade ? 'is-in' : 'is-out'}`}
+            loading="eager"
+            decoding="async"
+            referrerPolicy="no-referrer"
+            crossOrigin={
+              !useInline && current && !current.sameOrigin && !terminalSrc
+                ? 'anonymous'
+                : undefined
+            }
+            onError={
+              useInline || terminalSrc
+                ? undefined
+                : () => {
+                    const failedUrl = current?.url
+                    setAliveStack((prev) => {
+                      if (!failedUrl || prev.length <= 1) {
+                        setUseInline(true)
+                        return prev
+                      }
+                      const next = prev.filter((c) => c.url !== failedUrl)
+                      setAngleIdx(0)
+                      if (next.length === 0) {
+                        setUseInline(true)
+                        return prev
+                      }
+                      return next
+                    })
+                  }
+            }
+          />
           <div className="mkt-learn__photo-overlay">
             <RiskChip risk={active.risk} />
           </div>

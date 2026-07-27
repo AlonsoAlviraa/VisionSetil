@@ -1,5 +1,6 @@
 /**
- * Offline pack UI — Phase D-14 / U6: season pack + priority T0/T1, progress, clear.
+ * Offline pack UI — Phase D-14 / U6 + Pro packaging.
+ * Free: preview list. Pro: install season + priority packs.
  * Educational / PWA shell only — study & reference; does not classify offline.
  */
 import { useEffect, useMemo, useState } from 'react'
@@ -24,6 +25,13 @@ import { SpeciesNameBlock } from '../components/SpeciesNameBlock'
 import { RiskChip } from '../components/RiskChip'
 import { IconMushroom } from '../components/icons'
 import { SpeciesThumb } from '../components/SpeciesThumb'
+import { ProPlanBanner } from '../components/ProPlanBanner'
+import {
+  canInstallOfflinePack,
+  canPreviewOfflinePack,
+  planLabelEs,
+  usePlanActions,
+} from '../lib/entitlements'
 
 const TOP_N = 20
 
@@ -32,6 +40,7 @@ export function OfflinePackPage() {
   const season = currentSeason()
   const seasonId = season.id as SeasonId
 
+  const { plan, unlock } = usePlanActions()
   const [kind, setKind] = useState<OfflinePackKind>('season')
   const [catalogReady, setCatalogReady] = useState(false)
   const [busy, setBusy] = useState(false)
@@ -63,7 +72,21 @@ export function OfflinePackPage() {
   const progressPct =
     progress && progress.total > 0 ? Math.round((progress.done / progress.total) * 100) : 0
 
+  const installGate = canInstallOfflinePack(kind)
+  const canDownload = plan === 'pro' && installGate.allowed
+  // Free always previews list (canPreviewOfflinePack documents product policy)
+  const showPreview = canPreviewOfflinePack()
+
   const download = async () => {
+    if (!canDownload) {
+      setStatus(
+        t('offline.proRequired', {
+          defaultValue:
+            'Descargar el pack es Pro. Activa Pro demo o actualiza para instalar fotos offline de estudio.',
+        }),
+      )
+      return
+    }
     setBusy(true)
     setStatus(null)
     try {
@@ -135,14 +158,39 @@ export function OfflinePackPage() {
   return (
     <div className="page-offline page-atelier-shell">
       <div className="page-header mkt-page-head">
-        <p className="atelier-kicker home-kicker">{t('offline.kicker', { defaultValue: 'Campo · PWA' })}</p>
-        <h1 className="page-title">{t('offline.title', { defaultValue: 'Pack offline' })}</h1>
+        <p className="atelier-kicker home-kicker">{t('offline.kicker', { defaultValue: 'Campo · PWA · Pro' })}</p>
+        <h1 className="page-title">{t('offline.title', { defaultValue: 'Pack offline Pro' })}</h1>
         <p className="page-subtitle">
           {t('offline.subtitle', {
             defaultValue:
               'Descarga la temporada o el pack prioritario para estudiar fichas y fotos sin red. Material educativo — no identifica setas offline ni autoriza consumo.',
           })}
         </p>
+      </div>
+
+      <div className="atelier-panel offline-plan-panel" data-testid="offline-plan-panel">
+        <p>
+          <strong>Plan {planLabelEs(plan)}</strong>
+          {plan === 'free'
+            ? ' — puedes previsualizar el listado; la descarga de pack es Pro.'
+            : ' — descarga temporada y prioritario T0/T1 habilitada.'}
+        </p>
+        {plan === 'free' && (
+          <button
+            type="button"
+            className="btn-atelier btn-atelier--primary"
+            style={{ marginTop: '0.75rem' }}
+            onClick={() => unlock()}
+            data-testid="offline-unlock-pro"
+          >
+            Activar Pro (demo local)
+          </button>
+        )}
+        {showPreview && plan === 'free' && (
+          <p className="muted" style={{ marginTop: '0.5rem' }}>
+            Vista previa del listado disponible en Free; la instalación en caché es Pro.
+          </p>
+        )}
       </div>
 
       <div className="atelier-panel offline-scope-note" role="note">
@@ -153,7 +201,7 @@ export function OfflinePackPage() {
           <li>
             {t('offline.scopeIncludes', {
               defaultValue:
-                'Incluye: fotos y metadatos de fichas prioritarias o de temporada para estudiar sin red.',
+                'Incluye (Pro): fotos y metadatos de fichas prioritarias o de temporada para estudiar sin red.',
             })}
           </li>
           <li>
@@ -161,6 +209,9 @@ export function OfflinePackPage() {
               defaultValue:
                 'No incluye: identificación offline, permiso de recolección ni de consumo. Ante la duda, micólogo humano.',
             })}
+          </li>
+          <li>
+            Free: vista previa del listado. Pro: instalar pack en este dispositivo (Cache API).
           </li>
         </ul>
       </div>
@@ -212,7 +263,7 @@ export function OfflinePackPage() {
             setShowAll(false)
           }}
         >
-          {t('offline.modePriority', { defaultValue: 'Prioritario T0/T1' })}
+          {t('offline.modePriority', { defaultValue: 'Prioritario T0/T1 · Pro' })}
         </button>
       </div>
 
@@ -249,15 +300,26 @@ export function OfflinePackPage() {
           <button
             type="button"
             className="btn-atelier btn-atelier--primary"
-            disabled={busy || (kind === 'priority' && !catalogReady && entries.length === 0)}
+            disabled={
+              busy ||
+              !canDownload ||
+              (kind === 'priority' && !catalogReady && entries.length === 0)
+            }
             onClick={() => void download()}
             data-testid="offline-pack-download"
+            title={
+              canDownload
+                ? undefined
+                : 'Requiere plan Pro para instalar el pack en este dispositivo'
+            }
           >
             {busy
               ? t('offline.saving', { defaultValue: 'Guardando…' })
-              : installed
-                ? t('offline.redownload', { defaultValue: 'Volver a descargar' })
-                : t('offline.download', { defaultValue: 'Descargar pack' })}
+              : !canDownload
+                ? t('offline.downloadPro', { defaultValue: 'Descargar pack (Pro)' })
+                : installed
+                  ? t('offline.redownload', { defaultValue: 'Volver a descargar' })
+                  : t('offline.download', { defaultValue: 'Descargar pack' })}
           </button>
           <button
             type="button"
@@ -277,10 +339,16 @@ export function OfflinePackPage() {
             {status}
           </p>
         )}
+        {!canDownload && (
+          <p className="muted" style={{ marginTop: '0.85rem' }} data-testid="offline-pro-hint">
+            {installGate.messageEs ||
+              'Free: previsualiza el listado. Pro: instala fotos y fichas offline de estudio.'}
+          </p>
+        )}
         <p className="muted offline-pack-disclaimer" style={{ marginTop: '0.85rem' }} role="note">
           {t('offline.disclaimer', {
             defaultValue:
-              'Uso educativo: consulta de fichas y fotos de estudio. No identifica setas sin red, no sustituye a un micólogo y nunca autoriza consumo.',
+              'Uso educativo: consulta de fichas y fotos de estudio. No identifica setas sin red, no sustituye a un micólogo y nunca autoriza consumo. No prometemos cobertura fotográfica 100% en campo sin red.',
           })}
         </p>
       </div>
@@ -339,6 +407,10 @@ export function OfflinePackPage() {
           ))}
         </ul>
       )}
+
+      <div style={{ marginTop: '1.5rem' }}>
+        <ProPlanBanner compact />
+      </div>
     </div>
   )
 }

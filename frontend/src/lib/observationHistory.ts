@@ -73,7 +73,8 @@ export type HistoryEntry<T extends HistoryClassification = HistoryClassification
 }
 
 export const HISTORY_KEY = 'visionsetil_history'
-export const MAX_HISTORY = 30
+/** Absolute storage cap (Pro depth). Free UI trims via entitlements.historyLimit(). */
+export const MAX_HISTORY = 100
 
 export type HistoryModeFilter = 'all' | ClassifyMode
 

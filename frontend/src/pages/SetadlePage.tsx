@@ -28,10 +28,19 @@ import {
   type CellTone,
   type ClassicGuessRow,
   type HabitatRound,
+  type SetadleMode,
   type SetadleSpecies,
 } from '../lib/setadle'
+import {
+  canAccess,
+  usePlanActions,
+} from '../lib/entitlements'
+import { ProPlanBanner } from '../components/ProPlanBanner'
 
 type PlayKind = 'daily' | 'unlimited'
+
+/** Free: classic daily only. Pro: all modes + unlimited. */
+const FREE_SETADLE_MODES: SetadleMode[] = ['classic']
 
 function toneClass(t: CellTone): string {
   return `setadle-cell setadle-cell--${t}`
@@ -41,6 +50,11 @@ export function SetadlePage() {
   const { mode: modeParam } = useParams<{ mode?: string }>()
   const navigate = useNavigate()
   const mode = normalizeSetadleMode(modeParam)
+  const { isPro: pro, unlock } = usePlanActions()
+  /** Pending Pro mode — requires explicit Activar click (no auto-unlock on explore). */
+  const [pendingProMode, setPendingProMode] = useState<SetadleMode | 'unlimited' | null>(
+    null,
+  )
 
   // Redirect legacy /setadle/emoji → /setadle/habitat
   useEffect(() => {
@@ -196,16 +210,17 @@ export function SetadlePage() {
       <div className="page-setadle page-setadle--mkt page-atelier-shell">
         <header className="setadle-hero setadle-hero--mkt">
           <p className="atelier-kicker" style={{ color: '#e8c872', justifyContent: 'center' }}>
-            Daily · al estilo LoLdle
+            Daily · al estilo LoLdle · {pro ? 'Pro' : 'Free'}
           </p>
           <h1 className="page-title">Setadle</h1>
           <p className="page-subtitle">
-            Cinco minijuegos. Una seta al día. Colores que enseñan. Solo educación — nunca consumo.
+            Free: clásico diario. Pro: cinco modos e ilimitado. Colores que enseñan. Solo educación —
+            nunca consumo.
           </p>
           <p className="setadle-day">Hoy · {todayKey()}</p>
           <ul className="setadle-hero__chips" aria-label="Características">
-            <li>5 modos</li>
-            <li>Diario + ilimitado</li>
+            <li>{pro ? '5 modos' : '1 modo Free'}</li>
+            <li>{pro ? 'Diario + ilimitado' : 'Diario Free'}</li>
             <li>Riesgo visible</li>
           </ul>
           <div className="setadle-hero__board">
@@ -213,23 +228,74 @@ export function SetadlePage() {
           </div>
         </header>
 
+        {pendingProMode && pendingProMode !== 'unlimited' && !pro && (
+          <div
+            className="atelier-panel setadle-unlock-sheet"
+            data-testid="setadle-unlock-sheet"
+            role="dialog"
+            aria-labelledby="setadle-unlock-title"
+          >
+            <h2 id="setadle-unlock-title">Modo Pro</h2>
+            <p>
+              «{SETADLE_MODES.find((x) => x.id === pendingProMode)?.title || pendingProMode}» es Pro.
+              Free mantiene el clásico diario. Confirma para activar demo local en este dispositivo.
+            </p>
+            <div className="identify-mode-toggle" style={{ marginTop: '0.75rem' }}>
+              <button
+                type="button"
+                className="mkt-btn mkt-btn--amber"
+                data-testid="setadle-unlock-pro"
+                onClick={() => {
+                  unlock()
+                  const target = pendingProMode
+                  setPendingProMode(null)
+                  navigate(`/setadle/${target}`)
+                }}
+              >
+                Activar Pro demo
+              </button>
+              <button
+                type="button"
+                className="mkt-btn mkt-btn--ghost"
+                onClick={() => setPendingProMode(null)}
+              >
+                Seguir en Free
+              </button>
+            </div>
+            <ProPlanBanner compact showTable={false} />
+          </div>
+        )}
+
         <div className="setadle-mode-grid">
           {SETADLE_MODES.map((m) => {
             const win = readDailyWin(m.id)
+            const locked = !pro && !FREE_SETADLE_MODES.includes(m.id)
             return (
               <button
                 key={m.id}
                 type="button"
-                className={`setadle-mode-card ${win ? 'is-done' : ''}`}
-                onClick={() => navigate(`/setadle/${m.id}`)}
+                className={`setadle-mode-card ${win ? 'is-done' : ''} ${locked ? 'is-locked' : ''}`}
+                onClick={() => {
+                  if (locked) {
+                    setPendingProMode(m.id)
+                    return
+                  }
+                  navigate(`/setadle/${m.id}`)
+                }}
+                data-pro-locked={locked ? '1' : '0'}
               >
                 <span className="setadle-mode-card__emoji" aria-hidden>
                   {m.emoji}
                 </span>
-                <span className="setadle-mode-card__title">{m.title}</span>
+                <span className="setadle-mode-card__title">
+                  {m.title}
+                  {locked ? ' · Pro' : ''}
+                </span>
                 <span className="setadle-mode-card__blurb">{m.blurb}</span>
                 {win ? (
                   <span className="setadle-mode-card__done">✓ {win.guesses} intentos</span>
+                ) : locked ? (
+                  <span className="setadle-mode-card__cta">Ver Pro →</span>
                 ) : (
                   <span className="setadle-mode-card__cta">Jugar →</span>
                 )}
@@ -264,6 +330,39 @@ export function SetadlePage() {
   const meta = SETADLE_MODES.find((m) => m.id === mode)!
   const waiting =
     !ready || (mode === 'habitat' ? !habitatRound : !secret)
+  const unlimitedOk = pro || canAccess('setadle_unlimited').allowed
+  const modeOk = pro || FREE_SETADLE_MODES.includes(mode)
+
+  if (!modeOk && !pro) {
+    return (
+      <div className="page-setadle page-setadle--mkt page-atelier-shell">
+        <header className="setadle-play-head mkt-page-head">
+          <Link to="/setadle" className="setadle-back">
+            ← Modos
+          </Link>
+          <h1 className="page-title">Modo Pro</h1>
+          <p className="page-subtitle">
+            Free incluye el clásico diario. Confirma para activar Pro demo (modos extra e
+            ilimitado).
+          </p>
+          <button
+            type="button"
+            className="mkt-btn mkt-btn--amber"
+            onClick={() => {
+              unlock()
+              navigate(`/setadle/${mode}`)
+            }}
+            data-testid="setadle-unlock-pro"
+          >
+            Activar Pro demo
+          </button>
+          <div style={{ marginTop: '1rem' }}>
+            <ProPlanBanner compact />
+          </div>
+        </header>
+      </div>
+    )
+  }
 
   if (waiting) {
     return (
@@ -283,6 +382,32 @@ export function SetadlePage() {
           {meta.emoji} {meta.title}
         </h1>
         <p className="page-subtitle">{meta.blurb}</p>
+        {pendingProMode === 'unlimited' && !unlimitedOk && (
+          <div className="atelier-panel" data-testid="setadle-unlimited-sheet" role="dialog">
+            <p>Ilimitado es Pro. Confirma para activar demo local.</p>
+            <div className="identify-mode-toggle">
+              <button
+                type="button"
+                className="mkt-btn mkt-btn--amber"
+                data-testid="setadle-unlock-unlimited"
+                onClick={() => {
+                  unlock()
+                  setPendingProMode(null)
+                  setPlayKind('unlimited')
+                }}
+              >
+                Activar Pro demo
+              </button>
+              <button
+                type="button"
+                className="mkt-btn mkt-btn--ghost"
+                onClick={() => setPendingProMode(null)}
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        )}
         <div className="identify-mode-toggle">
           <button
             type="button"
@@ -302,9 +427,17 @@ export function SetadlePage() {
                 ? 'btn-atelier btn-atelier--primary'
                 : 'btn-atelier btn-atelier--ghost'
             }
-            onClick={() => setPlayKind('unlimited')}
+            onClick={() => {
+              if (!unlimitedOk) {
+                setPendingProMode('unlimited')
+                return
+              }
+              setPlayKind('unlimited')
+            }}
+            data-testid="setadle-unlimited"
+            title={unlimitedOk ? undefined : 'Ilimitado es Pro — requiere confirmación'}
           >
-            Ilimitado
+            Ilimitado{unlimitedOk ? '' : ' · Pro'}
           </button>
         </div>
       </header>
