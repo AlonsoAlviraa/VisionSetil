@@ -21,6 +21,7 @@ import { sanitizeEducationalText } from '../lib/educationCopy'
 import { EmptyState } from '../components/EmptyState'
 import { getFoodQuality } from '../lib/foodQuality'
 import { rankLookalikes } from '../lib/lookalikeRisk'
+import { resolveSpeciesMeta } from '../lib/speciesMeta'
 
 type DetailTab = 'morphology' | 'habitat' | 'lookalikes'
 
@@ -68,6 +69,19 @@ export function SpeciesDetailPage() {
   const habitat = rich?.habitat ? sanitizeEducationalText(rich.habitat, '') : ''
   const toxicity = rich?.toxicity ? sanitizeEducationalText(rich.toxicity, '') : ''
   const foodQ = scientificName ? getFoodQuality(scientificName) : null
+  const meta = scientificName
+    ? resolveSpeciesMeta({
+        taxon: scientificName,
+        family: catalog?.family || rich?.family,
+        risk_label: riskRaw,
+        food_class: catalog?.food_class ?? foodQ?.food_class,
+        documented_edibility: catalog?.documented_edibility,
+        description: description || catalog?.description,
+        common_names: commons,
+        season: catalog?.season || rich?.season,
+        iberian_relevance: catalog?.iberian_relevance,
+      })
+    : null
 
   const tabs: { id: DetailTab; label: string; count?: number }[] = [
     { id: 'morphology', label: t('detail.tabs.morphology', { defaultValue: 'Morfología' }) },
@@ -209,6 +223,35 @@ export function SpeciesDetailPage() {
         </div>
       </section>
 
+      {meta ? (
+        <dl className="species-meta-grid" aria-label={t('detail.metaGrid', { defaultValue: 'Ficha rápida' })}>
+          <div className="species-meta-grid__item">
+            <dt>Familia</dt>
+            <dd>{meta.family}</dd>
+          </div>
+          <div className="species-meta-grid__item">
+            <dt>Género</dt>
+            <dd>{meta.genus}</dd>
+          </div>
+          <div className="species-meta-grid__item">
+            <dt>Riesgo</dt>
+            <dd>{riskMeta.short || riskMeta.label}</dd>
+          </div>
+          <div className="species-meta-grid__item">
+            <dt>Clase educ.</dt>
+            <dd>{meta.educLabel}</dd>
+          </div>
+          <div className="species-meta-grid__item">
+            <dt>Iberia</dt>
+            <dd>{meta.iberian}</dd>
+          </div>
+          <div className="species-meta-grid__item">
+            <dt>Temporada</dt>
+            <dd>{meta.season}</dd>
+          </div>
+        </dl>
+      ) : null}
+
       {foodQ ? (
         <div className={`species-product__food food-badge food-badge--${foodQ.food_class}`}>
           <p className="food-badge__label">
@@ -232,13 +275,13 @@ export function SpeciesDetailPage() {
         <div className="species-product__food food-badge food-badge--unknown">
           <p className="food-badge__label">
             {t('detail.foodQualityUnknown', {
-              defaultValue: 'Sin calidad alimenticia documentada en nuestras fuentes.',
+              defaultValue: 'Clase educ.: sin documentar en fuentes curadas (no inventamos comestibilidad).',
             })}
           </p>
           <p className="food-badge__source">
             {t('detail.foodQualityUnknownHint', {
               defaultValue:
-                'No inventamos comestibilidad. Solo base curada Iberia + lista tóxicas.',
+                'Solo base curada Iberia + lista tóxicas. Ante la duda: precaución y micólogo humano.',
             })}
           </p>
         </div>

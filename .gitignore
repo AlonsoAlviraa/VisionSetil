@@ -85,3 +85,32 @@ kaggle/kernel_output_v11_dl/
 **/checkpoint_latest.pt
 
 
+
+# GBIF bulk downloads + media (large; never commit)
+data/industrial_v1/gbif/downloads/
+data/industrial_v1/gbif/images/
+data/industrial_v1/obs_gbif_es.jsonl
+data/industrial_v1/gbif/download_summary.json
+
+# Kaggle staging (junctions/hardlinks/copies of large media)
+data/kaggle_staging/
+
+
+# Local heavy / secrets (portfolio-safe)
+.venv-ci/
+backend/*.db
+backend/*.db-shm
+backend/*.db-wal
+backend/uploads/
+data/industrial_v1/
+data/kaggle_staging/
+media/species/
+kaggle/kernel_output*/
+kaggle/kernel_pull*/
+kaggle/push_e*/
+tmp/
+frontend/test-results/
+frontend/node_modules/
+frontend/dist/
+*.pt
+yolov8n.pt

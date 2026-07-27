@@ -3,6 +3,7 @@
  * Wave A: no cooking/dosing/consumption-permission language.
  */
 import { useState, type ReactNode } from 'react'
+import { Link } from 'react-router-dom'
 import {
   IconAlert,
   IconBan,
@@ -295,6 +296,31 @@ export function EducationPage() {
               {openFaq === i && <p className="faq-answer">{item.a}</p>}
             </div>
           ))}
+        </div>
+      </section>
+
+      <section className="edu-section edu-cta-grid" aria-label="Seguir aprendiendo">
+        <h2 className="edu-section-title">
+          <IconBook size={22} />
+          Seguir aprendiendo
+        </h2>
+        <div className="edu-cta-cards">
+          <Link to="/lookalikes" className="edu-cta-card atelier-panel">
+            <strong>Lookalikes</strong>
+            <span>Confusiones clásicas lado a lado, con riesgo visible.</span>
+          </Link>
+          <Link to="/reto" className="edu-cta-card atelier-panel">
+            <strong>Reto</strong>
+            <span>Quiz de caracteres y clase educativa — sin permiso de consumo.</span>
+          </Link>
+          <Link to="/enciclopedia" className="edu-cta-card atelier-panel">
+            <strong>Enciclopedia</strong>
+            <span>Fichas con fotos, familia, temporada e Iberia.</span>
+          </Link>
+          <Link to="/revision-experta" className="edu-cta-card atelier-panel">
+            <strong>Revisión experta</strong>
+            <span>Empaqueta evidencia para un micólogo humano.</span>
+          </Link>
         </div>
       </section>
 

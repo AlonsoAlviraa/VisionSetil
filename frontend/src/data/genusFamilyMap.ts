@@ -132,6 +132,17 @@ export const GENUS_TO_FAMILY: Record<string, string> = {
   collybia: 'Tricholomataceae',
   polyporus: 'Polyporaceae',
   langermannia: 'Agaricaceae',
+  // Complements (Iberia catalog gaps)
+  melanoleuca: 'Tricholomataceae',
+  hydnellum: 'Bankeraceae',
+  leucoagaricus: 'Agaricaceae',
+  lyophyllum: 'Lyophyllaceae',
+  buchwaldoboletus: 'Boletaceae',
+  calocybe: 'Lyophyllaceae',
+  cuphophyllus: 'Hygrophoraceae',
+  cystolepiota: 'Agaricaceae',
+  pseudoboletus: 'Boletaceae',
+  terfezia: 'Pezizaceae',
 }
 
 export function familyForTaxon(taxon: string, existing?: string | null): string | null {

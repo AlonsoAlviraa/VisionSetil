@@ -646,11 +646,15 @@ export function HistoryPage() {
                   )}
                   {e.result.recommend_human_review && (
                     <p>
-                      <Link to="/revision-experta">
+                      <button
+                        type="button"
+                        className="btn-atelier btn-atelier--primary"
+                        onClick={() => handoff(e)}
+                      >
                         {t('notebook.requestReview', {
-                          defaultValue: 'Solicitar revisión experta',
+                          defaultValue: 'Empaquetar para revisión experta',
                         })}
-                      </Link>
+                      </button>
                     </p>
                   )}
                   <p className="notebook-detail-disclaimer">

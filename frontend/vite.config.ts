@@ -132,15 +132,20 @@ function serveRepoMediaPlugin(): Plugin {
               }
             }
             if (!usedSibling) {
-              const kind = placeholderKindFromRel(rel)
-              file = safeResolve(`placeholders/${kind}.webp`)
-              qualityHeader = 'stub_fallback'
+              // Prefer 404 over fake placeholder so the FE can cascade to catalog HD URLs
+              // (SpeciesImage / speciesPhotos.json). Only serve brand placeholder when
+              // explicitly requested under /media/placeholders/.
+              res.statusCode = 404
+              res.setHeader('X-Media-Quality', 'stub_missing')
+              res.setHeader('Cache-Control', 'public, max-age=60')
+              res.end('media stub or missing — use catalog cascade')
               if (!stubFallbackLogged) {
                 stubFallbackLogged = true
                 console.info(
-                  `[serve-repo-media] stub/missing → placeholder (e.g. ${rel}); Cache-Control max-age=300`,
+                  `[serve-repo-media] stub/missing → 404 for cascade (e.g. ${rel})`,
                 )
               }
+              return
             }
           }
           if (!file || !fs.existsSync(file)) {
@@ -253,7 +258,7 @@ export default defineConfig({
             },
           },
           {
-            urlPattern: /\/(?:api\/)?media\/placeholder\/[a-z]+/i,
+            urlPattern: /\/(?:api\/)?media\/placeholders?\/[a-z]+/i,
             handler: 'CacheFirst',
             options: {
               cacheName: 'species-media-placeholders',

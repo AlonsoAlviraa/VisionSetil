@@ -159,3 +159,72 @@ export function expertReviewPath(draftId?: string): string {
   if (!draftId) return '/revision-experta'
   return `/revision-experta?handoff=${encodeURIComponent(draftId)}`
 }
+
+/**
+ * Plain-text summary for WhatsApp / email to a human mycologist.
+ * Educational only — never consumption language.
+ */
+export function formatHandoffSummary(draft: ExpertHandoffDraft): string {
+  const conf =
+    draft.top_confidence != null
+      ? `${(draft.top_confidence * 100).toFixed(1)}%`
+      : '—'
+  const views = draft.view_types?.length ? draft.view_types.join(', ') : 'Sin etiquetas'
+  const looks = draft.dangerous_lookalikes?.length
+    ? draft.dangerous_lookalikes.slice(0, 6).join(', ')
+    : '—'
+  const missing = draft.missing_evidence?.length
+    ? draft.missing_evidence.join(', ')
+    : '—'
+  const lines = [
+    'VisionSetil — borrador de revisión experta',
+    HAND_OFF_DISCLAIMER,
+    '',
+    `Fecha: ${new Date(draft.created_at).toLocaleString()}`,
+    `ID: ${draft.id}`,
+    `Decisión app: ${draft.decision}`,
+    `Taxón top: ${draft.top_species || '—'}`,
+    `Confianza top: ${conf}`,
+    `Riesgo/safety: ${draft.safety_level || '—'}`,
+    `Modo: ${handoffModeLabelEs(draft.mode)}`,
+    `Vistas: ${views}`,
+    `Fotos empaquetadas: ${draft.preview_count}`,
+    `Lookalikes peligrosos: ${looks}`,
+    `Evidencia faltante: ${missing}`,
+    draft.rejection_reason ? `Motivo rechazo: ${draft.rejection_reason}` : null,
+    draft.notes ? `Notas: ${draft.notes}` : null,
+    draft.quality_gate
+      ? `Gate: ${handoffGateVerdictLabelEs(draft.quality_gate.verdict)} · ID especie ${
+          draft.quality_gate.species_id_allowed ? 'permitida' : 'bloqueada'
+        }`
+      : null,
+    '',
+    'No es permiso de consumo ni identificación certificada.',
+  ]
+  return lines.filter((l) => l != null).join('\n')
+}
+
+export async function copyHandoffSummary(
+  draft: ExpertHandoffDraft,
+): Promise<{ ok: boolean; error?: string }> {
+  const text = formatHandoffSummary(draft)
+  try {
+    if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text)
+      return { ok: true }
+    }
+    return { ok: false, error: 'Portapapeles no disponible' }
+  } catch {
+    return { ok: false, error: 'No se pudo copiar' }
+  }
+}
+
+export function downloadHandoffJson(draft: ExpertHandoffDraft, filename?: string): void {
+  const blob = new Blob([JSON.stringify(draft, null, 2)], { type: 'application/json' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = filename || `visionsetil-handoff-${draft.id}.json`
+  a.click()
+  URL.revokeObjectURL(url)
+}

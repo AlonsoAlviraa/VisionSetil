@@ -1,0 +1,18 @@
+{
+  "id": "alonsoalviraaaa/visionsetil-exp-v20-source-holdout",
+  "title": "visionsetil-exp-v20-source-holdout",
+  "code_file": "visionsetil_exp_v20_source_holdout.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "dataset_sources": [
+    "picekl/fungitastic",
+    "alonsoalviraaaa/visionsetil-gbif-es-allowlist40",
+    "daniilonishchenko/mushrooms-images-classification-215"
+  ],
+  "competition_sources": [],
+  "kernel_sources": []
+}

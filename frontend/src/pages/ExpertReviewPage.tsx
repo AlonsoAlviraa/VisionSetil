@@ -1,5 +1,6 @@
 /**
- * Expert review + ML health — product UI, not an API console.
+ * Expert review product UI — package evidence for a human mycologist.
+ * Not an API console. Orientation only; never consumption permission.
  */
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
@@ -7,10 +8,16 @@ import axios from 'axios'
 import { entriesNeedingReview, loadHistory } from '../lib/observationHistory'
 import { decisionLabelEs } from '../lib/decisionLabels'
 import {
+  buildHandoffFromHistory,
+  copyHandoffSummary,
+  downloadHandoffJson,
+  expertReviewPath,
+  formatHandoffSummary,
   handoffGateVerdictLabelEs,
   handoffModeLabelEs,
   loadHandoffDraft,
   loadHandoffQueue,
+  saveHandoffDraft,
   type ExpertHandoffDraft,
 } from '../lib/expertHandoff'
 import { isQualityGatePayload } from '../lib/classifyMode'
@@ -60,20 +67,32 @@ export function ExpertReviewPage() {
   const [remote, setRemote] = useState<ReviewRow[]>([])
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
+  const [mlOpen, setMlOpen] = useState(false)
+  const [copyStatus, setCopyStatus] = useState<string | null>(null)
   const [ml, setMl] = useState<MlHealth>({
     ready: null,
     health: '…',
     models: '…',
     details: '',
   })
-  const localQueue = entriesNeedingReview(loadHistory())
-  const drafts = useMemo(() => loadHandoffQueue(), [])
+
+  // Re-read local storage each render path after actions
+  const [localTick, setLocalTick] = useState(0)
+  const localQueue = useMemo(() => {
+    void localTick
+    return entriesNeedingReview(loadHistory())
+  }, [localTick])
+  const drafts = useMemo(() => {
+    void localTick
+    return loadHandoffQueue()
+  }, [localTick])
   const activeDraft: ExpertHandoffDraft | null = useMemo(() => {
+    void localTick
     if (handoffId) {
       return drafts.find((d) => d.id === handoffId) || loadHandoffDraft()
     }
     return loadHandoffDraft()
-  }, [handoffId, drafts])
+  }, [handoffId, drafts, localTick])
 
   const loadRemote = useCallback(async () => {
     setLoading(true)
@@ -121,48 +140,38 @@ export function ExpertReviewPage() {
     void loadMlHealth()
   }, [loadRemote, loadMlHealth])
 
+  const onCopy = async (draft: ExpertHandoffDraft) => {
+    const res = await copyHandoffSummary(draft)
+    setCopyStatus(res.ok ? 'Resumen copiado al portapapeles' : res.error || 'No se pudo copiar')
+    window.setTimeout(() => setCopyStatus(null), 2800)
+  }
+
+  const packageLocal = (entryId: string) => {
+    const entry = loadHistory().find((e) => e.id === entryId)
+    if (!entry) return
+    const draft = buildHandoffFromHistory(entry, entry.notes || '')
+    saveHandoffDraft(draft)
+    setLocalTick((n) => n + 1)
+    window.history.replaceState(null, '', expertReviewPath(draft.id))
+  }
+
   return (
     <div className="page-expert-review page-atelier-shell">
-      <div className="page-header">
-        <h1 className="page-title">Revisión experta y ML</h1>
-        <p className="page-subtitle">
-          Segunda opinión humana + estado del modelo. Empaqueta evidencia y revisa si el stack es
-          demo o real.
+      <header className="mkt-page-head mkt-mesh">
+        <p className="mkt-kicker">Revisión experta</p>
+        <h1>Segunda opinión humana</h1>
+        <p>
+          Empaqueta evidencia multi-vista y compártela con un micólogo. Orientación solamente — no
+          certifica ni autoriza consumo.
         </p>
+      </header>
+
+      <div className="feature-card-neo safety-disclaimer" role="note">
+        Un micólogo de carne y hueso debe validar en el campo. La app no sustituye criterio humano.
       </div>
 
-      <section className="atelier-panel expert-card ml-health-card">
-        <div className="expert-card__head">
-          <h2>Estado del modelo</h2>
-          <button type="button" className="btn-atelier btn-atelier--ghost" onClick={() => void loadMlHealth()}>
-            Actualizar
-          </button>
-        </div>
-        <div className="ml-health-grid">
-          <div className="ml-health-stat">
-            <span>API</span>
-            <strong>{ml.health}</strong>
-          </div>
-          <div className="ml-health-stat">
-            <span>Ready</span>
-            <strong>
-              {ml.ready === null ? '…' : ml.ready ? 'Listo' : 'Degradado'}
-            </strong>
-          </div>
-          <div className="ml-health-stat">
-            <span>Modelos</span>
-            <strong>{ml.models}</strong>
-          </div>
-        </div>
-        {ml.details && (
-          <p className="muted ml-health-details">{ml.details}</p>
-        )}
-        <p className="muted">
-          Si ves “mock” o “degraded”, las pistas de Identificar son demo — nunca permiso de consumo.
-        </p>
-      </section>
-
-      {activeDraft && (
+      {/* 1) Active handoff */}
+      {activeDraft ? (
         <article className="atelier-panel expert-card expert-card--featured">
           <p className="atelier-kicker" style={{ color: 'var(--ink-mute)' }}>
             Borrador listo
@@ -181,9 +190,7 @@ export function ExpertReviewPage() {
             {activeDraft.mode != null && (
               <li>
                 <span>Modo</span>
-                <strong data-testid="handoff-mode">
-                  {handoffModeLabelEs(activeDraft.mode)}
-                </strong>
+                <strong data-testid="handoff-mode">{handoffModeLabelEs(activeDraft.mode)}</strong>
               </li>
             )}
             <li>
@@ -205,49 +212,48 @@ export function ExpertReviewPage() {
               </li>
             )}
           </ul>
-          {/* B-37: dual-signal gate snapshot — only when present (legacy drafts omit) */}
-          {activeDraft.quality_gate != null &&
-            isQualityGatePayload(activeDraft.quality_gate) && (
-              <div
-                className="expert-dual-gate"
-                data-testid="handoff-dual-gate"
-                aria-label="Umbral de calidad dual"
-              >
-                <p className="expert-card__note" style={{ marginBottom: '0.35rem' }}>
-                  <strong>Umbral de calidad</strong>
-                  {activeDraft.quality_gate.verdict
-                    ? ` · ${handoffGateVerdictLabelEs(activeDraft.quality_gate.verdict)}`
-                    : ''}
-                </p>
-                <ul className="expert-meta-list">
+
+          {activeDraft.quality_gate != null && isQualityGatePayload(activeDraft.quality_gate) && (
+            <div
+              className="expert-dual-gate"
+              data-testid="handoff-dual-gate"
+              aria-label="Umbral de calidad dual"
+            >
+              <p className="expert-card__note" style={{ marginBottom: '0.35rem' }}>
+                <strong>Umbral de calidad</strong>
+                {activeDraft.quality_gate.verdict
+                  ? ` · ${handoffGateVerdictLabelEs(activeDraft.quality_gate.verdict)}`
+                  : ''}
+              </p>
+              <ul className="expert-meta-list">
+                <li>
+                  <span>Métricas OK</span>
+                  <strong>
+                    {activeDraft.quality_gate.metrics_acceptable ? 'Sí' : 'No'}
+                  </strong>
+                </li>
+                <li>
+                  <span>ID de especie</span>
+                  <strong>
+                    {activeDraft.quality_gate.species_id_allowed ? 'Permitida' : 'Bloqueada'}
+                  </strong>
+                </li>
+                {activeDraft.quality_gate.reason && (
                   <li>
-                    <span>Métricas OK</span>
-                    <strong>
-                      {activeDraft.quality_gate.metrics_acceptable ? 'Sí' : 'No'}
-                    </strong>
+                    <span>Motivo</span>
+                    <strong>{activeDraft.quality_gate.reason}</strong>
                   </li>
-                  <li>
-                    <span>ID de especie</span>
-                    <strong>
-                      {activeDraft.quality_gate.species_id_allowed
-                        ? 'Permitida'
-                        : 'Bloqueada'}
-                    </strong>
-                  </li>
-                  {activeDraft.quality_gate.reason && (
-                    <li>
-                      <span>Motivo</span>
-                      <strong>{activeDraft.quality_gate.reason}</strong>
-                    </li>
-                  )}
-                </ul>
-              </div>
-            )}
+                )}
+              </ul>
+            </div>
+          )}
+
           {(activeDraft.dangerous_lookalikes?.length ?? 0) > 0 && (
             <p className="expert-card__note">
               Lookalikes: {activeDraft.dangerous_lookalikes.slice(0, 4).join(', ')}
             </p>
           )}
+
           {activeDraft.preview_urls?.[0] && (
             <div className="handoff-previews">
               {activeDraft.preview_urls.slice(0, 4).map((src, i) => (
@@ -255,9 +261,51 @@ export function ExpertReviewPage() {
               ))}
             </div>
           )}
+
+          <div className="expert-handoff-actions">
+            <button
+              type="button"
+              className="btn-atelier btn-atelier--primary"
+              onClick={() => void onCopy(activeDraft)}
+            >
+              Copiar resumen
+            </button>
+            <button
+              type="button"
+              className="btn-atelier btn-atelier--ghost"
+              onClick={() => downloadHandoffJson(activeDraft)}
+            >
+              Descargar JSON
+            </button>
+            <Link to="/historial" className="btn-atelier btn-atelier--ghost">
+              Abrir cuaderno
+            </Link>
+            <Link to="/identificar" className="btn-atelier btn-atelier--ghost">
+              Nueva identificación
+            </Link>
+          </div>
+          {copyStatus && (
+            <p className="expert-copy-status" role="status">
+              {copyStatus}
+            </p>
+          )}
+          <details className="expert-summary-preview">
+            <summary>Vista previa del texto</summary>
+            <pre>{formatHandoffSummary(activeDraft)}</pre>
+          </details>
         </article>
+      ) : (
+        <div className="atelier-panel expert-card">
+          <EmptyState
+            title="Sin borrador activo"
+            description="Identifica una seta dudosa y pulsa «Revisión experta» en el resultado, o empaqueta un caso desde el cuaderno."
+            actionLabel="Identificar"
+            actionTo="/identificar"
+          />
+        </div>
       )}
 
+      {/* 2) Local + server queues */}
       <div className="expert-grid">
         <section className="atelier-panel expert-card">
           <h2>Cola local</h2>
@@ -273,21 +321,25 @@ export function ExpertReviewPage() {
             />
           ) : (
             <ul className="expert-case-list">
-              {localQueue.slice(0, 8).map((e) => (
+              {localQueue.slice(0, 10).map((e) => (
                 <li key={e.id} className="expert-case">
                   <div>
                     <strong>{decisionLabelEs(e.result.decision)}</strong>
-                    <span className="muted">
-                      {' '}
-                      · {new Date(e.timestamp).toLocaleString()}
-                    </span>
-                    <p>
-                      {e.result.predictions?.[0]?.species || 'Sin especie top'}
-                    </p>
+                    <span className="muted"> · {new Date(e.timestamp).toLocaleString()}</span>
+                    <p>{e.result.predictions?.[0]?.species || 'Sin especie top'}</p>
                   </div>
-                  <Link to="/historial" className="btn-atelier btn-atelier--ghost">
-                    Ver
-                  </Link>
+                  <div className="expert-case__actions">
+                    <button
+                      type="button"
+                      className="btn-atelier btn-atelier--primary"
+                      onClick={() => packageLocal(e.id)}
+                    >
+                      Empaquetar
+                    </button>
+                    <Link to="/historial" className="btn-atelier btn-atelier--ghost">
+                      Ver
+                    </Link>
+                  </div>
                 </li>
               ))}
             </ul>
@@ -316,7 +368,7 @@ export function ExpertReviewPage() {
           {!loading && !error && remote.length === 0 && (
             <EmptyState
               title="Cola vacía o no conectada"
-              description="Cuando el backend esté disponible, verás aquí los casos asignados."
+              description="Cuando el backend esté disponible, verás aquí los casos asignados. Mientras tanto usa handoffs locales."
             />
           )}
           {remote.length > 0 && (
@@ -324,7 +376,10 @@ export function ExpertReviewPage() {
               {remote.map((row, i) => (
                 <li key={String(row.id ?? i)} className="expert-case">
                   <div>
-                    <RiskChip risk={row.priority === 'high' ? 'deadly' : 'unknown_or_risky'} label={priorityLabelEs(row.priority)} />
+                    <RiskChip
+                      risk={row.priority === 'high' ? 'deadly' : 'unknown_or_risky'}
+                      label={priorityLabelEs(row.priority)}
+                    />
                     <p>
                       Caso {String(row.id ?? i + 1)} · {statusLabelEs(row.status)}
                     </p>
@@ -339,18 +394,16 @@ export function ExpertReviewPage() {
         </section>
       </div>
 
-      {drafts.length > 1 && (
+      {/* 3) Recent handoffs */}
+      {drafts.length > 0 && (
         <section className="atelier-panel expert-card" style={{ marginTop: '1rem' }}>
           <h2>Handoffs recientes</h2>
           <ul className="expert-case-list">
-            {drafts.slice(0, 6).map((d) => (
+            {drafts.slice(0, 8).map((d) => (
               <li key={d.id} className="expert-case">
                 <div>
                   <strong>{d.top_species || decisionLabelEs(d.decision)}</strong>
-                  <span className="muted">
-                    {' '}
-                    · {new Date(d.created_at).toLocaleString()}
-                  </span>
+                  <span className="muted"> · {new Date(d.created_at).toLocaleString()}</span>
                 </div>
                 <Link
                   to={`/revision-experta?handoff=${encodeURIComponent(d.id)}`}
@@ -363,6 +416,59 @@ export function ExpertReviewPage() {
           </ul>
         </section>
       )}
+
+      {/* 4) Model health — secondary */}
+      <section className="atelier-panel expert-card ml-health-card expert-ml-collapse">
+        <div className="expert-card__head">
+          <h2>
+            <button
+              type="button"
+              className="expert-ml-toggle"
+              aria-expanded={mlOpen}
+              onClick={() => setMlOpen((v) => !v)}
+            >
+              Estado del modelo {mlOpen ? '▾' : '▸'}
+            </button>
+          </h2>
+          <div className="expert-card__head-actions">
+            <button
+              type="button"
+              className="btn-atelier btn-atelier--ghost"
+              onClick={() => void loadMlHealth()}
+            >
+              Actualizar
+            </button>
+            <Link to="/ml" className="btn-atelier btn-atelier--ghost">
+              Detalle técnico
+            </Link>
+          </div>
+        </div>
+        {mlOpen && (
+          <>
+            <div className="ml-health-grid">
+              <div className="ml-health-stat">
+                <span>API</span>
+                <strong>{ml.health}</strong>
+              </div>
+              <div className="ml-health-stat">
+                <span>Ready</span>
+                <strong>
+                  {ml.ready === null ? '…' : ml.ready ? 'Listo' : 'Degradado'}
+                </strong>
+              </div>
+              <div className="ml-health-stat">
+                <span>Modelos</span>
+                <strong>{ml.models}</strong>
+              </div>
+            </div>
+            {ml.details && <p className="muted ml-health-details">{ml.details}</p>}
+            <p className="muted">
+              Si ves “mock” o “degraded”, las pistas de Identificar son demo — nunca permiso de
+              consumo.
+            </p>
+          </>
+        )}
+      </section>
     </div>
   )
 }

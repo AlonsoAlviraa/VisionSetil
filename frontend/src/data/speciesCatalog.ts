@@ -25,6 +25,13 @@ export type CatalogSpecies = {
   food_class?: string | null
   food_label?: string | null
   food_sources?: string[] | null
+  /** Fruiting season (Iberia educational). */
+  season?: string | null
+  /** Iberian presence bucket for Setadle / filters. */
+  iberian_relevance?: string | null
+  /** Legacy / SSOT edibility code when present. */
+  documented_edibility?: string | null
+  edibility_code?: string | null
 }
 
 export type SpeciesCatalogFile = {
@@ -58,6 +65,8 @@ function polishTaxon(taxon: string): string {
 }
 
 function hydrateSpecies(data: SpeciesCatalogFile): CatalogSpecies[] {
+  // Lazy import avoided — meta resolved at Setadle/detail time via resolveSpeciesMeta.
+  // Here we only ensure family + family_es for browse/filter.
   return data.species.map((s) => {
     const taxon = polishTaxon(s.taxon)
     const common_names = enrichCommonNames(taxon, s.common_names || [])

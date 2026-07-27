@@ -33,8 +33,14 @@ export interface MushroomZone {
 
 import { additionalZones } from './additionalZones'
 import { moreZones } from './moreZones'
+import { mycologicalParksZones } from './mycologicalParksZones'
+import { cylCotosZones } from './cylCotosZones'
 
-export const mushroomZones: MushroomZone[] = [...additionalZones, ...moreZones,
+export const mushroomZones: MushroomZone[] = [
+  ...cylCotosZones,
+  ...mycologicalParksZones,
+  ...additionalZones,
+  ...moreZones,
   // ─── NORTE / CORDILLERA CANTÁBRICA ───
   {
     id: 'asturias-oriental',

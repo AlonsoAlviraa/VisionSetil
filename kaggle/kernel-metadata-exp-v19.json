@@ -1,0 +1,18 @@
+{
+  "id": "alonsoalviraaaa/visionsetil-exp-v19-gbif-mega",
+  "title": "visionsetil-exp-v19-gbif-mega",
+  "code_file": "visionsetil_exp_v19_gbif_mega.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "dataset_sources": [
+    "picekl/fungitastic",
+    "alonsoalviraaaa/visionsetil-gbif-es-allowlist40",
+    "daniilonishchenko/mushrooms-images-classification-215"
+  ],
+  "competition_sources": [],
+  "kernel_sources": []
+}

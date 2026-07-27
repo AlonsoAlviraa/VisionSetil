@@ -1,0 +1,18 @@
+{
+  "id": "alonsoalviraaaa/visionsetil-exp-v17-data-scale",
+  "title": "visionsetil-exp-v17-data-scale",
+  "code_file": "visionsetil_exp_v17_data_scale.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "dataset_sources": [
+    "seemshukla/fungiclef",
+    "picekl/fungitastic",
+    "fdfyaytkt/2022-data-fungiclef-train"
+  ],
+  "competition_sources": [],
+  "kernel_sources": []
+}

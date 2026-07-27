@@ -462,7 +462,7 @@ export const mushroomDatabase: MushroomSpecies[] = [...additionalSpecies, ...ext
   },
   {
     scientificName: 'Boletus pinophilus',
-    commonNames: ['Hondo pinícola', 'Boletus de pino', 'Pinate'],
+    commonNames: ['Hongo pinícola', 'Boletus de pino', 'Pinate'],
     tagline: 'El boletus rojo de pinares: corpulento y sabroso',
     description:
       'Excelente comestible, corpulento, de color rojo vinoso. Muy apreciado en zonas de pinares. Se diferencia del B. edulis por su coloración rojiza.',

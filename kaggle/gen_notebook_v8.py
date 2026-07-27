@@ -350,7 +350,8 @@ def find_metadata_csv_fast(root):
                     IMAGE_COLS = {'image_path', 'filename', 'file_path', 'image', 'photo_id',
                                   'image_path_jpg', 'filename_jpg', 'observationuuid',
                                   'observationid'}
-                    LABEL_COLS = {'species', 'class', 'class_id', 'scientificname',
+                    # E18: do not treat Darwin-Core taxonomic `class` as a species label
+                    LABEL_COLS = {'species', 'class_id', 'class_name', 'scientificname',
                                   'scientific_name', 'genus', 'taxon_name', 'category'}
                     if (cols_lower & IMAGE_COLS) and (cols_lower & LABEL_COLS):
                         log(f"  ✓ CSV found (glob): {m}")
@@ -411,21 +412,30 @@ def load_single_dataset(root, db_name):
         log(f"  Built from files: {len(df)} images")
 
     # ── Column normalization ────────────────────────────────────────────────────
+    # E18 FIX: never map Darwin-Core taxonomic `class` (Agaricomycetes) → species.
+    # Prefer species > scientificName; filename → image_path; observationID → obs id.
     COLUMN_MAP = {
-        'class': 'species', 'class_id': 'species',
         'scientificName': 'species', 'scientific_name': 'species',
+        'class_id': 'species',  # integer id only when no binomial col (DF20)
+        'taxon_name': 'species', 'class_name': 'species',
         'observationUUID': 'observation_id', 'observation_uuid': 'observation_id',
-        'observationID': 'observation_id',
+        'observationID': 'observation_id', 'observationId': 'observation_id',
+        'obs_id': 'observation_id',
         'photo_id': 'observation_id',
-        'filename': 'image_path', 'file_path': 'image_path', 'image': 'image_path',
-        'image_path_jpg': 'image_path',
+        'filename': 'image_path', 'file_path': 'image_path', 'file_name': 'image_path',
+        'image': 'image_path', 'ImageUniqueID': 'image_path',
+        'image_path_jpg': 'image_path', 'filename_jpg': 'image_path',
     }
 
     safe_map = {}
+    # Apply in priority order; skip if destination already present
     for src, dst in COLUMN_MAP.items():
         if src in df.columns and dst not in df.columns:
             safe_map[src] = dst
     df = df.rename(columns=safe_map)
+    # If species still missing but scientificName remains, map it
+    if 'species' not in df.columns and 'scientificName' in df.columns:
+        df = df.rename(columns={'scientificName': 'species'})
 
     if df.columns.duplicated().any():
         log(f"  WARNING: Deduplicating columns")

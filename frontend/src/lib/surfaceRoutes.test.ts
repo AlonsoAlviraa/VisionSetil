@@ -80,17 +80,30 @@ describe('product surfaces routes', () => {
     }
   })
 
-  it('header keeps 5 primaries + Más overflow (Wave A)', () => {
+  it('header keeps 5 primaries + Más overflow hub (grouped)', () => {
     expect(header).toMatch(/primaryNav\s*=\s*\[/)
-    expect(header).toMatch(/moreNav\s*=\s*\[/)
+    expect(header).toMatch(/moreNavGroups/)
+    expect(header).toMatch(/const moreNav/)
     expect(header).toContain('Más')
     expect(header).toContain('nav-more')
+    expect(header).toContain('nav-more__group')
     expect(header).toMatch(
       /primaryNav\s*=\s*\[[\s\S]*?to: '\/identificar'[\s\S]*?to: '\/enciclopedia'[\s\S]*?to: '\/setadle'[\s\S]*?to: '\/mapa'[\s\S]*?\]/,
     )
-    expect(header).toMatch(
-      /moreNav\s*=\s*\[[\s\S]*?to: '\/reto'[\s\S]*?to: '\/lookalikes'[\s\S]*?to: '\/historial'[\s\S]*?to: '\/offline'[\s\S]*?to: '\/educacion'[\s\S]*?to: '\/comunidad'[\s\S]*?to: '\/revision-experta'[\s\S]*?to: '\/ml'[\s\S]*?\]/,
-    )
+    // Grouped hub still exposes all product destinations
+    for (const p of [
+      '/reto',
+      '/lookalikes',
+      '/historial',
+      '/offline',
+      '/educacion',
+      '/comunidad',
+      '/revision-experta',
+      '/ml',
+    ]) {
+      expect(header).toContain(`to: '${p}'`)
+    }
+    expect(header).toMatch(/badge:\s*'dev'/)
   })
 
   it('ships feature modules for studio, notebook export, season, handoff', () => {

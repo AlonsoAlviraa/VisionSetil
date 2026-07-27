@@ -67,6 +67,40 @@ export function getCatalogPhotoUrl(taxon: string): string | null {
   return entry?.url || null
 }
 
+export type PhotoDisplayQuality = 'thumb' | 'display' | 'hd'
+
+/**
+ * Upgrade remote thumbs for display.
+ * Default `display` = medium (good quality, much lighter than large/original).
+ * Use `hd` only for explicit fullscreen viewers.
+ */
+export function upgradePhotoUrl(
+  url: string,
+  quality: PhotoDisplayQuality = 'display',
+): string {
+  if (!url || url.startsWith('data:')) return url
+  let u = url
+  const inatSize = quality === 'hd' ? 'large' : quality === 'thumb' ? 'small' : 'medium'
+  const wikiPx = quality === 'hd' ? '1280px-' : quality === 'thumb' ? '320px-' : '640px-'
+  // Normalize any iNat size → target
+  u = u
+    .replace(/\/(square|small|medium|large|original|thumb)\./g, `/${inatSize}.`)
+  // Wikimedia Commons thumbnails
+  if (u.includes('upload.wikimedia.org')) {
+    u = u.replace(/\/\d+px-/g, `/${wikiPx}`)
+  }
+  return u
+}
+
+/** Catalog URL at display quality (medium by default — lighter network). */
+export function getCatalogPhotoUrlHd(
+  taxon: string,
+  quality: PhotoDisplayQuality = 'display',
+): string | null {
+  const raw = getCatalogPhotoUrl(taxon)
+  return raw ? upgradePhotoUrl(raw, quality) : null
+}
+
 function resolveTier(taxon: string, opts?: ResolveImageOptions): PhotoTier {
   return opts?.tier ?? getPhotoTier(taxon, opts?.riskLabel)
 }
@@ -99,7 +133,24 @@ export function resolveSpeciesImageSync(
     return cached
   }
 
-  // 1) Preferred: monorepo media store (Vite /media or FastAPI)
+  // Prefer real catalog HD photos when policy allows (many local cards are stubs).
+  // T2 grid must never leak remote catalog (photoTiers policy).
+  const allowCatalog =
+    context !== 'grid' || shouldUseCatalogUrlOnGrid(tier)
+  const catalogHd = allowCatalog ? getCatalogPhotoUrlHd(name) : null
+
+  if (catalogHd) {
+    const r: ResolvedSpeciesImage = {
+      url: catalogHd,
+      provider: 'catalog',
+      taxon: name,
+      tier,
+    }
+    runtimeCache.set(key, r)
+    return r
+  }
+
+  // Same-origin /media derivatives (ok_real or vite stub_fallback → placeholder)
   const slug = scientificNameToSlug(name)
   if (slug) {
     const localUrl = speciesImageUrl(slug, context === 'grid' ? 'card' : 'detail')
@@ -111,21 +162,6 @@ export function resolveSpeciesImageSync(
     }
     runtimeCache.set(key, rLocal)
     return rLocal
-  }
-
-  const catalog = getCatalogPhotoUrl(name)
-  const allowCatalog =
-    context !== 'grid' || shouldUseCatalogUrlOnGrid(tier)
-
-  if (catalog && allowCatalog) {
-    const r: ResolvedSpeciesImage = {
-      url: catalog,
-      provider: 'catalog',
-      taxon: name,
-      tier,
-    }
-    runtimeCache.set(key, r)
-    return r
   }
 
   return {
@@ -190,7 +226,7 @@ async function fetchInat(name: string): Promise<string | null> {
       if (icon && icon !== 'fungi' && icon !== 'protozoa') continue
       const p = t.default_photo
       const u = p?.medium_url || p?.url || p?.square_url
-      if (u) return u.replace('/square.', '/medium.').replace('/small.', '/medium.')
+      if (u) return upgradePhotoUrl(u)
     }
     return null
   } catch {

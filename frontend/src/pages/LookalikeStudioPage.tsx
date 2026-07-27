@@ -65,7 +65,8 @@ export function LookalikeStudioPage() {
     setActivePairId(null)
     if (!err) {
       setQuery('')
-      setFocused(false)
+      // Keep focus state ready for next search (same pattern as Setadle).
+      setFocused(true)
     }
   }
 
@@ -88,16 +89,17 @@ export function LookalikeStudioPage() {
 
   return (
     <div className="page-lookalike page-atelier-shell lookalike-atelier">
-      <header className="lookalike-hero">
-        <p className="atelier-kicker">
+      <header className="mkt-page-head mkt-mesh lookalike-hero">
+        <p className="mkt-kicker">
           {t('lookalike.kicker', { defaultValue: 'Educación · Confusiones peligrosas' })}
         </p>
-        <h1 className="page-title">
+        <h1>
           {t('lookalike.studioTitle', { defaultValue: 'Lookalike Studio' })}
         </h1>
-        <p className="page-subtitle lookalike-hero__lead">
+        <p className="lookalike-hero__lead">
           {t('lookalike.studioSubtitleShort', {
-            defaultValue: 'Compara confusiones clásicas. Solo orientación — nunca consumo.',
+            defaultValue:
+              'Compara confusiones clásicas lado a lado. Riesgo claro en cada ficha. Solo orientación — nunca consumo.',
           })}
         </p>
         <div
@@ -166,9 +168,12 @@ export function LookalikeStudioPage() {
               defaultValue: 'Oronja, níscalo, Galerina…',
             })}
             disabled={selection.length >= LOOKALIKE_STUDIO_MAX}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => {
+              setQuery(e.target.value)
+              setFocused(true)
+            }}
             onFocus={() => setFocused(true)}
-            onBlur={() => setTimeout(() => setFocused(false), 160)}
+            onBlur={() => setTimeout(() => setFocused(false), 180)}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
                 e.preventDefault()

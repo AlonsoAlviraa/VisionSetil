@@ -1,0 +1,213 @@
+{
+  "generated_at": "2026-07-27T08:29:31.034496+00:00",
+  "experiment": "E19-gbif-holdout",
+  "checkpoint": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v19\\models\\best.pt",
+  "orientation_only": true,
+  "protocol": {
+    "allowlist": "industrial_v1 40 spp",
+    "source": "local obs_gbif_es.jsonl + images",
+    "fair_cap": {
+      "max_obs": 200,
+      "max_obs_deadly": 400,
+      "prefer_cc_ok": true
+    },
+    "split": "anti_leak observation_id stratified 70/15/15 seed=42",
+    "eval_partition": "test",
+    "max_views": 1,
+    "device": "cpu",
+    "fungitastic_local": false,
+    "note_max_views": "Checkpoint is multi-view trained; max_views=1 is a domain mismatch documented for offline CPU eval.",
+    "macro_f1": "sklearn f1_score average=macro zero_division=0 (classes in y_true)"
+  },
+  "pool": {
+    "raw_imgs": 38003,
+    "post_cap_imgs": 18311,
+    "post_cap_obs": 7385,
+    "post_cap_species": 40,
+    "split": {
+      "n_train_obs": 5168,
+      "n_val_obs": 1108,
+      "n_test_obs": 1108,
+      "n_species": 39,
+      "n_species_pre_min_filter": 40,
+      "species_dropped_min_per_class": [
+        "Cortinarius rubellus"
+      ],
+      "min_per_class": 4,
+      "leaks": {
+        "train_val": 0,
+        "train_test": 0,
+        "val_test": 0
+      },
+      "pass": true
+    },
+    "species_dropped_min_per_class": [
+      "Cortinarius rubellus"
+    ],
+    "n_species_in_split": 39,
+    "load_stats": {
+      "skipped_outside_label2idx": 0,
+      "n_failed_images": 0,
+      "n_dropped_obs_no_image": 0,
+      "n_evaluated": 1108
+    }
+  },
+  "contamination": {
+    "protocol": "pure_gbif_anti_leak_split_seed42",
+    "e19_trained_on_mixed_ft_gbif": true,
+    "e19_train_frac": 0.7,
+    "e19_gbif_imgs_post_cap": 12326,
+    "e19_ft_imgs_post_cap": 10937,
+    "local_gbif_post_cap_obs": 7385,
+    "local_test_obs": 1108,
+    "estimate": "E19 randomly assigned ~70% of its post-cap observation pool to train. Local pure-GBIF fair_cap selects a DIFFERENT observation set than E19's per-source reserved cap. Therefore train-overlap for this hold-out is UNKNOWN but non-zero expected. Treat scores as UPPER BOUND on true unseen-GBIF performance (data contamination possible).",
+    "contamination_risk": "medium-high",
+    "strict_unseen_gbif": false
+  },
+  "metrics": {
+    "n_test_obs": 1108,
+    "map_at_3": 0.9240373044524668,
+    "map_at_3_ci_low": 0.9103452166064981,
+    "map_at_3_ci_high": 0.9395344464500602,
+    "top1": 0.8962093862815884,
+    "top3": 0.9557761732851986,
+    "macro_f1": 0.8866474360009021,
+    "deadly_at_3": 0.9696202531645569,
+    "deadly_top1": 0.9240506329113924,
+    "n_deadly": 395,
+    "ece_naive": 0.10392672770290168,
+    "ece_binned_15": 0.09710197607963093,
+    "temperature_metrics_json": 1.5966918468475342,
+    "elapsed_sec": 210.2563717365265
+  },
+  "e19_headline": {
+    "map_at_3": 0.9600000000000002,
+    "top1": 0.9361538461538461,
+    "deadly_top1": 0.9626373626373627,
+    "deadly_top1_source": "metrics.json safety_recall_deadly (gen_notebook test cell = top-1, NOT @3; verified vs npz)",
+    "deadly_at_3": 0.9934065934065934,
+    "deadly_at_3_source": "recomputed from test_predictions.npz top-3 hit among deadly",
+    "safety_recall_deadly_raw": 0.9626373626373627,
+    "ece_naive": 0.0630488328062571,
+    "ece_naive_source": "mean(|max_prob-correct|); metrics.json test_ece",
+    "ece_binned_15": null,
+    "macro_f1": 0.9045567839830136
+  },
+  "delta_vs_headline": {
+    "map_at_3": -0.035962695547533396,
+    "top1": -0.0399444598722577,
+    "deadly_at_3": -0.02378634024203652,
+    "deadly_top1": -0.038586729725970215,
+    "ece_naive": 0.040877894896644576,
+    "note": "deadly_at_3 \u0394 uses recomputed E19 @3 from npz, NOT safety_recall_deadly (which is top-1)."
+  },
+  "worst_species": [
+    {
+      "species": "Imleria badia",
+      "n": 38,
+      "top1": 0.7105263157894737,
+      "map3": 0.7587719298245613,
+      "deadly": false
+    },
+    {
+      "species": "Laccaria laccata",
+      "n": 22,
+      "top1": 0.6818181818181818,
+      "map3": 0.7954545454545454,
+      "deadly": false
+    },
+    {
+      "species": "Amanita rubescens",
+      "n": 27,
+      "top1": 0.7777777777777778,
+      "map3": 0.7962962962962963,
+      "deadly": false
+    },
+    {
+      "species": "Lepiota subincarnata",
+      "n": 11,
+      "top1": 0.6363636363636364,
+      "map3": 0.8181818181818182,
+      "deadly": true
+    },
+    {
+      "species": "Trametes versicolor",
+      "n": 31,
+      "top1": 0.8387096774193549,
+      "map3": 0.8548387096774194,
+      "deadly": false
+    },
+    {
+      "species": "Hygrophoropsis aurantiaca",
+      "n": 23,
+      "top1": 0.782608695652174,
+      "map3": 0.8550724637681159,
+      "deadly": false
+    },
+    {
+      "species": "Leccinum scabrum",
+      "n": 15,
+      "top1": 0.8,
+      "map3": 0.8555555555555556,
+      "deadly": false
+    },
+    {
+      "species": "Lepiota cristata",
+      "n": 31,
+      "top1": 0.8387096774193549,
+      "map3": 0.8655913978494624,
+      "deadly": false
+    },
+    {
+      "species": "Agaricus campestris",
+      "n": 39,
+      "top1": 0.8205128205128205,
+      "map3": 0.8675213675213675,
+      "deadly": false
+    },
+    {
+      "species": "Amanita citrina",
+      "n": 26,
+      "top1": 0.7692307692307693,
+      "map3": 0.8782051282051282,
+      "deadly": false
+    },
+    {
+      "species": "Pluteus cervinus",
+      "n": 23,
+      "top1": 0.8695652173913043,
+      "map3": 0.8840579710144929,
+      "deadly": false
+    },
+    {
+      "species": "Kuehneromyces mutabilis",
+      "n": 15,
+      "top1": 0.8666666666666667,
+      "map3": 0.9,
+      "deadly": false
+    },
+    {
+      "species": "Amanita phalloides",
+      "n": 69,
+      "top1": 0.8985507246376812,
+      "map3": 0.9033816425120772,
+      "deadly": true
+    },
+    {
+      "species": "Lepiota castanea",
+      "n": 13,
+      "top1": 0.8461538461538461,
+      "map3": 0.9230769230769231,
+      "deadly": true
+    },
+    {
+      "species": "Suillus grevillei",
+      "n": 20,
+      "top1": 0.9,
+      "map3": 0.925,
+      "deadly": false
+    }
+  ],
+  "product_gates_trustworthy": "partial",
+  "product_recommendation": "GBIF-only hold-out MAP@3=0.924 deadly@3=0.970 still high \u2014 possible train contamination and/or easy GBIF StillImage domain. Do NOT unlock product Identify; require true unseen field photos + source-holdout retrain (E20)."
+}

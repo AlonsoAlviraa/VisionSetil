@@ -1,0 +1,329 @@
+{
+  "generated_at": "2026-07-27T08:29:40.321131+00:00",
+  "experiment": "E19-gbif-mega",
+  "orientation_only": true,
+  "policy": "never_consumption_permission",
+  "verdicts": [
+    {
+      "name": "obs_id_leak_splitter_self_test",
+      "status": "PASS",
+      "detail": "anti_leak_split on local GBIF-only: train/val/test observation_ids disjoint",
+      "numbers": {
+        "n_train_obs": 5168,
+        "n_val_obs": 1108,
+        "n_test_obs": 1108,
+        "n_species": 39,
+        "n_species_pre_min_filter": 40,
+        "species_dropped_min_per_class": [
+          "Cortinarius rubellus"
+        ],
+        "min_per_class": 4,
+        "leaks": {
+          "train_val": 0,
+          "train_test": 0,
+          "val_test": 0
+        },
+        "pass": true
+      }
+    },
+    {
+      "name": "stem_multi_species_gbif",
+      "status": "PASS",
+      "detail": "No basename stem collides across species in local GBIF post-cap pool",
+      "numbers": {
+        "n_stems": 18311
+      }
+    },
+    {
+      "name": "obs_id_leak_e19_original",
+      "status": "UNKNOWN",
+      "detail": "Code-level only: notebook anti_leak_split asserts train\u2229val\u2229test empty and log shows Split train=6065 / val=1300 / test=1300. Exact observation_id lists were NOT saved \u2014 runtime E19 split is NOT re-verified offline. Status UNKNOWN until train_obs/test_obs artifacts exist (do not dashboard-green this as proven).",
+      "numbers": {
+        "num_train_obs": 6065,
+        "num_val_obs": 1300,
+        "num_test_obs": 1300,
+        "split_log": "Split: train=6065 obs (16256 imgs) | val=1300 obs (3472 imgs) | test=1300 obs (3535 imgs)",
+        "code_asserts_disjoint": true,
+        "runtime_ids_reverified": false
+      }
+    },
+    {
+      "name": "cross_source_path_stem_ft_gbif",
+      "status": "UNKNOWN",
+      "detail": "FungiTastic not present locally; cannot measure FT\u2194GBIF basename/stem collisions. E19 only did exact image_path dedup (log: 36648 \u2192 23263). Different roots mean same media under FT and GBIF would NOT be path-deduped.",
+      "numbers": {
+        "dedup_log": "Dedup image_path: 36648 \u2192 23263",
+        "sources_post_cap": "Sources post-cap: {'gbif_es': 12326, 'fungitastic': 10937}",
+        "risk": "medium"
+      }
+    },
+    {
+      "name": "cross_source_exact_path_dedup",
+      "status": "PASS",
+      "detail": "E19 applied drop_duplicates on image_path after fair_cap (36648\u219223263). Exact path collisions handled; content-level near-dup across sources unhandled.",
+      "numbers": {
+        "dedup_log": "Dedup image_path: 36648 \u2192 23263"
+      }
+    },
+    {
+      "name": "per_source_test_breakdown",
+      "status": "UNKNOWN",
+      "detail": "Cannot split original mixed test into gbif_es vs fungitastic: test_predictions.npz lacks observation_id/source_db. See e19_gbif_holdout.md for pure-GBIF re-inference.",
+      "numbers": {
+        "npz_keys": [
+          "probs",
+          "preds",
+          "labels"
+        ]
+      }
+    },
+    {
+      "name": "headline_deadly_is_top1_not_at3",
+      "status": "SUSPECT",
+      "detail": "E19 metrics.json `safety_recall_deadly` matches deadly **top-1** (0.9626), NOT deadly@3 (0.9934). Notebook gate logs label this field as deadly@3 (DO3/DO3b) \u2014 definition mismatch. Val loop uses true @3; test cell uses top-1. Any comparison labeled 'Deadly@3' that cites 0.963 is wrong; use recomputed 0.993 for @3.",
+      "numbers": {
+        "metrics_json_safety_recall_deadly": 0.9626373626373627,
+        "deadly_top1_recomputed": 0.9626373626373627,
+        "deadly_at_3_recomputed": 0.9934065934065934,
+        "n_deadly": 455,
+        "deadly_top1_match_metrics_json": true,
+        "deadly_at3_match_metrics_json": false
+      }
+    },
+    {
+      "name": "ep0_deadly_suspicious",
+      "status": "SUSPECT",
+      "detail": "val deadly@3=0.9824 at epoch 0 (backbone frozen warmup). Not necessarily leakage: top-3 among 40 classes is generous for distinctive deadly morphs (A. muscaria, H. fasciculare) + ImageNet-pretrained ConvNeXt. ep0 val MAP@3=0.7294 is high but not perfect; best MAP@3 at epoch 8=0.953076923076923. Note: val uses true deadly@3; final metrics.json uses deadly top-1.",
+      "numbers": {
+        "ep0_val_deadly3": 0.9823788546255506,
+        "ep0_val_map3": 0.7293589743589757,
+        "best": {
+          "epoch": 8,
+          "train_loss": 3.034934921099544,
+          "val_acc": 0.9276923076923077,
+          "val_map3": 0.953076923076923,
+          "val_f1": 0.8997413562170167,
+          "val_deadly3": 0.9823788546255506
+        }
+      }
+    },
+    {
+      "name": "headline_too_high_for_fungi",
+      "status": "SUSPECT",
+      "detail": "Headline MAP@3=0.960; deadly top-1 (stored)=0.963; deadly@3 (recomputed)=0.9934065934065934. Unusually high for real-world fungi ID. Mixed random split of FT+GBIF can inflate metrics vs field photos. Not proof of train/test obs leak; metrics NOT trustworthy alone for product gates.",
+      "numbers": {
+        "map3": 0.9600000000000002,
+        "deadly_top1_stored": 0.9626373626373627,
+        "deadly_at_3_recomputed": 0.9934065934065934,
+        "perfect_deadly_ge10": [
+          {
+            "species": "Gyromitra esculenta",
+            "n": 21,
+            "top1": 1.0,
+            "deadly": true
+          },
+          {
+            "species": "Amanita virosa",
+            "n": 49,
+            "top1": 1.0,
+            "deadly": true
+          },
+          {
+            "species": "Hypholoma fasciculare",
+            "n": 60,
+            "top1": 1.0,
+            "deadly": true
+          }
+        ]
+      }
+    }
+  ],
+  "limitations": [
+    "E19 train/val/test observation_id lists were NOT saved as artifacts; only counts (6065/1300/1300) and test_predictions.npz (labels only).",
+    "FungiTastic is not available locally \u2014 cannot fully rebuild the mixed FT+GBIF post-cap pool (23263 imgs) used on Kaggle."
+  ],
+  "headline_metrics": {
+    "test_map_at_3": 0.9600000000000002,
+    "test_accuracy": 0.9361538461538461,
+    "safety_recall_deadly": 0.9626373626373627,
+    "safety_recall_deadly_meaning": "top-1 among deadly samples (NOT deadly@3); see gen_notebook_v8 test cell",
+    "test_ece": 0.0630488328062571,
+    "test_ece_meaning": "mean(|max_prob - correct|) unbinned, not 15-bin ECE",
+    "num_train_obs": 6065,
+    "num_val_obs": 1300,
+    "num_test_obs": 1300,
+    "databases_used": [
+      "fungitastic",
+      "gbif_es"
+    ],
+    "deadly_at_3_recomputed": 0.9934065934065934,
+    "deadly_top1_recomputed": 0.9626373626373627,
+    "ece_naive_recomputed": 0.0630488328062571
+  },
+  "log_extract": {
+    "path": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v19\\visionsetil-exp-v19-gbif-mega.log",
+    "exists": true,
+    "sources_post_cap": "Sources post-cap: {'gbif_es': 12326, 'fungitastic': 10937}",
+    "dedup": "Dedup image_path: 36648 \u2192 23263",
+    "split": "Split: train=6065 obs (16256 imgs) | val=1300 obs (3472 imgs) | test=1300 obs (3535 imgs)",
+    "e19_pool": "E19 gbif-mega: imgs=23263 spp=40 obs=8665",
+    "combined": "COMBINED: 365190 existing images",
+    "loaded_ft": "Loaded CSV source 'fungitastic': 327187 existing images, 5109 spp, 83166 obs\\n\"}",
+    "loaded_gbif": "jsonl: 38003 images, 40 spp",
+    "ep0_log_snippet": ",{\"stream_name\":\"stdout\",\"time\":4303.417949252,\"data\":\"[22:33:49] [INFO] EPOCH 0/39\\n\"}",
+    "map_gate_line": "DO2b: soft-gate A MAP@3\u22650.25 . \u2705 (0.9600)\\n\"}",
+    "deadly_gate_line": "DO3b: soft-gate deadly\u22650.90 .. \u2705 (0.9626)\\n\"}"
+  },
+  "reconstruction": {
+    "local_gbif": {
+      "pre_cap_imgs": 38003,
+      "pre_cap_obs": 24649,
+      "post_cap_imgs": 18311,
+      "post_cap_obs": 7385,
+      "split": {
+        "n_train_obs": 5168,
+        "n_val_obs": 1108,
+        "n_test_obs": 1108,
+        "n_species": 39,
+        "n_species_pre_min_filter": 40,
+        "species_dropped_min_per_class": [
+          "Cortinarius rubellus"
+        ],
+        "min_per_class": 4,
+        "leaks": {
+          "train_val": 0,
+          "train_test": 0,
+          "val_test": 0
+        },
+        "pass": true
+      },
+      "note": "GBIF-only fair_cap uses full 200/400 per species; E19 mixed FT+GBIF reserved ~half cap per source \u2014 observation sets differ."
+    },
+    "stem_audit_gbif_only": {
+      "status": "ok",
+      "n_unique_stems": 18311,
+      "n_cross_source_stems": 0,
+      "n_cross_source_media_ids": 0,
+      "n_cross_source_size_stem_prefix": 0,
+      "n_stems_multi_species": 0,
+      "examples_cross_stem": {},
+      "examples_multi_species_stem": {},
+      "pass_cross_source": true
+    }
+  },
+  "prediction_audit": {
+    "status": "ok",
+    "n_test": 1300,
+    "map_at_3": 0.96,
+    "top1": 0.9361538461538461,
+    "top3": 0.9876923076923076,
+    "deadly_at_3": 0.9934065934065934,
+    "deadly_top1": 0.9626373626373627,
+    "n_deadly": 455,
+    "metrics_json_map3": 0.9600000000000002,
+    "metrics_json_safety_recall_deadly": 0.9626373626373627,
+    "metrics_json_deadly_field_meaning": "top-1 among deadly samples (NOT @3) \u2014 gen_notebook_v8 test cell; E19 gate logs mislabel this field as deadly@3",
+    "map_match_metrics_json": true,
+    "deadly_top1_match_metrics_json": true,
+    "deadly_at3_match_metrics_json": false,
+    "deadly_definition_mismatch": true,
+    "ece_naive_recomputed": 0.0630488328062571,
+    "metrics_json_ece": 0.0630488328062571,
+    "metrics_json_ece_meaning": "mean(|max_prob - correct|) unbinned \u2014 not 15-bin ECE",
+    "worst_species": [
+      {
+        "species": "Cortinarius rubellus",
+        "n": 1,
+        "top1": 0.0,
+        "deadly": true
+      },
+      {
+        "species": "Lepiota castanea",
+        "n": 16,
+        "top1": 0.6875,
+        "deadly": true
+      },
+      {
+        "species": "Kuehneromyces mutabilis",
+        "n": 30,
+        "top1": 0.7,
+        "deadly": false
+      },
+      {
+        "species": "Amanita rubescens",
+        "n": 30,
+        "top1": 0.7666666666666667,
+        "deadly": false
+      },
+      {
+        "species": "Lepiota subincarnata",
+        "n": 9,
+        "top1": 0.7777777777777778,
+        "deadly": true
+      },
+      {
+        "species": "Amanita citrina",
+        "n": 30,
+        "top1": 0.8,
+        "deadly": false
+      },
+      {
+        "species": "Leccinum scabrum",
+        "n": 30,
+        "top1": 0.8333333333333334,
+        "deadly": false
+      },
+      {
+        "species": "Imleria badia",
+        "n": 30,
+        "top1": 0.8666666666666667,
+        "deadly": false
+      }
+    ],
+    "perfect_deadly_ge10": [
+      {
+        "species": "Gyromitra esculenta",
+        "n": 21,
+        "top1": 1.0,
+        "deadly": true
+      },
+      {
+        "species": "Amanita virosa",
+        "n": 49,
+        "top1": 1.0,
+        "deadly": true
+      },
+      {
+        "species": "Hypholoma fasciculare",
+        "n": 60,
+        "top1": 1.0,
+        "deadly": true
+      }
+    ],
+    "label_sortedness": 0.09006928406466508,
+    "has_obs_ids_in_npz": false,
+    "note": "test_predictions.npz has probs/preds/labels only \u2014 no observation_id or source_db"
+  },
+  "training_dynamics": {
+    "ep0": {
+      "epoch": 0,
+      "train_loss": 32.72168942394084,
+      "val_acc": 0.6107692307692307,
+      "val_map3": 0.7293589743589757,
+      "val_f1": 0.5414689542191984,
+      "val_deadly3": 0.9823788546255506
+    },
+    "best_epoch": {
+      "epoch": 8,
+      "train_loss": 3.034934921099544,
+      "val_acc": 0.9276923076923077,
+      "val_map3": 0.953076923076923,
+      "val_f1": 0.8997413562170167,
+      "val_deadly3": 0.9823788546255506
+    },
+    "n_epochs_logged": 19
+  },
+  "overall": "SUSPECT",
+  "product_gates_trustworthy": "partial",
+  "product_recommendation": "No proven observation_id train/test leak (runtime IDs unverified offline). Metrics inflated by mixed easy pool / top-3 generosity / possible cross-source near-dups; plus `safety_recall_deadly` is deadly top-1 mislabeled as @3 in gates. NOT sufficient alone to unlock product Identify."
+}

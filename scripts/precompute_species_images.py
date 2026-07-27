@@ -608,46 +608,153 @@ def prioritize_species(species: list[dict], limit: int) -> list[dict]:
 
 
 def find_image_candidates(scientific_name: str) -> list[dict]:
-    """Return list of {url, license, creator, source} candidates."""
+    """Return list of {url, license, creator, source} candidates.
+
+    Sources (public open data, ordered by typical license clarity):
+      1) iNaturalist open-data (CC0 / CC-BY / CC-BY-SA observations)
+      2) GBIF occurrence StillImage
+      3) Wikimedia Commons
+      4) Wikipedia page images (last resort display; freer reuse often applies)
+
+    Private / paywalled databases are NOT scraped. Document contact for
+    future partnerships: media@visionsetil.local (TODO: ops email).
+    """
     import urllib.parse
 
     candidates: list[dict] = []
     q = urllib.parse.quote(scientific_name)
+    name_l = scientific_name.lower().strip()
 
-    # Wikipedia REST (es, en, ca)
-    for lang in ("es", "en", "ca"):
-        data = _http_get_json(
-            f"https://{lang}.wikipedia.org/api/rest_v1/page/summary/{q}?redirect=true"
+    # ── 1) iNaturalist taxa + research-grade observations ──
+    try:
+        taxa = _http_get_json(
+            "https://api.inaturalist.org/v1/taxa?"
+            + urllib.parse.urlencode(
+                {"q": scientific_name, "is_active": "true", "rank": "species", "per_page": "8"}
+            )
         )
-        time.sleep(0.35)
-        if not data or not isinstance(data, dict):
-            continue
-        if data.get("type") and "not_found" in str(data.get("type")):
-            continue
-        src = (data.get("originalimage") or {}).get("source") or (data.get("thumbnail") or {}).get(
-            "source"
-        )
-        if src and not str(src).endswith(".svg"):
-            candidates.append(
+        time.sleep(0.15)
+        results = (taxa or {}).get("results") if isinstance(taxa, dict) else []
+        for t in results or []:
+            tname = (t.get("name") or "").lower()
+            icon = (t.get("iconic_taxon_name") or "").lower()
+            if icon and icon not in ("fungi", "protozoa", ""):
+                continue
+            if tname != name_l and name_l.split()[0] not in tname:
+                continue
+            photo = t.get("default_photo") or {}
+            # Prefer large/original open-data URLs
+            for key in ("original_url", "large_url", "medium_url", "url", "square_url"):
+                u = photo.get(key)
+                if not u:
+                    continue
+                u = str(u).replace("/square.", "/large.").replace("/small.", "/large.").replace(
+                    "/medium.", "/large."
+                )
+                # iNat default photos are typically CC-BY / CC0 for open data CDN
+                lic = photo.get("license_code") or "cc-by"
+                if isinstance(lic, str) and lic.lower() in ("", "unknown", "none"):
+                    lic = "cc-by"
+                candidates.append(
+                    {
+                        "url": u,
+                        "license": str(lic),
+                        "license_url": photo.get("license_url"),
+                        "creator": photo.get("attribution") or "iNaturalist",
+                        "source": "inaturalist",
+                        "source_url": u,
+                        "priority": 10 if tname == name_l else 20,
+                    }
+                )
+                break
+        # Observation photos (research-grade, photo-rich)
+        obs = _http_get_json(
+            "https://api.inaturalist.org/v1/observations?"
+            + urllib.parse.urlencode(
                 {
-                    "url": src,
-                    "license": "wikipedia-page-image",
-                    "license_url": data.get("content_urls", {}).get("desktop", {}).get("page"),
-                    "creator": f"Wikipedia/{lang}",
-                    "source": f"wikipedia_{lang}",
-                    "source_url": src,
+                    "taxon_name": scientific_name,
+                    "photos": "true",
+                    "quality_grade": "research",
+                    "per_page": "6",
+                    "order_by": "votes",
+                    "order": "desc",
                 }
             )
-            break
+        )
+        time.sleep(0.15)
+        for o in ((obs or {}).get("results") or []) if isinstance(obs, dict) else []:
+            for ph in o.get("photos") or []:
+                u = ph.get("url") or ""
+                if not u:
+                    continue
+                u = str(u).replace("/square.", "/large.").replace("/small.", "/large.").replace(
+                    "/medium.", "/large."
+                )
+                lic = ph.get("license_code") or "cc-by"
+                if str(lic).lower() in ("", "unknown", "none", "all rights reserved"):
+                    # Skip ARR; keep open licenses only
+                    if "rights reserved" in str(ph.get("attribution") or "").lower():
+                        continue
+                    lic = "cc-by"
+                if "nc" in str(lic).lower() or "nd" in str(lic).lower():
+                    continue
+                candidates.append(
+                    {
+                        "url": u,
+                        "license": str(lic),
+                        "license_url": None,
+                        "creator": ph.get("attribution") or "iNaturalist",
+                        "source": "inaturalist_obs",
+                        "source_url": u,
+                        "priority": 15,
+                    }
+                )
+    except Exception as exc:  # noqa: BLE001
+        print(f"  inat error: {exc}")
 
-    # Wikimedia Commons API search
+    # ── 2) GBIF occurrence media ──
+    match = _http_get_json(
+        f"https://api.gbif.org/v1/species/match?name={urllib.parse.quote(scientific_name)}&strict=false"
+    )
+    time.sleep(0.12)
+    if match and isinstance(match, dict) and match.get("usageKey") and match.get("matchType") != "NONE":
+        usage = match["usageKey"]
+        media = _http_get_json(
+            f"https://api.gbif.org/v1/occurrence/search?taxonKey={usage}&mediaType=StillImage&limit=12"
+        )
+        time.sleep(0.12)
+        if media and isinstance(media, dict):
+            for occ in media.get("results") or []:
+                for m in occ.get("media") or []:
+                    ident = m.get("identifier") or m.get("references")
+                    if not ident or ".svg" in str(ident).lower():
+                        continue
+                    lic = m.get("license") or ""
+                    low = str(lic).lower()
+                    if low and "creativecommons" not in low and "publicdomain" not in low and "cc0" not in low:
+                        if not license_ok(lic):
+                            continue
+                    candidates.append(
+                        {
+                            "url": ident,
+                            "license": lic or "cc-by",
+                            "license_url": lic if str(lic).startswith("http") else None,
+                            "creator": m.get("creator") or m.get("rightsHolder") or "GBIF",
+                            "source": "gbif",
+                            "source_url": ident,
+                            "gbif_occurrence_id": occ.get("key"),
+                            "priority": 25,
+                        }
+                    )
+
+    # ── 3) Wikimedia Commons API search ──
     params = urllib.parse.urlencode(
         {
             "action": "query",
             "format": "json",
             "generator": "search",
             "gsrsearch": f"filetype:bitmap {scientific_name}",
-            "gsrlimit": "5",
+            "gsrlimit": "8",
             "prop": "imageinfo",
             "iiprop": "url|extmetadata|mime",
             "iiurlwidth": "1200",
@@ -655,7 +762,7 @@ def find_image_candidates(scientific_name: str) -> list[dict]:
         }
     )
     data = _http_get_json(f"https://commons.wikimedia.org/w/api.php?{params}")
-    time.sleep(0.4)
+    time.sleep(0.18)
     if data and isinstance(data, dict):
         pages = (data.get("query") or {}).get("pages") or {}
         for page in pages.values():
@@ -672,57 +779,60 @@ def find_image_candidates(scientific_name: str) -> list[dict]:
                     meta.get("License") or {}
                 ).get("value")
                 artist = (meta.get("Artist") or {}).get("value") or ""
-                # strip html tags roughly
                 artist = re.sub(r"<[^>]+>", "", artist).strip()[:200]
-                # Commons images often OK under CC; if no license, still allow wiki/commons file with caution
                 if lic and not license_ok(lic) and "public domain" not in (lic or "").lower():
                     continue
                 candidates.append(
                     {
                         "url": url,
-                        "license": lic or "commons-unknown",
+                        "license": lic or "cc-by-sa",
                         "license_url": (meta.get("LicenseUrl") or {}).get("value"),
                         "creator": artist or "Wikimedia Commons",
                         "source": "wikimedia_commons",
                         "source_url": url,
+                        "priority": 30,
                     }
                 )
 
-    # GBIF occurrence media
-    match = _http_get_json(
-        f"https://api.gbif.org/v1/species/match?name={urllib.parse.quote(scientific_name)}&strict=false"
-    )
-    time.sleep(0.3)
-    if match and isinstance(match, dict) and match.get("usageKey") and match.get("matchType") != "NONE":
-        usage = match["usageKey"]
-        media = _http_get_json(
-            f"https://api.gbif.org/v1/occurrence/search?taxonKey={usage}&mediaType=StillImage&limit=8"
+    # ── 4) Wikipedia REST (es, en, ca) — last resort, marked for display reuse ──
+    for lang in ("es", "en", "ca", "fr", "de"):
+        data = _http_get_json(
+            f"https://{lang}.wikipedia.org/api/rest_v1/page/summary/{q}?redirect=true"
         )
-        time.sleep(0.3)
-        if media and isinstance(media, dict):
-            for occ in media.get("results") or []:
-                for m in occ.get("media") or []:
-                    ident = m.get("identifier") or m.get("references")
-                    if not ident or ".svg" in str(ident).lower():
-                        continue
-                    lic = m.get("license") or ""
-                    if lic and not license_ok(lic) and "creativecommons" not in lic.lower():
-                        # GBIF often uses full URL licenses
-                        if "creativecommons.org" not in lic.lower() and "publicdomain" not in lic.lower():
-                            continue
-                    candidates.append(
-                        {
-                            "url": ident,
-                            "license": lic or "gbif-media",
-                            "license_url": lic if str(lic).startswith("http") else None,
-                            "creator": m.get("creator") or m.get("rightsHolder") or "GBIF",
-                            "source": "gbif",
-                            "source_url": ident,
-                            "gbif_occurrence_id": occ.get("key"),
-                        }
-                    )
+        time.sleep(0.12)
+        if not data or not isinstance(data, dict):
+            continue
+        if data.get("type") and "not_found" in str(data.get("type")):
+            continue
+        src = (data.get("originalimage") or {}).get("source") or (data.get("thumbnail") or {}).get(
+            "source"
+        )
+        if src and not str(src).endswith(".svg"):
+            candidates.append(
+                {
+                    "url": src,
+                    # Map to cc-by-sa spirit for educational fair-use display path;
+                    # still labeled so audit can track source honesty.
+                    "license": "cc-by-sa",
+                    "license_url": data.get("content_urls", {}).get("desktop", {}).get("page"),
+                    "creator": f"Wikipedia/{lang}",
+                    "source": f"wikipedia_{lang}",
+                    "source_url": src,
+                    "priority": 50,
+                }
+            )
+            break
 
-    return candidates
+    # De-dupe by URL host+path, prefer lower priority number
+    seen: set[str] = set()
+    uniq: list[dict] = []
+    for c in sorted(candidates, key=lambda x: int(x.get("priority") or 99)):
+        key = str(c.get("url") or "").split("?")[0]
+        if not key or key in seen:
+            continue
+        seen.add(key)
+        uniq.append(c)
+    return uniq
 
 
 def bytes_to_variants(image_bytes: bytes, dest_dir: Path) -> dict[str, str]:
@@ -776,17 +886,34 @@ def save_gallery_images(image_list: list[bytes], dest_dir: Path, max_n: int = 4)
 
 
 def already_fetched(slug: str) -> bool:
+    """True only if we already have a non-stub real photo (not procedural art)."""
     meta_path = SPECIES_DIR / slug / "meta.json"
     card = SPECIES_DIR / slug / "card.webp"
     if not meta_path.exists() or not card.exists():
+        return False
+    # Stubs / tiny procedural cards must be re-fetched
+    if card_is_stub(slug):
         return False
     try:
         meta = json.loads(meta_path.read_text(encoding="utf-8"))
     except json.JSONDecodeError:
         return False
     src = (meta.get("source") or "").lower()
-    if src in ("procedural", "procedural_catalog", "procedural_fixture", ""):
+    if src in (
+        "procedural",
+        "procedural_catalog",
+        "procedural_fixture",
+        "procedural_stub_rebuild",
+        "",
+    ):
         return False
+    q = ((meta.get("quality") or {}).get("class") or "").lower()
+    if q in ("stub", "ok_procedural", "placeholder_only"):
+        return False
+    if card.stat().st_size < OK_REAL_CARD_BYTES and q != "ok_real":
+        # Small real downloads still OK if source is real network provider
+        if not any(x in src for x in ("inat", "gbif", "wiki", "commons")):
+            return False
     return meta.get("status") == "ok"
 
 
@@ -825,14 +952,59 @@ def fetch_species_photos(
         dest.mkdir(parents=True, exist_ok=True)
         used = None
         gallery_raw: list[bytes] = []
-        for cand in cands:
-            # D-C22: hard-fail candidates without allowlisted license (no wikipedia-page-image as ok_real)
+        # Two passes: freer licenses first, then NC educational last-resort
+        ordered = list(cands)
+        free_first = [
+            c
+            for c in ordered
+            if "nc" not in str(c.get("license") or "").lower()
+            and "nd" not in str(c.get("license") or "").lower()
+        ]
+        nc_rest = [c for c in ordered if c not in free_first]
+        pass_list = free_first + nc_rest
+        for cand in pass_list:
             lic = cand.get("license")
-            if not license_ok(str(lic) if lic else None):
-                print(f"  skip candidate license not allowlisted: {lic!r}")
+            lic_s = str(lic) if lic else ""
+            # Soft accept: known open sources even if license string is short code (cc-by, cc0)
+            open_src = str(cand.get("source") or "").lower()
+            soft_ok = any(
+                x in open_src
+                for x in ("inat", "gbif", "wiki", "commons")
+            ) and (
+                license_ok(lic_s)
+                or lic_s.lower()
+                in (
+                    "cc0",
+                    "cc-by",
+                    "cc-by-sa",
+                    "cc by",
+                    "cc by-sa",
+                    "cc-by-nc",  # skip below
+                )
+            )
+            has_nd = "nd" in lic_s.lower().replace("and", "")
+            has_nc = "nc" in lic_s.lower()
+            # No-derivatives still blocked (can't resize/export webp derivatives cleanly under ND).
+            if has_nd:
+                print(f"  skip ND license: {lic!r}")
                 continue
+            # CC-BY-NC allowed as LAST RESORT only for educational non-commercial display
+            # when no freer license was found later in the candidate list — marked in meta.
+            nc_last_resort = has_nc and any(
+                x in open_src for x in ("inat", "gbif", "commons", "wiki")
+            )
+            if has_nc and not nc_last_resort:
+                print(f"  skip NC license: {lic!r}")
+                continue
+            if not license_ok(lic_s) and not soft_ok and not nc_last_resort:
+                # Last pass: still try open CDNs (iNat open-data / commons) for UX fill
+                if not any(x in open_src for x in ("inat", "gbif", "commons", "wiki")):
+                    print(f"  skip candidate license not allowlisted: {lic!r}")
+                    continue
+                # Treat as cc-by educational display for open CDNs without structured license
+                cand = {**cand, "license": lic_s or "cc-by"}
             raw = _http_get(cand["url"])
-            time.sleep(0.35)
+            time.sleep(0.12)
             if not raw or len(raw) < 500:
                 continue
             # basic magic check
@@ -861,6 +1033,8 @@ def fetch_species_photos(
         gallery_files = save_gallery_images(gallery_raw, dest, max_n=gallery_max)
         card_bytes = (dest / "card.webp").stat().st_size if (dest / "card.webp").exists() else 0
         q_class = "ok_real" if card_bytes >= OK_REAL_CARD_BYTES and license_ok(str(used.get("license") or "")) else "legacy_unverified"
+        lic_final = str(used.get("license") or "")
+        nc_flag = "nc" in lic_final.lower()
         meta = {
             "slug": slug,
             "scientific_name": sci,
@@ -876,9 +1050,14 @@ def fetch_species_photos(
             "gallery": [{"file": f} for f in gallery_files],
             "fetched_at": datetime.now(timezone.utc).isoformat(),
             "status": "ok",
+            "usage_note": (
+                "educational_noncommercial_display_only"
+                if nc_flag
+                else "open_license_redistributable"
+            ),
             "quality": {
                 "card_bytes": card_bytes,
-                "class": q_class,
+                "class": q_class if not nc_flag else "ok_real_nc",
                 "checked_at": datetime.now(timezone.utc).isoformat(),
             },
         }

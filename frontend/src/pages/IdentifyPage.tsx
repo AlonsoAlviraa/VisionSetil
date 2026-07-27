@@ -26,7 +26,6 @@ import { BatchCompare } from '../components/BatchCompare'
 import { MultiViewWizard } from '../components/MultiViewWizard'
 import { IdentifyResultSkeleton } from '../components/ui/Skeleton'
 import { IconClose, IconExpert, IconHistory, IconSearch } from '../components/icons'
-import { MEDIA } from '../data/media'
 import { featureFlags } from '../lib/featureFlags'
 import {
   assessMultiViewReadiness,
@@ -311,17 +310,21 @@ export function IdentifyPage() {
       data-preflight-mode={preflightEnabled ? preflight.mode : undefined}
       data-result-mode={resultMode ?? undefined}
     >
-      <div className="atelier-banner">
-        <div
-          className="atelier-banner__media"
-          style={{ backgroundImage: `url(${MEDIA.mushroomsClose})` }}
-        />
-        <div className="atelier-banner__veil" />
-        <div className="atelier-banner__copy">
-          <h1>{t('identify.title')}</h1>
-          <p>{t('identify.bannerLead', { defaultValue: 'Multi-vista guiada. Si no esta seguro, se calla. Mejor eso que inventar.' })}</p>
-        </div>
-      </div>
+      <header className="mkt-page-head mkt-mesh">
+        <p className="mkt-kicker">Campo · multi-vista</p>
+        <h1>{t('identify.title')}</h1>
+        <p>
+          {t('identify.bannerLead', {
+            defaultValue:
+              'Multi-vista guiada. Si no está seguro, se calla. Mejor eso que inventar. Solo orientación — nunca consumo.',
+          })}
+        </p>
+        <ul className="mkt-page-head__chips" aria-label="Principios de identificación">
+          <li>Orientación, no consumo</li>
+          <li>IA con abstención</li>
+          <li>Preflight visible</li>
+        </ul>
+      </header>
 
       {/*
         B-24 honesty flow shell — visual order:

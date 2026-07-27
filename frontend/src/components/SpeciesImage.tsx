@@ -1,8 +1,7 @@
 /**
  * SpeciesImage — always show a photo (or branded fallback).
- * Cascade: primary variant → card → thumb → risk placeholder → inline SVG.
- * layout="fill" (default): card/grid with minHeight 80.
- * layout="fixed": list thumbs — NO minHeight; parent sets box (C-06).
+ * Cascade: catalog HD → local variant → card → thumb → risk placeholder → inline SVG.
+ * Prefers real catalog photos (iNat/Wiki HD) because many local cards are stubs.
  */
 import { useEffect, useMemo, useState, type CSSProperties, type SyntheticEvent } from 'react'
 import {
@@ -19,6 +18,7 @@ import {
   mediaBadgeLabel,
   shouldShowMediaBadge,
 } from '../lib/mediaBadge'
+import { getCatalogPhotoUrlHd } from '../lib/speciesImageService'
 import { ImageAttribution, type ImageAttributionMeta } from './ui/ImageAttribution'
 
 export type SpeciesImageLayout = 'fill' | 'fixed'
@@ -52,6 +52,11 @@ export interface SpeciesImageProps {
   showMediaBadge?: boolean | 'auto' | 'always'
   /** Optional external KPI status from season pack / audit */
   mediaStatus?: string | null
+  /**
+   * Prefer remote catalog HD before local /media (default true).
+   * Set false only for offline-pack pure same-origin demos.
+   */
+  preferCatalog?: boolean
 }
 
 function riskFromProps(riskLevel?: PlaceholderKind): PlaceholderKind {
@@ -60,15 +65,50 @@ function riskFromProps(riskLevel?: PlaceholderKind): PlaceholderKind {
   return 'default'
 }
 
-type Stage = 'primary' | 'card' | 'thumb' | 'placeholder' | 'inline'
+type Stage = 'catalog' | 'primary' | 'card' | 'thumb' | 'placeholder' | 'inline'
+
+function stageOrder(
+  variant: SpeciesImageVariant,
+  hasCatalog: boolean,
+  preferCatalog: boolean,
+): Stage[] {
+  const localFirst: Stage[] =
+    variant === 'card'
+      ? ['primary', 'thumb', 'placeholder', 'inline']
+      : variant === 'thumb'
+        ? ['primary', 'card', 'placeholder', 'inline']
+        : ['primary', 'card', 'thumb', 'placeholder', 'inline']
+
+  // Fluidity + security: same-origin local first, then catalog remote, then placeholders.
+  // Local WebP is faster and avoids leaking referrers to third parties until needed.
+  if (hasCatalog) {
+    const out: Stage[] = []
+    for (const s of localFirst) {
+      if (s === 'placeholder') {
+        if (preferCatalog) out.push('catalog')
+      }
+      out.push(s)
+    }
+    if (!preferCatalog) {
+      // still allow catalog before final placeholder when local fails
+      const pi = out.indexOf('placeholder')
+      if (pi >= 0) out.splice(pi, 0, 'catalog')
+    }
+    return out
+  }
+  return localFirst
+}
 
 function urlForStage(
   slug: string,
   variant: SpeciesImageVariant,
   stage: Stage,
   kind: PlaceholderKind,
+  catalogUrl: string | null,
 ): string {
   switch (stage) {
+    case 'catalog':
+      return catalogUrl || INLINE_PLACEHOLDER_SVG
     case 'primary':
       return speciesImageUrl(slug, variant)
     case 'card':
@@ -102,15 +142,26 @@ export function SpeciesImage({
   onStageChange,
   showMediaBadge = false,
   mediaStatus = null,
+  preferCatalog = true,
 }: SpeciesImageProps) {
   const slug = (slugProp || scientificNameToSlug(scientificName) || '').toLowerCase()
   const kind = riskFromProps(riskLevel)
   const mediaOn = featureFlags.SPECIES_MEDIA && Boolean(slug)
+  // Prefer display (medium) remote — lighter and less third-party load
+  const catalogUrl = useMemo(
+    () => (preferCatalog ? getCatalogPhotoUrlHd(scientificName, 'display') : null),
+    [scientificName, preferCatalog],
+  )
+  const hasCatalog = Boolean(catalogUrl)
+  const order = useMemo(
+    () => stageOrder(variant, hasCatalog, preferCatalog),
+    [variant, hasCatalog, preferCatalog],
+  )
 
-  const initialStage: Stage = mediaOn ? 'primary' : 'inline'
+  const initialStage: Stage = mediaOn ? order[0] : 'inline'
   const [stage, setStage] = useState<Stage>(initialStage)
   const [src, setSrc] = useState(() =>
-    mediaOn ? urlForStage(slug, variant, 'primary', kind) : INLINE_PLACEHOLDER_SVG,
+    mediaOn ? urlForStage(slug, variant, order[0], kind, catalogUrl) : INLINE_PLACEHOLDER_SVG,
   )
   const [loaded, setLoaded] = useState(false)
 
@@ -123,31 +174,27 @@ export function SpeciesImage({
       onStageChange?.('inline')
       return
     }
-    setStage('primary')
-    setSrc(urlForStage(slug, variant, 'primary', kind))
+    const start = order[0]
+    setStage(start)
+    setSrc(urlForStage(slug, variant, start, kind, catalogUrl))
     setLoaded(false)
-    onStageChange?.('primary')
-  }, [slug, variant, kind, mediaOn]) // eslint-disable-line react-hooks/exhaustive-deps
+    onStageChange?.(start)
+  }, [slug, variant, kind, mediaOn, catalogUrl, order]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const advanceFrom = (current: Stage) => {
-    const order: Stage[] =
-      variant === 'card'
-        ? ['primary', 'thumb', 'placeholder', 'inline']
-        : variant === 'thumb'
-          ? ['primary', 'card', 'placeholder', 'inline']
-          : ['primary', 'card', 'thumb', 'placeholder', 'inline']
-
     const idx = order.indexOf(current)
     let next = order[idx + 1] || 'inline'
-    // skip duplicate primary→card when already on card
-    if (next === 'card' && variant === 'card') {
-      next = 'thumb'
+    // skip empty catalog
+    if (next === 'catalog' && !catalogUrl) {
+      next = order[order.indexOf('catalog') + 1] || 'inline'
     }
-    if (next === 'primary') {
-      next = 'card'
+    // skip duplicate primary→card when already on card variant
+    if (next === 'card' && variant === 'card' && current !== 'catalog') {
+      const after = order.indexOf(next)
+      next = order[after + 1] || 'inline'
     }
     setStage(next)
-    setSrc(urlForStage(slug, variant, next, kind))
+    setSrc(urlForStage(slug, variant, next, kind, catalogUrl))
     setLoaded(next === 'inline')
     onStageChange?.(next)
   }
@@ -156,13 +203,24 @@ export function SpeciesImage({
 
   const handleLoad = (e: SyntheticEvent<HTMLImageElement>) => {
     const img = e.currentTarget
-    // Client last-line only: zero-dim / tiny naturalWidth (NOT solid-color full-dim stubs — C-04/C-05)
-    // naturalWidth === 0 counts as failure (broken decode) — Issue 2
     if (
       minNaturalWidth > 0 &&
       stage !== 'inline' &&
       stage !== 'placeholder' &&
       (img.naturalWidth < minNaturalWidth || img.naturalHeight < 1)
+    ) {
+      advanceFrom(stage)
+      return
+    }
+    // Tiny decoded images (often stub placeholders) → keep cascading when catalog available
+    if (
+      stage !== 'inline' &&
+      stage !== 'placeholder' &&
+      stage !== 'catalog' &&
+      catalogUrl &&
+      img.naturalWidth > 0 &&
+      img.naturalWidth < 96 &&
+      img.naturalHeight < 96
     ) {
       advanceFrom(stage)
       return
@@ -237,11 +295,14 @@ export function SpeciesImage({
         alt={alt}
         className={`species-image__img ${loaded ? 'species-image__img--loaded' : 'species-image__img--loading'}`}
         style={style}
-        sizes={sizes}
+        sizes={sizes || '(max-width: 600px) 50vw, 240px'}
         width={width}
         height={height}
         loading={priority ? 'eager' : 'lazy'}
         decoding="async"
+        referrerPolicy="no-referrer"
+        // Avoid credentialed cross-origin loads to third-party CDNs
+        crossOrigin={stage === 'catalog' ? 'anonymous' : undefined}
         onError={handleError}
         onLoad={handleLoad}
         data-slug={slug}

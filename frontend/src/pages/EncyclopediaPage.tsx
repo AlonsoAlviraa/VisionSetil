@@ -6,8 +6,8 @@ import { listFamilies, searchCatalogRanked } from '../lib/catalogSearch'
 import { getRiskMeta, type RiskLabel } from '../lib/riskLabels'
 import { getFoodQuality, type FoodClass, foodQualityStats } from '../lib/foodQuality'
 import { SpeciesPhotoCard } from '../components/SpeciesPhotoCard'
-import { MUSHROOM_HERO_SHOTS } from '../data/mushroomPhotos'
 import { ENCYCLOPEDIA_FIRST_PAGE_SIZE } from '../data/photoTiers'
+import { photoPriorityScore } from '../lib/speciesMediaStack'
 import { EmptyState } from '../components/EmptyState'
 import { IconMushroom } from '../components/icons'
 import { Skeleton } from '../components/ui/Skeleton'
@@ -79,6 +79,13 @@ export function EncyclopediaPage() {
         return q?.food_class === food
       })
     }
+    // Browse mode (no text query): premium multi-view packs first, then rest
+    if (!debouncedQuery.trim()) {
+      list = [...list].sort(
+        (a, b) =>
+          photoPriorityScore(b.slug || b.taxon) - photoPriorityScore(a.slug || a.taxon),
+      )
+    }
     return list
   }, [speciesCatalog, debouncedQuery, risk, family, food])
 
@@ -114,25 +121,18 @@ export function EncyclopediaPage() {
 
   return (
     <div className="page-encyclopedia encyclopedia-shell">
-      <div className="atelier-banner atelier-banner--compact">
-        <div
-          className="atelier-banner__media"
-          style={{ backgroundImage: `url(${MUSHROOM_HERO_SHOTS[0]})` }}
-        />
-        <div className="atelier-banner__veil" />
-        <div className="atelier-banner__copy">
-          <h1>Enciclopedia de setas</h1>
-          <p>
-            {catalogLoading ? (
-              'Cargando catálogo…'
-            ) : (
-              <span data-testid="encyclopedia-count">{speciesCatalogMeta.count} taxones</span>
-            )}{' '}
-            ·{' '}
-            {foodStats.total_documented} con calidad documentada. Solo orientación.
-          </p>
-        </div>
-      </div>
+      <header className="mkt-page-head mkt-mesh">
+        <p className="mkt-kicker">Catálogo · riesgo claro</p>
+        <h1>Enciclopedia de setas</h1>
+        <p>
+          {catalogLoading ? (
+            'Cargando catálogo…'
+          ) : (
+            <span data-testid="encyclopedia-count">{speciesCatalogMeta.count} taxones</span>
+          )}{' '}
+          · {foodStats.total_documented} con calidad documentada. Solo orientación de campo.
+        </p>
+      </header>
 
       {catalogLoading && (
         <div
@@ -329,7 +329,11 @@ export function EncyclopediaPage() {
         <>
           <div className="species-photo-grid">
             {results.map((s) => (
-              <SpeciesPhotoCard key={s.slug} species={s} />
+              <SpeciesPhotoCard
+                key={s.slug}
+                species={s}
+                priority={results.indexOf(s) < 4}
+              />
             ))}
           </div>
           {hasMore && (

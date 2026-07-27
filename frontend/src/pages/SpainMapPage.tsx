@@ -11,7 +11,7 @@ import {
   memo,
   startTransition,
 } from 'react'
-import { MapContainer, TileLayer, Marker, Popup, Circle, useMap } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, Circle, useMap } from 'react-leaflet'
 import L from 'leaflet'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -23,19 +23,16 @@ import {
   SPAIN_ZOOM,
   type MushroomZone,
 } from '../data/mushroomZones'
+import { getZoneResourcePack, kindLabelEs } from '../data/zonePermitLinks'
 import { getSpeciesByTaxon, loadSpeciesCatalog } from '../data/speciesCatalog'
-import { getRiskMeta } from '../lib/riskLabels'
-import { SpeciesNameBlock } from '../components/SpeciesNameBlock'
 import { SpeciesThumb } from '../components/SpeciesThumb'
-import { EmptyState } from '../components/EmptyState'
-import { SeasonRadar } from '../components/SeasonRadar'
 import {
   fetchWeatherData,
   evaluateMushroomConditions,
+  type WeatherData,
   type MushroomConditions,
 } from '../api/weather'
 import {
-  alertFromConditions,
   alertFromScore,
   hotspotRadiusMeters,
   isHotspotActive,
@@ -48,7 +45,6 @@ import {
   filterZonesByQuery,
   findZoneById,
   nearestZone,
-  nextBoardIndex,
   replaceMapUrl,
   resolveMapDeepLink,
   stickyRegionAfterSearchChange,
@@ -122,15 +118,48 @@ function makeClusterIcon(count: number, locale: string, zonesWord: string): L.Di
   return icon
 }
 
-function MapController({ zone }: { zone: MushroomZone | null }) {
+/** Zoom when opening a single zone card (close enough to see the place). */
+const ZONE_FOCUS_ZOOM = 10
+
+function MapController({
+  zone,
+  regionFocus,
+}: {
+  zone: MushroomZone | null
+  /** Fit map to these points when region filter changes (e.g. all Soria zones). */
+  regionFocus: { key: string; points: Array<{ lat: number; lng: number }> } | null
+}) {
   const map = useMap()
   useEffect(() => {
+    const t = window.setTimeout(() => map.invalidateSize({ animate: false }), 100)
+    return () => window.clearTimeout(t)
+  }, [map])
+
+  // Click / select zone → always fly to THAT place (not stay zoomed on previous area)
+  useEffect(() => {
     if (!zone) return
-    map.flyTo([zone.lat, zone.lng], Math.max(map.getZoom(), 8.5), {
-      duration: 0.55,
-      easeLinearity: 0.35,
+    map.flyTo([zone.lat, zone.lng], ZONE_FOCUS_ZOOM, {
+      duration: 0.65,
+      easeLinearity: 0.3,
     })
-  }, [zone, map])
+  }, [zone?.id, map]) // eslint-disable-line react-hooks/exhaustive-deps -- only re-fly when zone identity changes
+
+  // Comunidad / filtro → encuadra las zonas de esa área
+  useEffect(() => {
+    if (!regionFocus || regionFocus.points.length === 0) return
+    if (regionFocus.key === 'todas') {
+      map.flyTo(SPAIN_CENTER, SPAIN_ZOOM, { duration: 0.55 })
+      return
+    }
+    if (regionFocus.points.length === 1) {
+      const p = regionFocus.points[0]
+      map.flyTo([p.lat, p.lng], ZONE_FOCUS_ZOOM, { duration: 0.55 })
+      return
+    }
+    const bounds = L.latLngBounds(regionFocus.points.map((p) => [p.lat, p.lng] as [number, number]))
+    map.fitBounds(bounds.pad(0.18), { maxZoom: 10, animate: true, duration: 0.55 })
+  }, [regionFocus?.key, map]) // eslint-disable-line react-hooks/exhaustive-deps
+
   return null
 }
 
@@ -177,129 +206,6 @@ export function shortZoneLabel(name: string, max = 22): string {
   return `${base.slice(0, max - 1).trim()}…`
 }
 
-function ZoneWeatherPanel({
-  lat,
-  lng,
-  cached,
-}: {
-  lat: number
-  lng: number
-  cached: MushroomConditions | null | undefined
-}) {
-  const { t } = useTranslation()
-  const [conditions, setConditions] = useState<MushroomConditions | null>(cached ?? null)
-  const [loading, setLoading] = useState(cached === undefined)
-  const [error, setError] = useState(false)
-
-  useEffect(() => {
-    if (cached !== undefined) {
-      setConditions(cached)
-      setLoading(false)
-      setError(cached === null)
-      return
-    }
-    let cancelled = false
-    setLoading(true)
-    setError(false)
-    fetchWeatherData(lat, lng)
-      .then((w) => {
-        if (cancelled) return
-        if (w) {
-          setConditions(evaluateMushroomConditions(w))
-          setError(false)
-        } else {
-          setConditions(null)
-          setError(true)
-        }
-        setLoading(false)
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setError(true)
-          setConditions(null)
-          setLoading(false)
-        }
-      })
-    return () => {
-      cancelled = true
-    }
-  }, [lat, lng, cached])
-
-  if (loading) {
-    return (
-      <div className="alert-banner alert-banner--unknown" role="status">
-        {t('map.weatherLoading', { defaultValue: 'Cargando aviso meteorológico…' })}
-      </div>
-    )
-  }
-  if (error || !conditions) {
-    return (
-      <div className="alert-banner alert-banner--unknown" role="status">
-        <strong>{t('map.weatherErrorTitle', { defaultValue: 'Sin datos meteorológicos' })}</strong>
-        <p className="alert-banner__advisory">
-          {t('map.weatherErrorBody', {
-            defaultValue:
-              'No se pudieron cargar condiciones en vivo. Puedes seguir explorando la ficha de zona (especies y hábitat).',
-          })}
-        </p>
-        <p className="alert-banner__source">
-          {t('map.weatherSource', { defaultValue: 'Fuente' })}:{' '}
-          <a href="https://open-meteo.com" target="_blank" rel="noopener noreferrer">
-            Open-Meteo
-          </a>
-        </p>
-      </div>
-    )
-  }
-
-  const meta = alertFromConditions(conditions)
-  const alertLabel = t(`map.alert.${meta.level}.label`, { defaultValue: meta.label })
-  const alertAdvisory = t(`map.alert.${meta.level}.advisory`, { defaultValue: meta.advisory })
-  return (
-    <div
-      className={`alert-banner alert-banner--${meta.level}`}
-      style={{ borderColor: meta.border, background: meta.bg }}
-    >
-      <div className="alert-banner__row">
-        <span className="alert-banner__level" style={{ color: meta.color }}>
-          {alertLabel}
-        </span>
-        <span className="alert-banner__score" style={{ color: meta.color }}>
-          {t('map.index', { defaultValue: 'Índice' })} {conditions.score}/100
-        </span>
-      </div>
-      <p className="alert-banner__advisory">{alertAdvisory}</p>
-      <ul className="alert-banner__details">
-        {conditions.details.slice(0, 5).map((d) => (
-          <li key={d}>{d.replace(/[✅⚠️🔴🟡📊💧]/g, '').trim()}</li>
-        ))}
-      </ul>
-      <p className="alert-banner__source">
-        {t('map.liveData', { defaultValue: 'Datos en tiempo real' })} ·{' '}
-        <a href="https://open-meteo.com" target="_blank" rel="noopener noreferrer">
-          Open-Meteo
-        </a>
-        {' · '}
-        <a
-          href={`https://www.google.com/maps?q=${lat},${lng}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {t('map.viewMaps', { defaultValue: 'Ver en mapa' })}
-        </a>
-        {' · '}
-        <a
-          href="https://www.aemet.es/es/eltiempo/prediccion/municipios"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          AEMET
-        </a>
-      </p>
-    </div>
-  )
-}
-
 const ZoneHotspot = memo(function ZoneHotspot({
   zone,
   meta,
@@ -326,19 +232,19 @@ const ZoneHotspot = memo(function ZoneHotspot({
   )
 })
 
-/** Stable marker row — avoids new eventHandlers object every weather chunk (issue 10). */
+/** One click → open compact float card (no Leaflet popup friction). */
 const ZoneMapMarker = memo(function ZoneMapMarker({
   zone,
   meta,
   onSelect,
-  openLabel,
   locale,
+  selected,
 }: {
   zone: MushroomZone
   meta: ZoneAlertMeta
   onSelect: (z: MushroomZone) => void
-  openLabel: string
   locale: string
+  selected?: boolean
 }) {
   const onClick = useCallback(() => onSelect(zone), [onSelect, zone])
   const handlers = useMemo(() => ({ click: onClick }), [onClick])
@@ -349,27 +255,9 @@ const ZoneMapMarker = memo(function ZoneMapMarker({
       icon={makeAlertIcon(meta, locale)}
       eventHandlers={handlers}
       title={`${zone.name} · ${meta.label}${scorePart}`}
-    >
-      <Popup className="map-popup-leaflet" maxWidth={260} minWidth={200}>
-        <div className="map-popup map-popup--atelier">
-          <p className="map-popup__kicker">{zone.region}</p>
-          <strong className="map-popup__title">{shortZoneLabel(zone.name, 36)}</strong>
-          <span
-            className={`map-popup__chip map-popup__chip--${meta.level}`}
-            style={{ color: meta.color, borderColor: meta.border, background: meta.bg }}
-          >
-            {meta.label}
-            {scorePart}
-          </span>
-          {zone.habitat ? (
-            <p className="map-popup__habitat">{zone.habitat}</p>
-          ) : null}
-          <button type="button" className="map-popup__cta" onClick={onClick}>
-            {openLabel}
-          </button>
-        </div>
-      </Popup>
-    </Marker>
+      opacity={selected ? 1 : 0.92}
+      zIndexOffset={selected ? 800 : 0}
+    />
   )
 })
 
@@ -398,15 +286,23 @@ const ClusterMapMarker = memo(function ClusterMapMarker({
   )
 })
 
+type ZoneWeatherSnap = {
+  weather: WeatherData
+  conditions: MushroomConditions
+}
+
+/** Unified zone card: climate metrics + what the score means + permits. */
 function ZoneDetailBody({
   zone,
   scores,
-  conditionsMap,
+  weatherSnap,
+  weatherLoading,
   onClose,
 }: {
   zone: MushroomZone
   scores: Record<string, number | null>
-  conditionsMap: Record<string, MushroomConditions | null>
+  weatherSnap: ZoneWeatherSnap | null | undefined
+  weatherLoading: boolean
   onClose: () => void
 }) {
   const { t } = useTranslation()
@@ -415,143 +311,258 @@ function ZoneDetailBody({
   const advisory = t(`map.alert.${meta.level}.advisory`, {
     defaultValue: meta.advisory,
   })
+  const preview = zone.species.slice(0, 4)
+  const resources = getZoneResourcePack(zone)
+  const province =
+    zone.provinces?.length ? zone.provinces.join(' · ') : null
+  const w = weatherSnap?.weather
+  const details = weatherSnap?.conditions.details ?? []
 
   return (
-    <div className="zone-detail zone-detail-card" data-testid="zone-detail-card">
+    <div
+      className="zone-detail zone-detail-card zone-detail-card--hero"
+      data-testid="zone-detail-card"
+    >
       <div className="zone-detail__sheet-handle" aria-hidden />
       <button
         type="button"
-        className="zone-close"
+        className="zone-close zone-close--hero"
         id="map-zone-close"
         onClick={onClose}
       >
         {t('actions.back', { defaultValue: 'Cerrar' })}
       </button>
 
-      <div
-        className="zone-detail-alert"
-        style={{ borderColor: meta.border, background: meta.bg }}
-      >
-        <span style={{ color: meta.color, fontWeight: 800 }}>{label}</span>
-        {meta.score !== null && (
-          <span style={{ color: meta.color }}> · {meta.score}/100</span>
-        )}
-        <p>{advisory}</p>
-        {isHotspotActive(meta.level) && (
-          <p className="zone-hotspot-badge">
-            {t('map.hotspotActive', {
-              defaultValue: 'Hotspot activo (condiciones favorables/aceptables)',
+      <header className="zone-hero-head">
+        <p className="zone-detail-region zone-detail-region--peek">
+          {zone.region}
+          {province ? ` · ${province}` : ''}
+        </p>
+        <h2 className="zone-detail-name zone-detail-name--hero">{zone.name}</h2>
+        <div
+          className="zone-detail-alert zone-detail-alert--peek"
+          style={{ borderColor: meta.border, background: meta.bg }}
+        >
+          <span style={{ color: meta.color, fontWeight: 800 }}>{label}</span>
+          {meta.score !== null && (
+            <span style={{ color: meta.color }}> · {meta.score}/100</span>
+          )}
+        </div>
+        <p className="zone-detail-advisory">{advisory}</p>
+        <div className="zone-detail-meta zone-detail-meta--peek">
+          {zone.habitat ? (
+            <span className="zone-meta-chip">{zone.habitat}</span>
+          ) : null}
+          {zone.season ? (
+            <span className="zone-meta-chip">{zone.season}</span>
+          ) : null}
+        </div>
+      </header>
+
+      {/* Climate block — explains Favorable / Desfavorable with real metrics */}
+      <section className="zone-climate" aria-label="Condiciones meteorológicas">
+        <h3 className="zone-climate__title">
+          {t('map.climateTitle', {
+            defaultValue: 'Condiciones ahora (orientativas)',
+          })}
+        </h3>
+        {weatherLoading && !w ? (
+          <p className="zone-climate__loading">
+            {t('map.weatherLoading', {
+              defaultValue: 'Cargando temperatura y humedad…',
+            })}
+          </p>
+        ) : w ? (
+          <>
+            <div className="zone-climate__grid">
+              <div className="zone-climate__metric">
+                <span className="zone-climate__k">
+                  {t('map.metricTemp', { defaultValue: 'Temperatura' })}
+                </span>
+                <span className="zone-climate__v">
+                  {w.temperature > -50 ? `${w.temperature.toFixed(1)} °C` : '—'}
+                </span>
+              </div>
+              <div className="zone-climate__metric">
+                <span className="zone-climate__k">
+                  {t('map.metricHumidity', { defaultValue: 'Humedad aire' })}
+                </span>
+                <span className="zone-climate__v">
+                  {w.relativeHumidity >= 0
+                    ? `${w.relativeHumidity.toFixed(0)} %`
+                    : '—'}
+                </span>
+              </div>
+              <div className="zone-climate__metric">
+                <span className="zone-climate__k">
+                  {t('map.metricSoil', { defaultValue: 'Humedad suelo' })}
+                </span>
+                <span className="zone-climate__v">
+                  {w.soilMoisture07 >= 0
+                    ? `${w.soilMoisture07.toFixed(0)} %`
+                    : '—'}
+                </span>
+              </div>
+              <div className="zone-climate__metric">
+                <span className="zone-climate__k">
+                  {t('map.metricSoilTemp', { defaultValue: 'Temp. suelo' })}
+                </span>
+                <span className="zone-climate__v">
+                  {w.soilTemperature > -50
+                    ? `${w.soilTemperature.toFixed(1)} °C`
+                    : '—'}
+                </span>
+              </div>
+              <div className="zone-climate__metric">
+                <span className="zone-climate__k">
+                  {t('map.metricRain', { defaultValue: 'Lluvia (ahora)' })}
+                </span>
+                <span className="zone-climate__v">
+                  {`${w.precipitation.toFixed(1)} mm`}
+                </span>
+              </div>
+              <div className="zone-climate__metric">
+                <span className="zone-climate__k">
+                  {t('map.metricRainProb', { defaultValue: 'Prob. lluvia' })}
+                </span>
+                <span className="zone-climate__v">
+                  {`${w.precipitationProbability.toFixed(0)} %`}
+                </span>
+              </div>
+            </div>
+            {details.length > 0 && (
+              <ul className="zone-climate__details">
+                {details.slice(0, 6).map((d) => (
+                  <li key={d}>{d}</li>
+                ))}
+              </ul>
+            )}
+            <p className="zone-climate__legend">
+              {t('map.climateLegend', {
+                defaultValue:
+                  'Índice 0–100: Favorable ≥75 · Aceptable ≥55 · Regular ≥35 · Desfavorable <35. No es permiso de recolección.',
+              })}
+            </p>
+          </>
+        ) : (
+          <p className="zone-climate__loading">
+            {t('map.weatherErrorBody', {
+              defaultValue:
+                'Sin datos meteorológicos en vivo. Puedes seguir explorando la zona.',
             })}
           </p>
         )}
-      </div>
+      </section>
 
-      <h2 className="zone-detail-name">{shortZoneLabel(zone.name, 40)}</h2>
-      <p className="zone-detail-region">{zone.region}</p>
-      <p className="zone-detail-desc zone-detail-desc--clamp">{zone.description}</p>
+      {zone.description ? (
+        <p className="zone-detail-desc zone-detail-desc--hero">
+          {zone.description.length > 180
+            ? `${zone.description.slice(0, 177).trim()}…`
+            : zone.description}
+        </p>
+      ) : null}
 
-      <ZoneWeatherPanel
-        lat={zone.lat}
-        lng={zone.lng}
-        cached={zone.id in conditionsMap ? conditionsMap[zone.id] : undefined}
-      />
-
-      <div className="zone-links">
-        <a
-          href={`https://www.openstreetmap.org/?mlat=${zone.lat}&mlon=${zone.lng}#map=11/${zone.lat}/${zone.lng}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          OpenStreetMap
-        </a>
-        <a
-          href={`https://www.google.com/maps?q=${zone.lat},${zone.lng}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Google Maps
-        </a>
-        <a
-          href="https://www.aemet.es/es/eltiempo/prediccion/municipios"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          AEMET
-        </a>
-        <Link to="/enciclopedia">{t('nav.encyclopedia', { defaultValue: 'Enciclopedia' })}</Link>
-        <Link to="/identificar">{t('nav.identify', { defaultValue: 'Identificar' })}</Link>
-      </div>
-
-      <div className="zone-detail-meta">
-        <div className="zone-meta-item">
-          <span className="zone-meta-label">
-            {t('map.habitat', { defaultValue: 'Hábitat' })}
-          </span>
-          <span className="zone-meta-value">{zone.habitat}</span>
+      {preview.length > 0 && (
+        <div className="zone-species-peek">
+          <p className="zone-species-peek__label">
+            {t('map.speciesPeek', {
+              defaultValue: 'Especies orientativas',
+            })}
+          </p>
+          <div className="zone-species-peek__row zone-species-peek__row--hero">
+            {preview.map((sciName) => {
+              const cat = getSpeciesByTaxon(sciName)
+              const slug = speciesSlug(sciName)
+              const common =
+                cat?.common_names?.find((n) => n && !/^hondo\b/i.test(n)) ||
+                cat?.common_names?.[0] ||
+                cat?.display_name ||
+                null
+              return (
+                <Link
+                  key={sciName}
+                  to={`/enciclopedia/${slug}`}
+                  className="zone-species-peek__item zone-species-peek__item--clean"
+                  title={sciName}
+                >
+                  <SpeciesThumb
+                    taxon={sciName}
+                    riskLabel={cat?.risk_label}
+                    alt={common || sciName}
+                    size={56}
+                  />
+                  <span className="zone-species-peek__name">
+                    {common || sciName}
+                  </span>
+                  {common ? (
+                    <span className="zone-species-peek__sci">{sciName}</span>
+                  ) : null}
+                </Link>
+              )
+            })}
+          </div>
         </div>
-        <div className="zone-meta-item">
-          <span className="zone-meta-label">
-            {t('map.season', { defaultValue: 'Temporada' })}
-          </span>
-          <span className="zone-meta-value">{zone.season}</span>
-        </div>
-        <div className="zone-meta-item">
-          <span className="zone-meta-label">
-            {t('map.abundance', { defaultValue: 'Producción habitual' })}
-          </span>
-          <span className="zone-meta-value">{zone.abundance}</span>
-        </div>
-      </div>
+      )}
 
-      <div className="zone-tips">
-        <strong>{t('map.tips', { defaultValue: 'Consejos de campo' })}</strong>
-        <ul>
-          {zone.tips.map((tip) => (
-            <li key={tip}>{tip}</li>
-          ))}
-        </ul>
-      </div>
-
-      <div className="zone-species">
-        <h3>
-          {t('map.speciesTitle', {
-            count: zone.species.length,
-            defaultValue: 'Especies orientativas ({{count}})',
+      <section className="zone-resources" aria-label="Permisos e información">
+        <h3 className="zone-resources__title">
+          {t('map.permitsTitle', {
+            defaultValue: 'Permisos e información oficial',
           })}
         </h3>
-        <div className="zone-species-list">
-          {zone.species.map((sciName) => {
-            const cat = getSpeciesByTaxon(sciName)
-            const risk = getRiskMeta(cat?.risk_label || 'dangerous_or_unknown')
-            const slug = speciesSlug(sciName)
-            return (
-              <Link key={sciName} to={`/enciclopedia/${slug}`} className="zone-species-card">
-                <SpeciesThumb
-                  taxon={sciName}
-                  riskLabel={cat?.risk_label}
-                  alt={sciName}
-                  size={48}
-                  className="zone-species-card__thumb"
-                />
-                <div className="species-info">
-                  <SpeciesNameBlock
-                    taxon={sciName}
-                    commonNames={cat?.common_names}
-                    family={cat?.family}
-                    familyEs={cat?.family_es}
-                    size="sm"
-                  />
-                </div>
-                <span className={`risk-chip ${risk.className}`}>{risk.label}</span>
-              </Link>
-            )
-          })}
-        </div>
+        {resources.note ? (
+          <p className="zone-resources__note">{resources.note}</p>
+        ) : null}
+        <ul className="zone-resources__list">
+          {resources.links.map((link) => (
+            <li key={link.url}>
+              <a
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`zone-resource-link zone-resource-link--${link.kind}`}
+              >
+                <span className="zone-resource-link__kind">
+                  {kindLabelEs(link.kind)}
+                </span>
+                <span className="zone-resource-link__label">{link.label}</span>
+                <span className="zone-resource-link__arrow" aria-hidden>
+                  ↗
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <div className="zone-detail-actions zone-detail-actions--hero">
+        <Link
+          to="/enciclopedia"
+          className="btn-atelier btn-atelier--primary zone-detail-actions__main"
+        >
+          {t('map.openEncyclopedia', { defaultValue: 'Enciclopedia' })}
+        </Link>
+        <a
+          href={`https://www.openstreetmap.org/?mlat=${zone.lat}&mlon=${zone.lng}#map=12/${zone.lat}/${zone.lng}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn-atelier btn-atelier--ghost"
+        >
+          {t('map.openOsm', { defaultValue: 'Ver en mapa' })}
+        </a>
+        <button
+          type="button"
+          className="btn-atelier btn-atelier--ghost"
+          onClick={onClose}
+        >
+          {t('map.keepExploring', { defaultValue: 'Seguir' })}
+        </button>
       </div>
-      <p className="zone-disclaimer">
-        {t('map.disclaimer', {
+
+      <p className="zone-disclaimer zone-disclaimer--peek">
+        {t('map.disclaimerShort', {
           defaultValue:
-            'No autoriza recolección ni consumo. Consulta normativa local y un micólogo. El mapa es educativo.',
+            'Educativo · no autoriza recolección ni consumo. Enlaces a webs oficiales o de gestión del coto.',
         })}
       </p>
     </div>
@@ -599,13 +610,12 @@ export default function SpainMapPage() {
     () => deepLinkBoot.zoneMissing,
   )
   const [scores, setScores] = useState<Record<string, number | null>>({})
-  const [conditionsMap, setConditionsMap] = useState<
-    Record<string, MushroomConditions | null>
+  const [weatherByZone, setWeatherByZone] = useState<
+    Record<string, ZoneWeatherSnap | null>
   >({})
   const [loadingAlerts, setLoadingAlerts] = useState(true)
   const [loadProgress, setLoadProgress] = useState(0)
   const [weatherFailedAll, setWeatherFailedAll] = useState(false)
-  const [mapMode, setMapMode] = useState<'simple' | 'advanced'>('simple')
   const [showHotspots, setShowHotspots] = useState(true)
   const [showMarkers, setShowMarkers] = useState(true)
   const [onlyHotspots, setOnlyHotspots] = useState(false)
@@ -615,20 +625,13 @@ export default function SpainMapPage() {
     lng: number
     zoom: number
   } | null>(null)
-  const [boardFocusIdx, setBoardFocusIdx] = useState(-1)
   const [geoStatus, setGeoStatus] = useState<
     'idle' | 'loading' | 'denied' | 'unsupported' | 'error'
   >('idle')
-  const [isMobileViewport, setIsMobileViewport] = useState(() =>
-    typeof window !== 'undefined'
-      ? window.matchMedia('(max-width: 899px)').matches
-      : false,
-  )
   const cancelledRef = useRef(false)
   const loadedZonesRef = useRef(0)
   /** Preserve non-CCAA deep-link region (e.g. Soria province) in URL. */
   const stickyRegionParamRef = useRef<string | null>(deepLinkBoot.stickyRegion)
-  const boardRef = useRef<HTMLDivElement>(null)
   const searchInputRef = useRef<HTMLInputElement>(null)
   const sidebarRef = useRef<HTMLDivElement>(null)
   const focusBeforeSheetRef = useRef<HTMLElement | null>(null)
@@ -652,16 +655,6 @@ export default function SpainMapPage() {
     clearZoneAlertIconCache()
   }, [mapLocale])
 
-  // Track mobile sheet breakpoint (M2.5 a11y roles)
-  useEffect(() => {
-    if (typeof window === 'undefined') return
-    const mq = window.matchMedia('(max-width: 899px)')
-    const onChange = () => setIsMobileViewport(mq.matches)
-    onChange()
-    mq.addEventListener('change', onChange)
-    return () => mq.removeEventListener('change', onChange)
-  }, [])
-
   // Keep URL in sync (replaceState — no history spam). State already bootstrapped from URL.
   useEffect(() => {
     replaceMapUrl({
@@ -682,7 +675,11 @@ export default function SpainMapPage() {
     setWeatherFailedAll(false)
     const totalZones = mushroomZones.length
 
-    type WeatherRow = { score: number | null; cond: MushroomConditions | null }
+    type WeatherRow = {
+      score: number | null
+      snap: ZoneWeatherSnap | null
+      ok: boolean
+    }
 
     void mapPoolChunked<MushroomZone, WeatherRow>(
       mushroomZones,
@@ -707,12 +704,12 @@ export default function SpainMapPage() {
               }
               return next
             })
-            setConditionsMap((prev) => {
+            setWeatherByZone((prev) => {
               const next = { ...prev }
               for (const p of partial) {
                 const zone = mushroomZones[p.index]
                 if (!zone) continue
-                next[zone.id] = p.value.cond
+                next[zone.id] = p.value.snap
               }
               return next
             })
@@ -722,17 +719,21 @@ export default function SpainMapPage() {
       async (zone) => {
         const w = await fetchWeatherData(zone.lat, zone.lng)
         if (!w) {
-          return { score: null, cond: null }
+          return { score: null, snap: null, ok: false }
         }
         const cond = evaluateMushroomConditions(w)
-        return { score: cond.score, cond }
+        return {
+          score: cond.score,
+          snap: { weather: w, conditions: cond },
+          ok: true,
+        }
       },
     ).then((results) => {
       if (cancelledRef.current) return
       setLoadingAlerts(false)
       setLoadProgress(100)
-      const anyOk = results.some((r) => r.cond != null)
-      const anyFail = results.some((r) => r.cond == null)
+      const anyOk = results.some((r) => r.ok)
+      const anyFail = results.some((r) => !r.ok)
       setWeatherFailedAll(!anyOk && anyFail)
     })
 
@@ -750,11 +751,6 @@ export default function SpainMapPage() {
     return counts
   }, [scores])
 
-  const setMapModeSafe = useCallback((mode: 'simple' | 'advanced') => {
-    setMapMode(mode)
-    if (mode === 'simple') setFilterAlert('todas')
-  }, [])
-
   const filteredZones = useMemo(() => {
     const base = mushroomZones.filter((z) => {
       if (filterRegion !== 'todas' && z.region !== filterRegion) return false
@@ -762,35 +758,23 @@ export default function SpainMapPage() {
         const level = alertFromScore(scores[z.id] ?? null).level
         if (!isHotspotActive(level) && selectedZone?.id !== z.id) return false
       }
-      if (mapMode === 'simple' && !onlyHotspots) return true
-      if (mapMode === 'advanced' && filterAlert !== 'todas') {
+      if (filterAlert !== 'todas') {
         const level = alertFromScore(scores[z.id] ?? null).level
         if (level !== filterAlert) return false
       }
       return true
     })
     return filterZonesByQuery(base, searchQuery)
-  }, [
-    filterRegion,
-    filterAlert,
-    scores,
-    mapMode,
-    onlyHotspots,
-    selectedZone,
-    searchQuery,
-  ])
+  }, [filterRegion, filterAlert, scores, onlyHotspots, selectedZone, searchQuery])
 
-  /** Limit hotspot circles on map for pan/zoom fluidness (mid-range mobile). */
+  /** Hotspot glows for favorable/acceptable (and selected). */
   const hotspotZones = useMemo(() => {
-    if (mapMode === 'simple') {
-      return filteredZones.filter((z) => {
-        if (selectedZone?.id === z.id) return true
-        const level = alertFromScore(scores[z.id] ?? null).level
-        return isHotspotActive(level)
-      })
-    }
-    return filteredZones
-  }, [filteredZones, mapMode, scores, selectedZone])
+    return filteredZones.filter((z) => {
+      if (selectedZone?.id === z.id) return true
+      const level = alertFromScore(scores[z.id] ?? null).level
+      return isHotspotActive(level)
+    })
+  }, [filteredZones, scores, selectedZone])
 
   // M2.1 Top 5 of the day (global scores — not re-filtered by search)
   const topHotspots = useMemo(() => {
@@ -811,6 +795,26 @@ export default function SpainMapPage() {
       clusterBelowZoom: CLUSTER_BELOW_ZOOM,
     })
   }, [filteredZones, mapZoom, showMarkers])
+
+  /**
+   * When user picks Comunidad / busca, pan the map to that area
+   * (e.g. filter → Pinares de Soria lands on their lat/lng, not Spain overview).
+   */
+  const regionFocus = useMemo(() => {
+    const key =
+      filterRegion !== 'todas'
+        ? `region:${filterRegion}`
+        : searchQuery.trim()
+          ? `q:${searchQuery.trim().toLowerCase()}`
+          : onlyHotspots
+            ? 'hotspots'
+            : 'todas'
+    if (key === 'todas') {
+      return { key: 'todas', points: [] as Array<{ lat: number; lng: number }> }
+    }
+    const pts = filteredZones.map((z) => ({ lat: z.lat, lng: z.lng }))
+    return { key, points: pts }
+  }, [filterRegion, searchQuery, onlyHotspots, filteredZones])
 
   const handleSelectZone = useCallback((zone: MushroomZone) => {
     setZoneNotFound(null)
@@ -841,99 +845,24 @@ export default function SpainMapPage() {
     setMapZoom((prev) => (prev === z ? prev : z))
   }, [])
 
-  // Sync board focus when filtered list changes
-  useEffect(() => {
-    if (boardFocusIdx >= filteredZones.length) {
-      setBoardFocusIdx(filteredZones.length > 0 ? filteredZones.length - 1 : -1)
-    }
-  }, [filteredZones, boardFocusIdx])
-
-  // Highlight board item when selected zone is in filtered list
-  useEffect(() => {
-    if (!selectedZone) return
-    const i = filteredZones.findIndex((z) => z.id === selectedZone.id)
-    if (i >= 0) setBoardFocusIdx(i)
-  }, [selectedZone, filteredZones])
-
-  // M2.6 keyboard — single owner (window). No local board onKeyDown (avoids double-step).
+  // Esc cierra la tarjeta de zona (sin listado inferior de nombres)
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      const target = e.target as HTMLElement | null
-      const tag = target?.tagName
-      const inField =
-        tag === 'INPUT' ||
-        tag === 'TEXTAREA' ||
-        tag === 'SELECT' ||
-        target?.isContentEditable
-
-      if (e.key === 'Escape') {
-        if (selectedZone) {
-          e.preventDefault()
-          e.stopPropagation()
-          setSelectedZone(null)
-        }
-        return
-      }
-
-      if (inField) return
-
-      const boardActive =
-        !!boardRef.current &&
-        (boardRef.current === document.activeElement ||
-          boardRef.current.contains(document.activeElement) ||
-          (target != null && boardRef.current.contains(target)))
-
-      const onPill = target?.classList?.contains('zone-pill')
-      const bodyFocus =
-        document.activeElement === document.body ||
-        document.activeElement === document.documentElement
-
-      // Arrows/Enter only when board-ish or idle body (map page exploration)
-      if (!boardActive && !onPill && !bodyFocus) return
-      if (filteredZones.length === 0) return
-
-      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-        e.preventDefault()
-        e.stopPropagation()
-        setBoardFocusIdx((i) => nextBoardIndex(i, 1, filteredZones.length))
-        boardRef.current?.focus()
-      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-        e.preventDefault()
-        e.stopPropagation()
-        setBoardFocusIdx((i) => nextBoardIndex(i, -1, filteredZones.length))
-        boardRef.current?.focus()
-      } else if (e.key === 'Enter') {
-        const idx = boardFocusIdx >= 0 ? boardFocusIdx : 0
-        const z = filteredZones[idx]
-        if (z) {
-          e.preventDefault()
-          e.stopPropagation()
-          handleSelectZone(z)
-        }
-      }
+      if (e.key !== 'Escape' || !selectedZone) return
+      e.preventDefault()
+      setSelectedZone(null)
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [filteredZones, boardFocusIdx, selectedZone, handleSelectZone])
-
-  // Focus the active pill for a11y
-  useEffect(() => {
-    if (boardFocusIdx < 0) return
-    const el = boardRef.current?.querySelector<HTMLElement>(
-      `[data-board-idx="${boardFocusIdx}"]`,
-    )
-    el?.scrollIntoView({ block: 'nearest', inline: 'nearest' })
-  }, [boardFocusIdx])
+  }, [selectedZone])
 
   const sheetOpen = Boolean(selectedZone)
-  const mobileSheetOpen = sheetOpen && isMobileViewport
 
-  // M2.5 mobile sheet: focus close on open, restore on close; light Tab trap
+  // Focus close on open, restore on close; light Tab trap (float sheet all sizes)
   useEffect(() => {
-    if (!mobileSheetOpen) return
+    if (!sheetOpen) return
     focusBeforeSheetRef.current =
       (document.activeElement as HTMLElement | null) ?? null
-    // Defer so dialog is in DOM
     const t = window.setTimeout(() => {
       document.getElementById('map-zone-close')?.focus()
     }, 0)
@@ -975,7 +904,7 @@ export default function SpainMapPage() {
       }
       focusBeforeSheetRef.current = null
     }
-  }, [mobileSheetOpen, selectedZone?.id])
+  }, [sheetOpen, selectedZone?.id])
 
   // M2.8 geolocation opt-in — session only, no storage
   const handleNearMe = useCallback(() => {
@@ -1008,187 +937,32 @@ export default function SpainMapPage() {
     )
   }, [handleSelectZone])
 
-  const mapHeight =
-    mapMode === 'simple' ? 'clamp(420px, 70vh, 720px)' : 'clamp(480px, 75vh, 780px)'
+  // Map-first: no bottom zone-name rail — maximize map area.
+  const mapHeight = 'calc(100vh - var(--header-h, 64px) - 6.25rem)'
 
   return (
     <div
-      className={`page-map page-map--${mapMode} page-map--immersive page-atelier-shell${
-        mobileSheetOpen ? ' page-map--sheet-open' : ''
+      className={`page-map page-map--immersive page-map--map-first page-atelier-shell${
+        sheetOpen ? ' page-map--sheet-open' : ''
       }`}
     >
-      <div className="mkt-page-head mkt-mesh map-page-header map-page-header--compact">
-        <p className="mkt-kicker">
-          {t('map.kicker', { defaultValue: 'Iberia · temporada' })}
-        </p>
-        <h1>{t('map.title', { defaultValue: 'Mapa micológico' })}</h1>
-        <p className="map-page-header__lead">
-          {t('map.subtitleShort', {
-            defaultValue:
-              'Zonas y avisos de fructificación. Toca el mapa. Solo orientación educativa.',
-          })}
-        </p>
-        <div className="map-header-row">
-          <div className="identify-mode-toggle map-mode-toggle">
-            <button
-              type="button"
-              className={
-                mapMode === 'simple'
-                  ? 'btn-atelier btn-atelier--primary'
-                  : 'btn-atelier btn-atelier--ghost'
-              }
-              onClick={() => setMapModeSafe('simple')}
-            >
-              {t('map.modeSimple', { defaultValue: 'Simple' })}
-            </button>
-            <button
-              type="button"
-              className={
-                mapMode === 'advanced'
-                  ? 'btn-atelier btn-atelier--primary'
-                  : 'btn-atelier btn-atelier--ghost'
-              }
-              onClick={() => setMapModeSafe('advanced')}
-            >
-              {t('map.modeAdvanced', { defaultValue: 'Avanzado' })}
-            </button>
-          </div>
+      {/* Unified chrome: one mode, filters + climate on zone click */}
+      <header className="map-chrome">
+        <div className="map-chrome__title-row">
+          <h1 className="map-chrome__title">
+            {t('map.title', { defaultValue: 'Mapa micológico' })}
+          </h1>
           <span className="map-safety-chip" role="note">
             {t('map.safetyChip', { defaultValue: 'Educativo · no recolección' })}
           </span>
         </div>
-      </div>
 
-      {mapMode === 'advanced' && (
-        <div className="atelier-panel map-advanced-panel">
-          <SeasonRadar compact />
-        </div>
-      )}
-
-      {mapMode === 'advanced' && (
-        <div className="map-alert-strip" role="status">
-          <div className="map-alert-strip__item map-alert-strip__item--extreme">
-            <strong>{alertSummary.extreme}</strong>
-            <span>{t('map.levelExtreme', { defaultValue: 'Desfavorable' })}</span>
-          </div>
-          <div className="map-alert-strip__item map-alert-strip__item--severe">
-            <strong>{alertSummary.severe}</strong>
-            <span>{t('map.levelSevere', { defaultValue: 'Regular' })}</span>
-          </div>
-          <div className="map-alert-strip__item map-alert-strip__item--moderate">
-            <strong>{alertSummary.moderate}</strong>
-            <span>{t('map.levelModerate', { defaultValue: 'Aceptable' })}</span>
-          </div>
-          <div className="map-alert-strip__item map-alert-strip__item--good">
-            <strong>{alertSummary.good}</strong>
-            <span>{t('map.levelGood', { defaultValue: 'Favorable' })}</span>
-          </div>
-          <div className="map-alert-strip__item map-alert-strip__item--unknown">
-            <strong>
-              {loadingAlerts ? `${loadProgress}%` : alertSummary.unknown}
-            </strong>
-            <span>
-              {loadingAlerts
-                ? t('map.loadingZones', {
-                    defaultValue: 'Cargando zonas…',
-                    pct: loadProgress,
-                  })
-                : t('map.noData', { defaultValue: 'Sin datos' })}
-            </span>
-          </div>
-        </div>
-      )}
-
-      {weatherFailedAll && !loadingAlerts && (
-        <div className="map-weather-banner" role="status">
-          {t('map.weatherAllFailed', {
-            defaultValue:
-              'No hay datos meteorológicos ahora. El mapa sigue usable con fichas de zona y especies orientativas.',
-          })}
-        </div>
-      )}
-
-      {zoneNotFound && (
-        <div className="map-weather-banner map-zone-missing" role="status">
-          {t('map.zoneNotFound', {
-            id: zoneNotFound,
-            defaultValue: 'Zona no encontrada: «{{id}}». Elige otra en el mapa o el tablero.',
-          })}{' '}
-          <button
-            type="button"
-            className="map-zone-missing__dismiss"
-            onClick={() => setZoneNotFound(null)}
-          >
-            {t('actions.clear', { defaultValue: 'Cerrar' })}
-          </button>
-        </div>
-      )}
-
-      {/* M2.1 Top 5 hotspots del día */}
-      <section
-        className="map-top-hotspots"
-        aria-label={t('map.topHotspotsTitle', {
-          defaultValue: 'Top 5 hotspots del día',
-        })}
-      >
-        <div className="map-top-hotspots__head">
-          <h2 className="map-top-hotspots__title">
-            {t('map.topHotspotsTitle', { defaultValue: 'Top 5 hotspots del día' })}
-          </h2>
-          <span className="map-top-hotspots__hint">
-            {loadingAlerts
-              ? t('map.topHotspotsLoading', {
-                  defaultValue: 'Actualizando con el tiempo…',
-                })
-              : t('map.topHotspotsHint', {
-                  defaultValue: 'Toda Iberia · índice de condiciones · educativo',
-                })}
-          </span>
-        </div>
-        {topHotspots.length === 0 ? (
-          <p className="map-top-hotspots__empty">
-            {t('map.topHotspotsEmpty', {
-              defaultValue: 'Aún no hay puntuaciones. Explora el mapa mientras carga.',
-            })}
-          </p>
-        ) : (
-          <ol className="map-top-hotspots__list">
-            {topHotspots.map(({ zone, score }, i) => {
-              const meta = alertFromScore(score)
-              return (
-                <li key={zone.id}>
-                  <button
-                    type="button"
-                    className={`map-hotspot-chip ${
-                      selectedZone?.id === zone.id ? 'is-active' : ''
-                    }`}
-                    style={{ ['--hot' as string]: meta.color }}
-                    onClick={() => handleSelectZone(zone)}
-                  >
-                    <span className="map-hotspot-chip__rank">{i + 1}</span>
-                    <span className="map-hotspot-chip__name">
-                      {shortZoneLabel(zone.name, 28)}
-                    </span>
-                    <span className="map-hotspot-chip__score">{score}</span>
-                  </button>
-                </li>
-              )
-            })}
-          </ol>
-        )}
-      </section>
-
-      {/* Search + region + near me */}
-      <div className="map-toolbar map-toolbar--sticky map-toolbar--slim map-toolbar--region">
-        <div className="filter-row map-search-row">
-          <label htmlFor="map-zone-search">
-            {t('map.searchLabel', { defaultValue: 'Buscar zona' })}
-          </label>
+        <div className="map-chrome__filters" role="search">
           <input
             ref={searchInputRef}
             id="map-zone-search"
             type="search"
-            className="map-search-input"
+            className="map-search-input map-chrome__search"
             data-testid="map-zone-search"
             placeholder={t('map.searchPlaceholder', {
               defaultValue: 'Buscar Picos, Soria, hayedo…',
@@ -1197,14 +971,11 @@ export default function SpainMapPage() {
             onChange={(e) => handleSearchChange(e.target.value)}
             autoComplete="off"
             enterKeyHint="search"
+            aria-label={t('map.searchLabel', { defaultValue: 'Buscar zona' })}
           />
-        </div>
-        <div className="filter-row">
-          <label htmlFor="map-region-select">
-            {t('map.region', { defaultValue: 'Comunidad' })}
-          </label>
           <select
             id="map-region-select"
+            className="map-chrome__select"
             value={filterRegion}
             onChange={(e) => {
               const v = e.target.value
@@ -1212,6 +983,7 @@ export default function SpainMapPage() {
               stickyRegionParamRef.current = v === 'todas' ? null : v
             }}
             data-testid="map-region-select"
+            aria-label={t('map.region', { defaultValue: 'Comunidad' })}
           >
             <option value="todas">{t('map.allRegions', { defaultValue: 'Todas' })}</option>
             {regions
@@ -1222,40 +994,35 @@ export default function SpainMapPage() {
                 </option>
               ))}
           </select>
-        </div>
-        {mapMode === 'advanced' && (
-          <div className="filter-row">
-            <label htmlFor="map-alert-select">
-              {t('map.alertFilter', { defaultValue: 'Aviso' })}
-            </label>
-            <select
-              id="map-alert-select"
-              value={filterAlert}
-              onChange={(e) => setFilterAlert(e.target.value)}
-            >
-              <option value="todas">{t('map.allLevels', { defaultValue: 'Todos' })}</option>
-              <option value="extreme">
-                {t('map.levelExtreme', { defaultValue: 'Desfavorable' })}
-              </option>
-              <option value="severe">
-                {t('map.levelSevere', { defaultValue: 'Regular' })}
-              </option>
-              <option value="moderate">
-                {t('map.levelModerate', { defaultValue: 'Aceptable' })}
-              </option>
-              <option value="good">
-                {t('map.levelGood', { defaultValue: 'Favorable' })}
-              </option>
-              <option value="unknown">
-                {t('map.noData', { defaultValue: 'Sin datos' })}
-              </option>
-            </select>
-          </div>
-        )}
-        <div className="filter-row">
+          <select
+            id="map-alert-select"
+            className="map-chrome__select"
+            value={filterAlert}
+            onChange={(e) => setFilterAlert(e.target.value)}
+            aria-label={t('map.alertFilter', { defaultValue: 'Condiciones' })}
+          >
+            <option value="todas">
+              {t('map.allLevels', { defaultValue: 'Todas las condiciones' })}
+            </option>
+            <option value="good">
+              {t('map.levelGood', { defaultValue: 'Favorable' })}
+            </option>
+            <option value="moderate">
+              {t('map.levelModerate', { defaultValue: 'Aceptable' })}
+            </option>
+            <option value="severe">
+              {t('map.levelSevere', { defaultValue: 'Regular' })}
+            </option>
+            <option value="extreme">
+              {t('map.levelExtreme', { defaultValue: 'Desfavorable' })}
+            </option>
+            <option value="unknown">
+              {t('map.noData', { defaultValue: 'Sin datos' })}
+            </option>
+          </select>
           <button
             type="button"
-            className="btn-atelier btn-atelier--ghost map-near-me"
+            className="btn-atelier btn-atelier--ghost map-near-me map-chrome__near"
             onClick={handleNearMe}
             disabled={geoStatus === 'loading'}
             data-testid="map-near-me"
@@ -1268,14 +1035,88 @@ export default function SpainMapPage() {
               ? t('map.nearMeLoading', { defaultValue: 'Localizando…' })
               : t('map.nearMe', { defaultValue: 'Cerca de mí' })}
           </button>
-        </div>
-        <div className="filter-row map-toolbar__meta">
-          <span>
+          <span className="map-chrome__meta" aria-live="polite">
             {filteredZones.length} {t('map.zones', { defaultValue: 'zonas' })}
             {loadingAlerts ? ` · ${loadProgress}%` : ''}
           </span>
         </div>
+
+        {/* Top 5 — one-tap selection (no wall of text) */}
+        {topHotspots.length > 0 && (
+          <div
+            className="map-chrome__hotspots"
+            role="toolbar"
+            aria-label={t('map.topHotspotsTitle', {
+              defaultValue: 'Top hotspots',
+            })}
+          >
+            {topHotspots.map(({ zone, score }, i) => {
+              const meta = alertFromScore(score)
+              return (
+                <button
+                  key={zone.id}
+                  type="button"
+                  className={`map-hotspot-chip ${
+                    selectedZone?.id === zone.id ? 'is-active' : ''
+                  }`}
+                  style={{ ['--hot' as string]: meta.color }}
+                  onClick={() => handleSelectZone(zone)}
+                >
+                  <span className="map-hotspot-chip__rank">{i + 1}</span>
+                  <span className="map-hotspot-chip__name">
+                    {shortZoneLabel(zone.name, 22)}
+                  </span>
+                  <span className="map-hotspot-chip__score">{score}</span>
+                </button>
+              )
+            })}
+          </div>
+        )}
+      </header>
+
+      <div className="map-alert-strip map-alert-strip--compact" role="status">
+        <div className="map-alert-strip__item map-alert-strip__item--good">
+          <strong>{alertSummary.good}</strong>
+          <span>{t('map.levelGood', { defaultValue: 'Favorable' })}</span>
+        </div>
+        <div className="map-alert-strip__item map-alert-strip__item--moderate">
+          <strong>{alertSummary.moderate}</strong>
+          <span>{t('map.levelModerate', { defaultValue: 'Aceptable' })}</span>
+        </div>
+        <div className="map-alert-strip__item map-alert-strip__item--severe">
+          <strong>{alertSummary.severe}</strong>
+          <span>{t('map.levelSevere', { defaultValue: 'Regular' })}</span>
+        </div>
+        <div className="map-alert-strip__item map-alert-strip__item--extreme">
+          <strong>{alertSummary.extreme}</strong>
+          <span>{t('map.levelExtreme', { defaultValue: 'Desfavorable' })}</span>
+        </div>
       </div>
+
+      {weatherFailedAll && !loadingAlerts && (
+        <div className="map-weather-banner" role="status">
+          {t('map.weatherAllFailed', {
+            defaultValue:
+              'Sin datos meteorológicos ahora. El mapa sigue usable (educativo).',
+          })}
+        </div>
+      )}
+
+      {zoneNotFound && (
+        <div className="map-weather-banner map-zone-missing" role="status">
+          {t('map.zoneNotFound', {
+            id: zoneNotFound,
+            defaultValue: 'Zona no encontrada: «{{id}}». Elige otra en el mapa.',
+          })}{' '}
+          <button
+            type="button"
+            className="map-zone-missing__dismiss"
+            onClick={() => setZoneNotFound(null)}
+          >
+            {t('actions.clear', { defaultValue: 'Cerrar' })}
+          </button>
+        </div>
+      )}
 
       {(geoStatus === 'denied' ||
         geoStatus === 'unsupported' ||
@@ -1283,65 +1124,27 @@ export default function SpainMapPage() {
         <p className="map-geo-msg" role="status">
           {geoStatus === 'denied'
             ? t('map.nearMeDenied', {
-                defaultValue:
-                  'Ubicación denegada. Puedes seguir explorando el mapa sin GPS.',
+                defaultValue: 'Ubicación denegada. Explora el mapa sin GPS.',
               })
             : geoStatus === 'unsupported'
               ? t('map.nearMeUnsupported', {
                   defaultValue: 'Este dispositivo no ofrece geolocalización.',
                 })
               : t('map.nearMeError', {
-                  defaultValue: 'No se pudo obtener la ubicación. Inténtalo de nuevo.',
-                })}{' '}
-          <span className="map-geo-msg__privacy">
-            {t('map.nearMePrivacy', {
-              defaultValue:
-                'Solo en esta sesión. No guardamos ni rastreamos tu ubicación.',
-            })}
-          </span>
+                  defaultValue: 'No se pudo obtener la ubicación.',
+                })}
         </p>
       )}
 
-      <div className="map-layout">
+      {/* Full-bleed map — detail only when a zone is selected (sheet / float) */}
+      <div className="map-layout map-layout--solo">
         <div className="map-container-wrapper map-container-wrapper--hero">
           <div
-            className="map-overlay map-overlay--top"
-            role="region"
-            aria-label={t('map.controlsLabel', { defaultValue: 'Controles del mapa' })}
+            className="map-overlay map-overlay--layers"
+            role="group"
+            aria-label={t('map.controlsLabel', { defaultValue: 'Capas del mapa' })}
           >
-            <div
-              className="map-glass map-glass--chips map-glass--chips-scroll"
-              role="toolbar"
-              aria-label={t('map.region', { defaultValue: 'Comunidad' })}
-            >
-              <button
-                type="button"
-                className={`map-chip ${filterRegion === 'todas' ? 'is-active' : ''}`}
-                onClick={() => {
-                  setFilterRegion('todas')
-                  stickyRegionParamRef.current = null
-                }}
-              >
-                {t('map.allRegions', { defaultValue: 'Todas' })}
-              </button>
-              {regions
-                .filter((r) => r !== 'todas')
-                .map((r) => (
-                  <button
-                    key={r}
-                    type="button"
-                    className={`map-chip ${filterRegion === r ? 'is-active' : ''}`}
-                    onClick={() => {
-                      const next = r === filterRegion ? 'todas' : r
-                      setFilterRegion(next)
-                      stickyRegionParamRef.current = next === 'todas' ? null : next
-                    }}
-                  >
-                    {r}
-                  </button>
-                ))}
-            </div>
-            <div className="map-glass map-glass--layers" role="group" aria-label="Capas del mapa">
+            <div className="map-glass map-glass--layers">
               <button
                 type="button"
                 className={`map-chip map-chip--toggle ${showMarkers ? 'is-active' : ''}`}
@@ -1383,7 +1186,7 @@ export default function SpainMapPage() {
               <div className="map-load-progress__bar" style={{ width: `${loadProgress}%` }} />
               <span className="map-load-progress__label">
                 {t('map.loadingProgress', {
-                  defaultValue: 'Avisos meteorológicos · {{pct}}%',
+                  defaultValue: 'Avisos · {{pct}}%',
                   pct: loadProgress,
                 })}
               </span>
@@ -1403,7 +1206,7 @@ export default function SpainMapPage() {
             style={{
               height: mapHeight,
               width: '100%',
-              borderRadius: '20px',
+              borderRadius: '16px',
               zIndex: 1,
             }}
           >
@@ -1452,202 +1255,69 @@ export default function SpainMapPage() {
                       }),
                     }}
                     onSelect={handleSelectZone}
-                    openLabel={t('map.openCard', { defaultValue: 'Abrir ficha' })}
                     locale={mapLocale}
+                    selected={selectedZone?.id === zone.id}
                   />
                 )
               })}
-            <MapController zone={selectedZone} />
+            <MapController
+              zone={selectedZone}
+              regionFocus={selectedZone ? null : regionFocus}
+            />
             <ZoomTracker onZoom={handleZoom} />
             <FlyToCluster target={clusterFly} />
           </MapContainer>
 
-          <div className="map-legend map-legend--alerts map-legend--glass">
-            <strong>{t('map.legendTitle', { defaultValue: 'Aviso de condiciones' })}</strong>
+          <div className="map-legend map-legend--alerts map-legend--glass map-legend--mini">
             <span className="legend-item">
-              <span className="legend-dot" style={{ background: '#b91c1c' }} />{' '}
-              {t('map.levelExtreme', { defaultValue: 'Desfavorable' })}
-            </span>
-            <span className="legend-item">
-              <span className="legend-dot" style={{ background: '#c2410c' }} />{' '}
-              {t('map.levelSevere', { defaultValue: 'Regular' })}
+              <span className="legend-dot" style={{ background: '#15803d' }} />{' '}
+              {t('map.levelGood', { defaultValue: 'Favorable' })}
             </span>
             <span className="legend-item">
               <span className="legend-dot" style={{ background: '#a16207' }} />{' '}
               {t('map.levelModerate', { defaultValue: 'Aceptable' })}
             </span>
             <span className="legend-item">
-              <span className="legend-dot" style={{ background: '#15803d' }} />{' '}
-              {t('map.levelGood', { defaultValue: 'Favorable' })}
+              <span className="legend-dot" style={{ background: '#c2410c' }} />{' '}
+              {t('map.levelSevere', { defaultValue: 'Regular' })}
             </span>
-            <span className="legend-item legend-item--hotspot">
-              <span className="legend-hotspot-swatch" />{' '}
-              {t('map.hotspotLegend', { defaultValue: 'Halo = hotspot educativo' })}
+            <span className="legend-item">
+              <span className="legend-dot" style={{ background: '#b91c1c' }} />{' '}
+              {t('map.levelExtreme', { defaultValue: 'Desfavorable' })}
             </span>
-            {mapZoom < CLUSTER_BELOW_ZOOM && (
-              <span className="legend-item legend-item--cluster">
-                {t('map.clusterLegend', {
-                  defaultValue: 'Números = grupos (amplía el zoom)',
-                })}
-              </span>
-            )}
           </div>
-
-          <span className="map-safety-chip map-safety-chip--floating" role="note">
-            {t('map.safetyChip', { defaultValue: 'Educativo · no recolección' })}
-          </span>
         </div>
 
-        <div
-          ref={sidebarRef}
-          className={`map-sidebar map-sidebar--sticky${
-            mobileSheetOpen ? ' map-sidebar--sheet' : ''
-          }`}
-          id="map-sidebar"
-          role={mobileSheetOpen ? 'dialog' : 'complementary'}
-          aria-modal={mobileSheetOpen ? true : undefined}
-          aria-label={
-            selectedZone
-              ? shortZoneLabel(selectedZone.name, 40)
-              : t('map.pickZoneTitle', { defaultValue: 'Selecciona una zona' })
-          }
-        >
-          {!selectedZone ? (
-            <div className="zone-placeholder map-sidebar__desktop-only">
-              <EmptyState
-                title={t('map.pickZoneTitle', { defaultValue: 'Selecciona una zona' })}
-                description={t('map.pickZoneBody', {
-                  defaultValue:
-                    'Toca un marcador o una tarjeta del tablero. Los halos muestran hotspots de condiciones favorables (educativo).',
-                })}
-              />
-              <ul className="zone-placeholder-list">
-                <li>{t('map.feat1', { defaultValue: 'Aviso meteorológico por zona' })}</li>
-                <li>{t('map.feat2', { defaultValue: 'Hotspots visuales + ficha lateral' })}</li>
-                <li>{t('map.feat3', { defaultValue: 'Enlaces a fichas de la enciclopedia' })}</li>
-                <li>{t('map.feat4', { defaultValue: 'Consejos y hábitat' })}</li>
-              </ul>
-              <div className="zone-stats">
-                <div className="zone-stat">
-                  <strong>{mushroomZones.length}</strong>
-                  <span>{t('map.zones', { defaultValue: 'zonas' })}</span>
-                </div>
-                <div className="zone-stat">
-                  <strong>{regions.length - 1}</strong>
-                  <span>CC.AA.</span>
-                </div>
-                <div className="zone-stat">
-                  <strong>{alertSummary.good}</strong>
-                  <span>{t('map.hotspots', { defaultValue: 'hotspots' })}</span>
-                </div>
-              </div>
-              <p className="zone-disclaimer">
-                {t('map.disclaimer', {
-                  defaultValue:
-                    'No autoriza recolección ni consumo. Consulta normativa local y un micólogo. El mapa es educativo.',
-                })}
-              </p>
-            </div>
-          ) : (
+        {/* One compact card for the selected zone only */}
+      </div>
+
+      {sheetOpen && selectedZone && (
+        <div className="map-zone-modal-root">
+          <button
+            type="button"
+            className="map-sheet-backdrop map-sheet-backdrop--center"
+            aria-label={t('actions.back', { defaultValue: 'Cerrar' })}
+            onClick={handleClearZone}
+            tabIndex={-1}
+          />
+          <div
+            ref={sidebarRef}
+            className="map-sidebar map-sidebar--modal map-sidebar--sheet"
+            id="map-sidebar"
+            role="dialog"
+            aria-modal="true"
+            aria-label={shortZoneLabel(selectedZone.name, 48)}
+          >
             <ZoneDetailBody
               zone={selectedZone}
               scores={scores}
-              conditionsMap={conditionsMap}
+              weatherSnap={weatherByZone[selectedZone.id]}
+              weatherLoading={loadingAlerts && weatherByZone[selectedZone.id] === undefined}
               onClose={handleClearZone}
             />
-          )}
-        </div>
-      </div>
-
-      {/* Mobile sheet backdrop — only under sheet breakpoint */}
-      {mobileSheetOpen && (
-        <button
-          type="button"
-          className="map-sheet-backdrop"
-          aria-label={t('actions.back', { defaultValue: 'Cerrar' })}
-          onClick={handleClearZone}
-          tabIndex={-1}
-        />
-      )}
-
-      <div
-        className="zone-list-section zone-list-section--compact"
-        ref={boardRef}
-        tabIndex={0}
-        role="listbox"
-        aria-label={t('map.boardTitleShort', {
-          count: filteredZones.length,
-          defaultValue: 'Zonas ({{count}})',
-        })}
-        aria-activedescendant={
-          boardFocusIdx >= 0 && filteredZones[boardFocusIdx]
-            ? `zone-pill-${filteredZones[boardFocusIdx].id}`
-            : undefined
-        }
-      >
-        <div className="zone-list-head">
-          <h2 className="zone-list-title">
-            {t('map.boardTitleShort', {
-              count: filteredZones.length,
-              defaultValue: 'Zonas ({{count}})',
-            })}
-          </h2>
-          <span className="zone-list-hint">
-            {t('map.boardHintKeys', {
-              defaultValue: 'Toca o usa ← → · Enter · Esc',
-            })}
-          </span>
-        </div>
-        {filteredZones.length === 0 ? (
-          <EmptyState
-            title={t('map.emptyFilterTitle', { defaultValue: 'Sin zonas' })}
-            description={t('map.emptyFilterBody', {
-              defaultValue: 'Quita filtros o elige otra comunidad.',
-            })}
-            actionLabel={t('map.resetFilters', { defaultValue: 'Reset' })}
-            onAction={() => {
-              setFilterRegion('todas')
-              setFilterAlert('todas')
-              setOnlyHotspots(false)
-              setSearchQuery('')
-              stickyRegionParamRef.current = null
-            }}
-          />
-        ) : (
-          <div className="zone-list-rail" role="presentation">
-            {filteredZones.map((zone, idx) => {
-              const meta = alertFromScore(scores[zone.id] ?? null)
-              const hot = isHotspotActive(meta.level)
-              const scoreTxt =
-                meta.score !== null ? String(meta.score) : loadingAlerts ? '…' : '—'
-              const focused = boardFocusIdx === idx
-              return (
-                <button
-                  key={zone.id}
-                  id={`zone-pill-${zone.id}`}
-                  type="button"
-                  role="option"
-                  aria-selected={selectedZone?.id === zone.id || focused}
-                  data-board-idx={idx}
-                  title={zone.name}
-                  className={`zone-pill ${selectedZone?.id === zone.id ? 'is-active' : ''} ${
-                    hot ? 'is-hot' : ''
-                  } ${focused ? 'is-focus' : ''}`}
-                  style={{ ['--pill' as string]: meta.color }}
-                  onClick={() => {
-                    setBoardFocusIdx(idx)
-                    handleSelectZone(zone)
-                  }}
-                >
-                  <span className="zone-pill__dot" aria-hidden />
-                  <span className="zone-pill__name">{shortZoneLabel(zone.name)}</span>
-                  <span className="zone-pill__score">{scoreTxt}</span>
-                </button>
-              )
-            })}
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   )
 }

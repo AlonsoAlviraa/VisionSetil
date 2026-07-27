@@ -1,0 +1,18 @@
+{
+  "id": "alonsoalviraaaa/visionsetil-exp-v18-multisource",
+  "title": "visionsetil-exp-v18-multisource",
+  "code_file": "visionsetil_exp_v18_multisource.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "dataset_sources": [
+    "picekl/fungitastic",
+    "zlatan599/mushroom1",
+    "dariobaumberger/combined-kaggle-mushrooms-dataset"
+  ],
+  "competition_sources": [],
+  "kernel_sources": []
+}

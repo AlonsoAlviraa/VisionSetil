@@ -4,7 +4,7 @@
  * No procedural 3D — only real photographs.
  */
 
-import { getCatalogPhotoUrl } from './speciesImageService'
+import { getCatalogPhotoUrlHd } from './speciesImageService'
 
 export type SpinPhoto = {
   url: string
@@ -164,27 +164,41 @@ export async function resolveSpinPhotoSet(
   }
 
   const frames: SpinPhoto[] = []
-  if (sameOriginOnly) {
-    // Same-origin product media — no multi-MB iNat on Home
-    const slug = slugFromTaxon(name)
-    if (slug) {
-      frames.push({
-        url: `/media/species/${slug}/card.webp`,
-        source: 'catalog',
-        attribution: 'VisionSetil media',
-      })
-      frames.push({
-        url: `/media/species/${slug}/detail.webp`,
-        source: 'catalog',
-        attribution: 'VisionSetil media',
-      })
+  const slug = slugFromTaxon(name)
+
+  // Light same-origin: card + detail only (no speculative gallery 404 spam)
+  if (slug) {
+    frames.push({
+      url: `/media/species/${slug}/card.webp`,
+      source: 'catalog',
+      attribution: 'VisionSetil media',
+    })
+    frames.push({
+      url: `/media/species/${slug}/detail.webp`,
+      source: 'catalog',
+      attribution: 'VisionSetil media',
+    })
+    if (!sameOriginOnly) {
+      // Only first 2 gallery frames when remote multi-angle is allowed
+      for (let i = 1; i <= 2; i++) {
+        const n = String(i).padStart(2, '0')
+        frames.push({
+          url: `/media/species/${slug}/gallery/${n}.webp`,
+          source: 'catalog',
+          attribution: 'VisionSetil gallery',
+        })
+      }
     }
-  } else {
-    const catalog = getCatalogPhotoUrl(name)
+  }
+
+  if (!sameOriginOnly) {
+    // Medium catalog (not large) — lighter network
+    const catalog = getCatalogPhotoUrlHd(name, 'display')
     if (catalog) {
       frames.push({ url: catalog, source: 'catalog', attribution: 'Catálogo VisionSetil' })
     }
-    const inat = await fetchInatSpinFrames(name, maxFrames)
+    // Cap remote frames hard for perf
+    const inat = await fetchInatSpinFrames(name, Math.min(maxFrames, 6))
     for (const f of inat) {
       frames.push(f)
     }

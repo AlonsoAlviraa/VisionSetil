@@ -1,4 +1,4 @@
-/** Product header — premium single bar, 5 primaries + Más. */
+/** Product header — premium bar + working Más menu (outside overflow clip). */
 import { useEffect, useRef, useState } from 'react'
 import { NavLink, Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
@@ -7,26 +7,112 @@ import { LanguageSwitcher } from './LanguageSwitcher'
 
 const THEME_KEY = 'visionsetil_theme'
 
-/** Always visible — product core */
 const primaryNav = [
-  { to: '/', labelKey: 'nav.home' },
-  { to: '/identificar', labelKey: 'nav.identify', cta: true },
-  { to: '/enciclopedia', labelKey: 'nav.encyclopedia' },
-  { to: '/setadle', labelKey: 'nav.setadle' },
-  { to: '/mapa', labelKey: 'nav.map' },
+  { to: '/', labelKey: 'nav.home', fallback: 'Inicio' },
+  { to: '/identificar', labelKey: 'nav.identify', fallback: 'Identificar', cta: true },
+  { to: '/enciclopedia', labelKey: 'nav.encyclopedia', fallback: 'Enciclopedia' },
+  { to: '/setadle', labelKey: 'nav.setadle', fallback: 'Setadle' },
+  { to: '/mapa', labelKey: 'nav.map', fallback: 'Mapa' },
 ] as const
 
-/** Overflow “Más” — grouped experience */
-const moreNav = [
-  { to: '/reto', labelKey: 'nav.quiz' },
-  { to: '/lookalikes', labelKey: 'nav.lookalikes' },
-  { to: '/historial', labelKey: 'nav.notebook' },
-  { to: '/offline', labelKey: 'nav.offline' },
-  { to: '/educacion', labelKey: 'nav.education' },
-  { to: '/comunidad', labelKey: 'nav.community' },
-  { to: '/revision-experta', labelKey: 'nav.experts' },
-  { to: '/ml', labelKey: 'nav.ml' },
-] as const
+type MoreNavItem = {
+  to: string
+  labelKey: string
+  fallback: string
+  blurb: string
+  badge?: 'dev'
+}
+
+type MoreNavGroup = {
+  id: string
+  titleKey: string
+  titleFallback: string
+  items: MoreNavItem[]
+}
+
+/** Grouped product hub under Más (flat moreNav kept for active-path checks). */
+const moreNavGroups: MoreNavGroup[] = [
+  {
+    id: 'learn',
+    titleKey: 'nav.moreGroup.learn',
+    titleFallback: 'Aprender',
+    items: [
+      {
+        to: '/educacion',
+        labelKey: 'nav.education',
+        fallback: 'Educación',
+        blurb: 'Reglas de campo y anatomía',
+      },
+      {
+        to: '/lookalikes',
+        labelKey: 'nav.lookalikes',
+        fallback: 'Lookalikes',
+        blurb: 'Confusiones clásicas lado a lado',
+      },
+      {
+        to: '/reto',
+        labelKey: 'nav.quiz',
+        fallback: 'Reto',
+        blurb: 'Quiz de riesgo y caracteres',
+      },
+    ],
+  },
+  {
+    id: 'field',
+    titleKey: 'nav.moreGroup.field',
+    titleFallback: 'Campo',
+    items: [
+      {
+        to: '/historial',
+        labelKey: 'nav.notebook',
+        fallback: 'Cuaderno',
+        blurb: 'Tus observaciones en el dispositivo',
+      },
+      {
+        to: '/offline',
+        labelKey: 'nav.offline',
+        fallback: 'Offline',
+        blurb: 'Pack de fotos para estudiar sin red',
+      },
+    ],
+  },
+  {
+    id: 'people',
+    titleKey: 'nav.moreGroup.people',
+    titleFallback: 'Gente',
+    items: [
+      {
+        to: '/comunidad',
+        labelKey: 'nav.community',
+        fallback: 'Comunidad',
+        blurb: 'Opiniones de campo · no certeza',
+      },
+      {
+        to: '/revision-experta',
+        labelKey: 'nav.experts',
+        fallback: 'Revisión experta',
+        blurb: 'Empaqueta evidencia para un micólogo',
+      },
+    ],
+  },
+  {
+    id: 'dev',
+    titleKey: 'nav.moreGroup.dev',
+    titleFallback: 'Desarrollo',
+    items: [
+      {
+        to: '/ml',
+        labelKey: 'nav.ml',
+        fallback: 'ML',
+        blurb: 'Métricas y stack del modelo',
+        badge: 'dev',
+      },
+    ],
+  },
+]
+
+/** Flat list for active-path + tests (order: learn → field → people → ml). */
+const moreNav: MoreNavItem[] = moreNavGroups.flatMap((g) => g.items)
 
 function IconSun() {
   return (
@@ -154,8 +240,15 @@ export function Header() {
         setMoreOpen(false)
       }
     }
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMoreOpen(false)
+    }
     document.addEventListener('mousedown', onDoc)
-    return () => document.removeEventListener('mousedown', onDoc)
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('mousedown', onDoc)
+      document.removeEventListener('keydown', onKey)
+    }
   }, [moreOpen])
 
   const toggleTheme = () => {
@@ -170,65 +263,98 @@ export function Header() {
     setMoreOpen(false)
   }
 
+  const morePanel = moreOpen && (
+    <div className="nav-more__panel" role="menu" id="nav-more-menu">
+      <p className="nav-more__lead">
+        {t('nav.moreLead', {
+          defaultValue: 'Aprender · campo · gente. Solo orientación.',
+        })}
+      </p>
+      {moreNavGroups.map((group) => (
+        <div key={group.id} className="nav-more__group" role="group" aria-label={group.titleFallback}>
+          <p className="nav-more__group-title">
+            {t(group.titleKey, { defaultValue: group.titleFallback })}
+          </p>
+          {group.items.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              role="menuitem"
+              className={({ isActive }) =>
+                `nav-more__item ${isActive ? 'nav-more__item--active' : ''}`
+              }
+              onClick={closeAll}
+            >
+              <span className="nav-more__item-row">
+                <span className="nav-more__item-title">
+                  {t(item.labelKey, { defaultValue: item.fallback })}
+                  {item.badge === 'dev' ? (
+                    <span className="nav-more__badge">Dev</span>
+                  ) : null}
+                </span>
+                <span className="nav-more__item-blurb">{item.blurb}</span>
+              </span>
+            </NavLink>
+          ))}
+        </div>
+      ))}
+    </div>
+  )
+
   return (
-    <header className={`header header--v2 ${scrolled ? 'header--scrolled' : ''}`}>
+    <header className={`header header--v2 header--mkt ${scrolled ? 'header--scrolled' : ''}`}>
       <div className="header-inner">
         <Link to="/" className="header-brand" onClick={closeAll}>
           <LogoMark />
           <div className="header-brand-text">
             <h1>VisionSetil</h1>
-            <p className="subtitle">{t('app.fieldSubtitle', { defaultValue: 'Micologia de campo' })}</p>
+            <p className="subtitle">
+              {t('app.fieldSubtitle', { defaultValue: 'Micología de campo' })}
+            </p>
           </div>
         </Link>
 
-        <nav
-          className={`header-nav header-nav--bar ${menuOpen ? 'header-nav--open' : ''}`}
-          aria-label="Principal"
-        >
-          {primaryNav.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              className={({ isActive }) =>
-                `nav-link ${isActive ? 'nav-link--active' : ''} ${'cta' in item && item.cta ? 'nav-link--cta' : ''}`
-              }
-              onClick={closeAll}
-              end={item.to === '/'}
-            >
-              <span>{t(item.labelKey)}</span>
-            </NavLink>
-          ))}
+        <div className={`header-nav-wrap ${menuOpen ? 'header-nav-wrap--open' : ''}`}>
+          <nav className="header-nav header-nav--bar" aria-label="Principal">
+            {primaryNav.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={({ isActive }) =>
+                  `nav-link ${isActive ? 'nav-link--active' : ''} ${
+                    'cta' in item && item.cta ? 'nav-link--cta' : ''
+                  }`
+                }
+                onClick={closeAll}
+                end={item.to === '/'}
+              >
+                <span>{t(item.labelKey, { defaultValue: item.fallback })}</span>
+              </NavLink>
+            ))}
+          </nav>
 
-          <div className={`nav-more ${moreOpen ? 'nav-more--open' : ''}`} ref={moreRef}>
+          {/* Más lives OUTSIDE the overflow bar so the panel is never clipped */}
+          <div
+            className={`nav-more ${moreOpen ? 'nav-more--open' : ''}`}
+            ref={moreRef}
+          >
             <button
               type="button"
               className={`nav-link nav-more__trigger ${moreActive ? 'nav-link--active' : ''}`}
               aria-expanded={moreOpen}
-              aria-haspopup="true"
-              onClick={() => setMoreOpen((v) => !v)}
+              aria-haspopup="menu"
+              aria-controls="nav-more-menu"
+              onClick={(e) => {
+                e.stopPropagation()
+                setMoreOpen((v) => !v)
+              }}
             >
-              <span>{t('nav.more', { defaultValue: 'Mas' })}</span>
+              <span>{t('nav.more', { defaultValue: 'Más' })}</span>
               <IconChevron open={moreOpen} />
             </button>
-            {moreOpen && (
-              <div className="nav-more__panel" role="menu">
-                {moreNav.map((item) => (
-                  <NavLink
-                    key={item.to}
-                    to={item.to}
-                    role="menuitem"
-                    className={({ isActive }) =>
-                      `nav-more__item ${isActive ? 'nav-more__item--active' : ''}`
-                    }
-                    onClick={closeAll}
-                  >
-                    {t(item.labelKey)}
-                  </NavLink>
-                ))}
-              </div>
-            )}
+            {morePanel}
           </div>
-        </nav>
+        </div>
 
         <div className="header-actions">
           {!loading && isAuthenticated && user && (

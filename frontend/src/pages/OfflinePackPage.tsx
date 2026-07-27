@@ -134,7 +134,7 @@ export function OfflinePackPage() {
 
   return (
     <div className="page-offline page-atelier-shell">
-      <div className="page-header">
+      <div className="page-header mkt-page-head">
         <p className="atelier-kicker home-kicker">{t('offline.kicker', { defaultValue: 'Campo · PWA' })}</p>
         <h1 className="page-title">{t('offline.title', { defaultValue: 'Pack offline' })}</h1>
         <p className="page-subtitle">
@@ -143,6 +143,26 @@ export function OfflinePackPage() {
               'Descarga la temporada o el pack prioritario para estudiar fichas y fotos sin red. Material educativo — no identifica setas offline ni autoriza consumo.',
           })}
         </p>
+      </div>
+
+      <div className="atelier-panel offline-scope-note" role="note">
+        <p className="offline-scope-note__title">
+          {t('offline.scopeTitle', { defaultValue: 'Qué incluye · qué no' })}
+        </p>
+        <ul className="offline-scope-note__list">
+          <li>
+            {t('offline.scopeIncludes', {
+              defaultValue:
+                'Incluye: fotos y metadatos de fichas prioritarias o de temporada para estudiar sin red.',
+            })}
+          </li>
+          <li>
+            {t('offline.scopeExcludes', {
+              defaultValue:
+                'No incluye: identificación offline, permiso de recolección ni de consumo. Ante la duda, micólogo humano.',
+            })}
+          </li>
+        </ul>
       </div>
 
       {installed && meta ? (

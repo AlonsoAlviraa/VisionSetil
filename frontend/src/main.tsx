@@ -18,6 +18,7 @@ import './styles/premium.css'
 import './styles/tokens.css'
 import './styles/redesign.css'
 import './styles/atelier.css'
+import './styles/marketing.css'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

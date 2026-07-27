@@ -1,6 +1,5 @@
 /**
- * Mycology-only media — every URL comes from verified species photos
- * (Wikipedia / iNaturalist catalog), never generic landscape stock.
+ * Mycology-only media — verified species photos / placeholders.
  */
 import { mycologyHeroUrls } from '../lib/speciesImageService'
 import { getCatalogPhotoUrl } from '../lib/speciesImageService'
@@ -24,6 +23,8 @@ export const MEDIA = {
   community: photo('Cantharellus cibarius'),
   encyclopedia: photo('Macrolepiota procera'),
   risk: photo('Amanita phalloides'),
+  setadle: photo('Amanita muscaria'),
+  map: photo('Macrolepiota procera'),
 } as const
 
 export type FeatureCardMedia = {
@@ -32,29 +33,41 @@ export type FeatureCardMedia = {
   to: string
   image: string
   cta: string
+  badge?: string
 }
 
-/** Home shows three primary paths. */
+/** Home product pillars — sell the loop. */
 export const HOME_FEATURES: FeatureCardMedia[] = [
   {
     title: 'Identificar',
-    description: 'Multi-vista y orientación de riesgo. Si duda, se calla.',
+    description: 'Multi-vista con IA honesta. Si el modelo duda, se abstiene — mejor que inventar.',
     to: '/identificar',
     image: MEDIA.identify,
-    cta: 'Empezar',
+    cta: 'Empezar identificación →',
+    badge: 'Campo',
   },
   {
     title: 'Enciclopedia',
-    description: 'Fichas con fotos reales, nombres ES y calidad documentada.',
+    description: '520 taxones, fotos reales y riesgo claro. Fichas listas para estudiar.',
     to: '/enciclopedia',
     image: MEDIA.encyclopedia,
-    cta: 'Explorar',
+    cta: 'Explorar catálogo →',
+    badge: 'Catálogo',
   },
   {
-    title: 'Reto',
-    description: 'Preguntados micológico: comestible, tóxica o mortal.',
-    to: '/reto',
+    title: 'Setadle',
+    description: 'Adivina la seta del día al estilo LoLdle. Cinco modos que enganchan.',
+    to: '/setadle',
+    image: MEDIA.setadle,
+    cta: 'Jugar al diario →',
+    badge: 'Nuevo',
+  },
+  {
+    title: 'Lookalikes',
+    description: 'Confusiones clásicas: oronja vs mortal, níscalo vs riesgos. Compara lado a lado.',
+    to: '/lookalikes',
     image: MEDIA.risk,
-    cta: 'Jugar',
+    cta: 'Comparar confusiones →',
+    badge: 'Estudio',
   },
 ]
