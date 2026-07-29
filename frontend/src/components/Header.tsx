@@ -69,6 +69,12 @@ const moreNavGroups: MoreNavGroup[] = [
     titleFallback: 'Campo',
     items: [
       {
+        to: '/mapa',
+        labelKey: 'nav.map',
+        fallback: 'Mapa / cotos',
+        blurb: 'nav.blurb.map',
+      },
+      {
         to: '/historial',
         labelKey: 'nav.notebook',
         fallback: 'Cuaderno',
