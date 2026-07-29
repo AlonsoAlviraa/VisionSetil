@@ -559,26 +559,31 @@ export function IdentifyPage() {
 
   return (
     <div
-      className="page-identify page-identify--v184 page-identify--cn"
+      className="cn-page page-identify page-identify--v184 page-identify--cn"
       data-testid="identify-page"
       data-phase={phase}
       data-preflight-mode={preflightEnabled ? preflight.mode : undefined}
       data-result-mode={resultMode ?? undefined}
       data-capture-mode={useWizard ? 'wizard' : 'free'}
     >
+      <p className="cn-warn-strip" role="note">
+        {t('identify.orientationSticky', {
+          defaultValue: 'Solo orientación · nunca consumo',
+        })}
+      </p>
       <header className="mkt-page-head mkt-mesh identify-cn-head">
         <p className="mkt-kicker">
           {t('identify.kicker', { defaultValue: 'Campo · multi-vista' })}
         </p>
         <h1>
           {t('identify.titleCn', {
-            defaultValue: 'Identificación multi-vista',
+            defaultValue: 'Identificación Multi-vista',
           })}
         </h1>
         <p>
           {t('identify.bannerLead', {
             defaultValue:
-              'Láminas · perfil · hábitat · detalle. Si no está seguro, se calla. Solo orientación — nunca consumo.',
+              'Capturar múltiples ángulos críticos aumenta la precisión. Sigue las guías visuales para mejores resultados. Solo orientación — nunca consumo.',
           })}
         </p>
         <ul

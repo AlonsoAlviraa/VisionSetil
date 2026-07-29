@@ -128,7 +128,7 @@ export function CommunityPage() {
   }
 
   return (
-    <div className="page-community page-atelier-shell">
+    <div className="cn-page page-community page-atelier-shell" data-skin="campo-nocturno">
       <header className="mkt-page-head mkt-mesh">
         <p className="mkt-kicker">
           {t('community.kicker', { defaultValue: 'Comunidad' })}

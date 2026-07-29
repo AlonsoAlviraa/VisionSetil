@@ -249,7 +249,7 @@ export function SpeciesDetailPage() {
 
   if (!ready) {
     return (
-      <div className="page-detail page-atelier-shell species-detail">
+      <div className="cn-page page-detail page-atelier-shell species-detail">
         <div className="species-detail-hero species-detail-hero--skeleton">
           <div className="skeleton-atelier" style={{ minHeight: 280 }}>
             <div className="skeleton-atelier__shimmer" />
@@ -261,7 +261,7 @@ export function SpeciesDetailPage() {
 
   if (!catalog && !rich) {
     return (
-      <div className="page-detail page-atelier-shell species-detail">
+      <div className="cn-page page-detail page-atelier-shell species-detail">
         <EmptyState
           title={t('encyclopedia.notFound', { defaultValue: 'Especie no encontrada' })}
           description={t('detail.notFoundBody', {
@@ -278,7 +278,7 @@ export function SpeciesDetailPage() {
   }
 
   return (
-    <div className="page-detail species-product species-detail">
+    <div className="cn-page page-detail species-product species-detail" data-skin="campo-nocturno">
       <div className="detail-back">
         <Link to="/enciclopedia">
           {t('nav.encyclopedia', { defaultValue: 'Enciclopedia' })}

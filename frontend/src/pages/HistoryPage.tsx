@@ -338,7 +338,12 @@ export function HistoryPage() {
   }, [openId, closeObservation])
 
   return (
-    <div className="page-history page-atelier-shell">
+    <div className="cn-page page-history page-atelier-shell" data-skin="campo-nocturno">
+      <p className="cn-warn-strip" role="note">
+        {t('notebook.orientation', {
+          defaultValue: 'Solo orientación · nunca consumo',
+        })}
+      </p>
       <div className="page-header">
         <p className="atelier-kicker" data-testid="history-plan-chip">
           Plan {planLabelEs(plan)} · hasta {historyLimit(plan)} entradas
@@ -357,12 +362,12 @@ export function HistoryPage() {
           )}
         </p>
         <h1 className="page-title">
-          {t('notebook.title', { defaultValue: 'Cuaderno de campo' })}
+          {t('notebook.title', { defaultValue: 'Cuaderno de Campo' })}
         </h1>
         <p className="page-subtitle">
           {t('notebook.subtitle', {
             defaultValue:
-              'Historial local con notas y etiquetas. Solo orientación — no es un diario de consumo.',
+              'Tus registros de campo. Historial local con notas y etiquetas. Solo orientación — no es un diario de consumo.',
           })}
         </p>
       </div>

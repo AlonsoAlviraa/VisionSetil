@@ -1,4 +1,4 @@
-/** Más hub — full product map beyond bottom-nav primaries (Option B). */
+/** Más hub — Stitch B 11-mas · full product map. */
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
@@ -13,6 +13,7 @@ type Item = {
   fallback: string
   blurbKey: string
   blurbFb: string
+  icon: string
   external?: boolean
   testId?: string
 }
@@ -33,14 +34,16 @@ const GROUPS: {
         labelKey: 'nav.education',
         fallback: 'Educación',
         blurbKey: 'nav.blurb.education',
-        blurbFb: 'Multi-vista y seguridad de campo',
+        blurbFb: 'Cursos de seguridad y multi-vista de campo',
+        icon: 'school',
       },
       {
         to: '/lookalikes',
         labelKey: 'nav.lookalikes',
         fallback: 'Lookalike Studio',
         blurbKey: 'nav.blurb.lookalikes',
-        blurbFb: 'Confusiones y vistas críticas',
+        blurbFb: 'Compara especies confusas lado a lado',
+        icon: 'compare',
       },
       {
         to: '/juegos',
@@ -48,6 +51,7 @@ const GROUPS: {
         fallback: 'Juegos',
         blurbKey: 'nav.blurb.games',
         blurbFb: 'Setadle · Wordle · Reto',
+        icon: 'games',
       },
     ],
   },
@@ -59,44 +63,49 @@ const GROUPS: {
       {
         to: '/mapa',
         labelKey: 'nav.map',
-        fallback: 'Mapa / cotos',
+        fallback: 'Mapa España cotos',
         blurbKey: 'nav.blurb.map',
-        blurbFb: 'Zonas e info oficial — no identifica setas',
+        blurbFb: 'Zonas de recolección — no identifica setas',
+        icon: 'map',
       },
       {
         to: '/historial',
         labelKey: 'nav.notebook',
         fallback: 'Cuaderno',
         blurbKey: 'nav.blurb.notebook',
-        blurbFb: 'Historial y pins privados',
+        blurbFb: 'Historial local y pins privados',
+        icon: 'book',
       },
       {
         to: '/offline',
         labelKey: 'nav.offline',
         fallback: 'Offline pack',
         blurbKey: 'nav.blurb.offline',
-        blurbFb: 'Estudio sin red (no ID de campo)',
+        blurbFb: 'Guías y mapas sin red (no ID de campo)',
+        icon: 'offline',
       },
     ],
   },
   {
     id: 'people',
     titleKey: 'nav.moreGroup.people',
-    titleFb: 'Gente',
+    titleFb: 'Comunidad',
     items: [
       {
         to: '/comunidad',
         labelKey: 'nav.community',
-        fallback: 'Comunidad',
+        fallback: 'Comunidad (foros)',
         blurbKey: 'nav.blurb.community',
-        blurbFb: 'Segunda opinión humana',
+        blurbFb: 'Segunda opinión humana y foros',
+        icon: 'people',
       },
       {
         to: '/revision-experta',
         labelKey: 'nav.experts',
         fallback: 'Revisión experta',
         blurbKey: 'nav.blurb.experts',
-        blurbFb: 'Handoff a micólogo',
+        blurbFb: 'Handoff a micólogo de carne y hueso',
+        icon: 'expert',
       },
       {
         to: '/login',
@@ -104,32 +113,126 @@ const GROUPS: {
         fallback: 'Entrar',
         blurbKey: 'nav.blurb.login',
         blurbFb: 'Cuenta opcional',
+        icon: 'login',
       },
     ],
   },
   {
     id: 'ops',
     titleKey: 'nav.moreGroup.dev',
-    titleFb: 'Ops / beta',
+    titleFb: 'Instrumentación',
     items: [
+      {
+        to: '/ml',
+        labelKey: 'nav.ml',
+        fallback: 'ML dashboard ops',
+        blurbKey: 'nav.blurb.ml',
+        blurbFb: 'Métricas honestas · product_unlock false',
+        icon: 'ml',
+      },
       {
         to: '/beta-feedback',
         labelKey: 'nav.betaFeedback',
         fallback: 'Feedback beta',
         blurbKey: 'nav.blurb.beta',
-        blurbFb: 'Cuéntanos qué falla',
+        blurbFb: 'Ayúdanos a mejorar VisionSetil',
         testId: 'more-hub-beta',
-      },
-      {
-        to: '/ml',
-        labelKey: 'nav.ml',
-        fallback: 'ML dashboard',
-        blurbKey: 'nav.blurb.ml',
-        blurbFb: 'Métricas honestas · product_unlock false',
+        icon: 'feedback',
       },
     ],
   },
 ]
+
+function MoreIcon({ name }: { name: string }) {
+  const c = {
+    width: 20,
+    height: 20,
+    viewBox: '0 0 24 24',
+    fill: 'none',
+    stroke: 'currentColor',
+    strokeWidth: 1.8,
+    strokeLinecap: 'round' as const,
+    strokeLinejoin: 'round' as const,
+  }
+  switch (name) {
+    case 'school':
+      return (
+        <svg {...c}>
+          <path d="M3 9l9-5 9 5-9 5-9-5z" />
+          <path d="M7 12v5c0 1 2.5 3 5 3s5-2 5-3v-5" />
+        </svg>
+      )
+    case 'compare':
+      return (
+        <svg {...c}>
+          <rect x="3" y="4" width="7" height="16" rx="1.5" />
+          <rect x="14" y="4" width="7" height="16" rx="1.5" />
+        </svg>
+      )
+    case 'games':
+      return (
+        <svg {...c}>
+          <rect x="3" y="8" width="18" height="10" rx="3" />
+          <path d="M8 13h2M9 12v2" />
+        </svg>
+      )
+    case 'map':
+      return (
+        <svg {...c}>
+          <path d="M9 4l-5 2v14l5-2 6 2 5-2V4l-5 2-6-2z" />
+        </svg>
+      )
+    case 'book':
+      return (
+        <svg {...c}>
+          <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5V5.5z" />
+        </svg>
+      )
+    case 'offline':
+      return (
+        <svg {...c}>
+          <path d="M2 8c4-4 10-4 14 0M5 11c3-3 7-3 10 0" />
+          <path d="M8.5 14a4 4 0 0 1 5 0M12 18h.01" />
+          <path d="M3 3l18 18" />
+        </svg>
+      )
+    case 'people':
+      return (
+        <svg {...c}>
+          <circle cx="9" cy="8" r="3" />
+          <circle cx="17" cy="9" r="2.5" />
+          <path d="M3 19c0-3 3-5 6-5s6 2 6 5M14 19c.5-2 2.5-3.5 5-3.5 1 0 2 .3 2.8.8" />
+        </svg>
+      )
+    case 'expert':
+      return (
+        <svg {...c}>
+          <circle cx="12" cy="8" r="3.5" />
+          <path d="M5 20c1.5-4 4-6 7-6s5.5 2 7 6" />
+        </svg>
+      )
+    case 'login':
+      return (
+        <svg {...c}>
+          <path d="M10 17l5-5-5-5M15 12H3" />
+          <path d="M15 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4" />
+        </svg>
+      )
+    case 'ml':
+      return (
+        <svg {...c}>
+          <rect x="3" y="4" width="18" height="14" rx="2" />
+          <path d="M7 14l3-4 3 2 4-5" />
+        </svg>
+      )
+    default:
+      return (
+        <svg {...c}>
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+        </svg>
+      )
+  }
+}
 
 export function MoreHubPage() {
   const { t } = useTranslation()
@@ -137,18 +240,20 @@ export function MoreHubPage() {
   const betaExternal = isBetaExternalForm() || isBetaMailto()
 
   return (
-    <div className="page-more-hub page-atelier-shell" data-testid="more-hub-page">
-      <p className="cn-orientation home-orientation-sticky" role="note">
+    <div className="cn-page page-more-hub" data-testid="more-hub-page">
+      <p className="cn-warn-strip" role="note">
         {t('more.orientation', {
-          defaultValue: 'Solo orientación · mapa completo del producto · nunca consumo',
+          defaultValue: 'Solo orientación · nunca consumo',
         })}
       </p>
-      <header className="mkt-page-head">
-        <p className="mkt-kicker">{t('nav.more', { defaultValue: 'Más' })}</p>
-        <h1 className="mkt-page-head__title">
-          {t('more.title', { defaultValue: 'Todo VisionSetil' })}
+      <header className="cn-page-head cn-page-pad">
+        <p className="cn-kicker mkt-kicker">
+          {t('nav.more', { defaultValue: 'Más' })}
+        </p>
+        <h1 className="cn-page-head__title">
+          {t('more.title', { defaultValue: 'Centro de operaciones y recursos' })}
         </h1>
-        <p className="mkt-page-head__lead" role="note">
+        <p className="cn-page-head__lead" role="note">
           {t('more.policy', {
             defaultValue:
               'Mapa completo del producto. Identify y juegos son orientación — nunca permiso de consumo.',
@@ -156,55 +261,76 @@ export function MoreHubPage() {
         </p>
       </header>
 
-      {GROUPS.map((g) => (
-        <section key={g.id} className="more-hub-group" data-testid={`more-hub-${g.id}`}>
-          <h2 className="more-hub-group__title">
-            {t(g.titleKey, { defaultValue: g.titleFb })}
-          </h2>
-          <ul className="more-hub-list">
-            {g.items.map((item) => {
-              const isBeta = item.to === '/beta-feedback'
-              const body = (
-                <>
-                  <span className="more-hub-list__label">
-                    {t(item.labelKey, { defaultValue: item.fallback })}
-                  </span>
-                  <span className="more-hub-list__blurb">
-                    {t(item.blurbKey, { defaultValue: item.blurbFb })}
-                  </span>
-                </>
-              )
-              if (isBeta && betaExternal) {
+      <div className="cn-page-pad">
+        {GROUPS.map((g) => (
+          <section key={g.id} className="more-hub-group" data-testid={`more-hub-${g.id}`}>
+            <h2 className="more-hub-group__title">
+              {t(g.titleKey, { defaultValue: g.titleFb })}
+            </h2>
+            <ul className="more-hub-list">
+              {g.items.map((item) => {
+                const isBeta = item.to === '/beta-feedback'
+                const body = (
+                  <>
+                    <span className="more-hub-list__icon" aria-hidden="true">
+                      <MoreIcon name={item.icon} />
+                    </span>
+                    <span className="more-hub-list__text">
+                      <span className="more-hub-list__label">
+                        {t(item.labelKey, { defaultValue: item.fallback })}
+                      </span>
+                      <span className="more-hub-list__blurb">
+                        {t(item.blurbKey, { defaultValue: item.blurbFb })}
+                      </span>
+                    </span>
+                    <span className="more-hub-list__chev" aria-hidden="true">
+                      ›
+                    </span>
+                  </>
+                )
+                if (isBeta && betaExternal) {
+                  return (
+                    <li key={item.to}>
+                      <a
+                        href={betaHref}
+                        className="more-hub-list__link"
+                        data-testid={item.testId}
+                        {...(isBetaMailto()
+                          ? {}
+                          : { target: '_blank', rel: 'noopener noreferrer' })}
+                      >
+                        {body}
+                      </a>
+                    </li>
+                  )
+                }
                 return (
                   <li key={item.to}>
-                    <a
-                      href={betaHref}
+                    <Link
+                      to={item.to}
                       className="more-hub-list__link"
                       data-testid={item.testId}
-                      {...(isBetaMailto()
-                        ? {}
-                        : { target: '_blank', rel: 'noopener noreferrer' })}
                     >
                       {body}
-                    </a>
+                    </Link>
                   </li>
                 )
-              }
-              return (
-                <li key={item.to}>
-                  <Link
-                    to={item.to}
-                    className="more-hub-list__link"
-                    data-testid={item.testId}
-                  >
-                    {body}
-                  </Link>
-                </li>
-              )
-            })}
-          </ul>
-        </section>
-      ))}
+              })}
+            </ul>
+          </section>
+        ))}
+
+        <div className="more-hub-cta">
+          <Link to="/identificar" className="cn-btn cn-btn--primary cn-btn--block">
+            {t('more.ctaIdentify', { defaultValue: 'Acceder a Identificar' })}
+          </Link>
+        </div>
+        <p className="more-hub-foot">
+          {t('more.foot', {
+            defaultValue: 'VisionSetil · OLED night · v1.9.9',
+          })}
+        </p>
+      </div>
     </div>
   )
 }

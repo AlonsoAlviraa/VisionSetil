@@ -137,11 +137,11 @@ function AppShell() {
       <a href="#main-content" className="skip-link">
         {t('a11y.skipToContent', { defaultValue: 'Saltar al contenido' })}
       </a>
-      <div className="app bg-aurora app--campo-nocturno app--has-bottom-nav">
+      <div className="app app--campo-nocturno app--has-bottom-nav app--stitch-b" data-skin="campo-nocturno">
         <Header />
         <ApiStatusBanner />
         <PwaInstallHint />
-        <main className="container" id="main-content" tabIndex={-1}>
+        <main className="container cn-main" id="main-content" tabIndex={-1}>
           <ErrorBoundary surface="routes">
             <Suspense fallback={<PageFallback />}>
               <Routes>

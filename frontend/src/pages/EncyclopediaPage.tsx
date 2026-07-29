@@ -226,13 +226,18 @@ export function EncyclopediaPage() {
   const foodNote = encyclopediaFoodFilterNote(locale)
 
   return (
-    <div className="page-encyclopedia encyclopedia-shell page-encyclopedia--cn" data-skin="campo-nocturno">
+    <div className="cn-page page-encyclopedia encyclopedia-shell page-encyclopedia--cn" data-skin="campo-nocturno">
+      <p className="cn-warn-strip" role="note">
+        {t('encyclopedia.orientation', {
+          defaultValue: 'Solo orientación · nunca consumo',
+        })}
+      </p>
       <header className="mkt-page-head mkt-mesh">
         <p className="mkt-kicker">
           {t('encyclopedia.kicker', { defaultValue: 'Catálogo · riesgo claro' })}
         </p>
         <h1>
-          {t('encyclopedia.titlePage', { defaultValue: 'Enciclopedia de setas' })}
+          {t('encyclopedia.titlePage', { defaultValue: 'Enciclopedia Iberia' })}
         </h1>
         <p>
           {catalogLoading ? (

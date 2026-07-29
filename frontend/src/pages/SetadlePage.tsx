@@ -327,7 +327,7 @@ export function SetadlePage() {
   // ── Hub ──
   if (!mode) {
     return (
-      <div className="page-setadle page-setadle--mkt page-atelier-shell">
+      <div className="cn-page page-setadle page-setadle--mkt page-atelier-shell">
         <header className="setadle-hero setadle-hero--mkt">
           <p className="atelier-kicker" style={{ color: '#e8c872', justifyContent: 'center' }}>
             {t('setadle.kicker', {
@@ -545,7 +545,7 @@ export function SetadlePage() {
 
   if (!modeOk && !pro) {
     return (
-      <div className="page-setadle page-setadle--mkt page-atelier-shell">
+      <div className="cn-page page-setadle page-setadle--mkt page-atelier-shell">
         <header className="setadle-play-head mkt-page-head">
           <Link to="/setadle" className="setadle-back">
             {t('setadle.backModes', { defaultValue: '← Modos' })}
@@ -580,7 +580,7 @@ export function SetadlePage() {
 
   if (waiting) {
     return (
-      <div className="page-setadle page-setadle--mkt page-atelier-shell">
+      <div className="cn-page page-setadle page-setadle--mkt page-atelier-shell">
         <p className="muted">
           {t('setadle.loading', { defaultValue: 'Cargando pool de especies…' })}
         </p>
@@ -590,7 +590,7 @@ export function SetadlePage() {
 
   if (poolError || pool.length === 0) {
     return (
-      <div className="page-setadle page-setadle--mkt page-atelier-shell" data-testid="setadle-pool-error">
+      <div className="cn-page page-setadle page-setadle--mkt page-atelier-shell" data-testid="setadle-pool-error">
         <header className="mkt-page-head mkt-mesh">
           <h1 className="page-title">
             {t('setadle.title', { defaultValue: 'Setadle' })}
@@ -610,7 +610,7 @@ export function SetadlePage() {
   }
 
   return (
-    <div className="page-setadle page-setadle--mkt page-atelier-shell">
+    <div className="cn-page page-setadle page-setadle--mkt page-atelier-shell">
       <header className="setadle-play-head mkt-page-head mkt-mesh">
         <Link to="/setadle" className="setadle-back">
           ← Modos

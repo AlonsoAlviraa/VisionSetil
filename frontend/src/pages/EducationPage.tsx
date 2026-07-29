@@ -190,21 +190,29 @@ export function EducationPage() {
   const coach = useMemo(() => deadlyCoach(locale), [locale])
 
   return (
-    <div className="page-education page-atelier-shell">
+    <div className="cn-page page-education page-atelier-shell" data-skin="campo-nocturno">
+      <p className="cn-warn-strip" role="note">
+        {t('education.orientation', {
+          defaultValue: 'Solo orientación · nunca consumo',
+        })}
+      </p>
       <div className="page-header">
+        <p className="mkt-kicker">
+          {t('education.kicker', { defaultValue: 'Aprender · campo' })}
+        </p>
         <h1 className="page-title">
-          {t('education.title', { defaultValue: 'Educación de seguridad' })}
+          {t('education.title', { defaultValue: 'Seguridad en el Campo' })}
         </h1>
         <p className="page-subtitle">
           {t('education.subtitle', {
             defaultValue:
-              'Reglas de campo, anatomía y calendario. Orientación — nunca permiso de consumo.',
+              'Reglas de campo, anatomía y multi-vista. Orientación — nunca permiso de consumo.',
           })}
         </p>
       </div>
 
-      <div className="safety-disclaimer" role="note">
-        <strong>Solo orientación</strong>
+      <div className="safety-disclaimer edu-never-consume" role="note">
+        <strong>Nunca consumir</strong>
         <p>Aquí aprendes a observar y a dudar. Ningún texto de esta app autoriza consumo.</p>
       </div>
 

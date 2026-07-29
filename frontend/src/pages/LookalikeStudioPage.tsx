@@ -121,7 +121,12 @@ export function LookalikeStudioPage() {
   const slots = Array.from({ length: LOOKALIKE_STUDIO_MAX }, (_, i) => selection[i] ?? null)
 
   return (
-    <div className="page-lookalike page-atelier-shell lookalike-atelier">
+    <div className="cn-page page-lookalike page-atelier-shell lookalike-atelier" data-skin="campo-nocturno">
+      <p className="cn-warn-strip" role="note">
+        {t('lookalike.orientation', {
+          defaultValue: 'Solo orientación · nunca consumo',
+        })}
+      </p>
       <header className="mkt-page-head mkt-mesh lookalike-hero">
         <p className="mkt-kicker">
           {t('lookalike.kicker', { defaultValue: 'Educación · Confusiones peligrosas' })}
@@ -132,7 +137,7 @@ export function LookalikeStudioPage() {
         <p className="lookalike-hero__lead">
           {t('lookalike.studioSubtitleShort', {
             defaultValue:
-              'Compara confusiones clásicas lado a lado. Riesgo claro en cada ficha. Solo orientación — nunca consumo.',
+              'Compara confusiones clásicas lado a lado. Diferencias críticas en cada ficha. Solo orientación — nunca consumo.',
           })}
         </p>
         <div

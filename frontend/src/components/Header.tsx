@@ -227,7 +227,7 @@ export function Header() {
   const { t } = useTranslation()
   const { user, isAuthenticated, logout, loading } = useAuth()
   const location = useLocation()
-  // Option B Campo nocturno: dark is product default (user can still toggle light)
+  // Stitch B remodel: always dark product chrome
   const [theme, setTheme] = useState<'light' | 'dark'>('dark')
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -240,12 +240,12 @@ export function Header() {
   )
 
   useEffect(() => {
-    const saved = localStorage.getItem(THEME_KEY) as 'light' | 'dark' | null
-    // Option B Campo nocturno: default dark unless user chose light
-    const initial = saved === 'light' || saved === 'dark' ? saved : 'dark'
+    // Force Campo nocturno (Stitch B) — product is night UI
+    const initial = 'dark'
     setTheme(initial)
     document.documentElement.setAttribute('data-theme', initial)
     document.documentElement.dataset.skin = 'campo-nocturno'
+    localStorage.setItem(THEME_KEY, initial)
   }, [])
 
   useEffect(() => {

@@ -276,7 +276,7 @@ export function QuizGamePage() {
   const totalRounds = progress.total
 
   return (
-    <div className="page-quiz">
+    <div className="cn-page page-quiz" data-skin="campo-nocturno">
       <div className="quiz-stage">
         <div className="quiz-stage__glow" aria-hidden="true" />
 

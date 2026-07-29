@@ -36,14 +36,16 @@ describe('UI layout contracts (marketing + lookalike)', () => {
     expect(page).toMatch(/fill\s*\n?\s*className="lookalike-studio-card__thumb"/)
   })
 
-  it('home marketing CTAs stay wired with consistent chrome', () => {
+  it('home Campo nocturno CTAs stay wired with consistent chrome', () => {
     const home = readSrc('pages/HomePage.tsx')
     expect(home).toMatch(/data-testid="home-cta-identify"/)
     expect(home).toMatch(/to="\/identificar"/)
-    expect(home).toMatch(/to="\/setadle"/)
-    expect(home).toMatch(/mkt-trust__list/)
-    expect(home).toMatch(/mkt-icon-strip__photo/)
-    expect(home).toMatch(/mkt-btn--primary/)
+    expect(home).toMatch(/to="\/juegos"/)
+    expect(home).toMatch(/to="\/enciclopedia"/)
+    expect(home).toMatch(/to="\/mapa"/)
+    expect(home).toMatch(/cn-home-hero/)
+    expect(home).toMatch(/cn-btn--primary/)
+    expect(home).toMatch(/data-testid="home-orientation-sticky"/)
   })
 
   it('classic lookalike pairs load for studio (SSOT-backed)', async () => {

@@ -1,4 +1,4 @@
-/** Games hub — Setadle, Wordle, Reto (Option B Stitch style). */
+/** Games hub — Stitch B 04-juegos (photo cards + badges). */
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { SpeciesImage } from '../components/SpeciesImage'
@@ -10,10 +10,11 @@ const GAMES = [
     titleKey: 'games.setadleTitle',
     titleFb: 'Setadle',
     bodyKey: 'games.setadleBody',
-    bodyFb: 'Puzzle diario de hábitat y rasgos de campo. Educativo, no identifica setas.',
+    bodyFb: 'Adivina la seta del día con pistas de hábitat y morfología. Educativo, no identifica setas.',
     ctaKey: 'games.play',
-    ctaFb: 'Jugar Setadle',
-    tone: 'amber' as const,
+    ctaFb: 'Jugar ahora',
+    badgeKey: 'games.badgeDaily',
+    badgeFb: 'Diario',
     taxon: 'Cantharellus cibarius',
   },
   {
@@ -22,10 +23,11 @@ const GAMES = [
     titleKey: 'games.wordleTitle',
     titleFb: 'Wordle de setas',
     bodyKey: 'games.wordleBody',
-    bodyFb: 'Adivina el taxón en letras. Solo orientación y vocabulario micológico.',
+    bodyFb: 'Cinco letras de taxón micológico. Entrena vocabulario — solo orientación, nunca consumo.',
     ctaKey: 'games.playWordle',
     ctaFb: 'Jugar Wordle',
-    tone: 'moss' as const,
+    badgeKey: 'games.badgePopular',
+    badgeFb: 'Popular',
     taxon: 'Amanita muscaria',
   },
   {
@@ -34,10 +36,11 @@ const GAMES = [
     titleKey: 'games.quizTitle',
     titleFb: 'Reto diario',
     bodyKey: 'games.quizBody',
-    bodyFb: 'Quiz de confusiones y lookalikes. Multi-vista que discrimina, nunca consumo.',
+    bodyFb: 'Quiz de confusiones y lookalikes con multi-vista. Entrena el ojo, no el plato.',
     ctaKey: 'games.playQuiz',
     ctaFb: 'Abrir reto',
-    tone: 'primary' as const,
+    badgeKey: 'games.badgeChallenge',
+    badgeFb: 'Reto',
     taxon: 'Morchella esculenta',
   },
 ] as const
@@ -46,34 +49,31 @@ export function GamesHubPage() {
   const { t } = useTranslation()
 
   return (
-    <div className="page-games-hub page-atelier-shell page-games-hub--cn" data-testid="games-hub-page">
-      <p className="cn-orientation home-orientation-sticky" role="note">
+    <div className="cn-page page-games-hub" data-testid="games-hub-page">
+      <p className="cn-warn-strip" role="note">
         {t('games.orientation', {
           defaultValue: 'Solo orientación educativa · nunca consumo',
         })}
       </p>
-      <header className="mkt-page-head">
-        <p className="mkt-kicker">
-          {t('games.kicker', { defaultValue: 'Juegos · VisionSetil' })}
+      <header className="cn-page-head cn-page-pad">
+        <p className="cn-kicker mkt-kicker">
+          {t('games.kicker', { defaultValue: 'MicoJuegos' })}
         </p>
-        <h1 className="mkt-page-head__title">
+        <h1 className="cn-page-head__title">
           {t('games.title', { defaultValue: 'Juegos de campo' })}
         </h1>
-        <p className="mkt-page-head__lead" role="note">
+        <p className="cn-page-head__lead">
           {t('games.policy', {
             defaultValue:
-              'Solo educativos. No sustituyen Identify multi-vista ni dan permiso de consumo o recolección.',
+              'Entrena tu ojo con taxonomía, morfología y hábitat. Educativo — no sustituye Identify multi-vista ni da permiso de consumo.',
           })}
         </p>
       </header>
 
-      <ul className="games-hub-grid">
+      <ul className="games-hub-grid cn-page-pad">
         {GAMES.map((g) => (
           <li key={g.to}>
-            <article
-              className={`games-hub-card games-hub-card--photo games-hub-card--${g.tone}`}
-              data-testid={g.testId}
-            >
+            <article className="games-hub-card games-hub-card--photo" data-testid={g.testId}>
               <div className="games-hub-card__media" aria-hidden="true">
                 <SpeciesImage
                   scientificName={g.taxon}
@@ -83,6 +83,9 @@ export function GamesHubPage() {
                   preferCatalog
                 />
               </div>
+              <span className="games-hub-card__badge">
+                {t(g.badgeKey, { defaultValue: g.badgeFb })}
+              </span>
               <div className="games-hub-card__content">
                 <h2 className="games-hub-card__title">
                   {t(g.titleKey, { defaultValue: g.titleFb })}
@@ -90,7 +93,7 @@ export function GamesHubPage() {
                 <p className="games-hub-card__body">
                   {t(g.bodyKey, { defaultValue: g.bodyFb })}
                 </p>
-                <Link to={g.to} className="mkt-btn mkt-btn--primary mkt-btn--sm">
+                <Link to={g.to} className="cn-btn cn-btn--sm">
                   {t(g.ctaKey, { defaultValue: g.ctaFb })}
                 </Link>
               </div>
@@ -99,16 +102,18 @@ export function GamesHubPage() {
         ))}
       </ul>
 
-      <section className="games-hub-extra atelier-panel" aria-label="Más aprendizaje">
-        <h2 className="games-hub-extra__title">
-          {t('games.moreLearn', { defaultValue: 'También para aprender' })}
-        </h2>
+      <div className="games-hub-extra atelier-panel cn-page-pad">
+        <p className="cn-kicker" style={{ marginBottom: '0.5rem' }}>
+          {t('games.alsoStudy', { defaultValue: 'También estudiar' })}
+        </p>
         <div className="games-hub-extra__links">
-          <Link to="/lookalikes">{t('nav.lookalikes', { defaultValue: 'Lookalike Studio' })}</Link>
+          <Link to="/lookalikes">
+            {t('nav.lookalikes', { defaultValue: 'Lookalike Studio' })}
+          </Link>
           <Link to="/educacion">{t('nav.education', { defaultValue: 'Educación' })}</Link>
-          <Link to="/identificar">{t('nav.identify', { defaultValue: 'Identificar multi-vista' })}</Link>
+          <Link to="/identificar">{t('nav.identify', { defaultValue: 'Identificar' })}</Link>
         </div>
-      </section>
+      </div>
     </div>
   )
 }

@@ -158,7 +158,7 @@ export function OfflinePackPage() {
   }
 
   return (
-    <div className="page-offline page-atelier-shell">
+    <div className="cn-page page-offline page-atelier-shell" data-skin="campo-nocturno">
       <div className="page-header mkt-page-head">
         <p className="atelier-kicker home-kicker">{t('offline.kicker', { defaultValue: 'Campo · PWA · Pro' })}</p>
         <h1 className="page-title">{t('offline.title', { defaultValue: 'Pack offline Pro' })}</h1>

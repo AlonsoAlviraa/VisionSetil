@@ -198,7 +198,7 @@ export function MushroomWordlePage() {
 
   if (!ready) {
     return (
-      <div className="page-wordle page-atelier-shell">
+      <div className="cn-page page-wordle page-atelier-shell">
         <p className="wordle-loading">{t('wordle.loading', { defaultValue: 'Cargando pool…' })}</p>
       </div>
     )
@@ -206,7 +206,7 @@ export function MushroomWordlePage() {
 
   if (pool.length === 0) {
     return (
-      <div className="page-wordle page-atelier-shell">
+      <div className="cn-page page-wordle page-atelier-shell">
         <p>{t('wordle.emptyPool', { defaultValue: 'No hay especies en el pool.' })}</p>
         <Link to="/setadle">{t('wordle.backSetadle', { defaultValue: 'Volver a Setadle' })}</Link>
       </div>
@@ -214,7 +214,7 @@ export function MushroomWordlePage() {
   }
 
   return (
-    <div className="page-wordle page-atelier-shell" data-testid="mushroom-wordle">
+    <div className="cn-page page-wordle page-atelier-shell" data-testid="mushroom-wordle">
       <header className="wordle-hero">
         <p className="atelier-kicker">
           {t('wordle.kicker', {
