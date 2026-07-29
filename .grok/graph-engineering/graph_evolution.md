@@ -1681,3 +1681,19 @@ Operator executes checklist (not autonomous). S9 traffic after deploy. E21 optio
 
 **product_unlock remains false.**
 
+
+## v1.10.0 — Campo nocturno B into product FE (2026-07-29)
+
+**Decision:** User chose Option B; games hub Stitch liked; home calm like original B (not dense home-full); **map stays as current live UX**.
+
+### Shipped
+- campo-nocturno.css night OLED tokens + bottom nav + glass cards
+- Home home-mkt--cn-calm hero multi-vista + trust + 3 quick links (Juegos/Enciclopedia/Mapa)
+- GamesHub + MoreHub orientation strips
+- Identify/Encyclopedia night classes
+- Stitch pack + ref-app already in repo
+
+### Explicit non-change
+- Spain map page visual system **not** restyled to Stitch map mock
+
+**product_unlock remains false.**

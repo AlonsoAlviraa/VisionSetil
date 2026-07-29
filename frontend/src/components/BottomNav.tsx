@@ -95,7 +95,17 @@ export function BottomNav() {
             }
             aria-current={active ? 'page' : undefined}
           >
-            <span className="bottom-nav__dot" aria-hidden="true" />
+            <span className="bottom-nav__icon" aria-hidden="true">
+              {tab.to === '/'
+                ? '⌂'
+                : tab.to === '/identificar'
+                  ? '◎'
+                  : tab.to === '/juegos'
+                    ? '✦'
+                    : tab.to === '/enciclopedia'
+                      ? '☰'
+                      : '···'}
+            </span>
             <span className="bottom-nav__label">
               {t(tab.labelKey, { defaultValue: tab.fallback })}
             </span>

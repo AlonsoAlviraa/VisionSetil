@@ -559,7 +559,7 @@ export function IdentifyPage() {
 
   return (
     <div
-      className="page-identify page-identify--v184"
+      className="page-identify page-identify--v184 page-identify--cn"
       data-testid="identify-page"
       data-phase={phase}
       data-preflight-mode={preflightEnabled ? preflight.mode : undefined}

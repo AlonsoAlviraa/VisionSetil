@@ -57,23 +57,97 @@ export function HomePage() {
   const fieldHoldoutCopy = fieldHoldoutCoachLines(locale)
 
   return (
-    <div className="home-page home-mkt home-mkt--tight home-mkt--v193 home-mkt--v195" data-testid="home-page-v193">
+    <div
+      className="home-page home-mkt home-mkt--tight home-mkt--v193 home-mkt--v195 home-mkt--cn-calm"
+      data-testid="home-page-v193"
+      data-skin="campo-nocturno"
+    >
       {/* Sticky orientation strip — density polish · never edible green light */}
       <p
-        className="home-orientation-sticky"
+        className="home-orientation-sticky cn-orientation"
         data-testid="home-orientation-sticky"
         role="note"
       >
         {t('home.orientationSticky', {
           defaultValue:
-            'Solo orientación de campo · open-set + multi-vista · nunca permiso de consumo · nomenclatura Kew no sobrescribe el catálogo',
+            'Solo orientación · nunca consumo · open-set + multi-vista',
         })}
       </p>
 
-      {/* Hero — value prop + conversion CTAs */}
+      {/* Calm Campo nocturno hero (Stitch B) — primary conversion surface */}
       <section
-        className="mkt-hero mkt-mesh mkt-hero--compact"
+        className="cn-home-calm"
         aria-label={t('home.ariaHero', { defaultValue: 'Presentación' })}
+        data-testid="home-cn-calm-hero"
+      >
+        <div className="cn-hero-card">
+          <SpeciesImage
+            scientificName="Boletus edulis"
+            alt={t('home.cnHeroAlt', {
+              defaultValue: 'Foto de campo de seta (referencia visual)',
+            })}
+            className="cn-hero-card__media"
+            variant="detail"
+            layout="fill"
+            preferCatalog
+          />
+          <div className="cn-hero-card__body">
+            <p className="mkt-kicker">
+              {t('home.kicker', { defaultValue: 'VisionSetil · Iberia · campo' })}
+            </p>
+            <h1 className="mkt-display">
+              {t('home.cnTitle', {
+                defaultValue: 'Identifica con multi-vista',
+              })}
+            </h1>
+            <p className="mkt-lead">
+              {t('home.cnLead', {
+                defaultValue:
+                  'Orientación de campo con honestidad de modelo. Nunca permiso de consumo.',
+              })}
+            </p>
+            <div className="cn-view-chips" data-testid="home-cn-view-chips">
+              {priorityViews.map((v) => (
+                <span key={v}>{t(`identify.views.${v}`, { defaultValue: v })}</span>
+              ))}
+            </div>
+            <Link
+              to="/identificar"
+              className="mkt-btn mkt-btn--primary"
+              data-testid="home-cta-identify"
+            >
+              {t('home.ctaTryIdentify', { defaultValue: 'Probar Identificar' })}
+            </Link>
+          </div>
+        </div>
+        <div className="cn-trust-row" data-testid="home-cn-trust">
+          <span>{t('home.trustOpenSetTitle', { defaultValue: 'Open-set' })}</span>
+          <span>
+            {t('home.trustEncy', {
+              defaultValue: `Enciclopedia · ${HOME_CATALOG_COUNT} taxones`,
+            })}
+          </span>
+          <span>
+            {t('home.trustNever', { defaultValue: 'Nunca consumo' })}
+          </span>
+        </div>
+        <nav className="cn-quick-links" aria-label={t('home.ariaDiscover', { defaultValue: 'Explorar' })}>
+          <Link to="/juegos" data-testid="home-quick-games">
+            {t('nav.games', { defaultValue: 'Juegos' })}
+          </Link>
+          <Link to="/enciclopedia" data-testid="home-cta-encyclopedia">
+            {t('nav.encyclopedia', { defaultValue: 'Enciclopedia' })}
+          </Link>
+          <Link to="/mapa" data-testid="home-quick-map">
+            {t('nav.map', { defaultValue: 'Mapa' })}
+          </Link>
+        </nav>
+      </section>
+
+      {/* Legacy marketing blocks kept in DOM for tests/SEO but hidden under .home-mkt--cn-calm */}
+      <section
+        className="mkt-hero mkt-mesh mkt-hero--compact home-legacy-hero"
+        aria-hidden="true"
       >
         <div className="mkt-hero__copy">
           <p className="mkt-kicker">
@@ -84,37 +158,8 @@ export function HomePage() {
             <br />
             <em>{t('home.heroTitleEm', { defaultValue: 'criterio.' })}</em>
           </h1>
-          <p className="mkt-lead mkt-lead--home">
-            {t('home.heroLead', {
-              defaultValue:
-                'Identificación con honestidad de modelo, enciclopedia y mapa de cotos. Orientación de campo — nunca permiso de consumo.',
-            })}
-          </p>
           <div className="mkt-cta-row">
-            <Link
-              to="/identificar"
-              className="mkt-btn mkt-btn--primary"
-              data-testid="home-cta-identify"
-            >
-              {t('home.ctaTryIdentify', {
-                defaultValue: 'Probar Identificar',
-              })}
-            </Link>
-            <Link
-              to="/enciclopedia"
-              className="mkt-btn mkt-btn--ghost"
-              data-testid="home-cta-encyclopedia"
-            >
-              {t('home.ctaEncyclopedia', { defaultValue: 'Enciclopedia' })}
-            </Link>
-            <Link to="/mapa" className="mkt-btn mkt-btn--ghost">
-              {t('home.ctaMap', { defaultValue: 'Cotos y mapa' })}
-            </Link>
-            <Link
-              to="/offline"
-              className="mkt-btn mkt-btn--amber"
-              data-testid="home-cta-offline"
-            >
+            <Link to="/offline" className="mkt-btn mkt-btn--amber" data-testid="home-cta-offline">
               {t('home.ctaOffline', { defaultValue: 'Pack offline Pro' })}
             </Link>
           </div>
@@ -126,10 +171,6 @@ export function HomePage() {
             <div className="mkt-hero__stat">
               <strong>{FREE_IDENTIFY_PER_DAY}</strong>
               <span>{t('home.statFreeId', { defaultValue: 'ID Free/día' })}</span>
-            </div>
-            <div className="mkt-hero__stat">
-              <strong>Pro</strong>
-              <span>{t('home.statOffline', { defaultValue: 'Offline campo' })}</span>
             </div>
           </div>
         </div>

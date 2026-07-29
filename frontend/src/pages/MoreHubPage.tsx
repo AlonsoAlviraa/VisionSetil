@@ -138,6 +138,11 @@ export function MoreHubPage() {
 
   return (
     <div className="page-more-hub page-atelier-shell" data-testid="more-hub-page">
+      <p className="cn-orientation home-orientation-sticky" role="note">
+        {t('more.orientation', {
+          defaultValue: 'Solo orientación · mapa completo del producto · nunca consumo',
+        })}
+      </p>
       <header className="mkt-page-head">
         <p className="mkt-kicker">{t('nav.more', { defaultValue: 'Más' })}</p>
         <h1 className="mkt-page-head__title">

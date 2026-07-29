@@ -43,6 +43,11 @@ export function GamesHubPage() {
 
   return (
     <div className="page-games-hub page-atelier-shell" data-testid="games-hub-page">
+      <p className="cn-orientation home-orientation-sticky" role="note">
+        {t('games.orientation', {
+          defaultValue: 'Solo orientación educativa · nunca consumo',
+        })}
+      </p>
       <header className="mkt-page-head">
         <p className="mkt-kicker">
           {t('games.kicker', { defaultValue: 'Juegos · VisionSetil' })}

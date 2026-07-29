@@ -226,7 +226,7 @@ export function EncyclopediaPage() {
   const foodNote = encyclopediaFoodFilterNote(locale)
 
   return (
-    <div className="page-encyclopedia encyclopedia-shell">
+    <div className="page-encyclopedia encyclopedia-shell page-encyclopedia--cn">
       <header className="mkt-page-head mkt-mesh">
         <p className="mkt-kicker">
           {t('encyclopedia.kicker', { defaultValue: 'Catálogo · riesgo claro' })}

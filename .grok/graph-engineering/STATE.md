@@ -1,59 +1,38 @@
-﻿# VisionSetil Graph Engineering â€” STATE
+# VisionSetil Graph Engineering — STATE
 
-**Mode:** Graph Engineering (process-synced)  
+**Mode:** Graph Engineering (Campo nocturno B → product)  
 **Updated:** 2026-07-29  
-**Goal:** Canon docs + operator beta checklist Â· never product_unlock Â· never forage
+**Goal:** Ship Stitch B visual language into real FE (map unchanged) · never product_unlock · never forage
 
 ## Active graph version
 
-`v1.9.11-operator-dry-run`
+`v1.10.0-campo-nocturno-b`
 
 ## Current status
 
 | Area | Status | Notes |
 |------|--------|--------|
-| Graph process (PROCESS.md) | **SHIPPED** | v1.9.10 |
-| MEMORY / VISION / ROADMAP anti time-travel | **SHIPPED** | Aligned to E20 + v1.9.9 lineage |
-| Operator beta checklist | **SHIPPED** (docs) | `docs/OPERATOR_BETA_CHECKLIST.md` â€” execution residual |
-| IF / ECE / M3 / S9 schema | **SHIPPED** | v1.9.x |
-| Product unlock | **BLOCKED** | false |
+| Stitch B v2 pack (16 screens) | **SHIPPED** | `docs/design/stitch/screens-b-v2/` |
+| App ref screenshots | **SHIPPED** | `docs/design/stitch/ref-app/` |
+| FE shell dark + bottom nav | **SHIPPED** | `/juegos` `/mas` |
+| Home calm B | **IN PROGRESS → SHIPPING** | `home-mkt--cn-calm` + campo-nocturno.css |
+| Identify / games / ency night skin | **SHIPPING** | tokens + page classes |
+| **Mapa** | **KEEP CURRENT** | user preference — no Stitch map restyle |
+| product_unlock | **BLOCKED** | false |
 
-## E20 snapshot (do not regress docs to Phase-E MAP~0.07)
+## Design source of truth
 
-| Key | Value |
-|-----|------:|
-| MAP@3 | ~0.860 |
-| deadly@1 | ~0.788 |
-| deadly@3 | ~0.927 |
-| ECE | ~0.188 (high) |
-| Soft gates | PASS |
-| product_unlock | **false** |
-| unlock_eligible_advisory | true (metrics only) |
+- Stitch: `docs/design/stitch/screens-b-v2/01-home.png` … `16-comunidad.png`
+- System prompt: `docs/design/stitch/B_SYSTEM_PROMPT.md`
+- Implementation CSS: `frontend/src/styles/campo-nocturno.css`
 
-## S9 log schema (v1.9.9)
+## Residual next
 
-| Field | Value |
-|-------|--------|
-| timestamp | UTC ISO with offset |
-| mode | real\|mock\|blocked (top-level) |
-| view_coverage / n_views | top-level for multiview honesty |
-| product_unlock | **always false** |
-| policy | orientation_only_never_consume |
+1. Iterate pixel fidelity vs Stitch PNGs (identify slots, result card)  
+2. Games pages (Setadle/Wordle/Reto) skin pass  
+3. Species detail night gallery  
+4. Operator deploy still open  
 
 ## product_unlock
 
 Always **false**.
-
-## Residual next
-
-1. **Operator:** execute `docs/OPERATOR_BETA_CHECKLIST.md` (deploy + form + smoke Identify + small cohort)  
-2. Grow S9 under real Identify traffic (schema ready)  
-3. Kew official CSV optional Â· E21 only if operator schedules GPU  
-4. Labeled view-slot holdout (M4) if FT mounts  
-
-## Process pointer
-
-- `.grok/graph-engineering/PROCESS.md`  
-- `.grok/graph-engineering/BACKLOG.md`  
-- Thematic git commits (ml / catalog / frontend / docs) â€” not monoblock  
-

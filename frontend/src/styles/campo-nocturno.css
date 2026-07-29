@@ -1,0 +1,517 @@
+/**
+ * Option B — Campo nocturno (Stitch pack screens-b-v2)
+ * Product SSOT for night OLED shell. Map page styles intentionally NOT overridden.
+ * Safety: never edible green; deadly stays red.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap');
+
+/* ── Tokens when dark + skin ─────────────────────────────────────────────── */
+html[data-skin='campo-nocturno'][data-theme='dark'],
+html[data-theme='dark'] {
+  --cn-bg: #101511;
+  --cn-bg-deep: #0a0f0b;
+  --cn-surface: #1c211c;
+  --cn-surface-high: #262b27;
+  --cn-surface-highest: #313631;
+  --cn-moss: #8fbc8f;
+  --cn-moss-bright: #aad8a9;
+  --cn-cream: #dfe4dd;
+  --cn-cream-soft: #c2c9be;
+  --cn-sand: #d1c5b2;
+  --cn-outline: #424940;
+  --cn-danger: #ffb4ab;
+  --cn-danger-container: #93000a;
+  --cn-warn: #e6a23c;
+
+  --bg: var(--cn-bg);
+  --bg-gradient: linear-gradient(180deg, #101511 0%, #0c110e 100%);
+  --surface: var(--cn-surface);
+  --surface-alt: var(--cn-surface-high);
+  --text: var(--cn-cream);
+  --text-muted: var(--cn-cream-soft);
+  --border: rgba(140, 147, 137, 0.22);
+  --primary: var(--cn-moss-bright);
+  --primary-light: var(--cn-moss);
+  --primary-dark: #274f2c;
+  --moss: var(--cn-moss);
+  --cream: var(--cn-bg);
+  --ink: var(--cn-cream);
+  --ink-mute: var(--cn-cream-soft);
+  --glass: rgba(28, 33, 28, 0.92);
+  --shadow-soft: 0 4px 24px rgba(0, 0, 0, 0.45);
+  --shadow-lift: 0 16px 48px rgba(0, 0, 0, 0.55);
+  --font-display: 'Playfair Display', 'Instrument Serif', Georgia, serif;
+  --font-sans: 'Source Serif 4', Inter, system-ui, sans-serif;
+  color-scheme: dark;
+}
+
+html[data-theme='dark'] body,
+html[data-theme='dark'] .app {
+  background: var(--bg-gradient) !important;
+  color: var(--text);
+  font-family: var(--font-sans);
+}
+
+html[data-theme='dark'] .app--campo-nocturno {
+  min-height: 100dvh;
+}
+
+/* Aurora mesh quiet on night skin */
+html[data-theme='dark'] .bg-aurora::before,
+html[data-theme='dark'] .mkt-mesh::before {
+  opacity: 0.25;
+  background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(143, 188, 143, 0.18), transparent 60%);
+}
+
+/* Header glass night */
+html[data-theme='dark'] .site-header,
+html[data-theme='dark'] .header,
+html[data-theme='dark'] header.header-bar {
+  background: rgba(16, 21, 17, 0.88) !important;
+  border-bottom: 1px solid var(--cn-outline);
+  backdrop-filter: blur(14px);
+}
+
+html[data-theme='dark'] .header-nav .nav-link--cta,
+html[data-theme='dark'] .nav-link--cta {
+  background: var(--cn-moss) !important;
+  color: #0e3817 !important;
+}
+
+/* Bottom nav — Stitch 5-tab bar */
+.bottom-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 80;
+  display: flex;
+  justify-content: space-around;
+  align-items: stretch;
+  gap: 2px;
+  padding: 6px 6px calc(6px + env(safe-area-inset-bottom, 0px));
+  background: rgba(10, 15, 11, 0.94);
+  border-top: 1px solid rgba(143, 188, 143, 0.2);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.bottom-nav__item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-height: 48px;
+  padding: 4px 2px;
+  border-radius: 999px;
+  color: var(--cn-cream-soft, #c2c9be);
+  text-decoration: none;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.bottom-nav__item.is-active {
+  color: var(--cn-moss-bright, #aad8a9);
+  background: rgba(143, 188, 143, 0.14);
+}
+
+.bottom-nav__item--primary.is-active {
+  background: rgba(143, 188, 143, 0.28);
+  color: #0e3817;
+  background: var(--cn-moss);
+}
+
+.bottom-nav__icon {
+  font-size: 0.95rem;
+  line-height: 1;
+  opacity: 0.75;
+}
+
+.bottom-nav__item.is-active .bottom-nav__icon {
+  opacity: 1;
+}
+
+.app--has-bottom-nav {
+  padding-bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px));
+}
+
+.app--has-bottom-nav .fab-identify {
+  bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
+  background: var(--cn-moss) !important;
+  color: #0e3817 !important;
+  box-shadow: 0 8px 28px rgba(143, 188, 143, 0.35);
+}
+
+@media (min-width: 900px) {
+  .bottom-nav {
+    display: none;
+  }
+  .app--has-bottom-nav {
+    padding-bottom: 0;
+  }
+  .app--has-bottom-nav .fab-identify {
+    bottom: 1.5rem;
+  }
+}
+
+/* Sticky orientation — global product note */
+html[data-theme='dark'] .home-orientation-sticky,
+html[data-theme='dark'] .result-orientation-sticky,
+html[data-theme='dark'] .cn-orientation {
+  background: rgba(147, 0, 10, 0.55) !important;
+  color: #ffdad6 !important;
+  border-color: rgba(255, 180, 171, 0.35) !important;
+  text-align: center;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Glass cards */
+html[data-theme='dark'] .atelier-card,
+html[data-theme='dark'] .atelier-panel,
+html[data-theme='dark'] .mkt-discover-card,
+html[data-theme='dark'] .games-hub-card,
+html[data-theme='dark'] .more-hub-list__link,
+html[data-theme='dark'] .result-card,
+html[data-theme='dark'] .mv-slot,
+html[data-theme='dark'] .species-photo-card,
+html[data-theme='dark'] .ency-card {
+  background: var(--cn-surface) !important;
+  border: 1px solid rgba(66, 73, 64, 0.85) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  border-radius: 0.75rem;
+}
+
+html[data-theme='dark'] .mkt-btn--primary,
+html[data-theme='dark'] .btn-atelier--primary {
+  background: var(--cn-moss) !important;
+  color: #0e3817 !important;
+  border: none !important;
+  font-weight: 700;
+}
+
+html[data-theme='dark'] .mkt-btn--ghost {
+  border-color: rgba(143, 188, 143, 0.4) !important;
+  color: var(--cn-moss-bright) !important;
+}
+
+html[data-theme='dark'] .mkt-kicker,
+html[data-theme='dark'] .mkt-h2,
+html[data-theme='dark'] .mkt-page-head__title,
+html[data-theme='dark'] h1,
+html[data-theme='dark'] h2 {
+  font-family: var(--font-display);
+  color: var(--cn-cream);
+}
+
+/* Home calm B */
+html[data-theme='dark'] .home-mkt--cn-calm .mkt-hero {
+  padding: 1.25rem 0 0.5rem;
+}
+
+html[data-theme='dark'] .home-mkt--cn-calm .mkt-hero__copy h1,
+html[data-theme='dark'] .home-mkt--cn-calm .mkt-display {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 5vw, 2.35rem);
+  line-height: 1.15;
+}
+
+html[data-theme='dark'] .home-mkt--cn-calm .cn-hero-card {
+  position: relative;
+  border-radius: 1rem;
+  overflow: hidden;
+  min-height: 200px;
+  background: var(--cn-surface-high);
+  border: 1px solid var(--cn-outline);
+  margin-bottom: 1rem;
+}
+
+html[data-theme='dark'] .home-mkt--cn-calm .cn-hero-card__media {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  display: block;
+  opacity: 0.85;
+}
+
+html[data-theme='dark'] .home-mkt--cn-calm .cn-hero-card__body {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 1.25rem 1.1rem;
+  background: linear-gradient(transparent, rgba(10, 15, 11, 0.92));
+}
+
+html[data-theme='dark'] .home-mkt--cn-calm .cn-view-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.75rem 0 1rem;
+}
+
+html[data-theme='dark'] .home-mkt--cn-calm .cn-view-chips span {
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(143, 188, 143, 0.15);
+  color: var(--cn-moss-bright);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+html[data-theme='dark'] .home-mkt--cn-calm .cn-trust-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.75rem 0 1.25rem;
+}
+
+html[data-theme='dark'] .home-mkt--cn-calm .cn-trust-row span {
+  padding: 0.35rem 0.7rem;
+  border-radius: 0.5rem;
+  background: var(--cn-surface);
+  border: 1px solid var(--cn-outline);
+  font-size: 0.72rem;
+  color: var(--cn-cream-soft);
+}
+
+html[data-theme='dark'] .home-mkt--cn-calm .cn-quick-links {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+html[data-theme='dark'] .home-mkt--cn-calm .cn-quick-links a {
+  text-align: center;
+  padding: 0.75rem 0.4rem;
+  border-radius: 0.75rem;
+  background: var(--cn-surface);
+  border: 1px solid var(--cn-outline);
+  color: var(--cn-cream);
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+html[data-theme='dark'] .home-mkt--cn-calm .cn-quick-links a:hover {
+  border-color: var(--cn-moss);
+  color: var(--cn-moss-bright);
+}
+
+/* Hide heavy marketing sections in calm home when marked */
+html[data-theme='dark'] .home-mkt--cn-calm .mkt-discover,
+html[data-theme='dark'] .home-mkt--cn-calm .mkt-diff,
+html[data-theme='dark'] .home-mkt--cn-calm .mkt-install-strip,
+html[data-theme='dark'] .home-mkt--cn-calm .mkt-privacy,
+html[data-theme='dark'] .home-mkt--cn-calm .mkt-trust,
+html[data-theme='dark'] .home-mkt--cn-calm .mkt-learn,
+html[data-theme='dark'] .home-mkt--cn-calm .mkt-deadly-row,
+html[data-theme='dark'] .home-mkt--cn-calm .mkt-beta-strip,
+html[data-theme='dark'] .home-mkt--cn-calm .mkt-field-holdout-note,
+html[data-theme='dark'] .home-mkt--cn-calm .mkt-multiview-strip,
+html[data-theme='dark'] .home-mkt--cn-calm .pro-plan-banner,
+html[data-theme='dark'] .home-mkt--cn-calm .waitlist-temporada,
+html[data-theme='dark'] .home-mkt--cn-calm .device-frame,
+html[data-theme='dark'] .home-mkt--cn-calm .mkt-hero .mkt-hero__visual,
+html[data-theme='dark'] .home-mkt--cn-calm .home-legacy-hero {
+  display: none !important;
+}
+
+html[data-theme='dark'] .home-mkt--cn-calm .cn-hero-card .species-image,
+html[data-theme='dark'] .home-mkt--cn-calm .cn-hero-card img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  display: block;
+}
+
+/* Identify night */
+html[data-theme='dark'] .page-identify,
+html[data-theme='dark'] .page-identify--v184 {
+  --surface: var(--cn-surface);
+}
+
+html[data-theme='dark'] .mv-wizard,
+html[data-theme='dark'] .multi-view-wizard {
+  gap: 0.75rem;
+}
+
+html[data-theme='dark'] .page-identify .identify-sticky-cta button,
+html[data-theme='dark'] .page-identify .btn-analyze {
+  background: var(--cn-moss) !important;
+  color: #0e3817 !important;
+}
+
+/* Games hub */
+.page-games-hub .games-hub-grid {
+  list-style: none;
+  margin: 1rem 0;
+  padding: 0;
+  display: grid;
+  gap: 0.85rem;
+}
+
+@media (min-width: 720px) {
+  .page-games-hub .games-hub-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.games-hub-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 1.15rem;
+  min-height: 11rem;
+  border-radius: 1rem;
+}
+
+.games-hub-card__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+}
+
+.games-hub-card__body {
+  margin: 0;
+  flex: 1;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.games-hub-card--amber {
+  border-color: rgba(209, 197, 178, 0.35) !important;
+}
+
+.games-hub-card--moss {
+  border-color: rgba(143, 188, 143, 0.4) !important;
+}
+
+/* More hub */
+.more-hub-group {
+  margin: 1.15rem 0;
+}
+
+.more-hub-group__title {
+  margin: 0 0 0.45rem;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.more-hub-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.more-hub-list__link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.8rem 0.95rem;
+  text-decoration: none;
+  color: inherit;
+  border-radius: 0.75rem;
+}
+
+.more-hub-list__label {
+  font-weight: 650;
+}
+
+.more-hub-list__blurb {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+/* Encyclopedia grid night */
+html[data-theme='dark'] .page-encyclopedia .species-photo-card img,
+html[data-theme='dark'] .ency-grid img {
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+
+/* Footer night */
+html[data-theme='dark'] .footer {
+  background: transparent;
+  border-top: 1px solid var(--cn-outline);
+  color: var(--cn-cream-soft);
+}
+
+html[data-theme='dark'] .footer a {
+  color: var(--cn-moss-bright);
+}
+
+/* Risk chips stay honest */
+html[data-theme='dark'] .risk-deadly,
+html[data-theme='dark'] .risk-chip--deadly {
+  background: var(--cn-danger-container) !important;
+  color: #ffdad6 !important;
+}
+
+/* Identify / result night density */
+html[data-theme='dark'] .page-identify--cn .identify-region,
+html[data-theme='dark'] .page-identify--cn .mv-progressive-coach,
+html[data-theme='dark'] .page-identify--cn .identify-capture-density {
+  background: var(--cn-surface);
+  border: 1px solid var(--cn-outline);
+  border-radius: 0.75rem;
+}
+
+html[data-theme='dark'] .page-encyclopedia--cn .ency-toolbar {
+  background: var(--cn-surface);
+  border-radius: 0.75rem;
+  border: 1px solid var(--cn-outline);
+  padding: 0.75rem;
+}
+
+/* Games pages */
+html[data-theme='dark'] .page-setadle,
+html[data-theme='dark'] .page-wordle,
+html[data-theme='dark'] .page-quiz {
+  color: var(--cn-cream);
+}
+
+html[data-theme='dark'] .page-setadle .setadle-board,
+html[data-theme='dark'] .page-wordle .wordle-grid,
+html[data-theme='dark'] .page-quiz .quiz-card {
+  background: var(--cn-surface);
+  border: 1px solid var(--cn-outline);
+  border-radius: 0.75rem;
+}
+
+/* Species detail */
+html[data-theme='dark'] .species-detail,
+html[data-theme='dark'] .page-detail {
+  color: var(--cn-cream);
+}
+
+html[data-theme='dark'] .species-detail-hero,
+html[data-theme='dark'] .species-meta-grid {
+  background: var(--cn-surface);
+  border-radius: 0.75rem;
+}
+
+/* Lookalike / education / offline / community / history */
+html[data-theme='dark'] .page-lookalike,
+html[data-theme='dark'] .page-education,
+html[data-theme='dark'] .page-offline,
+html[data-theme='dark'] .page-community,
+html[data-theme='dark'] .page-history {
+  color: var(--cn-cream);
+}
+
+/* ── MAP: keep current live map UX (user request) ───────────────────────── */
+html[data-theme='dark'] .page-map {
+  /* shell padding only via .app--has-bottom-nav — no map chrome restyle */
+}
