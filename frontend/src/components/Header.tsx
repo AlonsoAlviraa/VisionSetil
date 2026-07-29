@@ -10,9 +10,9 @@ const THEME_KEY = 'visionsetil_theme'
 const primaryNav = [
   { to: '/', labelKey: 'nav.home', fallback: 'Inicio' },
   { to: '/identificar', labelKey: 'nav.identify', fallback: 'Identificar', cta: true },
+  { to: '/juegos', labelKey: 'nav.games', fallback: 'Juegos' },
   { to: '/enciclopedia', labelKey: 'nav.encyclopedia', fallback: 'Enciclopedia' },
-  { to: '/setadle', labelKey: 'nav.setadle', fallback: 'Setadle' },
-  { to: '/mapa', labelKey: 'nav.map', fallback: 'Mapa' },
+  { to: '/mas', labelKey: 'nav.more', fallback: 'Más' },
 ] as const
 
 type MoreNavItem = {
@@ -326,7 +326,7 @@ export function Header() {
 
         <div className={`header-nav-wrap ${menuOpen ? 'header-nav-wrap--open' : ''}`}>
           <nav
-            className="header-nav header-nav--bar"
+            className="header-nav header-nav--bar header-nav--desktop-primary"
             aria-label={t('nav.primaryAria', { defaultValue: 'Principal' })}
           >
             {primaryNav.map((item) => (

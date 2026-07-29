@@ -6,7 +6,7 @@
 
 ## Active graph version
 
-`v1.10.0-campo-nocturno-b`
+`v1.10.1-campo-nocturno-full-skin`
 
 ## Current status
 

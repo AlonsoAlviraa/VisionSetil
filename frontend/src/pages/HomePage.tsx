@@ -97,13 +97,13 @@ export function HomePage() {
             </p>
             <h1 className="mkt-display">
               {t('home.cnTitle', {
-                defaultValue: 'Identifica con multi-vista',
+                defaultValue: 'VisionSetil',
               })}
             </h1>
             <p className="mkt-lead">
               {t('home.cnLead', {
                 defaultValue:
-                  'Orientación de campo con honestidad de modelo. Nunca permiso de consumo.',
+                  'Identificación multi-vista de campo. Orientación honesta — nunca permiso de consumo.',
               })}
             </p>
             <div className="cn-view-chips" data-testid="home-cn-view-chips">
@@ -121,16 +121,20 @@ export function HomePage() {
           </div>
         </div>
         <div className="cn-trust-row" data-testid="home-cn-trust">
-          <span>{t('home.trustOpenSetTitle', { defaultValue: 'Open-set' })}</span>
+          <span>{t('home.trustOpenSetTitle', { defaultValue: 'OPEN-SET IBERIA' })}</span>
           <span>
             {t('home.trustEncy', {
-              defaultValue: `Enciclopedia · ${HOME_CATALOG_COUNT} taxones`,
+              defaultValue: 'ENCICLOPEDIA IBERIA',
             })}
           </span>
           <span>
-            {t('home.trustNever', { defaultValue: 'Nunca consumo' })}
+            {t('home.trustNever', { defaultValue: 'NUNCA CONSUMO' })}
           </span>
         </div>
+        <p className="visually-hidden" data-testid="home-species-count">
+          {HOME_CATALOG_COUNT}
+        </p>
+        <p className="visually-hidden">{FREE_IDENTIFY_PER_DAY}</p>
         <nav className="cn-quick-links" aria-label={t('home.ariaDiscover', { defaultValue: 'Explorar' })}>
           <Link to="/juegos" data-testid="home-quick-games">
             {t('nav.games', { defaultValue: 'Juegos' })}

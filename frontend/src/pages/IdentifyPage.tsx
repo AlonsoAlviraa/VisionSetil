@@ -566,15 +566,19 @@ export function IdentifyPage() {
       data-result-mode={resultMode ?? undefined}
       data-capture-mode={useWizard ? 'wizard' : 'free'}
     >
-      <header className="mkt-page-head mkt-mesh">
+      <header className="mkt-page-head mkt-mesh identify-cn-head">
         <p className="mkt-kicker">
           {t('identify.kicker', { defaultValue: 'Campo · multi-vista' })}
         </p>
-        <h1>{t('identify.title')}</h1>
+        <h1>
+          {t('identify.titleCn', {
+            defaultValue: 'Identificación multi-vista',
+          })}
+        </h1>
         <p>
           {t('identify.bannerLead', {
             defaultValue:
-              'Multi-vista guiada. Si no está seguro, se calla. Mejor eso que inventar. Solo orientación — nunca consumo.',
+              'Láminas · perfil · hábitat · detalle. Si no está seguro, se calla. Solo orientación — nunca consumo.',
           })}
         </p>
         <ul

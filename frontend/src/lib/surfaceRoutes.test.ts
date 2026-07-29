@@ -76,9 +76,12 @@ describe('product surfaces routes', () => {
   })
 
   it('header nav exposes primary discovery links', () => {
+    // Campo nocturno primaries + overflow destinations still in moreNavGroups
     for (const p of [
       '/identificar',
+      '/juegos',
       '/enciclopedia',
+      '/mas',
       '/setadle',
       '/historial',
       '/mapa',
@@ -100,8 +103,9 @@ describe('product surfaces routes', () => {
     expect(header).toContain('Más')
     expect(header).toContain('nav-more')
     expect(header).toContain('nav-more__group')
+    // Option B primary strip: home · identify · games · encyclopedia · más
     expect(header).toMatch(
-      /primaryNav\s*=\s*\[[\s\S]*?to: '\/identificar'[\s\S]*?to: '\/enciclopedia'[\s\S]*?to: '\/setadle'[\s\S]*?to: '\/mapa'[\s\S]*?\]/,
+      /primaryNav\s*=\s*\[[\s\S]*?to: '\/identificar'[\s\S]*?to: '\/juegos'[\s\S]*?to: '\/enciclopedia'[\s\S]*?to: '\/mas'[\s\S]*?\]/,
     )
     // Grouped hub still exposes all product destinations
     for (const p of [
