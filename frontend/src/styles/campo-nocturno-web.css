@@ -924,11 +924,14 @@
 }
 .app--mode-web .species-photo-card__frame {
   aspect-ratio: 4 / 5 !important;
-  min-height: 11rem;
+  min-height: 12rem;
 }
 .app--mode-web .species-photo-card__img {
+  object-fit: cover !important;
+  object-position: center 35% !important;
+}
+.app--mode-web .species-photo-card__img.is-plate {
   object-fit: contain !important;
-  object-position: center center !important;
 }
 /* Do not zoom-crop on hover (atelier scale was cutting photos) */
 .app--mode-web .species-photo-card:hover .species-photo-card__img,

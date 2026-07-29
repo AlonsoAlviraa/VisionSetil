@@ -12,7 +12,7 @@ import {
   mediaStackWithTerminal,
 } from '../lib/speciesMediaStack'
 import { speciesPhotoErrorFallback } from '../lib/speciesPhotoFallback'
-import { INLINE_PLACEHOLDER_SVG } from '../lib/speciesImageUrl'
+import { getCatalogPhotoUrlHd } from '../lib/speciesImageService'
 
 export { NO_LOCAL_COMMON_NAME }
 
@@ -23,8 +23,8 @@ type Props = {
 }
 
 /**
- * Encyclopedia grid card — multi-angle when available (best photo first).
- * Safe loads: referrerPolicy no-referrer, cascade on error by URL → SVG terminal.
+ * Encyclopedia grid card — real field photos only (catalog → local).
+ * Never prefers brand "Foto de campo no disponible" plates while a real URL exists.
  */
 export function SpeciesPhotoCard({ species, priority = false }: Props) {
   const { i18n } = useTranslation()
@@ -37,70 +37,85 @@ export function SpeciesPhotoCard({ species, priority = false }: Props) {
   const stack = useMemo(
     () =>
       mediaStackWithTerminal(species.taxon, {
-        maxGallery: 3,
+        maxGallery: 2,
         includeCatalog: true,
         riskLabel: species.risk_label,
-        maxCandidates: 4,
-        // Medium remotes: sharp enough in portrait contain frames, still light
+        maxCandidates: 6,
         quality: 'display',
       }),
     [species.taxon, species.risk_label],
   )
 
+  // Real candidates only (drop terminal SVG until every photo URL failed)
+  const photoStack = useMemo(
+    () => stack.filter((c) => !isTerminalMediaUrl(c.url)),
+    [stack],
+  )
+
   const [idx, setIdx] = useState(0)
-  const [alive, setAlive] = useState(stack)
-  const [useInline, setUseInline] = useState(false)
-  const current = alive[idx] || alive[0]
+  const [alive, setAlive] = useState(photoStack)
+  const [useTerminal, setUseTerminal] = useState(false)
+  const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
-    setAlive(stack)
+    setAlive(photoStack)
     setIdx(0)
-    setUseInline(false)
-  }, [stack])
+    setUseTerminal(false)
+    setLoaded(false)
+  }, [photoStack])
+
+  const current = alive[idx] || alive[0]
+  const src = useTerminal
+    ? // Last resort only: if catalog has any URL, force it once more before plate
+      getCatalogPhotoUrlHd(species.taxon, 'display') ||
+      getCatalogPhotoUrlHd(species.taxon, 'thumb') ||
+      terminal
+    : current?.url ||
+      getCatalogPhotoUrlHd(species.taxon, 'display') ||
+      terminal
+
+  const isPlate = isTerminalMediaUrl(src)
 
   const onError = () => {
-    const failedUrl = current?.url
+    if (useTerminal || isPlate) return
+    setLoaded(false)
     setAlive((prev) => {
+      const failedUrl = current?.url
       if (!failedUrl || prev.length <= 1) {
-        setUseInline(true)
+        setUseTerminal(true)
         return prev
       }
       const next = prev.filter((c) => c.url !== failedUrl)
       setIdx(0)
-      if (next.length === 0 || next.every((c) => isTerminalMediaUrl(c.url))) {
-        // still try remaining terminal frames; if only terminal left, show it once
-        if (next.length === 0) {
-          setUseInline(true)
-          return prev
-        }
+      if (next.length === 0) {
+        setUseTerminal(true)
+        return prev
       }
       return next
     })
   }
 
-  const src = useInline
-    ? terminal || INLINE_PLACEHOLDER_SVG
-    : current?.url || terminal || INLINE_PLACEHOLDER_SVG
-  const terminalSrc = isTerminalMediaUrl(src)
+  const onLoad = () => setLoaded(true)
 
   return (
     <Link to={`/enciclopedia/${species.slug}`} className="species-photo-card">
-      {/* Portrait frame + contain (CSS) so mushrooms are not cropped mid-body */}
       <div className="species-photo-card__frame">
+        {!loaded && !isPlate ? (
+          <div className="species-photo-card__shimmer" aria-hidden />
+        ) : null}
         <img
-          key={useInline ? 'inline' : current?.url || 'fb'}
+          key={useTerminal ? `term-${src}` : current?.url || src}
           src={src}
           alt={alt}
-          className="species-photo-card__img"
+          className={`species-photo-card__img${loaded ? ' is-loaded' : ''}${isPlate ? ' is-plate' : ''}`}
           loading={priority ? 'eager' : 'lazy'}
           decoding={priority ? 'sync' : 'async'}
           {...(priority ? { fetchPriority: 'high' as const } : {})}
           referrerPolicy="no-referrer"
-          sizes="(max-width: 600px) 48vw, (max-width: 1100px) 22vw, 240px"
-          onError={useInline || terminalSrc ? undefined : onError}
-          data-media-kind={
-            useInline || terminalSrc ? 'illustration' : current?.kind || 'illustration'
-          }
+          sizes="(max-width: 600px) 48vw, (max-width: 1100px) 22vw, 260px"
+          onError={isPlate ? undefined : onError}
+          onLoad={onLoad}
+          data-media-kind={isPlate ? 'illustration' : 'photo'}
         />
         <span className="species-photo-card__chips">
           {food ? (
@@ -109,18 +124,20 @@ export function SpeciesPhotoCard({ species, priority = false }: Props) {
             <RiskChip risk={species.risk_label} />
           )}
         </span>
-        {!useInline && alive.length > 1 && (
+        {!useTerminal && !isPlate && alive.length > 1 && (
           <span
             className="species-photo-card__angles"
             onClick={(e) => {
               e.preventDefault()
               e.stopPropagation()
+              setLoaded(false)
               setIdx((i) => (i + 1) % alive.length)
             }}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault()
                 e.stopPropagation()
+                setLoaded(false)
                 setIdx((i) => (i + 1) % alive.length)
               }
             }}

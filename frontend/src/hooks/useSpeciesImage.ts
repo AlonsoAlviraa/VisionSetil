@@ -11,7 +11,7 @@ import { getPhotoTier } from '../data/photoTiers'
 
 export type UseSpeciesImageOptions = {
   riskLabel?: string
-  /** grid = encyclopedia cards (no remote upgrade; T2 placeholder). detail/eager = full resolve. */
+  /** grid = encyclopedia cards (sync catalog/local only). detail/eager = full resolve. */
   context?: ImageLoadContext
   tier?: PhotoTier
   allowNetwork?: boolean
@@ -21,7 +21,7 @@ export type UseSpeciesImageOptions = {
 
 /**
  * Displayable mycology image URL.
- * Grid: sync only (catalog for T0/T1, placeholder for T2) — never wiki/iNat.
+ * Grid: sync only from speciesPhotos catalog + local media (all tiers) — never live wiki/iNat.
  * Detail/eager: may upgrade via network when not in catalog.
  */
 export function useSpeciesImage(

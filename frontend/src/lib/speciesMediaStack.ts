@@ -102,21 +102,37 @@ export function buildSpeciesMediaStack(
     })
   })
 
-  // 1) Remote catalog (speciesPhotos.json / Wiki / iNat) — resized for paint speed
+  // 1) Remote catalog (speciesPhotos.json / Wiki / iNat) — real field photos first
   if (opts?.includeCatalog !== false) {
     const cat = getCatalogPhotoUrl(taxon) || getCatalogPhotoUrl(slug.replace(/-/g, ' '))
     if (cat) {
+      const sized = upgradePhotoUrl(cat, quality)
       out.push({
-        url: upgradePhotoUrl(cat, quality),
+        url: sized,
         kind: 'catalog',
-        // Above extras default (100) and local pack so product surfaces show real photos
-        rank: 130,
+        // Highest: product must show real photos, never brand plates
+        rank: 140,
         sameOrigin: false,
       })
+      // Fallback if sized thumb 404s (some Commons files lack certain px sizes)
+      if (sized !== cat) {
+        out.push({
+          url: upgradePhotoUrl(cat, 'display'),
+          kind: 'catalog',
+          rank: 135,
+          sameOrigin: false,
+        })
+        out.push({
+          url: cat,
+          kind: 'catalog',
+          rank: 132,
+          sameOrigin: false,
+        })
+      }
     }
   }
 
-  // 2) Local same-origin pack (fallback when catalog blocked / offline)
+  // 2) Local same-origin pack (real derivatives when present; Vite 404s stubs for cascade)
   out.push({
     url: speciesImageUrl(slug, 'detail'),
     kind: 'detail',

@@ -1,6 +1,7 @@
 /**
  * Photo load tiers for VisionSetil encyclopedia / image pipeline (Week 1).
- * T0 = hero / iconic · T1 = known Spain + high-risk · T2 = rest (placeholder on grid).
+ * T0 = hero / iconic · T1 = known Spain + high-risk · T2 = rest of catalog.
+ * All tiers may show real catalog photos on grid (no brand-plate placeholders).
  * Pure data + pure functions — unit-tested without React or network.
  */
 
@@ -169,11 +170,13 @@ export function shouldAllowRemotePhotoResolve(
 }
 
 /**
- * On encyclopedia grid: only T0/T1 may show verified catalog photo URLs.
- * T2 always uses local SVG placeholder until detail/eager.
+ * On encyclopedia grid: always allow verified catalog photo URLs (speciesPhotos).
+ * Product requirement: show real field photos for every taxon, not brand plates.
+ * Tier is kept for analytics / prioritization only.
  */
-export function shouldUseCatalogUrlOnGrid(tier: PhotoTier): boolean {
-  return tier === 'T0' || tier === 'T1'
+export function shouldUseCatalogUrlOnGrid(_tier: PhotoTier): boolean {
+  void _tier
+  return true
 }
 
 /** Bound for concurrent remote upgrades / catalog img loads on first encyclopedia paint. */

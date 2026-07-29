@@ -81,7 +81,8 @@ describe('remote resolve policy', () => {
   it('only T0/T1 may use catalog URL on grid', () => {
     expect(shouldUseCatalogUrlOnGrid('T0')).toBe(true)
     expect(shouldUseCatalogUrlOnGrid('T1')).toBe(true)
-    expect(shouldUseCatalogUrlOnGrid('T2')).toBe(false)
+    // Product: all tiers show real catalog photos on grid
+    expect(shouldUseCatalogUrlOnGrid('T2')).toBe(true)
   })
 
   it('canAsyncRemoteResolve blocks grid even without catalog', () => {
@@ -112,7 +113,7 @@ describe('resolveSpeciesImageSync grid policy', () => {
     clearSpeciesImageCache()
   })
 
-  it('T2 grid always returns placeholder or local_media (no remote leak)', () => {
+  it('T2 grid may use real catalog or local_media (no brand-plate preference)', () => {
     // Pick a T2 species from catalog if any
     const t2 = speciesCatalog.find((s) => s.photo_tier === 'T2')
     expect(t2).toBeTruthy()
@@ -121,10 +122,13 @@ describe('resolveSpeciesImageSync grid policy', () => {
       context: 'grid',
       tier: 'T2',
     })
-    // Phase C/E: same-origin local_media preferred over remote catalog URLs
-    expect(['placeholder', 'local_media']).toContain(resolved.provider)
+    // Product: real photos everywhere — catalog remote OK on grid for all tiers
+    expect(['catalog', 'local_media', 'placeholder']).toContain(resolved.provider)
     expect(resolved.url.length).toBeGreaterThan(10)
     expect(resolved.tier).toBe('T2')
+    if (resolved.provider === 'catalog') {
+      expect(resolved.url.startsWith('http')).toBe(true)
+    }
   })
 
   it('T0 grid may use local_media or catalog when photo exists', () => {
@@ -164,7 +168,7 @@ describe('resolveSpeciesImageAsync no-network on T2 grid', () => {
     clearSpeciesImageCache()
   })
 
-  it('does not call wiki/iNat for T2 grid path', async () => {
+  it('does not call wiki/iNat for T2 grid path (catalog sync only)', async () => {
     const t2 = speciesCatalog.find((s) => s.photo_tier === 'T2')!
     const r = await resolveSpeciesImageAsync(t2.taxon, {
       riskLabel: t2.risk_label,
@@ -173,7 +177,8 @@ describe('resolveSpeciesImageAsync no-network on T2 grid', () => {
     })
     expect(wikiSpy).not.toHaveBeenCalled()
     expect(inatSpy).not.toHaveBeenCalled()
-    expect(['placeholder', 'local_media']).toContain(r.provider)
+    // Grid never live-fetches wiki/iNat; catalog JSON or local is fine
+    expect(['catalog', 'placeholder', 'local_media']).toContain(r.provider)
   })
 
   it('does not call wiki/iNat for T0/T1 grid path either', async () => {

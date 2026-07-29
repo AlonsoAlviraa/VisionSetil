@@ -1811,25 +1811,43 @@ button[aria-pressed='true'] {
 .species-photo-card__frame {
   position: relative;
   width: 100%;
-  /* Portrait: better for setas standing upright */
+  /* Portrait frame — real photos fill the card (no brand plate) */
   aspect-ratio: 4 / 5 !important;
   overflow: hidden;
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
-  background:
-    radial-gradient(ellipse 70% 60% at 50% 55%, rgba(143, 188, 143, 0.08), transparent 70%),
-    linear-gradient(165deg, #1c241d 0%, #0f1410 100%) !important;
+  background: #121812 !important;
+}
+
+.species-photo-card__shimmer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(90deg, #1c241d 25%, #2a342c 50%, #1c241d 75%);
+  background-size: 200% 100%;
+  animation: species-shimmer 1.1s ease-in-out infinite;
+  pointer-events: none;
 }
 
 .species-photo-card__img {
   width: 100% !important;
   height: 100% !important;
-  /* contain = entire photo visible; cover was cutting caps/stems */
+  /* cover fills card with real photo; position favors cap + upper stipe */
+  object-fit: cover !important;
+  object-position: center 35% !important;
+  display: block;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.species-photo-card__img.is-loaded {
+  opacity: 1;
+}
+
+/* Brand plate only if every real URL failed — keep subtle, never a fake mushroom */
+.species-photo-card__img.is-plate {
   object-fit: contain !important;
   object-position: center center !important;
-  display: block;
-  background: transparent !important;
+  opacity: 0.85;
+  background: #0f1410;
 }
 
 .page-encyclopedia--cn .species-photo-card,
@@ -1844,8 +1862,13 @@ button[aria-pressed='true'] {
 
 .page-encyclopedia--cn .species-photo-card__img,
 .featured-species-grid .species-photo-card__img {
+  object-fit: cover !important;
+  object-position: center 35% !important;
+}
+
+.page-encyclopedia--cn .species-photo-card__img.is-plate,
+.featured-species-grid .species-photo-card__img.is-plate {
   object-fit: contain !important;
-  object-position: center center !important;
 }
 
 .species-photo-card__chips,
