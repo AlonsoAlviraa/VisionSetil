@@ -1,6 +1,7 @@
 # VisionSetil — 3 frontend design options
 
-**Goal:** improve product polish while keeping **real field photos only**, **orientation-only** safety, multi-view Identify, Iberia encyclopedia.
+**Chosen direction (2026-07-29):** **B — Campo nocturno** (full product map + games).  
+**Goal:** improve product polish while keeping **real field photos only**, **orientation-only** safety, multi-view Identify, Iberia encyclopedia, **all games and secondary surfaces**.
 
 **Policy forever:** never edible green lights · open-set is a feature · no 3D model studio.
 
@@ -31,7 +32,7 @@ Earlier draft mockups (Imagine): `option-A-bosque-claro.jpg` etc. Prefer **Stitc
 
 ---
 
-## Option B — **Campo nocturno** (dark field PWA)
+## Option B — **Campo nocturno** (dark field PWA) ✅ CHOSEN
 
 | | |
 |--|--|
@@ -39,9 +40,12 @@ Earlier draft mockups (Imagine): `option-A-bosque-claro.jpg` etc. Prefer **Stitc
 | **Layout** | Bottom nav mobile, glass panels, high-contrast risk chips |
 | **Identify** | Full-bleed capture stage; FAB primary; result as bottom sheet |
 | **Best for** | Field use at dusk, mobile-first beta |
-| **Risk** | More CSS rewrite; encyclopedia reading comfort |
+| **Product map** | **All surfaces:** Identify · Enciclopedia · Juegos (Setadle/Wordle/Reto) · Mapa · Educación · Lookalikes · Cuaderno · Offline · Comunidad · Expertos · Beta · ML · Login |
+| **Implementation** | Dark default + `BottomNav` + `/juegos` + `/mas` hubs + expanded Home discover |
 
 **Palette:** `#0F1410` bg, `#1A2420` cards, `#8FBC8F` accents, `#E8DCC8` text, deadly `#C45C5C`.
+
+**Stitch B full set:** `option-B-home-full.png` · `option-B-games.png` · `option-B-map.png` · `option-B-mas.png` · base `option-B-stitch.png`
 
 ---
 

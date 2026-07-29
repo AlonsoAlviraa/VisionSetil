@@ -28,6 +28,8 @@ const SURFACES: Array<{ name: string; path: string; pageHint: string }> = [
   { name: 'Register', path: '/registro', pageHint: 'RegisterPage' },
   { name: 'Lookalike Studio', path: '/lookalikes', pageHint: 'LookalikeStudioPage' },
   { name: 'Quiz game', path: '/reto', pageHint: 'QuizGamePage' },
+  { name: 'Games hub', path: '/juegos', pageHint: 'GamesHubPage' },
+  { name: 'More hub', path: '/mas', pageHint: 'MoreHubPage' },
   { name: 'Setadle hub', path: '/setadle', pageHint: 'SetadlePage' },
   { name: 'Setadle mode', path: '/setadle/:mode', pageHint: 'SetadlePage' },
   { name: 'Mushroom Wordle', path: '/wordle', pageHint: 'MushroomWordlePage' },
@@ -62,6 +64,15 @@ describe('product surfaces routes', () => {
     expect(app).toContain('PwaInstallHint')
     expect(app).toContain('/offline')
     expect(app).toContain('OfflinePackPage')
+  })
+
+  it('Option B shell: bottom nav + games/more hubs', () => {
+    expect(app).toContain('BottomNav')
+    expect(app).toContain('app--campo-nocturno')
+    expect(app).toContain('GamesHubPage')
+    expect(app).toContain('MoreHubPage')
+    expect(app).toContain('/juegos')
+    expect(app).toContain('/mas')
   })
 
   it('header nav exposes primary discovery links', () => {

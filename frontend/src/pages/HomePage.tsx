@@ -577,15 +577,17 @@ export function HomePage() {
             </span>
           </Link>
           <Link
-            to="/setadle"
+            to="/juegos"
             className="mkt-discover-card mkt-discover-card--amber"
-            data-testid="home-discover-setadle"
+            data-testid="home-discover-games"
           >
             <span className="mkt-discover-card__kicker">
               {t('home.discoverPlayKicker', { defaultValue: 'Jugar' })}
             </span>
             <strong className="mkt-discover-card__title">
-              {t('home.discoverPlayTitle', { defaultValue: 'Setadle & retos' })}
+              {t('home.discoverPlayTitle', {
+                defaultValue: 'Juegos: Setadle · Wordle · Reto',
+              })}
             </strong>
             <span className="mkt-discover-card__body">
               {t('home.discoverPlayBody', {
@@ -624,6 +626,76 @@ export function HomePage() {
             <span className="mkt-discover-card__body">
               {t('home.discoverEduBody', {
                 defaultValue: 'Multi-vista diagnóstica y riesgos.',
+              })}
+            </span>
+          </Link>
+          <Link
+            to="/offline"
+            className="mkt-discover-card"
+            data-testid="home-discover-offline"
+          >
+            <span className="mkt-discover-card__kicker">
+              {t('home.discoverOfflineKicker', { defaultValue: 'Sin red' })}
+            </span>
+            <strong className="mkt-discover-card__title">
+              {t('home.discoverOfflineTitle', { defaultValue: 'Pack offline' })}
+            </strong>
+            <span className="mkt-discover-card__body">
+              {t('home.discoverOfflineBody', {
+                defaultValue: 'Estudio en el dispositivo · no ID de campo.',
+              })}
+            </span>
+          </Link>
+          <Link
+            to="/comunidad"
+            className="mkt-discover-card"
+            data-testid="home-discover-community"
+          >
+            <span className="mkt-discover-card__kicker">
+              {t('home.discoverCommunityKicker', { defaultValue: 'Gente' })}
+            </span>
+            <strong className="mkt-discover-card__title">
+              {t('home.discoverCommunityTitle', { defaultValue: 'Comunidad' })}
+            </strong>
+            <span className="mkt-discover-card__body">
+              {t('home.discoverCommunityBody', {
+                defaultValue: 'Segunda opinión humana · multi-vista en campo.',
+              })}
+            </span>
+          </Link>
+          <Link
+            to="/revision-experta"
+            className="mkt-discover-card"
+            data-testid="home-discover-expert"
+          >
+            <span className="mkt-discover-card__kicker">
+              {t('home.discoverExpertKicker', { defaultValue: 'Experto' })}
+            </span>
+            <strong className="mkt-discover-card__title">
+              {t('home.discoverExpertTitle', {
+                defaultValue: 'Revisión experta',
+              })}
+            </strong>
+            <span className="mkt-discover-card__body">
+              {t('home.discoverExpertBody', {
+                defaultValue: 'Handoff a micólogo · orientación only.',
+              })}
+            </span>
+          </Link>
+          <Link
+            to="/mas"
+            className="mkt-discover-card"
+            data-testid="home-discover-more"
+          >
+            <span className="mkt-discover-card__kicker">
+              {t('home.discoverMoreKicker', { defaultValue: 'Todo' })}
+            </span>
+            <strong className="mkt-discover-card__title">
+              {t('home.discoverMoreTitle', { defaultValue: 'Más VisionSetil' })}
+            </strong>
+            <span className="mkt-discover-card__body">
+              {t('home.discoverMoreBody', {
+                defaultValue: 'Feedback beta · ML ops · login · mapa completo.',
               })}
             </span>
           </Link>

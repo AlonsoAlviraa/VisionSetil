@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&amp;family=Hanken+Grotesk:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-variant": "#333533",
+                    "tertiary-fixed-dim": "#ffb4a8",
+                    "surface-container": "#1e201e",
+                    "secondary-container": "#494a38",
+                    "surface-container-low": "#1a1c1a",
+                    "on-tertiary": "#690000",
+                    "on-background": "#e3e3df",
+                    "on-secondary-container": "#b9baa3",
+                    "on-primary-fixed": "#012113",
+                    "on-error": "#690005",
+                    "on-surface-variant": "#c2c8c1",
+                    "outline": "#8c928c",
+                    "error": "#ffb4ab",
+                    "inverse-on-surface": "#2f312f",
+                    "inverse-surface": "#e3e3df",
+                    "on-tertiary-fixed": "#410000",
+                    "primary-fixed-dim": "#accfb8",
+                    "on-tertiary-fixed-variant": "#920703",
+                    "inverse-primary": "#466553",
+                    "tertiary-fixed": "#ffdad4",
+                    "on-surface": "#e3e3df",
+                    "surface-tint": "#accfb8",
+                    "on-secondary-fixed-variant": "#474836",
+                    "primary-fixed": "#c7ebd4",
+                    "surface-container-lowest": "#0d0f0d",
+                    "surface-container-highest": "#333533",
+                    "secondary-fixed-dim": "#c8c8b0",
+                    "surface-dim": "#121412",
+                    "surface-bright": "#383a38",
+                    "on-primary": "#173627",
+                    "primary": "#accfb8",
+                    "secondary": "#c8c8b0",
+                    "tertiary-container": "#900502",
+                    "error-container": "#93000a",
+                    "on-primary-fixed-variant": "#2e4d3c",
+                    "tertiary": "#ffb4a8",
+                    "on-primary-container": "#99bca6",
+                    "surface": "#121412",
+                    "primary-container": "#2d4c3b",
+                    "on-error-container": "#ffdad6",
+                    "surface-container-high": "#292a29",
+                    "on-tertiary-container": "#ff9787",
+                    "on-secondary": "#303221",
+                    "background": "#121412",
+                    "secondary-fixed": "#e4e4cc",
+                    "on-secondary-fixed": "#1b1d0e",
+                    "outline-variant": "#424843"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-lg": "48px",
+                    "stack-sm": "12px",
+                    "stack-md": "24px",
+                    "gutter": "16px",
+                    "container-padding": "20px",
+                    "base": "8px",
+                    "margin-mobile": "20px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Hanken Grotesk"],
+                    "display-lg": ["Playfair Display"],
+                    "headline-md-mobile": ["Playfair Display"],
+                    "headline-md": ["Playfair Display"],
+                    "title-lg": ["Hanken Grotesk"],
+                    "body-md": ["Hanken Grotesk"],
+                    "body-lg": ["Hanken Grotesk"]
+            },
+            "fontSize": {
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-md-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                    "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                    "title-lg": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #0F1410; /* Level 1 Surface */
+            color: #e3e3df;
+            -webkit-font-smoothing: antialiased;
+        }
+        .glass-card {
+            background: rgba(73, 74, 56, 0.15); /* Semi-transparent Moss Green */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(172, 207, 184, 0.1); /* Subtle stroke */
+        }
+        .safe-bottom {
+            padding-bottom: 120px;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .risk-banner {
+            background: rgba(147, 0, 10, 0.2);
+            backdrop-filter: blur(8px);
+            border-left: 4px solid #ffb4ab;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-md text-on-background selection:bg-primary/30">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-mobile py-4 bg-surface/80 backdrop-blur-xl border-b border-outline-variant/10">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary font-headline-md text-headline-md">microbiology</span>
+<h1 class="font-headline-md text-headline-md text-primary tracking-tight">M├ís</h1>
+</div>
+<div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-error-container/20 border border-error/20">
+<span class="material-symbols-outlined text-error text-[18px]">warning</span>
+<span class="font-label-sm text-[10px] text-error tracking-wider uppercase">S├│lo Orientaci├│n</span>
+</div>
+</header>
+<main class="pt-24 px-margin-mobile safe-bottom">
+<!-- Danger Warning Section -->
+<section class="mb-stack-md">
+<div class="risk-banner p-4 rounded-xl flex items-start gap-3">
+<span class="material-symbols-outlined text-error" style="font-variation-settings: 'FILL' 1;">report</span>
+<div>
+<h3 class="font-title-lg text-title-lg text-error mb-1">Aviso Cr├¡tico</h3>
+<p class="font-body-md text-label-sm text-on-surface-variant leading-relaxed">
+                        NUNCA CONSUMA especies bas├índose ├║nicamente en esta aplicaci├│n. La identificaci├│n por IA es una herramienta de apoyo y puede cometer errores fatales. Consulte siempre a un experto.
+                    </p>
+</div>
+</div>
+</section>
+<!-- Category: Aprender -->
+<section class="mb-stack-lg">
+<div class="flex items-center justify-between mb-4">
+<h2 class="font-headline-md-mobile text-headline-md-mobile text-on-surface">Aprender</h2>
+<span class="w-12 h-[1px] bg-outline-variant/30"></span>
+</div>
+<div class="grid grid-cols-1 gap-3">
+<!-- Educaci├│n -->
+<button class="glass-card w-full p-4 rounded-2xl flex items-center gap-4 active:scale-[0.98] transition-transform">
+<div class="w-12 h-12 rounded-xl bg-primary-container/40 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[28px]">school</span>
+</div>
+<div class="text-left flex-1">
+<p class="font-title-lg text-[18px] text-on-surface">Educaci├│n</p>
+<p class="font-body-md text-label-sm text-on-surface-variant">Cursos y gu├¡as micol├│gicas</p>
+</div>
+<span class="material-symbols-outlined text-outline-variant">chevron_right</span>
+</button>
+<!-- Lookalike Studio -->
+<button class="glass-card w-full p-4 rounded-2xl flex items-center gap-4 active:scale-[0.98] transition-transform">
+<div class="w-12 h-12 rounded-xl bg-secondary-container/40 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[28px]">compare</span>
+</div>
+<div class="text-left flex-1">
+<p class="font-title-lg text-[18px] text-on-surface">Lookalike Studio</p>
+<p class="font-body-md text-label-sm text-on-surface-variant">Compara especies similares</p>
+</div>
+<span class="material-symbols-outlined text-outline-variant">chevron_right</span>
+</button>
+</div>
+</section>
+<!-- Category: Campo -->
+<section class="mb-stack-lg">
+<div class="flex items-center justify-between mb-4">
+<h2 class="font-headline-md-mobile text-headline-md-mobile text-on-surface">Campo</h2>
+<span class="w-12 h-[1px] bg-outline-variant/30"></span>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<!-- Cuaderno historial -->
+<button class="glass-card p-5 rounded-3xl flex flex-col items-start gap-3 active:scale-[0.98] transition-transform text-left">
+<span class="material-symbols-outlined text-primary text-[32px]">menu_book</span>
+<div>
+<p class="font-title-lg text-title-lg text-on-surface">Historial</p>
+<p class="font-body-md text-[13px] text-on-surface-variant mt-1 leading-tight">Tus capturas y hallazgos</p>
+</div>
+</button>
+<!-- Offline Pack -->
+<button class="glass-card p-5 rounded-3xl flex flex-col items-start gap-3 active:scale-[0.98] transition-transform text-left">
+<span class="material-symbols-outlined text-secondary text-[32px]">cloud_download</span>
+<div>
+<p class="font-title-lg text-title-lg text-on-surface">Offline</p>
+<p class="font-body-md text-[13px] text-on-surface-variant mt-1 leading-tight">Mapas y gu├¡as locales</p>
+</div>
+</button>
+</div>
+</section>
+<!-- Category: Comunidad -->
+<section class="mb-stack-lg">
+<div class="flex items-center justify-between mb-4">
+<h2 class="font-headline-md-mobile text-headline-md-mobile text-on-surface">Comunidad</h2>
+<span class="w-12 h-[1px] bg-outline-variant/30"></span>
+</div>
+<div class="space-y-3">
+<!-- Comunidad -->
+<div class="relative rounded-2xl overflow-hidden h-32 group">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="A moody, atmospheric forest at twilight with soft mossy ground and silhouettes of large mushrooms in the background, cinematic low-light photography, deep greens and earthy tones, scholarly adventure aesthetic." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAmdNBUOp1B7qI_titDOb3CSXtMa8hK4XkrqkzBlFyubvNRMu77Z_r750UdEMeFNqFeBLREdTnbtg0SBeC-uC-Rm2bJA6PV5ZXDodCYgd1YmNjCcQuQnNiv5QXrrbXv5-GNzUPlwYU0G5OYgYxgcFCyvrF3CFXuepJIzqnclIL5tf-ndJRQnLE6iVD1uCwDOXgyXWSQ3kpbgtCIqMs-usoaxAXHfdKN90lSMV0bT4cwFecFRHo0W5JDEcXWPp4pvHHGB0YLL35khZ6u')"></div>
+<div class="absolute inset-0 bg-gradient-to-r from-black/80 to-transparent flex items-center px-6">
+<div class="flex flex-col gap-1">
+<span class="material-symbols-outlined text-primary text-[30px]" style="font-variation-settings: 'FILL' 1;">groups</span>
+<p class="font-title-lg text-title-lg text-on-surface">Comunidad</p>
+<p class="font-body-md text-label-sm text-on-surface-variant">Foros y avistamientos</p>
+</div>
+</div>
+</div>
+<!-- Revisi├│n Experta -->
+<button class="glass-card w-full p-4 rounded-2xl flex items-center gap-4 active:scale-[0.98] transition-transform">
+<div class="w-12 h-12 rounded-xl bg-tertiary-container/30 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-[28px]">verified_user</span>
+</div>
+<div class="text-left flex-1">
+<p class="font-title-lg text-[18px] text-on-surface">Revisi├│n experta</p>
+<p class="font-body-md text-label-sm text-on-surface-variant">Solicita validaci├│n humana</p>
+</div>
+<span class="material-symbols-outlined text-outline-variant">chevron_right</span>
+</button>
+</div>
+</section>
+<!-- Category: Desarrollo -->
+<section class="mb-stack-lg">
+<div class="flex items-center justify-between mb-4">
+<h2 class="font-headline-md-mobile text-headline-md-mobile text-on-surface">Configuraci├│n</h2>
+<span class="w-12 h-[1px] bg-outline-variant/30"></span>
+</div>
+<div class="grid grid-cols-1 bg-surface-container/50 rounded-2xl border border-outline-variant/10 overflow-hidden">
+<!-- Feedback Beta -->
+<button class="flex items-center justify-between p-4 border-b border-outline-variant/10 active:bg-surface-variant/30">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-outline">bug_report</span>
+<div class="text-left">
+<p class="font-title-lg text-body-lg text-on-surface">Feedback beta</p>
+<p class="font-body-md text-[13px] text-on-surface-variant">Ay├║danos a mejorar</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant">chevron_right</span>
+</button>
+<!-- ML Dashboard -->
+<button class="flex items-center justify-between p-4 border-b border-outline-variant/10 active:bg-surface-variant/30">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-outline">analytics</span>
+<div class="text-left">
+<p class="font-title-lg text-body-lg text-on-surface">ML dashboard ops</p>
+<p class="font-body-md text-[13px] text-on-surface-variant">M├®tricas del modelo IA</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant">chevron_right</span>
+</button>
+<!-- Login -->
+<button class="flex items-center justify-between p-4 active:bg-surface-variant/30">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary">account_circle</span>
+<div class="text-left">
+<p class="font-title-lg text-body-lg text-on-surface">Acceder</p>
+<p class="font-body-md text-[13px] text-on-surface-variant">Entra a tu cuenta personal</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-primary">login</span>
+</button>
+</div>
+</section>
+<!-- Footer Info -->
+<footer class="text-center space-y-2 opacity-40 mb-8">
+<p class="font-label-sm text-label-sm">VISIONSETIL v2.4.0-BETA</p>
+<p class="font-label-sm text-[10px] uppercase tracking-[0.2em]">Crafted for the Nocturnal Forager</p>
+</footer>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-margin-mobile pb-6 pt-2 bg-surface/80 backdrop-blur-xl">
+<!-- Inicio -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant active:scale-95 transition-transform duration-150">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm">Inicio</span>
+</button>
+<!-- Identificar -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant active:scale-95 transition-transform duration-150">
+<span class="material-symbols-outlined">center_focus_weak</span>
+<span class="font-label-sm text-label-sm">Identificar</span>
+</button>
+<!-- Juegos -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant active:scale-95 transition-transform duration-150">
+<span class="material-symbols-outlined">sports_esports</span>
+<span class="font-label-sm text-label-sm">Juegos</span>
+</button>
+<!-- Enciclopedia -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant active:scale-95 transition-transform duration-150">
+<span class="material-symbols-outlined">menu_book</span>
+<span class="font-label-sm text-label-sm">Libros</span>
+</button>
+<!-- Mas (ACTIVE) -->
+<button class="flex flex-col items-center justify-center bg-secondary-container/30 text-primary rounded-xl px-3 py-1 active:scale-95 transition-transform duration-150">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">more_horiz</span>
+<span class="font-label-sm text-label-sm">M├ís</span>
+</button>
+</nav>
+<script>
+        // Micro-interaction for cards
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('touchstart', () => {
+                button.style.transform = 'scale(0.97)';
+            });
+            button.addEventListener('touchend', () => {
+                button.style.transform = 'scale(1)';
+            });
+        });
+
+        // Atmospheric parallax or simple scroll effect could go here
+        window.addEventListener('scroll', () => {
+            const scrolled = window.scrollY;
+            const header = document.querySelector('header');
+            if (scrolled > 20) {
+                header.classList.add('shadow-lg', 'bg-surface/95');
+            } else {
+                header.classList.remove('shadow-lg', 'bg-surface/80');
+            }
+        });
+    </script>
+</body></html>

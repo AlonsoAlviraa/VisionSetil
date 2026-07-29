@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-do
 import { useTranslation } from 'react-i18next'
 import { AuthProvider } from './auth/AuthContext'
 import { Header } from './components/Header'
+import { BottomNav } from './components/BottomNav'
 import { ApiStatusBanner } from './components/ApiStatusBanner'
 import { DocumentTitle } from './components/DocumentTitle'
 import { PwaInstallHint } from './components/PwaInstallHint'
@@ -68,6 +69,12 @@ const MlDashboardPage = lazy(() =>
 const BetaFeedbackPage = lazy(() =>
   import('./pages/BetaFeedbackPage').then((m) => ({ default: m.BetaFeedbackPage })),
 )
+const GamesHubPage = lazy(() =>
+  import('./pages/GamesHubPage').then((m) => ({ default: m.GamesHubPage })),
+)
+const MoreHubPage = lazy(() =>
+  import('./pages/MoreHubPage').then((m) => ({ default: m.MoreHubPage })),
+)
 
 function PageFallback() {
   return (
@@ -130,7 +137,7 @@ function AppShell() {
       <a href="#main-content" className="skip-link">
         {t('a11y.skipToContent', { defaultValue: 'Saltar al contenido' })}
       </a>
-      <div className="app bg-aurora">
+      <div className="app bg-aurora app--campo-nocturno app--has-bottom-nav">
         <Header />
         <ApiStatusBanner />
         <PwaInstallHint />
@@ -151,6 +158,8 @@ function AppShell() {
                 <Route path="/educacion" element={<EducationPage />} />
                 <Route path="/offline" element={<OfflinePackPage />} />
                 <Route path="/lookalikes" element={<LookalikeStudioPage />} />
+                <Route path="/juegos" element={<GamesHubPage />} />
+                <Route path="/mas" element={<MoreHubPage />} />
                 <Route path="/reto" element={<QuizGamePage />} />
                 <Route path="/setadle" element={<SetadlePage />} />
                 <Route path="/setadle/wordle" element={<MushroomWordlePage />} />
@@ -163,6 +172,7 @@ function AppShell() {
             </Suspense>
           </ErrorBoundary>
         </main>
+        <BottomNav />
         <footer className="footer footer--v16">
           <div className="footer-content">
             <p className="footer-brand">{t('app.name', { defaultValue: 'VisionSetil' })}</p>

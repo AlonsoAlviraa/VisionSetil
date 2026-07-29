@@ -209,7 +209,8 @@ export function Header() {
   const { t } = useTranslation()
   const { user, isAuthenticated, logout, loading } = useAuth()
   const location = useLocation()
-  const [theme, setTheme] = useState<'light' | 'dark'>('light')
+  // Option B Campo nocturno: dark is product default (user can still toggle light)
+  const [theme, setTheme] = useState<'light' | 'dark'>('dark')
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [moreOpen, setMoreOpen] = useState(false)
@@ -222,10 +223,11 @@ export function Header() {
 
   useEffect(() => {
     const saved = localStorage.getItem(THEME_KEY) as 'light' | 'dark' | null
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-    const initial = saved ?? (prefersDark ? 'dark' : 'light')
+    // Option B Campo nocturno: default dark unless user chose light
+    const initial = saved === 'light' || saved === 'dark' ? saved : 'dark'
     setTheme(initial)
     document.documentElement.setAttribute('data-theme', initial)
+    document.documentElement.dataset.skin = 'campo-nocturno'
   }, [])
 
   useEffect(() => {

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VisionSetil - Gu├¡a de Micolog├¡a Nocturna</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Playfair+Display:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-container": "#b0bbb5",
+                    "secondary-container": "#414b47",
+                    "surface-container-low": "#201b0f",
+                    "tertiary-container": "#adb2ab",
+                    "primary": "#aad8a9",
+                    "surface-tint": "#a4d2a4",
+                    "secondary-fixed-dim": "#bec9c3",
+                    "on-primary": "#0e3817",
+                    "on-primary-container": "#234c29",
+                    "on-tertiary-fixed": "#181d19",
+                    "inverse-on-surface": "#363022",
+                    "tertiary-fixed": "#dfe4dd",
+                    "error-container": "#93000a",
+                    "on-tertiary-fixed-variant": "#434843",
+                    "tertiary": "#c9cdc7",
+                    "on-secondary-fixed-variant": "#3f4944",
+                    "surface-container-highest": "#3b3426",
+                    "surface-container-lowest": "#120e04",
+                    "on-error-container": "#ffdad6",
+                    "on-primary-fixed-variant": "#274f2c",
+                    "on-background": "#ede1cd",
+                    "surface": "#181307",
+                    "on-primary-fixed": "#002107",
+                    "surface-variant": "#3b3426",
+                    "on-error": "#690005",
+                    "surface-container": "#251f12",
+                    "surface-dim": "#181307",
+                    "on-tertiary-container": "#404540",
+                    "primary-fixed-dim": "#a4d2a4",
+                    "background": "#181307",
+                    "secondary": "#bec9c3",
+                    "inverse-surface": "#ede1cd",
+                    "outline": "#8c9389",
+                    "secondary-fixed": "#dae5df",
+                    "outline-variant": "#424940",
+                    "tertiary-fixed-dim": "#c3c8c1",
+                    "on-secondary": "#28332e",
+                    "primary-fixed": "#bfefbe",
+                    "on-surface": "#ede1cd",
+                    "on-secondary-fixed": "#141e1a",
+                    "inverse-primary": "#3e6842",
+                    "surface-container-high": "#2f291c",
+                    "error": "#ffb4ab",
+                    "primary-container": "#8fbc8f",
+                    "surface-bright": "#3f382a",
+                    "on-surface-variant": "#c2c9be",
+                    "on-tertiary": "#2c322d"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "base-unit": "4px",
+                    "margin-desktop": "64px",
+                    "container-max-width": "1200px",
+                    "margin-mobile": "20px",
+                    "gutter": "16px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Playfair Display"],
+                    "label-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-md": ["Playfair Display"],
+                    "body-lg": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "headline-lg-mobile": ["Playfair Display"]
+            },
+            "fontSize": {
+                    "headline-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-md": ["28px", {"lineHeight": "34px", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["32px", {"lineHeight": "38px", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #0F1410;
+            color: #E8DCC8;
+            -webkit-font-smoothing: antialiased;
+        }
+        .oled-card {
+            background-color: #1A2420;
+            border: 1px solid rgba(143, 188, 143, 0.15);
+        }
+        .active-glow {
+            box-shadow: 0 0 12px 0 rgba(143, 188, 143, 0.2);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .custom-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .glass-nav {
+            background-color: rgba(15, 20, 16, 0.8);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-md text-body-md pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-mobile py-4 bg-surface/80 backdrop-blur-xl border-b border-outline-variant/10">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">microbiology</span>
+<h1 class="font-headline-md text-headline-md text-primary tracking-tight">VisionSetil</h1>
+</div>
+<button class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-surface-container-high/50 transition-colors">
+<span class="material-symbols-outlined text-on-surface">search</span>
+</button>
+</header>
+<main class="mt-16">
+<!-- Sticky Warning Banner -->
+<div class="sticky top-[72px] z-40 bg-error-container/20 border-y border-error/20 backdrop-blur-md px-margin-mobile py-2">
+<p class="text-center font-label-sm text-label-sm text-error uppercase tracking-widest">
+                SOLO ORIENTACI├ôN, NUNCA CONSUMO
+            </p>
+</div>
+<!-- Hero Section -->
+<section class="px-margin-mobile pt-8 pb-10">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-6">Identifica con IA</h2>
+<button class="w-full bg-[#8FBC8F] text-[#0F1410] font-label-md text-label-md py-4 rounded-xl flex items-center justify-center gap-3 active:scale-95 transition-transform duration-150 active-glow mb-8">
+<span class="material-symbols-outlined">center_focus_weak</span>
+                Probar Identificar multi-vista
+            </button>
+<div class="flex justify-between gap-3 overflow-x-auto custom-scrollbar">
+<div class="flex-shrink-0 flex flex-col items-center gap-2">
+<div class="w-20 h-20 rounded-2xl overflow-hidden oled-card">
+<img class="w-full h-full object-cover" data-alt="Close-up macro photography of mushroom gills, highlighting delicate texture and linear patterns in a dark forest setting with moody, low-light atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuADoEGgHxLtiNEvf4xFD7oAKFVaePNW8UbT8IgC602pK7QBpk21R8vyH8bmz_LltADCzFNAGiYRtPoMOOT0Ik1F5XrumxCwka_OijLPSaNxcgMMK32tSXilM1N2t2tpnbRQI9_-Z1NIMfwaLP0VaViVampkAeFhfpuwce9lVXX5FxK_TvU6EfdVhtlBPXBm0osN3ofULxyRKzOuMVoiMlDSUqR0f2K1HIy-q58qrlEngmeKhW71ZKjJVTfQ0FB4iFjoiAJrbkjCDZSr"/>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Laminillas</span>
+</div>
+<div class="flex-shrink-0 flex flex-col items-center gap-2">
+<div class="w-20 h-20 rounded-2xl overflow-hidden oled-card">
+<img class="w-full h-full object-cover" data-alt="Side profile view of a majestic wild mushroom standing on the mossy forest floor, captured during twilight with soft, ambient night vision lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSUedQId8CRjxlfOJB-rP1YBBxBZDVjDoaGKzGdDJy14fxaXN2KiA8KMMMhmgxsfrEnYj-jeRy6XI1iH79_IZxnDlq2_HIDF6lrEyydC5DkEIfyg6biY8V-HhPmlbHNuV4pAoc6iSNF5kaa4fTd-paxtpXV39mktgfvWQEITs8pl7UXGw_njw30nILRGy8z_dGMeG1QE7e8IVJ3yr_usbEwAck_LPAKK2n4uzLwgdP5AeB4UGRWhOTT2M8y0qaibebreyGp9SbZyn0"/>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Perfil</span>
+</div>
+<div class="flex-shrink-0 flex flex-col items-center gap-2">
+<div class="w-20 h-20 rounded-2xl overflow-hidden oled-card">
+<img class="w-full h-full object-cover" data-alt="Wide shot of a fungus growing in its natural woodland habitat, surrounded by damp leaves and dark green moss in a high-contrast OLED aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKojmyyrX-Z8ywQxz3CMqTWH0rMIyzEo4Ze1upR3O3ROvHLMwuMdy8617RHKV2sE9JACoulo5zhNwPSsWgW_E9v_kcDavZ3CtKFNoPsoVpPBLBy8Rx0UqwEDCgnw38FPRgrnWEOEdRfF_2L1ARYoR1XmwgF4S8_-NWYOQ53oTR5b2DBZO05byFJwOe9zldwAJYANQJVHCBoUbXO3DXh0TNj3ztrYDyT3YD7O5ILrHRMdUDkHlpcLJIPwBiw2RWzXaDn_7wIqzjozAw"/>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">H├íbitat</span>
+</div>
+<div class="flex-shrink-0 flex flex-col items-center gap-2">
+<div class="w-20 h-20 rounded-2xl overflow-hidden oled-card">
+<img class="w-full h-full object-cover" data-alt="Extreme detailed close-up of a mushroom cap showing intricate skin textures and spores, illuminated by a subtle moss-green glow." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdpBFlhsTQYlvZkdeWfgbqmp-gnKr3PNaMlsH89sOcT9KuL9oRPaYLGfZTtQNcMlc1zU_K03GywxesY3CioMDz34QeN1xysYVjuLzT8LPqFkEMLub0py8ZsFZtT4Hbfx8uNWIdV4yPQVLF5glOQqvxSvl_9sI12RTD7pii2cZN7UtxuEyV0NzTqz0JxWXffljfT6gymo9OU1iy2tB1249hSlkSYYdLfEwbp5SsTvhSVOA9TJPySzBO-l8m7xLN3Y5AQ7b_f1BY07HL"/>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Detalle</span>
+</div>
+</div>
+</section>
+<!-- Discover Section -->
+<section class="px-margin-mobile mb-10">
+<div class="flex justify-between items-end mb-6">
+<h3 class="font-headline-md text-headline-md text-on-surface">Descubrir</h3>
+<span class="font-label-sm text-label-sm text-primary">Ver todo</span>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<!-- Card 1 -->
+<div class="oled-card p-4 rounded-xl flex flex-col gap-3 group active:bg-secondary-container/20 transition-colors">
+<div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">menu_book</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface">Enciclopedia Iberia</span>
+</div>
+<!-- Card 2 -->
+<div class="oled-card p-4 rounded-xl flex flex-col gap-3 group active:bg-secondary-container/20 transition-colors">
+<div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">find_replace</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface">Lookalike Studio</span>
+</div>
+<!-- Card 3 -->
+<div class="oled-card p-4 rounded-xl flex flex-col gap-3 active:bg-secondary-container/20 transition-colors">
+<div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">school</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface">Educaci├│n</span>
+</div>
+<!-- Card 4 -->
+<div class="oled-card p-4 rounded-xl flex flex-col gap-3 active:bg-secondary-container/20 transition-colors">
+<div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">map</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface">Mapa Espa├▒a cotos</span>
+</div>
+<!-- Card 5 -->
+<div class="oled-card p-4 rounded-xl flex flex-col gap-3 active:bg-secondary-container/20 transition-colors">
+<div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">history_edu</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface">Cuaderno historial</span>
+</div>
+<!-- Card 6 -->
+<div class="oled-card p-4 rounded-xl flex flex-col gap-3 active:bg-secondary-container/20 transition-colors">
+<div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">offline_pin</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface">Offline pack</span>
+</div>
+<!-- Card 7 -->
+<div class="oled-card p-4 rounded-xl flex flex-col gap-3 active:bg-secondary-container/20 transition-colors">
+<div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">groups</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface">Comunidad</span>
+</div>
+<!-- Card 8 -->
+<div class="oled-card p-4 rounded-xl flex flex-col gap-3 active:bg-secondary-container/20 transition-colors">
+<div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">verified_user</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface">Revisi├│n experta</span>
+</div>
+</div>
+<div class="mt-4 oled-card p-4 rounded-xl border-dashed flex items-center justify-between opacity-60">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined">bug_report</span>
+<span class="font-label-md text-label-md">Feedback beta</span>
+</div>
+<span class="material-symbols-outlined">chevron_right</span>
+</div>
+</section>
+<!-- Games Row -->
+<section class="mb-10">
+<h3 class="font-headline-md text-headline-md text-on-surface px-margin-mobile mb-6">MicoJuegos</h3>
+<div class="flex gap-4 overflow-x-auto px-margin-mobile custom-scrollbar">
+<!-- Game Card 1 -->
+<div class="flex-shrink-0 w-40 oled-card rounded-2xl overflow-hidden flex flex-col">
+<div class="h-24 bg-gradient-to-br from-secondary-container/40 to-surface-container relative">
+<div class="absolute inset-0 flex items-center justify-center opacity-40">
+<span class="material-symbols-outlined text-4xl">extension</span>
+</div>
+</div>
+<div class="p-4">
+<h4 class="font-label-md text-label-md text-on-surface">Setadle</h4>
+<p class="text-[10px] uppercase tracking-wider text-primary mt-1">Acertijos</p>
+</div>
+</div>
+<!-- Game Card 2 -->
+<div class="flex-shrink-0 w-40 oled-card rounded-2xl overflow-hidden flex flex-col">
+<div class="h-24 bg-gradient-to-br from-primary/20 to-surface-container relative">
+<div class="absolute inset-0 flex items-center justify-center opacity-40">
+<span class="material-symbols-outlined text-4xl">spellcheck</span>
+</div>
+</div>
+<div class="p-4">
+<h4 class="font-label-md text-label-md text-on-surface">Wordle setas</h4>
+<p class="text-[10px] uppercase tracking-wider text-primary mt-1">Palabras</p>
+</div>
+</div>
+<!-- Game Card 3 -->
+<div class="flex-shrink-0 w-40 oled-card rounded-2xl overflow-hidden flex flex-col">
+<div class="h-24 bg-gradient-to-br from-secondary-fixed-dim/20 to-surface-container relative">
+<div class="absolute inset-0 flex items-center justify-center opacity-40">
+<span class="material-symbols-outlined text-4xl">calendar_today</span>
+</div>
+</div>
+<div class="p-4">
+<h4 class="font-label-md text-label-md text-on-surface">Reto diario</h4>
+<p class="text-[10px] uppercase tracking-wider text-primary mt-1">Concurso</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-margin-mobile pb-6 pt-2 bg-surface/80 backdrop-blur-xl border-t border-outline-variant/10">
+<button class="flex flex-col items-center justify-center bg-secondary-container/30 text-primary rounded-xl px-3 py-1 transition-transform active:scale-95 duration-150">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-label-sm text-label-sm">Inicio</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-secondary-container/10 transition-transform active:scale-95 duration-150">
+<span class="material-symbols-outlined">center_focus_weak</span>
+<span class="font-label-sm text-label-sm">Identificar</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-secondary-container/10 transition-transform active:scale-95 duration-150">
+<span class="material-symbols-outlined">sports_esports</span>
+<span class="font-label-sm text-label-sm">Juegos</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-secondary-container/10 transition-transform active:scale-95 duration-150">
+<span class="material-symbols-outlined">menu_book</span>
+<span class="font-label-sm text-label-sm">Enciclopedia</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-secondary-container/10 transition-transform active:scale-95 duration-150">
+<span class="material-symbols-outlined">more_horiz</span>
+<span class="font-label-sm text-label-sm">Mas</span>
+</button>
+</nav>
+<!-- Floating Magnifier FAB -->
+<div class="fixed bottom-24 right-6 z-50">
+<button class="w-14 h-14 bg-[#8FBC8F] text-[#0F1410] rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(143,188,143,0.4)] active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-3xl">search</span>
+</button>
+</div>
+<script>
+        // Micro-interaction for cards
+        document.querySelectorAll('.oled-card').forEach(card => {
+            card.addEventListener('touchstart', () => {
+                card.style.transform = 'scale(0.98)';
+                card.style.transition = 'transform 0.1s ease';
+            });
+            card.addEventListener('touchend', () => {
+                card.style.transform = 'scale(1)';
+            });
+        });
+    </script>
+</body></html>

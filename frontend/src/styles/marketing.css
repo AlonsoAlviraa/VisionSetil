@@ -3960,6 +3960,223 @@
   letter-spacing: -0.01em;
   box-shadow: 0 8px 22px rgba(26, 42, 34, 0.16);
 }
+/* ── Option B Campo nocturno — bottom nav + hubs ───────────────────────── */
+.app--has-bottom-nav {
+  padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px));
+}
+
+.app--has-bottom-nav .fab-identify {
+  bottom: calc(5.25rem + env(safe-area-inset-bottom, 0px));
+}
+
+.app--has-bottom-nav .footer {
+  margin-bottom: 0.5rem;
+}
+
+.bottom-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 60;
+  display: flex;
+  justify-content: space-around;
+  align-items: stretch;
+  gap: 0.15rem;
+  padding: 0.35rem 0.4rem calc(0.35rem + env(safe-area-inset-bottom, 0px));
+  background: rgba(15, 20, 16, 0.94);
+  border-top: 1px solid rgba(143, 188, 143, 0.18);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+:root:not([data-theme='dark']) .bottom-nav {
+  background: rgba(247, 244, 237, 0.96);
+  border-top-color: rgba(45, 74, 43, 0.12);
+}
+
+.bottom-nav__item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+  min-height: 2.75rem;
+  padding: 0.25rem 0.2rem;
+  border-radius: 999px;
+  color: var(--text-muted, #a8b4ac);
+  text-decoration: none;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: color 0.15s var(--ease-out, ease), background 0.15s var(--ease-out, ease);
+}
+
+.bottom-nav__item.is-active {
+  color: var(--primary-light, #8fbf98);
+  background: rgba(143, 191, 152, 0.12);
+}
+
+.bottom-nav__item--primary {
+  color: var(--primary, #9dcea6);
+}
+
+.bottom-nav__item--primary.is-active {
+  background: rgba(45, 74, 43, 0.55);
+  color: #f7f4ed;
+}
+
+.bottom-nav__dot {
+  width: 0.35rem;
+  height: 0.35rem;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0.35;
+}
+
+.bottom-nav__item.is-active .bottom-nav__dot {
+  opacity: 1;
+}
+
+.bottom-nav__label {
+  line-height: 1.1;
+  text-align: center;
+}
+
+@media (min-width: 900px) {
+  .bottom-nav {
+    display: none;
+  }
+  .app--has-bottom-nav {
+    padding-bottom: 0;
+  }
+  .app--has-bottom-nav .fab-identify {
+    bottom: 1.25rem;
+  }
+}
+
+.games-hub-grid {
+  list-style: none;
+  margin: 1rem 0 1.5rem;
+  padding: 0;
+  display: grid;
+  gap: 0.85rem;
+}
+
+@media (min-width: 720px) {
+  .games-hub-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.games-hub-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.1rem 1.15rem;
+  border-radius: 1rem;
+  background: var(--surface, #18231d);
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+  box-shadow: var(--shadow-soft);
+  min-height: 10rem;
+}
+
+.games-hub-card--amber {
+  border-color: rgba(232, 191, 144, 0.35);
+}
+
+.games-hub-card--moss {
+  border-color: rgba(143, 188, 143, 0.35);
+}
+
+.games-hub-card__title {
+  margin: 0;
+  font-family: var(--font-display, Georgia, serif);
+  font-size: 1.25rem;
+}
+
+.games-hub-card__body {
+  margin: 0;
+  flex: 1;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.games-hub-extra {
+  margin-top: 0.5rem;
+  padding: 1rem;
+}
+
+.games-hub-extra__title {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+}
+
+.games-hub-extra__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+}
+
+.more-hub-group {
+  margin: 1.25rem 0;
+}
+
+.more-hub-group__title {
+  margin: 0 0 0.5rem;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+.more-hub-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.more-hub-list__link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.75rem;
+  background: var(--surface, #18231d);
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+  text-decoration: none;
+  color: inherit;
+}
+
+.more-hub-list__link:hover {
+  border-color: rgba(143, 188, 143, 0.4);
+}
+
+.more-hub-list__label {
+  font-weight: 600;
+}
+
+.more-hub-list__blurb {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* Campo nocturno OLED polish (skin marker) */
+html[data-skin='campo-nocturno'][data-theme='dark'] {
+  --bg: #0f1410;
+  --bg-gradient: linear-gradient(180deg, #0f1410 0%, #121a14 100%);
+  --surface: #1a2420;
+  --surface-alt: #1e2a24;
+  --moss: #8fbc8f;
+  --primary: #9dcea6;
+  --text: #e8dcc8;
+}
+
 [data-theme='dark'] .home-orientation-sticky {
   color: #e8f0ea;
   background: linear-gradient(90deg, rgba(63, 107, 74, 0.18), rgba(196, 163, 90, 0.1));
