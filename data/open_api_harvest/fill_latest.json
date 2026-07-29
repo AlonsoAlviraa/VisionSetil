@@ -1,0 +1,420 @@
+{
+  "generated_at": "2026-07-29T16:09:00.706711+00:00",
+  "policy": "open APIs only — no commercial app scrape",
+  "targets": 20,
+  "hits": 19,
+  "results": [
+    {
+      "taxon": "Agaricus freirei",
+      "slug": "agaricus-freirei",
+      "reason": "flaky_host",
+      "prev_url": "https://svampe.databasen.org/uploads/2025-10556380_HkW76DcRll.JPG",
+      "sources": {
+        "inat": {
+          "provider": "inaturalist",
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/343141505/medium.jpeg",
+          "taxon_id": 1434103,
+          "license": "cc-by-nc",
+          "attribution": "(c) Guinberteau Jacques, some rights reserved (CC BY-NC), uploaded by Guinberteau Jacques",
+          "matched_name": "Agaricus freirei"
+        }
+      },
+      "best": {
+        "provider": "inaturalist",
+        "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/343141505/medium.jpeg",
+        "taxon_id": 1434103,
+        "license": "cc-by-nc",
+        "attribution": "(c) Guinberteau Jacques, some rights reserved (CC BY-NC), uploaded by Guinberteau Jacques",
+        "matched_name": "Agaricus freirei"
+      }
+    },
+    {
+      "taxon": "Agaricus pampeanus",
+      "slug": "agaricus-pampeanus",
+      "reason": "flaky_host",
+      "prev_url": "https://botanicgardens.netx.net/file/asset/255144/original/DBG-F-035593.JPG",
+      "sources": {
+        "inat": {
+          "provider": "inaturalist",
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/24549625/medium.jpeg",
+          "taxon_id": 480772,
+          "license": "cc-by-sa",
+          "attribution": "(c) pinonbistro, niektoré práva vyhradené (CC BY-SA), uploaded by pinonbistro",
+          "matched_name": "Agaricus pampeanus"
+        }
+      },
+      "best": {
+        "provider": "inaturalist",
+        "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/24549625/medium.jpeg",
+        "taxon_id": 480772,
+        "license": "cc-by-sa",
+        "attribution": "(c) pinonbistro, niektoré práva vyhradené (CC BY-SA), uploaded by pinonbistro",
+        "matched_name": "Agaricus pampeanus"
+      }
+    },
+    {
+      "taxon": "Amanita caesarea",
+      "slug": "amanita-caesarea",
+      "reason": "wiki_page_not_file",
+      "prev_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Amanita_caesarea_2010_G1.jpg",
+      "sources": {
+        "wiki_en": {
+          "provider": "wikipedia_en",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Oronges.jpg/1280px-Oronges.jpg",
+          "title": "Amanita caesarea",
+          "license": "wikipedia-page-image"
+        }
+      },
+      "best": {
+        "provider": "wikipedia_en",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Oronges.jpg/1280px-Oronges.jpg",
+        "title": "Amanita caesarea",
+        "license": "wikipedia-page-image"
+      }
+    },
+    {
+      "taxon": "Bankera fuligineoalba",
+      "slug": "bankera-fuligineoalba",
+      "reason": "flaky_host",
+      "prev_url": "https://s3.hpc.ut.ee/plutof-public/large/efb41f82-e26b-4f6d-87aa-9c30f3abe6c4.jpg",
+      "sources": {
+        "inat": {
+          "provider": "inaturalist",
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/91954805/medium.jpeg",
+          "taxon_id": 830648,
+          "license": "cc-by-nc",
+          "attribution": "(c) Елена, some rights reserved (CC BY-NC), uploaded by Елена",
+          "matched_name": "Phellodon fuligineoalbus"
+        }
+      },
+      "best": {
+        "provider": "inaturalist",
+        "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/91954805/medium.jpeg",
+        "taxon_id": 830648,
+        "license": "cc-by-nc",
+        "attribution": "(c) Елена, some rights reserved (CC BY-NC), uploaded by Елена",
+        "matched_name": "Phellodon fuligineoalbus"
+      }
+    },
+    {
+      "taxon": "Boletus edulis",
+      "slug": "boletus-edulis",
+      "reason": "wiki_page_not_file",
+      "prev_url": "https://commons.wikimedia.org/wiki/Special:FilePath/AD2009Sep13_Boletus_edulis_01.jpg",
+      "sources": {
+        "filepath_resolve": {
+          "provider": "wikimedia_commons",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/AD2009Sep13_Boletus_edulis_01.jpg/1280px-AD2009Sep13_Boletus_edulis_01.jpg",
+          "license": "Public domain",
+          "title": "File:AD2009Sep13 Boletus edulis 01.jpg"
+        }
+      },
+      "best": {
+        "provider": "wikimedia_commons",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/AD2009Sep13_Boletus_edulis_01.jpg/1280px-AD2009Sep13_Boletus_edulis_01.jpg",
+        "license": "Public domain",
+        "title": "File:AD2009Sep13 Boletus edulis 01.jpg"
+      }
+    },
+    {
+      "taxon": "Calvatia gigantea",
+      "slug": "calvatia-gigantea",
+      "reason": "flaky_host",
+      "prev_url": "https://arter.dk/media/a0aa580a-a04b-4032-a23e-6325f1b47be7.jpg",
+      "sources": {
+        "wiki_en": {
+          "provider": "wikipedia_en",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Giant_Puffball.jpg/1280px-Giant_Puffball.jpg",
+          "title": "Calvatia gigantea",
+          "license": "wikipedia-page-image"
+        }
+      },
+      "best": {
+        "provider": "wikipedia_en",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Giant_Puffball.jpg/1280px-Giant_Puffball.jpg",
+        "title": "Calvatia gigantea",
+        "license": "wikipedia-page-image"
+      }
+    },
+    {
+      "taxon": "Hebeloma laterinum",
+      "slug": "hebeloma-laterinum",
+      "reason": "flaky_host",
+      "prev_url": "https://svampe.databasen.org/uploads/2025-10533423_BJQg3L4ige.JPG",
+      "sources": {
+        "wiki_en": {
+          "provider": "wikipedia_en",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Hebeloma_laterinum_G3.3.jpg/1280px-Hebeloma_laterinum_G3.3.jpg",
+          "title": "Hebeloma laterinum",
+          "license": "wikipedia-page-image"
+        }
+      },
+      "best": {
+        "provider": "wikipedia_en",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Hebeloma_laterinum_G3.3.jpg/1280px-Hebeloma_laterinum_G3.3.jpg",
+        "title": "Hebeloma laterinum",
+        "license": "wikipedia-page-image"
+      }
+    },
+    {
+      "taxon": "Hygrophorus discoxanthus",
+      "slug": "hygrophorus-discoxanthus",
+      "reason": "flaky_host",
+      "prev_url": "https://svampe.databasen.org/uploads/2025-10537358_Bkq3uOAseg.JPG",
+      "sources": {
+        "inat": {
+          "provider": "inaturalist",
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/445200890/medium.jpg",
+          "taxon_id": 500101,
+          "license": "cc-by-nc",
+          "attribution": "(c) Nicolas Schwab, some rights reserved (CC BY-NC), uploaded by Nicolas Schwab",
+          "matched_name": "Hygrophorus discoxanthus"
+        }
+      },
+      "best": {
+        "provider": "inaturalist",
+        "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/445200890/medium.jpg",
+        "taxon_id": 500101,
+        "license": "cc-by-nc",
+        "attribution": "(c) Nicolas Schwab, some rights reserved (CC BY-NC), uploaded by Nicolas Schwab",
+        "matched_name": "Hygrophorus discoxanthus"
+      }
+    },
+    {
+      "taxon": "Inocybe erubescens",
+      "slug": "inocybe-erubescens",
+      "reason": "flaky_host",
+      "prev_url": "https://s3.hpc.ut.ee/plutof-public/large/a5ef86ef-1cab-4d60-9369-6a8a0770cd55.jpg",
+      "sources": {
+        "wiki_en": {
+          "provider": "wikipedia_en",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/2010-04-27_Inocybe_erubescens.jpg/1280px-2010-04-27_Inocybe_erubescens.jpg",
+          "title": "Inosperma erubescens",
+          "license": "wikipedia-page-image"
+        }
+      },
+      "best": {
+        "provider": "wikipedia_en",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/2010-04-27_Inocybe_erubescens.jpg/1280px-2010-04-27_Inocybe_erubescens.jpg",
+        "title": "Inosperma erubescens",
+        "license": "wikipedia-page-image"
+      }
+    },
+    {
+      "taxon": "Lyophyllum transforme",
+      "slug": "lyophyllum-transforme",
+      "reason": "flaky_host",
+      "prev_url": "https://svampe.databasen.org/uploads/2021-10242793_BySyDmNPK.JPG",
+      "sources": {
+        "inat": {
+          "provider": "inaturalist",
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/160499682/medium.jpg",
+          "taxon_id": 875096,
+          "license": "cc-by-nc",
+          "attribution": "(c) Joseba, some rights reserved (CC BY-NC), uploaded by Joseba",
+          "matched_name": "Lyophyllum transforme"
+        }
+      },
+      "best": {
+        "provider": "inaturalist",
+        "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/160499682/medium.jpg",
+        "taxon_id": 875096,
+        "license": "cc-by-nc",
+        "attribution": "(c) Joseba, some rights reserved (CC BY-NC), uploaded by Joseba",
+        "matched_name": "Lyophyllum transforme"
+      }
+    },
+    {
+      "taxon": "Morchella esculenta",
+      "slug": "morchella-esculenta",
+      "reason": "wiki_page_not_file",
+      "prev_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Speise-Morchel_Morchella_esculenta.jpg",
+      "sources": {
+        "filepath_resolve": {
+          "provider": "wikimedia_commons",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Speise-Morchel_Morchella_esculenta.jpg/1280px-Speise-Morchel_Morchella_esculenta.jpg",
+          "license": "CC BY 3.0",
+          "title": "File:Speise-Morchel Morchella esculenta.jpg"
+        }
+      },
+      "best": {
+        "provider": "wikimedia_commons",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Speise-Morchel_Morchella_esculenta.jpg/1280px-Speise-Morchel_Morchella_esculenta.jpg",
+        "license": "CC BY 3.0",
+        "title": "File:Speise-Morchel Morchella esculenta.jpg"
+      }
+    },
+    {
+      "taxon": "Picosphaera cistidiolens",
+      "slug": "picosphaera-cistidiolens",
+      "reason": "local_media_only",
+      "prev_url": "/media/species/picosphaera-cistidiolens/card.webp",
+      "sources": {},
+      "best": null
+    },
+    {
+      "taxon": "Pleurotus ostreatus",
+      "slug": "pleurotus-ostreatus",
+      "reason": "wiki_page_not_file",
+      "prev_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Pleurotus_ostreatus_JPG1.jpg",
+      "sources": {
+        "filepath_resolve": {
+          "provider": "wikimedia_commons",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Pleurotus_ostreatus_JPG1.jpg/1280px-Pleurotus_ostreatus_JPG1.jpg",
+          "license": "CC BY 3.0",
+          "title": "File:Pleurotus ostreatus JPG1.jpg"
+        }
+      },
+      "best": {
+        "provider": "wikimedia_commons",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Pleurotus_ostreatus_JPG1.jpg/1280px-Pleurotus_ostreatus_JPG1.jpg",
+        "license": "CC BY 3.0",
+        "title": "File:Pleurotus ostreatus JPG1.jpg"
+      }
+    },
+    {
+      "taxon": "Russula integra",
+      "slug": "russula-integra",
+      "reason": "flaky_host",
+      "prev_url": "https://s3.hpc.ut.ee/plutof-public/large/1227a2ac-32ca-4126-bcbd-d128e84b31d9.jpg",
+      "sources": {
+        "wiki_en": {
+          "provider": "wikipedia_en",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Russula_integra_%282%29.jpg/1280px-Russula_integra_%282%29.jpg",
+          "title": "Russula integra",
+          "license": "wikipedia-page-image"
+        }
+      },
+      "best": {
+        "provider": "wikipedia_en",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Russula_integra_%282%29.jpg/1280px-Russula_integra_%282%29.jpg",
+        "title": "Russula integra",
+        "license": "wikipedia-page-image"
+      }
+    },
+    {
+      "taxon": "Russula rosea",
+      "slug": "russula-rosea",
+      "reason": "flaky_host",
+      "prev_url": "https://svampe.databasen.org/uploads/2025-10520911_BJLvY3PPxe.JPG",
+      "sources": {
+        "wiki_en": {
+          "provider": "wikipedia_en",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/2011-05-14_Russula_lepida_146790_146793_combined.jpg/1280px-2011-05-14_Russula_lepida_146790_146793_combined.jpg",
+          "title": "Russula rosea",
+          "license": "wikipedia-page-image"
+        }
+      },
+      "best": {
+        "provider": "wikipedia_en",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/2011-05-14_Russula_lepida_146790_146793_combined.jpg/1280px-2011-05-14_Russula_lepida_146790_146793_combined.jpg",
+        "title": "Russula rosea",
+        "license": "wikipedia-page-image"
+      }
+    },
+    {
+      "taxon": "Suillus luteus",
+      "slug": "suillus-luteus",
+      "reason": "wiki_page_not_file",
+      "prev_url": "https://commons.wikimedia.org/wiki/Special:FilePath/2025-10-15_D500-1030_Achim-Lammerts_Suillus-luteus.jpg",
+      "sources": {
+        "filepath_resolve": {
+          "provider": "wikimedia_commons",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/2025-10-15_D500-1030_Achim-Lammerts_Suillus-luteus.jpg/1280px-2025-10-15_D500-1030_Achim-Lammerts_Suillus-luteus.jpg",
+          "license": "CC BY-SA 4.0",
+          "title": "File:2025-10-15 D500-1030 Achim-Lammerts Suillus-luteus.jpg"
+        }
+      },
+      "best": {
+        "provider": "wikimedia_commons",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/2025-10-15_D500-1030_Achim-Lammerts_Suillus-luteus.jpg/1280px-2025-10-15_D500-1030_Achim-Lammerts_Suillus-luteus.jpg",
+        "license": "CC BY-SA 4.0",
+        "title": "File:2025-10-15 D500-1030 Achim-Lammerts Suillus-luteus.jpg"
+      }
+    },
+    {
+      "taxon": "Tricholoma orirubens",
+      "slug": "tricholoma-orirubens",
+      "reason": "flaky_host",
+      "prev_url": "https://svampe.databasen.org/uploads/2025-10543774_rk43dKahxe.JPG",
+      "sources": {
+        "wiki_en": {
+          "provider": "wikipedia_en",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/2012-10-26_Tricholoma_orirubens_Qu%C3%A9l_312760.jpg/1280px-2012-10-26_Tricholoma_orirubens_Qu%C3%A9l_312760.jpg",
+          "title": "Tricholoma orirubens",
+          "license": "wikipedia-page-image"
+        }
+      },
+      "best": {
+        "provider": "wikipedia_en",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/2012-10-26_Tricholoma_orirubens_Qu%C3%A9l_312760.jpg/1280px-2012-10-26_Tricholoma_orirubens_Qu%C3%A9l_312760.jpg",
+        "title": "Tricholoma orirubens",
+        "license": "wikipedia-page-image"
+      }
+    },
+    {
+      "taxon": "Armillaria lutea",
+      "slug": "armillaria-lutea",
+      "reason": "missing",
+      "prev_url": null,
+      "sources": {
+        "wiki_en": {
+          "provider": "wikipedia_en",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Armillaria_gallica_26659.jpg/1280px-Armillaria_gallica_26659.jpg",
+          "title": "Armillaria gallica",
+          "license": "wikipedia-page-image"
+        }
+      },
+      "best": {
+        "provider": "wikipedia_en",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Armillaria_gallica_26659.jpg/1280px-Armillaria_gallica_26659.jpg",
+        "title": "Armillaria gallica",
+        "license": "wikipedia-page-image"
+      }
+    },
+    {
+      "taxon": "Chlorophyllum olivieri",
+      "slug": "chlorophyllum-olivieri",
+      "reason": "missing",
+      "prev_url": null,
+      "sources": {
+        "inat": {
+          "provider": "inaturalist",
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/12984927/medium.jpg",
+          "taxon_id": 424530,
+          "license": "cc-by-nc",
+          "attribution": "(c) Christian Schwarz, some rights reserved (CC BY-NC), uploaded by Christian Schwarz",
+          "matched_name": "Chlorophyllum olivieri"
+        }
+      },
+      "best": {
+        "provider": "inaturalist",
+        "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/12984927/medium.jpg",
+        "taxon_id": 424530,
+        "license": "cc-by-nc",
+        "attribution": "(c) Christian Schwarz, some rights reserved (CC BY-NC), uploaded by Christian Schwarz",
+        "matched_name": "Chlorophyllum olivieri"
+      }
+    },
+    {
+      "taxon": "Laccaria amethystina",
+      "slug": "laccaria-amethystina",
+      "reason": "missing",
+      "prev_url": null,
+      "sources": {
+        "wiki_en": {
+          "provider": "wikipedia_en",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Laccaria_amethystina_LC0370.jpg/1280px-Laccaria_amethystina_LC0370.jpg",
+          "title": "Laccaria amethystina",
+          "license": "wikipedia-page-image"
+        }
+      },
+      "best": {
+        "provider": "wikipedia_en",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Laccaria_amethystina_LC0370.jpg/1280px-Laccaria_amethystina_LC0370.jpg",
+        "title": "Laccaria amethystina",
+        "license": "wikipedia-page-image"
+      }
+    }
+  ]
+}
