@@ -193,7 +193,7 @@ function AppShell() {
             <p>
               {t('app.footerDisclaimer', {
                 defaultValue:
-                  'Orientación de campo, no permiso de consumo. Ante la duda, un micólogo de carne y hueso.',
+                  'Solo orientación de campo. No sustituye a un micólogo. Ante la duda, no recolectes ni consumas.',
               })}
             </p>
             {/* Keep test contracts; visually hidden by CSS (bottom nav is primary) */}
@@ -234,7 +234,7 @@ function AppShell() {
             >
               {t('app.footerMultiview', {
                 defaultValue:
-                  'Multi-vista: láminas · perfil · base. Solo orientación, nunca consumo.',
+                  'Mejor con varias fotos: láminas, perfil y base. Una sola foto no basta.',
               })}
             </p>
             <p
@@ -242,7 +242,8 @@ function AppShell() {
               data-testid="footer-index-fungorum"
             >
               {t('app.indexFungorumAttr', {
-                defaultValue: 'Nomenclatura: Index Fungorum — solo nombres.',
+                defaultValue:
+                  'Nombres de referencia: Index Fungorum (solo nomenclatura).',
               })}{' '}
               <a
                 href="https://www.indexfungorum.org/"

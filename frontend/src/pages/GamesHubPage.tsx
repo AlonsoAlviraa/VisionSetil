@@ -10,9 +10,10 @@ const GAMES = [
     titleKey: 'games.setadleTitle',
     titleFb: 'Setadle',
     bodyKey: 'games.setadleBody',
-    bodyFb: 'Adivina la seta del día con pistas de hábitat y morfología. Educativo, no identifica setas.',
+    bodyFb:
+      'Puzzle diario con pistas de hábitat y forma. Solo educación: no identifica setas reales.',
     ctaKey: 'games.play',
-    ctaFb: 'Jugar ahora',
+    ctaFb: 'Jugar',
     badgeKey: 'games.badgeDaily',
     badgeFb: 'Diario',
     taxon: 'Cantharellus cibarius',
@@ -23,7 +24,8 @@ const GAMES = [
     titleKey: 'games.wordleTitle',
     titleFb: 'Wordle de setas',
     bodyKey: 'games.wordleBody',
-    bodyFb: 'Cinco letras de taxón micológico. Entrena vocabulario — solo orientación, nunca consumo.',
+    bodyFb:
+      'Adivina el nombre en letras. Sirve para vocabulario, no para salir a recolectar.',
     ctaKey: 'games.playWordle',
     ctaFb: 'Jugar Wordle',
     badgeKey: 'games.badgePopular',
@@ -36,7 +38,8 @@ const GAMES = [
     titleKey: 'games.quizTitle',
     titleFb: 'Reto diario',
     bodyKey: 'games.quizBody',
-    bodyFb: 'Quiz de confusiones y lookalikes con multi-vista. Entrena el ojo, no el plato.',
+    bodyFb:
+      'Preguntas sobre confusiones y multi-vista. Entrena el ojo, no el plato.',
     ctaKey: 'games.playQuiz',
     ctaFb: 'Abrir reto',
     badgeKey: 'games.badgeChallenge',
@@ -52,20 +55,20 @@ export function GamesHubPage() {
     <div className="cn-page page-games-hub" data-testid="games-hub-page">
       <p className="cn-warn-strip" role="note">
         {t('games.orientation', {
-          defaultValue: 'Solo orientación educativa · nunca consumo',
+          defaultValue: 'Juegos educativos · nunca permiso de consumo',
         })}
       </p>
       <header className="cn-page-head cn-page-pad">
         <p className="cn-kicker mkt-kicker">
-          {t('games.kicker', { defaultValue: 'MicoJuegos' })}
+          {t('games.kicker', { defaultValue: 'Juegos de campo' })}
         </p>
         <h1 className="cn-page-head__title">
-          {t('games.title', { defaultValue: 'Juegos de campo' })}
+          {t('games.title', { defaultValue: 'Entrena el ojo' })}
         </h1>
         <p className="cn-page-head__lead">
           {t('games.policy', {
             defaultValue:
-              'Entrena tu ojo con taxonomía, morfología y hábitat. Educativo — no sustituye Identify multi-vista ni da permiso de consumo.',
+              'Aprende nombres, hábitats y confusiones. No sustituye a Identificar y no autoriza consumo.',
           })}
         </p>
       </header>
@@ -104,11 +107,11 @@ export function GamesHubPage() {
 
       <div className="games-hub-extra atelier-panel cn-page-pad">
         <p className="cn-kicker" style={{ marginBottom: '0.5rem' }}>
-          {t('games.alsoStudy', { defaultValue: 'También estudiar' })}
+          {t('games.alsoStudy', { defaultValue: 'Seguir aprendiendo' })}
         </p>
         <div className="games-hub-extra__links">
           <Link to="/lookalikes">
-            {t('nav.lookalikes', { defaultValue: 'Lookalike Studio' })}
+            {t('nav.lookalikes', { defaultValue: 'Confusiones' })}
           </Link>
           <Link to="/educacion">{t('nav.education', { defaultValue: 'Educación' })}</Link>
           <Link to="/identificar">{t('nav.identify', { defaultValue: 'Identificar' })}</Link>

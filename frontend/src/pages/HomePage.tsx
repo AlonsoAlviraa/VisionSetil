@@ -53,7 +53,7 @@ export function HomePage() {
         role="note"
       >
         {t('home.orientationSticky', {
-          defaultValue: 'Solo orientación · nunca consumo',
+          defaultValue: 'Solo orientación de campo · nunca permiso de consumo',
         })}
       </p>
 
@@ -62,7 +62,7 @@ export function HomePage() {
           <SpeciesImage
             scientificName="Amanita muscaria"
             alt={t('home.cnHeroAlt', {
-              defaultValue: 'Foto de campo de seta',
+              defaultValue: 'Foto de seta en el campo',
             })}
             variant="detail"
             layout="fill"
@@ -73,7 +73,7 @@ export function HomePage() {
         </div>
         <div className="cn-home-hero__content">
           <p className="cn-home-hero__kicker">
-            {t('home.kicker', { defaultValue: 'VisionSetil · Iberia · campo' })}
+            {t('home.kicker', { defaultValue: 'VisionSetil · campo ibérico' })}
           </p>
           <h1 className="cn-home-hero__title">
             {t('home.cnTitle', { defaultValue: 'VisionSetil' })}
@@ -81,7 +81,7 @@ export function HomePage() {
           <p className="cn-home-hero__lead">
             {t('home.cnLead', {
               defaultValue:
-                'Identificación multi-vista de campo. Captura cada detalle para una guía académica precisa.',
+                'Identifica setas con varias fotos de campo. Honestidad primero: si no está seguro, se calla.',
             })}
           </p>
           <div className="cn-chip-row" data-testid="home-cn-view-chips">
@@ -97,7 +97,7 @@ export function HomePage() {
             data-testid="home-cta-identify"
           >
             <span>
-              {t('home.ctaTryIdentify', { defaultValue: 'Probar Identificar' })}
+              {t('home.ctaTryIdentify', { defaultValue: 'Probar identificar' })}
             </span>
             <span className="cn-btn__orb" aria-hidden="true">
               ⊕
@@ -108,13 +108,13 @@ export function HomePage() {
 
       <div className="cn-home-trust" data-testid="home-cn-trust">
         <span className="cn-pill">
-          {t('home.trustOpenSetTitle', { defaultValue: 'OPEN-SET IBERIA' })}
+          {t('home.trustOpenSetTitle', { defaultValue: 'Rechaza lo dudoso' })}
         </span>
         <span className="cn-pill">
-          {t('home.trustEncy', { defaultValue: 'ENCICLOPEDIA IBERIA' })}
+          {t('home.trustEncy', { defaultValue: 'Enciclopedia ibérica' })}
         </span>
         <span className="cn-pill cn-pill--danger">
-          {t('home.trustNever', { defaultValue: 'NUNCA CONSUMO' })}
+          {t('home.trustNever', { defaultValue: 'Nunca consumo' })}
         </span>
       </div>
 
@@ -129,7 +129,9 @@ export function HomePage() {
             </span>
             <div className="cn-home-quick__text">
               <strong>{t('nav.games', { defaultValue: 'Juegos' })}</strong>
-              <span>{t('home.quickGames', { defaultValue: 'Setadle · Wordle · Reto' })}</span>
+              <span>
+                {t('home.quickGames', { defaultValue: 'Setadle, Wordle y reto' })}
+              </span>
             </div>
           </Link>
           <Link
@@ -144,7 +146,8 @@ export function HomePage() {
               <strong>{t('nav.encyclopedia', { defaultValue: 'Enciclopedia' })}</strong>
               <span>
                 {t('home.quickEncy', {
-                  defaultValue: `${HOME_CATALOG_COUNT} taxones`,
+                  defaultValue: `${HOME_CATALOG_COUNT} especies`,
+                  count: HOME_CATALOG_COUNT,
                 })}
               </span>
             </div>
@@ -155,7 +158,9 @@ export function HomePage() {
             </span>
             <div className="cn-home-quick__text">
               <strong>{t('nav.map', { defaultValue: 'Mapa' })}</strong>
-              <span>{t('home.quickMap', { defaultValue: 'Cotos · no ID' })}</span>
+              <span>
+                {t('home.quickMap', { defaultValue: 'Cotos · no identifica' })}
+              </span>
             </div>
           </Link>
         </nav>
@@ -163,18 +168,18 @@ export function HomePage() {
         <section className="cn-home-obs" data-testid="home-cn-observation">
           <div className="cn-home-obs__copy">
             <h2 className="cn-home-obs__title">
-              {t('home.obsTitle', { defaultValue: 'Observación Nocturna' })}
+              {t('home.obsTitle', { defaultValue: 'Modo campo nocturno' })}
             </h2>
             <p className="cn-home-obs__body">
               {t('home.obsBody', {
                 defaultValue:
-                  'Optimizado para low-toxins. El brillo de la interfaz no interfiere con la visión nocturna de campo.',
+                  'Pantalla oscura pensada para el bosque de noche: menos brillo, menos deslumbramiento.',
               })}
             </p>
           </div>
           <p className="cn-home-obs__meta">
             {t('home.obsMeta', {
-              defaultValue: '← Observaciones hoy · solo orientación',
+              defaultValue: 'Observaciones de hoy · solo orientación',
             })}
           </p>
         </section>

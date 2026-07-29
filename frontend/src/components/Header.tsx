@@ -300,7 +300,7 @@ export function Header({ layoutMode = 'app', onLayoutModeChange }: HeaderProps =
     <div className="nav-more__panel" role="menu" id="nav-more-menu">
       <p className="nav-more__lead">
         {t('nav.moreLead', {
-          defaultValue: 'Aprender · campo · gente. Solo orientación.',
+          defaultValue: 'Aprender, campo y gente. Solo orientación.',
         })}
       </p>
       {moreNavGroups.map((group) => (

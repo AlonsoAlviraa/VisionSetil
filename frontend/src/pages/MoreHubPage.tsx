@@ -34,15 +34,15 @@ const GROUPS: {
         labelKey: 'nav.education',
         fallback: 'Educación',
         blurbKey: 'nav.blurb.education',
-        blurbFb: 'Cursos de seguridad y multi-vista de campo',
+        blurbFb: 'Seguridad y multi-vista de campo',
         icon: 'school',
       },
       {
         to: '/lookalikes',
         labelKey: 'nav.lookalikes',
-        fallback: 'Lookalike Studio',
+        fallback: 'Confusiones',
         blurbKey: 'nav.blurb.lookalikes',
-        blurbFb: 'Compara especies confusas lado a lado',
+        blurbFb: 'Compara especies que se confunden',
         icon: 'compare',
       },
       {
@@ -50,7 +50,7 @@ const GROUPS: {
         labelKey: 'nav.games',
         fallback: 'Juegos',
         blurbKey: 'nav.blurb.games',
-        blurbFb: 'Setadle · Wordle · Reto',
+        blurbFb: 'Setadle, Wordle y reto diario',
         icon: 'games',
       },
     ],
@@ -63,9 +63,9 @@ const GROUPS: {
       {
         to: '/mapa',
         labelKey: 'nav.map',
-        fallback: 'Mapa España cotos',
+        fallback: 'Mapa de cotos',
         blurbKey: 'nav.blurb.map',
-        blurbFb: 'Zonas de recolección — no identifica setas',
+        blurbFb: 'Zonas y cotos — no identifica setas',
         icon: 'map',
       },
       {
@@ -73,15 +73,15 @@ const GROUPS: {
         labelKey: 'nav.notebook',
         fallback: 'Cuaderno',
         blurbKey: 'nav.blurb.notebook',
-        blurbFb: 'Historial local y pins privados',
+        blurbFb: 'Tus observaciones en este dispositivo',
         icon: 'book',
       },
       {
         to: '/offline',
         labelKey: 'nav.offline',
-        fallback: 'Offline pack',
+        fallback: 'Sin red',
         blurbKey: 'nav.blurb.offline',
-        blurbFb: 'Guías y mapas sin red (no ID de campo)',
+        blurbFb: 'Fichas para estudiar sin conexión',
         icon: 'offline',
       },
     ],
@@ -94,9 +94,9 @@ const GROUPS: {
       {
         to: '/comunidad',
         labelKey: 'nav.community',
-        fallback: 'Comunidad (foros)',
+        fallback: 'Comunidad',
         blurbKey: 'nav.blurb.community',
-        blurbFb: 'Segunda opinión humana y foros',
+        blurbFb: 'Opiniones humanas, nunca certeza',
         icon: 'people',
       },
       {
@@ -104,7 +104,7 @@ const GROUPS: {
         labelKey: 'nav.experts',
         fallback: 'Revisión experta',
         blurbKey: 'nav.blurb.experts',
-        blurbFb: 'Handoff a micólogo de carne y hueso',
+        blurbFb: 'Prepara el envío a un micólogo',
         icon: 'expert',
       },
       {
@@ -120,14 +120,14 @@ const GROUPS: {
   {
     id: 'ops',
     titleKey: 'nav.moreGroup.dev',
-    titleFb: 'Instrumentación',
+    titleFb: 'Herramientas',
     items: [
       {
         to: '/ml',
         labelKey: 'nav.ml',
-        fallback: 'ML dashboard ops',
+        fallback: 'Panel ML',
         blurbKey: 'nav.blurb.ml',
-        blurbFb: 'Métricas honestas · product_unlock false',
+        blurbFb: 'Métricas honestas del modelo',
         icon: 'ml',
       },
       {
@@ -135,7 +135,7 @@ const GROUPS: {
         labelKey: 'nav.betaFeedback',
         fallback: 'Feedback beta',
         blurbKey: 'nav.blurb.beta',
-        blurbFb: 'Ayúdanos a mejorar VisionSetil',
+        blurbFb: 'Cuéntanos qué falla',
         testId: 'more-hub-beta',
         icon: 'feedback',
       },
@@ -243,7 +243,7 @@ export function MoreHubPage() {
     <div className="cn-page page-more-hub" data-testid="more-hub-page">
       <p className="cn-warn-strip" role="note">
         {t('more.orientation', {
-          defaultValue: 'Solo orientación · nunca consumo',
+          defaultValue: 'Solo orientación · nunca permiso de consumo',
         })}
       </p>
       <header className="cn-page-head cn-page-pad">
@@ -251,12 +251,12 @@ export function MoreHubPage() {
           {t('nav.more', { defaultValue: 'Más' })}
         </p>
         <h1 className="cn-page-head__title">
-          {t('more.title', { defaultValue: 'Centro de operaciones y recursos' })}
+          {t('more.title', { defaultValue: 'Más herramientas' })}
         </h1>
         <p className="cn-page-head__lead" role="note">
           {t('more.policy', {
             defaultValue:
-              'Mapa completo del producto. Identify y juegos son orientación — nunca permiso de consumo.',
+              'Todo el mapa del producto. Identificar y los juegos orientan: nunca dan permiso de consumo.',
           })}
         </p>
       </header>
@@ -324,12 +324,12 @@ export function MoreHubPage() {
 
         <div className="more-hub-cta">
           <Link to="/identificar" className="cn-btn cn-btn--primary cn-btn--block more-hub-cta__btn">
-            {t('more.ctaIdentify', { defaultValue: 'Acceder a Identificar' })}
+            {t('more.ctaIdentify', { defaultValue: 'Ir a Identificar' })}
           </Link>
         </div>
         <p className="more-hub-foot">
           {t('more.foot', {
-            defaultValue: 'VisionSetil · OLED night · v1.9.9',
+            defaultValue: 'VisionSetil · campo nocturno',
           })}
         </p>
       </div>
