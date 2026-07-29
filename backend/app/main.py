@@ -112,6 +112,14 @@ app.add_middleware(
         "/nomenclature",
         # B-17: Identify preflight (mount + 60s poll); cached metrics, no GPU
         "/models/quality-gate",
+        # Same routes under /api alias (direct backend or misconfigured clients)
+        "/api/health",
+        "/api/healthz",
+        "/api/readyz",
+        "/api/media",
+        "/api/species",
+        "/api/nomenclature",
+        "/api/models/quality-gate",
     },
 )
 
@@ -123,19 +131,46 @@ app.add_middleware(SecurityHeadersMiddleware)
 
 # E-06: no public StaticFiles for user uploads — authenticated route instead.
 # Species photos remain public via /media (species_media).
-app.include_router(uploads_router)
-app.include_router(health_router)
-app.include_router(auth_router)
-app.include_router(community_router)
-app.include_router(observations_router)
-app.include_router(images_router)
-app.include_router(classification_router)
-app.include_router(classify_router)
-app.include_router(media_router)
-app.include_router(species_router)
-app.include_router(nomenclature_router)
-app.include_router(models_router)
-app.include_router(human_review_router)
-app.include_router(metrics_router)
-app.include_router(feedback_router)
-app.include_router(jobs_router)
+#
+# Routes are mounted twice:
+#   1) bare paths  (/health, /classify, …) — production Caddy strips /api
+#   2) /api/* alias — so browser hits to http://127.0.0.1:8000/api/health work
+#      without the Vite proxy (common "Not Found" when opening backend alone).
+_API_ROUTERS = (
+    uploads_router,
+    health_router,
+    auth_router,
+    community_router,
+    observations_router,
+    images_router,
+    classification_router,
+    classify_router,
+    media_router,
+    species_router,
+    nomenclature_router,
+    models_router,
+    human_review_router,
+    metrics_router,
+    feedback_router,
+    jobs_router,
+)
+for _router in _API_ROUTERS:
+    app.include_router(_router)
+    app.include_router(_router, prefix="/api")
+
+
+@app.get("/")
+def root() -> dict[str, object]:
+    """Avoid bare 404 at / when operators open the API port in a browser."""
+    return {
+        "service": "mushroom-photo-id",
+        "status": "ok",
+        "product_unlock": False,
+        "policy": "orientation_only_never_consume",
+        "health": "/health",
+        "readyz": "/readyz",
+        "docs": None if _is_prod else "/docs",
+        "classify": "POST /classify",
+        "api_alias": "All routes also under /api/* (e.g. /api/health)",
+        "frontend_dev": "http://127.0.0.1:5173 (Vite proxies /api → this server)",
+    }
