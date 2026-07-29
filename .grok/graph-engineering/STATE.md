@@ -1,12 +1,12 @@
 # VisionSetil Graph Engineering — STATE
 
-**Mode:** Graph Engineering (audit → photo + nav + dual layout)  
+**Mode:** Graph Engineering (open media/API distillation)  
 **Updated:** 2026-07-29  
-**Goal:** Store-ready app shell + trustworthy real photos · never product_unlock · never forage
+**Goal:** Legal open photo/API harvest + model source honesty · never product_unlock · never forage · **never commercial scrape**
 
 ## Active graph version
 
-`v1.10.4-competitive-world`
+`v1.10.5-open-api-harvest`
 
 ## Current status
 
@@ -23,6 +23,8 @@
 | Season strip + family guide | **SHIPPED** | Home + Enciclopedia |
 | Open study links | **SHIPPED** | Ficha → Wiki / iNat / GBIF |
 | World resources hub | **SHIPPED** | Más → 10 webs/apps |
+| Open API distillation | **SHIPPED** | `docs/DATA_SOURCES_OPEN_APIS.md` + `scripts/harvest_open_media_apis.py` |
+| Probe 12 taxa open APIs | **PASS** | 100% hit · Wiki/iNat/GBIF · `data/open_api_harvest/probe_latest.json` |
 
 ## Audit findings (this cycle)
 

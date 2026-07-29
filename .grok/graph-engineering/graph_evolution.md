@@ -1,5 +1,14 @@
 # Graph evolution log
 
+## v1.10.5 — open-api-harvest (2026-07-29)
+
+- **Policy lock:** no scrape of commercial mushroom apps/models (Picture Mushroom, Shroomify, etc.).
+- Distilled legal sources: Wikipedia REST, Commons, iNaturalist API, GBIF v1, Index Fungorum (names).
+- Doc: `docs/DATA_SOURCES_OPEN_APIS.md` (product photos + ML training registry links).
+- Script: `scripts/harvest_open_media_apis.py` (`--probe`, `--write-report`, `--refresh-photos-subset`).
+- Probe sample: 12/12 taxa with media (`data/open_api_harvest/probe_latest.json`); best often `wikipedia_en`, with iNat/GBIF often CC-BY-NC (flag for license filter).
+- ML models remain FungiCLEF/FungiTastic/GBIF holdout (E20 checkpoint) — not reverse-engineered app weights.
+
 ## v1.0 — bootstrap (2026-07-27)
 
 - Installed/patched grok-workflows (Windows ESM + `--always-approve`)

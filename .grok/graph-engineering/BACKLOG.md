@@ -35,6 +35,17 @@
 | P2 | Remove crossOrigin breaking commons | **SHIPPED** |
 | P3 | Re-scrape sub-15kb local cards | residual |
 | P4 | Night “sin foto” placeholder | **SHIPPED** |
+| P5 | Open API harvest script + probe report | **SHIPPED** |
+| P6 | Full-catalog `harvest_open_media_apis --refresh` + CC filter | residual (operator/network) |
+| P7 | Surface license attribution on ficha when iNat NC | residual |
+
+## Forbidden residual (do not pick up)
+
+| # | Item | Reason |
+|---|------|--------|
+| X1 | Scrape Picture Mushroom / Shroomify / paid APKs | copyright + ToS |
+| X2 | Extract proprietary model weights from apps | illegal / unethical |
+| X3 | Bulk hotlink without UA / rate limit | blocks + ToS |
 
 ## Standing orders
 

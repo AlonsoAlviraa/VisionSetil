@@ -1,0 +1,396 @@
+{
+  "generated_at": "2026-07-29T10:58:33.224256+00:00",
+  "policy": "open APIs only — no commercial app scrape",
+  "apis": {
+    "wikipedia_rest_es": "https://es.wikipedia.org/api/rest_v1/page/summary/",
+    "wikipedia_rest_en": "https://en.wikipedia.org/api/rest_v1/page/summary/",
+    "inaturalist_taxa": "https://api.inaturalist.org/v1/taxa",
+    "gbif_occurrence": "https://api.gbif.org/v1/occurrence/search",
+    "gbif_species_match": "https://api.gbif.org/v1/species/match",
+    "commons_api": "https://commons.wikimedia.org/w/api.php"
+  },
+  "stats": {
+    "probed": 12,
+    "with_any_media": 12,
+    "coverage_pct": 100.0,
+    "by_best_provider": {
+      "wikipedia_en": 10,
+      "wikipedia_es": 1,
+      "inaturalist": 1
+    }
+  },
+  "results": [
+    {
+      "taxon": "Agaricus arvensis",
+      "sources": {
+        "wiki_en": {
+          "provider": "wikipedia_en",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/4/40/Pieczarka_polowa_vongrzanka.JPG",
+          "page": "https://en.wikipedia.org/wiki/Agaricus_arvensis",
+          "title": "Agaricus arvensis"
+        },
+        "inat": {
+          "provider": "inaturalist",
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/457252694/medium.jpg",
+          "taxon_id": 58699,
+          "license_code": "cc-by-nc",
+          "attribution": "(c) Felipe Hidalgo, some rights reserved (CC BY-NC), uploaded by Felipe Hidalgo"
+        },
+        "gbif": {
+          "provider": "gbif",
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/661554702/original.jpg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "creator": "José María Pando",
+          "gbif_key": 6320869302,
+          "country": "ES"
+        }
+      },
+      "best": {
+        "provider": "wikipedia_en",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/4/40/Pieczarka_polowa_vongrzanka.JPG",
+        "page": "https://en.wikipedia.org/wiki/Agaricus_arvensis",
+        "title": "Agaricus arvensis"
+      }
+    },
+    {
+      "taxon": "Agaricus augustus",
+      "sources": {
+        "wiki_en": {
+          "provider": "wikipedia_en",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Agaricus_augustus_2011_G1.jpg/3840px-Agaricus_augustus_2011_G1.jpg",
+          "page": "https://en.wikipedia.org/wiki/Agaricus_augustus",
+          "title": "Agaricus augustus"
+        },
+        "inat": {
+          "provider": "inaturalist",
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/154491744/medium.jpg",
+          "taxon_id": 49547,
+          "license_code": "cc-by-nc",
+          "attribution": "(c) Federico Calledda, some rights reserved (CC BY-NC), uploaded by Federico Calledda"
+        },
+        "gbif": {
+          "provider": "gbif",
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/680335016/original.jpg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "creator": "enrico",
+          "gbif_key": 6413950084,
+          "country": "ES"
+        }
+      },
+      "best": {
+        "provider": "wikipedia_en",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Agaricus_augustus_2011_G1.jpg/3840px-Agaricus_augustus_2011_G1.jpg",
+        "page": "https://en.wikipedia.org/wiki/Agaricus_augustus",
+        "title": "Agaricus augustus"
+      }
+    },
+    {
+      "taxon": "Agaricus bisporus",
+      "sources": {
+        "wiki_en": {
+          "provider": "wikipedia_en",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/0/01/ChampignonMushroom.jpg",
+          "page": "https://en.wikipedia.org/wiki/Agaricus_bisporus",
+          "title": "Agaricus bisporus"
+        },
+        "inat": {
+          "provider": "inaturalist",
+          "url": "https://static.inaturalist.org/photos/351794616/medium.jpg",
+          "taxon_id": 61395,
+          "license_code": null,
+          "attribution": "(c) Spencer Wimmer, all rights reserved, uploaded by Spencer Wimmer"
+        },
+        "gbif": {
+          "provider": "gbif",
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/591873089/original.jpg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "creator": "toniconca",
+          "gbif_key": 5897265275,
+          "country": "ES"
+        }
+      },
+      "best": {
+        "provider": "wikipedia_en",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/0/01/ChampignonMushroom.jpg",
+        "page": "https://en.wikipedia.org/wiki/Agaricus_bisporus",
+        "title": "Agaricus bisporus"
+      }
+    },
+    {
+      "taxon": "Agaricus bitorquis",
+      "sources": {
+        "wiki_en": {
+          "provider": "wikipedia_en",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/a/a9/Agaricus.bitorquis.nathan.jpg",
+          "page": "https://en.wikipedia.org/wiki/Agaricus_bitorquis",
+          "title": "Agaricus bitorquis"
+        },
+        "inat": {
+          "provider": "inaturalist",
+          "url": "https://static.inaturalist.org/photos/271145739/medium.jpeg",
+          "taxon_id": 58696,
+          "license_code": null,
+          "attribution": "(c) Alan Mazza, all rights reserved, uploaded by Alan Mazza"
+        },
+        "gbif": {
+          "provider": "gbif",
+          "url": "https://svampe.databasen.org/uploads/2026-10583492_HJGQAzAIZg.JPG",
+          "license": null,
+          "creator": "Jane Nielsen",
+          "gbif_key": 6161867729,
+          "country": "ES"
+        }
+      },
+      "best": {
+        "provider": "wikipedia_en",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/a/a9/Agaricus.bitorquis.nathan.jpg",
+        "page": "https://en.wikipedia.org/wiki/Agaricus_bitorquis",
+        "title": "Agaricus bitorquis"
+      }
+    },
+    {
+      "taxon": "Agaricus campestris",
+      "sources": {
+        "wiki_en": {
+          "provider": "wikipedia_en",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/3/3a/Agaricus_campestris.jpg",
+          "page": "https://en.wikipedia.org/wiki/Agaricus_campestris",
+          "title": "Agaricus campestris"
+        },
+        "inat": {
+          "provider": "inaturalist",
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/457253795/medium.jpg",
+          "taxon_id": 143563,
+          "license_code": "cc-by-nc",
+          "attribution": "(c) Felipe Hidalgo, some rights reserved (CC BY-NC), uploaded by Felipe Hidalgo"
+        },
+        "gbif": {
+          "provider": "gbif",
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/629527065/original.jpg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "creator": "Susana Lara Celma",
+          "gbif_key": 6185308505,
+          "country": "ES"
+        }
+      },
+      "best": {
+        "provider": "wikipedia_en",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/3/3a/Agaricus_campestris.jpg",
+        "page": "https://en.wikipedia.org/wiki/Agaricus_campestris",
+        "title": "Agaricus campestris"
+      }
+    },
+    {
+      "taxon": "Agaricus cupreobrunneus",
+      "sources": {
+        "wiki_en": {
+          "provider": "wikipedia_en",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/a/ad/Cupreobrunneus.jpg",
+          "page": "https://en.wikipedia.org/wiki/Agaricus_cupreobrunneus",
+          "title": "Agaricus cupreobrunneus"
+        },
+        "inat": {
+          "provider": "inaturalist",
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/250780124/medium.jpeg",
+          "taxon_id": 118384,
+          "license_code": "cc-by-nc",
+          "attribution": "(c) Fabio Mauri, some rights reserved (CC BY-NC), uploaded by Fabio Mauri"
+        },
+        "gbif": {
+          "provider": "gbif",
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/657469907/original.jpg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "creator": "rebecagalicia",
+          "gbif_key": 6274327764,
+          "country": "ES"
+        }
+      },
+      "best": {
+        "provider": "wikipedia_en",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/a/ad/Cupreobrunneus.jpg",
+        "page": "https://en.wikipedia.org/wiki/Agaricus_cupreobrunneus",
+        "title": "Agaricus cupreobrunneus"
+      }
+    },
+    {
+      "taxon": "Agaricus dulcidulus",
+      "sources": {
+        "wiki_en": {
+          "provider": "wikipedia_en",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/0/02/Agaricus_dulcidulus_001.jpg",
+          "page": "https://en.wikipedia.org/wiki/Agaricus_dulcidulus",
+          "title": "Agaricus dulcidulus"
+        },
+        "inat": {
+          "provider": "inaturalist",
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/56339874/medium.jpeg",
+          "taxon_id": 480763,
+          "license_code": "cc-by-nc",
+          "attribution": "(c) Σάββας Ζαφειρίου (Savvas Zafeiriou), some rights reserved (CC BY-NC), uploaded by Σάββας Ζαφειρίου (Savvas Zafeiriou)"
+        },
+        "gbif": {
+          "provider": "gbif",
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/248384115/original.jpeg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "creator": "gabohq",
+          "gbif_key": 4022045690,
+          "country": "ES"
+        }
+      },
+      "best": {
+        "provider": "wikipedia_en",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/0/02/Agaricus_dulcidulus_001.jpg",
+        "page": "https://en.wikipedia.org/wiki/Agaricus_dulcidulus",
+        "title": "Agaricus dulcidulus"
+      }
+    },
+    {
+      "taxon": "Agaricus essettei",
+      "sources": {
+        "wiki_es": {
+          "provider": "wikipedia_es",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/7/71/Agaricus_abruptibulbus.jpg",
+          "page": "https://es.wikipedia.org/wiki/Agaricus_abruptibulbus",
+          "title": "Agaricus abruptibulbus"
+        },
+        "inat": {
+          "provider": "inaturalist",
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/5363175/medium.jpeg",
+          "taxon_id": 349999,
+          "license_code": "cc-by-nc",
+          "attribution": "(c) David Renoult, some rights reserved (CC BY-NC), uploaded by David Renoult"
+        },
+        "gbif": {
+          "provider": "gbif",
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/663871861/original.jpg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "creator": "joseluisiturrioz",
+          "gbif_key": 6333872868,
+          "country": "ES"
+        }
+      },
+      "best": {
+        "provider": "wikipedia_es",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/7/71/Agaricus_abruptibulbus.jpg",
+        "page": "https://es.wikipedia.org/wiki/Agaricus_abruptibulbus",
+        "title": "Agaricus abruptibulbus"
+      }
+    },
+    {
+      "taxon": "Agaricus excellens",
+      "sources": {
+        "wiki_en": {
+          "provider": "wikipedia_en",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/c/c6/Agaricus_spec._Lindsey_4.jpg",
+          "page": "https://en.wikipedia.org/wiki/Agaricus_excellens",
+          "title": "Agaricus excellens"
+        },
+        "gbif": {
+          "provider": "gbif",
+          "url": "https://observation.org/photos/107256925.jpg",
+          "license": "http://creativecommons.org/licenses/by-nc-nd/4.0/",
+          "creator": "pantxo zuazu",
+          "gbif_key": 6150861116,
+          "country": "ES"
+        }
+      },
+      "best": {
+        "provider": "wikipedia_en",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/c/c6/Agaricus_spec._Lindsey_4.jpg",
+        "page": "https://en.wikipedia.org/wiki/Agaricus_excellens",
+        "title": "Agaricus excellens"
+      }
+    },
+    {
+      "taxon": "Agaricus freirei",
+      "sources": {
+        "inat": {
+          "provider": "inaturalist",
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/343141505/medium.jpeg",
+          "taxon_id": 1434103,
+          "license_code": "cc-by-nc",
+          "attribution": "(c) Guinberteau Jacques, some rights reserved (CC BY-NC), uploaded by Guinberteau Jacques"
+        },
+        "gbif": {
+          "provider": "gbif",
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/602813772/original.jpg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "creator": "MAR (Miguel A. Ribes)",
+          "gbif_key": 6431139409,
+          "country": "ES"
+        }
+      },
+      "best": {
+        "provider": "inaturalist",
+        "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/343141505/medium.jpeg",
+        "taxon_id": 1434103,
+        "license_code": "cc-by-nc",
+        "attribution": "(c) Guinberteau Jacques, some rights reserved (CC BY-NC), uploaded by Guinberteau Jacques"
+      }
+    },
+    {
+      "taxon": "Agaricus fuscofibrillosus",
+      "sources": {
+        "wiki_en": {
+          "provider": "wikipedia_en",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/f/f9/Agaricus_fuscofibrillosus_Alan_Rockefeller.JPG",
+          "page": "https://en.wikipedia.org/wiki/Agaricus_brunneofibrillosus",
+          "title": "Agaricus brunneofibrillosus"
+        },
+        "inat": {
+          "provider": "inaturalist",
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/2893634/medium.jpg",
+          "taxon_id": 428226,
+          "license_code": "cc-by-sa",
+          "attribution": "(c) MushroomObserverUser|1=746|2=Ryane Snow (snowman), niektoré práva vyhradené (CC BY-SA)"
+        },
+        "gbif": {
+          "provider": "gbif",
+          "url": "https://d2jcv3kl45hlgi.cloudfront.net/6dea3b69e35c45dfd7453162481ffb25.jpg",
+          "license": "http://creativecommons.org/licenses/by/4.0/",
+          "creator": null,
+          "gbif_key": 5236205466,
+          "country": "ES"
+        }
+      },
+      "best": {
+        "provider": "wikipedia_en",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/f/f9/Agaricus_fuscofibrillosus_Alan_Rockefeller.JPG",
+        "page": "https://en.wikipedia.org/wiki/Agaricus_brunneofibrillosus",
+        "title": "Agaricus brunneofibrillosus"
+      }
+    },
+    {
+      "taxon": "Agaricus impudicus",
+      "sources": {
+        "wiki_en": {
+          "provider": "wikipedia_en",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/c/c8/Agaricus_impudicus_01.jpg",
+          "page": "https://en.wikipedia.org/wiki/Agaricus_impudicus",
+          "title": "Agaricus impudicus"
+        },
+        "inat": {
+          "provider": "inaturalist",
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/2339070/medium.jpg",
+          "taxon_id": 130198,
+          "license_code": "cc-by",
+          "attribution": "(c) Martin Cooper, some rights reserved (CC BY)"
+        },
+        "gbif": {
+          "provider": "gbif",
+          "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/580281465/original.jpg",
+          "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+          "creator": "Fernando Baños",
+          "gbif_key": 5844567275,
+          "country": "ES"
+        }
+      },
+      "best": {
+        "provider": "wikipedia_en",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/c/c8/Agaricus_impudicus_01.jpg",
+        "page": "https://en.wikipedia.org/wiki/Agaricus_impudicus",
+        "title": "Agaricus impudicus"
+      }
+    }
+  ]
+}
