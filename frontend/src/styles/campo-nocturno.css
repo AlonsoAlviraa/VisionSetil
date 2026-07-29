@@ -71,9 +71,10 @@ html[data-skin='campo-nocturno'] {
      so the product reads as Stitch intends (no sans body font). */
   --font-sans: 'Source Serif 4', Georgia, serif;
 
-  /* App shell width = design phone canvas; grows carefully */
-  --cn-shell: min(100%, 26.5rem);
-  --cn-gutter: 1.05rem;
+  /* Fluid product width — full phone on small screens, wide page on desktop
+     (no more 26.5rem phone pill with empty side gutters on big monitors). */
+  --cn-shell: 100%;
+  --cn-gutter: 1.1rem;
   --cn-nav-h: 4.5rem;
   --cn-header-h: 3.25rem;
   --cn-warn-h: 1.85rem;
@@ -117,7 +118,7 @@ html[data-skin='campo-nocturno'] {
   --danger: var(--cn-danger);
   --deadly: #ff8a80;
   --warning: #e8c17a;
-  --max-width: 26.5rem;
+  --max-width: 100%;
 }
 
 /* ── Global reset of legacy chrome ──────────────────────────────────────── */
@@ -171,7 +172,7 @@ body {
   content: none !important;
 }
 
-/* ── App frame (centered phone-like product on tablet/desktop) ──────────── */
+/* ── App frame: full-bleed product (no floating thin phone column) ─────── */
 .app--campo-nocturno > .header,
 .app--campo-nocturno > .cn-warn-strip,
 .app--campo-nocturno > .api-status-banner,
@@ -180,9 +181,9 @@ body {
 .app--campo-nocturno > main.container,
 .app--campo-nocturno > .footer {
   width: 100%;
-  max-width: var(--cn-shell);
-  margin-left: auto;
-  margin-right: auto;
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
 }
 
 /* ── Warn strip ─────────────────────────────────────────────────────────── */
@@ -1897,17 +1898,41 @@ a {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   TABLET (≥640px): slightly wider shell, still app-like
+   TABLET (≥640px): roomier page, multi-col where it helps
    ═══════════════════════════════════════════════════════════════════════════ */
 @media (min-width: 640px) {
   :root {
-    --cn-shell: min(100% - 1.5rem, 28.5rem);
-    --cn-gutter: 1.15rem;
-    --cn-hero-min-h: min(62vh, 30rem);
+    --cn-shell: 100%;
+    --cn-gutter: clamp(1.15rem, 3vw, 2rem);
+    --cn-hero-min-h: min(68vh, 34rem);
   }
 
   .cn-home-hero {
-    min-height: min(62vh, 30rem);
+    min-height: min(68vh, 34rem);
+    margin-left: var(--cn-gutter);
+    margin-right: var(--cn-gutter);
+  }
+
+  .cn-home-lower {
+    display: grid;
+    grid-template-columns: 1.2fr 0.9fr;
+    gap: 1rem;
+    margin-left: var(--cn-gutter);
+    margin-right: var(--cn-gutter);
+  }
+
+  .cn-home-trust {
+    margin-left: var(--cn-gutter);
+    margin-right: var(--cn-gutter);
+  }
+
+  .cn-page-pad {
+    padding-left: var(--cn-gutter);
+    padding-right: var(--cn-gutter);
+  }
+
+  .seasonal-top-strip__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .page-education .rules-grid,
@@ -1916,119 +1941,194 @@ a {
   }
 
   .page-encyclopedia--cn .species-photo-grid {
-    gap: 0.75rem !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 0.85rem !important;
+  }
+
+  .games-hub-grid {
+    grid-template-columns: 1fr 1fr;
   }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   DESKTOP (≥960px): centered app frame + optional wider content surfaces
+   DESKTOP (≥960px): REAL web width — no phone pill, no empty side gutters
    ═══════════════════════════════════════════════════════════════════════════ */
 @media (min-width: 960px) {
   :root {
-    --cn-shell: min(100% - 2rem, 26.5rem);
-    --cn-gutter: 1.15rem;
+    --cn-shell: 100%;
+    --cn-gutter: clamp(1.5rem, 3.5vw, 3rem);
     --cn-nav-h: 0px;
+    --max-width: min(100% - 2 * var(--cn-gutter), 80rem);
   }
 
-  /* Soft phone frame on desktop so browser matches designs */
   .app--campo-nocturno {
-    padding-top: 0.75rem;
-    padding-bottom: 0.75rem;
+    padding: 0 !important;
   }
 
   .app--campo-nocturno > .header,
+  .app--campo-nocturno > .cn-warn-strip,
   .app--campo-nocturno > main.cn-main,
   .app--campo-nocturno > main.container,
-  .app--campo-nocturno > .footer,
-  .cn-bottom-nav {
-    box-shadow: 0 0 0 1px rgba(143, 188, 143, 0.12), 0 24px 64px rgba(0, 0, 0, 0.45);
-  }
-
-  .app--campo-nocturno > .header {
-    border-radius: 1.15rem 1.15rem 0 0 !important;
-  }
-
   .app--campo-nocturno > .footer {
-    border-radius: 0 0 1.15rem 1.15rem !important;
-    border-bottom: 1px solid rgba(143, 188, 143, 0.12);
+    max-width: none !important;
+    width: 100% !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
   }
 
   .app--campo-nocturno > main.cn-main,
   .app--campo-nocturno > main.container {
-    background: var(--cn-bg);
-    min-height: calc(100dvh - 6rem);
-    padding-bottom: 1.25rem !important;
+    background: transparent !important;
+    min-height: auto !important;
+    padding-bottom: 3rem !important;
+    max-width: none !important;
   }
 
-  /* Bottom nav stays (design fidelity) even on desktop */
+  /* Inner content uses a readable max width but still WIDE (~80rem) */
+  .cn-page,
+  .page-atelier-shell,
+  .page-games-hub,
+  .page-more-hub,
+  .page-identify,
+  .page-encyclopedia,
+  .page-detail,
+  .page-education,
+  .page-lookalike,
+  .page-history,
+  .page-offline,
+  .page-community,
+  .page-setadle,
+  .page-wordle,
+  .page-quiz {
+    max-width: var(--max-width) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: var(--cn-gutter) !important;
+    padding-right: var(--cn-gutter) !important;
+  }
+
+  .cn-home {
+    max-width: none !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .header-inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding-left: var(--cn-gutter);
+    padding-right: var(--cn-gutter);
+  }
+
+  /* Top nav on desktop; bottom nav off */
   .cn-bottom-nav,
   .bottom-nav {
-    display: flex !important;
-    border-radius: 0 !important;
-    bottom: 0.75rem;
-    /* sit inside the shell frame */
-  }
-
-  .app--campo-nocturno > main.cn-main,
-  .app--campo-nocturno > main.container {
-    padding-bottom: calc(4.75rem + 0.75rem) !important;
+    display: none !important;
   }
 
   .header-nav--desktop-primary {
-    display: none !important; /* keep single bottom-nav paradigm = designs */
+    display: flex !important;
+  }
+
+  .app--has-bottom-nav {
+    padding-bottom: 0 !important;
+  }
+
+  .app--has-bottom-nav .fab-identify {
+    display: inline-flex !important;
+    bottom: 1.5rem !important;
   }
 
   .cn-home-hero {
-    min-height: min(58vh, 28rem);
+    min-height: min(78vh, 42rem);
+    margin: 0 var(--cn-gutter) 1.25rem;
+    border-radius: 1.5rem;
+  }
+
+  .cn-home-lower {
+    max-width: var(--max-width);
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 var(--cn-gutter);
+    grid-template-columns: 1.35fr 0.85fr;
+    gap: 1.25rem;
+  }
+
+  .cn-home-trust {
+    max-width: var(--max-width);
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 var(--cn-gutter);
+  }
+
+  .cn-page-pad,
+  .cn-home-season {
+    max-width: var(--max-width);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--cn-gutter);
+    padding-right: var(--cn-gutter);
+  }
+
+  .seasonal-top-strip__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .page-encyclopedia--cn .species-photo-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 1rem !important;
+  }
+
+  .games-hub-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.15rem;
   }
 
   .games-hub-card--photo,
   .games-hub-card__content {
-    min-height: 15rem;
-  }
-}
-
-/* Wide desktop: still one app column (design-true), not stretched mess */
-@media (min-width: 1200px) {
-  :root {
-    --cn-shell: 27rem;
-  }
-}
-
-/* Map exception: usable width on large screens */
-@media (min-width: 960px) {
-  .app--campo-nocturno:has(.page-map) > main.cn-main,
-  .app--campo-nocturno:has(.page-map) > main.container {
-    max-width: min(100% - 2rem, 56rem) !important;
+    min-height: 18rem;
   }
 
-  .app--campo-nocturno:has(.page-map) > .header,
-  .app--campo-nocturno:has(.page-map) > .footer,
-  .app--campo-nocturno:has(.page-map) .cn-bottom-nav {
-    max-width: min(100% - 2rem, 56rem) !important;
+  .more-hub-groups {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem 2rem;
   }
 
   .page-map .leaflet-container {
-    min-height: min(68vh, 36rem);
+    min-height: min(70vh, 40rem);
   }
 }
 
-/* Encyclopedia/identify slightly wider on large if wanted — keep shell for fidelity */
-@media (min-width: 1100px) {
-  .app--campo-nocturno:has(.page-encyclopedia) > main.cn-main,
-  .app--campo-nocturno:has(.page-encyclopedia) > main.container {
-    max-width: min(100% - 2rem, 42rem) !important;
+@media (min-width: 1200px) {
+  :root {
+    --max-width: min(100% - 2 * var(--cn-gutter), 88rem);
+    --cn-gutter: clamp(2rem, 4vw, 4rem);
   }
 
-  .app--campo-nocturno:has(.page-encyclopedia) > .header,
-  .app--campo-nocturno:has(.page-encyclopedia) > .footer,
-  .app--campo-nocturno:has(.page-encyclopedia) .cn-bottom-nav {
-    max-width: min(100% - 2rem, 42rem) !important;
+  .cn-home-hero {
+    min-height: min(82vh, 48rem);
   }
 
   .page-encyclopedia--cn .species-photo-grid {
-    grid-template-columns: repeat(3, 1fr) !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
   }
+
+  .seasonal-top-strip__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* Kill legacy atelier/global narrow containers that leave empty sides */
+.app--campo-nocturno main.container,
+.app--campo-nocturno .container,
+.app--stitch-b main.container {
+  width: 100% !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
 }
 
 /* ── Competitive strips: season + family guide + open study ─────────────── */
