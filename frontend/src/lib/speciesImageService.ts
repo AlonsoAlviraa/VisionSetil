@@ -81,13 +81,17 @@ export function upgradePhotoUrl(
   if (!url || url.startsWith('data:')) return url
   let u = url
   const inatSize = quality === 'hd' ? 'large' : quality === 'thumb' ? 'small' : 'medium'
-  const wikiPx = quality === 'hd' ? '1280px-' : quality === 'thumb' ? '320px-' : '640px-'
+  const wikiPx = quality === 'hd' ? '1280px-' : quality === 'thumb' ? '320px-' : '800px-'
   // Normalize any iNat size → target
-  u = u
-    .replace(/\/(square|small|medium|large|original|thumb)\./g, `/${inatSize}.`)
-  // Wikimedia Commons thumbnails
+  u = u.replace(/\/(square|small|medium|large|original|thumb)\./g, `/${inatSize}.`)
+  // Wikimedia Commons: force a readable thumb size when already a thumb path
   if (u.includes('upload.wikimedia.org')) {
-    u = u.replace(/\/\d+px-/g, `/${wikiPx}`)
+    if (/\/\d+px-/.test(u)) {
+      u = u.replace(/\/\d+px-/g, `/${wikiPx}`)
+    } else if (quality !== 'hd' && u.includes('/commons/') && !u.includes('/thumb/')) {
+      // Full-file commons URL can be multi-MB; leave as-is (browser will decode).
+      // Prefer catalog entries that already use /thumb/ paths when available.
+    }
   }
   return u
 }

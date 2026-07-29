@@ -91,20 +91,21 @@ export function buildSpeciesMediaStack(
     })
   })
 
-  // 1) Remote catalog HD (speciesPhotos.json) — strong recognition for popular taxa
+  // 1) Remote catalog HD (speciesPhotos.json / Wiki / iNat) — real field photos first
   if (opts?.includeCatalog !== false) {
     const cat = getCatalogPhotoUrl(taxon) || getCatalogPhotoUrl(slug.replace(/-/g, ' '))
     if (cat) {
       out.push({
         url: cat,
         kind: 'catalog',
-        rank: 105,
+        // Above extras default (100) and local pack so product surfaces show real photos
+        rank: 130,
         sameOrigin: false,
       })
     }
   }
 
-  // 2) Local same-origin pack (fast when present; cascade skips 404)
+  // 2) Local same-origin pack (fallback when catalog blocked / offline)
   out.push({
     url: speciesImageUrl(slug, 'detail'),
     kind: 'detail',

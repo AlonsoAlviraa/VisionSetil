@@ -1,37 +1,38 @@
 # VisionSetil Graph Engineering — STATE
 
-**Mode:** Graph Engineering (Campo nocturno B → product)  
+**Mode:** Graph Engineering (audit → photo + nav + dual layout)  
 **Updated:** 2026-07-29  
-**Goal:** Ship Stitch B visual language into real FE (map unchanged) · never product_unlock · never forage
+**Goal:** Store-ready app shell + trustworthy real photos · never product_unlock · never forage
 
 ## Active graph version
 
-`v1.10.1-campo-nocturno-full-skin`
+`v1.10.3-photo-nav-audit`
 
 ## Current status
 
 | Area | Status | Notes |
 |------|--------|--------|
-| Stitch B v2 pack (16 screens) | **SHIPPED** | `docs/design/stitch/screens-b-v2/` |
-| App ref screenshots | **SHIPPED** | `docs/design/stitch/ref-app/` |
-| FE shell dark + bottom nav | **SHIPPED** | `/juegos` `/mas` |
-| Home calm B | **IN PROGRESS → SHIPPING** | `home-mkt--cn-calm` + campo-nocturno.css |
-| Identify / games / ency night skin | **SHIPPING** | tokens + page classes |
-| **Mapa** | **KEEP CURRENT** | user preference — no Stitch map restyle |
+| Dual layout App / Web | **SHIPPED** | `app--mode-app` · `app--mode-web` · toggle header |
+| Más duplication | **FIXED** | single hub+menu; app mode hides header Más (bottom nav) |
+| Real photo cascade | **FIXED** | catalog first · no crossOrigin CORS kill · night placeholders |
+| Stitch B skin | **SHIPPED** | campo-nocturno + web layer |
+| Mapa | **KEEP CURRENT** | user lock |
 | product_unlock | **BLOCKED** | false |
+| Competitive audit | **SHIPPED** | `docs/design/COMPETITIVE_AUDIT_2026.md` |
 
-## Design source of truth
+## Audit findings (this cycle)
 
-- Stitch: `docs/design/stitch/screens-b-v2/01-home.png` … `16-comunidad.png`
-- System prompt: `docs/design/stitch/B_SYSTEM_PROMPT.md`
-- Implementation CSS: `frontend/src/styles/campo-nocturno.css`
+1. **Más ×2** in header (primaryNav link + dropdown label) → fixed  
+2. **Wiki/iNat imgs blank** with `crossOrigin=anonymous` (no CORS) → removed  
+3. **SpeciesImage** tried local before catalog despite `preferCatalog` → catalog first  
+4. Games cards **opacity 0.5** washed photos → restored full opacity  
+5. Light-green skeletons on night UI → dark night skeletons  
 
 ## Residual next
 
-1. Iterate pixel fidelity vs Stitch PNGs (identify slots, result card)  
-2. Games pages (Setadle/Wordle/Reto) skin pass  
-3. Species detail night gallery  
-4. Operator deploy still open  
+1. Identify/result pixel vs Stitch 02–03  
+2. Weaker local `/media` taxa (under 15kb) optional re-fetch  
+3. Operator deploy residual  
 
 ## product_unlock
 

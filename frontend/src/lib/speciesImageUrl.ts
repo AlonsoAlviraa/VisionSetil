@@ -63,8 +63,15 @@ export const INLINE_PLACEHOLDER_SVG =
   'data:image/svg+xml,' +
   encodeURIComponent(
     `<svg xmlns="http://www.w3.org/2000/svg" width="480" height="360" viewBox="0 0 480 360">
-      <rect width="480" height="360" fill="#2d3a2e"/>
-      <text x="240" y="170" text-anchor="middle" font-family="system-ui,sans-serif" font-size="16" fill="rgba(255,255,255,0.55)">Sin foto real</text>
-      <text x="240" y="200" text-anchor="middle" font-family="system-ui,sans-serif" font-size="18" fill="rgba(255,255,255,0.8)">VisionSetil</text>
+      <defs>
+        <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#1a221b"/>
+          <stop offset="100%" stop-color="#101511"/>
+        </linearGradient>
+      </defs>
+      <rect width="480" height="360" fill="url(#g)"/>
+      <circle cx="240" cy="150" r="36" fill="none" stroke="rgba(170,216,169,0.35)" stroke-width="2"/>
+      <text x="240" y="210" text-anchor="middle" font-family="system-ui,sans-serif" font-size="15" fill="rgba(223,228,221,0.7)">Foto de campo no disponible</text>
+      <text x="240" y="236" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" fill="rgba(143,188,143,0.75)">VisionSetil · solo orientación</text>
     </svg>`,
   )

@@ -141,11 +141,6 @@ export function SpeciesFlashcard({
                 loading="eager"
                 decoding="async"
                 referrerPolicy="no-referrer"
-                crossOrigin={
-                  !useInline && current && !current.sameOrigin && !terminalSrc
-                    ? 'anonymous'
-                    : undefined
-                }
                 draggable={false}
                 onLoad={() => setLoaded(true)}
                 onError={useInline || terminalSrc ? undefined : dropCurrent}

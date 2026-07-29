@@ -23,6 +23,18 @@
 | B5 | Identify/result pixel match Stitch | residual iterate |
 | B6 | Setadle/Wordle/Reto deeper skin | residual |
 | B7 | Species detail gallery night | residual |
+| B8 | Dual App/Web layout modes | **SHIPPED** v1.10.2 |
+| B9 | Más de-dupe + real photo cascade | **SHIPPED** v1.10.3 |
+| B10 | Competitive audit → UX copy (no edible) | **SHIPPED** doc |
+
+## Photo integrity residual
+
+| # | Item | Status |
+|---|------|--------|
+| P1 | Prefer catalog Wiki/iNat over weak local | **SHIPPED** |
+| P2 | Remove crossOrigin breaking commons | **SHIPPED** |
+| P3 | Re-scrape sub-15kb local cards | residual |
+| P4 | Night “sin foto” placeholder | **SHIPPED** |
 
 ## Standing orders
 

@@ -9,12 +9,12 @@ import type { LayoutMode } from '../lib/layoutMode'
 
 const THEME_KEY = 'visionsetil_theme'
 
+/** Primary chrome only — Más is a single control (dropdown → hub), never duplicated. */
 const primaryNav = [
   { to: '/', labelKey: 'nav.home', fallback: 'Inicio' },
   { to: '/identificar', labelKey: 'nav.identify', fallback: 'Identificar', cta: true },
   { to: '/juegos', labelKey: 'nav.games', fallback: 'Juegos' },
   { to: '/enciclopedia', labelKey: 'nav.encyclopedia', fallback: 'Enciclopedia' },
-  { to: '/mas', labelKey: 'nav.more', fallback: 'Más' },
 ] as const
 
 type MoreNavItem = {
@@ -371,25 +371,40 @@ export function Header({ layoutMode = 'app', onLayoutModeChange }: HeaderProps =
             ))}
           </nav>
 
-          {/* Más lives OUTSIDE the overflow bar so the panel is never clipped */}
+          {/* Single Más control: hub link + overflow menu (not a second tab duplicate) */}
           <div
             className={`nav-more ${moreOpen ? 'nav-more--open' : ''}`}
             ref={moreRef}
           >
-            <button
-              type="button"
-              className={`nav-link nav-more__trigger ${moreActive ? 'nav-link--active' : ''}`}
-              aria-expanded={moreOpen}
-              aria-haspopup="menu"
-              aria-controls="nav-more-menu"
-              onClick={(e) => {
-                e.stopPropagation()
-                setMoreOpen((v) => !v)
-              }}
-            >
-              <span>{t('nav.more', { defaultValue: 'Más' })}</span>
-              <IconChevron open={moreOpen} />
-            </button>
+            <div className="nav-more__cluster">
+              <NavLink
+                to="/mas"
+                className={({ isActive }) =>
+                  `nav-link nav-more__hub ${isActive || moreActive ? 'nav-link--active' : ''}`
+                }
+                onClick={closeAll}
+                data-testid="header-mas-hub"
+              >
+                {t('nav.more', { defaultValue: 'Más' })}
+              </NavLink>
+              <button
+                type="button"
+                className="nav-link nav-more__trigger"
+                aria-expanded={moreOpen}
+                aria-haspopup="menu"
+                aria-controls="nav-more-menu"
+                aria-label={t('nav.moreMenuAria', {
+                  defaultValue: 'Abrir menú Más',
+                })}
+                data-testid="header-mas-menu"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setMoreOpen((v) => !v)
+                }}
+              >
+                <IconChevron open={moreOpen} />
+              </button>
+            </div>
             {morePanel}
           </div>
         </div>

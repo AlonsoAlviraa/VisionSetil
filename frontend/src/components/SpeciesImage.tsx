@@ -79,24 +79,19 @@ function stageOrder(
         ? ['primary', 'card', 'placeholder', 'inline']
         : ['primary', 'card', 'thumb', 'placeholder', 'inline']
 
-  // Fluidity + security: same-origin local first, then catalog remote, then placeholders.
-  // Local WebP is faster and avoids leaking referrers to third parties until needed.
-  if (hasCatalog) {
-    const out: Stage[] = []
-    for (const s of localFirst) {
-      if (s === 'placeholder') {
-        if (preferCatalog) out.push('catalog')
-      }
-      out.push(s)
-    }
-    if (!preferCatalog) {
-      // still allow catalog before final placeholder when local fails
-      const pi = out.indexOf('placeholder')
-      if (pi >= 0) out.splice(pi, 0, 'catalog')
-    }
-    return out
+  if (!hasCatalog) return localFirst
+
+  // Real field photos from speciesPhotos.json (Wiki/iNat) first when preferCatalog.
+  // Local /media is fallback — some packs are weak crops or legacy stubs.
+  // Never put catalog after local when the product promises "real photos".
+  if (preferCatalog) {
+    return ['catalog', ...localFirst]
   }
-  return localFirst
+  // Offline-leaning: same-origin first, catalog before terminal placeholders
+  const out = [...localFirst]
+  const pi = out.indexOf('placeholder')
+  if (pi >= 0) out.splice(pi, 0, 'catalog')
+  return out
 }
 
 function urlForStage(
@@ -136,7 +131,7 @@ export function SpeciesImage({
   layout = 'fill',
   width,
   height,
-  minNaturalWidth = 8,
+  minNaturalWidth = 32,
   showAttribution = false,
   attribution = null,
   onStageChange,
@@ -247,7 +242,7 @@ export function SpeciesImage({
           height: height ?? '100%',
           minHeight: 0,
           overflow: 'hidden',
-          background: 'linear-gradient(135deg, #dfe8df, #c5d4c5)',
+          background: 'linear-gradient(135deg, #1a221b, #243028)',
           aspectRatio: aspectRatio,
         }
       : {
@@ -256,7 +251,7 @@ export function SpeciesImage({
           height: '100%',
           minHeight: 80,
           overflow: 'hidden',
-          background: 'linear-gradient(135deg, #dfe8df, #c5d4c5)',
+          background: 'linear-gradient(135deg, #1a221b, #243028)',
           aspectRatio: aspectRatio,
         }
 
@@ -283,7 +278,7 @@ export function SpeciesImage({
             position: 'absolute',
             inset: 0,
             background:
-              'linear-gradient(90deg, #d0dcd0 25%, #e8f0e8 50%, #d0dcd0 75%)',
+              'linear-gradient(90deg, #1c241d 25%, #2a342c 50%, #1c241d 75%)',
             backgroundSize: '200% 100%',
             animation: 'species-shimmer 1.2s ease-in-out infinite',
           }}
@@ -300,9 +295,9 @@ export function SpeciesImage({
         height={height}
         loading={priority ? 'eager' : 'lazy'}
         decoding="async"
+        // no-referrer helps privacy; do NOT set crossOrigin=anonymous —
+        // Wikimedia often lacks CORS headers and then <img> fails to paint.
         referrerPolicy="no-referrer"
-        // Avoid credentialed cross-origin loads to third-party CDNs
-        crossOrigin={stage === 'catalog' ? 'anonymous' : undefined}
         onError={handleError}
         onLoad={handleLoad}
         data-slug={slug}

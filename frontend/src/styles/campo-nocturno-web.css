@@ -70,6 +70,16 @@
   align-items: center;
 }
 
+/* Web: one Más control (hub + chevron menu), never two labels */
+.app--mode-web .nav-more {
+  display: block !important;
+}
+
+.app--mode-web .nav-more__cluster {
+  display: inline-flex;
+  align-items: center;
+}
+
 .app--mode-web .nav-link {
   font-size: 0.92rem !important;
   padding: 0.5rem 0.95rem !important;

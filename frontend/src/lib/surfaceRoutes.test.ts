@@ -81,7 +81,6 @@ describe('product surfaces routes', () => {
       '/identificar',
       '/juegos',
       '/enciclopedia',
-      '/mas',
       '/setadle',
       '/historial',
       '/mapa',
@@ -94,19 +93,23 @@ describe('product surfaces routes', () => {
     ]) {
       expect(header).toContain(`to: '${p}'`)
     }
+    // Más hub is a single NavLink (not duplicated in primaryNav array)
+    expect(header).toMatch(/to=["']\/mas["']/)
   })
 
-  it('header keeps 5 primaries + Más overflow hub (grouped)', () => {
+  it('header keeps primaries + single Más hub (no double label)', () => {
     expect(header).toMatch(/primaryNav\s*=\s*\[/)
     expect(header).toMatch(/moreNavGroups/)
     expect(header).toMatch(/const moreNav/)
     expect(header).toContain('Más')
     expect(header).toContain('nav-more')
     expect(header).toContain('nav-more__group')
-    // Option B primary strip: home · identify · games · encyclopedia · más
+    expect(header).toContain('header-mas-hub')
+    // Primary strip: home · identify · games · encyclopedia (Más is hub link, not a 2nd primary)
     expect(header).toMatch(
-      /primaryNav\s*=\s*\[[\s\S]*?to: '\/identificar'[\s\S]*?to: '\/juegos'[\s\S]*?to: '\/enciclopedia'[\s\S]*?to: '\/mas'[\s\S]*?\]/,
+      /primaryNav\s*=\s*\[[\s\S]*?to: '\/identificar'[\s\S]*?to: '\/juegos'[\s\S]*?to: '\/enciclopedia'[\s\S]*?\]/,
     )
+    expect(header).toContain('to="/mas"')
     // Grouped hub still exposes all product destinations
     for (const p of [
       '/reto',

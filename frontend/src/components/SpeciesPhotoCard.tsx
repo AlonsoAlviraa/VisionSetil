@@ -92,11 +92,6 @@ export function SpeciesPhotoCard({ species, priority = false }: Props) {
           loading={priority ? 'eager' : 'lazy'}
           decoding="async"
           referrerPolicy="no-referrer"
-          crossOrigin={
-            !useInline && current && !current.sameOrigin && !terminalSrc
-              ? 'anonymous'
-              : undefined
-          }
           sizes="(max-width: 600px) 45vw, 220px"
           onError={useInline || terminalSrc ? undefined : onError}
           data-media-kind={

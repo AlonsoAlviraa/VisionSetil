@@ -102,11 +102,6 @@ export function MiniPhotoReel({
         loading={priority ? 'eager' : 'lazy'}
         decoding="async"
         referrerPolicy="no-referrer"
-        crossOrigin={
-          !useInline && current && !current.sameOrigin && !terminalSrc
-            ? 'anonymous'
-            : undefined
-        }
         draggable={false}
         onError={
           useInline || terminalSrc

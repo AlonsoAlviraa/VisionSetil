@@ -890,11 +890,45 @@ button[aria-pressed='true'] {
 }
 
 .games-hub-card__media img,
-.games-hub-card__media .species-image {
+.games-hub-card__media .species-image,
+.games-hub-card__media .species-image__img {
   width: 100% !important;
   height: 100% !important;
   object-fit: cover !important;
-  opacity: 0.5;
+  /* Keep photos real and visible — scrim is on content overlay, not the image */
+  opacity: 1 !important;
+  filter: none !important;
+}
+
+.nav-more__cluster {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  border-radius: 999px;
+  background: rgba(143, 188, 143, 0.08);
+  border: 1px solid rgba(143, 188, 143, 0.2);
+  padding: 0 0.15rem 0 0;
+}
+
+.nav-more__hub {
+  border-radius: 999px !important;
+}
+
+.nav-more__trigger {
+  min-width: 2rem !important;
+  padding: 0.35rem 0.45rem !important;
+  border-radius: 999px !important;
+}
+
+/* App mode: bottom nav already has Más — hide header Más cluster to avoid double */
+.app--mode-app .nav-more {
+  display: none !important;
+}
+
+@media (min-width: 960px) {
+  .app--mode-app .nav-more {
+    display: none !important;
+  }
 }
 
 .games-hub-card__badge {

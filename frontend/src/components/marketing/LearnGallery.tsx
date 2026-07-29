@@ -134,11 +134,6 @@ export function LearnGallery({ className = '' }: Props) {
             loading="eager"
             decoding="async"
             referrerPolicy="no-referrer"
-            crossOrigin={
-              !useInline && current && !current.sameOrigin && !terminalSrc
-                ? 'anonymous'
-                : undefined
-            }
             onError={
               useInline || terminalSrc
                 ? undefined
