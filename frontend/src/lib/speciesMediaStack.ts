@@ -9,7 +9,11 @@ import {
   mediaPublicPrefix,
   speciesImageUrl,
 } from './speciesImageUrl'
-import { getCatalogPhotoUrl } from './speciesImageService'
+import {
+  getCatalogPhotoUrl,
+  upgradePhotoUrl,
+  type PhotoDisplayQuality,
+} from './speciesImageService'
 import { getGalleryExtras } from './speciesGalleryExtras'
 import { scientificNameToSlug } from './slug'
 import { speciesPhotoErrorFallback } from './speciesPhotoFallback'
@@ -70,11 +74,18 @@ export function photoPriorityScore(slugOrTaxon: string): number {
  */
 export function buildSpeciesMediaStack(
   taxon: string,
-  opts?: { maxGallery?: number; includeCatalog?: boolean; includeLqip?: boolean },
+  opts?: {
+    maxGallery?: number
+    includeCatalog?: boolean
+    includeLqip?: boolean
+    /** Remote size for catalog/extras (grid should use thumb). */
+    quality?: PhotoDisplayQuality
+  },
 ): MediaCandidate[] {
   const slug = scientificNameToSlug(taxon)
   if (!slug) return []
   const maxG = opts?.maxGallery ?? 4
+  const quality: PhotoDisplayQuality = opts?.quality ?? 'thumb'
   const out: MediaCandidate[] = []
 
   // 0) Field-realistic open-license extras FIRST when curated (fixes weak local heroes)
@@ -83,7 +94,7 @@ export function buildSpeciesMediaStack(
     const roleBoost =
       p.role === 'hero' ? 120 : p.role === 'front' ? 115 : p.role === 'gills' ? 112 : 100
     out.push({
-      url: p.url,
+      url: upgradePhotoUrl(p.url, quality),
       kind: 'extra',
       rank: roleBoost - Math.min(idx, 15),
       sameOrigin: false,
@@ -91,12 +102,12 @@ export function buildSpeciesMediaStack(
     })
   })
 
-  // 1) Remote catalog HD (speciesPhotos.json / Wiki / iNat) — real field photos first
+  // 1) Remote catalog (speciesPhotos.json / Wiki / iNat) — resized for paint speed
   if (opts?.includeCatalog !== false) {
     const cat = getCatalogPhotoUrl(taxon) || getCatalogPhotoUrl(slug.replace(/-/g, ' '))
     if (cat) {
       out.push({
-        url: cat,
+        url: upgradePhotoUrl(cat, quality),
         kind: 'catalog',
         // Above extras default (100) and local pack so product surfaces show real photos
         rank: 130,
@@ -191,12 +202,15 @@ export function mediaStackWithTerminal(
     riskLabel?: string | null
     /** Max non-terminal candidates before appending terminal */
     maxCandidates?: number
+    /** Remote size — default thumb for encyclopedia grids */
+    quality?: PhotoDisplayQuality
   },
 ): MediaCandidate[] {
   const base = uniqueMediaStack(
     buildSpeciesMediaStack(taxon, {
       maxGallery: opts?.maxGallery ?? 3,
       includeCatalog: opts?.includeCatalog !== false,
+      quality: opts?.quality ?? 'thumb',
     }),
   )
   const limited =

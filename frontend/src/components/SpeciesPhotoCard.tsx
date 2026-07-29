@@ -41,6 +41,8 @@ export function SpeciesPhotoCard({ species, priority = false }: Props) {
         includeCatalog: true,
         riskLabel: species.risk_label,
         maxCandidates: 4,
+        // Encyclopedia grid: small remotes (320/small) so cards paint fast
+        quality: 'thumb',
       }),
     [species.taxon, species.risk_label],
   )
@@ -90,9 +92,10 @@ export function SpeciesPhotoCard({ species, priority = false }: Props) {
           alt={alt}
           className="species-photo-card__img"
           loading={priority ? 'eager' : 'lazy'}
-          decoding="async"
+          decoding={priority ? 'sync' : 'async'}
+          {...(priority ? { fetchPriority: 'high' as const } : {})}
           referrerPolicy="no-referrer"
-          sizes="(max-width: 600px) 45vw, 220px"
+          sizes="(max-width: 600px) 45vw, 200px"
           onError={useInline || terminalSrc ? undefined : onError}
           data-media-kind={
             useInline || terminalSrc ? 'illustration' : current?.kind || 'illustration'

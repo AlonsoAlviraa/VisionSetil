@@ -45,7 +45,7 @@ export function SeasonalTopStrip({ limit = 8 }: { limit?: number }) {
         </p>
       </header>
       <ul className="seasonal-top-strip__grid">
-        {taxa.map((item) => (
+        {taxa.map((item, idx) => (
           <li key={item.slug || item.taxon}>
             <Link
               to={`/enciclopedia/${item.slug}`}
@@ -59,6 +59,9 @@ export function SeasonalTopStrip({ limit = 8 }: { limit?: number }) {
                   variant="card"
                   layout="fill"
                   preferCatalog
+                  quality="thumb"
+                  priority={idx < 2}
+                  sizes="(max-width: 640px) 45vw, 200px"
                 />
               </div>
               <div className="seasonal-top-strip__meta">

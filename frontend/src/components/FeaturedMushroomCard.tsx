@@ -11,6 +11,8 @@ interface Props {
 export function FeaturedMushroomCard({ species }: Props) {
   const { url, loading } = useSpeciesImage(species.scientificName, {
     riskLabel: species.edibility,
+    context: 'grid',
+    quality: 'thumb',
   })
   const slug = encodeURIComponent(species.scientificName)
   const placeholder = speciesPhotoErrorFallback(species.scientificName, species.edibility)

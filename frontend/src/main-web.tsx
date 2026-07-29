@@ -1,16 +1,16 @@
+/**
+ * Web shell entry — browser build (port 5174).
+ * Bakes `web` layout mode at build time; imports BOTH skin layers so the
+ * full-width desktop chrome (top nav, multi-column grids, footer) applies.
+ */
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import { ErrorBoundary } from './components/ErrorBoundary'
+import { FORCED_LAYOUT_MODE } from './shells/forcedMode'
 import './i18n'
 /**
- * CSS cascade (Phase D-01) — later files win on equal specificity.
- * Order is intentional:
- *   1. global / premium / redesign — legacy layout & page chrome
- *   2. tokens — spacing/type/D16/skeleton primitives
- *   3. atelier — **product SSOT** for color, type, buttons, cards, empty states
- * Prefer: btn-atelier, atelier-card, empty-state-atelier, design tokens.
- * Do not reintroduce food-safe green on Identify (D16).
+ * CSS cascade (Phase D-01) — web build. Later files win on equal specificity.
  */
 import './styles/global.css'
 import './styles/animations.css'
@@ -25,12 +25,13 @@ import './styles/campo-nocturno.css'
 import './styles/campo-nocturno-web.css'
 import { warmCriticalSpeciesImages } from './lib/imageWarm'
 
+// Kick image cache for home hero + first grid thumbs before first paint settles
 warmCriticalSpeciesImages()
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ErrorBoundary surface="root">
-      <App />
+      <App forcedMode={FORCED_LAYOUT_MODE ?? 'web'} />
     </ErrorBoundary>
   </React.StrictMode>,
 )

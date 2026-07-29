@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import {
   resolveSpeciesImageAsync,
   resolveSpeciesImageSync,
+  type PhotoDisplayQuality,
   type PhotoProvider,
   type ResolveImageOptions,
 } from '../lib/speciesImageService'
@@ -14,6 +15,8 @@ export type UseSpeciesImageOptions = {
   context?: ImageLoadContext
   tier?: PhotoTier
   allowNetwork?: boolean
+  /** Remote resize quality (grid defaults to thumb in resolver). */
+  quality?: PhotoDisplayQuality
 }
 
 /**
@@ -44,6 +47,7 @@ export function useSpeciesImage(
     context,
     tier,
     allowNetwork: opts.allowNetwork,
+    quality: opts.quality,
   }
 
   const initial = resolveSpeciesImageSync(name, resolveOpts)
@@ -84,7 +88,7 @@ export function useSpeciesImage(
       cancelled = true
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- opts flattened
-  }, [name, riskLabel, context, tier, opts.allowNetwork])
+  }, [name, riskLabel, context, tier, opts.allowNetwork, opts.quality])
 
   return { url, loading, source, tier }
 }

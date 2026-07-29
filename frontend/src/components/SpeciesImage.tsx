@@ -18,7 +18,12 @@ import {
   mediaBadgeLabel,
   shouldShowMediaBadge,
 } from '../lib/mediaBadge'
-import { getCatalogPhotoUrlHd } from '../lib/speciesImageService'
+import {
+  getCatalogPhotoUrlHd,
+  qualityForVariant,
+  type PhotoDisplayQuality,
+} from '../lib/speciesImageService'
+import { warmImageUrl } from '../lib/imageWarm'
 import { ImageAttribution, type ImageAttributionMeta } from './ui/ImageAttribution'
 
 export type SpeciesImageLayout = 'fill' | 'fixed'
@@ -30,6 +35,7 @@ export interface SpeciesImageProps {
   riskLevel?: PlaceholderKind
   alt: string
   className?: string
+  /** Eager + high fetch priority (LCP / above-the-fold). */
   priority?: boolean
   sizes?: string
   aspectRatio?: string
@@ -53,10 +59,15 @@ export interface SpeciesImageProps {
   /** Optional external KPI status from season pack / audit */
   mediaStatus?: string | null
   /**
-   * Prefer remote catalog HD before local /media (default true).
+   * Prefer remote catalog before local /media (default true).
    * Set false only for offline-pack pure same-origin demos.
    */
   preferCatalog?: boolean
+  /**
+   * Remote resize quality. Default from variant:
+   * thumb/card → thumb (320), detail → display (640), override with 'hd' for hero.
+   */
+  quality?: PhotoDisplayQuality
 }
 
 function riskFromProps(riskLevel?: PlaceholderKind): PlaceholderKind {
@@ -138,14 +149,16 @@ export function SpeciesImage({
   showMediaBadge = false,
   mediaStatus = null,
   preferCatalog = true,
+  quality: qualityProp,
 }: SpeciesImageProps) {
   const slug = (slugProp || scientificNameToSlug(scientificName) || '').toLowerCase()
   const kind = riskFromProps(riskLevel)
   const mediaOn = featureFlags.SPECIES_MEDIA && Boolean(slug)
-  // Prefer display (medium) remote — lighter and less third-party load
+  const quality = qualityProp ?? qualityForVariant(variant)
+  // Sized remote — thumb for cards, display for detail (never multi-MB originals)
   const catalogUrl = useMemo(
-    () => (preferCatalog ? getCatalogPhotoUrlHd(scientificName, 'display') : null),
-    [scientificName, preferCatalog],
+    () => (preferCatalog ? getCatalogPhotoUrlHd(scientificName, quality) : null),
+    [scientificName, preferCatalog, quality],
   )
   const hasCatalog = Boolean(catalogUrl)
   const order = useMemo(
@@ -170,11 +183,14 @@ export function SpeciesImage({
       return
     }
     const start = order[0]
+    const nextSrc = urlForStage(slug, variant, start, kind, catalogUrl)
     setStage(start)
-    setSrc(urlForStage(slug, variant, start, kind, catalogUrl))
+    setSrc(nextSrc)
     setLoaded(false)
     onStageChange?.(start)
-  }, [slug, variant, kind, mediaOn, catalogUrl, order]) // eslint-disable-line react-hooks/exhaustive-deps
+    // Warm next-candidate local path only after catalog (low priority)
+    if (priority && nextSrc) warmImageUrl(nextSrc)
+  }, [slug, variant, kind, mediaOn, catalogUrl, order, priority]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const advanceFrom = (current: Stage) => {
     const idx = order.indexOf(current)
@@ -196,8 +212,7 @@ export function SpeciesImage({
 
   const handleError = () => advanceFrom(stage)
 
-  const handleLoad = (e: SyntheticEvent<HTMLImageElement>) => {
-    const img = e.currentTarget
+  const markLoaded = (img: HTMLImageElement) => {
     if (
       minNaturalWidth > 0 &&
       stage !== 'inline' &&
@@ -221,6 +236,18 @@ export function SpeciesImage({
       return
     }
     setLoaded(true)
+  }
+
+  const handleLoad = (e: SyntheticEvent<HTMLImageElement>) => {
+    markLoaded(e.currentTarget)
+  }
+
+  /** Cached images may complete before onLoad attaches — paint immediately. */
+  const imgRefCallback = (node: HTMLImageElement | null) => {
+    if (!node || loaded) return
+    if (node.complete && node.naturalWidth > 0) {
+      markLoaded(node)
+    }
   }
 
   const style = useMemo(
@@ -285,16 +312,25 @@ export function SpeciesImage({
         />
       ) : null}
       <img
-        key={`${slug}-${variant}-${stage}`}
+        key={`${slug}-${variant}-${stage}-${quality}`}
+        ref={imgRefCallback}
         src={src}
         alt={alt}
         className={`species-image__img ${loaded ? 'species-image__img--loaded' : 'species-image__img--loading'}`}
         style={style}
-        sizes={sizes || '(max-width: 600px) 50vw, 240px'}
+        sizes={
+          sizes ||
+          (priority
+            ? '100vw'
+            : variant === 'thumb'
+              ? '(max-width: 600px) 30vw, 120px'
+              : '(max-width: 600px) 45vw, 220px')
+        }
         width={width}
         height={height}
         loading={priority ? 'eager' : 'lazy'}
-        decoding="async"
+        decoding={priority ? 'sync' : 'async'}
+        {...(priority ? { fetchPriority: 'high' as const } : {})}
         // no-referrer helps privacy; do NOT set crossOrigin=anonymous —
         // Wikimedia often lacks CORS headers and then <img> fails to paint.
         referrerPolicy="no-referrer"
@@ -302,6 +338,7 @@ export function SpeciesImage({
         onLoad={handleLoad}
         data-slug={slug}
         data-stage={stage}
+        data-quality={quality}
       />
       {showBadge ? (
         <span

@@ -1,7 +1,14 @@
-/** Games hub — Stitch B 04-juegos (photo cards + badges). */
+/** Games hub — Stitch B 04-juegos (photo cards + badges + study progress). */
+import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { SpeciesImage } from '../components/SpeciesImage'
+import { Icon } from '../components/ui'
+import { useSpeciesCatalog } from '../hooks/useSpeciesCatalog'
+import { readStudyStreak, readStudyStats } from '../lib/studyBadges'
+import { HIGH_SEARCH_TAXA } from '../lib/encyclopediaPopularity'
+import { getRiskMeta } from '../lib/riskLabels'
+import { scientificNameToSlug } from '../lib/slug'
 
 const GAMES = [
   {
@@ -45,8 +52,26 @@ const GAMES = [
   },
 ] as const
 
+/** High-risk taxa pulled from the catalog for the "deadly confusions" block. */
+function useDeadlyHighlights() {
+  const { catalog } = useSpeciesCatalog()
+  return useMemo(() => {
+    const byTaxon = new Map(catalog.map((s) => [s.taxon, s]))
+    const deadly = HIGH_SEARCH_TAXA.map((t) => byTaxon.get(t))
+      .filter((s) => s && (s.risk_label === 'deadly' || s.risk_label === 'poisonous'))
+      .slice(0, 4)
+    return deadly
+  }, [catalog])
+}
+
 export function GamesHubPage() {
   const { t } = useTranslation()
+  const streak = readStudyStreak()
+  const stats = readStudyStats()
+  const deadlyHighlights = useDeadlyHighlights()
+
+  const totalActivities =
+    stats.quizSessions + stats.setadleWins + stats.lookalikeCompares + stats.encyclopediaViews
 
   return (
     <div className="cn-page page-games-hub" data-testid="games-hub-page">
@@ -69,6 +94,51 @@ export function GamesHubPage() {
         </p>
       </header>
 
+      {/* ── Study progress panel (real local data) ──────────────────────── */}
+      <section className="games-study-panel cn-glass cn-page-pad" data-testid="games-study-panel">
+        <div className="games-study-panel__streak">
+          <Icon name="local_fire_department" size="lg" aria-hidden="true" />
+          <div>
+            <strong className="games-study-panel__streak-num">{streak.current}</strong>
+            <span className="games-study-panel__streak-label">
+              {t('games.streakDays', { defaultValue: 'días seguidos' })}
+            </span>
+          </div>
+        </div>
+        <div className="games-study-panel__stats">
+          <div className="games-study-panel__stat">
+            <span className="games-study-panel__stat-num">{stats.quizSessions}</span>
+            <span className="games-study-panel__stat-label">
+              {t('games.statQuiz', { defaultValue: 'Retos' })}
+            </span>
+          </div>
+          <div className="games-study-panel__stat">
+            <span className="games-study-panel__stat-num">{stats.setadleWins}</span>
+            <span className="games-study-panel__stat-label">
+              {t('games.statSetadle', { defaultValue: 'Setadle' })}
+            </span>
+          </div>
+          <div className="games-study-panel__stat">
+            <span className="games-study-panel__stat-num">{stats.lookalikeCompares}</span>
+            <span className="games-study-panel__stat-label">
+              {t('games.statLookalike', { defaultValue: 'Confusiones' })}
+            </span>
+          </div>
+        </div>
+        {totalActivities === 0 && (
+          <p className="games-study-panel__hint">
+            {t('games.progressHint', {
+              defaultValue: 'Tu progreso se guarda en este dispositivo. ¡Empieza tu racha!',
+            })}
+          </p>
+        )}
+        {streak.best > 0 && (
+          <p className="games-study-panel__best">
+            {t('games.bestStreak', { defaultValue: 'Mejor racha: {{n}} días', n: streak.best })}
+          </p>
+        )}
+      </section>
+
       <ul className="games-hub-grid cn-page-pad">
         {GAMES.map((g) => (
           <li key={g.to}>
@@ -80,6 +150,8 @@ export function GamesHubPage() {
                   variant="card"
                   layout="fill"
                   preferCatalog
+                  quality="thumb"
+                  sizes="(max-width: 640px) 50vw, 280px"
                 />
               </div>
               <span className="games-hub-card__badge">
@@ -100,6 +172,54 @@ export function GamesHubPage() {
           </li>
         ))}
       </ul>
+
+      {/* ── Deadly confusions block (real catalog data) ─────────────────── */}
+      {deadlyHighlights.length > 0 && (
+        <section className="games-deadly-block cn-page-pad" data-testid="games-deadly-block">
+          <header className="games-deadly-block__head">
+            <Icon name="warning" size="md" aria-hidden="true" />
+            <div>
+              <h2 className="games-deadly-block__title cn-text-cream">
+                {t('games.deadlyTitle', { defaultValue: 'Confusiones que matan' })}
+              </h2>
+              <p className="games-deadly-block__lead">
+                {t('games.deadlyLead', {
+                  defaultValue: 'Estudia estas setas de cerca. Solo orientación.',
+                })}
+              </p>
+            </div>
+          </header>
+          <ul className="games-deadly-block__list">
+            {deadlyHighlights.map((s) => {
+              const meta = getRiskMeta(s!.risk_label)
+              const slug = s!.slug || scientificNameToSlug(s!.taxon)
+              return (
+                <li key={s!.taxon} className={`games-deadly-block__item ${meta.className}`}>
+                  <Link to={`/enciclopedia/${slug}`} className="games-deadly-block__link">
+                    <div className="games-deadly-block__media" aria-hidden="true">
+                      <SpeciesImage
+                        scientificName={s!.taxon}
+                        alt=""
+                        variant="thumb"
+                        preferCatalog
+                        quality="thumb"
+                        className="games-deadly-block__img"
+                      />
+                    </div>
+                    <div className="games-deadly-block__info">
+                      <em className="games-deadly-block__taxon">{s!.taxon}</em>
+                      <span className={`risk-chip risk-chip--${s!.risk_label}`}>
+                        {meta.label}
+                      </span>
+                    </div>
+                    <Icon name="chevron_right" size="sm" aria-hidden="true" />
+                  </Link>
+                </li>
+              )
+            })}
+          </ul>
+        </section>
+      )}
 
       <div className="games-hub-extra atelier-panel cn-page-pad">
         <p className="cn-kicker" style={{ marginBottom: '0.5rem' }}>

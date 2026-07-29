@@ -21,6 +21,8 @@ export type PhotoProvider =
   | 'inaturalist'
   | 'placeholder'
 
+export type PhotoDisplayQuality = 'thumb' | 'display' | 'hd'
+
 export type ResolvedSpeciesImage = {
   url: string
   provider: PhotoProvider
@@ -39,6 +41,8 @@ export type ResolveImageOptions = {
    * Explicit false forces no remote resolve regardless of context.
    */
   allowNetwork?: boolean
+  /** Remote resize quality (grid defaults to thumb). */
+  quality?: PhotoDisplayQuality
 }
 
 type PhotoEntry = { taxon: string; url: string; provider?: string }
@@ -67,12 +71,25 @@ export function getCatalogPhotoUrl(taxon: string): string | null {
   return entry?.url || null
 }
 
-export type PhotoDisplayQuality = 'thumb' | 'display' | 'hd'
+/** Wiki thumb width per quality — never ship multi‑MB originals in grids. */
+const WIKI_PX: Record<PhotoDisplayQuality, number> = {
+  thumb: 320,
+  display: 640,
+  hd: 1280,
+}
+
+const INAT_SIZE: Record<PhotoDisplayQuality, string> = {
+  thumb: 'small',
+  display: 'medium',
+  hd: 'large',
+}
 
 /**
- * Upgrade remote thumbs for display.
- * Default `display` = medium (good quality, much lighter than large/original).
- * Use `hd` only for explicit fullscreen viewers.
+ * Resize remote photo URLs for the product surface.
+ * - iNaturalist: large/original → small|medium|large
+ * - Wikimedia full files → /thumb/…/{N}px-… (critical: 136 catalog entries are full originals)
+ * - Existing wiki thumbs → swap pixel width
+ * Default `display` is medium/640px (fast paint, still sharp on retina cards).
  */
 export function upgradePhotoUrl(
   url: string,
@@ -80,23 +97,38 @@ export function upgradePhotoUrl(
 ): string {
   if (!url || url.startsWith('data:')) return url
   let u = url
-  const inatSize = quality === 'hd' ? 'large' : quality === 'thumb' ? 'small' : 'medium'
-  const wikiPx = quality === 'hd' ? '1280px-' : quality === 'thumb' ? '320px-' : '800px-'
-  // Normalize any iNat size → target
-  u = u.replace(/\/(square|small|medium|large|original|thumb)\./g, `/${inatSize}.`)
-  // Wikimedia Commons: force a readable thumb size when already a thumb path
+  const inatSize = INAT_SIZE[quality] || 'medium'
+  const wikiPx = WIKI_PX[quality] || 640
+
+  // iNaturalist static + open-data S3: …/photos/ID/(square|small|medium|large|original).ext
+  u = u.replace(
+    /\/(square|small|medium|large|original|thumb)\.(jpe?g|png|webp|gif)/gi,
+    `/${inatSize}.$2`,
+  )
+
   if (u.includes('upload.wikimedia.org')) {
     if (/\/\d+px-/.test(u)) {
-      u = u.replace(/\/\d+px-/g, `/${wikiPx}`)
-    } else if (quality !== 'hd' && u.includes('/commons/') && !u.includes('/thumb/')) {
-      // Full-file commons URL can be multi-MB; leave as-is (browser will decode).
-      // Prefer catalog entries that already use /thumb/ paths when available.
+      u = u.replace(/\/\d+px-/g, `/${wikiPx}px-`)
+    } else {
+      // Full commons file → generated thumb (avoids multi-MB downloads)
+      // https://upload.wikimedia.org/wikipedia/commons/a/ab/File.jpg
+      // → …/commons/thumb/a/ab/File.jpg/640px-File.jpg
+      const m = u.match(
+        /^(https?:\/\/upload\.wikimedia\.org\/wikipedia\/commons)\/(?!thumb\/)([0-9a-f]\/[0-9a-f]{2}\/)([^?#]+)/i,
+      )
+      if (m) {
+        const [, base, hashPath, filename] = m
+        // SVG/PDF/etc. either don't need thumbs or use different endpoints
+        if (!/\.(svg|gif|pdf|djvu|tiff?|ogg|ogv|webm)$/i.test(filename)) {
+          u = `${base}/thumb/${hashPath}${filename}/${wikiPx}px-${filename}`
+        }
+      }
     }
   }
   return u
 }
 
-/** Catalog URL at display quality (medium by default — lighter network). */
+/** Catalog URL at chosen quality (default display = medium/640). */
 export function getCatalogPhotoUrlHd(
   taxon: string,
   quality: PhotoDisplayQuality = 'display',
@@ -105,12 +137,30 @@ export function getCatalogPhotoUrlHd(
   return raw ? upgradePhotoUrl(raw, quality) : null
 }
 
+/**
+ * Quality hint from product surface.
+ * grid/card/thumb → thumb; detail/eager → display; explicit hero → hd.
+ */
+export function qualityForVariant(
+  variant: 'thumb' | 'card' | 'detail' | 'lqip' | 'hero' | string,
+): PhotoDisplayQuality {
+  if (variant === 'hero') return 'hd'
+  if (variant === 'detail') return 'display'
+  if (variant === 'thumb' || variant === 'card' || variant === 'lqip') return 'thumb'
+  return 'display'
+}
+
 function resolveTier(taxon: string, opts?: ResolveImageOptions): PhotoTier {
   return opts?.tier ?? getPhotoTier(taxon, opts?.riskLabel)
 }
 
-function cacheKey(taxon: string, context: ImageLoadContext, tier: PhotoTier): string {
-  return `${taxon.toLowerCase()}|${context}|${tier}`
+function cacheKey(
+  taxon: string,
+  context: ImageLoadContext,
+  tier: PhotoTier,
+  quality: PhotoDisplayQuality = 'display',
+): string {
+  return `${taxon.toLowerCase()}|${context}|${tier}|${quality}`
 }
 
 /**
@@ -129,7 +179,10 @@ export function resolveSpeciesImageSync(
   const name = (taxon || '').trim() || 'Fungi'
   const context: ImageLoadContext = opts.context ?? 'eager'
   const tier = resolveTier(name, opts)
-  const key = cacheKey(name, context, tier)
+  // Grid/list always request thumb-sized remotes for paint speed.
+  const quality: PhotoDisplayQuality =
+    opts.quality ?? (context === 'grid' ? 'thumb' : 'display')
+  const key = cacheKey(name, context, tier, quality)
 
   // Only reuse cache for non-placeholder hits (safe across contexts)
   const cached = runtimeCache.get(key)
@@ -137,11 +190,11 @@ export function resolveSpeciesImageSync(
     return cached
   }
 
-  // Prefer real catalog HD photos when policy allows (many local cards are stubs).
+  // Prefer real catalog photos when policy allows (many local cards are stubs).
   // T2 grid must never leak remote catalog (photoTiers policy).
   const allowCatalog =
     context !== 'grid' || shouldUseCatalogUrlOnGrid(tier)
-  const catalogHd = allowCatalog ? getCatalogPhotoUrlHd(name) : null
+  const catalogHd = allowCatalog ? getCatalogPhotoUrlHd(name, quality) : null
 
   if (catalogHd) {
     const r: ResolvedSpeciesImage = {
@@ -285,35 +338,41 @@ export async function resolveSpeciesImageAsync(
 
   if (!allow) return sync
 
+  const asyncQuality: PhotoDisplayQuality =
+    opts.quality ?? (context === 'grid' ? 'thumb' : 'display')
+
   for (const lang of ['en', 'es'] as const) {
     const wiki = await __remoteResolvers.fetchWiki(name, lang)
     if (wiki) {
       const r: ResolvedSpeciesImage = {
-        url: wiki,
+        url: upgradePhotoUrl(wiki, asyncQuality),
         provider: 'wikipedia',
         taxon: name,
         tier,
       }
-      runtimeCache.set(cacheKey(name, context, tier), r)
+      runtimeCache.set(cacheKey(name, context, tier, asyncQuality), r)
       return r
     }
   }
   const inat = await __remoteResolvers.fetchInat(name)
   if (inat) {
     const r: ResolvedSpeciesImage = {
-      url: inat,
+      url: upgradePhotoUrl(inat, asyncQuality),
       provider: 'inaturalist',
       taxon: name,
       tier,
     }
-    runtimeCache.set(cacheKey(name, context, tier), r)
+    runtimeCache.set(cacheKey(name, context, tier, asyncQuality), r)
     return r
   }
   return sync
 }
 
 /** Hero shots only from verified catalog photos of real mushrooms (T0 preferred). */
-export function mycologyHeroUrls(limit = 6): string[] {
+export function mycologyHeroUrls(
+  limit = 6,
+  quality: PhotoDisplayQuality = 'display',
+): string[] {
   const urls: string[] = []
   const preferred = [
     'amanita muscaria',
@@ -329,12 +388,14 @@ export function mycologyHeroUrls(limit = 6): string[] {
   ]
   for (const k of preferred) {
     const u = db.photos?.[k]?.url
-    if (u) urls.push(u)
+    if (u) urls.push(upgradePhotoUrl(u, quality))
     if (urls.length >= limit) break
   }
   if (urls.length < limit) {
     for (const entry of Object.values(db.photos || {})) {
-      if (entry.url && !urls.includes(entry.url)) urls.push(entry.url)
+      if (!entry.url) continue
+      const upgraded = upgradePhotoUrl(entry.url, quality)
+      if (!urls.includes(upgraded)) urls.push(upgraded)
       if (urls.length >= limit) break
     }
   }

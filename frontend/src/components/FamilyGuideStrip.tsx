@@ -100,6 +100,8 @@ export function FamilyGuideStrip({
                   variant="card"
                   layout="fill"
                   preferCatalog
+                  quality="thumb"
+                  sizes="(max-width: 640px) 40vw, 180px"
                 />
               </div>
               <span className="family-guide-strip__name">{row.family_es}</span>

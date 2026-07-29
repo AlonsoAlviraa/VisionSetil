@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { SpeciesImage } from '../components/SpeciesImage'
 import { SeasonalTopStrip } from '../components/SeasonalTopStrip'
+import { FeaturedSpeciesGrid } from '../components/FeaturedSpeciesGrid'
 import { WaitlistTemporada } from '../components/WaitlistTemporada'
 import { Icon } from '../components/ui'
 import { FREE_IDENTIFY_PER_DAY } from '../lib/entitlements'
@@ -63,6 +64,9 @@ export function HomePage() {
             variant="detail"
             layout="fill"
             preferCatalog
+            priority
+            quality="display"
+            sizes="100vw"
             className="cn-home-hero__img"
           />
           <div className="cn-home-hero__scrim" aria-hidden="true" />
@@ -209,6 +213,11 @@ export function HomePage() {
       {/* ── Season photos ───────────────────────────────────────────────── */}
       <div className="cn-page-pad cn-home-season">
         <SeasonalTopStrip limit={8} />
+      </div>
+
+      {/* ── Featured species: photo-first grid of popular taxa ─────────── */}
+      <div className="cn-page-pad cn-home-featured">
+        <FeaturedSpeciesGrid limit={8} />
       </div>
 
       {/*
