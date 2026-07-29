@@ -1,0 +1,145 @@
+{
+  "generated": "2026-07-28T17:11:36.471116+00:00",
+  "version": "1.9.5-m3-field-holdout",
+  "protocol": "same_specimen_field_holdout_m3",
+  "product_unlock": false,
+  "policy": "orientation_only_never_consume",
+  "definition": {
+    "same_specimen": "Multiple still images sharing a GBIF occurrence-id prefix in local industrial media folders — one observation/specimen.",
+    "not_labeled_slots": "View order is filename sort, not gills/front/habitat/detail labels. Product wizard slots remain the capture UX contract.",
+    "field_holdout_meaning": "Eval uses local GBIF multi-media packs (field-like multi-photo of one specimen). E20 primary train is separate (FT+soft); this report is honest multi-view stress on held media packs, not a forage gate.",
+    "leave_one_photo_out": "full4 vs mean of leave-one-of-4 remaining views on the same occurrence."
+  },
+  "honesty_notes": [
+    "Multi-view MAP@3 gains on general packs do not imply deadly safety.",
+    "Deadly-only subset may be flat (see deadly block) — keep lookalikes + open-set.",
+    "Never product_unlock from multi-view metrics alone.",
+    "Never consumption permission."
+  ],
+  "sources": {
+    "paired_loo_eval": "eval/reports/ml_experiments/paired_multiview_loo_eval.json",
+    "paired_loo_deadly": "eval/reports/ml_experiments/paired_multiview_loo_deadly.json",
+    "paired_inventory": "eval/reports/ml_experiments/paired_multiview_inventory.json"
+  },
+  "inventory": {
+    "readiness": {
+      "true_leave_one_photo_out": true,
+      "ft_val_ready": false,
+      "ft_train_ready": false,
+      "gbif_local_same_occurrence": true,
+      "gbif_loo_eval_ok": true,
+      "val_multi_ge2": 656,
+      "train_multi_ge2": 3773,
+      "test_multi_ge2": 0,
+      "images_local_val": false,
+      "images_local_train": false,
+      "blocker": null,
+      "next": "Local GBIF same-occurrence multi-image packs evaluated via eval/scripts/paired_multiview_loo_eval.py. Optional: mount FungiTastic for labeled view slots."
+    },
+    "n_packs_ge2": 3773,
+    "note": null
+  },
+  "field_eval": {
+    "protocol": "same_occurrence_multi_image_gbif_local_stratified",
+    "torch_ok": true,
+    "n_eval_packs": 48,
+    "n_species": 38,
+    "sampling": "stratified_round_robin_by_species",
+    "temperature": 1.5879640579223633,
+    "inventory": {
+      "n_packs_ge2": 8060,
+      "n_packs_ge4": 1546,
+      "n_species": 40,
+      "max_images": 23
+    },
+    "by_n_views": {
+      "1": {
+        "n": 48,
+        "errors": 0,
+        "top1": 0.7917,
+        "map_at_3": 0.8472,
+        "reject_rate": 0.2083,
+        "acc_keep": 0.8421,
+        "ms_per_pack_mean": 221.43,
+        "temperature": 1.5879640579223633,
+        "interpretation": "single photo from same occurrence"
+      },
+      "2": {
+        "n": 48,
+        "errors": 0,
+        "top1": 0.8542,
+        "map_at_3": 0.9167,
+        "reject_rate": 0.1042,
+        "acc_keep": 0.8837,
+        "ms_per_pack_mean": 362.22,
+        "temperature": 1.5879640579223633,
+        "interpretation": "two photos same occurrence"
+      },
+      "4": {
+        "n": 48,
+        "errors": 0,
+        "top1": 0.875,
+        "map_at_3": 0.9236,
+        "reject_rate": 0.0625,
+        "acc_keep": 0.9111,
+        "ms_per_pack_mean": 652.91,
+        "temperature": 1.5879640579223633,
+        "interpretation": "up to four photos same occurrence (cycle-pad if fewer)"
+      }
+    },
+    "deltas": {
+      "map3_4_minus_1": 0.0764,
+      "map3_2_minus_1": 0.0695,
+      "top1_4_minus_1": 0.0833,
+      "reject_1_minus_4": 0.1458
+    },
+    "leave_one_photo_out": {
+      "full4_map_at_3": 0.9236,
+      "loo_mean_map_at_3": 0.9201,
+      "delta_map3_full_minus_loo": 0.0035
+    },
+    "thresholds": {
+      "conf": 0.92,
+      "margin": 0.05,
+      "entropy": 0.15,
+      "temperature": 1.5879640579223633
+    }
+  },
+  "gates": {
+    "torch_ok": true,
+    "map3_full_ge_single": true,
+    "map3_pair_ge_single": true,
+    "reject_drops_or_flat_with_more_views": true,
+    "same_occurrence_protocol": true,
+    "product_unlock": false,
+    "pass": true
+  },
+  "headline": {
+    "map3_1": 0.8472,
+    "map3_2": 0.9167,
+    "map3_4": 0.9236,
+    "map3_4_minus_1": 0.0764,
+    "reject_1": 0.2083,
+    "reject_4": 0.0625,
+    "loo_delta_map3_full_minus_leave1": 0.0035
+  },
+  "deadly_subset": {
+    "torch_ok": true,
+    "n_eval_packs": 33,
+    "n_species": 10,
+    "map3_1": 0.8434,
+    "map3_4": 0.8384,
+    "map3_4_minus_1": -0.005,
+    "flat_multiview": true,
+    "note": "Deadly-only same-occurrence packs: extra photos without diagnostic slot labels often do not fix discrimination — multi-view ≠ deadly-safe."
+  },
+  "deadly_multiview_caveat": true,
+  "readiness": {
+    "same_specimen_packs_available": true,
+    "torch_field_eval_ok": true,
+    "leave_one_photo_out_ok": true,
+    "true_leave_one_photo_out": true,
+    "product_unlock": false,
+    "status": "ready"
+  }
+}

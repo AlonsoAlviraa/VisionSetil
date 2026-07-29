@@ -1,0 +1,173 @@
+{
+  "generated": "2026-07-28T11:21:20.450600+00:00",
+  "slug": "alonsoalviraaaa/visionsetil-exp-v20-source-holdout",
+  "metrics_path": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models\\metrics.json",
+  "has_metrics": true,
+  "honesty": {
+    "recomputed": true,
+    "map_at_3": 0.8603024148047845,
+    "deadly_at_1": 0.7875968992248062,
+    "deadly_at_3": 0.9271317829457364,
+    "n_deadly": 2580,
+    "map_match": true,
+    "dual_keys_present": true
+  },
+  "product_unlock": false,
+  "unlock_eval": {
+    "policy": "orientation_only_never_consume",
+    "product_unlock": false,
+    "can_auto_unlock": false,
+    "unlock_eligible_advisory": true,
+    "eligible_but_locked": true,
+    "operator_cycle_required": true,
+    "checks": {
+      "metrics_present": true,
+      "e20_experiment": true,
+      "dual_deadly_keys": true,
+      "soft_map": true,
+      "soft_deadly_at_3": true,
+      "n_deadly_nonzero": true,
+      "orientation_only_policy": true
+    },
+    "checklist": [
+      {
+        "id": "metrics_present",
+        "pass": true,
+        "status": "PASS",
+        "detail": "Metrics blob present",
+        "value": {
+          "keys": [
+            "best_epoch",
+            "best_val_map3",
+            "deadly_gate_pass_expand",
+            "deadly_gate_pass_soft",
+            "deadly_gate_status",
+            "eval_protocol",
+            "n_deadly_in_test",
+            "num_classes",
+            "num_train_obs",
+            "primary_checkpoint",
+            "safety_recall_deadly",
+            "safety_recall_deadly_at_1",
+            "safety_recall_deadly_at_3",
+            "safety_recall_deadly_definition",
+            "split_artifacts",
+            "test_accuracy",
+            "test_balanced_accuracy",
+            "test_domain",
+            "test_ece",
+            "test_f1_macro",
+            "test_map_at_3",
+            "test_map_at_3_ci_high",
+            "test_map_at_3_ci_low",
+            "train_domain"
+          ]
+        }
+      },
+      {
+        "id": "e20_experiment",
+        "pass": true,
+        "status": "PASS",
+        "detail": "Must be E20 / source-holdout experiment identity",
+        "value": {
+          "version": "v20-E20-source-holdout",
+          "eval_protocol": "source_holdout_e20"
+        }
+      },
+      {
+        "id": "dual_deadly_keys",
+        "pass": true,
+        "status": "PASS",
+        "detail": "Both safety_recall_deadly_at_1 and _at_3 required",
+        "value": {
+          "at_1": 0.7875968992248062,
+          "at_3": 0.9271317829457364
+        }
+      },
+      {
+        "id": "n_deadly_nonzero",
+        "pass": true,
+        "status": "PASS",
+        "detail": "Deadly eval set must be non-vacuous",
+        "value": 2580
+      },
+      {
+        "id": "soft_map",
+        "pass": true,
+        "status": "PASS",
+        "detail": "test_map_at_3 >= 0.25",
+        "value": 0.8603024148047814
+      },
+      {
+        "id": "soft_deadly_at_3",
+        "pass": true,
+        "status": "PASS",
+        "detail": "safety_recall_deadly_at_3 >= 0.9",
+        "value": 0.9271317829457364
+      },
+      {
+        "id": "orientation_only_policy",
+        "pass": true,
+        "status": "PASS",
+        "detail": "product_unlock forced false; never forage/consumption permission",
+        "value": null
+      }
+    ],
+    "reasons": [
+      "all_checks_pass_but_product_unlock_forced_false_until_operator_cycle"
+    ],
+    "residual_lock_reasons": [
+      "policy_orientation_only_never_consume",
+      "no_auto_unlock_from_metrics_alone",
+      "all_checks_pass_but_product_unlock_forced_false_until_operator_cycle",
+      "human_operator_must_explicitly_approve_unlock"
+    ],
+    "metrics_path": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models\\metrics.json",
+    "note": "Fail-closed: product_unlock stays false until a human operator cycle. Metrics eligibility is advisory only \u2014 never forage/consumption permission.",
+    "forage_permission": false,
+    "consumption_permission": false,
+    "gates": {
+      "policy": "orientation_only_never_consume",
+      "product_unlock": false,
+      "note": "Gates are advisory metrics only; do not unlock Identify from a single run.",
+      "expand_map": {
+        "threshold": 0.22,
+        "value": 0.8603024148047814,
+        "pass": true,
+        "status": "ok"
+      },
+      "soft_map": {
+        "threshold": 0.25,
+        "value": 0.8603024148047814,
+        "pass": true,
+        "status": "ok"
+      },
+      "expand_deadly_at_3": {
+        "pass": true,
+        "status": "ok",
+        "n_deadly": 2580,
+        "threshold": 0.5,
+        "value": 0.9271317829457364,
+        "reason": null
+      },
+      "soft_deadly_at_3": {
+        "pass": true,
+        "status": "ok",
+        "n_deadly": 2580,
+        "threshold": 0.9,
+        "value": 0.9271317829457364,
+        "reason": null
+      },
+      "all_expand_pass": true
+    },
+    "values": {
+      "test_map_at_3": 0.8603024148047814,
+      "safety_recall_deadly_at_1": 0.7875968992248062,
+      "safety_recall_deadly_at_3": 0.9271317829457364,
+      "n_deadly_in_test": 2580,
+      "version": "v20-E20-source-holdout"
+    },
+    "operator_action": "eligible_but_locked: review checklist, S9 live reject, open-set thr; only then decide unlock (still orientation-only, never consumption)"
+  },
+  "note": "Orientation only \u2014 never consumption. Unlock requires operator cycle after E20."
+}

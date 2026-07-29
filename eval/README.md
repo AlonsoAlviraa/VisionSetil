@@ -2,6 +2,20 @@
 
 Este directorio contiene la infraestructura de evaluación reproducible del pipeline de identificación de setas. El objetivo es medir la precisión técnica del sistema, la tasa de abstención de open-set y garantizar de forma medible que se cumple la política estricta de seguridad (false_safe_rate de 0%).
 
+## Professional ML tester (anti-leak / gates)
+
+Suite unificada (pytest + hypothesis + artifact audit):
+
+```bash
+python scripts/run_professional_tester.py
+python scripts/run_professional_tester.py --fast
+python scripts/run_professional_tester.py --artifacts kaggle/kernel_output_v19/models
+```
+
+- Library: `kaggle/ml_qa/` (metrics_core, leak_invariants, gate_eval, artifact_audit, notebook_guards)
+- Reports: `eval/reports/ml_experiments/professional_tester_latest.{md,json}`
+- Policy: orientation only — never consumption; gates are **advisory** (no product unlock)
+
 ---
 
 ## Estructura del Directorio

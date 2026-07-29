@@ -45,7 +45,10 @@ def _write_metrics(path: Path, *, map3: float, deadly: float, version: str) -> P
         json.dumps(
             {
                 "test_map_at_3": map3,
+                # Honest dual keys — gate requires @3 (not ambiguous legacy top-1)
                 "safety_recall_deadly": deadly,
+                "safety_recall_deadly_at_1": deadly,
+                "safety_recall_deadly_at_3": deadly,
                 "version": version,
             }
         ),

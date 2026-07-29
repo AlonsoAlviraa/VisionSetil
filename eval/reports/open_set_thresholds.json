@@ -1,0 +1,30 @@
+{
+  "calibrated_threshold": 0.92,
+  "calibrated_margin": 0.05,
+  "calibrated_entropy": 0.15,
+  "status": "calibrated_e20_holdout",
+  "source_experiment": "v20-E20-source-holdout",
+  "protocol": "source_holdout_e20",
+  "predictions_dir": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models",
+  "holdout_stats": {
+    "reject_rate": 0.1819905213270142,
+    "acc_keep": 0.8808144346962423,
+    "deadly_reject_rate": 0.05402843601895735,
+    "deadly_at3_among_kept": 0.9679046309032554,
+    "n": 7385,
+    "top1_accuracy_all": 0.802031144211239,
+    "entropy_thr": 0.15
+  },
+  "lookalike_mate_rates": {
+    "lookalike_mate_in_topk_rate": 0.0988,
+    "true_in_topk_rate": 0.9275,
+    "n_eval_samples": 14455,
+    "n_pairs_in_label_space": 69,
+    "n_directed_pairs": 135,
+    "status": "PASS"
+  },
+  "product_unlock": false,
+  "policy": "orientation_only_never_consume",
+  "generated": "2026-07-28T11:21:27.645591+00:00",
+  "note": "Calibrated on E20 GBIF-ES pure holdout softmax (conf/margin + entropy). Does not unlock Identify; product_unlock remains operator-gated."
+}

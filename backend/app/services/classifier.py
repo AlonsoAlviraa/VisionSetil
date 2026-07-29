@@ -371,12 +371,14 @@ class MockMushroomClassifier:
         return reasoning[:5]
 
     def _lookalikes(self, candidate: dict) -> list[str]:
+        from app.services.poisonous_lookalikes import normalize_lookalike_names
+
+        base = normalize_lookalike_names(candidate.get("lookalikes") or [])
         if str(candidate.get("taxon", "")).startswith("Amanita"):
             poisonous = [
                 item["latin_name"]
                 for item in self.poisonous
                 if item["latin_name"].startswith("Amanita")
             ]
-            merged = poisonous + list(candidate.get("lookalikes") or [])
-            return list(dict.fromkeys(merged))
-        return list(candidate.get("lookalikes") or [])
+            return list(dict.fromkeys(poisonous + base))
+        return base

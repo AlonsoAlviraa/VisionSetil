@@ -1,0 +1,160 @@
+{
+  "title": "VisionSetil mega-auditoría (Accenture-style)",
+  "generated": "2026-07-27T18:57:23.316746+00:00",
+  "policy": "orientation_only; unsafe_to_consume; never_forage_permission; product_unlock_not_in_scope",
+  "product_unlock": false,
+  "consumption_permission": false,
+  "orientation_only": true,
+  "overall_pass": true,
+  "report_dir": "eval/reports/accenture_audit",
+  "areas": [
+    {
+      "area": "juegos_quiz_setadle",
+      "gating": true,
+      "pass": true,
+      "status": "PASS",
+      "evidence": "eval/reports/accenture_audit/accenture_games.log",
+      "log": "eval/reports/accenture_audit/accenture_games.log",
+      "tail": "ments/ALONSOO/VISIONSETIL/frontend\n\n ✓ src/lib/quizMatch.test.ts (5 tests) 92ms\n ✓ src/lib/lookalikeStudio.test.ts (6 tests) 46ms\n ✓ src/lib/safetyCopy.test.ts (4 tests) 78ms\n ✓ src/lib/foodQuality.test.ts (6 tests) 50ms\n ✓ src/lib/setadle.test.ts (7 tests) 200ms\n ✓ src/lib/mushroomQuiz.test.ts (15 tests) 89ms\n\n Test Files  6 passed (6)\n      Tests  43 passed (43)\n   Start at  20:57:06\n   Duration  1.24s (transform 612ms, setup 832ms, collect 1.27s, tests 555ms, environment 1ms, prepare 1.46s)\n\n",
+      "returncode": 0
+    },
+    {
+      "area": "nombres_i18n",
+      "gating": true,
+      "pass": true,
+      "status": "PASS",
+      "evidence": "eval/reports/accenture_audit/accenture_names_i18n.log",
+      "log": "eval/reports/accenture_audit/accenture_names_i18n.log",
+      "tail": "\n RUN  v3.2.7 C:/Users/Mariano/Documents/ALONSOO/VISIONSETIL/frontend\n\n ✓ src/lib/slug.test.ts (7 tests) 66ms\n ✓ src/lib/i18nParity.test.ts (5 tests) 53ms\n ✓ src/data/speciesCatalog.split.test.ts (8 tests) 99ms\n ✓ src/data/namesEs.test.ts (15 tests) 100ms\n\n Test Files  4 passed (4)\n      Tests  35 passed (35)\n   Start at  20:57:09\n   Duration  1.04s (transform 270ms, setup 558ms, collect 447ms, tests 318ms, environment 1ms, prepare 756ms)\n\n",
+      "returncode": 0
+    },
+    {
+      "area": "cookies_auth_frontend",
+      "gating": true,
+      "pass": true,
+      "status": "PASS",
+      "evidence": "eval/reports/accenture_audit/accenture_cookies_fe.log",
+      "log": "eval/reports/accenture_audit/accenture_cookies_fe.log",
+      "tail": "\n RUN  v3.2.7 C:/Users/Mariano/Documents/ALONSOO/VISIONSETIL/frontend\n\n ✓ src/auth/sessionTokenPolicy.test.ts (5 tests) 28ms\n ✓ src/api/auth.cookieMode.test.ts (2 tests) 70ms\n\n Test Files  2 passed (2)\n      Tests  7 passed (7)\n   Start at  20:57:12\n   Duration  672ms (transform 128ms, setup 208ms, collect 48ms, tests 98ms, environment 0ms, prepare 303ms)\n\n",
+      "returncode": 0
+    },
+    {
+      "area": "cookies_auth_backend",
+      "gating": true,
+      "pass": true,
+      "status": "PASS",
+      "evidence": "eval/reports/accenture_audit/accenture_cookies_be.log",
+      "log": "eval/reports/accenture_audit/accenture_cookies_be.log",
+      "tail": "                                             [100%]\n============================== warnings summary ===============================\n..\\..\\..\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\site-packages\\starlette\\formparsers.py:12\n  C:\\Users\\Mariano\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\site-packages\\starlette\\formparsers.py:12: PendingDeprecationWarning: Please use `import python_multipart` instead.\n    import multipart\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n",
+      "returncode": 0
+    },
+    {
+      "area": "seguridad_backend",
+      "gating": true,
+      "pass": true,
+      "status": "PASS",
+      "evidence": "eval/reports/accenture_audit/accenture_security_be.log",
+      "log": "eval/reports/accenture_audit/accenture_security_be.log",
+      "tail": "                                             [100%]\n============================== warnings summary ===============================\n..\\..\\..\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\site-packages\\starlette\\formparsers.py:12\n  C:\\Users\\Mariano\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\site-packages\\starlette\\formparsers.py:12: PendingDeprecationWarning: Please use `import python_multipart` instead.\n    import multipart\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n",
+      "returncode": 0
+    },
+    {
+      "area": "security_static",
+      "gating": true,
+      "pass": true,
+      "status": "PASS",
+      "checks": {
+        "localStorage_token_key": true,
+        "AUTH_COOKIE": true,
+        "auth_routes": true,
+        "httponly": true
+      },
+      "evidence": "eval/reports/accenture_audit/accenture_static_security.txt",
+      "hit_counts": {
+        "localStorage_token_key": 2,
+        "document_cookie": 0,
+        "AUTH_COOKIE": 9,
+        "auth_routes": 6,
+        "httponly": 8,
+        "cors_star": 6
+      }
+    },
+    {
+      "area": "app_web_pwa",
+      "gating": true,
+      "pass": true,
+      "status": "PASS",
+      "vite_config": true,
+      "pwa_plugin": true,
+      "service_worker_candidates": 6,
+      "evidence": "frontend/vite.config.ts + vite-plugin-pwa (shared SPA/PWA)",
+      "note": "Same SPA serves web + PWA installable surface"
+    },
+    {
+      "area": "e2e_browser",
+      "gating": false,
+      "pass": null,
+      "status": "SKIPPED",
+      "evidence": "eval/reports/accenture_audit/ (e2e not run; use --with-e2e)",
+      "note": "Playwright not executed by default — not a test PASS"
+    }
+  ],
+  "matrix": [
+    {
+      "area": "juegos_quiz_setadle",
+      "status": "PASS",
+      "pass": true,
+      "gating": true,
+      "evidence": "eval/reports/accenture_audit/accenture_games.log"
+    },
+    {
+      "area": "nombres_i18n",
+      "status": "PASS",
+      "pass": true,
+      "gating": true,
+      "evidence": "eval/reports/accenture_audit/accenture_names_i18n.log"
+    },
+    {
+      "area": "cookies_auth_frontend",
+      "status": "PASS",
+      "pass": true,
+      "gating": true,
+      "evidence": "eval/reports/accenture_audit/accenture_cookies_fe.log"
+    },
+    {
+      "area": "cookies_auth_backend",
+      "status": "PASS",
+      "pass": true,
+      "gating": true,
+      "evidence": "eval/reports/accenture_audit/accenture_cookies_be.log"
+    },
+    {
+      "area": "seguridad_backend",
+      "status": "PASS",
+      "pass": true,
+      "gating": true,
+      "evidence": "eval/reports/accenture_audit/accenture_security_be.log"
+    },
+    {
+      "area": "security_static",
+      "status": "PASS",
+      "pass": true,
+      "gating": true,
+      "evidence": "eval/reports/accenture_audit/accenture_static_security.txt"
+    },
+    {
+      "area": "app_web_pwa",
+      "status": "PASS",
+      "pass": true,
+      "gating": true,
+      "evidence": "frontend/vite.config.ts + vite-plugin-pwa (shared SPA/PWA)"
+    },
+    {
+      "area": "e2e_browser",
+      "status": "SKIPPED",
+      "pass": null,
+      "gating": false,
+      "evidence": "eval/reports/accenture_audit/ (e2e not run; use --with-e2e)"
+    }
+  ]
+}

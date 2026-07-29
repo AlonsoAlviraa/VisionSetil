@@ -53,21 +53,36 @@ def discover_metrics_artifacts(repo_root: Path | str | None = None) -> list[dict
             except (OSError, json.JSONDecodeError, TypeError):
                 n_labels = None
         best_pt = models / "best.pt"
+        best_deadly = models / "best_deadly.pt"
+        run_name = models.parent.name
+        # Parse version: kernel_output_v20 / kernel_output_v16_live → 20 / 16
+        digits = "".join(
+            ch if ch.isdigit() else " " for ch in run_name.split("_v", 1)[-1]
+        )
+        try:
+            ver = int(digits.split()[0]) if digits.strip() else 0
+        except ValueError:
+            ver = 0
         found.append(
             {
-                "run": models.parent.name,
+                "run": run_name,
+                "version_num": ver,
                 "metrics_path": str(metrics_path),
                 "history_path": str(history_path) if history_path.is_file() else None,
                 "weights_best_exists": best_pt.is_file(),
                 "weights_best_path": str(best_pt) if best_pt.is_file() else None,
+                "weights_best_deadly_exists": best_deadly.is_file(),
+                "weights_best_deadly_path": str(best_deadly)
+                if best_deadly.is_file()
+                else None,
                 "metrics": metrics if isinstance(metrics, dict) else {"raw": metrics},
                 "history_len": len(history) if isinstance(history, list) else 0,
                 "history_tail": history[-3:] if isinstance(history, list) else None,
                 "label2idx_count": n_labels,
             }
         )
-    # Prefer latest v9-style first
-    found.sort(key=lambda x: x.get("run") or "", reverse=True)
+    # Prefer highest experiment version first (v20 before v19…; never lexical v9>v20)
+    found.sort(key=lambda x: int(x.get("version_num") or 0), reverse=True)
     return found
 
 

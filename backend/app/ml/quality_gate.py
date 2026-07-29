@@ -162,18 +162,43 @@ def quality_gate_status(
 
     map3 = None
     deadly = None
+    deadly_def = "missing"
     path = None
     version = None
     if metrics:
         map3 = metrics.get("test_map_at_3")
-        deadly = metrics.get("safety_recall_deadly")
+        # Prefer honest dual key @3 (E20+ / compute_full_metrics). Never treat
+        # ambiguous legacy safety_recall_deadly as @3 (E16–E19 SUSPECT top-1).
+        at3 = metrics.get("safety_recall_deadly_at_3")
+        at1 = metrics.get("safety_recall_deadly_at_1")
+        legacy = metrics.get("safety_recall_deadly")
+        declared = str(metrics.get("safety_recall_deadly_definition") or "").lower()
+        if at3 is not None:
+            deadly = at3
+            deadly_def = "at_3"
+        elif "at_3" in declared or "@3" in declared or "top_3" in declared or "topk3" in declared:
+            deadly = legacy
+            deadly_def = "legacy_declared_at_3"
+        elif at1 is not None and legacy is None:
+            deadly = at1
+            deadly_def = "at_1_only"
+        elif legacy is not None:
+            deadly = legacy
+            deadly_def = "legacy_ambiguous_suspect"
+        else:
+            deadly = None
+            deadly_def = "missing"
         path = metrics.get("_metrics_path")
         version = metrics.get("version")
 
     map3_f = float(map3) if map3 is not None else None
     deadly_f = float(deadly) if deadly is not None else None
     map_ok = map3_f is not None and map3_f >= min_map
-    deadly_ok = deadly_f is not None and deadly_f >= min_deadly
+    # R7 requires @3 semantics — ambiguous top-1-only legacy fails closed
+    deadly_honest = deadly_def in {"at_3", "legacy_declared_at_3"}
+    deadly_ok = (
+        deadly_honest and deadly_f is not None and deadly_f >= min_deadly
+    )
 
     # Raw metrics signal — NEVER forced true by disable (D-B15)
     if map3_f is None:
@@ -184,10 +209,17 @@ def quality_gate_status(
         metrics_acceptable = False
         reason_code = "map_below"
         reason = f"map_at_3={map3_f:.4f}<{min_map} (unacceptable)"
+    elif not deadly_honest:
+        metrics_acceptable = False
+        reason_code = "deadly_definition_ambiguous"
+        reason = (
+            f"safety_recall_deadly definition={deadly_def} "
+            f"(need safety_recall_deadly_at_3 for R7; refuse E16–E19 top-1 mislabel)"
+        )
     elif not deadly_ok:
         metrics_acceptable = False
         reason_code = "deadly_below"
-        reason = f"safety_recall_deadly={deadly_f} < {min_deadly} (R7 blocker)"
+        reason = f"safety_recall_deadly_at_3={deadly_f} < {min_deadly} (R7 blocker)"
     else:
         metrics_acceptable = True
         reason_code = "gates_passed"
@@ -222,6 +254,7 @@ def quality_gate_status(
         "reason_code": reason_code,
         "test_map_at_3": map3_f,
         "safety_recall_deadly": deadly_f,
+        "safety_recall_deadly_definition": deadly_def,
         "min_map_at_3": min_map,
         "min_deadly_recall": min_deadly,
         "metrics_path": path,
@@ -236,6 +269,7 @@ REASON_CODES = frozenset(
         "no_metrics",
         "map_below",
         "deadly_below",
+        "deadly_definition_ambiguous",
         "gates_passed",
         "gate_disabled",
         "unset",

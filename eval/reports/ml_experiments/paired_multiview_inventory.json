@@ -1,0 +1,222 @@
+{
+  "generated": "2026-07-27T21:34:12.597681+00:00",
+  "product_unlock": false,
+  "policy": "orientation_only_never_consume",
+  "models_dir": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models",
+  "canonical_views": [
+    "gills",
+    "front",
+    "habitat",
+    "detail"
+  ],
+  "splits": {
+    "train": {
+      "n_obs": 5767,
+      "n_multi_ge2": 3773,
+      "n_multi_ge4": 776,
+      "max_images": 14,
+      "hist": {
+        "1": 1994,
+        "2": 1802,
+        "3": 1195,
+        "4": 502,
+        "5": 175,
+        "6": 54,
+        "7": 20,
+        "8": 14,
+        "9": 6,
+        "10": 2,
+        "11": 2,
+        "14": 1
+      },
+      "n_species": 40,
+      "n_species_with_multi": 40,
+      "top_multi_species": [
+        [
+          "Amanita muscaria",
+          340
+        ],
+        [
+          "Amanita pantherina",
+          225
+        ],
+        [
+          "Amanita phalloides",
+          199
+        ],
+        [
+          "Agaricus campestris",
+          170
+        ],
+        [
+          "Clitocybe nebularis",
+          170
+        ],
+        [
+          "Russula ochroleuca",
+          170
+        ],
+        [
+          "Amanita rubescens",
+          170
+        ],
+        [
+          "Boletus edulis",
+          170
+        ],
+        [
+          "Amanita citrina",
+          164
+        ],
+        [
+          "Trametes versicolor",
+          159
+        ],
+        [
+          "Fomitopsis pinicola",
+          144
+        ],
+        [
+          "Amanita virosa",
+          116
+        ]
+      ],
+      "path_probe": {
+        "checked": 200,
+        "exists_on_disk": 0,
+        "frac_exist": 0.0,
+        "sample_ok": [],
+        "sample_missing": [
+          "/kaggle/input/datasets/picekl/fungitastic/images/FungiTastic-Mini/train/500p/0-2237856578.JPG",
+          "/kaggle/input/datasets/picekl/fungitastic/images/FungiTastic-Mini/train/500p/0-2237884673.JPG",
+          "/kaggle/input/datasets/picekl/fungitastic/images/FungiTastic-Mini/train/500p/1-2237884673.JPG"
+        ],
+        "images_local": false
+      }
+    },
+    "val": {
+      "n_obs": 1018,
+      "n_multi_ge2": 656,
+      "n_multi_ge4": 152,
+      "max_images": 15,
+      "hist": {
+        "1": 362,
+        "2": 316,
+        "3": 188,
+        "4": 105,
+        "5": 17,
+        "6": 15,
+        "7": 5,
+        "8": 4,
+        "9": 2,
+        "10": 1,
+        "11": 1,
+        "13": 1,
+        "15": 1
+      },
+      "n_species": 40,
+      "n_species_with_multi": 37,
+      "top_multi_species": [
+        [
+          "Amanita muscaria",
+          60
+        ],
+        [
+          "Amanita pantherina",
+          42
+        ],
+        [
+          "Amanita phalloides",
+          31
+        ],
+        [
+          "Russula ochroleuca",
+          30
+        ],
+        [
+          "Boletus edulis",
+          30
+        ],
+        [
+          "Clitocybe nebularis",
+          30
+        ],
+        [
+          "Agaricus campestris",
+          30
+        ],
+        [
+          "Amanita rubescens",
+          30
+        ],
+        [
+          "Amanita citrina",
+          27
+        ],
+        [
+          "Trametes versicolor",
+          27
+        ],
+        [
+          "Amanita virosa",
+          22
+        ],
+        [
+          "Suillus grevillei",
+          22
+        ]
+      ],
+      "path_probe": {
+        "checked": 200,
+        "exists_on_disk": 0,
+        "frac_exist": 0.0,
+        "sample_ok": [],
+        "sample_missing": [
+          "/kaggle/input/datasets/picekl/fungitastic/images/FungiTastic-Mini/train/500p/0-2237913029.JPG",
+          "/kaggle/input/datasets/picekl/fungitastic/images/FungiTastic-Mini/train/500p/1-2237913029.JPG",
+          "/kaggle/input/datasets/picekl/fungitastic/images/FungiTastic-Mini/train/500p/0-2237918098.JPG"
+        ],
+        "images_local": false
+      }
+    },
+    "test": {
+      "n_obs": 7385,
+      "n_multi_ge2": 0,
+      "n_multi_ge4": 0,
+      "max_images": 1,
+      "hist": {
+        "1": 7385
+      },
+      "n_species": 40,
+      "n_species_with_multi": 0,
+      "top_multi_species": [],
+      "path_probe": {
+        "checked": 200,
+        "exists_on_disk": 0,
+        "frac_exist": 0.0,
+        "sample_ok": [],
+        "sample_missing": [
+          "/kaggle/input/datasets/alonsoalviraaaa/visionsetil-gbif-es-allowlist40/images/Phallus_impudicus/1024183469_1ce2bad2c4.jpg",
+          "/kaggle/input/datasets/alonsoalviraaaa/visionsetil-gbif-es-allowlist40/images/Boletus_edulis/1024217043_0aa6a2c5ad.jpg",
+          "/kaggle/input/datasets/alonsoalviraaaa/visionsetil-gbif-es-allowlist40/images/Boletus_edulis/1024217054_27fc9742f3.jpg"
+        ],
+        "images_local": false
+      }
+    }
+  },
+  "readiness": {
+    "true_leave_one_photo_out": true,
+    "ft_val_ready": false,
+    "ft_train_ready": false,
+    "gbif_local_same_occurrence": true,
+    "gbif_loo_eval_ok": true,
+    "val_multi_ge2": 656,
+    "train_multi_ge2": 3773,
+    "test_multi_ge2": 0,
+    "images_local_val": false,
+    "images_local_train": false,
+    "blocker": null,
+    "next": "Local GBIF same-occurrence multi-image packs evaluated via eval/scripts/paired_multiview_loo_eval.py. Optional: mount FungiTastic for labeled view slots."
+  },
+  "product_note": "E20 GBIF ES pure test JSON is mostly single-image (domain holdout). Local industrial GBIF media often has multiple files per occurrence id — used for true multi-photo torch n-views eval. FT train/val multi packs remain Kaggle-path until mounted."
+}

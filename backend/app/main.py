@@ -22,6 +22,7 @@ from app.api.routes_jobs import router as jobs_router
 from app.api.routes_media import router as media_router
 from app.api.routes_metrics import router as metrics_router
 from app.api.routes_models import router as models_router
+from app.api.routes_nomenclature import router as nomenclature_router
 from app.api.routes_observations import router as observations_router
 from app.api.routes_species import router as species_router
 from app.api.routes_uploads import router as uploads_router
@@ -107,6 +108,8 @@ app.add_middleware(
         "/redoc",
         "/media",
         "/species",
+        # Index Fungorum nomenclature resolve (encyclopedia deep-links; cached)
+        "/nomenclature",
         # B-17: Identify preflight (mount + 60s poll); cached metrics, no GPU
         "/models/quality-gate",
     },
@@ -130,6 +133,7 @@ app.include_router(classification_router)
 app.include_router(classify_router)
 app.include_router(media_router)
 app.include_router(species_router)
+app.include_router(nomenclature_router)
 app.include_router(models_router)
 app.include_router(human_review_router)
 app.include_router(metrics_router)

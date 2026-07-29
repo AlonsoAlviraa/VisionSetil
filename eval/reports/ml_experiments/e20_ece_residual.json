@@ -1,0 +1,43 @@
+{
+  "product_unlock": false,
+  "can_auto_unlock": false,
+  "forage_permission": false,
+  "consumption_permission": false,
+  "policy": "orientation_only_never_consume",
+  "source": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models\\metrics.json",
+  "test_ece": 0.18781378849301697,
+  "band": "high",
+  "bands": {
+    "good_max": 0.05,
+    "moderate_max": 0.12,
+    "note": "Advisory only — not unlock gates"
+  },
+  "temperature": 1.5879640579223633,
+  "test_map_at_3": 0.8603024148047814,
+  "safety_recall_deadly_at_3": 0.9271317829457364,
+  "eval_protocol": "source_holdout_e20",
+  "test_domain": "gbif_es_only",
+  "guidance": {
+    "show_confidence": false,
+    "deemphasize_confidence": true,
+    "prefer_open_set_abstain": true,
+    "summary_es": "ECE alto (residual): no confiar en % del modelo. Abstención open-set + multi-vista + revisión humana. Nunca permiso de consumo.",
+    "summary_en": "High ECE residual: do not trust model %. Open-set abstain + multi-view + human review. Never consumption permission."
+  },
+  "residual_actions": [
+    "Keep product_unlock=false until operator cycle (orientation only).",
+    "Never treat confidence as edible clearance or forage permission.",
+    "De-emphasize or hide Identify confidence chrome (shouldShowConfidence soft path).",
+    "Prefer open-set reject / needs_review over forced top-1 display.",
+    "Optional: re-temperature on holdout logits if test_predictions.npz available.",
+    "Grow multi-view same-specimen holdout before trusting confidence UI.",
+    "Temperature already scaled (T=1.588); residual ECE may remain high on domain shift.",
+    "Recorded ECE=0.1878 band=high."
+  ],
+  "honesty": "Soft MAP/deadly gates can PASS while ECE remains high (domain shift). Confidence UI must stay humble. Orientation only.",
+  "generated": "2026-07-28T16:59:07.555428+00:00",
+  "status": "ok",
+  "metrics_path": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models\\metrics.json",
+  "exists": true,
+  "version": "v20-E20-source-holdout"
+}

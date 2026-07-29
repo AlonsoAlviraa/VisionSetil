@@ -42,6 +42,70 @@ def models_status() -> dict:
     if isinstance(mv, dict) and mv.get("loaded"):
         any_real = True
     primary_m = (training.get("primary") or {}).get("metrics") or {}
+    # Fail-closed product_unlock surface for ops dashboard (never True from metrics alone).
+    # SSOT with operator package: evaluate_e20_local_artifacts (E20 metrics path +
+    # pro_tester / safe_dp signals) — not training "primary" discovery alone.
+    OPERATOR_METRICS_SSOT = "kaggle/kernel_output_v20/models/metrics.json"
+    unlock_eval: dict = {
+        "product_unlock": False,
+        "unlock_eligible_advisory": False,
+        "eligible_but_locked": False,
+        "can_auto_unlock": False,
+        "forage_permission": False,
+        "consumption_permission": False,
+        "policy": "orientation_only_never_consume",
+        "residual_lock_reasons": [
+            "policy_orientation_only_never_consume",
+            "no_auto_unlock_from_metrics_alone",
+        ],
+    }
+    try:
+        import sys
+        from pathlib import Path as _Path
+
+        _repo = _Path(repo_root).resolve()
+        if str(_repo) not in sys.path:
+            sys.path.insert(0, str(_repo))
+        from kaggle.ml_qa.gate_eval import evaluate_e20_local_artifacts
+
+        unlock_eval = evaluate_e20_local_artifacts(_repo)
+        # Absolute policy: never surface product_unlock=true from status alone
+        unlock_eval["product_unlock"] = False
+        unlock_eval["can_auto_unlock"] = False
+        unlock_eval["forage_permission"] = False
+        unlock_eval["consumption_permission"] = False
+    except Exception:  # noqa: BLE001 — status must never 500
+        unlock_eval = {
+            "product_unlock": False,
+            "can_auto_unlock": False,
+            "unlock_eligible_advisory": False,
+            "eligible_but_locked": False,
+            "forage_permission": False,
+            "consumption_permission": False,
+            "policy": "orientation_only_never_consume",
+            "reasons": ["unlock_eval_unavailable"],
+            "residual_lock_reasons": [
+                "policy_orientation_only_never_consume",
+                "no_auto_unlock_from_metrics_alone",
+                "unlock_eval_unavailable",
+            ],
+            "operator_action": "unlock_eval_unavailable_fix_then_re_run",
+            "operator_cycle_required": True,
+            "checks": {},
+            "checklist": [],
+            "metrics_path": OPERATOR_METRICS_SSOT,
+        }
+    open_set_summary: dict = {"product_unlock": False}
+    try:
+        from app.services.species_catalog import describe_active_open_set_thresholds
+
+        open_set_summary = describe_active_open_set_thresholds()
+    except Exception:  # noqa: BLE001
+        open_set_summary = {"status": "unavailable", "product_unlock": False}
+    # Prefer multi_view open_set block when already populated
+    if isinstance(mv, dict) and isinstance(mv.get("open_set"), dict):
+        open_set_summary = {**open_set_summary, **mv["open_set"], "product_unlock": False}
+
     status["summary"] = {
         "any_real_backend": any_real,
         "multi_view_loaded": bool(isinstance(mv, dict) and mv.get("loaded")),
@@ -51,8 +115,205 @@ def models_status() -> dict:
         "training_map_at_3": primary_m.get("test_map_at_3"),
         "training_num_classes": primary_m.get("num_classes"),
         "training_honesty": training.get("honesty"),
+        "training_primary_run": (training.get("primary") or {}).get("run"),
+        "product_unlock": False,
+        "unlock_eligible_advisory": bool(unlock_eval.get("unlock_eligible_advisory")),
+        "eligible_but_locked": bool(unlock_eval.get("eligible_but_locked")),
+        "operator_action": unlock_eval.get("operator_action"),
+        "residual_lock_reasons": list(unlock_eval.get("residual_lock_reasons") or []),
+        "open_set_status": open_set_summary.get("status"),
+        "open_set_conf_thr": open_set_summary.get("active_conf_thr"),
+        "open_set_margin_thr": open_set_summary.get("active_margin_thr"),
+        "open_set_entropy_thr": open_set_summary.get("active_entropy_thr"),
+        "open_set_holdout_reject_rate": open_set_summary.get("holdout_reject_rate"),
+        "lookalike_mate_in_topk_rate": open_set_summary.get("lookalike_mate_in_topk_rate"),
     }
+    status["open_set"] = open_set_summary
+    # Absolute policy: never surface product_unlock=true from status alone
+    if isinstance(unlock_eval, dict):
+        unlock_eval["product_unlock"] = False
+        unlock_eval["can_auto_unlock"] = False
+        unlock_eval.setdefault("forage_permission", False)
+        unlock_eval.setdefault("consumption_permission", False)
+        unlock_eval.setdefault("policy", "orientation_only_never_consume")
+    status["product_unlock_eval"] = unlock_eval
+    # Static operator runbook pointers (docs + regenerate; never auto-unlock)
+    status["operator_unlock_ops"] = {
+        "product_unlock": False,
+        "can_auto_unlock": False,
+        "forage_permission": False,
+        "consumption_permission": False,
+        "policy": "orientation_only_never_consume",
+        "operator_runbook_path": "docs/OPERATOR_UNLOCK_RUNBOOK.md",
+        "checklist_json_path": "eval/reports/ml_experiments/operator_unlock_checklist.json",
+        "checklist_md_path": "eval/reports/ml_experiments/operator_unlock_checklist.md",
+        "regenerate_command": "python -m kaggle.ml_qa.gate_eval",
+        # SSOT metrics for eligibility (same as gate_eval package / evaluate_e20_local_artifacts)
+        "metrics_ssot_path": OPERATOR_METRICS_SSOT,
+        "metrics_path_evaluated": unlock_eval.get("metrics_path") or OPERATOR_METRICS_SSOT,
+        "metrics_note": (
+            "Operator eligibility uses E20 local artifacts path + pro_tester/safe_dp "
+            "(evaluate_e20_local_artifacts), not training primary discovery alone."
+        ),
+        "note": (
+            "Human operator decision gate only. Metrics → advisory eligibility; "
+            "never auto-flip product_unlock; orientation only — never consumption."
+        ),
+    }
+    # Live Identify reject rates from feedback JSONL (ops; empty log OK)
+    try:
+        import sys
+        from pathlib import Path as _Path
+
+        _repo = _Path(repo_root).resolve()
+        if str(_repo) not in sys.path:
+            sys.path.insert(0, str(_repo))
+        from kaggle.ml_qa.live_reject_monitor import summarize_feedback_log
+
+        live = summarize_feedback_log(repo=_repo)
+        # Absolute policy on live ops block
+        if isinstance(live, dict):
+            live["product_unlock"] = False
+            live.setdefault("policy", "orientation_only_never_consume")
+        status["live_reject_monitor"] = live
+        status["summary"]["live_reject_rate"] = live.get("reject_rate")
+        status["summary"]["live_reject_n"] = live.get("n_entries")
+        status["summary"]["live_reject_status"] = live.get("status")
+        status["summary"]["live_reject_rate_7d"] = live.get("reject_rate_7d")
+        status["summary"]["live_reject_n_7d"] = live.get("n_entries_7d")
+        status["summary"]["live_reject_top_reason"] = live.get("top_reason")
+        status["summary"]["live_reject_health_flags"] = list(
+            live.get("health_flags") or []
+        )
+        status["summary"]["live_reject_traffic_depth"] = live.get("traffic_depth")
+        status["summary"]["live_reject_n_real"] = live.get("n_real_mode")
+        status["summary"]["live_reject_n_mock"] = live.get("n_mock_mode")
+    except Exception:  # noqa: BLE001
+        status["live_reject_monitor"] = {
+            "status": "unavailable",
+            "product_unlock": False,
+            "policy": "orientation_only_never_consume",
+            "health_flags": ["live_reject_unavailable"],
+            "windows": {},
+        }
+    # ECE residual honesty (M2) — advisory only; never unlocks
+    try:
+        import sys
+        from pathlib import Path as _Path
+
+        _repo = _Path(repo_root).resolve()
+        if str(_repo) not in sys.path:
+            sys.path.insert(0, str(_repo))
+        from kaggle.ml_qa.ece_honesty import build_ece_residual_report
+
+        ece_res = build_ece_residual_report()
+        if isinstance(ece_res, dict):
+            ece_res["product_unlock"] = False
+            ece_res["can_auto_unlock"] = False
+            ece_res.setdefault("forage_permission", False)
+            ece_res.setdefault("consumption_permission", False)
+            ece_res.setdefault("policy", "orientation_only_never_consume")
+        status["ece_residual"] = ece_res
+        status["summary"]["ece"] = ece_res.get("test_ece")
+        status["summary"]["ece_band"] = ece_res.get("band")
+        status["summary"]["ece_status"] = ece_res.get("status")
+    except Exception:  # noqa: BLE001
+        status["ece_residual"] = {
+            "status": "unavailable",
+            "product_unlock": False,
+            "can_auto_unlock": False,
+            "forage_permission": False,
+            "consumption_permission": False,
+            "band": "unknown",
+            "policy": "orientation_only_never_consume",
+        }
+        status["summary"]["ece_band"] = "unknown"
+    # Optional E21 scale readiness (never launches kernel; never unlocks)
+    try:
+        import sys
+        from pathlib import Path as _Path
+
+        _repo = _Path(repo_root).resolve()
+        if str(_repo) not in sys.path:
+            sys.path.insert(0, str(_repo))
+        from scripts.e21_readiness import evaluate_e21_readiness
+
+        e21 = evaluate_e21_readiness()
+        if isinstance(e21, dict):
+            e21["product_unlock"] = False
+            e21["can_auto_unlock"] = False
+            e21["e21_launched"] = False
+            e21["kaggle_push"] = False
+            e21.setdefault("policy", "orientation_only_never_consume")
+        status["e21_readiness"] = e21
+        status["summary"]["e21_ready"] = bool(e21.get("ready_for_e21_schedule"))
+        status["summary"]["e21_launched"] = False
+        status["summary"]["e21_status"] = e21.get("status")
+    except Exception:  # noqa: BLE001
+        status["e21_readiness"] = {
+            "status": "unavailable",
+            "product_unlock": False,
+            "can_auto_unlock": False,
+            "e21_launched": False,
+            "kaggle_push": False,
+            "ready_for_e21_schedule": False,
+            "policy": "orientation_only_never_consume",
+            "plan_doc": "docs/E21_SCALE_PLAN.md",
+        }
+        status["summary"]["e21_ready"] = False
+        status["summary"]["e21_launched"] = False
+
+    # Re-assert fail-closed on unlock + live blocks before return path continues
+    if isinstance(status.get("product_unlock_eval"), dict):
+        status["product_unlock_eval"]["product_unlock"] = False
+        status["product_unlock_eval"]["can_auto_unlock"] = False
+    if isinstance(status.get("live_reject_monitor"), dict):
+        status["live_reject_monitor"]["product_unlock"] = False
+    if isinstance(status.get("ece_residual"), dict):
+        status["ece_residual"]["product_unlock"] = False
+        status["ece_residual"]["can_auto_unlock"] = False
+        status["ece_residual"]["forage_permission"] = False
+        status["ece_residual"]["consumption_permission"] = False
+    if isinstance(status.get("operator_unlock_ops"), dict):
+        status["operator_unlock_ops"]["product_unlock"] = False
+        status["operator_unlock_ops"]["can_auto_unlock"] = False
+        status["operator_unlock_ops"]["forage_permission"] = False
+        status["operator_unlock_ops"]["consumption_permission"] = False
+    if isinstance(status.get("e21_readiness"), dict):
+        status["e21_readiness"]["product_unlock"] = False
+        status["e21_readiness"]["can_auto_unlock"] = False
+        status["e21_readiness"]["e21_launched"] = False
+        status["e21_readiness"]["kaggle_push"] = False
+    status["summary"]["product_unlock"] = False
+    status["summary"]["e21_launched"] = False
+    # Multi-view product contracts + four-photo bench + paired inventory
+    try:
+        from app.ml.multiview_product import describe_multiview_product
+
+        mv_prod = describe_multiview_product(repo_root)
+        if isinstance(mv_prod, dict):
+            mv_prod["product_unlock"] = False
+        status["multiview_product"] = mv_prod
+        fh = (mv_prod or {}).get("field_holdout_m3") if isinstance(mv_prod, dict) else None
+        if isinstance(fh, dict):
+            status["summary"]["field_holdout_gates_pass"] = fh.get("gates_pass")
+            status["summary"]["field_holdout_map3_4_minus_1"] = (
+                (fh.get("headline") or {}).get("map3_4_minus_1")
+            )
+            status["summary"]["field_holdout_deadly_caveat"] = bool(
+                fh.get("deadly_multiview_caveat")
+            )
+            status["summary"]["field_holdout_protocol"] = fh.get("protocol")
+        bench = mv_prod.get("benchmark") or {}
+        status["summary"]["multiview_map3_1"] = bench.get("map3_1")
+        status["summary"]["multiview_map3_4"] = bench.get("map3_4")
+        status["summary"]["multiview_torch_ok"] = bench.get("torch_ok")
+        inv = mv_prod.get("paired_inventory") or {}
+        status["summary"]["paired_loo_ready"] = inv.get("true_leave_one_photo_out")
+    except Exception:  # noqa: BLE001
+        status["multiview_product"] = {"product_unlock": False, "status": "unavailable"}
     return status
+
 
 
 @router.get("/models/discovery")
@@ -74,15 +335,41 @@ def models_training() -> dict:
 
 @router.get("/models/data-sources")
 def models_data_sources() -> dict:
-    """Public registry of training sources (Spain/Soria + ML datasets)."""
+    """Public registry of training sources (Spain/Soria + ML datasets).
+
+    Also surfaces Index Fungorum nomenclature attribution (names only —
+    never edibility; product_unlock false).
+    """
+    from app.services.index_fungorum import attribution_block
+
     repo_root = getattr(settings, "repo_root", None) or settings.base_dir.parent
     full = describe_training_metrics(repo_root=repo_root)
     return {
         "docs": full.get("docs"),
+        "model_card": "docs/MODEL_CARD.md",
+        "index_fungorum_doc": "docs/INDEX_FUNGORUM.md",
         "sources_registry": full.get("sources_registry"),
         "gbif_probe": full.get("gbif_probe_live_file"),
         "primary_metrics_summary": full.get("summary_line"),
         "honesty": full.get("honesty"),
+        "nomenclature": {
+            **attribution_block(),
+            "role": "taxonomic_name_backbone_only",
+            "used_for": [
+                "scientific_name_resolve",
+                "synonym_education",
+                "if_record_links",
+            ],
+            "not_used_for": [
+                "edibility",
+                "training_image_labels",
+                "product_ssot_auto_overwrite",
+                "consumption_permission",
+            ],
+            "product_unlock": False,
+            "policy": "nomenclature_only_never_consumption",
+        },
+        "product_unlock": False,
     }
 
 

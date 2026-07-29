@@ -145,16 +145,82 @@ def map_to_simple(
 def _record_classify_metrics(result: SimpleClassificationResult, gate: dict[str, Any]) -> None:
     """Emit classification + mode + gate-block counters (best-effort, never raises)."""
     try:
-        record_classification(rejected=result.decision == "rejected")
+        from app.api.routes_metrics import record_open_set_reject
+        from app.services.feedback_logger import feedback_logger
+
+        rejected = result.decision == "rejected"
+        record_classification(rejected=rejected)
         # mode may be Enum or str depending on model dump / construct path
         mode_val = result.mode
         mode_str = mode_val.value if hasattr(mode_val, "value") else str(mode_val)
         record_classify_mode(mode_str)
         if not bool(gate.get("species_id_allowed", False)):
             record_gate_blocked(str(gate.get("reason_code") or "unknown"))
+        # Open-set reason histogram (Identify abstention, not quality-gate block)
+        open_reason = result.open_set_reason or result.rejection_reason
+        if rejected and open_reason and "quality_gate" not in str(open_reason).lower():
+            if not str(open_reason).startswith("model_quality_gate"):
+                record_open_set_reject(str(open_reason))
+
+        # S9 live reject monitor: append JSONL for ops (orientation only)
+        preds = [
+            {
+                "species": getattr(p, "species", None),
+                "confidence": getattr(p, "confidence", None),
+            }
+            for p in (result.predictions or [])[:5]
+        ]
+        view_cov = list(getattr(result, "view_coverage", None) or [])
+        feedback_logger.log_classification(
+            request_id=str(result.request_id or ""),
+            image_path=None,
+            image_bytes=None,
+            predictions=preds,
+            decision="rejected" if rejected else "accepted",
+            rejection_reason=open_reason,
+            open_set_reason=open_reason,
+            metadata={
+                "mode": mode_str,
+                "species_id_allowed": bool(gate.get("species_id_allowed", False)),
+                "gate_reason_code": gate.get("reason_code"),
+                "is_mock_stack": bool(result.is_mock_stack),
+                "product_unlock": False,
+                # S9 multiview honesty: which diagnostic slots were labeled
+                "view_coverage": view_cov,
+                "view_types": view_cov,
+                "n_views": len(view_cov),
+                "policy": "orientation_only_never_consume",
+            },
+        )
     except Exception:
-        # Metrics must never break classify
+        # Metrics / feedback must never break classify
         pass
+
+
+def _ssot_lookalikes_for_taxon(taxon: str) -> list[str]:
+    """Curated catalog lookalikes for a scientific name (never invents pairs)."""
+    from app.services.poisonous_lookalikes import normalize_lookalike_names
+
+    name = (taxon or "").strip()
+    if not name:
+        return []
+    rec = catalog.get_by_scientific_name(name)
+    if not rec:
+        return []
+    return normalize_lookalike_names(rec.get("lookalikes"))
+
+
+def _merge_dangerous_lookalikes(
+    existing: list[str] | None,
+    *extra_lists: list[str],
+) -> list[str]:
+    """Union + synonym-normalize lookalike names for Identify safety surface."""
+    from app.services.poisonous_lookalikes import normalize_lookalike_names
+
+    bag: list[str] = list(existing or [])
+    for extra in extra_lists:
+        bag.extend(extra or [])
+    return normalize_lookalike_names(bag)
 
 
 def _hydrate_simple_result(
@@ -170,6 +236,10 @@ def _hydrate_simple_result(
 
     B-42: hydrate elevates deadly/poisonous catalog join risk onto prediction
     fields used by RiskChip; FE boosts visual chrome in real mode only.
+
+    B-43: merge SSOT catalog lookalikes for top (and secondary) predictions into
+    ``dangerous_lookalikes`` so Identify never drops curated confusions when the
+    model path left the field empty or partial.
     """
     gate = result.quality_gate
     if gate is not None and not bool(getattr(gate, "species_id_allowed", False)):
@@ -187,7 +257,12 @@ def _hydrate_simple_result(
         )
         for p in result.predictions
     ]
-    return result.model_copy(update={"predictions": hydrated})
+    # SSOT safety surface: union lookalikes for top-2 hydrated taxa
+    ssot_lists = [_ssot_lookalikes_for_taxon(p.species) for p in hydrated[:2]]
+    merged_lk = _merge_dangerous_lookalikes(result.dangerous_lookalikes, *ssot_lists)
+    return result.model_copy(
+        update={"predictions": hydrated, "dangerous_lookalikes": merged_lk}
+    )
 
 
 # Job result envelope version (D-B18 / D-B24 — raw kept indefinitely for admin/debug).

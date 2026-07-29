@@ -1,0 +1,8 @@
+juegos_quiz_setadle: PASS gating=True evidence=eval/reports/accenture_audit/accenture_games.log
+nombres_i18n: PASS gating=True evidence=eval/reports/accenture_audit/accenture_names_i18n.log
+cookies_auth_frontend: PASS gating=True evidence=eval/reports/accenture_audit/accenture_cookies_fe.log
+cookies_auth_backend: PASS gating=True evidence=eval/reports/accenture_audit/accenture_cookies_be.log
+seguridad_backend: PASS gating=True evidence=eval/reports/accenture_audit/accenture_security_be.log
+security_static: PASS gating=True evidence=eval/reports/accenture_audit/accenture_static_security.txt
+app_web_pwa: PASS gating=True evidence=frontend/vite.config.ts + vite-plugin-pwa (shared SPA/PWA)
+e2e_browser: SKIPPED gating=False evidence=eval/reports/accenture_audit/ (e2e not run; use --with-e2e)

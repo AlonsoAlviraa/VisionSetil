@@ -640,6 +640,32 @@ if old_model_build not in src:
     raise SystemExit("model build block missing for DataParallel inject")
 src = src.replace(old_model_build, new_model_build)
 
+# CRITICAL: warmup freeze/unfreeze must unwrap DataParallel (model.module).
+# Bare model.backbone crashes: AttributeError: DataParallel has no attribute 'backbone'
+_bare_freeze = "for p in model.backbone.backbone.parameters():"
+_safe_freeze = "for p in _unwrap(model).backbone.backbone.parameters():"
+if _bare_freeze in src:
+    src = src.replace(_bare_freeze, _safe_freeze)
+if "for p in model.backbone.backbone.parameters():" in src:
+    raise SystemExit("E20: bare model.backbone.backbone freeze remains after DP unwrap patch")
+if _safe_freeze not in src and "warmup_epochs" in src:
+    raise SystemExit("E20: expected safe _unwrap freeze path missing after DP inject")
+
+# Raw-regex polish: avoid DeprecationWarning invalid escape sequence \- / \d
+_regex_fixes = [
+    (
+        "re.sub('[_\\-]\\d+$', '', stem)",
+        "re.sub(r'[_\\-]\\d+$', '', stem)",
+    ),
+    (
+        "re.match('^(\\d{6,})', stem)",
+        "re.match(r'^(\\d{6,})', stem)",
+    ),
+]
+for _old, _new in _regex_fixes:
+    if _old in src:
+        src = src.replace(_old, _new)
+
 # Dual early-stop + deadly@3 val + unwrapped state_dict (before other state patches)
 marker = 'log(f"Deadly species in dataset: {len(deadly_label_indices)}")'
 inject = """

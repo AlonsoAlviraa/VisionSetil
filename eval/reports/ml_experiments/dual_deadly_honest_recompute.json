@@ -1,0 +1,60 @@
+{
+  "results": [
+    {
+      "path": "kaggle\\kernel_output_v16\\models",
+      "status": "patched",
+      "deadly_at_1": 0.3709677419354839,
+      "deadly_at_3": 0.5806451612903226,
+      "n_deadly": 124,
+      "n_idx": 11
+    },
+    {
+      "path": "kaggle\\kernel_output_v16_live\\models",
+      "status": "patched",
+      "deadly_at_1": 0.3709677419354839,
+      "deadly_at_3": 0.5806451612903226,
+      "n_deadly": 124,
+      "n_idx": 11
+    },
+    {
+      "path": "kaggle\\kernel_output_v17\\models",
+      "status": "patched",
+      "deadly_at_1": 0.44654088050314467,
+      "deadly_at_3": 0.7044025157232704,
+      "n_deadly": 159,
+      "n_idx": 11
+    },
+    {
+      "path": "kaggle\\kernel_output_v18\\models",
+      "status": "patched",
+      "deadly_at_1": 0.8902147971360382,
+      "deadly_at_3": 0.9594272076372315,
+      "n_deadly": 419,
+      "n_idx": 11
+    },
+    {
+      "path": "kaggle\\kernel_output_v19\\models",
+      "status": "patched",
+      "deadly_at_1": 0.9626373626373627,
+      "deadly_at_3": 0.9934065934065934,
+      "n_deadly": 455,
+      "n_idx": 11
+    },
+    {
+      "path": "kaggle\\kernel_output_v20\\models",
+      "status": "patched",
+      "deadly_at_1": 0.7875968992248062,
+      "deadly_at_3": 0.9271317829457364,
+      "n_deadly": 2580,
+      "n_idx": 11
+    },
+    {
+      "path": "kaggle\\kernel_output_v9\\models",
+      "status": "patched",
+      "deadly_at_1": 0.0,
+      "deadly_at_3": 0.0,
+      "n_deadly": 9,
+      "n_idx": 7
+    }
+  ]
+}

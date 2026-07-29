@@ -1,0 +1,24 @@
+{
+  "generated": "2026-07-27T20:49:24.467339+00:00",
+  "overall": "PASS",
+  "product_unlock": false,
+  "policy": "orientation_only_never_consume",
+  "steps": [
+    {
+      "name": "expand_catalog_ml40",
+      "rc": 0,
+      "tail": "{\n  \"catalog_total\": 523,\n  \"ml40_in_catalog\": 40,\n  \"missing\": [],\n  \"lookalike_coverage\": 1.0,\n  \"stubs_added\": [],\n  \"edges_added\": 9,\n  \"diag\": \"data/species_catalog/multiview_diagnostic_map.json\",\n  \"sync_rc\": null,\n  \"report\": \"C:\\\\Users\\\\Mariano\\\\Documents\\\\ALONSOO\\\\VISIONSETIL\\\\eval\\\\reports\\\\ml_experiments\\\\catalog_ml40_multiview.json\"\n}\n"
+    },
+    {
+      "name": "multiview_four_photo_benchmark",
+      "rc": 0,
+      "tail": "{\n  \"overall\": \"PASS\",\n  \"json\": \"C:\\\\Users\\\\Mariano\\\\Documents\\\\ALONSOO\\\\VISIONSETIL\\\\eval\\\\reports\\\\ml_experiments\\\\multiview_four_photo_benchmark.json\",\n  \"md\": \"C:\\\\Users\\\\Mariano\\\\Documents\\\\ALONSOO\\\\VISIONSETIL\\\\eval\\\\reports\\\\ml_experiments\\\\multiview_four_photo_benchmark.md\",\n  \"map3_1\": 0.5836,\n  \"map3_2\": 0.7357,\n  \"map3_4\": 0.8603,\n  \"torch_ok\": true,\n  \"gates_pass\": true\n}\n"
+    }
+  ],
+  "artifacts": {
+    "benchmark_json": "eval/reports/ml_experiments/multiview_four_photo_benchmark.json",
+    "benchmark_md": "eval/reports/ml_experiments/multiview_four_photo_benchmark.md",
+    "catalog_report": "eval/reports/ml_experiments/catalog_ml40_multiview.json",
+    "diagnostic_map": "data/species_catalog/multiview_diagnostic_map.json"
+  }
+}

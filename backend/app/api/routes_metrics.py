@@ -37,6 +37,7 @@ _metrics: dict[str, dict | int] = {
     "classification_rejections_total": 0,
     "classify_mode_total": defaultdict(int),  # mode → count
     "gate_blocked_total": defaultdict(int),  # reason_code → count
+    "open_set_reject_total": defaultdict(int),  # open_set reason → count
     "model_backend_status": {},
     "requests_in_flight": 0,
 }
@@ -67,6 +68,12 @@ def record_gate_blocked(reason_code: str) -> None:
     """Increment ``gate_blocked_total{reason_code=...}`` when gate denies species ID."""
     code = (reason_code or "unknown").strip() or "unknown"
     _metrics["gate_blocked_total"][code] += 1
+
+
+def record_open_set_reject(reason: str) -> None:
+    """Increment ``open_set_reject_total{reason=...}`` for Identify abstention reasons."""
+    code = (reason or "unknown").strip() or "unknown"
+    _metrics["open_set_reject_total"][code] += 1
 
 
 def update_model_status(component: str, is_real: bool) -> None:
@@ -133,6 +140,11 @@ async def metrics() -> Response:
     lines.append("# TYPE gate_blocked_total counter")
     for code, count in sorted(_metrics["gate_blocked_total"].items()):
         lines.append(f'gate_blocked_total{{reason_code="{_escape_label(str(code))}"}} {count}')
+
+    lines.append("# HELP open_set_reject_total Identify open-set abstentions by reason")
+    lines.append("# TYPE open_set_reject_total counter")
+    for code, count in sorted(_metrics["open_set_reject_total"].items()):
+        lines.append(f'open_set_reject_total{{reason="{_escape_label(str(code))}"}} {count}')
 
     # Model status
     lines.append("# HELP model_backend_status Model backend status (1=real, 0=mock)")

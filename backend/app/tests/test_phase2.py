@@ -14,6 +14,113 @@ def test_models_status_endpoint(client: TestClient):
     assert "detector" in data
     assert "visual_embedder" in data
     assert "image_text_embedder" in data
+    summary = data.get("summary") or {}
+    assert summary.get("product_unlock") is False
+    # Open-set ops surface (S8 / live Identify thr tracking)
+    assert "open_set" in data or "open_set_status" in summary
+    if data.get("open_set"):
+        assert data["open_set"].get("product_unlock") is False
+    # Operator unlock + S9 live reject surfaces (fail-closed)
+    unlock = data.get("product_unlock_eval") or {}
+    assert isinstance(unlock, dict)
+    assert unlock.get("product_unlock") is False
+    assert unlock.get("can_auto_unlock") is False
+    assert unlock.get("forage_permission") is False
+    assert unlock.get("consumption_permission") is False
+    assert unlock.get("policy") in (
+        None,
+        "orientation_only_never_consume",
+    ) or "orientation" in str(unlock.get("policy") or "")
+    # Residual lock / operator action — required non-empty fail-closed locks
+    assert "unlock_eligible_advisory" in summary
+    assert "eligible_but_locked" in summary
+    assert summary.get("product_unlock") is False
+    residual_summary = list(summary.get("residual_lock_reasons") or [])
+    residual_unlock = list(unlock.get("residual_lock_reasons") or [])
+    assert residual_unlock, "product_unlock_eval.residual_lock_reasons must be non-empty"
+    assert residual_summary == residual_unlock
+    assert any(
+        "orientation" in r or "no_auto_unlock" in r or "operator_cycle" in r or "unavailable" in r
+        for r in residual_unlock
+    )
+    assert bool(summary.get("eligible_but_locked")) == bool(unlock.get("eligible_but_locked"))
+    assert bool(summary.get("unlock_eligible_advisory")) == bool(
+        unlock.get("unlock_eligible_advisory")
+    )
+    # SSOT with gate_eval package: E20 path + pro_tester/safe_dp when report present
+    checks = unlock.get("checks") or {}
+    checklist_ids = {c.get("id") for c in (unlock.get("checklist") or []) if isinstance(c, dict)}
+    if checks or checklist_ids:
+        # When eval ran against real artifacts, pro/safe_dp signals should appear if present
+        if "pro_tester_pass" in checks or "pro_tester_pass" in checklist_ids:
+            assert "pro_tester_pass" in checks
+        if "safe_dp_freeze" in checks or "safe_dp_freeze" in checklist_ids:
+            assert "safe_dp_freeze" in checks
+    ops = data.get("operator_unlock_ops") or {}
+    assert isinstance(ops, dict)
+    assert ops.get("product_unlock") is False
+    assert ops.get("can_auto_unlock") is False
+    assert ops.get("forage_permission") is False
+    assert ops.get("consumption_permission") is False
+    assert "OPERATOR_UNLOCK_RUNBOOK" in str(ops.get("operator_runbook_path") or "")
+    assert "kaggle.ml_qa.gate_eval" in str(ops.get("regenerate_command") or "")
+    assert "operator_unlock_checklist" in str(ops.get("checklist_md_path") or "")
+    assert "kernel_output_v20" in str(ops.get("metrics_ssot_path") or "")
+    assert ops.get("metrics_path_evaluated") is not None
+    # Evaluated path should be the E20 SSOT (or string containing v20), not an arbitrary primary
+    eval_path = str(unlock.get("metrics_path") or ops.get("metrics_path_evaluated") or "")
+    assert "v20" in eval_path.replace("\\", "/") or "kernel_output_v20" in str(
+        ops.get("metrics_ssot_path") or ""
+    )
+    live = data.get("live_reject_monitor") or {}
+    assert isinstance(live, dict)
+    assert live.get("product_unlock") is False
+    assert live.get("status") in (
+        "ok",
+        "empty",
+        "no_log",
+        "unavailable",
+        "read_error",
+    )
+    e21 = data.get("e21_readiness") or {}
+    assert isinstance(e21, dict)
+    assert e21.get("product_unlock") is False
+    assert e21.get("can_auto_unlock") is False
+    assert e21.get("e21_launched") is False
+    assert e21.get("kaggle_push") is False
+    assert summary.get("product_unlock") is False
+    assert summary.get("e21_launched") is False
+
+
+def test_models_status_unlock_matches_e20_package_signals(client: TestClient):
+    """Status product_unlock_eval must match evaluate_e20_local_artifacts (pro/safe_dp SSOT)."""
+    import sys
+    from pathlib import Path
+
+    from app.core.config import settings as _settings
+
+    repo = Path(getattr(_settings, "repo_root", None) or _settings.base_dir.parent).resolve()
+    if str(repo) not in sys.path:
+        sys.path.insert(0, str(repo))
+    from kaggle.ml_qa.gate_eval import evaluate_e20_local_artifacts
+
+    pkg_eval = evaluate_e20_local_artifacts(repo)
+    response = client.get("/models/status")
+    assert response.status_code == 200
+    unlock = response.json().get("product_unlock_eval") or {}
+    assert unlock.get("product_unlock") is False
+    assert pkg_eval.get("product_unlock") is False
+    assert bool(unlock.get("unlock_eligible_advisory")) == bool(
+        pkg_eval.get("unlock_eligible_advisory")
+    )
+    assert bool(unlock.get("eligible_but_locked")) == bool(pkg_eval.get("eligible_but_locked"))
+    # Pro / safe_dp presence and values must agree when package evaluated them
+    pkg_checks = pkg_eval.get("checks") or {}
+    st_checks = unlock.get("checks") or {}
+    for key in ("pro_tester_pass", "safe_dp_freeze"):
+        if key in pkg_checks:
+            assert key in st_checks
+            assert bool(st_checks[key]) == bool(pkg_checks[key])
 
 
 def test_model_registry_fallbacks_from_config():
@@ -148,10 +255,11 @@ def test_open_set_rejection_low_confidence():
 
 
 def test_open_set_rejection_low_margin():
+    """Conf must clear calibrated thr so margin rule is the binding reason."""
     service = OpenSetRejectionService()
     candidates = [
-        {"taxon": "Boletus edulis", "confidence": 0.6, "lookalikes": []},
-        {"taxon": "Agaricus campestris", "confidence": 0.55, "lookalikes": []},
+        {"taxon": "Boletus edulis", "confidence": 0.96, "lookalikes": []},
+        {"taxon": "Agaricus campestris", "confidence": 0.95, "lookalikes": []},
     ]
     rep = ObservationRepresentation(
         vector=[],
@@ -168,7 +276,7 @@ def test_open_set_rejection_low_margin():
 
 def test_open_set_rejection_missing_evidence():
     service = OpenSetRejectionService()
-    candidates = [{"taxon": "Boletus edulis", "confidence": 0.8, "lookalikes": []}]
+    candidates = [{"taxon": "Boletus edulis", "confidence": 0.98, "lookalikes": []}]
     rep = ObservationRepresentation(
         vector=[],
         detected_views=["base"],
@@ -183,9 +291,10 @@ def test_open_set_rejection_missing_evidence():
 
 
 def test_open_set_rejection_deadly_lookalike():
+    # conf above E20 calibrated thr so deadly-lookalike reason is binding
     service = OpenSetRejectionService()
     candidates = [
-        {"taxon": "Boletus edulis", "confidence": 0.8, "lookalikes": ["Amanita phalloides"]}
+        {"taxon": "Boletus edulis", "confidence": 0.98, "lookalikes": ["Amanita phalloides"]}
     ]
     rep = ObservationRepresentation(
         vector=[],

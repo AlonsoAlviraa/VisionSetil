@@ -1,0 +1,45 @@
+# Static security surface scan
+repo=.
+
+## localStorage_token_key (2 files)
+  - frontend/src/auth/sessionTokenPolicy.test.ts
+  - frontend/src/auth/sessionTokenPolicy.ts
+
+## document_cookie (0 files)
+
+## AUTH_COOKIE (9 files)
+  - backend/app/api/deps_auth.py
+  - backend/app/api/routes_auth.py
+  - backend/app/core/config.py
+  - backend/app/tests/test_auth_cookie_e08.py
+  - frontend/src/api/auth.cookieMode.test.ts
+  - frontend/src/api/auth.ts
+  - frontend/src/auth/AuthContext.tsx
+  - frontend/src/lib/featureFlags.ts
+  - frontend/src/vite-env.d.ts
+
+## auth_routes (6 files)
+  - backend/app/middleware/rate_limit.py
+  - backend/app/tests/test_auth_community.py
+  - backend/app/tests/test_auth_cookie_e08.py
+  - backend/app/tests/test_authz_phase_e.py
+  - backend/app/tests/test_phase2.py
+  - frontend/src/api/auth.ts
+
+## httponly (8 files)
+  - backend/app/api/deps_auth.py
+  - backend/app/api/routes_auth.py
+  - backend/app/core/config.py
+  - backend/app/tests/test_auth_cookie_e08.py
+  - frontend/src/auth/AuthContext.tsx
+  - frontend/src/auth/sessionTokenPolicy.ts
+  - frontend/src/lib/featureFlags.ts
+  - frontend/src/vite-env.d.ts
+
+## cors_star (6 files)
+  - backend/app/core/config.py
+  - backend/app/main.py
+  - backend/app/tests/test_kaggle.py
+  - backend/app/tests/test_security.py
+  - frontend/src/App.tsx
+  - frontend/src/lib/surfaceRoutes.test.ts

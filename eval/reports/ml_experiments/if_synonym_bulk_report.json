@@ -1,0 +1,1287 @@
+{
+  "generated": "2026-07-28T17:02:57.013708+00:00",
+  "version": "1.9.4-p16-if-bulk",
+  "stats": {
+    "ssot_taxa_scanned": 523,
+    "base_synonyms": 3,
+    "proposals_raw": 7418,
+    "accepted_new": 6951,
+    "rejected": 467,
+    "merged_total": 6954,
+    "product_unlock": false,
+    "policy": "Aliases map to VisionSetil SSOT preferred names. Index Fungorum bulk is nomenclature-only; never consumption; never auto-flip SSOT."
+  },
+  "sources": [
+    "curated",
+    "index_fungorum_api"
+  ],
+  "accepted_sample": [
+    {
+      "alias": "Agaricus arvensis f. ochraceus",
+      "preferred": "Agaricus arvensis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Agaricus arvensis var. abruptus",
+      "preferred": "Agaricus arvensis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Agaricus arvensis var. exquisitus",
+      "preferred": "Agaricus arvensis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Agaricus arvensis var. fragrans",
+      "preferred": "Agaricus arvensis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Agaricus arvensis var. iodiformis",
+      "preferred": "Agaricus arvensis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Agaricus arvensis var. palustris",
+      "preferred": "Agaricus arvensis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Agaricus arvensis var. umbrelloideus",
+      "preferred": "Agaricus arvensis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Agaricus campestris var. arvensis",
+      "preferred": "Agaricus arvensis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Agaricus campestris var. buchananii",
+      "preferred": "Agaricus arvensis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Agaricus edulis var. arvensis",
+      "preferred": "Agaricus arvensis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Agaricus exquisitus",
+      "preferred": "Agaricus arvensis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Agaricus fissuratus",
+      "preferred": "Agaricus arvensis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Agaricus leucotrichus",
+      "preferred": "Agaricus arvensis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Agaricus vaporarius",
+      "preferred": "Agaricus arvensis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Fungus arvensis",
+      "preferred": "Agaricus arvensis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Pratella arvensis",
+      "preferred": "Agaricus arvensis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Psalliota arvensis",
+      "preferred": "Agaricus arvensis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Psalliota arvensis subsp. exquisita",
+      "preferred": "Agaricus arvensis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Psalliota arvensis var. albosquamosa",
+      "preferred": "Agaricus arvensis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Psalliota arvensis var. buchananii",
+      "preferred": "Agaricus arvensis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Psalliota arvensis var. epileata",
+      "preferred": "Agaricus arvensis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Psalliota arvensis var. fragrans",
+      "preferred": "Agaricus arvensis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Psalliota arvensis var. intermedium",
+      "preferred": "Agaricus arvensis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Psalliota arvensis var. iodoformis",
+      "preferred": "Agaricus arvensis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Psalliota arvensis var. obesa",
+      "preferred": "Agaricus arvensis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Psalliota arvensis var. vaporaria",
+      "preferred": "Agaricus arvensis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Psalliota campestris var. arvensis",
+      "preferred": "Agaricus arvensis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Psalliota fissurata",
+      "preferred": "Agaricus arvensis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Psalliota leucotricha",
+      "preferred": "Agaricus arvensis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Agaricus augustus var. perrarus",
+      "preferred": "Agaricus augustus",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Agaricus peronatus",
+      "preferred": "Agaricus augustus",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Agaricus perrarus",
+      "preferred": "Agaricus augustus",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Fungus augustus",
+      "preferred": "Agaricus augustus",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Fungus peronatus",
+      "preferred": "Agaricus augustus",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Orcella augusta",
+      "preferred": "Agaricus augustus",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Pratella augusta",
+      "preferred": "Agaricus augustus",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Psalliota augusta",
+      "preferred": "Agaricus augustus",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Psalliota augusta var. perrara",
+      "preferred": "Agaricus augustus",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Psalliota perrara",
+      "preferred": "Agaricus augustus",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Agaricus bisporus f. conicopodus",
+      "preferred": "Agaricus bisporus",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Agaricus bisporus f. depressus",
+      "preferred": "Agaricus bisporus",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Agaricus bisporus f. langei",
+      "preferred": "Agaricus bisporus",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Agaricus bisporus f. microspora",
+      "preferred": "Agaricus bisporus",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Agaricus bisporus var. burnettii",
+      "preferred": "Agaricus bisporus",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Agaricus bisporus var. eurotetrasporus",
+      "preferred": "Agaricus bisporus",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Agaricus bisporus var. perrubescens",
+      "preferred": "Agaricus bisporus",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Agaricus brunnescens",
+      "preferred": "Agaricus bisporus",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Agaricus campestris subsp. hortensis",
+      "preferred": "Agaricus bisporus",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Agaricus campestris var. bisporus",
+      "preferred": "Agaricus bisporus",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Agaricus campestris var. elongatus",
+      "preferred": "Agaricus bisporus",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Agaricus campestris var. hortensis",
+      "preferred": "Agaricus bisporus",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Agaricus cookeanus",
+      "preferred": "Agaricus bisporus",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Agaricus hortensis",
+      "preferred": "Agaricus bisporus",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Agaricus subfloccosus var. bisporus",
+      "preferred": "Agaricus bisporus",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Psalliota arvensis var. hortensis",
+      "preferred": "Agaricus bisporus",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Psalliota bispora",
+      "preferred": "Agaricus bisporus",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Psalliota bispora f. bispora",
+      "preferred": "Agaricus bisporus",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Psalliota campestris subsp. hortensis",
+      "preferred": "Agaricus bisporus",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Psalliota campestris var. hortensis",
+      "preferred": "Agaricus bisporus",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Psalliota hortensis",
+      "preferred": "Agaricus bisporus",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Psalliota hortensis f. bispora",
+      "preferred": "Agaricus bisporus",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Psalliota hortensis f. hortensis",
+      "preferred": "Agaricus bisporus",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Psalliota hortensis var. bispora",
+      "preferred": "Agaricus bisporus",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Psalliota hortensis var. hortensis",
+      "preferred": "Agaricus bisporus",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Agaricus bitorquis var. validus",
+      "preferred": "Agaricus bitorquis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Agaricus campestris subsp. bitorquis",
+      "preferred": "Agaricus bitorquis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Agaricus campestris var. edulis",
+      "preferred": "Agaricus bitorquis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Agaricus edulis",
+      "preferred": "Agaricus bitorquis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Agaricus edulis var. validus",
+      "preferred": "Agaricus bitorquis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Agaricus rodmanii",
+      "preferred": "Agaricus bitorquis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Fungus bitorquis",
+      "preferred": "Agaricus bitorquis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Fungus rodmanii",
+      "preferred": "Agaricus bitorquis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Pratella bitorquis",
+      "preferred": "Agaricus bitorquis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Pratella campestris var. bitorquis",
+      "preferred": "Agaricus bitorquis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Pratella peronata",
+      "preferred": "Agaricus bitorquis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Psalliota bitorquis",
+      "preferred": "Agaricus bitorquis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Psalliota campestris var. edulis",
+      "preferred": "Agaricus bitorquis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Psalliota edulis",
+      "preferred": "Agaricus bitorquis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Psalliota edulis var. nanayi",
+      "preferred": "Agaricus bitorquis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    },
+    {
+      "alias": "Psalliota edulis var. valida",
+      "preferred": "Agaricus bitorquis",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum"
+    }
+  ],
+  "rejected_sample": [
+    {
+      "alias": "Agaricus campestris var. buchananii",
+      "preferred": "Agaricus campestris",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum",
+      "reject": "curated_conflict",
+      "existing": "Agaricus arvensis"
+    },
+    {
+      "alias": "Agaricus campestris var. elongatus",
+      "preferred": "Agaricus campestris",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum",
+      "reject": "curated_conflict",
+      "existing": "Agaricus bisporus"
+    },
+    {
+      "alias": "Agaricus campestris * sylvicola",
+      "preferred": "Agaricus silvicola",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum",
+      "reject": "curated_conflict",
+      "existing": "Agaricus essettei"
+    },
+    {
+      "alias": "Agaricus campestris var. sylvicola",
+      "preferred": "Agaricus silvicola",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum",
+      "reject": "curated_conflict",
+      "existing": "Agaricus essettei"
+    },
+    {
+      "alias": "Agaricus flavescens",
+      "preferred": "Agaricus silvicola",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum",
+      "reject": "curated_conflict",
+      "existing": "Agaricus essettei"
+    },
+    {
+      "alias": "Agaricus sylvicola",
+      "preferred": "Agaricus silvicola",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum",
+      "reject": "curated_conflict",
+      "existing": "Agaricus essettei"
+    },
+    {
+      "alias": "Agaricus sylvicola f. immutatus",
+      "preferred": "Agaricus silvicola",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum",
+      "reject": "curated_conflict",
+      "existing": "Agaricus essettei"
+    },
+    {
+      "alias": "Agaricus sylvicola var. abruptus",
+      "preferred": "Agaricus silvicola",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum",
+      "reject": "curated_conflict",
+      "existing": "Agaricus essettei"
+    },
+    {
+      "alias": "Agaricus sylvicola var. squarrosus",
+      "preferred": "Agaricus silvicola",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum",
+      "reject": "curated_conflict",
+      "existing": "Agaricus essettei"
+    },
+    {
+      "alias": "Fungus flavescens",
+      "preferred": "Agaricus silvicola",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum",
+      "reject": "curated_conflict",
+      "existing": "Agaricus essettei"
+    },
+    {
+      "alias": "Fungus sylvicola",
+      "preferred": "Agaricus silvicola",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum",
+      "reject": "curated_conflict",
+      "existing": "Agaricus essettei"
+    },
+    {
+      "alias": "Pratella campestris var. sylvicola",
+      "preferred": "Agaricus silvicola",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum",
+      "reject": "curated_conflict",
+      "existing": "Agaricus essettei"
+    },
+    {
+      "alias": "Pratella flavescens",
+      "preferred": "Agaricus silvicola",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum",
+      "reject": "curated_conflict",
+      "existing": "Agaricus essettei"
+    },
+    {
+      "alias": "Psalliota arvensis var. sylvicola",
+      "preferred": "Agaricus silvicola",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum",
+      "reject": "curated_conflict",
+      "existing": "Agaricus essettei"
+    },
+    {
+      "alias": "Psalliota campestris var. sylvicola",
+      "preferred": "Agaricus silvicola",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum",
+      "reject": "curated_conflict",
+      "existing": "Agaricus essettei"
+    },
+    {
+      "alias": "Psalliota sylvicola",
+      "preferred": "Agaricus silvicola",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum",
+      "reject": "curated_conflict",
+      "existing": "Agaricus essettei"
+    },
+    {
+      "alias": "Agaricus crocodilinus",
+      "preferred": "Agaricus urinascens",
+      "reason": "if_current_name",
+      "source": "index_fungorum",
+      "reject": "curated_conflict",
+      "existing": "Agaricus excellens"
+    },
+    {
+      "alias": "Agaricus albertii",
+      "preferred": "Agaricus urinascens",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum",
+      "reject": "curated_conflict",
+      "existing": "Agaricus excellens"
+    },
+    {
+      "alias": "Agaricus albertii var. excellens",
+      "preferred": "Agaricus urinascens",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum",
+      "reject": "curated_conflict",
+      "existing": "Agaricus excellens"
+    },
+    {
+      "alias": "Agaricus albertii var. substramineus",
+      "preferred": "Agaricus urinascens",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum",
+      "reject": "curated_conflict",
+      "existing": "Agaricus excellens"
+    },
+    {
+      "alias": "Agaricus arvensis subsp. macrosporus",
+      "preferred": "Agaricus urinascens",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum",
+      "reject": "curated_conflict",
+      "existing": "Agaricus excellens"
+    },
+    {
+      "alias": "Agaricus arvensis subsp. osecanus",
+      "preferred": "Agaricus urinascens",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum",
+      "reject": "curated_conflict",
+      "existing": "Agaricus excellens"
+    },
+    {
+      "alias": "Agaricus arvensis subsp. stramineus",
+      "preferred": "Agaricus urinascens",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum",
+      "reject": "curated_conflict",
+      "existing": "Agaricus excellens"
+    },
+    {
+      "alias": "Agaricus arvensis subsp. urinascens",
+      "preferred": "Agaricus urinascens",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum",
+      "reject": "curated_conflict",
+      "existing": "Agaricus excellens"
+    },
+    {
+      "alias": "Agaricus crocodilinus var. stramineus",
+      "preferred": "Agaricus urinascens",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum",
+      "reject": "curated_conflict",
+      "existing": "Agaricus excellens"
+    },
+    {
+      "alias": "Agaricus macrosporus",
+      "preferred": "Agaricus urinascens",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum",
+      "reject": "curated_conflict",
+      "existing": "Agaricus excellens"
+    },
+    {
+      "alias": "Agaricus macrosporus subsp. excellens",
+      "preferred": "Agaricus urinascens",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum",
+      "reject": "curated_conflict",
+      "existing": "Agaricus excellens"
+    },
+    {
+      "alias": "Agaricus macrosporus var. excellens",
+      "preferred": "Agaricus urinascens",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum",
+      "reject": "curated_conflict",
+      "existing": "Agaricus excellens"
+    },
+    {
+      "alias": "Agaricus macrosporus var. stramineus",
+      "preferred": "Agaricus urinascens",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum",
+      "reject": "curated_conflict",
+      "existing": "Agaricus excellens"
+    },
+    {
+      "alias": "Agaricus nivescens",
+      "preferred": "Agaricus urinascens",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum",
+      "reject": "curated_conflict",
+      "existing": "Agaricus excellens"
+    },
+    {
+      "alias": "Agaricus nivescens var. parkensis",
+      "preferred": "Agaricus urinascens",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum",
+      "reject": "curated_conflict",
+      "existing": "Agaricus excellens"
+    },
+    {
+      "alias": "Agaricus nivescens var. squarrosipes",
+      "preferred": "Agaricus urinascens",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum",
+      "reject": "curated_conflict",
+      "existing": "Agaricus excellens"
+    },
+    {
+      "alias": "Agaricus osecanus",
+      "preferred": "Agaricus urinascens",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum",
+      "reject": "curated_conflict",
+      "existing": "Agaricus excellens"
+    },
+    {
+      "alias": "Agaricus osecanus var. nivescens",
+      "preferred": "Agaricus urinascens",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum",
+      "reject": "curated_conflict",
+      "existing": "Agaricus excellens"
+    },
+    {
+      "alias": "Agaricus osecanus var. parkensis",
+      "preferred": "Agaricus urinascens",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum",
+      "reject": "curated_conflict",
+      "existing": "Agaricus excellens"
+    },
+    {
+      "alias": "Agaricus osecanus var. squarrosipes",
+      "preferred": "Agaricus urinascens",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum",
+      "reject": "curated_conflict",
+      "existing": "Agaricus excellens"
+    },
+    {
+      "alias": "Agaricus schaefferianus",
+      "preferred": "Agaricus urinascens",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum",
+      "reject": "curated_conflict",
+      "existing": "Agaricus excellens"
+    },
+    {
+      "alias": "Agaricus stramineosquamulosus",
+      "preferred": "Agaricus urinascens",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum",
+      "reject": "curated_conflict",
+      "existing": "Agaricus excellens"
+    },
+    {
+      "alias": "Agaricus stramineus",
+      "preferred": "Agaricus urinascens",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum",
+      "reject": "curated_conflict",
+      "existing": "Agaricus excellens"
+    },
+    {
+      "alias": "Agaricus substramineus",
+      "preferred": "Agaricus urinascens",
+      "reason": "if_synonym_cluster",
+      "source": "index_fungorum",
+      "reject": "curated_conflict",
+      "existing": "Agaricus excellens"
+    }
+  ],
+  "per_taxon_sample": [
+    {
+      "taxon": "Agaricus arvensis",
+      "ok": true,
+      "hits": 10,
+      "current_name": "Agaricus arvensis",
+      "if_differs": false,
+      "n_synonyms_upstream": 30,
+      "proposals": 29,
+      "error": null
+    },
+    {
+      "taxon": "Agaricus augustus",
+      "ok": true,
+      "hits": 5,
+      "current_name": "Agaricus augustus",
+      "if_differs": false,
+      "n_synonyms_upstream": 11,
+      "proposals": 10,
+      "error": null
+    },
+    {
+      "taxon": "Agaricus bisporus",
+      "ok": true,
+      "hits": 10,
+      "current_name": "Agaricus bisporus",
+      "if_differs": false,
+      "n_synonyms_upstream": 26,
+      "proposals": 25,
+      "error": null
+    },
+    {
+      "taxon": "Agaricus bitorquis",
+      "ok": true,
+      "hits": 4,
+      "current_name": "Agaricus bitorquis",
+      "if_differs": false,
+      "n_synonyms_upstream": 19,
+      "proposals": 18,
+      "error": null
+    },
+    {
+      "taxon": "Agaricus campestris",
+      "ok": true,
+      "hits": 10,
+      "current_name": "Agaricus campestris",
+      "if_differs": false,
+      "n_synonyms_upstream": 40,
+      "proposals": 39,
+      "error": null
+    },
+    {
+      "taxon": "Agaricus cupreobrunneus",
+      "ok": true,
+      "hits": 3,
+      "current_name": "Agaricus cupreobrunneus",
+      "if_differs": false,
+      "n_synonyms_upstream": 3,
+      "proposals": 2,
+      "error": null
+    },
+    {
+      "taxon": "Agaricus dulcidulus",
+      "ok": true,
+      "hits": 2,
+      "current_name": "Agaricus dulcidulus",
+      "if_differs": false,
+      "n_synonyms_upstream": 11,
+      "proposals": 10,
+      "error": null
+    },
+    {
+      "taxon": "Agaricus essettei",
+      "ok": true,
+      "hits": 1,
+      "current_name": "Agaricus sylvicola",
+      "if_differs": true,
+      "n_synonyms_upstream": 16,
+      "proposals": 14,
+      "error": null
+    },
+    {
+      "taxon": "Agaricus excellens",
+      "ok": true,
+      "hits": 1,
+      "current_name": "Agaricus crocodilinus",
+      "if_differs": true,
+      "n_synonyms_upstream": 34,
+      "proposals": 32,
+      "error": null
+    },
+    {
+      "taxon": "Agaricus freirei",
+      "ok": true,
+      "hits": 1,
+      "current_name": "Agaricus freirei",
+      "if_differs": false,
+      "n_synonyms_upstream": 1,
+      "proposals": 0,
+      "error": null
+    },
+    {
+      "taxon": "Agaricus fuscofibrillosus",
+      "ok": true,
+      "hits": 1,
+      "current_name": "Agaricus fuscofibrillosus",
+      "if_differs": false,
+      "n_synonyms_upstream": 2,
+      "proposals": 1,
+      "error": null
+    },
+    {
+      "taxon": "Agaricus impudicus",
+      "ok": true,
+      "hits": 5,
+      "current_name": "Agaricus impudicus",
+      "if_differs": false,
+      "n_synonyms_upstream": 9,
+      "proposals": 8,
+      "error": null
+    },
+    {
+      "taxon": "Agaricus langei",
+      "ok": true,
+      "hits": 4,
+      "current_name": "Agaricus langei",
+      "if_differs": false,
+      "n_synonyms_upstream": 6,
+      "proposals": 5,
+      "error": null
+    },
+    {
+      "taxon": "Agaricus lanipes",
+      "ok": true,
+      "hits": 7,
+      "current_name": "Agaricus lanipes",
+      "if_differs": false,
+      "n_synonyms_upstream": 7,
+      "proposals": 6,
+      "error": null
+    },
+    {
+      "taxon": "Agaricus maleolens",
+      "ok": true,
+      "hits": 1,
+      "current_name": "Agaricus bernardii",
+      "if_differs": true,
+      "n_synonyms_upstream": 10,
+      "proposals": 9,
+      "error": null
+    },
+    {
+      "taxon": "Agaricus moelleri",
+      "ok": true,
+      "hits": 5,
+      "current_name": "Agaricus moelleri",
+      "if_differs": false,
+      "n_synonyms_upstream": 16,
+      "proposals": 15,
+      "error": null
+    },
+    {
+      "taxon": "Agaricus pampeanus",
+      "ok": true,
+      "hits": 1,
+      "current_name": "Naucoria pampeana",
+      "if_differs": true,
+      "n_synonyms_upstream": 6,
+      "proposals": 5,
+      "error": null
+    },
+    {
+      "taxon": "Agaricus porphyrizon",
+      "ok": true,
+      "hits": 3,
+      "current_name": "Agaricus porphyrizon",
+      "if_differs": false,
+      "n_synonyms_upstream": 9,
+      "proposals": 8,
+      "error": null
+    },
+    {
+      "taxon": "Agaricus silvicola",
+      "ok": true,
+      "hits": 8,
+      "current_name": "Agaricus silvicola",
+      "if_differs": false,
+      "n_synonyms_upstream": 16,
+      "proposals": 14,
+      "error": null
+    },
+    {
+      "taxon": "Agaricus subperonatus",
+      "ok": true,
+      "hits": 1,
+      "current_name": "Agaricus subperonatus",
+      "if_differs": false,
+      "n_synonyms_upstream": 3,
+      "proposals": 2,
+      "error": null
+    },
+    {
+      "taxon": "Agaricus sylvaticus",
+      "ok": true,
+      "hits": 10,
+      "current_name": "Agaricus sylvaticus",
+      "if_differs": false,
+      "n_synonyms_upstream": 36,
+      "proposals": 35,
+      "error": null
+    },
+    {
+      "taxon": "Agaricus urinascens",
+      "ok": true,
+      "hits": 4,
+      "current_name": "Agaricus crocodilinus",
+      "if_differs": true,
+      "n_synonyms_upstream": 34,
+      "proposals": 32,
+      "error": null
+    },
+    {
+      "taxon": "Agaricus xanthoderma",
+      "ok": true,
+      "hits": 10,
+      "current_name": "Agaricus xanthoderma",
+      "if_differs": false,
+      "n_synonyms_upstream": 19,
+      "proposals": 18,
+      "error": null
+    },
+    {
+      "taxon": "Agrocybe pediades",
+      "ok": true,
+      "hits": 10,
+      "current_name": "Agrocybe pediades",
+      "if_differs": false,
+      "n_synonyms_upstream": 34,
+      "proposals": 33,
+      "error": null
+    },
+    {
+      "taxon": "Agrocybe praecox",
+      "ok": true,
+      "hits": 9,
+      "current_name": "Agrocybe praecox",
+      "if_differs": false,
+      "n_synonyms_upstream": 40,
+      "proposals": 39,
+      "error": null
+    },
+    {
+      "taxon": "Albatrellus ovinus",
+      "ok": true,
+      "hits": 3,
+      "current_name": "Albatrellus ovinus",
+      "if_differs": false,
+      "n_synonyms_upstream": 14,
+      "proposals": 13,
+      "error": null
+    },
+    {
+      "taxon": "Aleuria aurantia",
+      "ok": true,
+      "hits": 3,
+      "current_name": "Aleuria aurantia",
+      "if_differs": false,
+      "n_synonyms_upstream": 8,
+      "proposals": 7,
+      "error": null
+    },
+    {
+      "taxon": "Amanita battarrae",
+      "ok": true,
+      "hits": 1,
+      "current_name": "Amanita battarrae",
+      "if_differs": false,
+      "n_synonyms_upstream": 12,
+      "proposals": 10,
+      "error": null
+    },
+    {
+      "taxon": "Amanita caesarea",
+      "ok": true,
+      "hits": 10,
+      "current_name": "Amanita caesarea",
+      "if_differs": false,
+      "n_synonyms_upstream": 15,
+      "proposals": 14,
+      "error": null
+    },
+    {
+      "taxon": "Amanita ceciliae",
+      "ok": true,
+      "hits": 3,
+      "current_name": "Amanita ceciliae",
+      "if_differs": false,
+      "n_synonyms_upstream": 9,
+      "proposals": 8,
+      "error": null
+    },
+    {
+      "taxon": "Amanita citrina",
+      "ok": true,
+      "hits": 10,
+      "current_name": "Amanita citrina",
+      "if_differs": false,
+      "n_synonyms_upstream": 36,
+      "proposals": 35,
+      "error": null
+    },
+    {
+      "taxon": "Amanita codinae",
+      "ok": true,
+      "hits": 1,
+      "current_name": "Saproamanita codinae",
+      "if_differs": true,
+      "n_synonyms_upstream": 6,
+      "proposals": 5,
+      "error": null
+    },
+    {
+      "taxon": "Amanita crocea",
+      "ok": true,
+      "hits": 6,
+      "current_name": "Amanita crocea",
+      "if_differs": false,
+      "n_synonyms_upstream": 4,
+      "proposals": 3,
+      "error": null
+    },
+    {
+      "taxon": "Amanita echinocephala",
+      "ok": true,
+      "hits": 7,
+      "current_name": "Amanita echinocephala",
+      "if_differs": false,
+      "n_synonyms_upstream": 20,
+      "proposals": 19,
+      "error": null
+    },
+    {
+      "taxon": "Amanita eliae",
+      "ok": true,
+      "hits": 8,
+      "current_name": "Amanita eliae",
+      "if_differs": false,
+      "n_synonyms_upstream": 9,
+      "proposals": 8,
+      "error": null
+    },
+    {
+      "taxon": "Amanita excelsa",
+      "ok": true,
+      "hits": 10,
+      "current_name": "Amanita excelsa",
+      "if_differs": false,
+      "n_synonyms_upstream": 40,
+      "proposals": 39,
+      "error": null
+    },
+    {
+      "taxon": "Amanita franchetii",
+      "ok": true,
+      "hits": 6,
+      "current_name": "Amanita franchetii",
+      "if_differs": false,
+      "n_synonyms_upstream": 9,
+      "proposals": 8,
+      "error": null
+    },
+    {
+      "taxon": "Amanita fulva",
+      "ok": true,
+      "hits": 5,
+      "current_name": "Amanita fulva",
+      "if_differs": false,
+      "n_synonyms_upstream": 10,
+      "proposals": 9,
+      "error": null
+    },
+    {
+      "taxon": "Amanita gemmata",
+      "ok": true,
+      "hits": 10,
+      "current_name": "Amanita gemmata",
+      "if_differs": false,
+      "n_synonyms_upstream": 31,
+      "proposals": 30,
+      "error": null
+    },
+    {
+      "taxon": "Amanita lividopallescens",
+      "ok": true,
+      "hits": 10,
+      "current_name": "Amanita lividopallescens",
+      "if_differs": false,
+      "n_synonyms_upstream": 7,
+      "proposals": 6,
+      "error": null
+    }
+  ],
+  "per_taxon_errors": [
+    {
+      "taxon": "Amanita vitadini",
+      "ok": false,
+      "hits": 0,
+      "current_name": null,
+      "if_differs": null,
+      "n_synonyms_upstream": 0,
+      "proposals": 0,
+      "error": "no_match"
+    },
+    {
+      "taxon": "Cortinarius bollardii",
+      "ok": false,
+      "hits": 0,
+      "current_name": null,
+      "if_differs": null,
+      "n_synonyms_upstream": 0,
+      "proposals": 0,
+      "error": "no_match"
+    },
+    {
+      "taxon": "Lactarius ligyotus",
+      "ok": false,
+      "hits": 0,
+      "current_name": null,
+      "if_differs": null,
+      "n_synonyms_upstream": 0,
+      "proposals": 0,
+      "error": "no_match"
+    },
+    {
+      "taxon": "Picosphaera cistidiolens",
+      "ok": false,
+      "hits": 0,
+      "current_name": null,
+      "if_differs": null,
+      "n_synonyms_upstream": 0,
+      "proposals": 0,
+      "error": "no_match"
+    },
+    {
+      "taxon": "Rubroboletus luridus",
+      "ok": false,
+      "hits": 0,
+      "current_name": null,
+      "if_differs": null,
+      "n_synonyms_upstream": 0,
+      "proposals": 0,
+      "error": "no_match"
+    },
+    {
+      "taxon": "Tricholoma monspessulanum",
+      "ok": false,
+      "hits": 0,
+      "current_name": null,
+      "if_differs": null,
+      "n_synonyms_upstream": 0,
+      "proposals": 0,
+      "error": "no_match"
+    }
+  ],
+  "apply": true
+}

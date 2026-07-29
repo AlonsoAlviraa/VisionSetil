@@ -26,5 +26,11 @@
   },
   "deadly_species_known": 26,
   "deadly_species_in_dataset": 4,
-  "version": "v8"
+  "version": "v8",
+  "safety_recall_deadly_at_1": 0.0,
+  "safety_recall_deadly_at_3": 0.0,
+  "safety_recall_deadly_definition": "at_3",
+  "n_deadly_eval": 9,
+  "deadly_index_source": "industrial_v1/deadly_set.json+label2idx",
+  "honesty_dual_recompute_at": "2026-07-27T18:44:28.564438+00:00"
 }

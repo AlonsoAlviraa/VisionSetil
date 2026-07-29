@@ -1,0 +1,13 @@
+
+ RUN  v3.2.7 C:/Users/Mariano/Documents/ALONSOO/VISIONSETIL/frontend
+
+ ✓ src/lib/slug.test.ts (7 tests) 66ms
+ ✓ src/lib/i18nParity.test.ts (5 tests) 53ms
+ ✓ src/data/speciesCatalog.split.test.ts (8 tests) 99ms
+ ✓ src/data/namesEs.test.ts (15 tests) 100ms
+
+ Test Files  4 passed (4)
+      Tests  35 passed (35)
+   Start at  20:57:09
+   Duration  1.04s (transform 270ms, setup 558ms, collect 447ms, tests 318ms, environment 1ms, prepare 756ms)
+

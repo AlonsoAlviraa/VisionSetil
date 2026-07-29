@@ -128,10 +128,15 @@ class Settings(BaseSettings):
     # (conf>=0.10 → ~16% acc@20% accept). Product still abstains aggressively.
     open_set_min_confidence: float = Field(default=0.48)
     open_set_min_margin: float = Field(default=0.10)
-    # Recommended offline calibration for current multi-view v9 checkpoint
-    # (see experiment_battery_report.json → best_open_set).
+    # Multiview conf/margin defaults. Legacy v9 few-shot used 0.10/0.0 (near-zero
+    # reject on E20 overconfident softmax). When eval/reports/open_set_thresholds.json
+    # has status calibrated*, MultiView prefers those (E20 ~0.92/0.05). Settings
+    # remain the fallback when no calibrated file is present.
     multiview_open_set_conf_thr: float = Field(default=0.10)
     multiview_open_set_margin_thr: float = Field(default=0.0)
+    # Secondary Shannon-entropy thr (nats). None/disabled when 0. Calibrated E20
+    # file may set calibrated_entropy (~0.25). Catches multi-modal uncertain mass.
+    open_set_max_entropy: float = Field(default=0.0)
     multiview_temperature_recommended: float = Field(default=1.5)
     # Hard product gate: if on-disk test MAP@3 is below this, classify NEVER
     # returns decision=accepted (species ID blocked). v9 is ~0.076 → blocked.
@@ -159,7 +164,8 @@ class Settings(BaseSettings):
     # Path to the trained MultiViewModel checkpoint (torch .pt).
     # Prefer in-repo Kaggle best.pt when present; else backend/app/ml/weights/.
     multi_view_weights_path: Path = Field(
-        default=_REPO_ROOT / "kaggle" / "kernel_output_v9" / "models" / "best.pt"
+        # Prefer E20 source-holdout when present; weight_discovery also scans v*.
+        default=_REPO_ROOT / "kaggle" / "kernel_output_v20" / "models" / "best.pt"
     )
     # Path to the view classifier ONNX weights.
     view_classifier_model_path: str = Field(default="")

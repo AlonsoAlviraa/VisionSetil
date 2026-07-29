@@ -1,0 +1,289 @@
+{
+  "generated": "2026-07-27T20:50:26.728423+00:00",
+  "overall": "PASS",
+  "product_unlock": false,
+  "policy": "orientation_only_never_consume",
+  "artifacts": "kaggle/kernel_output_v20/models",
+  "n_test": 7385,
+  "n_classes": 40,
+  "n_deadly": 11,
+  "thresholds": {
+    "calibrated_threshold": 0.92,
+    "calibrated_margin": 0.05,
+    "calibrated_entropy": 0.15,
+    "status": "calibrated_e20_holdout"
+  },
+  "product_contracts": {
+    "canonical_order": [
+      "gills",
+      "front",
+      "habitat",
+      "detail"
+    ],
+    "slots": [
+      {
+        "view": "gills",
+        "required": true,
+        "weight": 0.38
+      },
+      {
+        "view": "front",
+        "required": true,
+        "weight": 0.32
+      },
+      {
+        "view": "habitat",
+        "required": false,
+        "weight": 0.15
+      },
+      {
+        "view": "detail",
+        "required": false,
+        "weight": 0.15
+      }
+    ],
+    "soft_submit_min_photos": 1,
+    "recommended_min_for_field_id": 2,
+    "full_packet": 4,
+    "policy": "orientation_only_never_consume",
+    "note": "gills+front first (Picture Mushroom / field-guide style)"
+  },
+  "proxy_ablation": {
+    "baseline_full_model": {
+      "n": 7385,
+      "top1": 0.802,
+      "map_at_3": 0.8603,
+      "deadly_at_3": 0.9271,
+      "reject_rate": 0.182,
+      "n_keep": 6041,
+      "acc_keep": 0.8808,
+      "map3_keep": 0.9192,
+      "deadly_reject_rate": 0.1547,
+      "deadly_at3_among_kept": 0.9679,
+      "wrong_kept": 720,
+      "conf_thr": 0.92,
+      "margin_thr": 0.05,
+      "entropy_thr": 0.15
+    },
+    "by_n_views": {
+      "1": {
+        "n": 7385,
+        "top1": 0.5206,
+        "map_at_3": 0.5836,
+        "deadly_at_3": 0.6609,
+        "reject_rate": 1.0,
+        "n_keep": 0,
+        "acc_keep": null,
+        "map3_keep": null,
+        "deadly_reject_rate": 1.0,
+        "deadly_at3_among_kept": null,
+        "wrong_kept": 0,
+        "conf_thr": 0.92,
+        "margin_thr": 0.05,
+        "entropy_thr": 0.15,
+        "signal_alpha": 0.38,
+        "temperature": 2.6316,
+        "interpretation": "single photo (high T + rank noise proxy)"
+      },
+      "2": {
+        "n": 7385,
+        "top1": 0.6745,
+        "map_at_3": 0.7357,
+        "deadly_at_3": 0.8066,
+        "reject_rate": 0.655,
+        "n_keep": 2548,
+        "acc_keep": 0.7681,
+        "map3_keep": 0.7973,
+        "deadly_reject_rate": 0.3283,
+        "deadly_at3_among_kept": 0.8419,
+        "wrong_kept": 591,
+        "conf_thr": 0.92,
+        "margin_thr": 0.05,
+        "entropy_thr": 0.15,
+        "signal_alpha": 0.7,
+        "temperature": 1.4286,
+        "interpretation": "inferior + profile (required pair)"
+      },
+      "3": {
+        "n": 7385,
+        "top1": 0.7355,
+        "map_at_3": 0.7949,
+        "deadly_at_3": 0.862,
+        "reject_rate": 0.3043,
+        "n_keep": 5138,
+        "acc_keep": 0.8285,
+        "map3_keep": 0.8597,
+        "deadly_reject_rate": 0.224,
+        "deadly_at3_among_kept": 0.8986,
+        "wrong_kept": 881,
+        "conf_thr": 0.92,
+        "margin_thr": 0.05,
+        "entropy_thr": 0.15,
+        "signal_alpha": 0.85,
+        "temperature": 1.1765,
+        "interpretation": "three of four slots"
+      },
+      "4": {
+        "n": 7385,
+        "top1": 0.802,
+        "map_at_3": 0.8603,
+        "deadly_at_3": 0.9271,
+        "reject_rate": 0.182,
+        "n_keep": 6041,
+        "acc_keep": 0.8808,
+        "map3_keep": 0.9192,
+        "deadly_reject_rate": 0.1547,
+        "deadly_at3_among_kept": 0.9679,
+        "wrong_kept": 720,
+        "conf_thr": 0.92,
+        "margin_thr": 0.05,
+        "entropy_thr": 0.15,
+        "signal_alpha": 1.0,
+        "temperature": 1.0,
+        "interpretation": "full 4-photo packet (T≈1, no rank noise)"
+      }
+    },
+    "leave_one_view_out": {
+      "gills": {
+        "signal_alpha": 0.62,
+        "map_at_3": 0.7021,
+        "top1": 0.6401,
+        "deadly_at_3": 0.774,
+        "reject_rate": 0.8895,
+        "delta_map3_vs_full": -0.1582,
+        "delta_reject_vs_full": 0.7075,
+        "weight": 0.38
+      },
+      "front": {
+        "signal_alpha": 0.68,
+        "map_at_3": 0.7181,
+        "top1": 0.6566,
+        "deadly_at_3": 0.7915,
+        "reject_rate": 0.7453,
+        "delta_map3_vs_full": -0.1422,
+        "delta_reject_vs_full": 0.5633,
+        "weight": 0.32
+      },
+      "habitat": {
+        "signal_alpha": 0.85,
+        "map_at_3": 0.7943,
+        "top1": 0.7343,
+        "deadly_at_3": 0.8651,
+        "reject_rate": 0.3043,
+        "delta_map3_vs_full": -0.066,
+        "delta_reject_vs_full": 0.1223,
+        "weight": 0.15
+      },
+      "detail": {
+        "signal_alpha": 0.85,
+        "map_at_3": 0.7965,
+        "top1": 0.7372,
+        "deadly_at_3": 0.864,
+        "reject_rate": 0.3043,
+        "delta_map3_vs_full": -0.0638,
+        "delta_reject_vs_full": 0.1223,
+        "weight": 0.15
+      }
+    },
+    "gates": {
+      "reject_drops_from_1_to_4": true,
+      "map3_full_ge_single": true,
+      "required_pair_beats_or_ties_single": true,
+      "map3_monotone_soft": true,
+      "pass": true
+    },
+    "deltas": {
+      "map3_2_minus_1": 0.1521,
+      "map3_4_minus_1": 0.2767,
+      "map3_4_minus_2": 0.1246,
+      "reject_1_minus_4": 0.818,
+      "deadly3_4_minus_1": 0.2662
+    },
+    "method": "proxy: temperature T=1/alpha + rank-noise ∝ (1-alpha) using mycology view weights; not paired same-specimen photos. Complements torch n_views smoke."
+  },
+  "torch_forward_smoke": {
+    "ok": true,
+    "load_seconds": 6.906,
+    "arch": "multiview_v8",
+    "num_classes": 40,
+    "forwards": [
+      {
+        "n_views": 1,
+        "ok": true,
+        "error": null,
+        "ms": 195.36,
+        "logits_shape": [
+          1,
+          40
+        ],
+        "emb_shape": [
+          1,
+          576
+        ],
+        "view_indices": [
+          0
+        ],
+        "slot_names": [
+          "gills"
+        ]
+      },
+      {
+        "n_views": 2,
+        "ok": true,
+        "error": null,
+        "ms": 297.31,
+        "logits_shape": [
+          1,
+          40
+        ],
+        "emb_shape": [
+          1,
+          576
+        ],
+        "view_indices": [
+          0,
+          1
+        ],
+        "slot_names": [
+          "gills",
+          "front"
+        ]
+      },
+      {
+        "n_views": 4,
+        "ok": true,
+        "error": null,
+        "ms": 527.25,
+        "logits_shape": [
+          1,
+          40
+        ],
+        "emb_shape": [
+          1,
+          576
+        ],
+        "view_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "slot_names": [
+          "gills",
+          "front",
+          "habitat",
+          "detail"
+        ]
+      }
+    ],
+    "device": "cpu",
+    "checkpoint": "kaggle/kernel_output_v20/models/best.pt",
+    "interpretation": "PASS: MultiView accepts 1/2/4 photo tensors with view_idx encoding"
+  },
+  "verdict": "Proxy: reject drops 1→4 by 0.818 ( thr keeps more IDs when multi-view signal is full); MAP@3 (4−1)=0.2767; required pair ≥ single-view. Torch accepts 1/2/4 slots. Torch MultiView accepts 1/2/4 view batches with slot indices.",
+  "limitations": [
+    "Proxy mixes softmax with uniform using fixed view weights — not paired multi-photo field labels.",
+    "True leave-one-photo-out needs same-specimen multi-view folders in holdout.",
+    "Never use scores as consumption permission."
+  ]
+}

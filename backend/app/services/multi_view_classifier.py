@@ -46,7 +46,12 @@ from app.db.schemas import (
 from app.services.classifier import MockMushroomClassifier
 from app.services.quality_validation import ImageQualityValidationService
 from app.services.safety_explanation import SafetyExplanationService
-from app.services.species_catalog import list_mock_species_catalog, list_poisonous_species
+from app.services.poisonous_lookalikes import normalize_lookalike_names
+from app.services.species_catalog import (
+    list_expanded_species_catalog,
+    list_mock_species_catalog,
+    list_poisonous_species,
+)
 from app.services.view_classifier import CANONICAL_VIEWS, ViewClassifier
 
 logger = logging.getLogger(__name__)
@@ -69,6 +74,7 @@ class MultiViewMushroomClassifier:
         self.label2idx: dict[str, int] = {}
         self.idx2label: dict[int, str] = {}
         self.class_centroids: np.ndarray | None = None
+        self._centroids_source: str | None = None
         self._torch_model = None  # loaded lazily
         self._mock_fallback: MockMushroomClassifier | None = None
         self._checkpoint: dict[str, Any] | None = None
@@ -80,16 +86,60 @@ class MultiViewMushroomClassifier:
         self.last_ml_notes: list[str] = []
         self._deadly_idx: set[int] = set()
         self._deadly_names: set[str] = set()
+        self._serve_temperature: float | None = None
 
         # Shared services (same as mock for the safety layer).
         self.catalog = list_mock_species_catalog()
         self.poisonous = list_poisonous_species()
+        self._lookalike_index = self._build_lookalike_index()
         self.safety_service = SafetyExplanationService()
         self.quality_service = ImageQualityValidationService()
         self.view_classifier = ViewClassifier(device=self.device)
 
         self._try_load_weights()
         self._rebuild_deadly_index()
+
+    def _build_lookalike_index(self) -> dict[str, list[str]]:
+        """Taxon (lower) → curated lookalike scientific names from SSOT/expanded."""
+        idx: dict[str, list[str]] = {}
+        try:
+            payload = list_expanded_species_catalog()
+            for row in payload.get("species") or []:
+                taxon = str(row.get("taxon") or "").strip()
+                if not taxon:
+                    continue
+                names = normalize_lookalike_names(row.get("lookalikes"))
+                if names:
+                    idx[taxon.lower()] = names
+        except Exception as exc:  # pragma: no cover — defensive catalog load
+            logger.warning("lookalike index from expanded catalog failed: %s", exc)
+        for row in self.catalog or []:
+            taxon = str(row.get("taxon") or "").strip()
+            if not taxon:
+                continue
+            key = taxon.lower()
+            if key in idx:
+                continue
+            names = normalize_lookalike_names(row.get("lookalikes"))
+            if names:
+                idx[key] = names
+        return idx
+
+    def _lookalikes_for(self, taxon: str) -> list[str]:
+        """Catalog lookalikes for a predicted taxon (never invents pairs)."""
+        from app.services.poisonous_lookalikes import canonical_taxon_name
+
+        key = canonical_taxon_name(str(taxon or "").strip())
+        names = list(self._lookalike_index.get(key.lower(), []))
+        if key.startswith("Amanita"):
+            poisonous = [
+                item["latin_name"]
+                for item in self.poisonous
+                if str(item.get("latin_name", "")).startswith("Amanita")
+            ]
+            names = list(dict.fromkeys(poisonous + names))
+        # Never list the taxon as its own lookalike
+        return [n for n in names if n.strip().lower() != key.lower()]
 
     # ------------------------------------------------------------------ #
     # Weight loading
@@ -134,6 +184,22 @@ class MultiViewMushroomClassifier:
             raw_l2i = checkpoint.get("label2idx") or {}
             # label2idx may map str->int
             self.label2idx = {str(k): int(v) for k, v in raw_l2i.items()}
+            # Sibling SSOT when checkpoint omits labels (E20+ always ships label2idx.json)
+            if not self.label2idx:
+                sib_l2i = Path(weights_path).parent / "label2idx.json"
+                if sib_l2i.is_file():
+                    try:
+                        import json as _json
+
+                        raw = _json.loads(sib_l2i.read_text(encoding="utf-8"))
+                        if isinstance(raw, dict):
+                            self.label2idx = {str(k): int(v) for k, v in raw.items()}
+                            logger.info(
+                                "MultiViewMushroomClassifier: label2idx from sibling %s",
+                                sib_l2i,
+                            )
+                    except (OSError, ValueError, TypeError) as exc:
+                        logger.warning("sibling label2idx load failed: %s", exc)
             self.idx2label = {v: k for k, v in self.label2idx.items()}
             self.labels_loaded = bool(self.label2idx)
             # metadata vocab maps str->idx from training
@@ -149,6 +215,24 @@ class MultiViewMushroomClassifier:
             centroids_path = Path(weights_path).parent / "class_centroids.npy"
             if centroids_path.exists():
                 self.class_centroids = np.load(centroids_path)
+                self._centroids_source = f"file:{centroids_path.name}"
+            else:
+                # ArcFace class prototypes (num_classes, d) double as centroids for
+                # cosine open-set when no offline class_centroids.npy was exported.
+                extracted = self._extract_arcface_centroids(checkpoint)
+                if extracted is not None:
+                    self.class_centroids = extracted
+                    self._centroids_source = "checkpoint:arcface.weight"
+                    try:
+                        np.save(centroids_path, extracted)
+                        self._centroids_source = "checkpoint:arcface.weight→class_centroids.npy"
+                        logger.info(
+                            "MultiViewMushroomClassifier: wrote ArcFace centroids to %s shape=%s",
+                            centroids_path,
+                            extracted.shape,
+                        )
+                    except OSError as exc:
+                        logger.warning("could not persist class_centroids.npy: %s", exc)
 
             species_index_path = Path(weights_path).parent / "species_index.npz"
             if species_index_path.exists():
@@ -157,6 +241,20 @@ class MultiViewMushroomClassifier:
                     "MultiViewMushroomClassifier: loaded species index from %s",
                     species_index_path,
                 )
+
+            # Prefer learned scalar temperature from sibling metrics (E20 temperature~1.59)
+            self._serve_temperature: float | None = None
+            sib_metrics = Path(weights_path).parent / "metrics.json"
+            if sib_metrics.is_file():
+                try:
+                    import json as _json
+
+                    md = _json.loads(sib_metrics.read_text(encoding="utf-8"))
+                    t_val = md.get("temperature")
+                    if t_val is not None:
+                        self._serve_temperature = float(t_val)
+                except (OSError, ValueError, TypeError):
+                    pass
 
             self._torch_model = self._load_torch_model(checkpoint)
             # Real ONLY if torch model bound, labels present, and no load_error
@@ -321,6 +419,22 @@ class MultiViewMushroomClassifier:
             repo_root=getattr(settings, "repo_root", None) or settings.base_dir.parent,
         )
         arch = (self._arch_info or {}).get("arch") if self._arch_info else None
+        open_set_active: dict = {
+            "cosine_threshold": settings.model_open_set_threshold,
+        }
+        try:
+            from app.services.species_catalog import describe_active_open_set_thresholds
+
+            open_set_active = {
+                **describe_active_open_set_thresholds(),
+                "cosine_threshold": settings.model_open_set_threshold,
+            }
+        except Exception:
+            open_set_active["status"] = "describe_failed"
+        open_set_active["centroids_loaded"] = self.class_centroids is not None
+        open_set_active["centroids_source"] = self._centroids_source
+        if self.class_centroids is not None:
+            open_set_active["centroids_shape"] = list(self.class_centroids.shape)
         return {
             "backend": (f"real_{arch or 'multiview'}" if self.is_real else "mock_fallback"),
             "loaded": self.is_real,
@@ -332,6 +446,10 @@ class MultiViewMushroomClassifier:
             "num_classes": len(self.label2idx),
             "view_classifier_real": getattr(self.view_classifier, "is_real", False),
             "open_set_threshold": settings.model_open_set_threshold,
+            "open_set": open_set_active,
+            "centroids_loaded": self.class_centroids is not None,
+            "centroids_source": self._centroids_source,
+            "serve_temperature": getattr(self, "_serve_temperature", None),
             "load_error": self.load_error,
             "mock_fallback_active": self._mock_fallback is not None and not self.is_real,
             "discovery": discovery,
@@ -720,10 +838,57 @@ class MultiViewMushroomClassifier:
             if sp.strip().lower() in names:
                 self._deadly_idx.add(int(idx))
 
+    @staticmethod
+    def _extract_arcface_centroids(checkpoint: dict[str, Any]) -> np.ndarray | None:
+        """Pull ArcFace class prototypes from checkpoint state dict.
+
+        E20 multi-view stores ``arcface.weight`` as (num_classes, d_model).
+        These L2-normalized rows act as open-set class centroids when no
+        offline ``class_centroids.npy`` was shipped.
+        """
+        ms = checkpoint.get("model_state") or checkpoint.get("state_dict") or {}
+        if not isinstance(ms, dict):
+            return None
+        candidates = (
+            "arcface.weight",
+            "head.weight",
+            "module.arcface.weight",
+            "module.head.weight",
+        )
+        for key in candidates:
+            if key not in ms:
+                continue
+            w = ms[key]
+            try:
+                arr = w.detach().cpu().numpy() if hasattr(w, "detach") else np.asarray(w)
+            except Exception:
+                continue
+            if arr.ndim == 2 and arr.shape[0] >= 2 and arr.shape[1] >= 8:
+                # L2-normalize rows for cosine open-set
+                norms = np.linalg.norm(arr, axis=1, keepdims=True) + 1e-8
+                return (arr / norms).astype(np.float32)
+        # Fuzzy scan for arcface.weight under prefixes
+        for key, w in ms.items():
+            if not str(key).endswith("arcface.weight"):
+                continue
+            try:
+                arr = w.detach().cpu().numpy() if hasattr(w, "detach") else np.asarray(w)
+            except Exception:
+                continue
+            if arr.ndim == 2 and arr.shape[0] >= 2:
+                norms = np.linalg.norm(arr, axis=1, keepdims=True) + 1e-8
+                return (arr / norms).astype(np.float32)
+        return None
+
     def _apply_temperature(self, logits: np.ndarray, views: list[str]) -> np.ndarray:
-        """Apply temperature scaling. Uses recommended T for weak multi-view v9."""
+        """Apply temperature scaling.
+
+        Prefer T from sibling metrics.json (E20 holdout fitted temperature),
+        then settings.multiview_temperature_recommended, then model_temperature.
+        """
         T = float(
-            getattr(settings, "multiview_temperature_recommended", None)
+            getattr(self, "_serve_temperature", None)
+            or getattr(settings, "multiview_temperature_recommended", None)
             or settings.model_temperature
             or 1.5
         )
@@ -737,8 +902,9 @@ class MultiViewMushroomClassifier:
     ) -> tuple[bool, float]:
         """Reject when weak evidence — conf/margin first, then centroids.
 
-        With the v9 few-shot checkpoint (MAP@3~0.08), confidence/margin open-set
-        is mandatory: never pretend high certainty.
+        Prefer E20 holdout-calibrated thresholds from ``open_set_thresholds.json``
+        when present (see S8 / ``kaggle/ml_qa/open_set_holdout.py``). Fall back
+        to multiview settings (legacy v9 defaults were very low: 0.10 / 0.0).
         """
         conf_thr = float(
             getattr(settings, "multiview_open_set_conf_thr", None)
@@ -747,6 +913,22 @@ class MultiViewMushroomClassifier:
         margin_thr = float(
             getattr(settings, "multiview_open_set_margin_thr", None) or settings.open_set_min_margin
         )
+        entropy_thr = float(getattr(settings, "open_set_max_entropy", 0.0) or 0.0)
+        # Prefer calibrated file when status is calibrated* (E20+). Do not use
+        # settings_fallback blob as override — that would ignore multiview knobs.
+        try:
+            from app.services.species_catalog import load_open_set_thresholds
+
+            thr = load_open_set_thresholds()
+            status = str(thr.get("status") or "")
+            if status.startswith("calibrated") and thr.get("calibrated_threshold") is not None:
+                conf_thr = float(thr["calibrated_threshold"])
+                if thr.get("calibrated_margin") is not None:
+                    margin_thr = float(thr["calibrated_margin"])
+                if thr.get("calibrated_entropy") is not None:
+                    entropy_thr = float(thr["calibrated_entropy"])
+        except Exception:
+            pass
 
         score = 0.0
         if probs is not None and len(probs) >= 2:
@@ -760,6 +942,14 @@ class MultiViewMushroomClassifier:
             # Also reject if max conf is still tiny (flat distribution)
             if top1 < 0.15:
                 return True, score
+            # Secondary: high Shannon entropy → multi-modal uncertainty
+            if entropy_thr > 0.0:
+                p = np.asarray(probs, dtype=np.float64)
+                p = np.clip(p, 1e-12, 1.0)
+                p = p / p.sum()
+                ent = float(-(p * np.log(p)).sum())
+                if ent > entropy_thr:
+                    return True, score
 
         if self.class_centroids is not None and len(self.class_centroids) > 0:
             emb_norm = embedding / (np.linalg.norm(embedding) + 1e-8)
@@ -853,21 +1043,35 @@ class MultiViewMushroomClassifier:
                     if is_deadly
                     else "Validacion experta requerida. Nunca consumir por esta app."
                 )
+                lookalikes = self._lookalikes_for(taxon)
                 candidate = {
                     "taxon": taxon,
                     "rank": "species",
                     "risk_level": risk,
                     "warning": warning,
-                    "lookalikes": [],
+                    "lookalikes": lookalikes,
                 }
             else:
                 catalog_idx = int(idx) % len(self.catalog)
-                candidate = self.catalog[catalog_idx]
+                candidate = dict(self.catalog[catalog_idx])
+                # Prefer SSOT lookalike index over empty mock fields
+                if not candidate.get("lookalikes"):
+                    candidate["lookalikes"] = self._lookalikes_for(
+                        str(candidate.get("taxon") or "")
+                    )
+                else:
+                    candidate["lookalikes"] = normalize_lookalike_names(
+                        candidate.get("lookalikes")
+                    )
 
             confidence = float(probs[idx])
             # Honest ceiling: weak few-shot model must never show high confidence.
             # Removed artificial floor of 0.12 (that greenwashed uncertainty).
             confidence = min(confidence, 0.45)
+
+            lookalikes = normalize_lookalike_names(
+                candidate.get("lookalikes") or self._lookalikes_for(str(candidate.get("taxon") or ""))
+            )
 
             candidates.append(
                 CandidateResult(
@@ -880,7 +1084,7 @@ class MultiViewMushroomClassifier:
                     risk_level=candidate.get("risk_level", "unknown"),
                     reasoning=self._reasoning(views, observation),
                     danger_notes=self._danger_notes(candidate, images),
-                    lookalikes=candidate.get("lookalikes", []),
+                    lookalikes=lookalikes,
                     explanation="Clasificacion multi-vista orientativa; requiere validacion experta.",
                 )
             )

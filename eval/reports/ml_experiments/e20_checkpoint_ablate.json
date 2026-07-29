@@ -1,0 +1,34 @@
+{
+  "generated": "2026-07-27T19:29:44.250537+00:00",
+  "policy": "orientation_only_never_consume",
+  "product_unlock": false,
+  "serve_default": "best.pt",
+  "serve_default_reason": "primary protocol is MAP@3 peak; holdout metrics attached to MAP path",
+  "holdout_test": {
+    "test_map_at_3": 0.8603024148047814,
+    "safety_recall_deadly_at_3": 0.9271317829457364,
+    "primary_checkpoint": "best.pt (MAP@3); best_deadly.pt also saved on deadly@3 peak",
+    "version": "v20-E20-source-holdout"
+  },
+  "checkpoints": {
+    "best.pt": {
+      "path": "kaggle\\kernel_output_v20\\models\\best.pt",
+      "exists": true,
+      "checkpoint_kind": "best_map3",
+      "epoch": 6,
+      "val_map3": 0.965127701375246,
+      "val_deadly3": 0.9900662251655629,
+      "n_classes": 40
+    },
+    "best_deadly.pt": {
+      "path": "kaggle\\kernel_output_v20\\models\\best_deadly.pt",
+      "exists": true,
+      "checkpoint_kind": "best_deadly3",
+      "epoch": 2,
+      "val_map3": 0.9079895219384421,
+      "val_deadly3": 0.9933774834437086,
+      "n_classes": 40
+    }
+  },
+  "recommendation": "Keep serve on best.pt. best_deadly.pt is an earlier-epoch deadly@3 peak with lower val MAP \u2014 use only for explicit safety ablations, not default serve."
+}

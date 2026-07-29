@@ -1,0 +1,93 @@
+{
+  "ok": true,
+  "product_unlock": false,
+  "generated": "2026-07-28T11:21:27.645591+00:00",
+  "predictions_dir": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models",
+  "protocol": "source_holdout_e20",
+  "version": "v20-E20-source-holdout",
+  "n": 7385,
+  "top1_accuracy": 0.802031144211239,
+  "conf_stats": {
+    "mean_correct": 0.9818292929703333,
+    "mean_wrong": 0.875088734804524,
+    "p5_correct": 0.9051994919776917,
+    "p5_wrong": 0.4689792200922966,
+    "p50_wrong": 0.9759523570537567
+  },
+  "margin_stats": {
+    "mean_correct": 0.9697656552894771,
+    "mean_wrong": 0.7999124722574499,
+    "p5_wrong": 0.13286353945732116
+  },
+  "entropy_stats": {
+    "mean_correct": 0.0747303850302931,
+    "mean_wrong": 0.43600347782909715,
+    "p90_correct": 0.1540431712088868,
+    "p50_wrong": 0.1607682143297715
+  },
+  "current_multiview_thr": {
+    "conf_thr": 0.1,
+    "margin_thr": 0.0,
+    "entropy_thr": null,
+    "n": 7385,
+    "n_reject": 0,
+    "n_keep": 7385,
+    "reject_rate": 0.0,
+    "acc_keep": 0.802031144211239,
+    "acc_reject": null,
+    "wrong_kept": 1462,
+    "correct_rejected": 0,
+    "frac_correct_kept": 1.0,
+    "deadly_reject_rate": 0.0,
+    "deadly_at3_among_kept": 0.9271317829457364,
+    "n_deadly": 2580,
+    "n_deadly_kept": 2580
+  },
+  "current_generic_thr": {
+    "conf_thr": 0.48,
+    "margin_thr": 0.1,
+    "entropy_thr": null,
+    "n": 7385,
+    "n_reject": 127,
+    "n_keep": 7258,
+    "reject_rate": 0.017197020988490182,
+    "acc_keep": 0.8117938826122899,
+    "acc_reject": 0.2440944881889764,
+    "wrong_kept": 1366,
+    "correct_rejected": 31,
+    "frac_correct_kept": 0.994766165794361,
+    "deadly_reject_rate": 0.005416384563303994,
+    "deadly_at3_among_kept": 0.9322834645669291,
+    "n_deadly": 2580,
+    "n_deadly_kept": 2540
+  },
+  "recommended": {
+    "conf_thr": 0.92,
+    "margin_thr": 0.05,
+    "entropy_thr": 0.15,
+    "n": 7385,
+    "n_reject": 1344,
+    "n_keep": 6041,
+    "reject_rate": 0.1819905213270142,
+    "acc_keep": 0.8808144346962423,
+    "acc_reject": 0.4479166666666667,
+    "wrong_kept": 720,
+    "correct_rejected": 602,
+    "frac_correct_kept": 0.8983623163937194,
+    "deadly_reject_rate": 0.05402843601895735,
+    "deadly_at3_among_kept": 0.9679046309032554,
+    "n_deadly": 2580,
+    "n_deadly_kept": 2181,
+    "score": 0.03962960057301959,
+    "note": "+entropy_secondary"
+  },
+  "lookalike_mate_rates": {
+    "lookalike_mate_in_topk_rate": 0.0988,
+    "true_in_topk_rate": 0.9275,
+    "n_eval_samples": 14455,
+    "n_pairs_in_label_space": 69,
+    "n_directed_pairs": 135,
+    "status": "PASS"
+  },
+  "note": "Orientation only. Multiview thr 0.10/0.0 rejects ~0% on E20 (overconfident softmax). Recommended thr raises abstention without product_unlock."
+}

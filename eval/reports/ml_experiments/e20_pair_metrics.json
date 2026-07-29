@@ -1,0 +1,93 @@
+{
+  "name": "S5 lookalike pair metrics",
+  "status": "PASS",
+  "detail": "{\"n_directed_pairs\": 88, \"n_pairs_in_label_space\": 34, \"n_eval_samples\": 8688, \"true_in_topk_rate\": 0.9353, \"lookalike_mate_in_topk_rate\": 0.1052, \"predictions_dir\": \"kaggle\\\\kernel_output_v20\\\\models\"}",
+  "flags": [],
+  "metrics": {
+    "n_directed_pairs": 88,
+    "k": 3,
+    "predictions_dir": "kaggle\\kernel_output_v20\\models",
+    "n_eval_samples": 8688,
+    "n_pairs_in_label_space": 34,
+    "true_in_topk_rate": 0.9353,
+    "lookalike_mate_in_topk_rate": 0.1052,
+    "note": "mate_in_topk is a confusion signal (not accuracy). Curated pairs only.",
+    "by_pair_sample": {
+      "Agaricus campestris||Amanita verna": {
+        "n": 200,
+        "mate_in_topk": 0,
+        "true_in_topk": 177
+      },
+      "Amanita citrina||Amanita phalloides": {
+        "n": 200,
+        "mate_in_topk": 120,
+        "true_in_topk": 193
+      },
+      "Amanita muscaria||Amanita caesarea": {
+        "n": 400,
+        "mate_in_topk": 0,
+        "true_in_topk": 395
+      },
+      "Amanita muscaria||Amanita pantherina": {
+        "n": 400,
+        "mate_in_topk": 273,
+        "true_in_topk": 395
+      },
+      "Amanita muscaria||Amanita fulva": {
+        "n": 400,
+        "mate_in_topk": 0,
+        "true_in_topk": 395
+      },
+      "Amanita pantherina||Amanita muscaria": {
+        "n": 400,
+        "mate_in_topk": 13,
+        "true_in_topk": 369
+      },
+      "Amanita pantherina||Amanita rubescens": {
+        "n": 400,
+        "mate_in_topk": 37,
+        "true_in_topk": 369
+      },
+      "Amanita phalloides||Russula virescens": {
+        "n": 400,
+        "mate_in_topk": 0,
+        "true_in_topk": 392
+      },
+      "Amanita phalloides||Tricholoma equestre": {
+        "n": 400,
+        "mate_in_topk": 0,
+        "true_in_topk": 392
+      },
+      "Amanita phalloides||Amanita caesarea": {
+        "n": 400,
+        "mate_in_topk": 0,
+        "true_in_topk": 392
+      },
+      "Amanita phalloides||Amanita citrina": {
+        "n": 400,
+        "mate_in_topk": 178,
+        "true_in_topk": 392
+      },
+      "Amanita phalloides||Amanita vaginata": {
+        "n": 400,
+        "mate_in_topk": 0,
+        "true_in_topk": 392
+      },
+      "Amanita phalloides||Volvopluteus gloiocephalus": {
+        "n": 400,
+        "mate_in_topk": 0,
+        "true_in_topk": 392
+      },
+      "Amanita rubescens||Amanita pantherina": {
+        "n": 200,
+        "mate_in_topk": 78,
+        "true_in_topk": 169
+      },
+      "Amanita virosa||Agaricus arvensis": {
+        "n": 7,
+        "mate_in_topk": 0,
+        "true_in_topk": 7
+      }
+    }
+  }
+}

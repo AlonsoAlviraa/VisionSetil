@@ -1,0 +1,40 @@
+{
+  "generated": "2026-07-27T20:49:57.348811+00:00",
+  "policy": "orientation_only_never_consume",
+  "before": {
+    "n_ml40": 40,
+    "catalog_total": 523,
+    "ml40_in_catalog": 40,
+    "missing": [],
+    "ml40_without_lookalikes": [],
+    "ml40_lookalike_coverage": 1.0
+  },
+  "stubs": {
+    "added_stubs": [],
+    "catalog_count": 523
+  },
+  "edges": {
+    "edges_added": 0,
+    "already": 47,
+    "skipped": 0,
+    "taxa_with_lookalikes": 79,
+    "directed_edges": 135
+  },
+  "after": {
+    "n_ml40": 40,
+    "catalog_total": 523,
+    "ml40_in_catalog": 40,
+    "missing": [],
+    "ml40_without_lookalikes": [],
+    "ml40_lookalike_coverage": 1.0
+  },
+  "diagnostic_map": {
+    "path": "data/species_catalog/multiview_diagnostic_map.json",
+    "n_pairs": 14,
+    "n_ml40": 40,
+    "ml40_in_catalog": 40,
+    "ml40_with_lookalikes": 40
+  },
+  "sync_rc": 0,
+  "dry_run": false
+}

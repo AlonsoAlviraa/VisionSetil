@@ -1,0 +1,195 @@
+{
+  "generated": "2026-07-28T08:55:03.889891+00:00",
+  "policy": "orientation_only_never_consume",
+  "product_unlock": false,
+  "can_auto_unlock": false,
+  "unlock_eligible_advisory": true,
+  "eligible_but_locked": true,
+  "operator_cycle_required": true,
+  "operator_action": "eligible_but_locked: review checklist, S9 live reject, open-set thr; only then decide unlock (still orientation-only, never consumption)",
+  "residual_lock_reasons": [
+    "policy_orientation_only_never_consume",
+    "no_auto_unlock_from_metrics_alone",
+    "all_checks_pass_but_product_unlock_forced_false_until_operator_cycle",
+    "human_operator_must_explicitly_approve_unlock"
+  ],
+  "reasons": [
+    "all_checks_pass_but_product_unlock_forced_false_until_operator_cycle"
+  ],
+  "checks": {
+    "metrics_present": true,
+    "e20_experiment": true,
+    "dual_deadly_keys": true,
+    "soft_map": true,
+    "soft_deadly_at_3": true,
+    "n_deadly_nonzero": true,
+    "orientation_only_policy": true,
+    "pro_tester_pass": true,
+    "safe_dp_freeze": true
+  },
+  "checklist": [
+    {
+      "id": "metrics_present",
+      "status": "PASS",
+      "pass": true,
+      "detail": "Metrics blob present",
+      "value": {
+        "keys": [
+          "best_epoch",
+          "best_val_map3",
+          "deadly_gate_pass_expand",
+          "deadly_gate_pass_soft",
+          "deadly_gate_status",
+          "eval_protocol",
+          "n_deadly_in_test",
+          "num_classes",
+          "num_train_obs",
+          "primary_checkpoint",
+          "safety_recall_deadly",
+          "safety_recall_deadly_at_1",
+          "safety_recall_deadly_at_3",
+          "safety_recall_deadly_definition",
+          "split_artifacts",
+          "test_accuracy",
+          "test_balanced_accuracy",
+          "test_domain",
+          "test_ece",
+          "test_f1_macro",
+          "test_map_at_3",
+          "test_map_at_3_ci_high",
+          "test_map_at_3_ci_low",
+          "train_domain"
+        ]
+      }
+    },
+    {
+      "id": "e20_experiment",
+      "status": "PASS",
+      "pass": true,
+      "detail": "Must be E20 / source-holdout experiment identity",
+      "value": {
+        "version": "v20-E20-source-holdout",
+        "eval_protocol": "source_holdout_e20"
+      }
+    },
+    {
+      "id": "dual_deadly_keys",
+      "status": "PASS",
+      "pass": true,
+      "detail": "Both safety_recall_deadly_at_1 and _at_3 required",
+      "value": {
+        "at_1": 0.7875968992248062,
+        "at_3": 0.9271317829457364
+      }
+    },
+    {
+      "id": "n_deadly_nonzero",
+      "status": "PASS",
+      "pass": true,
+      "detail": "Deadly eval set must be non-vacuous",
+      "value": 2580
+    },
+    {
+      "id": "soft_map",
+      "status": "PASS",
+      "pass": true,
+      "detail": "test_map_at_3 >= 0.25",
+      "value": 0.8603024148047814
+    },
+    {
+      "id": "soft_deadly_at_3",
+      "status": "PASS",
+      "pass": true,
+      "detail": "safety_recall_deadly_at_3 >= 0.9",
+      "value": 0.9271317829457364
+    },
+    {
+      "id": "pro_tester_pass",
+      "status": "PASS",
+      "pass": true,
+      "detail": "Professional tester overall PASS",
+      "value": true
+    },
+    {
+      "id": "safe_dp_freeze",
+      "status": "PASS",
+      "pass": true,
+      "detail": "Notebook/DataParallel freeze uses _unwrap(model).backbone",
+      "value": true
+    },
+    {
+      "id": "orientation_only_policy",
+      "status": "PASS",
+      "pass": true,
+      "detail": "product_unlock forced false; never forage/consumption permission",
+      "value": null
+    }
+  ],
+  "values": {
+    "test_map_at_3": 0.8603024148047814,
+    "safety_recall_deadly_at_1": 0.7875968992248062,
+    "safety_recall_deadly_at_3": 0.9271317829457364,
+    "n_deadly_in_test": 2580,
+    "version": "v20-E20-source-holdout"
+  },
+  "gates": {
+    "policy": "orientation_only_never_consume",
+    "product_unlock": false,
+    "note": "Gates are advisory metrics only; do not unlock Identify from a single run.",
+    "expand_map": {
+      "threshold": 0.22,
+      "value": 0.8603024148047814,
+      "pass": true,
+      "status": "ok"
+    },
+    "soft_map": {
+      "threshold": 0.25,
+      "value": 0.8603024148047814,
+      "pass": true,
+      "status": "ok"
+    },
+    "expand_deadly_at_3": {
+      "pass": true,
+      "status": "ok",
+      "n_deadly": 2580,
+      "threshold": 0.5,
+      "value": 0.9271317829457364,
+      "reason": null
+    },
+    "soft_deadly_at_3": {
+      "pass": true,
+      "status": "ok",
+      "n_deadly": 2580,
+      "threshold": 0.9,
+      "value": 0.9271317829457364,
+      "reason": null
+    },
+    "all_expand_pass": true
+  },
+  "metrics_path": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models\\metrics.json",
+  "pro_tester": {
+    "path": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\eval\\reports\\ml_experiments\\professional_tester_latest.json",
+    "present": true,
+    "overall": "PASS",
+    "product_unlock": false,
+    "safe_dp_freeze": true,
+    "safe_dp_suite": "S4 notebook guards E20"
+  },
+  "pro_tester_pass": true,
+  "safe_dp_freeze": true,
+  "live_reject_monitor": {
+    "status": "ok",
+    "n_entries": 1,
+    "reject_rate": 1.0,
+    "reasons": {
+      "high_entropy": 1
+    },
+    "product_unlock": false,
+    "log_path": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\data\\feedback\\classification_log.jsonl"
+  },
+  "operator_runbook_path": "docs/OPERATOR_UNLOCK_RUNBOOK.md",
+  "regenerate_command": "python -m kaggle.ml_qa.gate_eval",
+  "note": "Fail-closed: product_unlock stays false until a human operator cycle. Metrics eligibility is advisory only — never forage/consumption permission.",
+  "forage_permission": false,
+  "consumption_permission": false
+}

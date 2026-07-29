@@ -1,0 +1,316 @@
+{
+  "generated": "2026-07-28T17:59:32.405740+00:00",
+  "policy": "orientation_only_never_consume",
+  "product_unlock": false,
+  "source": "data/feedback/fixtures/s9_mixed_reject.jsonl",
+  "suite_status": "PASS",
+  "metrics": {
+    "product_unlock": false,
+    "policy": "orientation_only_never_consume",
+    "generated": "2026-07-28T12:00:00+00:00",
+    "log_path": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\data\\feedback\\fixtures\\s9_mixed_reject.jsonl",
+    "exists": true,
+    "n_entries": 35,
+    "n_accepted": 15,
+    "n_rejected": 20,
+    "reject_rate": 0.5714285714285714,
+    "reasons": {
+      "high_entropy": 5,
+      "low_confidence": 4,
+      "low_margin": 4,
+      "below_threshold": 3,
+      "out_of_distribution": 2,
+      "gate_blocked": 1,
+      "unknown_taxon": 1
+    },
+    "reason_histogram": {
+      "high_entropy": 5,
+      "low_confidence": 4,
+      "low_margin": 4,
+      "below_threshold": 3,
+      "out_of_distribution": 2,
+      "gate_blocked": 1,
+      "unknown_taxon": 1
+    },
+    "decisions": {
+      "rejected": 20,
+      "accepted": 12,
+      "needs_review": 2,
+      "abstain": 1
+    },
+    "windows": {
+      "24h": {
+        "n_entries": 25,
+        "n_accepted": 11,
+        "n_rejected": 14,
+        "n_other": 0,
+        "reject_rate": 0.56,
+        "reasons": {
+          "high_entropy": 4,
+          "low_margin": 4,
+          "out_of_distribution": 2,
+          "below_threshold": 2,
+          "low_confidence": 1,
+          "unknown_taxon": 1
+        },
+        "reason_histogram": {
+          "high_entropy": 4,
+          "low_margin": 4,
+          "out_of_distribution": 2,
+          "below_threshold": 2,
+          "low_confidence": 1,
+          "unknown_taxon": 1
+        },
+        "decisions": {
+          "rejected": 14,
+          "accepted": 9,
+          "needs_review": 1,
+          "abstain": 1
+        },
+        "top_reason": "high_entropy",
+        "multiview": {
+          "n_with_view_labels": 25,
+          "n_multiview_ge2": 19,
+          "n_diag_any": 23,
+          "n_diag_full_gills_front_detail": 10,
+          "n_single_non_diag": 2,
+          "view_label_rate": 1.0,
+          "multiview_ge2_rate": 0.76,
+          "diag_full_rate": 0.4,
+          "priority_views": [
+            "detail",
+            "front",
+            "gills"
+          ],
+          "note": "Advisory only: multi-photo without gills/front/detail is not deadly-safe. Never forage/consumption permission."
+        },
+        "modes": {
+          "real": 23,
+          "mock": 2
+        },
+        "n_real_mode": 23,
+        "n_mock_mode": 2,
+        "n_blocked_mode": 0,
+        "traffic_depth": "moderate",
+        "traffic_note": "Advisory traffic depth for S9 ops. empty/sparse → grow Identify traffic. Never product_unlock. Orientation only — never forage/consumption.",
+        "window": "24h"
+      },
+      "7d": {
+        "n_entries": 29,
+        "n_accepted": 13,
+        "n_rejected": 16,
+        "n_other": 0,
+        "reject_rate": 0.5517241379310345,
+        "reasons": {
+          "high_entropy": 4,
+          "low_margin": 4,
+          "low_confidence": 2,
+          "out_of_distribution": 2,
+          "below_threshold": 2,
+          "gate_blocked": 1,
+          "unknown_taxon": 1
+        },
+        "reason_histogram": {
+          "high_entropy": 4,
+          "low_margin": 4,
+          "low_confidence": 2,
+          "out_of_distribution": 2,
+          "below_threshold": 2,
+          "gate_blocked": 1,
+          "unknown_taxon": 1
+        },
+        "decisions": {
+          "rejected": 16,
+          "accepted": 10,
+          "needs_review": 2,
+          "abstain": 1
+        },
+        "top_reason": "high_entropy",
+        "multiview": {
+          "n_with_view_labels": 29,
+          "n_multiview_ge2": 22,
+          "n_diag_any": 27,
+          "n_diag_full_gills_front_detail": 12,
+          "n_single_non_diag": 2,
+          "view_label_rate": 1.0,
+          "multiview_ge2_rate": 0.7586206896551724,
+          "diag_full_rate": 0.41379310344827586,
+          "priority_views": [
+            "detail",
+            "front",
+            "gills"
+          ],
+          "note": "Advisory only: multi-photo without gills/front/detail is not deadly-safe. Never forage/consumption permission."
+        },
+        "modes": {
+          "real": 26,
+          "mock": 2,
+          "blocked": 1
+        },
+        "n_real_mode": 26,
+        "n_mock_mode": 2,
+        "n_blocked_mode": 1,
+        "traffic_depth": "moderate",
+        "traffic_note": "Advisory traffic depth for S9 ops. empty/sparse → grow Identify traffic. Never product_unlock. Orientation only — never forage/consumption.",
+        "window": "7d"
+      },
+      "30d": {
+        "n_entries": 35,
+        "n_accepted": 15,
+        "n_rejected": 20,
+        "n_other": 0,
+        "reject_rate": 0.5714285714285714,
+        "reasons": {
+          "high_entropy": 5,
+          "low_confidence": 4,
+          "low_margin": 4,
+          "below_threshold": 3,
+          "out_of_distribution": 2,
+          "gate_blocked": 1,
+          "unknown_taxon": 1
+        },
+        "reason_histogram": {
+          "high_entropy": 5,
+          "low_confidence": 4,
+          "low_margin": 4,
+          "below_threshold": 3,
+          "out_of_distribution": 2,
+          "gate_blocked": 1,
+          "unknown_taxon": 1
+        },
+        "decisions": {
+          "rejected": 20,
+          "accepted": 12,
+          "needs_review": 2,
+          "abstain": 1
+        },
+        "top_reason": "high_entropy",
+        "multiview": {
+          "n_with_view_labels": 33,
+          "n_multiview_ge2": 25,
+          "n_diag_any": 31,
+          "n_diag_full_gills_front_detail": 13,
+          "n_single_non_diag": 2,
+          "view_label_rate": 0.9428571428571428,
+          "multiview_ge2_rate": 0.7142857142857143,
+          "diag_full_rate": 0.37142857142857144,
+          "priority_views": [
+            "detail",
+            "front",
+            "gills"
+          ],
+          "note": "Advisory only: multi-photo without gills/front/detail is not deadly-safe. Never forage/consumption permission."
+        },
+        "modes": {
+          "real": 31,
+          "mock": 3,
+          "blocked": 1
+        },
+        "n_real_mode": 31,
+        "n_mock_mode": 3,
+        "n_blocked_mode": 1,
+        "traffic_depth": "moderate",
+        "traffic_note": "Advisory traffic depth for S9 ops. empty/sparse → grow Identify traffic. Never product_unlock. Orientation only — never forage/consumption.",
+        "window": "30d"
+      },
+      "all": {
+        "n_entries": 35,
+        "n_accepted": 15,
+        "n_rejected": 20,
+        "n_other": 0,
+        "reject_rate": 0.5714285714285714,
+        "reasons": {
+          "high_entropy": 5,
+          "low_confidence": 4,
+          "low_margin": 4,
+          "below_threshold": 3,
+          "out_of_distribution": 2,
+          "gate_blocked": 1,
+          "unknown_taxon": 1
+        },
+        "reason_histogram": {
+          "high_entropy": 5,
+          "low_confidence": 4,
+          "low_margin": 4,
+          "below_threshold": 3,
+          "out_of_distribution": 2,
+          "gate_blocked": 1,
+          "unknown_taxon": 1
+        },
+        "decisions": {
+          "rejected": 20,
+          "accepted": 12,
+          "needs_review": 2,
+          "abstain": 1
+        },
+        "top_reason": "high_entropy",
+        "multiview": {
+          "n_with_view_labels": 33,
+          "n_multiview_ge2": 25,
+          "n_diag_any": 31,
+          "n_diag_full_gills_front_detail": 13,
+          "n_single_non_diag": 2,
+          "view_label_rate": 0.9428571428571428,
+          "multiview_ge2_rate": 0.7142857142857143,
+          "diag_full_rate": 0.37142857142857144,
+          "priority_views": [
+            "detail",
+            "front",
+            "gills"
+          ],
+          "note": "Advisory only: multi-photo without gills/front/detail is not deadly-safe. Never forage/consumption permission."
+        },
+        "modes": {
+          "real": 31,
+          "mock": 3,
+          "blocked": 1
+        },
+        "n_real_mode": 31,
+        "n_mock_mode": 3,
+        "n_blocked_mode": 1,
+        "traffic_depth": "moderate",
+        "traffic_note": "Advisory traffic depth for S9 ops. empty/sparse → grow Identify traffic. Never product_unlock. Orientation only — never forage/consumption.",
+        "window": "all"
+      }
+    },
+    "health_flags": [],
+    "note": "Live ops monitor; empty/missing log is SKIP not fail. Windows/health_flags are advisory only. Never unlocks.",
+    "status": "ok",
+    "n_other": 0,
+    "top_reason": "high_entropy",
+    "multiview": {
+      "n_with_view_labels": 33,
+      "n_multiview_ge2": 25,
+      "n_diag_any": 31,
+      "n_diag_full_gills_front_detail": 13,
+      "n_single_non_diag": 2,
+      "view_label_rate": 0.9428571428571428,
+      "multiview_ge2_rate": 0.7142857142857143,
+      "diag_full_rate": 0.37142857142857144,
+      "priority_views": [
+        "detail",
+        "front",
+        "gills"
+      ],
+      "note": "Advisory only: multi-photo without gills/front/detail is not deadly-safe. Never forage/consumption permission."
+    },
+    "modes": {
+      "real": 31,
+      "mock": 3,
+      "blocked": 1
+    },
+    "n_real_mode": 31,
+    "n_mock_mode": 3,
+    "n_blocked_mode": 1,
+    "traffic_depth": "moderate",
+    "traffic_note": "Advisory traffic depth for S9 ops. empty/sparse → grow Identify traffic. Never product_unlock. Orientation only — never forage/consumption.",
+    "n_parse_errors": 0,
+    "n_with_timestamp": 35,
+    "n_without_timestamp": 0,
+    "high_reject_rate_threshold": 0.85,
+    "sparse_sample_threshold": 5,
+    "reject_rate_7d": 0.5517241379310345,
+    "n_entries_7d": 29
+  },
+  "note": "Fixture-based S9 traffic depth demo — never unlocks. Prefer real classification_log.jsonl under traffic."
+}

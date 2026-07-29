@@ -1,0 +1,1483 @@
+{
+  "base": "https://www.indexfungorum.org/ixfwebservice/fungus.asmx",
+  "is_alive": {
+    "status": 200,
+    "body": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<boolean xmlns=\"http://Cabi/FungusServer/\">true</boolean>"
+  },
+  "attribution_required": true,
+  "attribution_url": "https://www.indexfungorum.org/",
+  "queries": {
+    "Amanita phalloides": {
+      "n_hits": 15,
+      "best": {
+        "NAME OF FUNGUS": "Amanita phalloides",
+        "AUTHORS": "(Vaill. ex Fr.) Link",
+        "YEAR OF PUBLICATION": "1833",
+        "NAME STATUS": "Legitimate",
+        "RECORD NUMBER": "178962",
+        "CURRENT NAME": "Amanita phalloides",
+        "CURRENT NAME RECORD NUMBER": "178962",
+        "BASIONYM RECORD NUMBER": "452913",
+        "UUID": "46d99dda-51f8-4a33-b1fd-9dc579942947"
+      },
+      "sample_statuses": [
+        {
+          "name": "Amanita phalloides",
+          "status": "Invalid",
+          "record": "178461",
+          "current": null
+        },
+        {
+          "name": "Amanita phalloides",
+          "status": "Legitimate",
+          "record": "178962",
+          "current": "Amanita phalloides"
+        },
+        {
+          "name": "Amanita phalloides f. citrina",
+          "status": "Legitimate",
+          "record": "153157",
+          "current": "Amanita phalloides"
+        },
+        {
+          "name": "Amanita phalloides f. dunensis",
+          "status": "Invalid",
+          "record": "349020",
+          "current": null
+        },
+        {
+          "name": "Amanita phalloides f. phalloides",
+          "status": "Legitimate",
+          "record": "422245",
+          "current": null
+        },
+        {
+          "name": "Amanita phalloides f. porrinensis",
+          "status": "Legitimate",
+          "record": "842794",
+          "current": "Amanita porrinensis"
+        },
+        {
+          "name": "Amanita phalloides subsp. mappa",
+          "status": "Legitimate",
+          "record": "663814",
+          "current": "Amanita citrina"
+        },
+        {
+          "name": "Amanita phalloides subsp. verna",
+          "status": "Legitimate",
+          "record": "647824",
+          "current": "Amanita verna"
+        }
+      ],
+      "name_by_key": [
+        {
+          "_error": "NameByKey failed",
+          "record": "178962"
+        }
+      ],
+      "names_by_current_key": [
+        {
+          "NAME OF FUNGUS": "Agaricus phalloides",
+          "AUTHORS": "Vaill. ex Fr.",
+          "YEAR OF PUBLICATION": "1821",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "452913",
+          "CURRENT NAME": "Amanita phalloides",
+          "CURRENT NAME RECORD NUMBER": "178962",
+          "BASIONYM RECORD NUMBER": "452913",
+          "UUID": "1cb1aea7-36b9-11d5-9548-00d0592d548c"
+        },
+        {
+          "NAME OF FUNGUS": "Agaricus virosus",
+          "AUTHORS": "Vittad.",
+          "YEAR OF PUBLICATION": "1835",
+          "NAME STATUS": "Illegitimate",
+          "RECORD NUMBER": "140053",
+          "CURRENT NAME": "Amanita phalloides",
+          "CURRENT NAME RECORD NUMBER": "178962",
+          "BASIONYM RECORD NUMBER": "140053",
+          "UUID": "55391e47-bcc6-42d3-bd62-4ea4f02af09a",
+          "NOMENCLATURAL COMMENT": "Nom. illegit., Art. 53.1"
+        },
+        {
+          "NAME OF FUNGUS": "Amanita phalloides",
+          "AUTHORS": "(Vaill. ex Fr.) Link",
+          "YEAR OF PUBLICATION": "1833",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "178962",
+          "CURRENT NAME": "Amanita phalloides",
+          "CURRENT NAME RECORD NUMBER": "178962",
+          "BASIONYM RECORD NUMBER": "452913",
+          "UUID": "46d99dda-51f8-4a33-b1fd-9dc579942947"
+        },
+        {
+          "NAME OF FUNGUS": "Amanita phalloides f. citrina",
+          "AUTHORS": "J.E. Lange",
+          "YEAR OF PUBLICATION": "1915",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "153157",
+          "CURRENT NAME": "Amanita phalloides",
+          "CURRENT NAME RECORD NUMBER": "178962",
+          "BASIONYM RECORD NUMBER": "153157",
+          "UUID": "3b5e97ce-b376-43dc-823d-d4d1026b02a5"
+        },
+        {
+          "NAME OF FUNGUS": "Amanita phalloides var. alba",
+          "AUTHORS": "Costantin &amp; L.M. Dufour",
+          "YEAR OF PUBLICATION": "1895",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "439321",
+          "CURRENT NAME": "Amanita phalloides",
+          "CURRENT NAME RECORD NUMBER": "178962",
+          "BASIONYM RECORD NUMBER": "439321",
+          "UUID": "634c367e-cf35-4c03-926d-fbf679fbcd33"
+        },
+        {
+          "NAME OF FUNGUS": "Amanita phalloides var. euphalloides",
+          "AUTHORS": "Maire",
+          "YEAR OF PUBLICATION": "1937",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "274179",
+          "CURRENT NAME": "Amanita phalloides",
+          "CURRENT NAME RECORD NUMBER": "178962",
+          "BASIONYM RECORD NUMBER": "274179",
+          "UUID": "d195c70f-1f17-4506-93aa-e72ec0a01ed8"
+        },
+        {
+          "NAME OF FUNGUS": "Amanita phalloides var. larroquei",
+          "AUTHORS": "F. Massart &amp; Beauvais ex F. Massart",
+          "YEAR OF PUBLICATION": "2004",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "508873",
+          "CURRENT NAME": "Amanita phalloides",
+          "CURRENT NAME RECORD NUMBER": "178962",
+          "BASIONYM RECORD NUMBER": "508873",
+          "UUID": "2267b524-2204-44ec-9de3-0f889c2a3ffd"
+        },
+        {
+          "NAME OF FUNGUS": "Amanita phalloides var. moravecii",
+          "AUTHORS": "Pilát",
+          "YEAR OF PUBLICATION": "1966",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "349019",
+          "CURRENT NAME": "Amanita phalloides",
+          "CURRENT NAME RECORD NUMBER": "178962",
+          "BASIONYM RECORD NUMBER": "349019",
+          "UUID": "8ac58993-4d9d-4c85-863a-e647e17f61dd"
+        }
+      ],
+      "field_keys": [
+        "AUTHORS",
+        "AddedBy",
+        "AddedDate",
+        "BASIONYM RECORD NUMBER",
+        "CMICC FLAG",
+        "CORRECTION",
+        "CURRENT NAME",
+        "CURRENT NAME FUNDIC RECORD NUMBER",
+        "CURRENT NAME RECORD NUMBER",
+        "GSD FLAG",
+        "INFRASPECIFIC EPITHET",
+        "INFRASPECIFIC RANK",
+        "LITERATURE LINK",
+        "LOCATION",
+        "NAME OF FUNGUS",
+        "NAME OF FUNGUS FUNDIC RECORD NUMBER",
+        "NAME STATUS",
+        "NOMENCLATURAL COMMENT",
+        "NameReleaseStatusID",
+        "PAGE",
+        "PART",
+        "PROTONYM RECORD NUMBER",
+        "PUBLISHED LIST REFERENCE",
+        "RECORD NUMBER",
+        "SANCTIONING AUTHOR",
+        "SPECIFIC EPITHET",
+        "SQLTimeStamp",
+        "TAXONOMIC REFEREE",
+        "UUID",
+        "UpdatedBy",
+        "UpdatedDate",
+        "VOLUME",
+        "YEAR OF PUBLICATION"
+      ]
+    },
+    "Amanita muscaria": {
+      "n_hits": 15,
+      "best": {
+        "NAME OF FUNGUS": "Amanita muscaria",
+        "AUTHORS": "(L.) Lam.",
+        "YEAR OF PUBLICATION": "1783",
+        "NAME STATUS": "Legitimate",
+        "RECORD NUMBER": "161267",
+        "CURRENT NAME": "Amanita muscaria",
+        "CURRENT NAME RECORD NUMBER": "161267",
+        "BASIONYM RECORD NUMBER": "375287",
+        "UUID": "1cb17d41-36b9-11d5-9548-00d0592d548c"
+      },
+      "sample_statuses": [
+        {
+          "name": "Amanita muscaria",
+          "status": "Legitimate",
+          "record": "161267",
+          "current": "Amanita muscaria"
+        },
+        {
+          "name": "Amanita muscaria a eu-umbrina",
+          "status": "Orthographic variant",
+          "record": "271875",
+          "current": "505264"
+        },
+        {
+          "name": "Amanita muscaria b hercynica",
+          "status": "Legitimate",
+          "record": "271876",
+          "current": "Amanita muscaria"
+        },
+        {
+          "name": "Amanita muscaria c sudedica",
+          "status": "Legitimate",
+          "record": "271877",
+          "current": "Amanita muscaria"
+        },
+        {
+          "name": "Amanita muscaria f. aureola",
+          "status": "Legitimate",
+          "record": "102231",
+          "current": "Amanita muscaria"
+        },
+        {
+          "name": "Amanita muscaria f. beglyanovae",
+          "status": "Legitimate",
+          "record": "518432",
+          "current": "Amanita muscaria"
+        },
+        {
+          "name": "Amanita muscaria f. europaea",
+          "status": "Legitimate",
+          "record": "374039",
+          "current": "Amanita muscaria"
+        },
+        {
+          "name": "Amanita muscaria f. eu-umbrina",
+          "status": "Legitimate",
+          "record": "505264",
+          "current": "Amanita muscaria"
+        }
+      ],
+      "name_by_key": [
+        {
+          "_error": "NameByKey failed",
+          "record": "161267"
+        }
+      ],
+      "names_by_current_key": [
+        {
+          "NAME OF FUNGUS": "Agaricus aureolus",
+          "AUTHORS": "Kalchbr.",
+          "YEAR OF PUBLICATION": "1873",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "298478",
+          "CURRENT NAME": "Amanita muscaria",
+          "CURRENT NAME RECORD NUMBER": "161267",
+          "BASIONYM RECORD NUMBER": "298478",
+          "UUID": "326d045b-f935-40cb-aeec-460a95abc693"
+        },
+        {
+          "NAME OF FUNGUS": "Agaricus imperialis",
+          "AUTHORS": "Batsch",
+          "YEAR OF PUBLICATION": "1783",
+          "NAME STATUS": "Illegitimate",
+          "RECORD NUMBER": "495382",
+          "CURRENT NAME": "Amanita muscaria",
+          "CURRENT NAME RECORD NUMBER": "161267",
+          "BASIONYM RECORD NUMBER": "495382",
+          "UUID": "314f38f1-370a-4d77-90ad-dae09902e21c",
+          "NOMENCLATURAL COMMENT": "Nom. illegit., Art. 52.1"
+        },
+        {
+          "NAME OF FUNGUS": "Agaricus muscarius",
+          "AUTHORS": "L.",
+          "YEAR OF PUBLICATION": "1753",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "375287",
+          "CURRENT NAME": "Amanita muscaria",
+          "CURRENT NAME RECORD NUMBER": "161267",
+          "BASIONYM RECORD NUMBER": "375287",
+          "UUID": "8d452a04-f09a-433a-b530-ca2af289cff2"
+        },
+        {
+          "NAME OF FUNGUS": "Agaricus muscarius var. albus",
+          "AUTHORS": "Peck",
+          "YEAR OF PUBLICATION": "1883",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "665959",
+          "CURRENT NAME": "Amanita muscaria",
+          "CURRENT NAME RECORD NUMBER": "161267",
+          "BASIONYM RECORD NUMBER": "665959",
+          "UUID": "5796a030-d773-4222-96c5-61f792ef09c1"
+        },
+        {
+          "NAME OF FUNGUS": "Agaricus muscarius var. formosus",
+          "AUTHORS": "(Pers.) J. Kickx f.",
+          "YEAR OF PUBLICATION": "1835",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "537188",
+          "CURRENT NAME": "Amanita muscaria",
+          "CURRENT NAME RECORD NUMBER": "161267",
+          "BASIONYM RECORD NUMBER": "160520",
+          "UUID": "5a29c83d-3132-4c48-9293-92f85faf850d"
+        },
+        {
+          "NAME OF FUNGUS": "Agaricus muscarius var. formosus",
+          "AUTHORS": "(Gonn. &amp; Rabenh.) Peck",
+          "YEAR OF PUBLICATION": "1883",
+          "NAME STATUS": "Illegitimate",
+          "RECORD NUMBER": "505642",
+          "CURRENT NAME": "Amanita muscaria",
+          "CURRENT NAME RECORD NUMBER": "161267",
+          "BASIONYM RECORD NUMBER": "212977",
+          "UUID": "5d1495f1-bd10-4912-9e54-3b46b5623996",
+          "NOMENCLATURAL COMMENT": "Nom. illegit., Art. 53.1"
+        },
+        {
+          "NAME OF FUNGUS": "Agaricus muscarius var. puella",
+          "AUTHORS": "(Batsch) Sw.",
+          "YEAR OF PUBLICATION": "1809",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "496820",
+          "CURRENT NAME": "Amanita muscaria",
+          "CURRENT NAME RECORD NUMBER": "161267",
+          "BASIONYM RECORD NUMBER": "372222",
+          "UUID": "5895d9ed-479f-47e0-97e6-0d57c1b1c104"
+        },
+        {
+          "NAME OF FUNGUS": "Agaricus muscarius var. puella",
+          "AUTHORS": "J. Kickx f.",
+          "YEAR OF PUBLICATION": "1835",
+          "NAME STATUS": "Illegitimate",
+          "RECORD NUMBER": "507090",
+          "CURRENT NAME": "Amanita muscaria",
+          "CURRENT NAME RECORD NUMBER": "161267",
+          "BASIONYM RECORD NUMBER": "507090",
+          "UUID": "5d81ed25-94bb-4735-9ba8-647e8a0a7bed",
+          "NOMENCLATURAL COMMENT": "Nom. illegit., Art. 53.1"
+        }
+      ],
+      "field_keys": [
+        "AUTHORS",
+        "AddedBy",
+        "AddedDate",
+        "BASIONYM RECORD NUMBER",
+        "CMICC FLAG",
+        "CORRECTION",
+        "CURRENT NAME",
+        "CURRENT NAME FUNDIC RECORD NUMBER",
+        "CURRENT NAME RECORD NUMBER",
+        "EDITORIAL COMMENT",
+        "EPITHET FLAG",
+        "GSD FLAG",
+        "INFRASPECIFIC EPITHET",
+        "INFRASPECIFIC RANK",
+        "LITERATURE LINK",
+        "NAME OF FUNGUS",
+        "NAME OF FUNGUS FUNDIC RECORD NUMBER",
+        "NAME STATUS",
+        "NameReleaseStatusID",
+        "ORTHOGRAPHY COMMENT",
+        "PAGE",
+        "PART",
+        "PROTONYM RECORD NUMBER",
+        "PUBLISHED LIST REFERENCE",
+        "RECORD NUMBER",
+        "SANCTIONING AUTHOR",
+        "SPECIFIC EPITHET",
+        "SQLTimeStamp",
+        "STS FLAG",
+        "TAXONOMIC REFEREE",
+        "UUID",
+        "UpdatedBy",
+        "UpdatedDate",
+        "VOLUME",
+        "YEAR OF PUBLICATION"
+      ]
+    },
+    "Boletus edulis": {
+      "n_hits": 15,
+      "best": {
+        "NAME OF FUNGUS": "Boletus edulis",
+        "AUTHORS": "Bull.",
+        "YEAR OF PUBLICATION": "1782",
+        "NAME STATUS": "Legitimate",
+        "RECORD NUMBER": "356530",
+        "CURRENT NAME": "Boletus edulis",
+        "CURRENT NAME RECORD NUMBER": "356530",
+        "BASIONYM RECORD NUMBER": "356530",
+        "UUID": "1cb17f8c-36b9-11d5-9548-00d0592d548c"
+      },
+      "sample_statuses": [
+        {
+          "name": "Boletus edulis",
+          "status": "Illegitimate",
+          "record": "228098",
+          "current": null
+        },
+        {
+          "name": "Boletus edulis",
+          "status": "Legitimate",
+          "record": "356530",
+          "current": "Boletus edulis"
+        },
+        {
+          "name": "Boletus edulis f. aereus",
+          "status": "Invalid",
+          "record": "346577",
+          "current": "Boletus aereus"
+        },
+        {
+          "name": "Boletus edulis f. aereus",
+          "status": "Legitimate",
+          "record": "486799",
+          "current": "Boletus aereus"
+        },
+        {
+          "name": "Boletus edulis f. albus",
+          "status": "Legitimate",
+          "record": "530144",
+          "current": "Boletus edulis"
+        },
+        {
+          "name": "Boletus edulis f. arcticus",
+          "status": "Legitimate",
+          "record": "349072",
+          "current": "Boletus edulis"
+        },
+        {
+          "name": "Boletus edulis f. aurantioruber",
+          "status": "Legitimate",
+          "record": "349073",
+          "current": "Boletus aurantioruber"
+        },
+        {
+          "name": "Boletus edulis f. betulicola",
+          "status": "Legitimate",
+          "record": "349074",
+          "current": "Boletus edulis"
+        }
+      ],
+      "name_by_key": [
+        {
+          "_error": "NameByKey failed",
+          "record": "356530"
+        }
+      ],
+      "names_by_current_key": [
+        {
+          "NAME OF FUNGUS": "Boletus betulicola",
+          "AUTHORS": "(Vassilkov) Pilát &amp; Dermek",
+          "YEAR OF PUBLICATION": "1974",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "309639",
+          "CURRENT NAME": "Boletus edulis",
+          "CURRENT NAME RECORD NUMBER": "356530",
+          "BASIONYM RECORD NUMBER": "349074",
+          "UUID": "ab40f6bb-bd1f-4812-8055-ca29904cf770"
+        },
+        {
+          "NAME OF FUNGUS": "Boletus citrinus",
+          "AUTHORS": "A. Venturi",
+          "YEAR OF PUBLICATION": "1863",
+          "NAME STATUS": "Illegitimate",
+          "RECORD NUMBER": "202985",
+          "CURRENT NAME": "Boletus edulis",
+          "CURRENT NAME RECORD NUMBER": "356530",
+          "BASIONYM RECORD NUMBER": "202985",
+          "UUID": "98e6c6a3-cd01-4b9e-96b2-68001fb37195",
+          "NOMENCLATURAL COMMENT": "Nom. illegit., Art. 53.1"
+        },
+        {
+          "NAME OF FUNGUS": "Boletus clavipes",
+          "AUTHORS": "(Peck) Pilát &amp; Dermek",
+          "YEAR OF PUBLICATION": "1974",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "309661",
+          "CURRENT NAME": "Boletus edulis",
+          "CURRENT NAME RECORD NUMBER": "356530",
+          "BASIONYM RECORD NUMBER": "457453",
+          "UUID": "e7c9004d-7af5-472c-82b7-6766819a901b"
+        },
+        {
+          "NAME OF FUNGUS": "Boletus edulis",
+          "AUTHORS": "Bull.",
+          "YEAR OF PUBLICATION": "1782",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "356530",
+          "CURRENT NAME": "Boletus edulis",
+          "CURRENT NAME RECORD NUMBER": "356530",
+          "BASIONYM RECORD NUMBER": "356530",
+          "UUID": "1cb17f8c-36b9-11d5-9548-00d0592d548c"
+        },
+        {
+          "NAME OF FUNGUS": "Boletus edulis f. albus",
+          "AUTHORS": "(Pers.) J.A. Muñoz",
+          "YEAR OF PUBLICATION": "2005",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "530144",
+          "CURRENT NAME": "Boletus edulis",
+          "CURRENT NAME RECORD NUMBER": "356530",
+          "BASIONYM RECORD NUMBER": "587434",
+          "UUID": "11fea616-3ea9-40d6-9010-9cb75f8557eb"
+        },
+        {
+          "NAME OF FUNGUS": "Boletus edulis f. arcticus",
+          "AUTHORS": "Vassilkov",
+          "YEAR OF PUBLICATION": "1966",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "349072",
+          "CURRENT NAME": "Boletus edulis",
+          "CURRENT NAME RECORD NUMBER": "356530",
+          "BASIONYM RECORD NUMBER": "349072",
+          "UUID": "e04e263a-88f5-4594-a3e9-2ba78eddaa41"
+        },
+        {
+          "NAME OF FUNGUS": "Boletus edulis f. betulicola",
+          "AUTHORS": "Vassilkov",
+          "YEAR OF PUBLICATION": "1966",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "349074",
+          "CURRENT NAME": "Boletus edulis",
+          "CURRENT NAME RECORD NUMBER": "356530",
+          "BASIONYM RECORD NUMBER": "349074",
+          "UUID": "98d86d8d-78aa-4d02-810b-9bb6bb87d4ef"
+        },
+        {
+          "NAME OF FUNGUS": "Boletus edulis f. citrinus",
+          "AUTHORS": "(Pelt. ex E.-J. Gilbert) Vassilkov",
+          "YEAR OF PUBLICATION": "1966",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "349075",
+          "CURRENT NAME": "Boletus edulis",
+          "CURRENT NAME RECORD NUMBER": "356530",
+          "BASIONYM RECORD NUMBER": "251933",
+          "UUID": "0ac56731-d893-405e-a057-48ca71ccd47a"
+        }
+      ],
+      "field_keys": [
+        "AUTHORS",
+        "AddedBy",
+        "AddedDate",
+        "BASIONYM RECORD NUMBER",
+        "BSM LINK",
+        "CMICC FLAG",
+        "CORRECTION",
+        "CURRENT NAME",
+        "CURRENT NAME FUNDIC RECORD NUMBER",
+        "CURRENT NAME RECORD NUMBER",
+        "EDITORIAL COMMENT",
+        "EPITHET FLAG",
+        "GSD FLAG",
+        "INFRASPECIFIC EPITHET",
+        "INFRASPECIFIC RANK",
+        "IXF RECORD NUMBER",
+        "LITERATURE LINK",
+        "LOCATION",
+        "NAME OF FUNGUS",
+        "NAME OF FUNGUS FUNDIC RECORD NUMBER",
+        "NAME STATUS",
+        "NOMENCLATURAL COMMENT",
+        "NameReleaseStatusID",
+        "PAGE",
+        "PROTONYM RECORD NUMBER",
+        "PUBLISHED LIST REFERENCE",
+        "PUBLISHING AUTHORS",
+        "RECORD NUMBER",
+        "SANCTIONING AUTHOR",
+        "SANCTIONING REFERENCE LITERATURE LINK",
+        "SANCTIONING REFERENCE PAGE",
+        "SANCTIONING REFERENCE VOLUME",
+        "SANCTIONING REFERENCE YEAR",
+        "SPECIFIC EPITHET",
+        "SQLTimeStamp",
+        "TAXONOMIC REFEREE",
+        "TYPIFICATION DETAILS",
+        "UUID",
+        "UpdatedBy",
+        "UpdatedDate",
+        "VOLUME",
+        "YEAR OF PUBLICATION",
+        "YEAR ON PUBLICATION"
+      ]
+    },
+    "Coprinopsis atramentaria": {
+      "n_hits": 3,
+      "best": {
+        "NAME OF FUNGUS": "Coprinopsis atramentaria",
+        "AUTHORS": "(Bull.) Redhead, Vilgalys &amp; Moncalvo",
+        "YEAR OF PUBLICATION": "2001",
+        "NAME STATUS": "Legitimate",
+        "RECORD NUMBER": "474167",
+        "CURRENT NAME": "Coprinopsis atramentaria",
+        "CURRENT NAME RECORD NUMBER": "474167",
+        "BASIONYM RECORD NUMBER": "207136",
+        "UUID": "ba7ed446-b65d-4f7b-8f49-f2cf4df60900"
+      },
+      "sample_statuses": [
+        {
+          "name": "Coprinopsis atramentaria",
+          "status": "Legitimate",
+          "record": "474167",
+          "current": "Coprinopsis atramentaria"
+        },
+        {
+          "name": "Coprinopsis atramentaria var. atramentaria",
+          "status": "Legitimate",
+          "record": "646759",
+          "current": null
+        },
+        {
+          "name": "Coprinopsis atramentaria var. squamosa",
+          "status": "Invalid",
+          "record": "646561",
+          "current": null
+        }
+      ],
+      "name_by_key": [
+        {
+          "_error": "NameByKey failed",
+          "record": "474167"
+        }
+      ],
+      "names_by_current_key": [
+        {
+          "NAME OF FUNGUS": "Agaricus atramentarius",
+          "AUTHORS": "Bull.",
+          "YEAR OF PUBLICATION": "1784",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "207136",
+          "CURRENT NAME": "Coprinopsis atramentaria",
+          "CURRENT NAME RECORD NUMBER": "474167",
+          "BASIONYM RECORD NUMBER": "207136",
+          "UUID": "1cb1bbc9-36b9-11d5-9548-00d0592d548c"
+        },
+        {
+          "NAME OF FUNGUS": "Agaricus fuscescens",
+          "AUTHORS": "Schaeff.",
+          "YEAR OF PUBLICATION": "1774",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "226993",
+          "CURRENT NAME": "Coprinopsis atramentaria",
+          "CURRENT NAME RECORD NUMBER": "474167",
+          "BASIONYM RECORD NUMBER": "226993",
+          "UUID": "3977d87a-52e0-4c06-ba27-e844d641c340"
+        },
+        {
+          "NAME OF FUNGUS": "Agaricus luridus",
+          "AUTHORS": "Bolton",
+          "YEAR OF PUBLICATION": "1788",
+          "NAME STATUS": "Illegitimate",
+          "RECORD NUMBER": "462633",
+          "CURRENT NAME": "Coprinopsis atramentaria",
+          "CURRENT NAME RECORD NUMBER": "474167",
+          "BASIONYM RECORD NUMBER": "462633",
+          "UUID": "e3dd009f-0299-4949-82a4-f2889274aaaa",
+          "NOMENCLATURAL COMMENT": "Nom. illegit., Art. 53.1"
+        },
+        {
+          "NAME OF FUNGUS": "Agaricus plicatus",
+          "AUTHORS": "Pers.",
+          "YEAR OF PUBLICATION": "1801",
+          "NAME STATUS": "Illegitimate",
+          "RECORD NUMBER": "185077",
+          "CURRENT NAME": "Coprinopsis atramentaria",
+          "CURRENT NAME RECORD NUMBER": "474167",
+          "BASIONYM RECORD NUMBER": "185077",
+          "UUID": "2ce72f7a-4981-45ed-a973-693319536ea8",
+          "NOMENCLATURAL COMMENT": "Nom. illegit., Art. 53.1"
+        },
+        {
+          "NAME OF FUNGUS": "Agaricus sobolifer",
+          "AUTHORS": "Hoffm.",
+          "YEAR OF PUBLICATION": "1789",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "243421",
+          "CURRENT NAME": "Coprinopsis atramentaria",
+          "CURRENT NAME RECORD NUMBER": "474167",
+          "BASIONYM RECORD NUMBER": "243421",
+          "UUID": "bf832f2a-2d62-4e91-83eb-e5cfb258c222"
+        },
+        {
+          "NAME OF FUNGUS": "Coprinopsis atramentaria",
+          "AUTHORS": "(Bull.) Redhead, Vilgalys &amp; Moncalvo",
+          "YEAR OF PUBLICATION": "2001",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "474167",
+          "CURRENT NAME": "Coprinopsis atramentaria",
+          "CURRENT NAME RECORD NUMBER": "474167",
+          "BASIONYM RECORD NUMBER": "207136",
+          "UUID": "ba7ed446-b65d-4f7b-8f49-f2cf4df60900"
+        },
+        {
+          "NAME OF FUNGUS": "Coprinopsis fuscescens",
+          "AUTHORS": "(Schaeff.) Fayod",
+          "YEAR OF PUBLICATION": "1889",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "652165",
+          "CURRENT NAME": "Coprinopsis atramentaria",
+          "CURRENT NAME RECORD NUMBER": "474167",
+          "BASIONYM RECORD NUMBER": "226993",
+          "UUID": "c41754d4-c638-41af-a751-afcbf8c165b9"
+        },
+        {
+          "NAME OF FUNGUS": "Coprinus atramentarius",
+          "AUTHORS": "(Bull.) Fr.",
+          "YEAR OF PUBLICATION": "1838",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "220725",
+          "CURRENT NAME": "Coprinopsis atramentaria",
+          "CURRENT NAME RECORD NUMBER": "474167",
+          "BASIONYM RECORD NUMBER": "207136",
+          "UUID": "1cb184b4-36b9-11d5-9548-00d0592d548c"
+        }
+      ],
+      "field_keys": [
+        "AUTHORS",
+        "AddedBy",
+        "AddedDate",
+        "BASIONYM RECORD NUMBER",
+        "BSM LINK",
+        "CURRENT NAME",
+        "CURRENT NAME FUNDIC RECORD NUMBER",
+        "CURRENT NAME RECORD NUMBER",
+        "GSD FLAG",
+        "INFRASPECIFIC EPITHET",
+        "INFRASPECIFIC RANK",
+        "IXF RECORD NUMBER",
+        "LITERATURE LINK",
+        "NAME OF FUNGUS",
+        "NAME OF FUNGUS FUNDIC RECORD NUMBER",
+        "NAME STATUS",
+        "NOMENCLATURAL COMMENT",
+        "NameReleaseStatusID",
+        "PAGE",
+        "PART",
+        "PROTONYM RECORD NUMBER",
+        "PUBLISHED LIST REFERENCE",
+        "PUBLISHING AUTHORS",
+        "RECORD NUMBER",
+        "SANCTIONING AUTHOR",
+        "SPECIFIC EPITHET",
+        "SQLTimeStamp",
+        "TAXONOMIC REFEREE",
+        "UUID",
+        "UpdatedBy",
+        "UpdatedDate",
+        "VOLUME",
+        "YEAR OF PUBLICATION"
+      ]
+    },
+    "Coprinus atramentarius": {
+      "n_hits": 11,
+      "best": {
+        "NAME OF FUNGUS": "Coprinus atramentarius",
+        "AUTHORS": "(Bull.) Fr.",
+        "YEAR OF PUBLICATION": "1838",
+        "NAME STATUS": "Legitimate",
+        "RECORD NUMBER": "220725",
+        "CURRENT NAME": "Coprinopsis atramentaria",
+        "CURRENT NAME RECORD NUMBER": "474167",
+        "BASIONYM RECORD NUMBER": "207136",
+        "UUID": "1cb184b4-36b9-11d5-9548-00d0592d548c"
+      },
+      "sample_statuses": [
+        {
+          "name": "Coprinus atramentarius",
+          "status": "Legitimate",
+          "record": "220725",
+          "current": "Coprinopsis atramentaria"
+        },
+        {
+          "name": "Coprinus atramentarius subsp. fuscescens",
+          "status": "Legitimate",
+          "record": "663797",
+          "current": "Coprinopsis atramentaria"
+        },
+        {
+          "name": "Coprinus atramentarius var. acuminatus",
+          "status": "Legitimate",
+          "record": "346672",
+          "current": "Coprinopsis acuminata"
+        },
+        {
+          "name": "Coprinus atramentarius var. atramentarius",
+          "status": "Legitimate",
+          "record": "418848",
+          "current": null
+        },
+        {
+          "name": "Coprinus atramentarius var. crassivelatus",
+          "status": "Invalid",
+          "record": "127163",
+          "current": null
+        },
+        {
+          "name": "Coprinus atramentarius var. crassivelatus",
+          "status": "Legitimate",
+          "record": "535287",
+          "current": "Coprinopsis variegata"
+        },
+        {
+          "name": "Coprinus atramentarius var. romagnesianus",
+          "status": "Legitimate",
+          "record": "354844",
+          "current": "Coprinopsis romagnesiana"
+        },
+        {
+          "name": "Coprinus atramentarius var. sobolifer",
+          "status": "Legitimate",
+          "record": "622709",
+          "current": "Coprinopsis atramentaria"
+        }
+      ],
+      "name_by_key": [
+        {
+          "_error": "NameByKey failed",
+          "record": "220725"
+        }
+      ],
+      "names_by_current_key": [
+        {
+          "_error": "500",
+          "_body": "Missing parameter: CurrentKey.\r\n"
+        }
+      ],
+      "field_keys": [
+        "AUTHORS",
+        "AddedBy",
+        "AddedDate",
+        "BASIONYM RECORD NUMBER",
+        "BSM LINK",
+        "CMICC FLAG",
+        "CORRECTION",
+        "CURRENT NAME",
+        "CURRENT NAME FUNDIC RECORD NUMBER",
+        "CURRENT NAME RECORD NUMBER",
+        "EDITORIAL COMMENT",
+        "EPITHET FLAG",
+        "GSD FLAG",
+        "HOST",
+        "INFRASPECIFIC EPITHET",
+        "INFRASPECIFIC RANK",
+        "LITERATURE LINK",
+        "LOCATION",
+        "NAME OF FUNGUS",
+        "NAME OF FUNGUS FUNDIC RECORD NUMBER",
+        "NAME STATUS",
+        "NOMENCLATURAL COMMENT",
+        "NameReleaseStatusID",
+        "PAGE",
+        "PART",
+        "PROTONYM RECORD NUMBER",
+        "PUBLISHED LIST REFERENCE",
+        "PUBLISHING AUTHORS",
+        "RECORD NUMBER",
+        "SANCTIONING AUTHOR",
+        "SPECIFIC EPITHET",
+        "SQLTimeStamp",
+        "UUID",
+        "UpdatedBy",
+        "UpdatedDate",
+        "VOLUME",
+        "YEAR OF PUBLICATION",
+        "YEAR ON PUBLICATION"
+      ]
+    },
+    "Galerina marginata": {
+      "n_hits": 2,
+      "best": {
+        "NAME OF FUNGUS": "Galerina marginata",
+        "AUTHORS": "(Batsch) Kühner",
+        "YEAR OF PUBLICATION": "1935",
+        "NAME STATUS": "Legitimate",
+        "RECORD NUMBER": "253217",
+        "CURRENT NAME": "Galerina marginata",
+        "CURRENT NAME RECORD NUMBER": "253217",
+        "BASIONYM RECORD NUMBER": "144051",
+        "UUID": "72d1d1d3-79c1-11d5-bebb-00508bca8de8"
+      },
+      "sample_statuses": [
+        {
+          "name": "Galerina marginata",
+          "status": "Legitimate",
+          "record": "253217",
+          "current": "Galerina marginata"
+        },
+        {
+          "name": "Galerina marginata f. marginata",
+          "status": "Legitimate",
+          "record": "485488",
+          "current": null
+        }
+      ],
+      "name_by_key": [
+        {
+          "_error": "NameByKey failed",
+          "record": "253217"
+        }
+      ],
+      "names_by_current_key": [
+        {
+          "NAME OF FUNGUS": "Agaricus autumnalis",
+          "AUTHORS": "Peck",
+          "YEAR OF PUBLICATION": "1872",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "463444",
+          "CURRENT NAME": "Galerina marginata",
+          "CURRENT NAME RECORD NUMBER": "253217",
+          "BASIONYM RECORD NUMBER": "463444",
+          "UUID": "9e4a1307-8864-493b-9e26-a1b25b175b5d"
+        },
+        {
+          "NAME OF FUNGUS": "Agaricus caudicinus var. denudatus",
+          "AUTHORS": "Pers.",
+          "YEAR OF PUBLICATION": "1801",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "497712",
+          "CURRENT NAME": "Galerina marginata",
+          "CURRENT NAME RECORD NUMBER": "253217",
+          "BASIONYM RECORD NUMBER": "497712",
+          "UUID": "b06f91ad-4a63-4297-a613-b94accca2aea"
+        },
+        {
+          "NAME OF FUNGUS": "Agaricus marginatus",
+          "AUTHORS": "Batsch",
+          "YEAR OF PUBLICATION": "1789",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "144051",
+          "CURRENT NAME": "Galerina marginata",
+          "CURRENT NAME RECORD NUMBER": "253217",
+          "BASIONYM RECORD NUMBER": "144051",
+          "UUID": "72d1d1b4-79c1-11d5-bebb-00508bca8de8"
+        },
+        {
+          "NAME OF FUNGUS": "Agaricus mustelinus",
+          "AUTHORS": "Fr.",
+          "YEAR OF PUBLICATION": "1838",
+          "NAME STATUS": "Illegitimate",
+          "RECORD NUMBER": "328972",
+          "CURRENT NAME": "Galerina marginata",
+          "CURRENT NAME RECORD NUMBER": "253217",
+          "BASIONYM RECORD NUMBER": "328972",
+          "UUID": "977f9e20-4da3-406d-8272-9a4ef5350148",
+          "NOMENCLATURAL COMMENT": "Nom. illegit., Art. 53.1"
+        },
+        {
+          "NAME OF FUNGUS": "Agaricus mutabilis var. marginatus",
+          "AUTHORS": "(Batsch) Fr.",
+          "YEAR OF PUBLICATION": "1874",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "654462",
+          "CURRENT NAME": "Galerina marginata",
+          "CURRENT NAME RECORD NUMBER": "253217",
+          "BASIONYM RECORD NUMBER": "144051",
+          "UUID": "e2a12a03-c043-4724-b73b-f6fc52209785"
+        },
+        {
+          "NAME OF FUNGUS": "Agaricus unicolor",
+          "AUTHORS": "Vahl",
+          "YEAR OF PUBLICATION": "1792",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "462486",
+          "CURRENT NAME": "Galerina marginata",
+          "CURRENT NAME RECORD NUMBER": "253217",
+          "BASIONYM RECORD NUMBER": "462486",
+          "UUID": "1cb1d439-36b9-11d5-9548-00d0592d548c"
+        },
+        {
+          "NAME OF FUNGUS": "Dryophila marginata",
+          "AUTHORS": "(Batsch) Quél.",
+          "YEAR OF PUBLICATION": "1886",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "652957",
+          "CURRENT NAME": "Galerina marginata",
+          "CURRENT NAME RECORD NUMBER": "253217",
+          "BASIONYM RECORD NUMBER": "144051",
+          "UUID": "93c914bc-fa87-4430-9896-1f1d24d0970c"
+        },
+        {
+          "NAME OF FUNGUS": "Dryophila mustelina",
+          "AUTHORS": "(Quél.) Quél.",
+          "YEAR OF PUBLICATION": "1886",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "652958",
+          "CURRENT NAME": "Galerina marginata",
+          "CURRENT NAME RECORD NUMBER": "253217",
+          "BASIONYM RECORD NUMBER": "144635",
+          "UUID": "5602a4e0-d1ef-4238-88d0-f8258af492e4"
+        }
+      ],
+      "field_keys": [
+        "AUTHORS",
+        "AddedBy",
+        "AddedDate",
+        "BASIONYM RECORD NUMBER",
+        "CMICC FLAG",
+        "CORRECTION",
+        "CURRENT NAME",
+        "CURRENT NAME FUNDIC RECORD NUMBER",
+        "CURRENT NAME RECORD NUMBER",
+        "GSD FLAG",
+        "INFRASPECIFIC EPITHET",
+        "INFRASPECIFIC RANK",
+        "LITERATURE LINK",
+        "NAME OF FUNGUS",
+        "NAME OF FUNGUS FUNDIC RECORD NUMBER",
+        "NAME STATUS",
+        "NameReleaseStatusID",
+        "PAGE",
+        "PROTONYM RECORD NUMBER",
+        "PUBLISHED LIST REFERENCE",
+        "RECORD NUMBER",
+        "SANCTIONING AUTHOR",
+        "SPECIFIC EPITHET",
+        "SQLTimeStamp",
+        "TAXONOMIC REFEREE",
+        "UUID",
+        "UpdatedBy",
+        "UpdatedDate",
+        "VOLUME",
+        "YEAR OF PUBLICATION"
+      ]
+    },
+    "Cantharellus cibarius": {
+      "n_hits": 15,
+      "best": {
+        "NAME OF FUNGUS": "Cantharellus cibarius",
+        "AUTHORS": "Fr.",
+        "YEAR OF PUBLICATION": "1821",
+        "NAME STATUS": "Legitimate",
+        "RECORD NUMBER": "200345",
+        "CURRENT NAME": "Cantharellus cibarius",
+        "CURRENT NAME RECORD NUMBER": "200345",
+        "BASIONYM RECORD NUMBER": "200345",
+        "UUID": "1cb18084-36b9-11d5-9548-00d0592d548c"
+      },
+      "sample_statuses": [
+        {
+          "name": "Cantharellus cibarius",
+          "status": "Legitimate",
+          "record": "200345",
+          "current": "Cantharellus cibarius"
+        },
+        {
+          "name": "Cantharellus cibarius",
+          "status": null,
+          "record": "598771",
+          "current": "200345"
+        },
+        {
+          "name": "Cantharellus cibarius",
+          "status": null,
+          "record": "10000061",
+          "current": "200345"
+        },
+        {
+          "name": "Cantharellus cibarius",
+          "status": null,
+          "record": "10000062",
+          "current": "200345"
+        },
+        {
+          "name": "Cantharellus cibarius f. cibarius",
+          "status": "Legitimate",
+          "record": "332455",
+          "current": null
+        },
+        {
+          "name": "Cantharellus cibarius f. neglectus",
+          "status": "Legitimate",
+          "record": "138762",
+          "current": "Cantharellus cibarius"
+        },
+        {
+          "name": "Cantharellus cibarius f. pallidus",
+          "status": "Invalid",
+          "record": "494277",
+          "current": "Cantharellus cibarius"
+        },
+        {
+          "name": "Cantharellus cibarius subsp. cibarius",
+          "status": "Legitimate",
+          "record": "423887",
+          "current": null
+        }
+      ],
+      "name_by_key": [
+        {
+          "_error": "NameByKey failed",
+          "record": "200345"
+        }
+      ],
+      "names_by_current_key": [
+        {
+          "NAME OF FUNGUS": "Agaricus alectorolophoides",
+          "AUTHORS": "Schaeff.",
+          "YEAR OF PUBLICATION": "1774",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "467981",
+          "CURRENT NAME": "Cantharellus cibarius",
+          "CURRENT NAME RECORD NUMBER": "200345",
+          "BASIONYM RECORD NUMBER": "467981",
+          "UUID": "45fa82b9-45ee-4c1e-9d90-0512bda584b5"
+        },
+        {
+          "NAME OF FUNGUS": "Agaricus chantarellus",
+          "AUTHORS": "L.",
+          "YEAR OF PUBLICATION": "1753",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "451032",
+          "CURRENT NAME": "Cantharellus cibarius",
+          "CURRENT NAME RECORD NUMBER": "200345",
+          "BASIONYM RECORD NUMBER": "451032",
+          "UUID": "c24c8081-156d-4f7d-83f3-2d159949d46d"
+        },
+        {
+          "NAME OF FUNGUS": "Agaricus chantarellus",
+          "AUTHORS": "Bolton",
+          "YEAR OF PUBLICATION": "1788",
+          "NAME STATUS": "Illegitimate",
+          "RECORD NUMBER": "457337",
+          "CURRENT NAME": "Cantharellus cibarius",
+          "CURRENT NAME RECORD NUMBER": "200345",
+          "BASIONYM RECORD NUMBER": "457337",
+          "UUID": "bb65ebf4-42fa-44a9-9511-d656684708da",
+          "NOMENCLATURAL COMMENT": "Nom. illegit., Art. 53.1"
+        },
+        {
+          "NAME OF FUNGUS": "Cantharellus cibarius",
+          "AUTHORS": "Fr.",
+          "YEAR OF PUBLICATION": "2021",
+          "RECORD NUMBER": "598771",
+          "CURRENT NAME RECORD NUMBER": "200345",
+          "BASIONYM RECORD NUMBER": "598771",
+          "UUID": "adb18e83-ec19-4250-bf46-87c81da7fb6d"
+        },
+        {
+          "NAME OF FUNGUS": "Cantharellus cibarius",
+          "AUTHORS": "Fr.",
+          "YEAR OF PUBLICATION": "2000",
+          "RECORD NUMBER": "10000061",
+          "CURRENT NAME RECORD NUMBER": "200345",
+          "BASIONYM RECORD NUMBER": "10000061",
+          "UUID": "2f6d20f9-5006-48fa-a41e-5699750b6f29"
+        },
+        {
+          "NAME OF FUNGUS": "Cantharellus cibarius",
+          "AUTHORS": "Fr.",
+          "YEAR OF PUBLICATION": "2016",
+          "RECORD NUMBER": "10000062",
+          "CURRENT NAME RECORD NUMBER": "200345",
+          "BASIONYM RECORD NUMBER": "10000062",
+          "UUID": "668b6c10-ed21-471d-9a5f-0a45702a0bf6"
+        },
+        {
+          "NAME OF FUNGUS": "Cantharellus cibarius",
+          "AUTHORS": "Fr.",
+          "YEAR OF PUBLICATION": "1821",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "200345",
+          "CURRENT NAME": "Cantharellus cibarius",
+          "CURRENT NAME RECORD NUMBER": "200345",
+          "BASIONYM RECORD NUMBER": "200345",
+          "UUID": "1cb18084-36b9-11d5-9548-00d0592d548c"
+        },
+        {
+          "NAME OF FUNGUS": "Cantharellus cibarius f. neglectus",
+          "AUTHORS": "M. Souché",
+          "YEAR OF PUBLICATION": "1904",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "138762",
+          "CURRENT NAME": "Cantharellus cibarius",
+          "CURRENT NAME RECORD NUMBER": "200345",
+          "BASIONYM RECORD NUMBER": "138762",
+          "UUID": "90df1e2a-2491-443b-b9ae-928a4e2605d5"
+        }
+      ],
+      "field_keys": [
+        "AUTHORS",
+        "AddedBy",
+        "AddedDate",
+        "BASIONYM RECORD NUMBER",
+        "CORRECTION",
+        "CURRENT NAME",
+        "CURRENT NAME FUNDIC RECORD NUMBER",
+        "CURRENT NAME RECORD NUMBER",
+        "EPITHET FLAG",
+        "GSD FLAG",
+        "HOST",
+        "INFRASPECIFIC EPITHET",
+        "INFRASPECIFIC RANK",
+        "LITERATURE LINK",
+        "LOCATION",
+        "NAME OF FUNGUS",
+        "NAME OF FUNGUS FUNDIC RECORD NUMBER",
+        "NAME STATUS",
+        "NameReleaseStatusID",
+        "PAGE",
+        "PART",
+        "PROTONYM RECORD NUMBER",
+        "PUBLISHED LIST REFERENCE",
+        "PUBLISHING AUTHORS",
+        "RECORD NUMBER",
+        "SANCTIONING AUTHOR",
+        "SANCTIONING REFERENCE LITERATURE LINK",
+        "SANCTIONING REFERENCE PAGE",
+        "SANCTIONING REFERENCE VOLUME",
+        "SANCTIONING REFERENCE YEAR",
+        "SPECIFIC EPITHET",
+        "SQLTimeStamp",
+        "STS FLAG",
+        "TAXONOMIC REFEREE",
+        "TYPIFICATION DETAILS",
+        "UUID",
+        "UpdatedBy",
+        "UpdatedDate",
+        "VOLUME",
+        "YEAR OF PUBLICATION",
+        "YEAR ON PUBLICATION"
+      ]
+    },
+    "Gyromitra esculenta": {
+      "n_hits": 11,
+      "best": {
+        "NAME OF FUNGUS": "Gyromitra esculenta",
+        "AUTHORS": "Pers. ex Fr.",
+        "YEAR OF PUBLICATION": "1849",
+        "NAME STATUS": "Legitimate",
+        "RECORD NUMBER": "236690",
+        "CURRENT NAME": "Gyromitra esculenta",
+        "CURRENT NAME RECORD NUMBER": "236690",
+        "BASIONYM RECORD NUMBER": "236690",
+        "UUID": "1cb18c4f-36b9-11d5-9548-00d0592d548c"
+      },
+      "sample_statuses": [
+        {
+          "name": "Gyromitra esculenta",
+          "status": "Legitimate",
+          "record": "236690",
+          "current": "Gyromitra esculenta"
+        },
+        {
+          "name": "Gyromitra esculenta f. rubiformis",
+          "status": "Legitimate",
+          "record": "838395",
+          "current": "Gyromitra esculenta"
+        },
+        {
+          "name": "Gyromitra esculenta var. alba",
+          "status": "Legitimate",
+          "record": "352122",
+          "current": "Gyromitra esculenta"
+        },
+        {
+          "name": "Gyromitra esculenta var. aurantiaca",
+          "status": "Legitimate",
+          "record": "349523",
+          "current": "Gyromitra esculenta"
+        },
+        {
+          "name": "Gyromitra esculenta var. bubaci",
+          "status": "Orthographic variant",
+          "record": "117461",
+          "current": "628395"
+        },
+        {
+          "name": "Gyromitra esculenta var. bubakii",
+          "status": "Legitimate",
+          "record": "628395",
+          "current": "Gyromitra bubakii"
+        },
+        {
+          "name": "Gyromitra esculenta var. crispa",
+          "status": "Legitimate",
+          "record": "138984",
+          "current": "Gyromitra esculenta"
+        },
+        {
+          "name": "Gyromitra esculenta var. esculenta",
+          "status": "Legitimate",
+          "record": "417608",
+          "current": null
+        }
+      ],
+      "name_by_key": [
+        {
+          "_error": "NameByKey failed",
+          "record": "236690"
+        }
+      ],
+      "names_by_current_key": [
+        {
+          "NAME OF FUNGUS": "Gyromitra esculenta",
+          "AUTHORS": "Pers. ex Fr.",
+          "YEAR OF PUBLICATION": "1849",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "236690",
+          "CURRENT NAME": "Gyromitra esculenta",
+          "CURRENT NAME RECORD NUMBER": "236690",
+          "BASIONYM RECORD NUMBER": "236690",
+          "UUID": "1cb18c4f-36b9-11d5-9548-00d0592d548c"
+        },
+        {
+          "NAME OF FUNGUS": "Gyromitra esculenta f. rubiformis",
+          "AUTHORS": "Klofac",
+          "YEAR OF PUBLICATION": "2021",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "838395",
+          "CURRENT NAME": "Gyromitra esculenta",
+          "CURRENT NAME RECORD NUMBER": "236690",
+          "BASIONYM RECORD NUMBER": "838395",
+          "UUID": "661fdaad-886d-434c-affc-30566052edc7"
+        },
+        {
+          "NAME OF FUNGUS": "Gyromitra esculenta var. alba",
+          "AUTHORS": "Pilát",
+          "YEAR OF PUBLICATION": "1951",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "352122",
+          "CURRENT NAME": "Gyromitra esculenta",
+          "CURRENT NAME RECORD NUMBER": "236690",
+          "BASIONYM RECORD NUMBER": "352122",
+          "UUID": "2b1fb6d4-8d40-40e4-85ab-f6a1abe601df"
+        },
+        {
+          "NAME OF FUNGUS": "Gyromitra esculenta var. aurantiaca",
+          "AUTHORS": "Benedix",
+          "YEAR OF PUBLICATION": "1969",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "349523",
+          "CURRENT NAME": "Gyromitra esculenta",
+          "CURRENT NAME RECORD NUMBER": "236690",
+          "BASIONYM RECORD NUMBER": "349523",
+          "UUID": "c22d1f37-5db0-4f2e-af7f-018f09fa4159"
+        },
+        {
+          "NAME OF FUNGUS": "Gyromitra esculenta var. crispa",
+          "AUTHORS": "Peck",
+          "YEAR OF PUBLICATION": "1898",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "138984",
+          "CURRENT NAME": "Gyromitra esculenta",
+          "CURRENT NAME RECORD NUMBER": "236690",
+          "BASIONYM RECORD NUMBER": "138984",
+          "UUID": "695bd7b7-a2ee-453d-8088-0defb370ffcb"
+        },
+        {
+          "NAME OF FUNGUS": "Gyromitra esculenta var. fragilis",
+          "AUTHORS": "A. Marchand ex Réaudin",
+          "YEAR OF PUBLICATION": "2008",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "518216",
+          "CURRENT NAME": "Gyromitra esculenta",
+          "CURRENT NAME RECORD NUMBER": "236690",
+          "BASIONYM RECORD NUMBER": "518216",
+          "UUID": "5f31b4ad-080e-42b7-a74f-06908db36dbe"
+        },
+        {
+          "NAME OF FUNGUS": "Gyromitra esculenta var. fulva",
+          "AUTHORS": "J. Moravec",
+          "YEAR OF PUBLICATION": "1986",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "117462",
+          "CURRENT NAME": "Gyromitra esculenta",
+          "CURRENT NAME RECORD NUMBER": "236690",
+          "BASIONYM RECORD NUMBER": "117462",
+          "UUID": "a8d0a740-6e4e-486f-aa23-40ed2f8c0df2"
+        },
+        {
+          "NAME OF FUNGUS": "Helvella phalloides",
+          "AUTHORS": "A. Cumino",
+          "YEAR OF PUBLICATION": "1805",
+          "NAME STATUS": "Legitimate",
+          "RECORD NUMBER": "654813",
+          "CURRENT NAME": "Gyromitra esculenta",
+          "CURRENT NAME RECORD NUMBER": "236690",
+          "BASIONYM RECORD NUMBER": "654813",
+          "UUID": "7740cc4c-2246-4891-bf33-4c8bfbc7b26f"
+        }
+      ],
+      "field_keys": [
+        "AUTHORS",
+        "AddedBy",
+        "AddedDate",
+        "BASIONYM RECORD NUMBER",
+        "CMICC FLAG",
+        "CORRECTION",
+        "CURRENT NAME",
+        "CURRENT NAME FUNDIC RECORD NUMBER",
+        "CURRENT NAME RECORD NUMBER",
+        "EDITORIAL COMMENT",
+        "EPITHET FLAG",
+        "GSD FLAG",
+        "HOST",
+        "INFRASPECIFIC EPITHET",
+        "INFRASPECIFIC RANK",
+        "LITERATURE LINK",
+        "LOCATION",
+        "NAME OF FUNGUS",
+        "NAME OF FUNGUS FUNDIC RECORD NUMBER",
+        "NAME STATUS",
+        "NOTES",
+        "NameReleaseStatusID",
+        "ORTHOGRAPHY COMMENT",
+        "PAGE",
+        "PROTONYM RECORD NUMBER",
+        "PUBLISHED LIST REFERENCE",
+        "PUBLISHING AUTHORS",
+        "RECORD NUMBER",
+        "SANCTIONING AUTHOR",
+        "SPECIFIC EPITHET",
+        "SQLTimeStamp",
+        "STS FLAG",
+        "TAXONOMIC REFEREE",
+        "TYPIFICATION DETAILS",
+        "UUID",
+        "UpdatedBy",
+        "UpdatedDate",
+        "VOLUME",
+        "YEAR OF PUBLICATION",
+        "YEAR ON PUBLICATION"
+      ]
+    }
+  },
+  "operations_http_get_documented": [
+    "IsAlive",
+    "NameSearch",
+    "NameSearchDs",
+    "EpithetSearch",
+    "NameByKey",
+    "NameByKeyDs",
+    "NameFullByKey",
+    "NameByKeyRDF",
+    "AuthorSearch",
+    "NamesByCurrentKey",
+    "AllUpdatedNames",
+    "UpdatedNames",
+    "UpdatedNamesInRange",
+    "NewNames",
+    "NewNamesInRange",
+    "DeprecatedNames",
+    "DeprecatedNamesByRank"
+  ],
+  "fitness_for_visionsetil": {
+    "synonym_resolution": "high",
+    "accepted_name_lookup": "high",
+    "if_record_id_ssot": "high",
+    "risk_edibility": "none",
+    "photos_media": "none",
+    "iberian_common_names": "none",
+    "live_classify_path": "no",
+    "offline_catalog_enrichment": "yes",
+    "recommendation": "Use IF as nomenclatural backbone (accepted names, IF RecordIDs, synonym map enrichment). Never for edibility/risk. Cache offline; respect Kew attribution + link."
+  }
+}

@@ -41,7 +41,7 @@ from app.services.image_quality import ImageQualityValidationService
 from app.services.metadata_encoder import MetadataEncoder
 from app.services.multimodal_fusion import MultimodalFusionService
 from app.services.open_set_rejection import OpenSetRejectionService
-from app.services.poisonous_lookalikes import HIGH_RISK_GENERA
+from app.services.poisonous_lookalikes import HIGH_RISK_GENERA, normalize_lookalike_names
 from app.services.safety_layer import SafetyLayer
 from app.services.species_catalog import list_mock_species_catalog
 
@@ -304,7 +304,9 @@ def classify_observation_advanced(
         first_taxon = safe["candidates"][0]["taxon"] if safe["candidates"] else ""
         first_genus = first_taxon.split()[0].lower() if first_taxon else ""
         has_deadly_lookalike = False
-        lookalikes = safe["candidates"][0].get("lookalikes", []) if safe["candidates"] else []
+        lookalikes = normalize_lookalike_names(
+            safe["candidates"][0].get("lookalikes", []) if safe["candidates"] else []
+        )
         for lk in lookalikes:
             if lk.split()[0].lower() in HIGH_RISK_GENERA:
                 has_deadly_lookalike = True
@@ -325,7 +327,9 @@ def classify_observation_advanced(
         first_taxon = safe["candidates"][0]["taxon"] if safe["candidates"] else ""
         first_genus = first_taxon.split()[0].lower() if first_taxon else ""
         has_deadly_lookalike = False
-        lookalikes = safe["candidates"][0].get("lookalikes", []) if safe["candidates"] else []
+        lookalikes = normalize_lookalike_names(
+            safe["candidates"][0].get("lookalikes", []) if safe["candidates"] else []
+        )
         for lk in lookalikes:
             if lk.split()[0].lower() in HIGH_RISK_GENERA:
                 has_deadly_lookalike = True

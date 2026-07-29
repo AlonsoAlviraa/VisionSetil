@@ -1,0 +1,15 @@
+
+ RUN  v3.2.7 C:/Users/Mariano/Documents/ALONSOO/VISIONSETIL/frontend
+
+ ✓ src/lib/quizMatch.test.ts (5 tests) 92ms
+ ✓ src/lib/lookalikeStudio.test.ts (6 tests) 46ms
+ ✓ src/lib/safetyCopy.test.ts (4 tests) 78ms
+ ✓ src/lib/foodQuality.test.ts (6 tests) 50ms
+ ✓ src/lib/setadle.test.ts (7 tests) 200ms
+ ✓ src/lib/mushroomQuiz.test.ts (15 tests) 89ms
+
+ Test Files  6 passed (6)
+      Tests  43 passed (43)
+   Start at  20:57:06
+   Duration  1.24s (transform 612ms, setup 832ms, collect 1.27s, tests 555ms, environment 1ms, prepare 1.46s)
+

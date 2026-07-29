@@ -1,0 +1,1427 @@
+{
+  "generated": "2026-07-28T11:21:27.676598+00:00",
+  "overall": "PASS",
+  "exit_code": 0,
+  "policy": "orientation_only_never_consume",
+  "product_unlock": false,
+  "suites": [
+    {
+      "name": "S1-S2 pytest (metrics+leak+loader+e20)",
+      "status": "PASS",
+      "detail": [
+        "........................................................................ [ 85%]",
+        "............                                                             [100%]"
+      ],
+      "flags": []
+    },
+    {
+      "name": "S4 notebook guards E20",
+      "status": "PASS",
+      "detail": "{\"path\": \"C:\\\\Users\\\\Mariano\\\\Documents\\\\ALONSOO\\\\VISIONSETIL\\\\kaggle\\\\visionsetil_exp_v20_source_holdout.ipynb\", \"has_chr92\": true, \"has_train_obs\": true, \"has_deadly_at_3\": true, \"has_fail_closed\": true, \"has_dataparallel\": true, \"safe_dp_freeze\": true, \"no_broken_backslash_replace\": true}",
+      "flags": []
+    },
+    {
+      "name": "S3 artifact audit",
+      "status": "PASS",
+      "detail": "n_dirs=10",
+      "flags": []
+    },
+    {
+      "name": "S5 lookalike pair metrics",
+      "status": "PASS",
+      "detail": "{\"n_directed_pairs\": 135, \"n_pairs_in_label_space\": 69, \"n_eval_samples\": 14455, \"true_in_topk_rate\": 0.9275, \"lookalike_mate_in_topk_rate\": 0.0988, \"predictions_dir\": \"C:\\\\Users\\\\Mariano\\\\Documents\\\\ALONSOO\\\\VISIONSETIL\\\\kaggle\\\\kernel_output_v20\\\\models\"}",
+      "flags": []
+    },
+    {
+      "name": "S6 product_unlock criteria (fail-closed)",
+      "status": "PASS",
+      "detail": "unlock_eligible_advisory=True; reasons=['all_checks_pass_but_product_unlock_forced_false_until_operator_cycle']; checks={'metrics_present': True, 'e20_experiment': True, 'dual_deadly_keys': True, 'soft_map': True, 'soft_deadly_at_3': True, 'n_deadly_nonzero': True, 'orientation_only_policy': True, 'pro_tester_pass': True, 'safe_dp_freeze': True}",
+      "flags": []
+    },
+    {
+      "name": "S7 E20 split integrity",
+      "status": "PASS",
+      "detail": "{\"protocol\": \"source_holdout_e20\", \"pass\": true, \"leaks\": {\"train_val\": 0, \"train_test\": 0, \"val_test\": 0}, \"n_train_obs\": 5767, \"n_val_obs\": 1018, \"n_test_obs\": 7385, \"has_metrics\": true}",
+      "flags": []
+    },
+    {
+      "name": "S8 E20 open-set + mate monitor",
+      "status": "PASS",
+      "detail": "{\"n\": 7385, \"top1_accuracy\": 0.802031144211239, \"multiview_reject_rate\": 0.0, \"recommended_conf\": 0.92, \"recommended_margin\": 0.05, \"recommended_entropy\": 0.15, \"recommended_reject_rate\": 0.1819905213270142, \"recommended_acc_keep\": 0.8808144346962423, \"mate_in_topk\": 0.0988, \"true_in_topk\": 0.9275, \"paths\": [\"C:\\\\Users\\\\Mariano\\\\Documents\\\\ALONSOO\\\\VISIONSETIL\\\\eval\\\\reports\\\\open_set_thresholds.json\", \"C:\\\\Users\\\\Mariano\\\\Documents\\\\ALONSOO\\\\VISIONSETIL\\\\eval\\\\reports\\\\ml_experiments\\\\e20_open_set_holdout.json\", \"C:\\\\Users\\\\Mariano\\\\Documents\\\\ALONSOO\\\\VISIONSETIL\\\\backend\\\\eval\\\\reports\\\\open_set_thresholds.json\"]}",
+      "flags": [
+        "multiview_thr_rejects_near_zero"
+      ]
+    },
+    {
+      "name": "S9 live Identify reject monitor",
+      "status": "PASS",
+      "detail": "{\"status\": \"ok\", \"n_entries\": 1, \"n_rejected\": 1, \"reject_rate\": 1.0, \"reject_rate_7d\": 1.0, \"n_entries_7d\": 1, \"reasons\": {\"high_entropy\": 1}, \"reason_histogram\": {\"high_entropy\": 1}, \"top_reason\": \"high_entropy\", \"health_flags\": [\"sparse_sample\", \"high_reject_rate_advisory\"], \"multiview\": {\"n_with_view_labels\": 0, \"n_multiview_ge2\": 0, \"n_diag_any\": 0, \"n_diag_full_gills_front_detail\": 0, \"n_single_non_diag\": 0, \"view_label_rate\": 0.0, \"multiview_ge2_rate\": 0.0, \"diag_full_rate\": 0.0, \"priority_views\": [\"detail\", \"front\", \"gills\"], \"note\": \"Advisory only: multi-photo without gills/front/detail is not deadly-safe. Never forage/consumption permission.\"}, \"windows\": {\"24h\": {\"n_entries\": 1, \"reject_rate\": 1.0, \"top_reason\": \"high_entropy\"}, \"7d\": {\"n_entries\": 1, \"reject_rate\": 1.0, \"top_reason\": \"high_entropy\"}, \"30d\": {\"n_entries\": 1, \"reject_rate\": 1.0, \"top_reason\": \"high_entropy\"}, \"all\": {\"n_entries\": 1, \"reject_rate\": 1.0, \"top_reason\": \"high_entropy\"}}, \"log_path\": \"C:\\\\Users\\\\Mariano\\\\Documents\\\\ALONSOO\\\\VISIONSETIL\\\\data\\\\feedback\\\\classification_log.jsonl\", \"product_unlock\": false}",
+      "flags": [
+        "sparse_sample",
+        "high_reject_rate_advisory"
+      ]
+    },
+    {
+      "name": "S13 E21 scale readiness (no launch)",
+      "status": "PASS",
+      "detail": "{\"ready\": true, \"status\": \"ready_for_operator_schedule\", \"e21_launched\": false, \"product_unlock\": false, \"map_at_3\": 0.8603024148047814, \"deadly_at_3\": 0.9271317829457364}",
+      "flags": []
+    },
+    {
+      "name": "S10 paired multi-view inventory",
+      "status": "PASS",
+      "detail": "{\"true_loo_ready\": true, \"train_multi_ge2\": 3773, \"val_multi_ge2\": 656, \"blocker\": null}",
+      "flags": []
+    },
+    {
+      "name": "S11 paired multi-view LOO torch",
+      "status": "PASS",
+      "detail": "{\"torch_ok\": true, \"n_packs\": 48, \"n_species\": 38, \"map3_1\": 0.8472, \"map3_4\": 0.9236, \"deltas\": {\"map3_4_minus_1\": 0.0764, \"map3_2_minus_1\": 0.0695, \"top1_4_minus_1\": 0.0833, \"reject_1_minus_4\": 0.1458}, \"loo_summary\": {\"full4_map_at_3\": 0.9236, \"loo_mean_map_at_3\": 0.9201, \"delta_map3_full_minus_loo\": 0.0035}}",
+      "flags": []
+    },
+    {
+      "name": "S12 deadly multi-view LOO honesty",
+      "status": "PASS",
+      "detail": "{\"torch_ok\": true, \"n_packs\": 33, \"map3_1\": 0.8434, \"map3_4\": 0.8384, \"deltas\": {\"map3_4_minus_1\": -0.005, \"map3_2_minus_1\": 0.0, \"top1_4_minus_1\": -0.0303, \"reject_1_minus_4\": -0.0303}, \"product_note\": \"flat multi-view on deadly → keep lookalikes+open-set\"}",
+      "flags": [
+        "deadly_multiview_map3_flat"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v12\\models",
+      "pass": true,
+      "status": "flagged",
+      "checks": {
+        "metrics_json": true,
+        "npz": false,
+        "split_artifacts": false
+      },
+      "flags": [
+        "no test_predictions.npz — skip recompute",
+        "no train/test_obs.json (UNKNOWN offline re-audit)"
+      ],
+      "declared": {
+        "test_map_at_3": 0.06997219647822057,
+        "safety_recall_deadly": 0.0,
+        "safety_recall_deadly_at_3": null,
+        "databases_used": [
+          "fungitastic",
+          "fungiclef"
+        ],
+        "version": "v12-E12-data-scale"
+      }
+    },
+    {
+      "path": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v13\\models",
+      "pass": true,
+      "status": "flagged",
+      "checks": {
+        "metrics_json": true,
+        "npz": false,
+        "split_artifacts": false
+      },
+      "flags": [
+        "no test_predictions.npz — skip recompute",
+        "no train/test_obs.json (UNKNOWN offline re-audit)"
+      ],
+      "declared": {
+        "test_map_at_3": 0.052332719459791247,
+        "safety_recall_deadly": 0.03571428571428571,
+        "safety_recall_deadly_at_3": null,
+        "databases_used": [
+          "fungitastic",
+          "fungiclef"
+        ],
+        "version": "v13-E13-deadly-data"
+      }
+    },
+    {
+      "path": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v14\\models",
+      "pass": true,
+      "status": "flagged",
+      "checks": {
+        "metrics_json": true,
+        "npz": false,
+        "split_artifacts": false
+      },
+      "flags": [
+        "no test_predictions.npz — skip recompute",
+        "no train/test_obs.json (UNKNOWN offline re-audit)"
+      ],
+      "declared": {
+        "test_map_at_3": 0.09267241379310347,
+        "safety_recall_deadly": 0.020833333333333332,
+        "safety_recall_deadly_at_3": null,
+        "databases_used": [
+          "fungitastic",
+          "fungiclef"
+        ],
+        "version": "v14-E14-focused"
+      }
+    },
+    {
+      "path": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v16\\models",
+      "pass": true,
+      "status": "flagged",
+      "checks": {
+        "metrics_json": true,
+        "deadly_idxs_source": "caller",
+        "map_matches_npz": true,
+        "deadly_field_is_at3": true,
+        "split_artifacts": false
+      },
+      "flags": [
+        "no train/test_obs.json (UNKNOWN offline re-audit)"
+      ],
+      "declared": {
+        "test_map_at_3": 0.18360215053763435,
+        "safety_recall_deadly": 0.5806451612903226,
+        "safety_recall_deadly_at_3": 0.5806451612903226,
+        "databases_used": [
+          "fungitastic",
+          "fungiclef"
+        ],
+        "version": "v16-E16-mega-focus40"
+      },
+      "recomputed": {
+        "map_at_k": 0.1836021505376344,
+        "top1": 0.11129032258064517,
+        "deadly_at_1": 0.3709677419354839,
+        "deadly_at_3": 0.5806451612903226,
+        "n_deadly": 124,
+        "ece_naive": 0.2615726001801029,
+        "ece_binned_15": 0.10178525458660817,
+        "n": 620,
+        "deadly_top1_from_preds": 0.3709677419354839
+      }
+    },
+    {
+      "path": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v16_live\\models",
+      "pass": true,
+      "status": "flagged",
+      "checks": {
+        "metrics_json": true,
+        "deadly_idxs_source": "caller",
+        "map_matches_npz": true,
+        "deadly_field_is_at3": true,
+        "split_artifacts": false
+      },
+      "flags": [
+        "no train/test_obs.json (UNKNOWN offline re-audit)"
+      ],
+      "declared": {
+        "test_map_at_3": 0.18360215053763435,
+        "safety_recall_deadly": 0.5806451612903226,
+        "safety_recall_deadly_at_3": 0.5806451612903226,
+        "databases_used": [
+          "fungitastic",
+          "fungiclef"
+        ],
+        "version": "v16-E16-mega-focus40"
+      },
+      "recomputed": {
+        "map_at_k": 0.1836021505376344,
+        "top1": 0.11129032258064517,
+        "deadly_at_1": 0.3709677419354839,
+        "deadly_at_3": 0.5806451612903226,
+        "n_deadly": 124,
+        "ece_naive": 0.2615726001801029,
+        "ece_binned_15": 0.10178525458660817,
+        "n": 620,
+        "deadly_top1_from_preds": 0.3709677419354839
+      }
+    },
+    {
+      "path": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v17\\models",
+      "pass": true,
+      "status": "flagged",
+      "checks": {
+        "metrics_json": true,
+        "deadly_idxs_source": "caller",
+        "map_matches_npz": true,
+        "deadly_field_is_at3": true,
+        "split_artifacts": false
+      },
+      "flags": [
+        "no train/test_obs.json (UNKNOWN offline re-audit)"
+      ],
+      "declared": {
+        "test_map_at_3": 0.19430894308943095,
+        "safety_recall_deadly": 0.7044025157232704,
+        "safety_recall_deadly_at_3": 0.7044025157232704,
+        "databases_used": [
+          "fungitastic",
+          "fungiclef",
+          "fungiclef2022"
+        ],
+        "version": "v17-E17-data-scale"
+      },
+      "recomputed": {
+        "map_at_k": 0.19430894308943086,
+        "top1": 0.12560975609756098,
+        "deadly_at_1": 0.44654088050314467,
+        "deadly_at_3": 0.7044025157232704,
+        "n_deadly": 159,
+        "ece_naive": 0.39791461780849025,
+        "ece_binned_15": 0.2438258562509606,
+        "n": 820,
+        "deadly_top1_from_preds": 0.44654088050314467
+      }
+    },
+    {
+      "path": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v18\\models",
+      "pass": true,
+      "status": "flagged",
+      "checks": {
+        "metrics_json": true,
+        "deadly_idxs_source": "caller",
+        "map_matches_npz": true,
+        "deadly_field_is_at3": true,
+        "split_artifacts": false
+      },
+      "flags": [
+        "no train/test_obs.json (UNKNOWN offline re-audit)"
+      ],
+      "declared": {
+        "test_map_at_3": 0.8701828410689181,
+        "safety_recall_deadly": 0.9594272076372315,
+        "safety_recall_deadly_at_3": 0.9594272076372315,
+        "databases_used": [
+          "combined_mushrooms",
+          "fungitastic",
+          "mushroom1"
+        ],
+        "version": "v18-E18-multisource"
+      },
+      "recomputed": {
+        "map_at_k": 0.8701828410689171,
+        "top1": 0.8236286919831224,
+        "deadly_at_1": 0.8902147971360382,
+        "deadly_at_3": 0.9594272076372315,
+        "n_deadly": 419,
+        "ece_naive": 0.18587302795693844,
+        "ece_binned_15": 0.08339309893579926,
+        "n": 1185,
+        "deadly_top1_from_preds": 0.8902147971360382
+      }
+    },
+    {
+      "path": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v19\\models",
+      "pass": true,
+      "status": "flagged",
+      "checks": {
+        "metrics_json": true,
+        "deadly_idxs_source": "caller",
+        "map_matches_npz": true,
+        "deadly_field_is_at3": true,
+        "split_artifacts": false
+      },
+      "flags": [
+        "no train/test_obs.json (UNKNOWN offline re-audit)"
+      ],
+      "declared": {
+        "test_map_at_3": 0.9600000000000002,
+        "safety_recall_deadly": 0.9934065934065934,
+        "safety_recall_deadly_at_3": 0.9934065934065934,
+        "databases_used": [
+          "fungitastic",
+          "gbif_es"
+        ],
+        "version": "v19-E19-gbif-mega"
+      },
+      "recomputed": {
+        "map_at_k": 0.96,
+        "top1": 0.9361538461538461,
+        "deadly_at_1": 0.9626373626373627,
+        "deadly_at_3": 0.9934065934065934,
+        "n_deadly": 455,
+        "ece_naive": 0.0630488328062571,
+        "ece_binned_15": 0.055177432459134326,
+        "n": 1300,
+        "deadly_top1_from_preds": 0.9626373626373627
+      }
+    },
+    {
+      "path": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models",
+      "pass": true,
+      "status": "ok",
+      "checks": {
+        "metrics_json": true,
+        "deadly_idxs_source": "caller",
+        "map_matches_npz": true,
+        "deadly_field_is_at3": true,
+        "split_artifacts": true
+      },
+      "flags": [],
+      "declared": {
+        "test_map_at_3": 0.8603024148047814,
+        "safety_recall_deadly": 0.9271317829457364,
+        "safety_recall_deadly_at_3": 0.9271317829457364,
+        "databases_used": [
+          "fungitastic",
+          "gbif_es"
+        ],
+        "version": "v20-E20-source-holdout"
+      },
+      "recomputed": {
+        "map_at_k": 0.8603024148047845,
+        "top1": 0.802031144211239,
+        "deadly_at_1": 0.7875968992248062,
+        "deadly_at_3": 0.9271317829457364,
+        "n_deadly": 2580,
+        "ece_naive": 0.18781378849301697,
+        "ece_binned_15": 0.1588856337154404,
+        "n": 7385,
+        "deadly_top1_from_preds": 0.7875968992248062
+      },
+      "split_leak": {
+        "train_test": 0,
+        "train_val": 0,
+        "val_test": 0
+      }
+    },
+    {
+      "path": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v9\\models",
+      "pass": true,
+      "status": "flagged",
+      "checks": {
+        "metrics_json": true,
+        "deadly_idxs_source": "caller",
+        "map_matches_npz": true,
+        "deadly_field_is_at3": true,
+        "split_artifacts": false
+      },
+      "flags": [
+        "no train/test_obs.json (UNKNOWN offline re-audit)"
+      ],
+      "declared": {
+        "test_map_at_3": 0.07583333333333335,
+        "safety_recall_deadly": 0.0,
+        "safety_recall_deadly_at_3": 0.0,
+        "databases_used": [
+          "fungitastic",
+          "fungiclef"
+        ],
+        "version": "v8"
+      },
+      "recomputed": {
+        "map_at_k": 0.07583333333333334,
+        "top1": 0.05,
+        "deadly_at_1": 0.0,
+        "deadly_at_3": 0.0,
+        "n_deadly": 9,
+        "ece_naive": 0.11058435034162055,
+        "ece_binned_15": 0.04633202902351817,
+        "n": 600,
+        "deadly_top1_from_preds": 0.0
+      }
+    }
+  ],
+  "pair_metrics": {
+    "n_directed_pairs": 135,
+    "k": 3,
+    "predictions_dir": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models",
+    "n_eval_samples": 14455,
+    "n_pairs_in_label_space": 69,
+    "true_in_topk_rate": 0.9275,
+    "lookalike_mate_in_topk_rate": 0.0988,
+    "note": "mate_in_topk is a confusion signal (not accuracy). Curated pairs only.",
+    "by_pair_sample": {
+      "Agaricus campestris||Amanita verna": {
+        "n": 200,
+        "mate_in_topk": 0,
+        "true_in_topk": 177
+      },
+      "Amanita citrina||Amanita phalloides": {
+        "n": 200,
+        "mate_in_topk": 120,
+        "true_in_topk": 193
+      },
+      "Amanita muscaria||Amanita caesarea": {
+        "n": 400,
+        "mate_in_topk": 0,
+        "true_in_topk": 395
+      },
+      "Amanita muscaria||Amanita pantherina": {
+        "n": 400,
+        "mate_in_topk": 273,
+        "true_in_topk": 395
+      },
+      "Amanita muscaria||Amanita fulva": {
+        "n": 400,
+        "mate_in_topk": 0,
+        "true_in_topk": 395
+      },
+      "Amanita pantherina||Amanita muscaria": {
+        "n": 400,
+        "mate_in_topk": 13,
+        "true_in_topk": 369
+      },
+      "Amanita pantherina||Amanita rubescens": {
+        "n": 400,
+        "mate_in_topk": 37,
+        "true_in_topk": 369
+      },
+      "Amanita phalloides||Russula virescens": {
+        "n": 400,
+        "mate_in_topk": 0,
+        "true_in_topk": 392
+      },
+      "Amanita phalloides||Tricholoma equestre": {
+        "n": 400,
+        "mate_in_topk": 0,
+        "true_in_topk": 392
+      },
+      "Amanita phalloides||Amanita caesarea": {
+        "n": 400,
+        "mate_in_topk": 0,
+        "true_in_topk": 392
+      },
+      "Amanita phalloides||Amanita citrina": {
+        "n": 400,
+        "mate_in_topk": 178,
+        "true_in_topk": 392
+      },
+      "Amanita phalloides||Amanita vaginata": {
+        "n": 400,
+        "mate_in_topk": 0,
+        "true_in_topk": 392
+      },
+      "Amanita phalloides||Volvopluteus gloiocephalus": {
+        "n": 400,
+        "mate_in_topk": 0,
+        "true_in_topk": 392
+      },
+      "Amanita rubescens||Amanita pantherina": {
+        "n": 200,
+        "mate_in_topk": 78,
+        "true_in_topk": 169
+      },
+      "Amanita virosa||Agaricus arvensis": {
+        "n": 7,
+        "mate_in_topk": 0,
+        "true_in_topk": 7
+      }
+    }
+  },
+  "open_set_holdout": {
+    "ok": true,
+    "product_unlock": false,
+    "generated": "2026-07-28T11:21:27.645591+00:00",
+    "predictions_dir": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models",
+    "protocol": "source_holdout_e20",
+    "version": "v20-E20-source-holdout",
+    "n": 7385,
+    "top1_accuracy": 0.802031144211239,
+    "conf_stats": {
+      "mean_correct": 0.9818292929703333,
+      "mean_wrong": 0.875088734804524,
+      "p5_correct": 0.9051994919776917,
+      "p5_wrong": 0.4689792200922966,
+      "p50_wrong": 0.9759523570537567
+    },
+    "margin_stats": {
+      "mean_correct": 0.9697656552894771,
+      "mean_wrong": 0.7999124722574499,
+      "p5_wrong": 0.13286353945732116
+    },
+    "entropy_stats": {
+      "mean_correct": 0.0747303850302931,
+      "mean_wrong": 0.43600347782909715,
+      "p90_correct": 0.1540431712088868,
+      "p50_wrong": 0.1607682143297715
+    },
+    "current_multiview_thr": {
+      "conf_thr": 0.1,
+      "margin_thr": 0.0,
+      "entropy_thr": null,
+      "n": 7385,
+      "n_reject": 0,
+      "n_keep": 7385,
+      "reject_rate": 0.0,
+      "acc_keep": 0.802031144211239,
+      "acc_reject": null,
+      "wrong_kept": 1462,
+      "correct_rejected": 0,
+      "frac_correct_kept": 1.0,
+      "deadly_reject_rate": 0.0,
+      "deadly_at3_among_kept": 0.9271317829457364,
+      "n_deadly": 2580,
+      "n_deadly_kept": 2580
+    },
+    "current_generic_thr": {
+      "conf_thr": 0.48,
+      "margin_thr": 0.1,
+      "entropy_thr": null,
+      "n": 7385,
+      "n_reject": 127,
+      "n_keep": 7258,
+      "reject_rate": 0.017197020988490182,
+      "acc_keep": 0.8117938826122899,
+      "acc_reject": 0.2440944881889764,
+      "wrong_kept": 1366,
+      "correct_rejected": 31,
+      "frac_correct_kept": 0.994766165794361,
+      "deadly_reject_rate": 0.005416384563303994,
+      "deadly_at3_among_kept": 0.9322834645669291,
+      "n_deadly": 2580,
+      "n_deadly_kept": 2540
+    },
+    "recommended": {
+      "conf_thr": 0.92,
+      "margin_thr": 0.05,
+      "entropy_thr": 0.15,
+      "n": 7385,
+      "n_reject": 1344,
+      "n_keep": 6041,
+      "reject_rate": 0.1819905213270142,
+      "acc_keep": 0.8808144346962423,
+      "acc_reject": 0.4479166666666667,
+      "wrong_kept": 720,
+      "correct_rejected": 602,
+      "frac_correct_kept": 0.8983623163937194,
+      "deadly_reject_rate": 0.05402843601895735,
+      "deadly_at3_among_kept": 0.9679046309032554,
+      "n_deadly": 2580,
+      "n_deadly_kept": 2181,
+      "score": 0.03962960057301959,
+      "note": "+entropy_secondary"
+    },
+    "lookalike_mate_rates": {
+      "lookalike_mate_in_topk_rate": 0.0988,
+      "true_in_topk_rate": 0.9275,
+      "n_eval_samples": 14455,
+      "n_pairs_in_label_space": 69,
+      "n_directed_pairs": 135,
+      "status": "PASS"
+    },
+    "note": "Orientation only. Multiview thr 0.10/0.0 rejects ~0% on E20 (overconfident softmax). Recommended thr raises abstention without product_unlock."
+  },
+  "live_reject_monitor": {
+    "product_unlock": false,
+    "policy": "orientation_only_never_consume",
+    "generated": "2026-07-28T11:21:27.667076+00:00",
+    "log_path": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\data\\feedback\\classification_log.jsonl",
+    "exists": true,
+    "n_entries": 1,
+    "n_accepted": 0,
+    "n_rejected": 1,
+    "reject_rate": 1.0,
+    "reasons": {
+      "high_entropy": 1
+    },
+    "reason_histogram": {
+      "high_entropy": 1
+    },
+    "decisions": {
+      "rejected": 1
+    },
+    "windows": {
+      "24h": {
+        "n_entries": 1,
+        "n_accepted": 0,
+        "n_rejected": 1,
+        "n_other": 0,
+        "reject_rate": 1.0,
+        "reasons": {
+          "high_entropy": 1
+        },
+        "reason_histogram": {
+          "high_entropy": 1
+        },
+        "decisions": {
+          "rejected": 1
+        },
+        "top_reason": "high_entropy",
+        "multiview": {
+          "n_with_view_labels": 0,
+          "n_multiview_ge2": 0,
+          "n_diag_any": 0,
+          "n_diag_full_gills_front_detail": 0,
+          "n_single_non_diag": 0,
+          "view_label_rate": 0.0,
+          "multiview_ge2_rate": 0.0,
+          "diag_full_rate": 0.0,
+          "priority_views": [
+            "detail",
+            "front",
+            "gills"
+          ],
+          "note": "Advisory only: multi-photo without gills/front/detail is not deadly-safe. Never forage/consumption permission."
+        },
+        "window": "24h"
+      },
+      "7d": {
+        "n_entries": 1,
+        "n_accepted": 0,
+        "n_rejected": 1,
+        "n_other": 0,
+        "reject_rate": 1.0,
+        "reasons": {
+          "high_entropy": 1
+        },
+        "reason_histogram": {
+          "high_entropy": 1
+        },
+        "decisions": {
+          "rejected": 1
+        },
+        "top_reason": "high_entropy",
+        "multiview": {
+          "n_with_view_labels": 0,
+          "n_multiview_ge2": 0,
+          "n_diag_any": 0,
+          "n_diag_full_gills_front_detail": 0,
+          "n_single_non_diag": 0,
+          "view_label_rate": 0.0,
+          "multiview_ge2_rate": 0.0,
+          "diag_full_rate": 0.0,
+          "priority_views": [
+            "detail",
+            "front",
+            "gills"
+          ],
+          "note": "Advisory only: multi-photo without gills/front/detail is not deadly-safe. Never forage/consumption permission."
+        },
+        "window": "7d"
+      },
+      "30d": {
+        "n_entries": 1,
+        "n_accepted": 0,
+        "n_rejected": 1,
+        "n_other": 0,
+        "reject_rate": 1.0,
+        "reasons": {
+          "high_entropy": 1
+        },
+        "reason_histogram": {
+          "high_entropy": 1
+        },
+        "decisions": {
+          "rejected": 1
+        },
+        "top_reason": "high_entropy",
+        "multiview": {
+          "n_with_view_labels": 0,
+          "n_multiview_ge2": 0,
+          "n_diag_any": 0,
+          "n_diag_full_gills_front_detail": 0,
+          "n_single_non_diag": 0,
+          "view_label_rate": 0.0,
+          "multiview_ge2_rate": 0.0,
+          "diag_full_rate": 0.0,
+          "priority_views": [
+            "detail",
+            "front",
+            "gills"
+          ],
+          "note": "Advisory only: multi-photo without gills/front/detail is not deadly-safe. Never forage/consumption permission."
+        },
+        "window": "30d"
+      },
+      "all": {
+        "n_entries": 1,
+        "n_accepted": 0,
+        "n_rejected": 1,
+        "n_other": 0,
+        "reject_rate": 1.0,
+        "reasons": {
+          "high_entropy": 1
+        },
+        "reason_histogram": {
+          "high_entropy": 1
+        },
+        "decisions": {
+          "rejected": 1
+        },
+        "top_reason": "high_entropy",
+        "multiview": {
+          "n_with_view_labels": 0,
+          "n_multiview_ge2": 0,
+          "n_diag_any": 0,
+          "n_diag_full_gills_front_detail": 0,
+          "n_single_non_diag": 0,
+          "view_label_rate": 0.0,
+          "multiview_ge2_rate": 0.0,
+          "diag_full_rate": 0.0,
+          "priority_views": [
+            "detail",
+            "front",
+            "gills"
+          ],
+          "note": "Advisory only: multi-photo without gills/front/detail is not deadly-safe. Never forage/consumption permission."
+        },
+        "window": "all"
+      }
+    },
+    "health_flags": [
+      "sparse_sample",
+      "high_reject_rate_advisory"
+    ],
+    "note": "Live ops monitor; empty/missing log is SKIP not fail. Windows/health_flags are advisory only. Never unlocks.",
+    "status": "ok",
+    "n_other": 0,
+    "top_reason": "high_entropy",
+    "multiview": {
+      "n_with_view_labels": 0,
+      "n_multiview_ge2": 0,
+      "n_diag_any": 0,
+      "n_diag_full_gills_front_detail": 0,
+      "n_single_non_diag": 0,
+      "view_label_rate": 0.0,
+      "multiview_ge2_rate": 0.0,
+      "diag_full_rate": 0.0,
+      "priority_views": [
+        "detail",
+        "front",
+        "gills"
+      ],
+      "note": "Advisory only: multi-photo without gills/front/detail is not deadly-safe. Never forage/consumption permission."
+    },
+    "n_parse_errors": 0,
+    "n_with_timestamp": 1,
+    "n_without_timestamp": 0,
+    "high_reject_rate_threshold": 0.85,
+    "sparse_sample_threshold": 5,
+    "reject_rate_7d": 1.0,
+    "n_entries_7d": 1
+  },
+  "e21_readiness": {
+    "generated": "2026-07-28T11:21:27.676598+00:00",
+    "policy": "orientation_only_never_consume",
+    "experiment": "e21_scale_holdout_optional",
+    "status": "ready_for_operator_schedule",
+    "e21_launched": false,
+    "kaggle_push": false,
+    "product_unlock": false,
+    "can_auto_unlock": false,
+    "forage_permission": false,
+    "baseline": {
+      "metrics_path": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models\\metrics.json",
+      "best_pt": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models\\best.pt",
+      "npz": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models\\test_predictions.npz",
+      "version": "v20-E20-source-holdout",
+      "test_map_at_3": 0.8603024148047814,
+      "safety_recall_deadly_at_1": 0.7875968992248062,
+      "safety_recall_deadly_at_3": 0.9271317829457364,
+      "n_deadly": 2580,
+      "protocol": null
+    },
+    "thresholds": {
+      "soft_map": 0.25,
+      "soft_deadly_at_3": 0.9
+    },
+    "checks": {
+      "metrics_present": true,
+      "e20_or_holdout_version": true,
+      "dual_deadly_keys": true,
+      "soft_map": true,
+      "soft_deadly_at_3": true,
+      "n_deadly_nonzero": true,
+      "best_pt_present": true,
+      "predictions_npz_present": true,
+      "e21_plan_doc_present": true
+    },
+    "fail_reasons": [],
+    "ready_for_e21_schedule": true,
+    "operator_action": "baseline_ok: schedule GPU only when class expansion + datasets ready; never auto-unlock; re-verify holdout after E21 COMPLETE",
+    "plan_doc": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\docs\\E21_SCALE_PLAN.md",
+    "note": "E21 is optional scale. This script never pushes Kaggle and never sets product_unlock true. Orientation only — never consumption."
+  },
+  "paired_multiview_inventory": {
+    "generated": "2026-07-27T21:34:12.597681+00:00",
+    "product_unlock": false,
+    "policy": "orientation_only_never_consume",
+    "models_dir": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models",
+    "canonical_views": [
+      "gills",
+      "front",
+      "habitat",
+      "detail"
+    ],
+    "splits": {
+      "train": {
+        "n_obs": 5767,
+        "n_multi_ge2": 3773,
+        "n_multi_ge4": 776,
+        "max_images": 14,
+        "hist": {
+          "1": 1994,
+          "2": 1802,
+          "3": 1195,
+          "4": 502,
+          "5": 175,
+          "6": 54,
+          "7": 20,
+          "8": 14,
+          "9": 6,
+          "10": 2,
+          "11": 2,
+          "14": 1
+        },
+        "n_species": 40,
+        "n_species_with_multi": 40,
+        "top_multi_species": [
+          [
+            "Amanita muscaria",
+            340
+          ],
+          [
+            "Amanita pantherina",
+            225
+          ],
+          [
+            "Amanita phalloides",
+            199
+          ],
+          [
+            "Agaricus campestris",
+            170
+          ],
+          [
+            "Clitocybe nebularis",
+            170
+          ],
+          [
+            "Russula ochroleuca",
+            170
+          ],
+          [
+            "Amanita rubescens",
+            170
+          ],
+          [
+            "Boletus edulis",
+            170
+          ],
+          [
+            "Amanita citrina",
+            164
+          ],
+          [
+            "Trametes versicolor",
+            159
+          ],
+          [
+            "Fomitopsis pinicola",
+            144
+          ],
+          [
+            "Amanita virosa",
+            116
+          ]
+        ],
+        "path_probe": {
+          "checked": 200,
+          "exists_on_disk": 0,
+          "frac_exist": 0.0,
+          "sample_ok": [],
+          "sample_missing": [
+            "/kaggle/input/datasets/picekl/fungitastic/images/FungiTastic-Mini/train/500p/0-2237856578.JPG",
+            "/kaggle/input/datasets/picekl/fungitastic/images/FungiTastic-Mini/train/500p/0-2237884673.JPG",
+            "/kaggle/input/datasets/picekl/fungitastic/images/FungiTastic-Mini/train/500p/1-2237884673.JPG"
+          ],
+          "images_local": false
+        }
+      },
+      "val": {
+        "n_obs": 1018,
+        "n_multi_ge2": 656,
+        "n_multi_ge4": 152,
+        "max_images": 15,
+        "hist": {
+          "1": 362,
+          "2": 316,
+          "3": 188,
+          "4": 105,
+          "5": 17,
+          "6": 15,
+          "7": 5,
+          "8": 4,
+          "9": 2,
+          "10": 1,
+          "11": 1,
+          "13": 1,
+          "15": 1
+        },
+        "n_species": 40,
+        "n_species_with_multi": 37,
+        "top_multi_species": [
+          [
+            "Amanita muscaria",
+            60
+          ],
+          [
+            "Amanita pantherina",
+            42
+          ],
+          [
+            "Amanita phalloides",
+            31
+          ],
+          [
+            "Russula ochroleuca",
+            30
+          ],
+          [
+            "Boletus edulis",
+            30
+          ],
+          [
+            "Clitocybe nebularis",
+            30
+          ],
+          [
+            "Agaricus campestris",
+            30
+          ],
+          [
+            "Amanita rubescens",
+            30
+          ],
+          [
+            "Amanita citrina",
+            27
+          ],
+          [
+            "Trametes versicolor",
+            27
+          ],
+          [
+            "Amanita virosa",
+            22
+          ],
+          [
+            "Suillus grevillei",
+            22
+          ]
+        ],
+        "path_probe": {
+          "checked": 200,
+          "exists_on_disk": 0,
+          "frac_exist": 0.0,
+          "sample_ok": [],
+          "sample_missing": [
+            "/kaggle/input/datasets/picekl/fungitastic/images/FungiTastic-Mini/train/500p/0-2237913029.JPG",
+            "/kaggle/input/datasets/picekl/fungitastic/images/FungiTastic-Mini/train/500p/1-2237913029.JPG",
+            "/kaggle/input/datasets/picekl/fungitastic/images/FungiTastic-Mini/train/500p/0-2237918098.JPG"
+          ],
+          "images_local": false
+        }
+      },
+      "test": {
+        "n_obs": 7385,
+        "n_multi_ge2": 0,
+        "n_multi_ge4": 0,
+        "max_images": 1,
+        "hist": {
+          "1": 7385
+        },
+        "n_species": 40,
+        "n_species_with_multi": 0,
+        "top_multi_species": [],
+        "path_probe": {
+          "checked": 200,
+          "exists_on_disk": 0,
+          "frac_exist": 0.0,
+          "sample_ok": [],
+          "sample_missing": [
+            "/kaggle/input/datasets/alonsoalviraaaa/visionsetil-gbif-es-allowlist40/images/Phallus_impudicus/1024183469_1ce2bad2c4.jpg",
+            "/kaggle/input/datasets/alonsoalviraaaa/visionsetil-gbif-es-allowlist40/images/Boletus_edulis/1024217043_0aa6a2c5ad.jpg",
+            "/kaggle/input/datasets/alonsoalviraaaa/visionsetil-gbif-es-allowlist40/images/Boletus_edulis/1024217054_27fc9742f3.jpg"
+          ],
+          "images_local": false
+        }
+      }
+    },
+    "readiness": {
+      "true_leave_one_photo_out": true,
+      "ft_val_ready": false,
+      "ft_train_ready": false,
+      "gbif_local_same_occurrence": true,
+      "gbif_loo_eval_ok": true,
+      "val_multi_ge2": 656,
+      "train_multi_ge2": 3773,
+      "test_multi_ge2": 0,
+      "images_local_val": false,
+      "images_local_train": false,
+      "blocker": null,
+      "next": "Local GBIF same-occurrence multi-image packs evaluated via eval/scripts/paired_multiview_loo_eval.py. Optional: mount FungiTastic for labeled view slots."
+    },
+    "product_note": "E20 GBIF ES pure test JSON is mostly single-image (domain holdout). Local industrial GBIF media often has multiple files per occurrence id — used for true multi-photo torch n-views eval. FT train/val multi packs remain Kaggle-path until mounted."
+  },
+  "paired_multiview_loo": {
+    "generated": "2026-07-27T21:29:57.046389+00:00",
+    "product_unlock": false,
+    "policy": "orientation_only_never_consume",
+    "image_root": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\data\\industrial_v1\\gbif\\images",
+    "protocol": "same_occurrence_multi_image_gbif_local_stratified",
+    "note": "Packs grouped by GBIF occurrence id prefix in filenames. Multiple media of the same occurrence — not FungiTastic view slots. View order is arbitrary (filename sort), not labeled gills/front. Sample is stratified round-robin by species; T from E20 metrics.",
+    "inventory": {
+      "n_packs_ge2": 8060,
+      "n_packs_ge4": 1546,
+      "n_species": 40,
+      "max_images": 23
+    },
+    "thresholds": {
+      "conf": 0.92,
+      "margin": 0.05,
+      "entropy": 0.15,
+      "temperature": 1.5879640579223633
+    },
+    "torch": {
+      "ok": true,
+      "load_seconds": 3.549,
+      "device": "cpu",
+      "n_packs_attempted": 48,
+      "n_species_in_sample": 38,
+      "sampling": "stratified_round_robin_by_species",
+      "temperature": 1.5879640579223633,
+      "by_n_views": {
+        "1": {
+          "n": 48,
+          "errors": 0,
+          "top1": 0.7917,
+          "map_at_3": 0.8472,
+          "reject_rate": 0.2083,
+          "acc_keep": 0.8421,
+          "ms_per_pack_mean": 221.43,
+          "temperature": 1.5879640579223633,
+          "interpretation": "single photo from same occurrence"
+        },
+        "2": {
+          "n": 48,
+          "errors": 0,
+          "top1": 0.8542,
+          "map_at_3": 0.9167,
+          "reject_rate": 0.1042,
+          "acc_keep": 0.8837,
+          "ms_per_pack_mean": 362.22,
+          "temperature": 1.5879640579223633,
+          "interpretation": "two photos same occurrence"
+        },
+        "4": {
+          "n": 48,
+          "errors": 0,
+          "top1": 0.875,
+          "map_at_3": 0.9236,
+          "reject_rate": 0.0625,
+          "acc_keep": 0.9111,
+          "ms_per_pack_mean": 652.91,
+          "temperature": 1.5879640579223633,
+          "interpretation": "up to four photos same occurrence (cycle-pad if fewer)"
+        }
+      },
+      "leave_one_photo_out": {
+        "n_packs": 48,
+        "n_loo_forwards": 192,
+        "errors": 0,
+        "full4_map_at_3": 0.9236,
+        "full4_top1": 0.875,
+        "loo_mean_map_at_3": 0.9201,
+        "loo_mean_top1": 0.875,
+        "delta_map3_full_minus_loo": 0.0035,
+        "interpretation": "full4 = first 4 media of occurrence; loo_mean = mean softmax over leave-one-of-4 remaining triples (same occurrence)"
+      },
+      "arch": "multiview_v8",
+      "num_classes": 40
+    },
+    "deltas": {
+      "map3_4_minus_1": 0.0764,
+      "map3_2_minus_1": 0.0695,
+      "top1_4_minus_1": 0.0833,
+      "reject_1_minus_4": 0.1458
+    },
+    "gates": {
+      "map3_full_ge_single": true,
+      "map3_pair_ge_single": true,
+      "reject_not_worse_with_more_views": true
+    },
+    "loo_summary": {
+      "full4_map_at_3": 0.9236,
+      "loo_mean_map_at_3": 0.9201,
+      "delta_map3_full_minus_loo": 0.0035
+    }
+  },
+  "paired_multiview_loo_deadly": {
+    "generated": "2026-07-27T21:44:05.874093+00:00",
+    "product_unlock": false,
+    "policy": "orientation_only_never_consume",
+    "image_root": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\data\\industrial_v1\\gbif\\images",
+    "protocol": "same_occurrence_multi_image_gbif_local_stratified_deadly_only",
+    "deadly_only": true,
+    "deadly_taxa_in_label_space": [
+      "Amanita muscaria",
+      "Amanita pantherina",
+      "Amanita phalloides",
+      "Amanita virosa",
+      "Cortinarius rubellus",
+      "Galerina marginata",
+      "Gyromitra esculenta",
+      "Hypholoma fasciculare",
+      "Lepiota castanea",
+      "Lepiota subincarnata",
+      "Paxillus involutus"
+    ],
+    "note": "Packs grouped by GBIF occurrence id prefix in filenames. Multiple media of the same occurrence — not FungiTastic view slots. View order is arbitrary (filename sort), not labeled gills/front. Sample is stratified round-robin by species; T from E20 metrics. Deadly-only filter applied.",
+    "inventory": {
+      "n_packs_ge2": 2162,
+      "n_packs_ge4": 429,
+      "n_species": 11,
+      "max_images": 23
+    },
+    "thresholds": {
+      "conf": 0.92,
+      "margin": 0.05,
+      "entropy": 0.15,
+      "temperature": 1.5879640579223633
+    },
+    "torch": {
+      "ok": true,
+      "load_seconds": 2.881,
+      "device": "cpu",
+      "n_packs_attempted": 33,
+      "n_species_in_sample": 10,
+      "sampling": "stratified_round_robin_by_species",
+      "temperature": 1.5879640579223633,
+      "by_n_views": {
+        "1": {
+          "n": 33,
+          "errors": 0,
+          "top1": 0.7576,
+          "map_at_3": 0.8434,
+          "reject_rate": 0.1212,
+          "acc_keep": 0.8276,
+          "ms_per_pack_mean": 166.85,
+          "temperature": 1.5879640579223633,
+          "interpretation": "single photo from same occurrence"
+        },
+        "2": {
+          "n": 33,
+          "errors": 0,
+          "top1": 0.7576,
+          "map_at_3": 0.8434,
+          "reject_rate": 0.1515,
+          "acc_keep": 0.8214,
+          "ms_per_pack_mean": 309.82,
+          "temperature": 1.5879640579223633,
+          "interpretation": "two photos same occurrence"
+        },
+        "4": {
+          "n": 33,
+          "errors": 0,
+          "top1": 0.7273,
+          "map_at_3": 0.8384,
+          "reject_rate": 0.1515,
+          "acc_keep": 0.8571,
+          "ms_per_pack_mean": 620.42,
+          "temperature": 1.5879640579223633,
+          "interpretation": "up to four photos same occurrence (cycle-pad if fewer)"
+        }
+      },
+      "leave_one_photo_out": {
+        "n_packs": 33,
+        "n_loo_forwards": 132,
+        "errors": 0,
+        "full4_map_at_3": 0.8384,
+        "full4_top1": 0.7273,
+        "loo_mean_map_at_3": 0.8283,
+        "loo_mean_top1": 0.7273,
+        "delta_map3_full_minus_loo": 0.0101,
+        "interpretation": "full4 = first 4 media of occurrence; loo_mean = mean softmax over leave-one-of-4 remaining triples (same occurrence)"
+      },
+      "arch": "multiview_v8",
+      "num_classes": 40
+    },
+    "deltas": {
+      "map3_4_minus_1": -0.005,
+      "map3_2_minus_1": 0.0,
+      "top1_4_minus_1": -0.0303,
+      "reject_1_minus_4": -0.0303
+    },
+    "gates": {
+      "map3_full_ge_single": false,
+      "map3_pair_ge_single": true,
+      "reject_not_worse_with_more_views": true
+    },
+    "loo_summary": {
+      "full4_map_at_3": 0.8384,
+      "loo_mean_map_at_3": 0.8283,
+      "delta_map3_full_minus_loo": 0.0101
+    }
+  },
+  "product_unlock_eval": {
+    "policy": "orientation_only_never_consume",
+    "product_unlock": false,
+    "can_auto_unlock": false,
+    "unlock_eligible_advisory": true,
+    "eligible_but_locked": true,
+    "operator_cycle_required": true,
+    "checks": {
+      "metrics_present": true,
+      "e20_experiment": true,
+      "dual_deadly_keys": true,
+      "soft_map": true,
+      "soft_deadly_at_3": true,
+      "n_deadly_nonzero": true,
+      "orientation_only_policy": true,
+      "pro_tester_pass": true,
+      "safe_dp_freeze": true
+    },
+    "checklist": [
+      {
+        "id": "metrics_present",
+        "pass": true,
+        "status": "PASS",
+        "detail": "Metrics blob present",
+        "value": {
+          "keys": [
+            "best_epoch",
+            "best_val_map3",
+            "deadly_gate_pass_expand",
+            "deadly_gate_pass_soft",
+            "deadly_gate_status",
+            "eval_protocol",
+            "n_deadly_in_test",
+            "num_classes",
+            "num_train_obs",
+            "primary_checkpoint",
+            "safety_recall_deadly",
+            "safety_recall_deadly_at_1",
+            "safety_recall_deadly_at_3",
+            "safety_recall_deadly_definition",
+            "split_artifacts",
+            "test_accuracy",
+            "test_balanced_accuracy",
+            "test_domain",
+            "test_ece",
+            "test_f1_macro",
+            "test_map_at_3",
+            "test_map_at_3_ci_high",
+            "test_map_at_3_ci_low",
+            "train_domain"
+          ]
+        }
+      },
+      {
+        "id": "e20_experiment",
+        "pass": true,
+        "status": "PASS",
+        "detail": "Must be E20 / source-holdout experiment identity",
+        "value": {
+          "version": "v20-E20-source-holdout",
+          "eval_protocol": "source_holdout_e20"
+        }
+      },
+      {
+        "id": "dual_deadly_keys",
+        "pass": true,
+        "status": "PASS",
+        "detail": "Both safety_recall_deadly_at_1 and _at_3 required",
+        "value": {
+          "at_1": 0.7875968992248062,
+          "at_3": 0.9271317829457364
+        }
+      },
+      {
+        "id": "n_deadly_nonzero",
+        "pass": true,
+        "status": "PASS",
+        "detail": "Deadly eval set must be non-vacuous",
+        "value": 2580
+      },
+      {
+        "id": "soft_map",
+        "pass": true,
+        "status": "PASS",
+        "detail": "test_map_at_3 >= 0.25",
+        "value": 0.8603024148047814
+      },
+      {
+        "id": "soft_deadly_at_3",
+        "pass": true,
+        "status": "PASS",
+        "detail": "safety_recall_deadly_at_3 >= 0.9",
+        "value": 0.9271317829457364
+      },
+      {
+        "id": "pro_tester_pass",
+        "pass": true,
+        "status": "PASS",
+        "detail": "Professional tester overall PASS",
+        "value": true
+      },
+      {
+        "id": "safe_dp_freeze",
+        "pass": true,
+        "status": "PASS",
+        "detail": "Notebook/DataParallel freeze uses _unwrap(model).backbone",
+        "value": true
+      },
+      {
+        "id": "orientation_only_policy",
+        "pass": true,
+        "status": "PASS",
+        "detail": "product_unlock forced false; never forage/consumption permission",
+        "value": null
+      }
+    ],
+    "reasons": [
+      "all_checks_pass_but_product_unlock_forced_false_until_operator_cycle"
+    ],
+    "residual_lock_reasons": [
+      "policy_orientation_only_never_consume",
+      "no_auto_unlock_from_metrics_alone",
+      "all_checks_pass_but_product_unlock_forced_false_until_operator_cycle",
+      "human_operator_must_explicitly_approve_unlock"
+    ],
+    "metrics_path": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models\\metrics.json",
+    "note": "Fail-closed: product_unlock stays false until a human operator cycle. Metrics eligibility is advisory only — never forage/consumption permission.",
+    "forage_permission": false,
+    "consumption_permission": false,
+    "gates": {
+      "policy": "orientation_only_never_consume",
+      "product_unlock": false,
+      "note": "Gates are advisory metrics only; do not unlock Identify from a single run.",
+      "expand_map": {
+        "threshold": 0.22,
+        "value": 0.8603024148047814,
+        "pass": true,
+        "status": "ok"
+      },
+      "soft_map": {
+        "threshold": 0.25,
+        "value": 0.8603024148047814,
+        "pass": true,
+        "status": "ok"
+      },
+      "expand_deadly_at_3": {
+        "pass": true,
+        "status": "ok",
+        "n_deadly": 2580,
+        "threshold": 0.5,
+        "value": 0.9271317829457364,
+        "reason": null
+      },
+      "soft_deadly_at_3": {
+        "pass": true,
+        "status": "ok",
+        "n_deadly": 2580,
+        "threshold": 0.9,
+        "value": 0.9271317829457364,
+        "reason": null
+      },
+      "all_expand_pass": true
+    },
+    "values": {
+      "test_map_at_3": 0.8603024148047814,
+      "safety_recall_deadly_at_1": 0.7875968992248062,
+      "safety_recall_deadly_at_3": 0.9271317829457364,
+      "n_deadly_in_test": 2580,
+      "version": "v20-E20-source-holdout"
+    },
+    "operator_action": "eligible_but_locked: review checklist, S9 live reject, open-set thr; only then decide unlock (still orientation-only, never consumption)"
+  }
+}

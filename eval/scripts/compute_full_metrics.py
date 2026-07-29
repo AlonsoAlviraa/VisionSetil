@@ -314,14 +314,30 @@ def compute_safety_metrics(
     else:
         toxic_correct = None
 
-    # Deadly recall
+    # Deadly recall (class-level flagging: pred toxic/deadly/reject) — NOT top-k species ID
     deadly_mask = true_toxicity == "deadly"
     if deadly_mask.sum() > 0:
         deadly_correct = (
             (pred_toxicity == "deadly") | (pred_toxicity == "toxic") | (pred_toxicity == "rejected")
         )[deadly_mask].mean()
+        # Honest dual species-ID metrics for deadly samples (top-1 vs top-3)
+        deadly_idx = np.where(deadly_mask)[0]
+        top1_hit = 0
+        top3_hit = 0
+        for i in deadly_idx:
+            true_i = int(labels[i])
+            order = np.argsort(-probs[i])
+            if int(order[0]) == true_i:
+                top1_hit += 1
+            if true_i in order[:3].tolist():
+                top3_hit += 1
+        n_d = max(int(deadly_mask.sum()), 1)
+        deadly_at_1 = top1_hit / n_d
+        deadly_at_3 = top3_hit / n_d
     else:
         deadly_correct = None
+        deadly_at_1 = None
+        deadly_at_3 = None
 
     # False edible rate: deadly/toxic predicted as edible
     dangerous_mask = (true_toxicity == "deadly") | (true_toxicity == "toxic")
@@ -332,7 +348,14 @@ def compute_safety_metrics(
 
     return {
         "toxic_recall": round(float(toxic_correct), 4) if toxic_correct is not None else None,
+        # Keep deadly_recall as class-flagging recall (legacy); dual keys are explicit.
         "deadly_recall": round(float(deadly_correct), 4) if deadly_correct is not None else None,
+        "safety_recall_deadly_at_1": (
+            round(float(deadly_at_1), 4) if deadly_at_1 is not None else None
+        ),
+        "safety_recall_deadly_at_3": (
+            round(float(deadly_at_3), 4) if deadly_at_3 is not None else None
+        ),
         "false_edible_rate": round(float(false_edible), 4) if false_edible is not None else None,
         "rejection_threshold": rejection_threshold,
         "n_toxic": int(toxic_mask.sum()),

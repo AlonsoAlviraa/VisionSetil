@@ -1,0 +1,63 @@
+===== juegos_quiz_setadle =====
+
+ RUN  v3.2.7 C:/Users/Mariano/Documents/ALONSOO/VISIONSETIL/frontend
+
+ ✓ src/lib/quizMatch.test.ts (5 tests) 92ms
+ ✓ src/lib/lookalikeStudio.test.ts (6 tests) 46ms
+ ✓ src/lib/safetyCopy.test.ts (4 tests) 78ms
+ ✓ src/lib/foodQuality.test.ts (6 tests) 50ms
+ ✓ src/lib/setadle.test.ts (7 tests) 200ms
+ ✓ src/lib/mushroomQuiz.test.ts (15 tests) 89ms
+
+ Test Files  6 passed (6)
+      Tests  43 passed (43)
+   Start at  20:57:06
+   Duration  1.24s (transform 612ms, setup 832ms, collect 1.27s, tests 555ms, environment 1ms, prepare 1.46s)
+
+
+===== nombres_i18n =====
+
+ RUN  v3.2.7 C:/Users/Mariano/Documents/ALONSOO/VISIONSETIL/frontend
+
+ ✓ src/lib/slug.test.ts (7 tests) 66ms
+ ✓ src/lib/i18nParity.test.ts (5 tests) 53ms
+ ✓ src/data/speciesCatalog.split.test.ts (8 tests) 99ms
+ ✓ src/data/namesEs.test.ts (15 tests) 100ms
+
+ Test Files  4 passed (4)
+      Tests  35 passed (35)
+   Start at  20:57:09
+   Duration  1.04s (transform 270ms, setup 558ms, collect 447ms, tests 318ms, environment 1ms, prepare 756ms)
+
+
+===== cookies_auth_frontend =====
+
+ RUN  v3.2.7 C:/Users/Mariano/Documents/ALONSOO/VISIONSETIL/frontend
+
+ ✓ src/auth/sessionTokenPolicy.test.ts (5 tests) 28ms
+ ✓ src/api/auth.cookieMode.test.ts (2 tests) 70ms
+
+ Test Files  2 passed (2)
+      Tests  7 passed (7)
+   Start at  20:57:12
+   Duration  672ms (transform 128ms, setup 208ms, collect 48ms, tests 98ms, environment 0ms, prepare 303ms)
+
+
+===== cookies_auth_backend =====
+.........                                                                [100%]
+============================== warnings summary ===============================
+..\..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\formparsers.py:12
+  C:\Users\Mariano\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\formparsers.py:12: PendingDeprecationWarning: Please use `import python_multipart` instead.
+    import multipart
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+
+===== seguridad_backend =====
+...........                                                              [100%]
+============================== warnings summary ===============================
+..\..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\formparsers.py:12
+  C:\Users\Mariano\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\formparsers.py:12: PendingDeprecationWarning: Please use `import python_multipart` instead.
+    import multipart
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+

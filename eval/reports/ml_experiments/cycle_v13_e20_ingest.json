@@ -1,0 +1,25 @@
+{
+  "status": "ok",
+  "workflow": "cycle-v13-e20-ingest",
+  "mode": "direct_postprocess_redownload",
+  "generated": "2026-07-28T11:21:27.792962+00:00",
+  "slug": "alonsoalviraaaa/visionsetil-exp-v20-source-holdout",
+  "kaggle_status": "KernelWorkerStatus.COMPLETE",
+  "honesty": {
+    "map_at_3": 0.8603024148047845,
+    "deadly_at_1": 0.7875968992248062,
+    "deadly_at_3": 0.9271317829457364,
+    "n_deadly": 2580,
+    "dual_keys_present": true,
+    "map_match": true
+  },
+  "gates": {
+    "soft_map": true,
+    "soft_deadly_at_3": true,
+    "pro_tester": "PASS"
+  },
+  "product_unlock": false,
+  "unlock_eligible_advisory": true,
+  "policy": "orientation_only_never_consume",
+  "product_surface_shipped": "v1.5.15-auth-pwa-multiview"
+}

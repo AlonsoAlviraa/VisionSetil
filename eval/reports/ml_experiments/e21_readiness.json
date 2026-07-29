@@ -1,0 +1,42 @@
+{
+  "generated": "2026-07-28T11:21:27.676598+00:00",
+  "policy": "orientation_only_never_consume",
+  "experiment": "e21_scale_holdout_optional",
+  "status": "ready_for_operator_schedule",
+  "e21_launched": false,
+  "kaggle_push": false,
+  "product_unlock": false,
+  "can_auto_unlock": false,
+  "forage_permission": false,
+  "baseline": {
+    "metrics_path": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models\\metrics.json",
+    "best_pt": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models\\best.pt",
+    "npz": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models\\test_predictions.npz",
+    "version": "v20-E20-source-holdout",
+    "test_map_at_3": 0.8603024148047814,
+    "safety_recall_deadly_at_1": 0.7875968992248062,
+    "safety_recall_deadly_at_3": 0.9271317829457364,
+    "n_deadly": 2580,
+    "protocol": null
+  },
+  "thresholds": {
+    "soft_map": 0.25,
+    "soft_deadly_at_3": 0.9
+  },
+  "checks": {
+    "metrics_present": true,
+    "e20_or_holdout_version": true,
+    "dual_deadly_keys": true,
+    "soft_map": true,
+    "soft_deadly_at_3": true,
+    "n_deadly_nonzero": true,
+    "best_pt_present": true,
+    "predictions_npz_present": true,
+    "e21_plan_doc_present": true
+  },
+  "fail_reasons": [],
+  "ready_for_e21_schedule": true,
+  "operator_action": "baseline_ok: schedule GPU only when class expansion + datasets ready; never auto-unlock; re-verify holdout after E21 COMPLETE",
+  "plan_doc": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\docs\\E21_SCALE_PLAN.md",
+  "note": "E21 is optional scale. This script never pushes Kaggle and never sets product_unlock true. Orientation only — never consumption."
+}

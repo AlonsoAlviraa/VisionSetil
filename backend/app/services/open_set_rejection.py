@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 from app.core.config import settings
 from app.ml.interfaces import ObservationRepresentation
-from app.services.poisonous_lookalikes import HIGH_RISK_GENERA
+from app.services.poisonous_lookalikes import HIGH_RISK_GENERA, normalize_lookalike_names
 
 
 @dataclass
@@ -46,12 +46,12 @@ class OpenSetRejectionService:
         top2_conf = candidates[1].get("confidence", 0.0) if len(candidates) > 1 else 0.0
         margin = round(top1_conf - top2_conf, 4)
 
-        # Calculate Shannon entropy
+        # Shannon entropy in nats (match MultiView / S8 E20 calibration)
         confidences = [c.get("confidence", 0.0) for c in candidates]
         total_conf = sum(confidences)
         if total_conf > 0:
             probs = [p / total_conf for p in confidences]
-            entropy = round(-sum(p * math.log2(p) for p in probs if p > 0), 4)
+            entropy = round(-sum(p * math.log(p) for p in probs if p > 0), 4)
         else:
             entropy = 0.0
 
@@ -65,10 +65,10 @@ class OpenSetRejectionService:
         first_taxon = candidates[0].get("taxon", "")
         first_genus = first_taxon.split()[0].lower() if first_taxon else ""
 
-        # Check deadly lookalikes
+        # Check deadly lookalikes (SSOT may store objects; normalize to strings)
         has_deadly_lookalike = False
         if settings.open_set_reject_on_deadly_lookalikes:
-            lookalikes = candidates[0].get("lookalikes", [])
+            lookalikes = normalize_lookalike_names(candidates[0].get("lookalikes", []))
             for lk in lookalikes:
                 lk_genus = lk.split()[0].lower() if lk else ""
                 if lk_genus in HIGH_RISK_GENERA:
@@ -78,6 +78,7 @@ class OpenSetRejectionService:
         # Load calibrated thresholds
         min_conf = settings.open_set_min_confidence
         min_margin = settings.open_set_min_margin
+        max_entropy = float(getattr(settings, "open_set_max_entropy", 0.0) or 0.0)
         thresholds_path = "settings"
         thresholds_status = "settings_fallback"
         try:
@@ -86,6 +87,8 @@ class OpenSetRejectionService:
             thresholds = load_open_set_thresholds()
             min_conf = thresholds.get("calibrated_threshold", min_conf)
             min_margin = thresholds.get("calibrated_margin", min_margin)
+            if thresholds.get("calibrated_entropy") is not None:
+                max_entropy = float(thresholds["calibrated_entropy"])
             thresholds_path = thresholds.get("source", thresholds_path)
             thresholds_status = thresholds.get("status", thresholds_status)
         except Exception:
@@ -106,6 +109,11 @@ class OpenSetRejectionService:
         elif margin < min_margin:
             is_unknown_or_uncertain = True
             reason = "low_margin"
+            reasons.append(reason)
+            decision = "reject_to_genus_or_human_review"
+        elif max_entropy > 0.0 and entropy > max_entropy:
+            is_unknown_or_uncertain = True
+            reason = "high_entropy"
             reasons.append(reason)
             decision = "reject_to_genus_or_human_review"
         elif first_genus in HIGH_RISK_GENERA:

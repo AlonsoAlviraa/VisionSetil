@@ -1,0 +1,93 @@
+{
+  "generated": "2026-07-27T21:29:57.046389+00:00",
+  "product_unlock": false,
+  "policy": "orientation_only_never_consume",
+  "image_root": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\data\\industrial_v1\\gbif\\images",
+  "protocol": "same_occurrence_multi_image_gbif_local_stratified",
+  "note": "Packs grouped by GBIF occurrence id prefix in filenames. Multiple media of the same occurrence — not FungiTastic view slots. View order is arbitrary (filename sort), not labeled gills/front. Sample is stratified round-robin by species; T from E20 metrics.",
+  "inventory": {
+    "n_packs_ge2": 8060,
+    "n_packs_ge4": 1546,
+    "n_species": 40,
+    "max_images": 23
+  },
+  "thresholds": {
+    "conf": 0.92,
+    "margin": 0.05,
+    "entropy": 0.15,
+    "temperature": 1.5879640579223633
+  },
+  "torch": {
+    "ok": true,
+    "load_seconds": 3.549,
+    "device": "cpu",
+    "n_packs_attempted": 48,
+    "n_species_in_sample": 38,
+    "sampling": "stratified_round_robin_by_species",
+    "temperature": 1.5879640579223633,
+    "by_n_views": {
+      "1": {
+        "n": 48,
+        "errors": 0,
+        "top1": 0.7917,
+        "map_at_3": 0.8472,
+        "reject_rate": 0.2083,
+        "acc_keep": 0.8421,
+        "ms_per_pack_mean": 221.43,
+        "temperature": 1.5879640579223633,
+        "interpretation": "single photo from same occurrence"
+      },
+      "2": {
+        "n": 48,
+        "errors": 0,
+        "top1": 0.8542,
+        "map_at_3": 0.9167,
+        "reject_rate": 0.1042,
+        "acc_keep": 0.8837,
+        "ms_per_pack_mean": 362.22,
+        "temperature": 1.5879640579223633,
+        "interpretation": "two photos same occurrence"
+      },
+      "4": {
+        "n": 48,
+        "errors": 0,
+        "top1": 0.875,
+        "map_at_3": 0.9236,
+        "reject_rate": 0.0625,
+        "acc_keep": 0.9111,
+        "ms_per_pack_mean": 652.91,
+        "temperature": 1.5879640579223633,
+        "interpretation": "up to four photos same occurrence (cycle-pad if fewer)"
+      }
+    },
+    "leave_one_photo_out": {
+      "n_packs": 48,
+      "n_loo_forwards": 192,
+      "errors": 0,
+      "full4_map_at_3": 0.9236,
+      "full4_top1": 0.875,
+      "loo_mean_map_at_3": 0.9201,
+      "loo_mean_top1": 0.875,
+      "delta_map3_full_minus_loo": 0.0035,
+      "interpretation": "full4 = first 4 media of occurrence; loo_mean = mean softmax over leave-one-of-4 remaining triples (same occurrence)"
+    },
+    "arch": "multiview_v8",
+    "num_classes": 40
+  },
+  "deltas": {
+    "map3_4_minus_1": 0.0764,
+    "map3_2_minus_1": 0.0695,
+    "top1_4_minus_1": 0.0833,
+    "reject_1_minus_4": 0.1458
+  },
+  "gates": {
+    "map3_full_ge_single": true,
+    "map3_pair_ge_single": true,
+    "reject_not_worse_with_more_views": true
+  },
+  "loo_summary": {
+    "full4_map_at_3": 0.9236,
+    "loo_mean_map_at_3": 0.9201,
+    "delta_map3_full_minus_loo": 0.0035
+  }
+}
