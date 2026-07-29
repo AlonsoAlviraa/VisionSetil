@@ -57,4 +57,16 @@ describe('zoneAlerts weather board', () => {
     expect(out).toEqual([3, 6, 9, 12, 15])
     expect(seen.sort((a, b) => a - b)).toEqual([0, 1, 2, 3, 4])
   })
+
+  it('handles larger zone-sized pools without dropping results', async () => {
+    const items = Array.from({ length: 48 }, (_, i) => i + 1)
+    const out = await mapPoolChunked(
+      items,
+      { concurrency: 4, chunkSize: 12 },
+      async (n) => n,
+    )
+    expect(out).toHaveLength(48)
+    expect(out[0]).toBe(1)
+    expect(out[47]).toBe(48)
+  })
 })

@@ -1,4 +1,7 @@
-/** CSS-only tilt card (Wave B — no framer-motion). */
+/**
+ * @deprecated Flat passthrough — 3D tilt chrome removed from product UI.
+ * Keeps import sites compiling without perspective/tilt wrappers.
+ */
 import type { ReactNode, CSSProperties } from 'react'
 
 interface TiltCard3DProps {
@@ -12,7 +15,7 @@ interface TiltCard3DProps {
 
 export function TiltCard3D({ children, className = '', style }: TiltCard3DProps) {
   return (
-    <div className={`tilt-card-css ${className}`.trim()} style={style}>
+    <div className={className.trim() || undefined} style={style}>
       {children}
     </div>
   )

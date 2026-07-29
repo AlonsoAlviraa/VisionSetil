@@ -19,6 +19,8 @@ export type StudioTaxonCard = {
   taxon: string
   slug: string
   common_names: string[]
+  /** English commons when available (EN UI). */
+  common_names_en: string[]
   family: string | null
   family_es: string | null
   risk_label: RiskLabel
@@ -89,7 +91,43 @@ export const CLASSIC_LOOKALIKE_PAIRS: ClassicLookalikePair[] = [
     id: 'comatus-atramentaria',
     label: 'Matacandil vs coprino de tinta',
     why: 'Alcohol + coprino = reacción peligrosa',
-    taxa: ['Coprinus comatus', 'Coprinopsis atramentaria'],
+    taxa: ['Coprinus comatus', 'Coprinus atramentarius'],
+  },
+  {
+    id: 'phalloides-citrina',
+    label: 'Oronja verde vs amanita citrina',
+    why: 'Volva y láminas; no confiar en el color solo',
+    taxa: ['Amanita phalloides', 'Amanita citrina'],
+  },
+  {
+    id: 'pantherina-rubescens',
+    label: 'Pantera vs rubescente',
+    why: 'Enrojecimiento al corte y base del pie',
+    taxa: ['Amanita pantherina', 'Amanita rubescens'],
+  },
+  {
+    id: 'esculenta-gyromitra',
+    label: 'Colmenilla vs gyromitra tóxica',
+    why: 'Costillas vs cámaras; gyromitra es peligrosa',
+    taxa: ['Morchella esculenta', 'Gyromitra esculenta'],
+  },
+  {
+    id: 'gambosa-inocybe',
+    label: 'San Jorge vs inocybe peligrosa',
+    why: 'Prados de primavera; inocybe puede ser mortal',
+    taxa: ['Calocybe gambosa', 'Inocybe erubescens'],
+  },
+  {
+    id: 'mutabilis-hypholoma',
+    label: 'Pholiota comestible vs hypholoma tóxico',
+    why: 'Sobre madera: amargor y color de láminas',
+    taxa: ['Kuehneromyces mutabilis', 'Hypholoma fasciculare'],
+  },
+  {
+    id: 'prunulus-entoloma',
+    label: 'Molinera vs entoloma tóxico',
+    why: 'Láminas y olor; entoloma sinuatum es tóxico',
+    taxa: ['Clitopilus prunulus', 'Entoloma sinuatum'],
   },
 ]
 
@@ -106,6 +144,7 @@ function catalogToCard(s: CatalogSpecies): StudioTaxonCard {
     taxon: s.taxon,
     slug: s.slug,
     common_names: s.common_names,
+    common_names_en: s.common_names_en || [],
     family: s.family ?? null,
     family_es: s.family_es ?? null,
     risk_label: toRiskLabel(s.risk_label),
@@ -119,6 +158,7 @@ function freeTextCard(q: string): StudioTaxonCard {
     taxon: q,
     slug: q.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
     common_names: [],
+    common_names_en: [],
     family: null,
     family_es: null,
     risk_label: 'dangerous_or_unknown',
@@ -269,12 +309,24 @@ function classicPeersFor(seedTaxon: string): string[] {
   return out
 }
 
-/** Suggest lookalikes: classic pairs first, then same family / high risk. */
+/** Suggest lookalikes: SSOT catalog lookalikes → classic pairs → same family / high risk. */
 export function suggestStudioPeers(seedTaxon: string, limit = 8): StudioTaxonCard[] {
   const seed = resolveStudioTaxon(seedTaxon)
   if (!seed) return []
   const seen = new Set<string>([fold(seed.taxon)])
   const out: StudioTaxonCard[] = []
+
+  // 1) Curated SSOT lookalikes on the catalog record (never invented)
+  const seedRec =
+    speciesCatalog.find((s) => fold(s.taxon) === fold(seed.taxon)) ||
+    speciesCatalog.find((s) => s.slug === seed.slug)
+  for (const t of seedRec?.lookalikes || []) {
+    const c = resolveStudioTaxon(t)
+    if (!c || seen.has(fold(c.taxon))) continue
+    seen.add(fold(c.taxon))
+    out.push(c)
+    if (out.length >= limit) return out
+  }
 
   for (const t of classicPeersFor(seed.taxon)) {
     const c = resolveStudioTaxon(t)

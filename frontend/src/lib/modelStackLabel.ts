@@ -30,36 +30,65 @@ export function stackModeFromModelStack(stack: ModelStack | null | undefined): S
   return 'mixed'
 }
 
-export function stackBadgeEs(stack: ModelStack | null | undefined): {
+const STACK_COPY = {
+  es: {
+    demo: {
+      label: 'Modo demo (mock)',
+      hint: 'Sin pesos reales cargados — pistas de ejemplo, no modelo de campo.',
+    },
+    loaded: {
+      label: 'Modelo cargado',
+      hint: 'Backends reales en stack. Sigue siendo solo orientación.',
+    },
+    mixed: {
+      label: 'Stack mixto',
+      hint: 'Algunos backends mock y otros reales. No confíes ciegamente.',
+    },
+    unknown: {
+      label: 'Stack desconocido',
+      hint: 'No hay información del backend en la respuesta.',
+    },
+  },
+  en: {
+    demo: {
+      label: 'Demo mode (mock)',
+      hint: 'No real weights loaded — sample cues, not a field model.',
+    },
+    loaded: {
+      label: 'Model loaded',
+      hint: 'Real backends in the stack. Still orientation only.',
+    },
+    mixed: {
+      label: 'Mixed stack',
+      hint: 'Some mock and some real backends. Do not trust blindly.',
+    },
+    unknown: {
+      label: 'Unknown stack',
+      hint: 'No backend information in the response.',
+    },
+  },
+} as const
+
+export function stackBadge(
+  stack: ModelStack | null | undefined,
+  locale?: string,
+): {
   mode: StackMode
   label: string
   hint: string
 } {
   const mode = stackModeFromModelStack(stack)
-  if (mode === 'demo') {
-    return {
-      mode,
-      label: 'Modo demo (mock)',
-      hint: 'Sin pesos reales cargados — pistas de ejemplo, no modelo de campo.',
-    }
-  }
-  if (mode === 'loaded') {
-    return {
-      mode,
-      label: 'Modelo cargado',
-      hint: 'Backends reales en stack. Sigue siendo solo orientación.',
-    }
-  }
-  if (mode === 'mixed') {
-    return {
-      mode,
-      label: 'Stack mixto',
-      hint: 'Algunos backends mock y otros reales. No confíes ciegamente.',
-    }
-  }
-  return {
-    mode: 'unknown',
-    label: 'Stack desconocido',
-    hint: 'No hay información del backend en la respuesta.',
-  }
+  const pack = (locale || '').toLowerCase().startsWith('en')
+    ? STACK_COPY.en
+    : STACK_COPY.es
+  return { mode, ...pack[mode] }
+}
+
+/** @deprecated Prefer stackBadge(stack, locale) */
+export function stackBadgeEs(stack: ModelStack | null | undefined): {
+  mode: StackMode
+  label: string
+  hint: string
+} {
+  return stackBadge(stack, 'es')
 }

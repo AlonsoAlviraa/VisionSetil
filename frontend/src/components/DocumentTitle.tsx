@@ -8,6 +8,9 @@ const ROUTE_KEYS: Record<string, string> = {
   '/enciclopedia': 'nav.encyclopedia',
   '/mapa': 'nav.map',
   '/educacion': 'nav.education',
+  '/wordle': 'nav.wordle',
+  '/setadle': 'nav.setadle',
+  '/reto': 'nav.quiz',
 }
 
 export function DocumentTitle() {

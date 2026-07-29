@@ -12,6 +12,7 @@ import type {
   QualityGatePayload,
 } from '../api/types'
 import { isClassifyMode, isQualityGatePayload, resolveMode } from './classifyMode'
+import { isNotebookPin, type NotebookPin } from './notebookGeo'
 
 export type HistoryPrediction = {
   species: string
@@ -64,6 +65,11 @@ export type HistoryEntry<T extends HistoryClassification = HistoryClassification
   notes?: string
   /** Field notebook: user tags */
   tags?: string[]
+  /**
+   * Private map pin (local only). Coords-only — never raw EXIF.
+   * See lib/notebookGeo.ts
+   */
+  pin?: NotebookPin | null
   /** Product honesty mode (B-38); soft-migrated when missing */
   mode?: ClassifyMode
   /** Compact gate snapshot (B-38); null when unknown */
@@ -228,6 +234,7 @@ export function buildHistoryEntry(input: {
   view_types?: string[]
   notes?: string
   tags?: string[]
+  pin?: NotebookPin | null
   id?: string
   timestamp?: number
 }): HistoryEntry {
@@ -236,6 +243,12 @@ export function buildHistoryEntry(input: {
   const gate_summary = toGateSummary(result.quality_gate)
   const locale =
     typeof result.locale === 'string' && result.locale ? result.locale : undefined
+  const pin =
+    input.pin === null
+      ? null
+      : input.pin && isNotebookPin(input.pin)
+        ? input.pin
+        : undefined
 
   return {
     id: input.id ?? result.request_id,
@@ -245,6 +258,7 @@ export function buildHistoryEntry(input: {
     view_types: input.view_types,
     notes: input.notes,
     tags: input.tags,
+    pin,
     mode,
     gate_summary,
     locale,
@@ -384,6 +398,11 @@ export function shareHistoryText(
     lines.push(`• ${when} · ${e.result.decision} · ${mode}`)
     lines.push(`  ${species}${conf}`)
     if (e.tags?.length) lines.push(`  tags: ${e.tags.join(', ')}`)
+    if (isNotebookPin(e.pin)) {
+      lines.push(
+        `  pin: ${e.pin.lat.toFixed(4)}, ${e.pin.lng.toFixed(4)} (local · no EXIF)`,
+      )
+    }
     if (e.notes?.trim()) {
       const note = e.notes.trim().slice(0, 160)
       lines.push(`  notas: ${note}${e.notes.trim().length > 160 ? '…' : ''}`)
@@ -412,21 +431,31 @@ export function historyDateLabelEs(filter: HistoryDateFilter): string {
 export function updateHistoryNotebook(
   entries: HistoryEntry[],
   id: string,
-  patch: { notes?: string; tags?: string[] },
+  patch: { notes?: string; tags?: string[]; pin?: NotebookPin | null },
 ): HistoryEntry[] {
   return entries.map((e) => {
     if (e.id !== id) return e
+    let pin = e.pin
+    if (patch.pin !== undefined) {
+      pin =
+        patch.pin === null
+          ? null
+          : isNotebookPin(patch.pin)
+            ? patch.pin
+            : e.pin
+    }
     return {
       ...e,
       notes: patch.notes !== undefined ? patch.notes : e.notes,
       tags: patch.tags !== undefined ? patch.tags : e.tags,
+      pin,
     }
   })
 }
 
 export function saveNotebookFields(
   id: string,
-  patch: { notes?: string; tags?: string[] },
+  patch: { notes?: string; tags?: string[]; pin?: NotebookPin | null },
   storage: StorageLike = localStorage,
 ): HistoryEntry[] {
   const next = updateHistoryNotebook(loadHistory(storage), id, patch)
@@ -467,6 +496,8 @@ export function exportHistoryJson(
         view_types: migrated.view_types || [],
         notes: migrated.notes || '',
         tags: migrated.tags || [],
+        // Coords only — never EXIF blobs (privacy stamp on pin)
+        pin: isNotebookPin(migrated.pin) ? migrated.pin : null,
         mode: migrated.mode,
         gate_summary: migrated.gate_summary ?? null,
         locale: migrated.locale,

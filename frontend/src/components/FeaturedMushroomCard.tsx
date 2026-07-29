@@ -4,8 +4,6 @@ import { type MushroomSpecies, EDIBILITY_COLORS, EDIBILITY_LABELS } from '../dat
 import { useSpeciesImage } from '../hooks/useSpeciesImage'
 import { speciesPhotoErrorFallback } from '../lib/speciesPhotoFallback'
 import { INLINE_PLACEHOLDER_SVG } from '../lib/speciesImageUrl'
-import { TiltCard3D } from './TiltCard3D'
-
 interface Props {
   species: MushroomSpecies
 }
@@ -27,8 +25,9 @@ export function FeaturedMushroomCard({ species }: Props) {
   const src =
     stage === 0 ? url : stage === 1 ? placeholder : INLINE_PLACEHOLDER_SVG
 
+  // Flat 2D card only — no TiltCard3D / card-3d chrome
   return (
-    <TiltCard3D className="featured-mushroom-card">
+    <div className="featured-mushroom-card featured-mushroom-card--flat">
       <Link
         to={`/enciclopedia/${slug}`}
         style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}
@@ -65,6 +64,6 @@ export function FeaturedMushroomCard({ species }: Props) {
           <p className="tagline">{species.tagline}</p>
         </div>
       </Link>
-    </TiltCard3D>
+    </div>
   )
 }

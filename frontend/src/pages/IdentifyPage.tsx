@@ -30,18 +30,32 @@ import { featureFlags } from '../lib/featureFlags'
 import {
   assessMultiViewReadiness,
   buildViewTypesOrder,
+  capturePacketDensity,
+  formatViewTypesShort,
+  freeModeCaptureCoachLine,
+  freeModeViewTypesHeuristic,
+  nextCameraSlot,
   orderedSlotKeys,
+  preSubmitFreeModeCoach,
+  preSubmitMultiViewCoach,
+  VIEW_SLOTS,
   type CanonicalView,
+  type PreSubmitCoach,
   type SlotAssignment,
 } from '../lib/multiViewSlots'
 import {
   appendHistory,
+  buildHistoryEntry,
   clearHistoryStore,
   loadHistory,
   summarizeHistory,
   type HistoryEntry,
 } from '../lib/observationHistory'
-import { decisionLabelEs } from '../lib/decisionLabels'
+import {
+  requestBrowserNotebookPin,
+  type NotebookPin,
+} from '../lib/notebookGeo'
+import { decisionLabel } from '../lib/decisionLabels'
 import { resolveDisplayMode } from '../lib/classifyMode'
 import {
   canSubmitPreflight,
@@ -59,6 +73,14 @@ import {
   usePlanActions,
   type IdentifyGateResult,
 } from '../lib/entitlements'
+import { orientationChips, orientationStickyLine } from '../lib/safetyCopy'
+import { fieldHoldoutCoachLines } from '../lib/fieldHoldoutHonesty'
+import {
+  eceConfidenceStickyLine,
+  E20_ECE_SNAPSHOT,
+  fetchEceBandForIdentify,
+  type EceBand,
+} from '../lib/eceHonesty'
 
 interface SelectedImage {
   file: File
@@ -79,8 +101,98 @@ function stageIndex(stage: ClassifyClientStage): number {
   return LOADING_STAGES.indexOf(stage)
 }
 
+type TranslateFn = (key: string, opts?: Record<string, unknown>) => string
+
+function SoftConfirmPanel({
+  coach,
+  locale,
+  t,
+  onAdd,
+  onProceed,
+}: {
+  coach: PreSubmitCoach
+  locale: string
+  t: TranslateFn
+  onAdd: () => void
+  onProceed: () => void
+}) {
+  const en = locale.toLowerCase().startsWith('en')
+  return (
+    <div
+      className={`identify-soft-confirm identify-soft-confirm--${coach.severity}`}
+      data-testid="identify-soft-confirm"
+      data-severity={coach.severity}
+      data-code={coach.code}
+      role="alertdialog"
+      aria-labelledby="identify-soft-confirm-title"
+      aria-describedby="identify-soft-confirm-body"
+    >
+      <p id="identify-soft-confirm-title" className="identify-soft-confirm__title">
+        {t(`identify.softConfirm.title.${coach.code}`, {
+          defaultValue: en ? coach.confirmTitleEn : coach.confirmTitleEs,
+        })}
+      </p>
+      <p id="identify-soft-confirm-body" className="identify-soft-confirm__body">
+        {t(`identify.softConfirm.body.${coach.code}`, {
+          defaultValue: en ? coach.confirmBodyEn : coach.confirmBodyEs,
+        })}
+      </p>
+      <div className="identify-soft-confirm__actions">
+        <button
+          type="button"
+          className="btn-atelier btn-atelier--primary"
+          data-testid="identify-soft-confirm-add"
+          onClick={onAdd}
+        >
+          {t(`identify.softConfirm.add.${coach.code}`, {
+            defaultValue: en ? coach.addViewCtaEn : coach.addViewCtaEs,
+          })}
+        </button>
+        <button
+          type="button"
+          className="btn-atelier btn-atelier--ghost"
+          data-testid="identify-soft-confirm-proceed"
+          onClick={onProceed}
+        >
+          {t(`identify.softConfirm.proceed.${coach.code}`, {
+            defaultValue: en ? coach.proceedCtaEn : coach.proceedCtaEs,
+          })}
+        </button>
+      </div>
+    </div>
+  )
+}
+
+function IdentifyGpsPinToggle({
+  checked,
+  onChange,
+  t,
+}: {
+  checked: boolean
+  onChange: (v: boolean) => void
+  t: TranslateFn
+}) {
+  return (
+    <label className="identify-gps-pin-toggle" data-testid="identify-gps-pin-toggle">
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={(e) => onChange(e.target.checked)}
+        data-testid="identify-gps-pin-checkbox"
+      />
+      <span>
+        {t('identify.gpsPinLabel', {
+          defaultValue:
+            'Guardar pin GPS local en el cuaderno (solo lat/lng · sin EXIF · no mapa público)',
+        })}
+      </span>
+    </label>
+  )
+}
+
 export function IdentifyPage() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const locale = i18n.resolvedLanguage || i18n.language || 'es'
   const [selectedImages, setSelectedImages] = useState<SelectedImage[]>([])
   const [assignments, setAssignments] = useState<SlotAssignment>({})
   const [useWizard, setUseWizard] = useState(true)
@@ -95,9 +207,18 @@ export function IdentifyPage() {
   const [lightbox, setLightbox] = useState<string | null>(null)
   const [showCompare, setShowCompare] = useState(false)
   const [showResultPhotos, setShowResultPhotos] = useState(false)
+  /** Soft pre-submit coach (v1.7/v1.8): weak packet confirm — never hard-block default */
+  const [softConfirmOpen, setSoftConfirmOpen] = useState(false)
+  /** Opt-in local GPS pin stamped on history after classify (EXIF never stored) */
+  const [attachGpsPin, setAttachGpsPin] = useState(false)
+  /** When camera opens from wizard, fill this slot (or next empty via nextCameraSlot) */
+  const [cameraTargetSlot, setCameraTargetSlot] = useState<CanonicalView | null>(null)
   const [preflight, setPreflight] = useState<PreflightState>(() =>
     initialPreflightState(),
   )
+  /** Live ECE residual band for confidence chrome (fail-soft → E20 snapshot high). */
+  const [eceBand, setEceBand] = useState<EceBand>(E20_ECE_SNAPSHOT.band)
+  const [eceSource, setEceSource] = useState<'live' | 'snapshot'>('snapshot')
 
   const preflightEnabled = featureFlags.IDENTIFY_PREFLIGHT
   /** HARD: only offline/API-down disables submit — never quality-gate blocked. */
@@ -160,7 +281,45 @@ export function IdentifyPage() {
   }, [preflightEnabled])
 
   const readiness = useMemo(() => assessMultiViewReadiness(assignments), [assignments])
+  const wizardPreSubmit = useMemo(
+    () => preSubmitMultiViewCoach(assignments),
+    [assignments],
+  )
+  const freePreSubmit = useMemo(
+    () => preSubmitFreeModeCoach(selectedImages.length),
+    [selectedImages.length],
+  )
+  /** Active soft coach for current capture mode (wizard or free). */
+  const preSubmitCoach: PreSubmitCoach = useWizard ? wizardPreSubmit : freePreSubmit
+  /** P14 free-mode educational view labels + density strip. */
+  const freeCaptureCoach = useMemo(
+    () => freeModeCaptureCoachLine(selectedImages.length, locale),
+    [selectedImages.length, locale],
+  )
+  const freeHeuristicViews = useMemo(
+    () => freeModeViewTypesHeuristic(selectedImages.length),
+    [selectedImages.length],
+  )
+  const wizardPacketDensity = useMemo(
+    () => capturePacketDensity(buildViewTypesOrder(assignments), readiness.filled),
+    [assignments, readiness.filled],
+  )
   const historySummary = useMemo(() => summarizeHistory(history), [history])
+  const fieldHoldoutCopy = useMemo(() => fieldHoldoutCoachLines(locale), [locale])
+  const eceSticky = useMemo(
+    () => eceConfidenceStickyLine(eceBand, locale),
+    [locale, eceBand],
+  )
+
+  // Live ECE residual from /models/status (v1.9.7) — fail-soft to E20 snapshot
+  useEffect(() => {
+    const ac = new AbortController()
+    void fetchEceBandForIdentify(ac.signal).then((r) => {
+      setEceBand(r.band)
+      setEceSource(r.source)
+    })
+    return () => ac.abort()
+  }, [])
 
   const addFiles = useCallback((files: File[]) => {
     const newImages = files.map((file) => ({
@@ -217,7 +376,11 @@ export function IdentifyPage() {
   const handleClassify = useCallback(async () => {
     // Defense-in-depth: never POST while offline (HARD B-11).
     if (preflightEnabled && !canSubmitPreflight(preflight)) {
-      setError('API no disponible. Conecta el backend para identificar.')
+      setError(
+        t('identify.errorApiDown', {
+          defaultValue: 'API no disponible. Conecta el backend para identificar.',
+        }),
+      )
       return
     }
 
@@ -230,7 +393,11 @@ export function IdentifyPage() {
     if (!reserved.allowed && !reserved.reserved) {
       submitLockRef.current = false
       setError(
-        `Límite Free de ${reserved.limit} identificaciones/día alcanzado. Activa Pro demo o vuelve mañana. Orientación de campo — no es permiso de consumo.`,
+        t('identify.errorQuota', {
+          defaultValue:
+            'Límite Free de {{limit}} identificaciones/día alcanzado. Activa Pro demo o vuelve mañana. Orientación de campo — no es permiso de consumo.',
+          limit: reserved.limit,
+        }),
       )
       return
     }
@@ -259,7 +426,8 @@ export function IdentifyPage() {
       }
       files = selectedImages.map((img) => img.file)
       previews = selectedImages.map((img) => img.preview)
-      viewTypes = undefined
+      // Educational heuristic: map free uploads to gills→front→habitat→detail order
+      viewTypes = freeModeViewTypesHeuristic(files.length)
     }
 
     const myGen = ++classifyGenRef.current
@@ -284,19 +452,26 @@ export function IdentifyPage() {
       }
       setIdentifyQuota(canIdentify())
 
-      const entry: HistoryEntry = {
-        id: data.request_id,
-        timestamp: Date.now(),
-        previews,
-        result: data,
-        view_types: viewTypes,
+      let pin: NotebookPin | null | undefined
+      if (attachGpsPin) {
+        pin = await requestBrowserNotebookPin()
       }
+      const entry = buildHistoryEntry({
+        result: data,
+        previews,
+        view_types: viewTypes,
+        pin: pin ?? undefined,
+      })
       setHistory(sliceHistoryForPlan(appendHistory(entry), plan))
     } catch (err) {
       if (reserved.reserved) rollbackIdentifyUse()
       setIdentifyQuota(canIdentify())
       if (classifyGenRef.current !== myGen) return
-      setError(err instanceof Error ? err.message : 'Error desconocido')
+      setError(
+        err instanceof Error
+          ? err.message
+          : t('identify.errorUnknown', { defaultValue: 'Error desconocido' }),
+      )
     } finally {
       submitLockRef.current = false
       if (classifyGenRef.current === myGen) {
@@ -313,7 +488,30 @@ export function IdentifyPage() {
     preflightEnabled,
     loading,
     plan,
+    attachGpsPin,
   ])
+
+  /**
+   * Soft gate before classify (wizard + free mode v1.8).
+   * Weak packet → confirm panel. Soft path only — user can still proceed.
+   */
+  const requestClassify = useCallback(() => {
+    if (preSubmitCoach.needsSoftConfirm) {
+      setSoftConfirmOpen(true)
+      return
+    }
+    setSoftConfirmOpen(false)
+    void handleClassify()
+  }, [preSubmitCoach.needsSoftConfirm, handleClassify])
+
+  const confirmClassifySoft = useCallback(() => {
+    setSoftConfirmOpen(false)
+    void handleClassify()
+  }, [handleClassify])
+
+  const dismissSoftConfirm = useCallback(() => {
+    setSoftConfirmOpen(false)
+  }, [])
 
   const handleFeedback = useCallback(
     async (isCorrect: boolean, species?: string) => {
@@ -361,14 +559,17 @@ export function IdentifyPage() {
 
   return (
     <div
-      className="page-identify"
+      className="page-identify page-identify--v184"
       data-testid="identify-page"
       data-phase={phase}
       data-preflight-mode={preflightEnabled ? preflight.mode : undefined}
       data-result-mode={resultMode ?? undefined}
+      data-capture-mode={useWizard ? 'wizard' : 'free'}
     >
       <header className="mkt-page-head mkt-mesh">
-        <p className="mkt-kicker">Campo · multi-vista</p>
+        <p className="mkt-kicker">
+          {t('identify.kicker', { defaultValue: 'Campo · multi-vista' })}
+        </p>
         <h1>{t('identify.title')}</h1>
         <p>
           {t('identify.bannerLead', {
@@ -376,11 +577,23 @@ export function IdentifyPage() {
               'Multi-vista guiada. Si no está seguro, se calla. Mejor eso que inventar. Solo orientación — nunca consumo.',
           })}
         </p>
-        <ul className="mkt-page-head__chips" aria-label="Principios de identificación">
-          <li>Orientación, no consumo</li>
-          <li>IA con abstención</li>
-          <li>Preflight visible</li>
+        <ul
+          className="mkt-page-head__chips"
+          aria-label={t('identify.principlesAria', {
+            defaultValue: 'Principios de identificación',
+          })}
+        >
+          {orientationChips(locale).map((chip) => (
+            <li key={chip}>{chip}</li>
+          ))}
         </ul>
+        {/* Always-visible pro-check (competitive parity with commercial apps; safer framing) */}
+        <p className="identify-pro-check" data-testid="identify-pro-check" role="note">
+          {t('identify.proCheck', {
+            defaultValue:
+              'Ninguna app es fiable para comer setas. Usa varias fotos (inferior + perfil), revisa lookalikes y confirma con un micólogo si hay duda.',
+          })}
+        </p>
       </header>
 
       {/*
@@ -394,7 +607,9 @@ export function IdentifyPage() {
       >
         <nav
           className="identify-flow-steps"
-          aria-label="Flujo de identificación honesta"
+          aria-label={t('identify.flowAria', {
+            defaultValue: 'Flujo de identificación honesta',
+          })}
           data-testid="identify-flow-steps"
         >
           <ol className="identify-flow-steps__list">
@@ -448,7 +663,9 @@ export function IdentifyPage() {
           <section
             className="identify-region identify-region--preflight"
             data-testid="identify-region-preflight"
-            aria-label="Estado del modelo antes de identificar"
+            aria-label={t('identify.preflightAria', {
+              defaultValue: 'Estado del modelo antes de identificar',
+            })}
           >
             <PreflightBanner state={preflight} />
           </section>
@@ -456,11 +673,26 @@ export function IdentifyPage() {
 
         {showCamera && (
           <CameraCapture
+            slotLabel={
+              cameraTargetSlot
+                ? VIEW_SLOTS.find((s) => s.view === cameraTargetSlot)?.labelEs
+                : undefined
+            }
             onCapture={(file) => {
-              addFiles([file])
+              const target = cameraTargetSlot ?? (useWizard ? nextCameraSlot(assignments) : null)
+              if (useWizard && target) {
+                const previewUrl = URL.createObjectURL(file)
+                onAssignSlot(target, file, previewUrl)
+              } else {
+                addFiles([file])
+              }
+              setCameraTargetSlot(null)
               setShowCamera(false)
             }}
-            onClose={() => setShowCamera(false)}
+            onClose={() => {
+              setCameraTargetSlot(null)
+              setShowCamera(false)
+            }}
           />
         )}
 
@@ -469,7 +701,9 @@ export function IdentifyPage() {
           <section
             className="identify-region identify-region--wizard"
             data-testid="identify-region-wizard"
-            aria-label="Captura multi-vista o libre"
+            aria-label={t('identify.captureAria', {
+              defaultValue: 'Captura multi-vista o libre',
+            })}
           >
             <div className="page-header identify-wizard-header">
               <div className="identify-mode-toggle">
@@ -501,8 +735,16 @@ export function IdentifyPage() {
               </div>
               {identifyQuota.plan === 'free' && identifyQuota.limit != null && (
                 <p className="identify-quota-chip muted" data-testid="identify-quota" role="status">
-                  Free: {identifyQuota.used}/{identifyQuota.limit} identificaciones hoy
-                  {quotaBlocked ? ' · cupo agotado' : ''}
+                  {t('identify.quotaStatus', {
+                    defaultValue: 'Free: {{used}}/{{limit}} identificaciones hoy',
+                    used: identifyQuota.used,
+                    limit: identifyQuota.limit,
+                  })}
+                  {quotaBlocked
+                    ? t('identify.quotaExhaustedSuffix', {
+                        defaultValue: ' · cupo agotado',
+                      })
+                    : ''}
                   {quotaBlocked && (
                     <>
                       {' · '}
@@ -530,36 +772,137 @@ export function IdentifyPage() {
                   assignments={assignments}
                   onAssign={onAssignSlot}
                   onClear={onClearSlot}
-                  onOpenCamera={() => setShowCamera(true)}
+                  onOpenCamera={() => {
+                    const next = nextCameraSlot(assignments)
+                    setCameraTargetSlot(next)
+                    setShowCamera(true)
+                  }}
                 />
                 {hasImages && (
                   <div className="image-review-section">
+                    <div
+                      className={`identify-capture-density identify-capture-density--${wizardPacketDensity.density}`}
+                      data-testid="identify-capture-density"
+                      data-mode="wizard"
+                      data-density={wizardPacketDensity.density}
+                      role="status"
+                    >
+                      <span className="identify-capture-density__chip">
+                        {t('identify.captureDensity.chip', {
+                          defaultValue: '{{n}} vistas · {{views}}',
+                          n: readiness.filled,
+                          views:
+                            formatViewTypesShort(wizardPacketDensity.views, locale) ||
+                            t('identify.captureDensity.viewsPending', {
+                              defaultValue: 'slots',
+                            }),
+                        })}
+                      </span>
+                      <span className="identify-capture-density__critical">
+                        {t('identify.captureDensity.critical', {
+                          defaultValue: 'críticas {{done}}/{{total}}',
+                          done: wizardPacketDensity.criticalDone,
+                          total: wizardPacketDensity.criticalTotal,
+                        })}
+                      </span>
+                      <p className="identify-capture-density__policy">
+                        {t('identify.captureDensity.policy', {
+                          defaultValue:
+                            'Densidad de captura · solo orientación · nunca permiso de consumo',
+                        })}
+                      </p>
+                      <p
+                        className="identify-field-holdout-note"
+                        data-testid="identify-field-holdout-note"
+                        role="note"
+                      >
+                        <strong>{fieldHoldoutCopy.title}.</strong> {fieldHoldoutCopy.deadlyNote}{' '}
+                        {fieldHoldoutCopy.policy}
+                      </p>
+                      <p
+                        className="identify-ece-note"
+                        data-testid="identify-ece-note"
+                        data-band={eceBand}
+                        data-ece-source={eceSource}
+                        role="note"
+                      >
+                        {eceSticky}
+                      </p>
+                    </div>
                     <MetadataForm metadata={metadata} onChange={setMetadata} />
+                    {readiness.filled === 1 && (
+                      <p
+                        className="identify-multiview-nudge"
+                        data-testid="identify-multiview-nudge"
+                        role="status"
+                      >
+                        {t('identify.multiviewNudge.single', {
+                          defaultValue:
+                            'Con 1 foto el modelo se abstiene más a menudo. Añade láminas + perfil (2+) para una pista más estable — siempre solo orientación, nunca consumo.',
+                        })}
+                      </p>
+                    )}
+                    {readiness.filled >= 2 && readiness.filled < 4 && (
+                      <p
+                        className="identify-multiview-nudge identify-multiview-nudge--ok"
+                        data-testid="identify-multiview-nudge"
+                        role="status"
+                      >
+                        {t('identify.multiviewNudge.pair', {
+                          defaultValue:
+                            'Buen paquete (2+ vistas). Hábitat y detalle bajan confusiones con lookalikes — sin permiso de consumo.',
+                        })}
+                      </p>
+                    )}
+                    {softConfirmOpen && preSubmitCoach.needsSoftConfirm && (
+                      <SoftConfirmPanel
+                        coach={preSubmitCoach}
+                        locale={locale}
+                        t={t}
+                        onAdd={dismissSoftConfirm}
+                        onProceed={confirmClassifySoft}
+                      />
+                    )}
+                    <IdentifyGpsPinToggle
+                      checked={attachGpsPin}
+                      onChange={setAttachGpsPin}
+                      t={t}
+                    />
                     <div className="analyze-actions">
                       <button
                         type="button"
                         className="btn-atelier btn-atelier--primary"
-                        onClick={handleClassify}
+                        onClick={requestClassify}
                         disabled={loading || !readiness.canSubmit || !canClickSubmit}
                         data-testid="identify-submit"
+                        data-soft-coach={preSubmitCoach.needsSoftConfirm ? '1' : '0'}
+                        data-mode="wizard"
                         title={
                           !submitAllowed
-                            ? 'API no disponible — identificación deshabilitada'
+                            ? t('identify.apiDisabledTitle', {
+                                defaultValue:
+                                  'API no disponible — identificación deshabilitada',
+                              })
                             : quotaBlocked
-                              ? 'Cupo Free diario agotado'
+                              ? t('identify.quotaBlockedTitle', {
+                                  defaultValue: 'Cupo Free diario agotado',
+                                })
                               : undefined
                         }
                       >
                         {loading ? (
-                          'Analizando…'
+                          t('identify.analyzing', { defaultValue: 'Analizando…' })
                         ) : !submitAllowed ? (
-                          'API desconectada'
+                          t('identify.apiOffline', { defaultValue: 'API desconectada' })
                         ) : quotaBlocked ? (
-                          'Cupo Free agotado'
+                          t('identify.quotaExhausted', { defaultValue: 'Cupo Free agotado' })
                         ) : (
                           <>
                             <IconSearch size={18} />
-                            Analizar ({readiness.filled} vistas)
+                            {t('identify.analyzeViews', {
+                              defaultValue: 'Analizar ({{n}} vistas)',
+                              n: readiness.filled,
+                            })}
                           </>
                         )}
                       </button>
@@ -568,7 +911,7 @@ export function IdentifyPage() {
                         className="btn-atelier btn-atelier--ghost"
                         onClick={reset}
                       >
-                        Cancelar
+                        {t('identify.cancel', { defaultValue: 'Cancelar' })}
                       </button>
                     </div>
                   </div>
@@ -587,55 +930,167 @@ export function IdentifyPage() {
             )}
 
             {!useWizard && hasImages && (
-              <div className="image-review-section">
-                <h2>Fotos seleccionadas ({selectedImages.length})</h2>
+              <div className="image-review-section identify-free-capture" data-testid="identify-free-capture">
+                <h2>
+                  {t('identify.freeSelectedTitle', {
+                    defaultValue: 'Fotos seleccionadas ({{n}})',
+                    n: selectedImages.length,
+                  })}
+                </h2>
+                <div
+                  className={`identify-capture-density identify-capture-density--${freeCaptureCoach.density.density}`}
+                  data-testid="identify-capture-density"
+                  data-mode="free"
+                  data-density={freeCaptureCoach.density.density}
+                  role="status"
+                >
+                  <span className="identify-capture-density__chip">
+                    {t('identify.captureDensity.chip', {
+                      defaultValue: '{{n}} vistas · {{views}}',
+                      n: selectedImages.length,
+                      views:
+                        formatViewTypesShort(freeHeuristicViews, locale) ||
+                        t('identify.captureDensity.viewsPending', {
+                          defaultValue: 'slots',
+                        }),
+                    })}
+                  </span>
+                  <span className="identify-capture-density__critical">
+                    {t('identify.captureDensity.critical', {
+                      defaultValue: 'críticas {{done}}/{{total}}',
+                      done: freeCaptureCoach.density.criticalDone,
+                      total: freeCaptureCoach.density.criticalTotal,
+                    })}
+                  </span>
+                  <p className="identify-capture-density__line" data-testid="identify-free-capture-coach">
+                    {locale.toLowerCase().startsWith('en')
+                      ? freeCaptureCoach.lineEn
+                      : freeCaptureCoach.lineEs}
+                  </p>
+                  <p className="identify-capture-density__policy">
+                    {t('identify.captureDensity.policy', {
+                      defaultValue:
+                        'Densidad de captura · solo orientación · nunca permiso de consumo',
+                    })}
+                  </p>
+                </div>
                 <div className="image-grid">
-                  {selectedImages.map((img, idx) => (
-                    <div
-                      key={idx}
-                      className="image-grid-item"
-                      onClick={() => setLightbox(img.preview)}
-                    >
-                      <img src={img.preview} alt={`Seta ${idx + 1}`} />
-                      <button
-                        className="btn-remove-image"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          removeImage(idx)
-                        }}
-                        aria-label="Eliminar imagen"
+                  {selectedImages.map((img, idx) => {
+                    const viewLabel = freeHeuristicViews[idx]
+                    return (
+                      <div
+                        key={idx}
+                        className="image-grid-item"
+                        data-view={viewLabel || undefined}
+                        onClick={() => setLightbox(img.preview)}
                       >
-                        <IconClose size={14} />
-                      </button>
-                    </div>
-                  ))}
+                        <img
+                          src={img.preview}
+                          alt={t('identify.freePhotoAlt', {
+                            defaultValue: 'Seta {{n}}',
+                            n: idx + 1,
+                          })}
+                        />
+                        {viewLabel ? (
+                          <span
+                            className="identify-free-view-badge"
+                            data-testid="identify-free-view-badge"
+                          >
+                            {t(`identify.views.${viewLabel}`, {
+                              defaultValue: viewLabel,
+                            })}
+                          </span>
+                        ) : null}
+                        <button
+                          className="btn-remove-image"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            removeImage(idx)
+                          }}
+                          aria-label={t('identify.removePhoto', {
+                            defaultValue: 'Eliminar imagen',
+                          })}
+                        >
+                          <IconClose size={14} />
+                        </button>
+                      </div>
+                    )
+                  })}
                 </div>
                 <MetadataForm metadata={metadata} onChange={setMetadata} />
+                {selectedImages.length === 1 && (
+                  <p
+                    className="identify-multiview-nudge"
+                    data-testid="identify-multiview-nudge"
+                    role="status"
+                  >
+                    {t('identify.multiviewNudge.single', {
+                      defaultValue:
+                        'Con 1 foto el modelo se abstiene más a menudo. Añade láminas + perfil (2+) para una pista más estable — siempre solo orientación, nunca consumo.',
+                    })}
+                  </p>
+                )}
+                {selectedImages.length >= 2 && selectedImages.length < 4 && (
+                  <p
+                    className="identify-multiview-nudge identify-multiview-nudge--ok"
+                    data-testid="identify-multiview-nudge"
+                    role="status"
+                  >
+                    {t('identify.multiviewNudge.pair', {
+                      defaultValue:
+                        'Buen paquete (2+ vistas). Hábitat y detalle bajan confusiones con lookalikes — sin permiso de consumo.',
+                    })}
+                  </p>
+                )}
+                {softConfirmOpen && preSubmitCoach.needsSoftConfirm && (
+                  <SoftConfirmPanel
+                    coach={preSubmitCoach}
+                    locale={locale}
+                    t={t}
+                    onAdd={dismissSoftConfirm}
+                    onProceed={confirmClassifySoft}
+                  />
+                )}
+                <IdentifyGpsPinToggle
+                  checked={attachGpsPin}
+                  onChange={setAttachGpsPin}
+                  t={t}
+                />
                 <div className="analyze-actions">
                   <button
                     type="button"
                     className="btn-atelier btn-atelier--primary"
-                    onClick={handleClassify}
+                    onClick={requestClassify}
                     disabled={loading || !canClickSubmit}
                     data-testid="identify-submit"
+                    data-soft-coach={preSubmitCoach.needsSoftConfirm ? '1' : '0'}
+                    data-mode="free"
                     title={
                       !submitAllowed
-                        ? 'API no disponible — identificación deshabilitada'
+                        ? t('identify.apiDisabledTitle', {
+                            defaultValue:
+                              'API no disponible — identificación deshabilitada',
+                          })
                         : quotaBlocked
-                          ? 'Cupo Free diario agotado'
+                          ? t('identify.quotaBlockedTitle', {
+                              defaultValue: 'Cupo Free diario agotado',
+                            })
                           : undefined
                     }
                   >
                     {loading ? (
-                      'Analizando…'
+                      t('identify.analyzing', { defaultValue: 'Analizando…' })
                     ) : !submitAllowed ? (
-                      'API desconectada'
+                      t('identify.apiOffline', { defaultValue: 'API desconectada' })
                     ) : quotaBlocked ? (
-                      'Cupo Free agotado'
+                      t('identify.quotaExhausted', { defaultValue: 'Cupo Free agotado' })
                     ) : (
                       <>
                         <IconSearch size={18} />
-                        Analizar
+                        {t('identify.analyzeViews', {
+                          defaultValue: 'Analizar ({{n}} vistas)',
+                          n: selectedImages.length,
+                        })}
                       </>
                     )}
                   </button>
@@ -644,7 +1099,7 @@ export function IdentifyPage() {
                     className="btn-atelier btn-atelier--ghost"
                     {...getRootProps()}
                   >
-                    + Añadir más fotos
+                    {t('identify.addMorePhotos', { defaultValue: '+ Añadir más fotos' })}
                   </button>
                   <input {...getInputProps()} />
                   <button
@@ -652,7 +1107,7 @@ export function IdentifyPage() {
                     className="btn-atelier btn-atelier--ghost"
                     onClick={reset}
                   >
-                    Cancelar
+                    {t('identify.cancel', { defaultValue: 'Cancelar' })}
                   </button>
                 </div>
               </div>
@@ -721,9 +1176,9 @@ export function IdentifyPage() {
 
         {error && (
           <div className="error-banner" data-testid="identify-error" role="alert">
-            <strong>Error:</strong> {error}
+            <strong>{t('error.defaultTitle', { defaultValue: 'Error' })}:</strong> {error}
             <button className="btn-retry" onClick={reset}>
-              Reintentar
+              {t('actions.retry', { defaultValue: 'Reintentar' })}
             </button>
           </div>
         )}
@@ -734,7 +1189,9 @@ export function IdentifyPage() {
             className={`identify-region identify-region--result identify-region--mode-${resultMode}`}
             data-testid="identify-region-result"
             data-mode={resultMode ?? undefined}
-            aria-label="Resultado de identificación"
+            aria-label={t('identify.resultAria', {
+              defaultValue: 'Resultado de identificación',
+            })}
           >
             <div className="result-layout identify-result-layout" data-testid="identify-result">
               {/* ResultCard first so ResultModeBanner leads the honesty chrome */}
@@ -742,6 +1199,7 @@ export function IdentifyPage() {
                 key={result.request_id}
                 result={result}
                 onFeedback={handleFeedback}
+                eceBand={eceBand}
                 viewTypes={
                   useWizard
                     ? orderedSlotKeys(assignments)
@@ -786,8 +1244,9 @@ export function IdentifyPage() {
                     type="button"
                     className="btn-atelier btn-atelier--primary"
                     onClick={reset}
+                    data-testid="identify-new-analysis"
                   >
-                    {t('identify.newAnalysis', { defaultValue: 'Nuevo analisis' })}
+                    {t('identify.newAnalysis', { defaultValue: 'Nuevo análisis' })}
                   </button>
                   <Link to="/historial" className="btn-atelier btn-atelier--ghost">
                     <IconHistory size={16} />
@@ -804,10 +1263,43 @@ export function IdentifyPage() {
         )}
       </div>
 
+      {/* Sticky orientation strip on result (mobile-first; CSS: identify-sticky-cta) */}
+      {phase === 'result' && result && (
+        <div
+          className="identify-sticky-cta identify-sticky-cta--result"
+          data-testid="identify-orientation-sticky"
+          role="status"
+        >
+          <p className="identify-sticky-cta__copy">{orientationStickyLine(locale)}</p>
+          <div className="identify-sticky-cta__actions">
+            <button
+              type="button"
+              className="btn-atelier btn-atelier--primary identify-submit-btn"
+              onClick={reset}
+              data-testid="identify-sticky-new"
+            >
+              {t('identify.newAnalysis', { defaultValue: 'Nuevo análisis' })}
+            </button>
+            <Link
+              to="/revision-experta"
+              className="btn-atelier btn-atelier--ghost"
+              data-testid="identify-sticky-expert"
+            >
+              <IconExpert size={16} />
+              {t('nav.experts', { defaultValue: 'Expertos' })}
+            </Link>
+          </div>
+        </div>
+      )}
+
       {lightbox && (
         <div className="lightbox" onClick={() => setLightbox(null)}>
           <img src={lightbox} alt="Vista ampliada" />
-          <button className="lightbox-close" onClick={() => setLightbox(null)} aria-label="Cerrar">
+          <button
+            className="lightbox-close"
+            onClick={() => setLightbox(null)}
+            aria-label={t('actions.back', { defaultValue: 'Cerrar' })}
+          >
             <IconClose size={18} />
           </button>
         </div>
@@ -848,7 +1340,7 @@ export function IdentifyPage() {
                     {new Date(entry.timestamp).toLocaleTimeString()}
                   </span>
                   <span className="history-decision">
-                    {decisionLabelEs(entry.result.decision)}
+                    {decisionLabel(entry.result.decision, locale)}
                   </span>
                 </div>
               </div>

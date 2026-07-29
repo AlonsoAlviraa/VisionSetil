@@ -2,6 +2,7 @@
  * Expert handoff payload — packages multi-view evidence for human review (S7).
  * Local draft + deep-link fields; does not authorize consumption.
  * B-37: snapshots product honesty mode + dual-signal quality_gate when present.
+ * v1.5.4: pair-specific critical_views for lookalike mates (educational).
  */
 import type {
   ClassificationResult,
@@ -10,9 +11,26 @@ import type {
 } from '../api/types'
 import { isQualityGatePayload, resolveMode } from './classifyMode'
 import type { HistoryEntry } from './observationHistory'
+import {
+  diagnosticForLookalikeMate,
+  missingPairCriticalViews,
+  type LookalikePairDiagnostic,
+} from './diagnosticViews'
+import type { CanonicalView } from './multiViewSlots'
 
 export const EXPERT_HANDOFF_KEY = 'visionsetil_expert_handoff_draft'
 export const EXPERT_HANDOFF_QUEUE_KEY = 'visionsetil_expert_handoff_queue'
+
+/** Educational pair coach for a lookalike mate (expert review). */
+export type HandoffLookalikeDiag = {
+  mate: string
+  pair_id: string | null
+  why: string
+  critical_views: CanonicalView[]
+  /** Critical views not present in submitted view_types (soft guidance). */
+  missing_critical_views: CanonicalView[]
+  source: LookalikePairDiagnostic['source'] | null
+}
 
 export type ExpertHandoffDraft = {
   id: string
@@ -29,6 +47,11 @@ export type ExpertHandoffDraft = {
   preview_urls: string[]
   missing_evidence: string[]
   dangerous_lookalikes: string[]
+  /**
+   * Pair-specific critical_views for top prediction × lookalike mates.
+   * Educational only — never forage permission.
+   */
+  lookalike_diagnostics?: HandoffLookalikeDiag[]
   rejection_reason: string | null
   recommend_human_review: boolean
   notes: string
@@ -43,6 +66,49 @@ export type ExpertHandoffDraft = {
    * metrics_acceptable vs species_id_allowed. Null/absent on legacy drafts.
    */
   quality_gate?: QualityGatePayload | null
+}
+
+/**
+ * Build lookalike diagnostic coaches for handoff (map-backed only).
+ * Uses top predictions + dangerous_lookalikes; never invents pairs.
+ */
+export function buildLookalikeDiagnostics(
+  result: ClassificationResult,
+  viewTypes: readonly string[] = [],
+): HandoffLookalikeDiag[] {
+  const predictionTaxa = (result.predictions || [])
+    .slice(0, 2)
+    .map((p) => p.species)
+    .filter(Boolean)
+  const mates = result.dangerous_lookalikes || []
+  const out: HandoffLookalikeDiag[] = []
+  const seen = new Set<string>()
+  for (const mate of mates) {
+    const key = (mate || '').trim().toLowerCase()
+    if (!key || seen.has(key)) continue
+    seen.add(key)
+    const diag = diagnosticForLookalikeMate(predictionTaxa, mate)
+    if (!diag) {
+      out.push({
+        mate,
+        pair_id: null,
+        why: '',
+        critical_views: [],
+        missing_critical_views: [],
+        source: null,
+      })
+      continue
+    }
+    out.push({
+      mate,
+      pair_id: diag.pair_id,
+      why: diag.why,
+      critical_views: diag.critical_views,
+      missing_critical_views: missingPairCriticalViews(diag, viewTypes),
+      source: diag.source,
+    })
+  }
+  return out
 }
 
 export const HAND_OFF_DISCLAIMER =
@@ -91,6 +157,7 @@ export function buildExpertHandoff(input: {
     preview_urls: previews.slice(0, 10),
     missing_evidence: result.missing_evidence || [],
     dangerous_lookalikes: result.dangerous_lookalikes || [],
+    lookalike_diagnostics: buildLookalikeDiagnostics(result, viewTypes),
     rejection_reason: result.rejection_reason ?? result.open_set_reason ?? null,
     recommend_human_review: Boolean(result.recommend_human_review),
     notes: notes.trim(),
@@ -176,6 +243,21 @@ export function formatHandoffSummary(draft: ExpertHandoffDraft): string {
   const missing = draft.missing_evidence?.length
     ? draft.missing_evidence.join(', ')
     : '—'
+  const diagLines: string[] = []
+  for (const d of draft.lookalike_diagnostics || []) {
+    if (!d.critical_views?.length && !d.why) continue
+    const viewsCrit = d.critical_views.length
+      ? d.critical_views.join(', ')
+      : '—'
+    const miss = d.missing_critical_views?.length
+      ? d.missing_critical_views.join(', ')
+      : 'ninguna (o sin mapa)'
+    diagLines.push(
+      `  · ${d.mate}: vistas discriminantes=${viewsCrit}` +
+        (d.why ? ` · ${d.why}` : '') +
+        ` · faltan en paquete=${miss}`,
+    )
+  }
   const lines = [
     'VisionSetil — borrador de revisión experta',
     HAND_OFF_DISCLAIMER,
@@ -190,6 +272,9 @@ export function formatHandoffSummary(draft: ExpertHandoffDraft): string {
     `Vistas: ${views}`,
     `Fotos empaquetadas: ${draft.preview_count}`,
     `Lookalikes peligrosos: ${looks}`,
+    diagLines.length
+      ? `Diagnóstico multi-vista (educativo):\n${diagLines.join('\n')}`
+      : null,
     `Evidencia faltante: ${missing}`,
     draft.rejection_reason ? `Motivo rechazo: ${draft.rejection_reason}` : null,
     draft.notes ? `Notas: ${draft.notes}` : null,

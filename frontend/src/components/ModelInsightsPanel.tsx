@@ -13,7 +13,8 @@ import {
   shouldShowConfidence,
   shouldShowEducationalShell,
 } from '../lib/classifyMode'
-import { stackBadgeEs } from '../lib/modelStackLabel'
+import { openSetReasonFallback, openSetReasonI18nKey } from '../lib/openSetReason'
+import { stackBadge } from '../lib/modelStackLabel'
 import { IconMicroscope, IconInfo, IconAlert } from './icons'
 
 const KNOWN_GATE_CODES: readonly QualityGateReasonCode[] = [
@@ -44,7 +45,8 @@ type Props = {
 }
 
 export function ModelInsightsPanel({ result, viewTypes = [], className = '' }: Props) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const locale = i18n.resolvedLanguage || i18n.language || 'es'
   // Product honesty mode (D-B4 display): dual-signal overrides stack/legacy
   const mode = resolveDisplayMode(result)
   const showConfidence = shouldShowConfidence(result)
@@ -54,8 +56,8 @@ export function ModelInsightsPanel({ result, viewTypes = [], className = '' }: P
   const gate = result.quality_gate
   const reasonKey = gateReasonI18nKey(gate?.reason_code)
 
-  // Stack badge is technical detail only ÔÇö panel chrome must NOT derive mode from it
-  const badge = stackBadgeEs(result.model_stack)
+  // Stack badge is technical detail only — panel chrome must NOT derive mode from it
+  const badge = stackBadge(result.model_stack, locale)
   // Stack truth (D-B1): explicit field only; never infer from stack-string badge
   const isMockStack = result.is_mock_stack === true
 
@@ -92,10 +94,20 @@ export function ModelInsightsPanel({ result, viewTypes = [], className = '' }: P
       ]
 
   // Rejected + not open-set ÔåÆ gate/shell copy (mirrors ResultCard)
+  const openReasonRaw = result.rejection_reason || result.open_set_reason || null
+  const openReasonKey = openSetReasonI18nKey(openReasonRaw)
+  const openReasonLabel = openReasonRaw
+    ? openReasonKey
+      ? t(openReasonKey, {
+          defaultValue: openSetReasonFallback(openReasonRaw, locale),
+        })
+      : openSetReasonFallback(openReasonRaw, locale)
+    : null
+
   const decisionLabel =
     result.decision === 'rejected'
       ? openSet
-        ? t('honesty.decision.rejected_open_set')
+        ? openReasonLabel || t('honesty.decision.rejected_open_set')
         : t('honesty.decision.rejected_gate')
       : 'Pista tentativa'
 

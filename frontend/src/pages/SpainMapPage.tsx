@@ -29,6 +29,7 @@ import {
   kindLabelEs as regulatedKindLabelEs,
   listRegulatedZones,
   regulatedZoneStats,
+  REGULATED_DIRECTORY_CAP,
 } from '../lib/regulatedZones'
 import { getSpeciesByTaxon, loadSpeciesCatalog } from '../data/speciesCatalog'
 import { SpeciesThumb } from '../components/SpeciesThumb'
@@ -54,6 +55,7 @@ import {
   replaceMapUrl,
   resolveMapDeepLink,
   stickyRegionAfterSearchChange,
+  suggestZonesByQuery,
   topHotspotsByScore,
   type MapCluster,
 } from '../lib/mapInteraction'
@@ -238,7 +240,7 @@ const ZoneHotspot = memo(function ZoneHotspot({
   )
 })
 
-/** One click → open compact float card (no Leaflet popup friction). */
+/** One click / keyboard → open compact float card (no Leaflet popup friction). */
 const ZoneMapMarker = memo(function ZoneMapMarker({
   zone,
   meta,
@@ -253,7 +255,32 @@ const ZoneMapMarker = memo(function ZoneMapMarker({
   selected?: boolean
 }) {
   const onClick = useCallback(() => onSelect(zone), [onSelect, zone])
-  const handlers = useMemo(() => ({ click: onClick }), [onClick])
+  const handlers = useMemo(
+    () => ({
+      click: onClick,
+      keydown: (e: L.LeafletKeyboardEvent) => {
+        const key = e.originalEvent?.key
+        if (key === 'Enter' || key === ' ') {
+          e.originalEvent?.preventDefault?.()
+          onClick()
+        }
+      },
+      add: (e: L.LeafletEvent) => {
+        const el = (e.target as L.Marker)?.getElement?.()
+        if (!el) return
+        el.setAttribute('tabindex', '0')
+        el.setAttribute('role', 'button')
+        const scorePart = meta.score !== null ? `, índice ${meta.score}` : ''
+        el.setAttribute(
+          'aria-label',
+          `${zone.name}. ${meta.label}${scorePart}. Abrir ficha de zona.`,
+        )
+        if (selected) el.setAttribute('aria-current', 'true')
+        else el.removeAttribute('aria-current')
+      },
+    }),
+    [onClick, zone.name, meta.label, meta.score, selected],
+  )
   const scorePart = meta.score !== null ? ` · ${meta.score}/100` : ''
   return (
     <Marker
@@ -263,6 +290,7 @@ const ZoneMapMarker = memo(function ZoneMapMarker({
       title={`${zone.name} · ${meta.label}${scorePart}`}
       opacity={selected ? 1 : 0.92}
       zIndexOffset={selected ? 800 : 0}
+      keyboard
     />
   )
 })
@@ -519,9 +547,27 @@ function ZoneDetailBody({
         {resources.note ? (
           <p className="zone-resources__note">{resources.note}</p>
         ) : null}
+        {(() => {
+          const permit = resources.links.find((l) => l.kind === 'permit')
+          if (!permit) return null
+          return (
+            <a
+              href={permit.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-atelier btn-atelier--primary zone-resources__cta"
+              data-testid="zone-permit-cta"
+            >
+              {t('map.permitCta', {
+                defaultValue: 'Tramitar permiso en web oficial',
+              })}{' '}
+              <span aria-hidden>↗</span>
+            </a>
+          )
+        })()}
         <ul className="zone-resources__list">
           {resources.links.map((link) => (
-            <li key={link.url}>
+            <li key={`${link.kind}:${link.url}`}>
               <a
                 href={link.url}
                 target="_blank"
@@ -539,6 +585,12 @@ function ZoneDetailBody({
             </li>
           ))}
         </ul>
+        <p className="zone-resources__policy muted">
+          {t('map.permitPolicy', {
+            defaultValue:
+              'VisionSetil no vende permisos. Solo enlaces a gestores oficiales.',
+          })}
+        </p>
       </section>
 
       <div className="zone-detail-actions zone-detail-actions--hero">
@@ -634,6 +686,7 @@ export default function SpainMapPage() {
   const [geoStatus, setGeoStatus] = useState<
     'idle' | 'loading' | 'denied' | 'unsupported' | 'error'
   >('idle')
+  const [showSuggestions, setShowSuggestions] = useState(false)
   const cancelledRef = useRef(false)
   const loadedZonesRef = useRef(0)
   /** Preserve non-CCAA deep-link region (e.g. Soria province) in URL. */
@@ -644,14 +697,36 @@ export default function SpainMapPage() {
 
   const regions = useMemo(() => {
     const set = new Set(mushroomZones.map((z) => z.region))
-    return ['todas', ...Array.from(set).sort()]
+    return ['todas', ...Array.from(set).sort((a, b) => a.localeCompare(b, 'es'))]
   }, [])
+
+  /** Priority chips for quick CCAA filter (canonical inventory labels). */
+  const regionChips = useMemo(() => {
+    const preferred = [
+      'Castilla y León',
+      'Aragón',
+      'Navarra',
+      'País Vasco',
+      'Galicia',
+      'Cataluña',
+      'Andalucía',
+      'Asturias',
+      'Cantabria',
+    ]
+    const available = new Set(regions.filter((r) => r !== 'todas'))
+    return preferred.filter((r) => available.has(r))
+  }, [regions])
 
   const zoneById = useMemo(() => {
     const m = new Map<string, MushroomZone>()
     for (const z of mushroomZones) m.set(z.id, z)
     return m
   }, [])
+
+  const searchSuggestions = useMemo(
+    () => suggestZonesByQuery(mushroomZones, searchQuery, 6),
+    [searchQuery],
+  )
 
   useEffect(() => {
     void loadSpeciesCatalog()
@@ -669,6 +744,7 @@ export default function SpainMapPage() {
         filterRegion !== 'todas'
           ? filterRegion
           : stickyRegionParamRef.current,
+      query: searchQuery.trim() || null,
     })
   }, [selectedZone, filterRegion, searchQuery])
 
@@ -949,10 +1025,15 @@ export default function SpainMapPage() {
   const regulatedRows = useMemo(() => listRegulatedZones(), [])
   const regulatedStats = useMemo(() => regulatedZoneStats(), [])
   const [showRegulatedDir, setShowRegulatedDir] = useState(false)
-  const [regulatedFilter, setRegulatedFilter] = useState<'all' | 'coto_cyl' | 'parque'>('all')
+  const [regulatedFilter, setRegulatedFilter] = useState<
+    'all' | 'coto_cyl' | 'parque' | 'coto'
+  >('all')
   const regulatedVisible = useMemo(() => {
-    if (regulatedFilter === 'all') return regulatedRows.slice(0, 40)
-    return regulatedRows.filter((r) => r.kind === regulatedFilter).slice(0, 40)
+    const rows =
+      regulatedFilter === 'all'
+        ? regulatedRows
+        : regulatedRows.filter((r) => r.kind === regulatedFilter)
+    return rows.slice(0, REGULATED_DIRECTORY_CAP)
   }, [regulatedRows, regulatedFilter])
 
   return (
@@ -970,6 +1051,19 @@ export default function SpainMapPage() {
           <span className="map-safety-chip" role="note">
             {t('map.safetyChip', { defaultValue: 'Educativo · no recolección' })}
           </span>
+          <span
+            className="map-safety-chip map-safety-chip--mv"
+            role="note"
+            data-testid="map-multiview-chip"
+            title={t('map.multiviewTip', {
+              defaultValue:
+                'En el campo: foto láminas + perfil + base. El mapa no identifica ni autoriza consumo.',
+            })}
+          >
+            {t('map.multiviewChip', {
+              defaultValue: 'Campo · multi-vista',
+            })}
+          </span>
           <button
             type="button"
             className="btn-atelier btn-atelier--ghost map-chrome__b2b"
@@ -982,21 +1076,63 @@ export default function SpainMapPage() {
         </div>
 
         <div className="map-chrome__filters" role="search">
-          <input
-            ref={searchInputRef}
-            id="map-zone-search"
-            type="search"
-            className="map-search-input map-chrome__search"
-            data-testid="map-zone-search"
-            placeholder={t('map.searchPlaceholder', {
-              defaultValue: 'Buscar Picos, Soria, hayedo…',
-            })}
-            value={searchQuery}
-            onChange={(e) => handleSearchChange(e.target.value)}
-            autoComplete="off"
-            enterKeyHint="search"
-            aria-label={t('map.searchLabel', { defaultValue: 'Buscar zona' })}
-          />
+          <div className="map-search-wrap">
+            <input
+              ref={searchInputRef}
+              id="map-zone-search"
+              type="search"
+              className="map-search-input map-chrome__search"
+              data-testid="map-zone-search"
+              placeholder={t('map.searchPlaceholder', {
+                defaultValue: 'Buscar Picos, Soria, hayedo…',
+              })}
+              value={searchQuery}
+              onChange={(e) => {
+                handleSearchChange(e.target.value)
+                setShowSuggestions(true)
+              }}
+              onFocus={() => setShowSuggestions(true)}
+              onBlur={() => {
+                // Delay so suggestion click registers
+                window.setTimeout(() => setShowSuggestions(false), 140)
+              }}
+              autoComplete="off"
+              enterKeyHint="search"
+              aria-label={t('map.searchLabel', { defaultValue: 'Buscar zona' })}
+              aria-autocomplete="list"
+              aria-controls="map-search-suggestions"
+              aria-expanded={showSuggestions && searchSuggestions.length > 0}
+            />
+            {showSuggestions && searchSuggestions.length > 0 && (
+              <ul
+                id="map-search-suggestions"
+                className="map-search-suggestions"
+                role="listbox"
+                data-testid="map-search-suggestions"
+              >
+                {searchSuggestions.map((z) => (
+                  <li key={z.id} role="option">
+                    <button
+                      type="button"
+                      className="map-search-suggestions__item"
+                      onMouseDown={(e) => e.preventDefault()}
+                      onClick={() => {
+                        handleSearchChange(z.name)
+                        handleSelectZone(z)
+                        setShowSuggestions(false)
+                      }}
+                    >
+                      <strong>{shortZoneLabel(z.name, 36)}</strong>
+                      <span className="muted">
+                        {z.region}
+                        {z.provinces?.length ? ` · ${z.provinces[0]}` : ''}
+                      </span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
           <select
             id="map-region-select"
             className="map-chrome__select"
@@ -1064,6 +1200,39 @@ export default function SpainMapPage() {
             {loadingAlerts ? ` · ${loadProgress}%` : ''}
           </span>
         </div>
+
+        {regionChips.length > 0 && (
+          <div
+            className="map-region-chips"
+            role="toolbar"
+            aria-label={t('map.regionChips', { defaultValue: 'Filtro rápido por comunidad' })}
+            data-testid="map-region-chips"
+          >
+            <button
+              type="button"
+              className={`map-region-chip ${filterRegion === 'todas' ? 'is-active' : ''}`}
+              onClick={() => {
+                setFilterRegion('todas')
+                stickyRegionParamRef.current = null
+              }}
+            >
+              {t('map.allRegions', { defaultValue: 'Todas' })}
+            </button>
+            {regionChips.map((r) => (
+              <button
+                key={r}
+                type="button"
+                className={`map-region-chip ${filterRegion === r ? 'is-active' : ''}`}
+                onClick={() => {
+                  setFilterRegion(r)
+                  stickyRegionParamRef.current = r
+                }}
+              >
+                {r}
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* Top 5 — one-tap selection (no wall of text) */}
         {topHotspots.length > 0 && (
@@ -1154,7 +1323,8 @@ export default function SpainMapPage() {
             </h2>
             <p className="map-regulated-dir__stats muted">
               {regulatedStats.cotos} acotados CyL · {regulatedStats.parks} parques ·{' '}
-              {regulatedStats.withPermit} con enlace de permiso
+              {regulatedStats.cotosOther} cotos · {regulatedStats.withPermit} con enlace
+              de permiso
             </p>
             <p className="map-regulated-dir__partner" role="note">
               {B2B_PARTNER_BLURB_ES}
@@ -1165,6 +1335,7 @@ export default function SpainMapPage() {
                   ['all', 'Todos'],
                   ['coto_cyl', 'Acotados CyL'],
                   ['parque', 'Parques'],
+                  ['coto', 'Otros cotos'],
                 ] as const
               ).map(([id, label]) => (
                 <button
@@ -1211,7 +1382,7 @@ export default function SpainMapPage() {
                       rel="noopener noreferrer"
                       className="map-regulated-dir__permit"
                     >
-                      Permiso ↗
+                      Permiso oficial ↗
                     </a>
                   ) : (
                     <span className="muted map-regulated-dir__permit">Info en ficha</span>
@@ -1220,6 +1391,12 @@ export default function SpainMapPage() {
               )
             })}
           </ul>
+          {regulatedRows.length > REGULATED_DIRECTORY_CAP && (
+            <p className="map-regulated-dir__cap muted" role="note">
+              Mostrando {regulatedVisible.length} de {regulatedRows.length}. Usa el mapa o
+              la búsqueda para el resto.
+            </p>
+          )}
         </section>
       )}
 
@@ -1244,6 +1421,39 @@ export default function SpainMapPage() {
       {/* Full-bleed map — detail only when a zone is selected (sheet / float) */}
       <div className="map-layout map-layout--solo">
         <div className="map-container-wrapper map-container-wrapper--hero">
+          {filteredZones.length === 0 && (
+            <div
+              className="map-empty-filter"
+              role="status"
+              data-testid="map-empty-filter"
+            >
+              <p className="map-empty-filter__title">
+                {t('map.emptyFilterTitle', {
+                  defaultValue: 'Sin zonas con estos filtros',
+                })}
+              </p>
+              <p className="map-empty-filter__body muted">
+                {t('map.emptyFilterBody', {
+                  defaultValue: 'Prueba otra comunidad, nivel de aviso o búsqueda.',
+                })}
+              </p>
+              <div className="map-empty-filter__actions">
+                <button
+                  type="button"
+                  className="btn-atelier btn-atelier--primary"
+                  onClick={() => {
+                    setFilterRegion('todas')
+                    setFilterAlert('todas')
+                    handleSearchChange('')
+                    setOnlyHotspots(false)
+                    stickyRegionParamRef.current = null
+                  }}
+                >
+                  {t('map.clearFilters', { defaultValue: 'Limpiar filtros' })}
+                </button>
+              </div>
+            </div>
+          )}
           <div
             className="map-overlay map-overlay--layers"
             role="group"

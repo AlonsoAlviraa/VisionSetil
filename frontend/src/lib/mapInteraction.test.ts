@@ -13,6 +13,7 @@ import {
   replaceMapUrl,
   resolveMapDeepLink,
   stickyRegionAfterSearchChange,
+  suggestZonesByQuery,
   topHotspotsByScore,
   CLUSTER_BELOW_ZOOM,
 } from './mapInteraction'
@@ -57,16 +58,34 @@ describe('parseMapSearchParams / buildMapSearchParams', () => {
     expect(parseMapSearchParams('?zone=asturias-oriental&region=Soria')).toEqual({
       zoneId: 'asturias-oriental',
       region: 'Soria',
+      query: null,
     })
     expect(parseMapSearchParams('zone=foo')).toEqual({
       zoneId: 'foo',
       region: null,
+      query: null,
+    })
+  })
+
+  it('parses free-text q search param', () => {
+    expect(parseMapSearchParams('?q=hayedo&region=Asturias')).toEqual({
+      zoneId: null,
+      region: 'Asturias',
+      query: 'hayedo',
     })
   })
 
   it('returns nulls when empty', () => {
-    expect(parseMapSearchParams('')).toEqual({ zoneId: null, region: null })
-    expect(parseMapSearchParams('?')).toEqual({ zoneId: null, region: null })
+    expect(parseMapSearchParams('')).toEqual({
+      zoneId: null,
+      region: null,
+      query: null,
+    })
+    expect(parseMapSearchParams('?')).toEqual({
+      zoneId: null,
+      region: null,
+      query: null,
+    })
   })
 
   it('builds query without empty keys', () => {
@@ -74,6 +93,7 @@ describe('parseMapSearchParams / buildMapSearchParams', () => {
     expect(buildMapSearchParams({ zoneId: null, region: 'Asturias' })).toBe(
       'region=Asturias',
     )
+    expect(buildMapSearchParams({ query: 'Soria' })).toBe('q=Soria')
     expect(buildMapSearchParams({})).toBe('')
   })
 })
@@ -127,6 +147,16 @@ describe('resolveMapDeepLink', () => {
     expect(r.filterRegion).toBe('todas')
     expect(r.searchQuery).toBe('Soria')
     expect(r.stickyRegion).toBe('Soria')
+  })
+
+  it('uses explicit q for search while keeping region filter', () => {
+    const r = resolveMapDeepLink(
+      '?q=hayedo&region=Asturias',
+      sampleZones,
+      regions,
+    )
+    expect(r.filterRegion).toBe('Asturias')
+    expect(r.searchQuery).toBe('hayedo')
   })
 
   it('flags missing zone id', () => {
@@ -190,6 +220,30 @@ describe('findZoneById / matchRegionFilter', () => {
     expect(matchRegionFilter(regions, 'Castilla')).toBe('Castilla y León')
     expect(matchRegionFilter(regions, 'todas')).toBeNull()
     expect(matchRegionFilter(regions, 'Nowhere')).toBeNull()
+  })
+
+  it('resolves co-official region aliases to inventory labels', () => {
+    const extended = [
+      ...regions,
+      'Comunidad Valenciana',
+      'Islas Baleares',
+      'Cataluña',
+      'País Vasco',
+    ]
+    expect(matchRegionFilter(extended, 'Comunitat Valenciana')).toBe(
+      'Comunidad Valenciana',
+    )
+    expect(matchRegionFilter(extended, 'Illes Balears')).toBe('Islas Baleares')
+    expect(matchRegionFilter(extended, 'Catalunya')).toBe('Cataluña')
+    expect(matchRegionFilter(extended, 'Euskadi')).toBe('País Vasco')
+  })
+})
+
+describe('suggestZonesByQuery', () => {
+  it('returns ranked name hits and ignores short queries', () => {
+    expect(suggestZonesByQuery(sampleZones, 'a')).toEqual([])
+    const hits = suggestZonesByQuery(sampleZones, 'soria')
+    expect(hits.map((z) => z.id)).toEqual(['soria-pinares'])
   })
 })
 

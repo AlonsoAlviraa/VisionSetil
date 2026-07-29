@@ -234,6 +234,115 @@ export function CameraCapture({
               <div className="grid-line-v left" />
               <div className="grid-line-v right" />
             </div>
+            {/* Live framing assist — silhouette only; never continuous species green-light */}
+            <div
+              className={`camera-frame-assist camera-frame-assist--${guidedMode ? step.id : 'single'}`}
+              data-testid="camera-frame-assist"
+              aria-hidden="true"
+            >
+              <svg viewBox="0 0 200 260" className="camera-frame-assist__svg">
+                <rect
+                  x="18"
+                  y="18"
+                  width="164"
+                  height="224"
+                  rx="16"
+                  fill="none"
+                  stroke="rgba(247,244,237,0.55)"
+                  strokeWidth="2"
+                  strokeDasharray="6 5"
+                />
+                {(guidedMode ? step.id : 'gills') === 'gills' && (
+                  <>
+                    <ellipse
+                      cx="100"
+                      cy="120"
+                      rx="62"
+                      ry="40"
+                      fill="none"
+                      stroke="rgba(157,206,166,0.75)"
+                      strokeWidth="2"
+                    />
+                    <path
+                      d="M45 120 Q75 145 100 120 Q125 95 155 120"
+                      fill="none"
+                      stroke="rgba(157,206,166,0.45)"
+                      strokeWidth="1.5"
+                    />
+                  </>
+                )}
+                {(guidedMode ? step.id : '') === 'stem' && (
+                  <>
+                    <ellipse
+                      cx="100"
+                      cy="70"
+                      rx="48"
+                      ry="22"
+                      fill="none"
+                      stroke="rgba(157,206,166,0.7)"
+                      strokeWidth="2"
+                    />
+                    <path
+                      d="M100 90 v90"
+                      stroke="rgba(157,206,166,0.7)"
+                      strokeWidth="2.2"
+                    />
+                    <ellipse
+                      cx="100"
+                      cy="185"
+                      rx="16"
+                      ry="8"
+                      fill="none"
+                      stroke="rgba(157,206,166,0.55)"
+                      strokeWidth="1.6"
+                    />
+                  </>
+                )}
+                {(guidedMode ? step.id : '') === 'base' && (
+                  <>
+                    <path
+                      d="M100 50 v95"
+                      stroke="rgba(157,206,166,0.55)"
+                      strokeWidth="1.8"
+                    />
+                    <ellipse
+                      cx="100"
+                      cy="160"
+                      rx="42"
+                      ry="28"
+                      fill="none"
+                      stroke="rgba(232,200,114,0.75)"
+                      strokeWidth="2"
+                    />
+                  </>
+                )}
+                {(guidedMode ? step.id : '') === 'cap' && (
+                  <ellipse
+                    cx="100"
+                    cy="110"
+                    rx="70"
+                    ry="36"
+                    fill="none"
+                    stroke="rgba(157,206,166,0.7)"
+                    strokeWidth="2"
+                  />
+                )}
+                {!guidedMode && (
+                  <ellipse
+                    cx="100"
+                    cy="115"
+                    rx="58"
+                    ry="48"
+                    fill="none"
+                    stroke="rgba(157,206,166,0.65)"
+                    strokeWidth="2"
+                  />
+                )}
+              </svg>
+              <span className="camera-frame-assist__label">
+                Encuadre · no identifica
+              </span>
+            </div>
           </div>
         )}
 
@@ -244,6 +353,11 @@ export function CameraCapture({
             </span>
             <p>{step.hint}</p>
           </div>
+        )}
+        {!guidedMode && !error && (
+          <p className="camera-frame-policy" data-testid="camera-frame-policy" role="note">
+            Guía de encuadre en vivo — nunca semáforo de especie ni permiso de consumo.
+          </p>
         )}
 
         <div className="camera-controls">

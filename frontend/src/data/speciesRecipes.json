@@ -1,0 +1,473 @@
+{
+  "version": "1.0.0",
+  "policy": "Educational external recipe links only for documented culinary (comestible) taxa. Never recipes for deadly/toxic taxa. Orientation only — not permission to forage or eat. Never rely on app ID alone.",
+  "default_disclaimer": "Orientación cultural únicamente. Nunca consumas setas silvestres identificadas solo por una app. Se requiere verificación experta. Esta app no autoriza el consumo. / Orientation only. Never eat wild mushrooms identified only by an app. Expert verification required. This app does not authorize consumption.",
+  "excluded_deadly": [
+    "Amanita phalloides",
+    "Amanita virosa",
+    "Amanita verna",
+    "Galerina marginata",
+    "Cortinarius orellanus",
+    "Cortinarius rubellus",
+    "Lepiota brunneoincarnata",
+    "Gyromitra esculenta"
+  ],
+  "species": {
+    "boletus-edulis": {
+      "taxon": "Boletus edulis",
+      "slug": "boletus-edulis",
+      "food_class": "comestible",
+      "disclaimer": "Orientación cultural únicamente. Nunca consumas setas silvestres identificadas solo por una app. Se requiere verificación experta. Esta app no autoriza el consumo.",
+      "recipes": [
+        {
+          "title": "Porcini Risotto",
+          "url": "https://honest-food.net/porcini-risotto-recipe/",
+          "lang": "en",
+          "disclaimer": "Use only correctly identified mushrooms from trusted sources; wild ID by app alone is never enough. This app does not authorize consumption."
+        },
+        {
+          "title": "Mushroom risotto (with dried porcini)",
+          "url": "https://www.bbcgoodfood.com/recipes/mushroom-risotto",
+          "lang": "en",
+          "disclaimer": "Use only correctly identified mushrooms from trusted sources; wild ID by app alone is never enough. This app does not authorize consumption."
+        },
+        {
+          "title": "True Italian Porcini Mushroom Risotto",
+          "url": "https://www.allrecipes.com/recipe/255521/true-italian-porcini-mushroom-risotto/",
+          "lang": "en",
+          "disclaimer": "Use only correctly identified mushrooms from trusted sources; wild ID by app alone is never enough. This app does not authorize consumption."
+        },
+        {
+          "title": "Boletus edulis a la plancha",
+          "url": "https://www.directoalpaladar.com/recetas-vegetarianas/receta-de-boletus-edulis-a-la-plancha",
+          "lang": "es",
+          "disclaimer": "Utilice únicamente setas correctamente identificadas de fuentes de confianza; la ID silvestre solo con app nunca es suficiente. Esta app no autoriza el consumo."
+        },
+        {
+          "title": "Risotto de boletus",
+          "url": "https://www.bonviveur.es/recetas/risotto-de-boletus",
+          "lang": "es",
+          "disclaimer": "Utilice únicamente setas correctamente identificadas de fuentes de confianza; la ID silvestre solo con app nunca es suficiente. Esta app no autoriza el consumo."
+        }
+      ]
+    },
+    "cantharellus-cibarius": {
+      "taxon": "Cantharellus cibarius",
+      "slug": "cantharellus-cibarius",
+      "food_class": "comestible",
+      "disclaimer": "Orientación cultural únicamente. Nunca consumas setas silvestres identificadas solo por una app. Se requiere verificación experta. Esta app no autoriza el consumo.",
+      "recipes": [
+        {
+          "title": "Dry Sautéed Chanterelle Mushroom Recipe",
+          "url": "https://www.thesophisticatedcaveman.com/dry-sauteed-chanterelle-mushroom-recipe/",
+          "lang": "en",
+          "disclaimer": "Use only correctly identified mushrooms from trusted sources; wild ID by app alone is never enough."
+        },
+        {
+          "title": "Pasta with chanterelle mushrooms and speck",
+          "url": "https://www.the-pasta-project.com/pasta-with-chanterelle-mushrooms-and-speck/",
+          "lang": "en",
+          "disclaimer": "Use only correctly identified mushrooms from trusted sources; wild ID by app alone is never enough."
+        },
+        {
+          "title": "Easy Chanterelle Mushrooms And Potatoes Recipe",
+          "url": "https://yourguardianchef.com/easy-chantarelle-recipe-with-potato/",
+          "lang": "en",
+          "disclaimer": "Use only correctly identified mushrooms from trusted sources; wild ID by app alone is never enough."
+        },
+        {
+          "title": "Revuelto de rebozuelos",
+          "url": "https://recetasdecocina.elmundo.es/2017/10/revuelto-rebozuelos-receta.html",
+          "lang": "es",
+          "disclaimer": "Utilice únicamente setas correctamente identificadas de fuentes de confianza."
+        },
+        {
+          "title": "Rebozuelos salteados",
+          "url": "https://cimanorte.com/receta-rebozuelos-salteados/",
+          "lang": "es",
+          "disclaimer": "Utilice únicamente setas correctamente identificadas de fuentes de confianza."
+        }
+      ]
+    },
+    "lactarius-deliciosus": {
+      "taxon": "Lactarius deliciosus",
+      "slug": "lactarius-deliciosus",
+      "food_class": "comestible",
+      "disclaimer": "Orientación cultural únicamente. Nunca consumas setas silvestres identificadas solo por una app. Se requiere verificación experta. Esta app no autoriza el consumo.",
+      "recipes": [
+        {
+          "title": "Níscalos a la plancha",
+          "url": "https://www.hola.com/cocina/recetas/20211019198053/niscalos-a-la-plancha/",
+          "lang": "es",
+          "disclaimer": "Utilice únicamente setas correctamente identificadas de fuentes de confianza."
+        },
+        {
+          "title": "Níscalos al ajillo, receta fácil y casera de otoño",
+          "url": "https://recetasdecocina.elmundo.es/2022/10/niscalos-al-ajillo-receta-facil-otono.html",
+          "lang": "es",
+          "disclaimer": "Utilice únicamente setas correctamente identificadas de fuentes de confianza."
+        },
+        {
+          "title": "Arroz cremoso de níscalos",
+          "url": "https://www.directoalpaladar.com/recetas-de-arroces/arroz-cremoso-de-niscalos-receta",
+          "lang": "es",
+          "disclaimer": "Utilice únicamente setas correctamente identificadas de fuentes de confianza."
+        },
+        {
+          "title": "Sauteed Saffron Milk Cap",
+          "url": "https://www.masalaherb.com/saffron-milk-cap/",
+          "lang": "en",
+          "disclaimer": "Use only correctly identified mushrooms from trusted sources; wild ID by app alone is never enough."
+        },
+        {
+          "title": "Saffron Milk Cap Mushroom Paella",
+          "url": "https://foragerchef.com/saffron-milkcap-paella/",
+          "lang": "en",
+          "disclaimer": "Use only correctly identified mushrooms from trusted sources; wild ID by app alone is never enough."
+        }
+      ]
+    },
+    "amanita-caesarea": {
+      "taxon": "Amanita caesarea",
+      "slug": "amanita-caesarea",
+      "food_class": "comestible",
+      "disclaimer": "Orientación cultural únicamente. Nunca consumas setas silvestres identificadas solo por una app. Se requiere verificación experta. Esta app no autoriza el consumo. Confusiones con Amanitas mortales en fase huevo.",
+      "recipes": [
+        {
+          "title": "Carpaccio de amanita caesarea",
+          "url": "https://www.gastronomia.es/recetas/carpaccio-de-amanita-caesarea/",
+          "lang": "es",
+          "disclaimer": "Utilice únicamente setas correctamente identificadas de fuentes de confianza."
+        },
+        {
+          "title": "Carpaccio de huevo de rey con aceite de oliva y sal en escamas",
+          "url": "https://micologiasetaex.es/carpaccio-de-huevo-de-rey-con-aceite-de-oliva-y-sal-en-escamas/",
+          "lang": "es",
+          "disclaimer": "Utilice únicamente setas correctamente identificadas de fuentes de confianza."
+        },
+        {
+          "title": "Amanita caesarea (oronja): carpaccio y guía culinaria",
+          "url": "https://lacasadelassetas.com/blog/amanita-caesarea-oronja-placer-del-cesar/",
+          "lang": "es",
+          "disclaimer": "Utilice únicamente setas correctamente identificadas de fuentes de confianza."
+        },
+        {
+          "title": "Caesar’s Mushrooms with Udon",
+          "url": "https://cookanddrink.org/2018/07/11/caesars-mushroom-with-udon/",
+          "lang": "en",
+          "disclaimer": "Use only correctly identified mushrooms from trusted sources; wild ID by app alone is never enough."
+        },
+        {
+          "title": "Amanita caesarea: The Edible Caesar’s Mushroom (Simple Caesar)",
+          "url": "https://www.mushroom-appreciation.com/amanita-caesarea.html",
+          "lang": "en",
+          "disclaimer": "Use only correctly identified mushrooms from trusted sources; wild ID by app alone is never enough."
+        }
+      ]
+    },
+    "macrolepiota-procera": {
+      "taxon": "Macrolepiota procera",
+      "slug": "macrolepiota-procera",
+      "food_class": "comestible",
+      "disclaimer": "Orientación cultural únicamente. Nunca consumas setas silvestres identificadas solo por una app. Se requiere verificación experta. Esta app no autoriza el consumo. Solo sombrero; evitar Lepiota pequeñas.",
+      "recipes": [
+        {
+          "title": "Parasol Mushrooms with Bacon Rarebit",
+          "url": "https://www.wildfooduk.com/wild-food-recipes/parasol-mushrooms-with-rarebit/",
+          "lang": "en",
+          "disclaimer": "Use only correctly identified mushrooms from trusted sources; wild ID by app alone is never enough."
+        },
+        {
+          "title": "Parasol Mushroom | Macrolepiota procera (breaded and fried recipe)",
+          "url": "https://www.gone71.com/parasol-mushroom-macrolepiota-procera-recipe/",
+          "lang": "en",
+          "disclaimer": "Use only correctly identified mushrooms from trusted sources; wild ID by app alone is never enough."
+        },
+        {
+          "title": "Macrolepiota procera: identificación, temporada y recetas",
+          "url": "https://amivall.com/macrolepiota-procera-guia-recetas.php",
+          "lang": "es",
+          "disclaimer": "Utilice únicamente setas correctamente identificadas de fuentes de confianza."
+        },
+        {
+          "title": "Macrolepiota rebozada",
+          "url": "https://lacocinadehoyydesiempre.blogspot.com/2013/10/os-voy-dar-una-receta-familiar-para.html",
+          "lang": "es",
+          "disclaimer": "Utilice únicamente setas correctamente identificadas de fuentes de confianza."
+        },
+        {
+          "title": "Bocata de Macrolepiota procera de jamón y queso",
+          "url": "https://gastronomiaenverso.es/bocata-de-macrolepiota-procera-de-jamon-y-queso/",
+          "lang": "es",
+          "disclaimer": "Utilice únicamente setas correctamente identificadas de fuentes de confianza."
+        }
+      ]
+    },
+    "pleurotus-ostreatus": {
+      "taxon": "Pleurotus ostreatus",
+      "slug": "pleurotus-ostreatus",
+      "food_class": "comestible",
+      "disclaimer": "Orientación cultural únicamente. Nunca consumas setas silvestres identificadas solo por una app. Se requiere verificación experta. Esta app no autoriza el consumo. Preferible cultivo comercial verificado.",
+      "recipes": [
+        {
+          "title": "Teriyaki oyster mushrooms",
+          "url": "https://www.bbc.co.uk/food/recipes/teriyaki_oyster_91010",
+          "lang": "en",
+          "disclaimer": "Use only correctly identified mushrooms from trusted sources; wild ID by app alone is never enough. This app does not authorize consumption."
+        },
+        {
+          "title": "Sautéed oyster mushrooms with garlic",
+          "url": "https://familystylefood.com/sauteed-oyster-mushrooms/",
+          "lang": "en",
+          "disclaimer": "Use only correctly identified mushrooms from trusted sources; wild ID by app alone is never enough. This app does not authorize consumption."
+        },
+        {
+          "title": "Pickled oyster mushrooms",
+          "url": "https://www.seriouseats.com/pickled-oyster-mushrooms-recipe",
+          "lang": "en",
+          "disclaimer": "Use only correctly identified mushrooms from trusted sources; wild ID by app alone is never enough. This app does not authorize consumption."
+        },
+        {
+          "title": "Setas a la plancha con ajo (Pleurotus ostreatus)",
+          "url": "https://www.directoalpaladar.com/recetas-vegetarianas/setas-a-plancha-ajo-mejor-receta-queden-crujientes-todo-sabor",
+          "lang": "es",
+          "disclaimer": "Utilice únicamente setas correctamente identificadas de fuentes de confianza. Esta app no autoriza el consumo."
+        },
+        {
+          "title": "Setas ostra crujientes en freidora de aire",
+          "url": "https://www.directoalpaladar.com/videos-recetas/setas-crujientes-freidora-aire-receta-vegetariana-para-cena-complicaciones-tiempo-record",
+          "lang": "es",
+          "disclaimer": "Utilice únicamente setas correctamente identificadas de fuentes de confianza. Esta app no autoriza el consumo."
+        }
+      ]
+    },
+    "agaricus-campestris": {
+      "taxon": "Agaricus campestris",
+      "slug": "agaricus-campestris",
+      "food_class": "comestible",
+      "disclaimer": "Orientación cultural únicamente. Nunca consumas setas silvestres identificadas solo por una app. Se requiere verificación experta. Esta app no autoriza el consumo. Contrastar con A. xanthoderma (olor a fenol / base amarilla).",
+      "recipes": [
+        {
+          "title": "Meadow Mushrooms à l'Escoffier",
+          "url": "https://honest-food.net/meadow-mushroom-recipe-escoffier/",
+          "lang": "en",
+          "disclaimer": "Use only correctly identified mushrooms from trusted sources; wild ID by app alone is never enough. This app does not authorize consumption of wild fungi."
+        },
+        {
+          "title": "Wild Mushrooms with Garlic and Parsley",
+          "url": "https://foragerchef.com/wild-mushrooms-with-garlic-and-parsley/",
+          "lang": "en",
+          "disclaimer": "Use only correctly identified mushrooms from trusted sources; wild ID by app alone is never enough. This app does not authorize consumption of wild fungi."
+        },
+        {
+          "title": "Champiñón silvestre con queso de cabra a la plancha",
+          "url": "https://canalcocina.es/receta/champinon-silvestre-queso-cabra-plancha-tomate-burbujas-cava-1",
+          "lang": "es",
+          "disclaimer": "Utilice únicamente setas correctamente identificadas de fuentes de confianza. Esta app no autoriza el consumo."
+        },
+        {
+          "title": "Cheesy autumn mushrooms",
+          "url": "https://www.bbcgoodfood.com/recipes/cheesy-autumn-mushrooms",
+          "lang": "en",
+          "disclaimer": "Use only correctly identified mushrooms from trusted sources; wild ID by app alone is never enough. This app does not authorize consumption of wild fungi."
+        },
+        {
+          "title": "All-in-one-baked mushrooms",
+          "url": "https://www.bbcgoodfood.com/recipes/all-one-baked-mushrooms",
+          "lang": "en",
+          "disclaimer": "Use only correctly identified mushrooms from trusted sources; wild ID by app alone is never enough. This app does not authorize consumption of wild fungi."
+        }
+      ]
+    },
+    "morchella-esculenta": {
+      "taxon": "Morchella esculenta",
+      "slug": "morchella-esculenta",
+      "food_class": "comestible",
+      "disclaimer": "Orientación cultural únicamente. Nunca consumas setas silvestres identificadas solo por una app. Se requiere verificación experta. Esta app no autoriza el consumo. Cocinar siempre a fondo; nunca crudas. No confundir con Gyromitra.",
+      "recipes": [
+        {
+          "title": "Sautéed Morel Mushrooms",
+          "url": "https://www.seriouseats.com/sauteed-morel-mushrooms",
+          "lang": "en",
+          "disclaimer": "Use only correctly identified mushrooms from trusted sources; wild ID by app alone is never enough. This app does not authorize consumption. Cook morels thoroughly; never eat raw."
+        },
+        {
+          "title": "Morel Mushroom Tartine With Chives",
+          "url": "https://www.seriouseats.com/morel-mushroom-tartine-chives-recipe",
+          "lang": "en",
+          "disclaimer": "Use only correctly identified mushrooms from trusted sources; wild ID by app alone is never enough. This app does not authorize consumption. Cook morels thoroughly; never eat raw."
+        },
+        {
+          "title": "Chicken with Tarragon and Morels",
+          "url": "https://www.foodandwine.com/recipes/chicken-tarragon-and-morels",
+          "lang": "en",
+          "disclaimer": "Use only correctly identified mushrooms from trusted sources; wild ID by app alone is never enough. This app does not authorize consumption. Cook morels thoroughly; never eat raw."
+        },
+        {
+          "title": "Quiche de colmenillas y espárragos",
+          "url": "https://www.hola.com/cocina/recetas/20230503231207/quiche-colmenillas-esparragos/",
+          "lang": "es",
+          "disclaimer": "Utilice únicamente setas correctamente identificadas. Cocine siempre las colmenillas a fondo; nunca crudas. Esta app no autoriza el consumo."
+        },
+        {
+          "title": "Patatas al horno rellenas de colmenillas salteadas y huevo",
+          "url": "https://www.lecturas.com/recetas/patatas-horno-rellenas-colmenillas-salteadas-y-huevo_12470.html",
+          "lang": "es",
+          "disclaimer": "Utilice únicamente setas correctamente identificadas. Cocine siempre las colmenillas a fondo; nunca crudas. Esta app no autoriza el consumo."
+        }
+      ]
+    },
+    "craterellus-cornucopioides": {
+      "taxon": "Craterellus cornucopioides",
+      "slug": "craterellus-cornucopioides",
+      "food_class": "comestible",
+      "disclaimer": "Orientación cultural únicamente. Nunca consumas setas silvestres identificadas solo por una app. Se requiere verificación experta. Esta app no autoriza el consumo.",
+      "recipes": [
+        {
+          "title": "Caramelized Shallots and Black Trumpet Mushrooms",
+          "url": "https://foragerchef.com/caramelized-shallots-and-black-trumpets/",
+          "lang": "en",
+          "disclaimer": "Use only correctly identified mushrooms from trusted sources; wild ID by app alone is never enough."
+        },
+        {
+          "title": "Black Trumpet Mushroom Pasta",
+          "url": "https://www.tyrantfarms.com/recipe-black-trumpet-mushroom-pasta/",
+          "lang": "en",
+          "disclaimer": "Use only correctly identified mushrooms from trusted sources; wild ID by app alone is never enough."
+        },
+        {
+          "title": "Black Trumpets on Crostini with Goat Cheese and Roasted Red Peppers",
+          "url": "https://bayareamushrooms.org/recipe_month/blacktrumpets.html",
+          "lang": "en",
+          "disclaimer": "Use only correctly identified mushrooms from trusted sources; wild ID by app alone is never enough."
+        },
+        {
+          "title": "Black Trumpet Mushroom Puree (Coulis)",
+          "url": "https://foragerchef.com/black-trumpet-coulis/",
+          "lang": "en",
+          "disclaimer": "Use only correctly identified mushrooms from trusted sources; wild ID by app alone is never enough."
+        },
+        {
+          "title": "Arroz con trompetas de la muerte",
+          "url": "https://recetasdecocina.elmundo.es/2025/10/arroz-con-trompetas-de-la-muerte-receta-casera-de-otono.html",
+          "lang": "es",
+          "disclaimer": "Utilice únicamente setas correctamente identificadas de fuentes de confianza."
+        }
+      ]
+    },
+    "hydnum-repandum": {
+      "taxon": "Hydnum repandum",
+      "slug": "hydnum-repandum",
+      "food_class": "comestible",
+      "disclaimer": "Orientación cultural únicamente. Nunca consumas setas silvestres identificadas solo por una app. Se requiere verificación experta. Esta app no autoriza el consumo.",
+      "recipes": [
+        {
+          "title": "How to Cook the Hedgehog Mushroom – The Cheaper Chanterelle",
+          "url": "https://braisedanddeglazed.com/how-to-cook-the-hedgehog-mushroom-the-cheaper-chanterelle/",
+          "lang": "en",
+          "disclaimer": "Use only correctly identified mushrooms from trusted sources; wild ID by app alone is never enough."
+        },
+        {
+          "title": "Hedgehog Pie with Ham, Cider and Tarragon",
+          "url": "https://www.wildfooduk.com/wild-food-recipes/hedgehog-pie/",
+          "lang": "en",
+          "disclaimer": "Use only correctly identified mushrooms from trusted sources; wild ID by app alone is never enough."
+        },
+        {
+          "title": "Hedgehog Mushroom Pasta",
+          "url": "https://foragerchef.com/hedgehog-mushroom-pasta/",
+          "lang": "en",
+          "disclaimer": "Use only correctly identified mushrooms from trusted sources; wild ID by app alone is never enough."
+        },
+        {
+          "title": "Hydnum repandum á feira",
+          "url": "https://gastronomiaenverso.es/hydnum-repandum-a-feira/",
+          "lang": "es",
+          "disclaimer": "Utilice únicamente setas correctamente identificadas de fuentes de confianza."
+        },
+        {
+          "title": "Lengua de vaca (Hydnum repandum) con huevo escalfado",
+          "url": "https://lamorerayelmuerdago.wordpress.com/2015/11/17/lengua-de-vaca-hydnum-repandum-con-huevo-escalfado/",
+          "lang": "es",
+          "disclaimer": "Utilice únicamente setas correctamente identificadas de fuentes de confianza."
+        }
+      ]
+    },
+    "coprinus-comatus": {
+      "taxon": "Coprinus comatus",
+      "slug": "coprinus-comatus",
+      "food_class": "comestible",
+      "disclaimer": "Orientación cultural únicamente. Nunca consumas setas silvestres identificadas solo por una app. Se requiere verificación experta. Esta app no autoriza el consumo. Solo ejemplares jóvenes blancos; cocinar el mismo día. No confundir con C. atramentarius + alcohol.",
+      "recipes": [
+        {
+          "title": "Parmesan Crusted Shaggy Mane Mushrooms",
+          "url": "https://foragerchef.com/parmesan-crusted-shaggy-manes/",
+          "lang": "en",
+          "disclaimer": "Use only correctly identified mushrooms from trusted sources; wild ID by app alone is never enough."
+        },
+        {
+          "title": "Shaggy Mane Mushroom Soup Recipe",
+          "url": "https://www.thesophisticatedcaveman.com/shaggy-mane-mushroom-soup/",
+          "lang": "en",
+          "disclaimer": "Use only correctly identified mushrooms from trusted sources; wild ID by app alone is never enough."
+        },
+        {
+          "title": "Shaggy manes | Coprinus comatus (fried recipe)",
+          "url": "https://www.gone71.com/shaggy-manes-coprinus-comatus-recipe/",
+          "lang": "en",
+          "disclaimer": "Use only correctly identified mushrooms from trusted sources; wild ID by app alone is never enough."
+        },
+        {
+          "title": "It's Shaggy Mane Mushrooms Season! (prep, air-fry & soup)",
+          "url": "https://rebeccalexa.com/its-shaggy-mane-mushrooms-season/",
+          "lang": "en",
+          "disclaimer": "Use only correctly identified mushrooms from trusted sources; wild ID by app alone is never enough."
+        },
+        {
+          "title": "Foraging and Cooking Shaggy Mane Mushrooms",
+          "url": "https://foragerchef.com/the-shaggy-mane-mushroomlawyers-wig/",
+          "lang": "en",
+          "disclaimer": "Use only correctly identified mushrooms from trusted sources; wild ID by app alone is never enough."
+        }
+      ]
+    },
+    "boletus-aereus": {
+      "taxon": "Boletus aereus",
+      "slug": "boletus-aereus",
+      "food_class": "comestible",
+      "disclaimer": "Orientación cultural únicamente. Nunca consumas setas silvestres identificadas solo por una app. Se requiere verificación experta. Esta app no autoriza el consumo.",
+      "recipes": [
+        {
+          "title": "Porcino nero coconut ragoût (with green tea air & foie pairing)",
+          "url": "https://www.foodpairing.com/porcino-nero-pairing-with-peanut-coconut-green-tea-duck-liver/",
+          "lang": "en",
+          "disclaimer": "Use only correctly identified mushrooms from trusted sources; wild ID by app alone is never enough. This app does not authorize consumption."
+        },
+        {
+          "title": "Risotto al vino tinto de hongo negro",
+          "url": "https://canalcocina.es/receta/risotto-al-vino-tinto-de-hongo-negro",
+          "lang": "es",
+          "disclaimer": "Utilice únicamente setas correctamente identificadas de fuentes de confianza. Esta app no autoriza el consumo."
+        },
+        {
+          "title": "Funghi porcini trifolati",
+          "url": "https://ricette.giallozafferano.it/Funghi-porcini-trifolati.html",
+          "lang": "it",
+          "disclaimer": "Use only correctly identified mushrooms from trusted sources; wild ID by app alone is never enough. This app does not authorize consumption. Porcini recipes typically cover the B. edulis group, which includes B. aereus when correctly identified."
+        },
+        {
+          "title": "Risotto ai funghi porcini",
+          "url": "https://ricette.giallozafferano.it/Risotto-ai-funghi-porcini.html",
+          "lang": "it",
+          "disclaimer": "Use only correctly identified mushrooms from trusted sources; wild ID by app alone is never enough. This app does not authorize consumption. Porcini recipes typically cover the B. edulis group, which includes B. aereus when correctly identified."
+        },
+        {
+          "title": "Sautéed Porcini Mushrooms",
+          "url": "https://www.giallozafferano.com/recipes/sauteed-porcini-mushrooms.html",
+          "lang": "en",
+          "disclaimer": "Use only correctly identified mushrooms from trusted sources; wild ID by app alone is never enough. This app does not authorize consumption. Porcini recipes typically cover the B. edulis group, which includes B. aereus when correctly identified."
+        }
+      ]
+    }
+  }
+}

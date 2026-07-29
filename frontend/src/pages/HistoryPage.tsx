@@ -28,7 +28,10 @@ import { EmptyState } from '../components/EmptyState'
 import { SpeciesNameBlock } from '../components/SpeciesNameBlock'
 import { RiskChip } from '../components/RiskChip'
 import { PhotoFrame } from '../components/PhotoFrame'
-import { rankLookalikes } from '../lib/lookalikeRisk'
+import {
+  ensureLookalikeRiskCatalog,
+  rankLookalikesForIdentify,
+} from '../lib/lookalikeRisk'
 import { getRiskMeta } from '../lib/riskLabels'
 import {
   buildHandoffFromHistory,
@@ -37,12 +40,25 @@ import {
 } from '../lib/expertHandoff'
 import { decisionLabelEs } from '../lib/decisionLabels'
 import { scientificNameToSlug } from '../lib/slug'
+import { diagnosticForLookalikeMate } from '../lib/diagnosticViews'
 import {
   historyLimit,
   planLabelEs,
   sliceHistoryForPlan,
   usePlanActions,
 } from '../lib/entitlements'
+import {
+  formatNotebookPin,
+  isNotebookPin,
+  listNotebookPinsFromEntries,
+  notebookGeoPolicy,
+  notebookPinMapHref,
+  notebookPinsShareText,
+  parseManualPinInput,
+  requestBrowserNotebookPin,
+  summarizeNotebookPins,
+  type NotebookPin,
+} from '../lib/notebookGeo'
 
 const MODE_FILTERS: HistoryModeFilter[] = ['all', 'real', 'mock', 'blocked']
 const DATE_FILTERS: HistoryDateFilter[] = ['all', 'today', '7d', '30d']
@@ -53,7 +69,8 @@ function speciesSlugFromTop(species: string | undefined): string | null {
 }
 
 export function HistoryPage() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const locale = i18n.resolvedLanguage || i18n.language || 'es'
   const [entries, setEntries] = useState<HistoryEntry[]>([])
   const [editingId, setEditingId] = useState<string | null>(null)
   const [noteDraft, setNoteDraft] = useState('')
@@ -63,6 +80,9 @@ export function HistoryPage() {
   /** Expanded observation (1st tap); detail panel is the reopen surface. */
   const [openId, setOpenId] = useState<string | null>(null)
   const [shareFeedback, setShareFeedback] = useState<string | null>(null)
+  const [pinDraft, setPinDraft] = useState('')
+  const [pinBusy, setPinBusy] = useState(false)
+  const [pinFeedback, setPinFeedback] = useState<string | null>(null)
   const detailCloseRef = useRef<HTMLButtonElement>(null)
   const detailPanelRef = useRef<HTMLDivElement>(null)
   const lastFocusRef = useRef<HTMLElement | null>(null)
@@ -77,8 +97,16 @@ export function HistoryPage() {
     reloadVisible()
   }, [reloadVisible])
 
+  useEffect(() => {
+    // SSOT catalog for lookalike enrichment on reopened observations
+    void ensureLookalikeRiskCatalog()
+  }, [])
+
   const summary = useMemo(() => summarizeHistory(entries), [entries])
   const needsReview = useMemo(() => entriesNeedingReview(entries), [entries])
+  /** Private pin table from local notebook (not marketplace). */
+  const pinList = useMemo(() => listNotebookPinsFromEntries(entries), [entries])
+  const pinSummary = useMemo(() => summarizeNotebookPins(pinList), [pinList])
   /** Mode chip counts respect active date window (issue 7). */
   const datedForCounts = useMemo(
     () => filterHistoryByDate(entries, dateFilter),
@@ -156,20 +184,92 @@ export function HistoryPage() {
     }
   }, [exportable, t])
 
+  const copyPinList = useCallback(async () => {
+    const text = notebookPinsShareText(pinList, locale)
+    try {
+      await navigator.clipboard.writeText(text)
+      setShareFeedback(
+        t('notebook.pinListCopied', {
+          defaultValue: 'Lista de pins copiada (coords only · sin EXIF)',
+        }),
+      )
+    } catch {
+      setShareFeedback(t('notebook.shareFailed', { defaultValue: 'No se pudo compartir' }))
+    }
+  }, [pinList, locale, t])
+
   const startEdit = (e: HistoryEntry) => {
     setEditingId(e.id)
     setNoteDraft(e.notes || '')
     setTagsDraft((e.tags || []).join(', '))
+    setPinDraft(
+      isNotebookPin(e.pin) ? `${e.pin.lat}, ${e.pin.lng}` : '',
+    )
+    setPinFeedback(null)
   }
 
   const saveEdit = (id: string) => {
+    let pin: NotebookPin | null | undefined = undefined
+    const raw = pinDraft.trim()
+    if (raw === '') {
+      pin = null
+    } else {
+      const parsed = parseManualPinInput(raw)
+      if (!parsed) {
+        setPinFeedback(
+          t('notebook.pinInvalid', {
+            defaultValue: 'Coordenadas no válidas (ej. 41.12, -2.55). Sin EXIF.',
+          }),
+        )
+        return
+      }
+      pin = parsed
+    }
     const next = saveNotebookFields(id, {
       notes: noteDraft,
       tags: parseTagsInput(tagsDraft),
+      pin,
     })
     // Re-apply Free/Pro UI depth — store may hold up to MAX_HISTORY
     setEntries(sliceHistoryForPlan(next, plan))
     setEditingId(null)
+    setPinFeedback(null)
+  }
+
+  const attachGpsPin = async (id: string) => {
+    setPinBusy(true)
+    setPinFeedback(null)
+    try {
+      const pin = await requestBrowserNotebookPin()
+      if (!pin) {
+        setPinFeedback(
+          t('notebook.pinGpsFail', {
+            defaultValue:
+              'No se pudo obtener GPS (permiso denegado o no disponible). Solo local, sin EXIF.',
+          }),
+        )
+        return
+      }
+      const next = saveNotebookFields(id, { pin })
+      setEntries(sliceHistoryForPlan(next, plan))
+      setPinDraft(`${pin.lat}, ${pin.lng}`)
+      setPinFeedback(
+        t('notebook.pinGpsOk', {
+          defaultValue: 'Pin GPS guardado en local (coords only · sin EXIF).',
+        }),
+      )
+    } finally {
+      setPinBusy(false)
+    }
+  }
+
+  const clearPin = (id: string) => {
+    const next = saveNotebookFields(id, { pin: null })
+    setEntries(sliceHistoryForPlan(next, plan))
+    setPinDraft('')
+    setPinFeedback(
+      t('notebook.pinCleared', { defaultValue: 'Pin eliminado del cuaderno local.' }),
+    )
   }
 
   const handoff = (e: HistoryEntry) => {
@@ -303,6 +403,98 @@ export function HistoryPage() {
             </Link>
           </p>
         </div>
+      )}
+
+      {pinList.length > 0 && (
+        <section
+          className="notebook-pin-list atelier-panel"
+          data-testid="notebook-pin-list"
+          aria-label={t('notebook.pinListAria', {
+            defaultValue: 'Tabla local de pins privados',
+          })}
+        >
+          <header className="notebook-pin-list__header">
+            <div>
+              <h2 className="notebook-pin-list__title">
+                {t('notebook.pinListTitle', {
+                  defaultValue: 'Pins de mapa (local)',
+                })}
+              </h2>
+              <p className="notebook-pin-list__policy" role="note">
+                {t('notebook.pinListPolicy', {
+                  defaultValue: notebookGeoPolicy(locale),
+                })}
+              </p>
+              <p className="notebook-pin-list__stats" data-testid="notebook-pin-list-stats">
+                {t('notebook.pinListStats', {
+                  total: pinSummary.total,
+                  gps: pinSummary.gps,
+                  manual: pinSummary.manual,
+                  defaultValue:
+                    '{{total}} pin(s) · {{gps}} GPS · {{manual}} manual · no marketplace',
+                })}
+              </p>
+            </div>
+            <button
+              type="button"
+              className="btn-atelier btn-atelier--ghost"
+              data-testid="notebook-pin-list-copy"
+              onClick={() => void copyPinList()}
+            >
+              {t('notebook.pinListCopy', {
+                defaultValue: 'Copiar lista',
+              })}
+            </button>
+          </header>
+          <ul className="notebook-pin-list__rows">
+            {pinList.map((row) => (
+              <li
+                key={row.entryId}
+                className="notebook-pin-list__row"
+                data-testid="notebook-pin-list-row"
+                data-entry-id={row.entryId}
+              >
+                <div className="notebook-pin-list__main">
+                  <span className="notebook-pin-list__species">
+                    {row.speciesHint ||
+                      t('notebook.pinListUnknownSpecies', {
+                        defaultValue: 'Sin especie (orientación)',
+                      })}
+                  </span>
+                  <span className="notebook-pin-list__coords">
+                    {formatNotebookPin(row.pin, locale)}
+                  </span>
+                  <span
+                    className={`notebook-pin-list__source notebook-pin-list__source--${row.source}`}
+                  >
+                    {row.source === 'gps'
+                      ? t('notebook.pinSourceGps', { defaultValue: 'GPS' })
+                      : t('notebook.pinSourceManual', { defaultValue: 'Manual' })}
+                  </span>
+                </div>
+                <div className="notebook-pin-list__actions">
+                  <button
+                    type="button"
+                    className="btn-atelier btn-atelier--ghost"
+                    data-testid="notebook-pin-list-open"
+                    onClick={() => openObservation(row.entryId)}
+                  >
+                    {t('notebook.pinListOpen', { defaultValue: 'Abrir' })}
+                  </button>
+                  <a
+                    className="btn-atelier btn-atelier--ghost"
+                    href={notebookPinMapHref(row.pin)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    data-testid="notebook-pin-list-map"
+                  >
+                    {t('notebook.pinListMap', { defaultValue: 'OSM' })}
+                  </a>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
       )}
 
       <div className="history-header atelier-section-bar">
@@ -513,8 +705,11 @@ export function HistoryPage() {
             {(() => {
               const e = openEntry
               const top = e.result.predictions?.[0]
-              const look = rankLookalikes(e.result.dangerous_lookalikes || [])
-              const topRisk = look[0] ? getRiskMeta(look[0].risk_label) : null
+              const predTaxa = (e.result.predictions || [])
+                .slice(0, 2)
+                .map((p) => p.species)
+                .filter(Boolean)
+              const look = rankLookalikesForIdentify(e.result.dangerous_lookalikes, predTaxa)
               const isEditing = editingId === e.id
               const mode = entryMode(e)
               const gate = e.gate_summary
@@ -579,6 +774,88 @@ export function HistoryPage() {
                       {e.view_types.join(', ')}
                     </p>
                   )}
+
+                  {/* Private geo pin — local only, EXIF stripped */}
+                  <section
+                    className="notebook-pin-block"
+                    data-testid="notebook-pin-block"
+                    aria-label={t('notebook.pinAria', {
+                      defaultValue: 'Pin de mapa privado',
+                    })}
+                  >
+                    <p className="notebook-pin-block__policy" role="note">
+                      {t('notebook.pinPolicy', {
+                        defaultValue: notebookGeoPolicy(locale),
+                      })}
+                    </p>
+                    {isNotebookPin(e.pin) && !isEditing ? (
+                      <p className="notebook-pin-block__coords" data-testid="notebook-pin-coords">
+                        <strong>
+                          {t('notebook.pinLabel', { defaultValue: 'Pin local' })}
+                        </strong>
+                        {': '}
+                        {formatNotebookPin(e.pin, locale)}
+                        {' · '}
+                        <a
+                          href={notebookPinMapHref(e.pin)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          data-testid="notebook-pin-map-link"
+                        >
+                          {t('notebook.pinOpenMap', { defaultValue: 'Abrir mapa' })}
+                        </a>
+                        {' · '}
+                        <button
+                          type="button"
+                          className="btn-atelier btn-atelier--ghost"
+                          data-testid="notebook-pin-clear"
+                          onClick={() => clearPin(e.id)}
+                        >
+                          {t('notebook.pinClear', { defaultValue: 'Quitar pin' })}
+                        </button>
+                      </p>
+                    ) : null}
+                    {isEditing ? (
+                      <div className="notebook-pin-block__edit">
+                        <label className="notebook-pin-block__label" htmlFor="notebook-pin-input">
+                          {t('notebook.pinManual', {
+                            defaultValue: 'Coords (lat, lng) — sin EXIF',
+                          })}
+                        </label>
+                        <input
+                          id="notebook-pin-input"
+                          type="text"
+                          className="notebook-pin-block__input"
+                          data-testid="notebook-pin-input"
+                          value={pinDraft}
+                          onChange={(ev) => setPinDraft(ev.target.value)}
+                          placeholder="41.12, -2.55"
+                          autoComplete="off"
+                        />
+                      </div>
+                    ) : (
+                      <div className="notebook-pin-block__actions">
+                        <button
+                          type="button"
+                          className="btn-atelier btn-atelier--ghost"
+                          data-testid="notebook-pin-gps"
+                          disabled={pinBusy}
+                          onClick={() => void attachGpsPin(e.id)}
+                        >
+                          {pinBusy
+                            ? t('notebook.pinGpsBusy', { defaultValue: 'GPS…' })
+                            : t('notebook.pinGps', {
+                                defaultValue: 'Añadir pin GPS (local)',
+                              })}
+                        </button>
+                      </div>
+                    )}
+                    {pinFeedback ? (
+                      <p className="notebook-pin-block__feedback" role="status">
+                        {pinFeedback}
+                      </p>
+                    ) : null}
+                  </section>
 
                   {(e.tags?.length ?? 0) > 0 && !isEditing && (
                     <p className="history-card-atelier__tags">
@@ -667,11 +944,105 @@ export function HistoryPage() {
                     </div>
                   )}
 
-                  {topRisk && (
-                    <RiskChip
-                      risk={look[0]?.risk_label}
-                      label={`Lookalike: ${topRisk.label}`}
-                    />
+                  {look.length > 0 && (
+                    <div
+                      className="notebook-detail-lookalikes"
+                      data-testid="notebook-lookalikes"
+                    >
+                      <p className="notebook-detail-lookalikes__title">
+                        {t('notebook.lookalikesTitle', {
+                          defaultValue: 'Lookalikes de riesgo',
+                        })}
+                      </p>
+                      <ul className="lookalike-list lookalike-list--notebook">
+                        {look.slice(0, 4).map((sp) => {
+                          const meta = getRiskMeta(sp.risk_label)
+                          const pairDiag = diagnosticForLookalikeMate(
+                            predTaxa,
+                            sp.name,
+                          )
+                          return (
+                            <li
+                              key={sp.name}
+                              className={`lookalike-item ${meta.className}`}
+                              data-testid={`notebook-lookalike-${sp.slug || sp.name}`}
+                              data-pair-id={pairDiag?.pair_id || undefined}
+                            >
+                              <div className="lookalike-item__text">
+                                <RiskChip
+                                  risk={sp.risk_label}
+                                  label={
+                                    sp === look[0]
+                                      ? `Lookalike: ${meta.label}`
+                                      : meta.label
+                                  }
+                                />
+                                <SpeciesNameBlock
+                                  taxon={sp.name}
+                                  commonNames={sp.common_names}
+                                  size="sm"
+                                  showFamily={false}
+                                />
+                                {sp.slug ? (
+                                  <Link
+                                    to={`/enciclopedia/${sp.slug}`}
+                                    className="lookalike-link"
+                                  >
+                                    {t('notebook.viewSpecies', {
+                                      defaultValue: 'Ver ficha',
+                                    })}
+                                  </Link>
+                                ) : null}
+                                {pairDiag && pairDiag.critical_views.length > 0 && (
+                                  <div
+                                    className="lookalike-item__diag"
+                                    data-testid={`notebook-lookalike-diag-${pairDiag.pair_id}`}
+                                    data-pair-source={pairDiag.source}
+                                  >
+                                    {pairDiag.why ? (
+                                      <p className="lookalike-item__diag-why muted">
+                                        {pairDiag.why}
+                                      </p>
+                                    ) : null}
+                                    <div
+                                      className="lookalike-item__diag-views"
+                                      aria-label={t('result.pairCriticalViewsAria', {
+                                        defaultValue:
+                                          'Vistas diagnósticas para esta confusión',
+                                      })}
+                                    >
+                                      <span className="lookalike-item__diag-label">
+                                        {t('result.pairCriticalViews', {
+                                          defaultValue: 'Vistas que discriminan:',
+                                        })}
+                                      </span>
+                                      {pairDiag.critical_views.map((view) => (
+                                        <span
+                                          key={view}
+                                          className="lookalike-item__diag-badge lookalike-item__diag-badge--static"
+                                          data-testid={`notebook-diag-view-${view}`}
+                                          data-slot={view}
+                                        >
+                                          {t(`identify.views.${view}`, {
+                                            defaultValue: view,
+                                          })}
+                                        </span>
+                                      ))}
+                                    </div>
+                                    <p className="lookalike-item__diag-policy muted">
+                                      {t('result.pairDiagPolicy', {
+                                        defaultValue:
+                                          'Educativo: multi-foto sin estas vistas no basta — solo orientación, nunca consumo.',
+                                      })}
+                                    </p>
+                                  </div>
+                                )}
+                              </div>
+                            </li>
+                          )
+                        })}
+                      </ul>
+                    </div>
                   )}
                   {e.result.recommend_human_review && (
                     <p>

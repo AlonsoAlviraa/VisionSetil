@@ -9,9 +9,14 @@ import {
 } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { getSpeciesBySlug, loadSpeciesCatalog } from '../data/speciesCatalog'
+import {
+  commonsForLocale,
+  getSpeciesBySlug,
+  loadSpeciesCatalog,
+} from '../data/speciesCatalog'
+import { enrichCommonNamesEn } from '../data/commonNamesEn'
+import { getRiskMeta, isSevereRisk, toRiskLabel } from '../lib/riskLabels'
 import { getMushroomByScientificName } from '../data/mushroomDatabase'
-import { getRiskMeta } from '../lib/riskLabels'
 import { scientificNameToSlug } from '../lib/slug'
 import { SpeciesGallery } from '../components/SpeciesGallery'
 import { SpeciesNameBlock } from '../components/SpeciesNameBlock'
@@ -20,17 +25,68 @@ import { LookalikeCompare } from '../components/LookalikeCompare'
 import { sanitizeEducationalText } from '../lib/educationCopy'
 import { EmptyState } from '../components/EmptyState'
 import { getFoodQuality } from '../lib/foodQuality'
+import {
+  getSpeciesRecipes,
+  hasEducationalRecipes,
+  RECIPES_DEFAULT_DISCLAIMER,
+} from '../lib/speciesRecipes'
 import { rankLookalikes } from '../lib/lookalikeRisk'
 import { resolveSpeciesMeta } from '../lib/speciesMeta'
+import { PhenologyBar } from '../components/PhenologyBar'
+import { recordStudyActivity } from '../lib/studyBadges'
+import {
+  deadlyCoach,
+  deadlyPriorityViews,
+  diagnosticPolicy,
+} from '../lib/diagnosticViews'
+import {
+  INDEX_FUNGORUM_ATTR_SHORT,
+  INDEX_FUNGORUM_HOME,
+  indexFungorumPolicyEs,
+  indexFungorumPolicyEn,
+  resolveIndexFungorumName,
+  type IndexFungorumResolve,
+} from '../lib/indexFungorum'
 
 type DetailTab = 'morphology' | 'habitat' | 'lookalikes'
 
 const TAB_ORDER: DetailTab[] = ['morphology', 'habitat', 'lookalikes']
 
+const RISK_T_KEY: Record<string, string> = {
+  deadly: 'risk.deadly',
+  poisonous: 'risk.poisonous',
+  toxic: 'risk.toxic',
+  unknown_or_risky: 'risk.orientation',
+  dangerous_or_unknown: 'risk.dangerous_or_unknown',
+  not_for_consumption_guidance: 'risk.not_for_consumption',
+}
+
+/** Map Spanish season tokens to EN when locale is English (educational buckets). */
+function localizeSeasonLabel(
+  season: string,
+  t: (key: string, opts?: { defaultValue?: string }) => string,
+  locale: string,
+): string {
+  if (!locale.toLowerCase().startsWith('en')) return season
+  const map: Array<[RegExp, string]> = [
+    [/primavera/gi, t('seasons.spring', { defaultValue: 'Spring' })],
+    [/verano/gi, t('seasons.summer', { defaultValue: 'Summer' })],
+    [/otoño|otono/gi, t('seasons.autumn', { defaultValue: 'Autumn' })],
+    [/invierno/gi, t('seasons.winter', { defaultValue: 'Winter' })],
+  ]
+  let out = season
+  for (const [re, rep] of map) {
+    out = out.replace(re, rep)
+  }
+  return out
+}
+
 export function SpeciesDetailPage() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const appLocale = i18n.resolvedLanguage || i18n.language || 'es'
   const { slug } = useParams<{ slug: string }>()
   const [ready, setReady] = useState(false)
+  const [ifNomen, setIfNomen] = useState<IndexFungorumResolve | null>(null)
   const [tab, setTab] = useState<DetailTab>('morphology')
   const tablistRef = useRef<HTMLDivElement>(null)
 
@@ -43,25 +99,70 @@ export function SpeciesDetailPage() {
     setTab('morphology')
   }, [slug])
 
+  // Seek-style study progress: encyclopedia views (local only; real fichas)
+  useEffect(() => {
+    if (!slug || !ready) return
+    if (!getSpeciesBySlug(slug)) return
+    recordStudyActivity('encyclopedia')
+  }, [slug, ready])
+
   const catalog = ready && slug ? getSpeciesBySlug(slug) : undefined
   const scientificName =
-    catalog?.taxon || (slug ? decodeURIComponent(slug).replace(/-/g, ' ') : '')
+    catalog?.taxon ||
+    (slug
+      ? (() => {
+          try {
+            const decoded = decodeURIComponent(slug)
+            // Prefer spaced scientific if param was encoded that way; else kebab → words
+            if (decoded.includes(' ')) return decoded
+            return decoded.replace(/-/g, ' ')
+          } catch {
+            return slug.replace(/-/g, ' ')
+          }
+        })()
+      : '')
   const gallerySlug =
     catalog?.slug || (scientificName ? scientificNameToSlug(scientificName) : slug || '')
+
+  // Index Fungorum nomenclature (backend proxy) — names only; never overwrites SSOT
+  useEffect(() => {
+    if (!ready || !scientificName || scientificName.length < 3) {
+      setIfNomen(null)
+      return
+    }
+    const ac = new AbortController()
+    setIfNomen(null)
+    void resolveIndexFungorumName(scientificName, ac.signal).then((data) => {
+      if (!ac.signal.aborted) setIfNomen(data)
+    })
+    return () => ac.abort()
+  }, [ready, scientificName])
+
   const rich = scientificName ? getMushroomByScientificName(scientificName) : undefined
   const riskRaw = catalog?.risk_label || rich?.edibility || 'dangerous_or_unknown'
   const riskMeta = getRiskMeta(riskRaw)
+  const riskCanon = toRiskLabel(riskRaw)
+  const highRisk = isSevereRisk(riskRaw) || riskCanon === 'deadly'
+  const priorityViews = useMemo(() => deadlyPriorityViews().slice(0, 3), [])
+  const coachLocale = appLocale.toLowerCase().startsWith('en') ? 'en' : 'es'
+  const multiviewCoach = useMemo(() => deadlyCoach(coachLocale), [coachLocale])
 
-  const commons =
-    catalog?.common_names?.length ? catalog.common_names : rich?.commonNames || []
+  // EN: never pass Spanish commons as SpeciesNameBlock override
+  const commons = catalog
+    ? commonsForLocale(catalog, appLocale, rich?.commonNames)
+    : appLocale.startsWith('en')
+      ? enrichCommonNamesEn(scientificName, [])
+      : rich?.commonNames || []
 
-  const lookalikes = useMemo(
-    () =>
-      rankLookalikes(
-        rich?.lookAlikes || catalog?.description?.match(/[A-Z][a-z]+ [a-z]+/g) || [],
-      ),
-    [rich?.lookAlikes, catalog?.description],
-  )
+  // Prefer curated SSOT catalog.lookalikes; then legacy rich DB; never invent from free text regex alone.
+  const lookalikes = useMemo(() => {
+    const fromCatalog = catalog?.lookalikes || []
+    const fromRich = rich?.lookAlikes || []
+    // Merge SSOT first (dedupe inside rankLookalikes via canonical names)
+    const names = [...fromCatalog, ...fromRich]
+    if (names.length > 0) return rankLookalikes(names)
+    return rankLookalikes([])
+  }, [catalog?.lookalikes, rich?.lookAlikes])
 
   const description = sanitizeEducationalText(
     catalog?.description || rich?.description || '',
@@ -69,6 +170,9 @@ export function SpeciesDetailPage() {
   const habitat = rich?.habitat ? sanitizeEducationalText(rich.habitat, '') : ''
   const toxicity = rich?.toxicity ? sanitizeEducationalText(rich.toxicity, '') : ''
   const foodQ = scientificName ? getFoodQuality(scientificName) : null
+  const recipeKey = gallerySlug || scientificName
+  const showRecipes = hasEducationalRecipes(recipeKey)
+  const recipeBundle = showRecipes ? getSpeciesRecipes(recipeKey) : null
   const meta = scientificName
     ? resolveSpeciesMeta({
         taxon: scientificName,
@@ -136,6 +240,7 @@ export function SpeciesDetailPage() {
         slug: ranked.slug || scientificNameToSlug(ranked.name),
         risk_label: ranked.risk_label,
         common_names: ranked.common_names,
+        common_names_en: ranked.common_names_en,
         family: ranked.family,
       }
     },
@@ -215,7 +320,7 @@ export function SpeciesDetailPage() {
           <SpeciesNameBlock
             taxon={scientificName}
             commonNames={commons}
-            family={catalog?.family || rich?.family}
+            family={meta?.family || catalog?.family || rich?.family}
             familyEs={catalog?.family_es}
             size="lg"
             className="species-product__names"
@@ -226,37 +331,196 @@ export function SpeciesDetailPage() {
       {meta ? (
         <dl className="species-meta-grid" aria-label={t('detail.metaGrid', { defaultValue: 'Ficha rápida' })}>
           <div className="species-meta-grid__item">
-            <dt>Familia</dt>
+            <dt>{t('detail.meta.family', { defaultValue: 'Familia' })}</dt>
             <dd>{meta.family}</dd>
           </div>
           <div className="species-meta-grid__item">
-            <dt>Género</dt>
+            <dt>{t('detail.meta.genus', { defaultValue: 'Género' })}</dt>
             <dd>{meta.genus}</dd>
           </div>
           <div className="species-meta-grid__item">
-            <dt>Riesgo</dt>
-            <dd>{riskMeta.short || riskMeta.label}</dd>
+            <dt>{t('detail.meta.risk', { defaultValue: 'Riesgo' })}</dt>
+            <dd>
+              {t(RISK_T_KEY[toRiskLabel(riskRaw)] || 'risk.dangerous_or_unknown', {
+                defaultValue: riskMeta.short || riskMeta.label,
+              })}
+            </dd>
           </div>
           <div className="species-meta-grid__item">
-            <dt>Clase educ.</dt>
-            <dd>{meta.educLabel}</dd>
+            <dt>{t('detail.meta.educClass', { defaultValue: 'Clase educ.' })}</dt>
+            <dd>
+              {t(`detail.educ.${meta.educ}`, { defaultValue: meta.educLabel })}
+            </dd>
           </div>
           <div className="species-meta-grid__item">
-            <dt>Iberia</dt>
-            <dd>{meta.iberian}</dd>
+            <dt>{t('detail.meta.iberia', { defaultValue: 'Iberia' })}</dt>
+            <dd>
+              {t(`detail.iberian.${meta.iberian}`, { defaultValue: meta.iberian })}
+            </dd>
           </div>
           <div className="species-meta-grid__item">
-            <dt>Temporada</dt>
-            <dd>{meta.season}</dd>
+            <dt>{t('detail.meta.season', { defaultValue: 'Temporada' })}</dt>
+            <dd>{localizeSeasonLabel(meta.season, t, appLocale)}</dd>
           </div>
         </dl>
       ) : null}
+
+      <section
+      {/* Index Fungorum nomenclature panel (Kew) */}
+      {ifNomen?.ok && ifNomen.best ? (
+        <section
+          className="species-if-nomen atelier-panel"
+          data-testid="species-if-nomen"
+          aria-label={t('detail.ifNomenAria', {
+            defaultValue: 'Nomenclatura Index Fungorum',
+          })}
+        >
+          <p className="species-if-nomen__title">
+            {t('detail.ifNomenTitle', {
+              defaultValue: 'Nomenclatura · Index Fungorum',
+            })}
+          </p>
+          <p className="species-if-nomen__row">
+            <strong>
+              {t('detail.ifCurrent', { defaultValue: 'Nombre actual (IF)' })}:
+            </strong>{' '}
+            <em>{ifNomen.current_name || ifNomen.best.name}</em>
+            {ifNomen.best.authors ? ` ${ifNomen.best.authors}` : ''}
+            {ifNomen.best.name_status ? (
+              <span className="species-if-nomen__status">
+                {' '}
+                · {ifNomen.best.name_status}
+              </span>
+            ) : null}
+          </p>
+          {ifNomen.if_differs_from_query ? (
+            <p className="species-if-nomen__diff" data-testid="species-if-differs">
+              {t('detail.ifDiffers', {
+                defaultValue:
+                  'IF usa un nombre actual distinto al de esta ficha SSOT. VisionSetil no sobrescribe el catálogo de producto automáticamente.',
+              })}
+            </p>
+          ) : null}
+          {ifNomen.best.record_url ? (
+            <p className="species-if-nomen__link">
+              <a
+                href={ifNomen.best.record_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-testid="species-if-record-link"
+              >
+                {t('detail.ifOpenRecord', {
+                  defaultValue: 'Abrir ficha en Index Fungorum',
+                })}
+              </a>
+              {ifNomen.best.record_number
+                ? ` · IF#${ifNomen.best.record_number}`
+                : ''}
+            </p>
+          ) : null}
+          {(ifNomen.synonyms || []).length > 0 ? (
+            <p className="species-if-nomen__syn" data-testid="species-if-synonyms">
+              <strong>
+                {t('detail.ifSynonyms', { defaultValue: 'Sinónimos / nombres ligados' })}
+                :
+              </strong>{' '}
+              {ifNomen.synonyms
+                .slice(0, 8)
+                .map((s) => s.name)
+                .join(' · ')}
+              {ifNomen.synonyms.length > 8 ? '…' : ''}
+            </p>
+          ) : null}
+          <p className="species-if-nomen__policy" role="note">
+            {appLocale.toLowerCase().startsWith('en')
+              ? indexFungorumPolicyEn()
+              : indexFungorumPolicyEs()}{' '}
+            <a href={INDEX_FUNGORUM_HOME} target="_blank" rel="noopener noreferrer">
+              {INDEX_FUNGORUM_ATTR_SHORT}
+            </a>
+          </p>
+        </section>
+      ) : null}
+
+      <section
+        className={`mkt-multiview-strip species-detail-multiview${
+          highRisk ? ' species-detail-multiview--high-risk' : ''
+        }`}
+        data-testid="species-detail-multiview"
+        data-risk={riskCanon}
+        data-policy={diagnosticPolicy()}
+        aria-label={t('detail.multiviewAria', {
+          defaultValue: 'Vistas diagnósticas multi-foto',
+        })}
+      >
+        <p className="mkt-multiview-strip__text" data-testid="species-detail-multiview-coach">
+          <strong>
+            {highRisk
+              ? t('detail.multiviewTitleHigh', {
+                  defaultValue: 'Taxón de alto riesgo: 3 vistas que discriminan',
+                })
+              : t('detail.multiviewTitle', {
+                  defaultValue: 'Para estudiar / identificar: 3 vistas que importan',
+                })}
+          </strong>{' '}
+          {multiviewCoach}{' '}
+          {t('detail.multiviewNeverConsume', {
+            defaultValue: 'Solo orientación — nunca consumo. La ficha no autoriza recolección.',
+          })}
+        </p>
+        <div
+          className="mkt-multiview-strip__views lookalike-item__diag-views"
+          data-testid="species-detail-multiview-priority"
+        >
+          {priorityViews.map((view) => (
+            <span
+              key={view}
+              className="lookalike-item__diag-badge lookalike-item__diag-badge--static"
+              data-slot={view}
+            >
+              {t(`identify.views.${view}`, { defaultValue: view })}
+            </span>
+          ))}
+        </div>
+        <div className="mkt-multiview-strip__actions">
+          <Link
+            to="/identificar"
+            className="mkt-btn mkt-btn--primary mkt-btn--sm"
+            data-testid="species-detail-cta-identify"
+          >
+            {t('detail.ctaIdentify', { defaultValue: 'Identificar multi-vista' })}
+          </Link>
+          <Link
+            to="/educacion"
+            className="mkt-btn mkt-btn--ghost mkt-btn--sm"
+            data-testid="species-detail-cta-edu"
+          >
+            {t('detail.ctaEdu', { defaultValue: 'Por qué multi-vista' })}
+          </Link>
+          {lookalikes.length > 0 ? (
+            <button
+              type="button"
+              className="mkt-btn mkt-btn--ghost mkt-btn--sm"
+              data-testid="species-detail-cta-lookalikes"
+              onClick={() => selectTab('lookalikes')}
+            >
+              {t('detail.ctaLookalikes', {
+                defaultValue: 'Ver confusiones (vistas críticas)',
+              })}
+            </button>
+          ) : null}
+        </div>
+      </section>
 
       {foodQ ? (
         <div className={`species-product__food food-badge food-badge--${foodQ.food_class}`}>
           <p className="food-badge__label">
             {t('detail.foodQualityLabel', { defaultValue: 'Calidad documentada' })}:{' '}
-            <strong>{foodQ.label}</strong>
+            <strong>
+              {t(`detail.foodClass.${foodQ.food_class}`, {
+                defaultValue: foodQ.label,
+              })}
+            </strong>
           </p>
           <p className="food-badge__source">
             {t('detail.foodQualitySource', {
@@ -286,6 +550,59 @@ export function SpeciesDetailPage() {
           </p>
         </div>
       )}
+
+      {/* Educational external recipes — encyclopedia only; never Identify ResultCard */}
+      {recipeBundle && recipeBundle.recipes.length > 0 ? (
+        <section
+          className="species-product__recipes recipes-edu"
+          data-testid="species-recipes"
+          aria-labelledby="species-recipes-heading"
+        >
+          <h2 id="species-recipes-heading" className="recipes-edu__title">
+            {t('detail.recipes.title', {
+              defaultValue: 'Recetas (enlaces externos)',
+            })}
+          </h2>
+          <div className="recipes-edu__banner" role="note">
+            <p>
+              {t('detail.recipes.disclaimer', {
+                defaultValue:
+                  'Orientación cultural únicamente. Nunca consumas setas silvestres identificadas solo por una app. Se requiere verificación experta. Esta app no autoriza el consumo.',
+              })}
+            </p>
+            <p className="recipes-edu__banner-src">
+              {recipeBundle.disclaimer || RECIPES_DEFAULT_DISCLAIMER}
+            </p>
+          </div>
+          <ul className="recipes-edu__list">
+            {recipeBundle.recipes.map((r) => (
+              <li key={r.url} className="recipes-edu__item">
+                <a
+                  href={r.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="recipes-edu__link"
+                >
+                  {r.title}
+                  <span className="recipes-edu__lang" aria-hidden="true">
+                    {' '}
+                    ({r.lang.toUpperCase()})
+                  </span>
+                </a>
+                <span className="recipes-edu__external">
+                  {t('detail.recipes.external', { defaultValue: 'Enlace externo' })}
+                </span>
+              </li>
+            ))}
+          </ul>
+          <p className="recipes-edu__footer muted">
+            {t('detail.recipes.footer', {
+              defaultValue:
+                'Enlaces culinarios de terceros con fines educativos. No son permiso de recolección ni de consumo.',
+            })}
+          </p>
+        </section>
+      ) : null}
 
       <div
         className="species-detail-tabs"
@@ -376,6 +693,8 @@ export function SpeciesDetailPage() {
           tabIndex={tab === 'habitat' ? 0 : -1}
           className="species-detail-panel"
         >
+          <PhenologyBar season={meta?.season || catalog?.season || rich?.season} />
+
           {habitat ? (
             <div className="species-product__block">
               <h3>{t('detail.tabs.habitat', { defaultValue: 'Hábitat' })}</h3>

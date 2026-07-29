@@ -7,17 +7,39 @@
 export type MapDeepLink = {
   zoneId: string | null
   region: string | null
+  /** Free-text search (`?q=`) */
+  query: string | null
 }
 
-/** Parse `/mapa?zone=…&region=…` search string (with or without leading `?`). */
+/** Canonical CCAA aliases (co-official / alternate labels → inventory label). */
+const REGION_ALIASES: Record<string, string> = {
+  'comunitat valenciana': 'Comunidad Valenciana',
+  'comunidad valenciana': 'Comunidad Valenciana',
+  'illes balears': 'Islas Baleares',
+  'islas baleares': 'Islas Baleares',
+  catalunya: 'Cataluña',
+  cataluna: 'Cataluña',
+  euskadi: 'País Vasco',
+  'pais vasco': 'País Vasco',
+  'castilla y leon': 'Castilla y León',
+  castilla: 'Castilla y León',
+  aragon: 'Aragón',
+  nafarroa: 'Navarra',
+  galiza: 'Galicia',
+  andalucia: 'Andalucía',
+}
+
+/** Parse `/mapa?zone=…&region=…&q=…` search string (with or without leading `?`). */
 export function parseMapSearchParams(search: string): MapDeepLink {
   const raw = search.startsWith('?') ? search.slice(1) : search
   const params = new URLSearchParams(raw)
   const zoneRaw = params.get('zone')?.trim() || null
   const regionRaw = params.get('region')?.trim() || null
+  const queryRaw = params.get('q')?.trim() || null
   return {
     zoneId: zoneRaw && zoneRaw.length > 0 ? zoneRaw : null,
     region: regionRaw && regionRaw.length > 0 ? regionRaw : null,
+    query: queryRaw && queryRaw.length > 0 ? queryRaw : null,
   }
 }
 
@@ -25,10 +47,12 @@ export function parseMapSearchParams(search: string): MapDeepLink {
 export function buildMapSearchParams(opts: {
   zoneId?: string | null
   region?: string | null
+  query?: string | null
 }): string {
   const params = new URLSearchParams()
   if (opts.zoneId) params.set('zone', opts.zoneId)
   if (opts.region && opts.region !== 'todas') params.set('region', opts.region)
+  if (opts.query && opts.query.trim()) params.set('q', opts.query.trim())
   return params.toString()
 }
 
@@ -39,11 +63,16 @@ export function buildMapSearchParams(opts: {
 export function replaceMapUrl(opts: {
   zoneId?: string | null
   region?: string | null
+  query?: string | null
   pathname?: string
 }): void {
   if (typeof window === 'undefined' || !window.history?.replaceState) return
   const path = opts.pathname ?? window.location.pathname
-  const qs = buildMapSearchParams({ zoneId: opts.zoneId, region: opts.region })
+  const qs = buildMapSearchParams({
+    zoneId: opts.zoneId,
+    region: opts.region,
+    query: opts.query,
+  })
   const next = qs ? `${path}?${qs}` : path
   const current = `${window.location.pathname}${window.location.search}`
   if (next === current) return
@@ -75,9 +104,9 @@ export function resolveMapDeepLink(
   zones: readonly { id: string }[],
   regions: readonly string[],
 ): MapDeepLinkBootstrap {
-  const { zoneId: rawZone, region: rawRegion } = parseMapSearchParams(search)
+  const { zoneId: rawZone, region: rawRegion, query: rawQuery } = parseMapSearchParams(search)
   let filterRegion = 'todas'
-  let searchQuery = ''
+  let searchQuery = rawQuery ?? ''
   let stickyRegion: string | null = null
 
   if (rawRegion) {
@@ -85,9 +114,11 @@ export function resolveMapDeepLink(
     if (matched) {
       filterRegion = matched
       stickyRegion = matched
-    } else {
-      // Province / free-text (e.g. Soria)
+    } else if (!searchQuery) {
+      // Province / free-text (e.g. Soria) when no explicit `q`
       searchQuery = rawRegion
+      stickyRegion = rawRegion
+    } else {
       stickyRegion = rawRegion
     }
   }
@@ -175,6 +206,7 @@ export function findZoneById<T extends { id: string }>(
 /**
  * Match a region query against known region labels (case/diacritic insensitive).
  * Returns the canonical region string from the list, or null.
+ * Supports co-official aliases (Comunitat Valenciana, Illes Balears, Catalunya…).
  */
 export function matchRegionFilter(
   regions: readonly string[],
@@ -183,19 +215,61 @@ export function matchRegionFilter(
   if (!raw) return null
   const needle = normalizeSearchText(raw)
   if (!needle || needle === 'todas' || needle === 'all') return null
+
+  const aliasTarget = REGION_ALIASES[needle]
+  if (aliasTarget) {
+    const hit = regions.find(
+      (r) => r !== 'todas' && normalizeSearchText(r) === normalizeSearchText(aliasTarget),
+    )
+    if (hit) return hit
+    // Alias canonical not in list yet — return target if any region includes it
+    for (const r of regions) {
+      if (r === 'todas') continue
+      if (normalizeSearchText(r) === normalizeSearchText(aliasTarget)) return r
+    }
+  }
+
   // Exact first
   for (const r of regions) {
     if (r === 'todas') continue
     if (normalizeSearchText(r) === needle) return r
   }
-  // Prefix / includes (e.g. "Soria" if region is Castilla y León still won't match —
-  // but "Castilla" matches "Castilla y León")
+  // Prefix / includes (e.g. "Castilla" matches "Castilla y León")
   for (const r of regions) {
     if (r === 'todas') continue
     const n = normalizeSearchText(r)
     if (n.includes(needle) || needle.includes(n)) return r
   }
   return null
+}
+
+/**
+ * Search suggestions for typeahead: name / region / province hits.
+ * Pure helper — UI caps display length.
+ */
+export function suggestZonesByQuery<T extends ZoneSearchFields>(
+  zones: readonly T[],
+  query: string,
+  limit = 8,
+): T[] {
+  const q = normalizeSearchText(query)
+  if (!q || q.length < 2) return []
+  const scored: Array<{ z: T; score: number }> = []
+  for (const z of zones) {
+    const name = normalizeSearchText(z.name)
+    const region = normalizeSearchText(z.region)
+    const prov = normalizeSearchText((z.provinces ?? []).join(' '))
+    let score = 0
+    if (name.startsWith(q)) score = 100
+    else if (name.includes(q)) score = 80
+    else if (region.startsWith(q) || region.includes(q)) score = 60
+    else if (prov.includes(q)) score = 50
+    else if (normalizeSearchText(z.id).includes(q)) score = 40
+    else if (normalizeSearchText(z.habitat).includes(q)) score = 20
+    if (score > 0) scored.push({ z, score })
+  }
+  scored.sort((a, b) => b.score - a.score || a.z.name.localeCompare(b.z.name, 'es'))
+  return scored.slice(0, limit).map((s) => s.z)
 }
 
 export type TopHotspot = { id: string; score: number }

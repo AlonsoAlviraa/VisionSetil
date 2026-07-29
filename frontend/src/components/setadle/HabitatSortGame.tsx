@@ -3,8 +3,10 @@
  * Click-to-place fallback for touch / a11y.
  */
 import { useCallback, useMemo, useState, type DragEvent } from 'react'
+import { useTranslation } from 'react-i18next'
 import { SpeciesImage } from '../SpeciesImage'
 import {
+  habitatTitle,
   scoreHabitatSort,
   type HabitatRound,
 } from '../../lib/setadle'
@@ -18,6 +20,8 @@ type Props = {
 }
 
 export function HabitatSortGame({ round, disabled, onWin }: Props) {
+  const { i18n } = useTranslation()
+  const locale = i18n.resolvedLanguage || i18n.language || 'es'
   const [placement, setPlacement] = useState<Record<string, Zone>>(() => {
     const init: Record<string, Zone> = {}
     for (const c of round.cards) init[c.taxon] = 'tray'
@@ -152,7 +156,7 @@ export function HabitatSortGame({ round, disabled, onWin }: Props) {
 
       <div className="hab-game__head">
         <h2 className="hab-game__title">
-          {round.habitat.icon} {round.habitat.title}
+          {round.habitat.icon} {habitatTitle(round.habitat.id, locale)}
         </h2>
         <p className="hab-game__blurb">{round.habitat.blurb}</p>
         <p className="hab-game__hint">

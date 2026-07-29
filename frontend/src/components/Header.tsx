@@ -41,19 +41,25 @@ const moreNavGroups: MoreNavGroup[] = [
         to: '/educacion',
         labelKey: 'nav.education',
         fallback: 'Educación',
-        blurb: 'Reglas de campo y anatomía',
+        blurb: 'nav.blurb.education',
       },
       {
         to: '/lookalikes',
         labelKey: 'nav.lookalikes',
         fallback: 'Lookalikes',
-        blurb: 'Confusiones clásicas lado a lado',
+        blurb: 'nav.blurb.lookalikes',
       },
       {
         to: '/reto',
         labelKey: 'nav.quiz',
         fallback: 'Reto',
-        blurb: 'Quiz de riesgo y caracteres',
+        blurb: 'nav.blurb.quiz',
+      },
+      {
+        to: '/wordle',
+        labelKey: 'nav.wordle',
+        fallback: 'Wordle setas',
+        blurb: 'nav.blurb.wordle',
       },
     ],
   },
@@ -66,13 +72,13 @@ const moreNavGroups: MoreNavGroup[] = [
         to: '/historial',
         labelKey: 'nav.notebook',
         fallback: 'Cuaderno',
-        blurb: 'Tus observaciones en el dispositivo',
+        blurb: 'nav.blurb.notebook',
       },
       {
         to: '/offline',
         labelKey: 'nav.offline',
         fallback: 'Offline',
-        blurb: 'Pack de fotos para estudiar sin red',
+        blurb: 'nav.blurb.offline',
       },
     ],
   },
@@ -85,13 +91,13 @@ const moreNavGroups: MoreNavGroup[] = [
         to: '/comunidad',
         labelKey: 'nav.community',
         fallback: 'Comunidad',
-        blurb: 'Opiniones de campo · no certeza',
+        blurb: 'nav.blurb.community',
       },
       {
         to: '/revision-experta',
         labelKey: 'nav.experts',
         fallback: 'Revisión experta',
-        blurb: 'Empaqueta evidencia para un micólogo',
+        blurb: 'nav.blurb.experts',
       },
     ],
   },
@@ -104,7 +110,7 @@ const moreNavGroups: MoreNavGroup[] = [
         to: '/ml',
         labelKey: 'nav.ml',
         fallback: 'ML',
-        blurb: 'Métricas y stack del modelo',
+        blurb: 'nav.blurb.ml',
         badge: 'dev',
       },
     ],
@@ -292,7 +298,9 @@ export function Header() {
                     <span className="nav-more__badge">Dev</span>
                   ) : null}
                 </span>
-                <span className="nav-more__item-blurb">{item.blurb}</span>
+                <span className="nav-more__item-blurb">
+                  {t(item.blurb, { defaultValue: item.blurb })}
+                </span>
               </span>
             </NavLink>
           ))}
@@ -315,7 +323,10 @@ export function Header() {
         </Link>
 
         <div className={`header-nav-wrap ${menuOpen ? 'header-nav-wrap--open' : ''}`}>
-          <nav className="header-nav header-nav--bar" aria-label="Principal">
+          <nav
+            className="header-nav header-nav--bar"
+            aria-label={t('nav.primaryAria', { defaultValue: 'Principal' })}
+          >
             {primaryNav.map((item) => (
               <NavLink
                 key={item.to}
@@ -367,8 +378,8 @@ export function Header() {
               className="btn-icon"
               type="button"
               onClick={() => void logout()}
-              title="Cerrar sesión"
-              aria-label="Cerrar sesión"
+              title={t('nav.logout', { defaultValue: 'Cerrar sesión' })}
+              aria-label={t('nav.logout', { defaultValue: 'Cerrar sesión' })}
             >
               <IconLogout />
             </button>
@@ -377,8 +388,8 @@ export function Header() {
             <Link
               to="/login"
               className="btn-icon"
-              title="Iniciar sesión"
-              aria-label="Iniciar sesión"
+              title={t('nav.login', { defaultValue: 'Iniciar sesión' })}
+              aria-label={t('nav.login', { defaultValue: 'Iniciar sesión' })}
               onClick={closeAll}
             >
               <IconUser />
@@ -390,7 +401,7 @@ export function Header() {
             type="button"
             onClick={toggleTheme}
             aria-label={theme === 'light' ? t('actions.darkMode') : t('actions.lightMode')}
-            title={theme === 'light' ? 'Modo oscuro' : 'Modo claro'}
+            title={theme === 'light' ? t('actions.darkMode') : t('actions.lightMode')}
           >
             {theme === 'light' ? <IconMoon /> : <IconSun />}
           </button>
@@ -398,8 +409,12 @@ export function Header() {
             className="btn-icon btn-menu-toggle"
             type="button"
             onClick={() => setMenuOpen((v) => !v)}
-            aria-label={menuOpen ? 'Cerrar menú' : 'Abrir menú'}
-            title="Menú"
+            aria-label={
+              menuOpen
+                ? t('nav.closeMenu', { defaultValue: 'Cerrar menú' })
+                : t('nav.openMenu', { defaultValue: 'Abrir menú' })
+            }
+            title={t('actions.menu', { defaultValue: 'Menú' })}
           >
             <IconMenu open={menuOpen} />
           </button>

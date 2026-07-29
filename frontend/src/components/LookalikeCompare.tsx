@@ -6,6 +6,8 @@ import { SpeciesImage } from './SpeciesImage'
 import { RiskChip } from './RiskChip'
 import { scientificNameToSlug } from '../lib/slug'
 import { riskToPlaceholder } from '../lib/edibility'
+import { displayCommonName } from '../data/speciesCatalog'
+import { findDiagnosticPair } from '../lib/diagnosticViews'
 
 export interface LookalikeSpecies {
   scientific_name?: string
@@ -20,6 +22,7 @@ export interface LookalikeSpecies {
   common_name?: string | null
   vernacular_names?: string[]
   common_names?: string[]
+  common_names_en?: string[]
   display_name?: string
 }
 
@@ -34,14 +37,25 @@ interface LookalikeCompareProps {
   resolve: (scientificName: string) => LookalikeSpecies | null
 }
 
-function displayName(s: LookalikeSpecies): string {
+function displayName(s: LookalikeSpecies, locale?: string): string {
+  const taxon = s.scientific_name || s.taxon || s.slug || ''
+  // Prefer locale-aware commons (EN never forced to Spanish)
+  const fromLocale = displayCommonName(
+    {
+      taxon,
+      common_names: s.common_names || (s.common_name ? [s.common_name] : []),
+      common_names_en: s.common_names_en,
+      display_name: s.display_name,
+    },
+    locale,
+  )
+  if (fromLocale && fromLocale !== 'undefined') return fromLocale
   return (
     s.display_name ||
     s.common_name ||
     s.common_names?.[0] ||
     s.vernacular_names?.[0] ||
-    s.scientific_name ||
-    s.taxon ||
+    taxon ||
     s.slug
   )
 }
@@ -51,7 +65,8 @@ function sciName(s: LookalikeSpecies): string {
 }
 
 export function LookalikeCompare({ current, lookalikes, resolve }: LookalikeCompareProps) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const locale = i18n.resolvedLanguage || i18n.language || 'es'
   const [selectedIdx, setSelectedIdx] = useState(0)
   const pickerRef = useRef<HTMLDivElement>(null)
 
@@ -99,9 +114,18 @@ export function LookalikeCompare({ current, lookalikes, resolve }: LookalikeComp
     [pairs.length, selectedIdx, focusChip],
   )
 
-  if (!pairs.length) return null
+  const safeIdx = pairs.length ? Math.min(selectedIdx, pairs.length - 1) : 0
+  const selected = pairs[safeIdx]
+  const pairDiag = useMemo(() => {
+    if (!selected) return null
+    return findDiagnosticPair(
+      sciName(current),
+      selected.la.scientific_name || selected.rec?.taxon || '',
+    )
+  }, [current, selected])
 
-  const selected = pairs[Math.min(selectedIdx, pairs.length - 1)]
+  if (!pairs.length || !selected) return null
+
   const other = selected.rec
   const curRisk = current.risk_level || current.risk_label || 'unknown'
 
@@ -135,7 +159,7 @@ export function LookalikeCompare({ current, lookalikes, resolve }: LookalikeComp
             className={`lookalike-compare__chip ${idx === selectedIdx ? 'lookalike-compare__chip--active' : ''}`}
             onClick={() => setSelectedIdx(idx)}
           >
-            {p.rec ? displayName(p.rec) : p.la.scientific_name}
+            {p.rec ? displayName(p.rec, locale) : p.la.scientific_name}
           </button>
         ))}
       </div>
@@ -154,7 +178,7 @@ export function LookalikeCompare({ current, lookalikes, resolve }: LookalikeComp
           </div>
           <div className="lookalike-compare__card-body">
             <RiskChip risk={curRisk} />
-            <h3>{displayName(current)}</h3>
+            <h3>{displayName(current, locale)}</h3>
             <p>
               <em>{sciName(current)}</em>
             </p>
@@ -184,7 +208,7 @@ export function LookalikeCompare({ current, lookalikes, resolve }: LookalikeComp
           </div>
           <div className="lookalike-compare__card-body">
             <RiskChip risk={other?.risk_level || other?.risk_label || 'unknown'} />
-            <h3>{other ? displayName(other) : selected.la.scientific_name}</h3>
+            <h3>{other ? displayName(other, locale) : selected.la.scientific_name}</h3>
             <p>
               <em>{selected.la.scientific_name}</em>
             </p>
@@ -208,6 +232,47 @@ export function LookalikeCompare({ current, lookalikes, resolve }: LookalikeComp
           </div>
         </article>
       </div>
+
+      {pairDiag && pairDiag.critical_views.length > 0 && (
+        <div
+          className="lookalike-item__diag lookalike-compare__diag"
+          data-testid={`lookalike-compare-diag-${pairDiag.pair_id}`}
+          data-pair-id={pairDiag.pair_id}
+          data-pair-source={pairDiag.source}
+        >
+          {pairDiag.why ? (
+            <p className="lookalike-item__diag-why muted">{pairDiag.why}</p>
+          ) : null}
+          <div
+            className="lookalike-item__diag-views"
+            aria-label={t('result.pairCriticalViewsAria', {
+              defaultValue: 'Vistas diagnósticas para esta confusión',
+            })}
+          >
+            <span className="lookalike-item__diag-label">
+              {t('result.pairCriticalViews', {
+                defaultValue: 'Vistas que discriminan:',
+              })}
+            </span>
+            {pairDiag.critical_views.map((view) => (
+              <span
+                key={view}
+                className="lookalike-item__diag-badge lookalike-item__diag-badge--static"
+                data-testid={`lookalike-compare-diag-view-${view}`}
+                data-slot={view}
+              >
+                {t(`identify.views.${view}`, { defaultValue: view })}
+              </span>
+            ))}
+          </div>
+          <p className="lookalike-item__diag-policy muted">
+            {t('result.pairDiagPolicy', {
+              defaultValue:
+                'Educativo: multi-foto sin estas vistas no basta — solo orientación, nunca consumo.',
+            })}
+          </p>
+        </div>
+      )}
     </div>
   )
 }

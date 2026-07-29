@@ -121,6 +121,57 @@ export const SETADLE_HABITATS: HabitatDef[] = [
   },
 ]
 
+const HABITAT_TITLE_EN: Record<HabitatId, string> = {
+  pinar: 'Pine forest',
+  hayedo: 'Beech / oak woodland',
+  prado: 'Meadow / grassland',
+  ribera: 'Riverside / wetland',
+  encinar: 'Holm oak / Mediterranean',
+  sotobosque: 'Understory / wood',
+}
+
+/** Locale-aware habitat title for Setadle UI (game logic still uses HabitatId). */
+export function habitatTitle(id: HabitatId, locale?: string): string {
+  if ((locale || '').toLowerCase().startsWith('en')) {
+    return HABITAT_TITLE_EN[id] || id
+  }
+  return SETADLE_HABITATS.find((h) => h.id === id)?.title || id
+}
+
+/** EN classic cells: keep risk English-ish short codes when needed. */
+export function localizeClassicCellValue(
+  key: string,
+  value: string,
+  locale?: string,
+): string {
+  if (!(locale || '').toLowerCase().startsWith('en')) return value
+  if (key === 'risk') {
+    const v = value.toLowerCase()
+    if (v.includes('mortal') || v === 'deadly') return 'Deadly'
+    if (v.includes('tóx') || v.includes('tox') || v.includes('poison')) return 'Toxic'
+    if (v.includes('orient') || v.includes('unknown')) return 'Orientation'
+    if (v.includes('precauc') || v.includes('caution') || v.includes('dangerous')) {
+      return 'Caution'
+    }
+  }
+  // Season token swap
+  return value
+    .replace(/Primavera/gi, 'Spring')
+    .replace(/Verano/gi, 'Summer')
+    .replace(/Otoño|Otono/gi, 'Autumn')
+    .replace(/Invierno/gi, 'Winter')
+    .replace(/Frecuente/gi, 'Frequent')
+    .replace(/Presente/gi, 'Present')
+    .replace(/Icono/gi, 'Iconic')
+    .replace(/Escasa/gi, 'Scarce')
+    .replace(/Mediterránea/gi, 'Mediterranean')
+    .replace(/Comestible \(doc\.\)/gi, 'Documented culinary')
+    .replace(/No comestible/gi, 'Not for consumption')
+    .replace(/Tóxica/gi, 'Toxic')
+    .replace(/Mortal/gi, 'Deadly')
+    .replace(/Sin documentar/gi, 'Undocumented')
+}
+
 /** Genus → typical habitats (educational, not exhaustive). */
 const GENUS_HABITATS: Record<string, HabitatId[]> = {
   Lactarius: ['pinar', 'hayedo'],
@@ -461,7 +512,13 @@ function buildEmojis(sp: CatalogSpecies): string {
 }
 
 export function toSetadleSpecies(sp: CatalogSpecies): SetadleSpecies {
-  const vern = (sp.common_names && sp.common_names[0]) || sp.taxon
+  // Prefer Spanish common for game matching (Iberian synonyms); never blank
+  const vern =
+    (sp.common_names && sp.common_names[0] && sp.common_names[0] !== 'undefined'
+      ? sp.common_names[0]
+      : '') ||
+    (sp.common_names_en && sp.common_names_en[0]) ||
+    sp.taxon
   const descMap = (sp as { description?: Record<string, string> | string }).description
   let description = ''
   if (typeof descMap === 'string') description = descMap
@@ -509,12 +566,18 @@ export function toSetadleSpecies(sp: CatalogSpecies): SetadleSpecies {
   }
 }
 
-/** Display value for classic cells (risk → Spanish short label). */
-export function classicCellDisplay(key: AttrKey, value: string): string {
+/** Display value for classic cells (risk → short label; locale-aware). */
+export function classicCellDisplay(
+  key: AttrKey,
+  value: string,
+  locale?: string,
+): string {
   if (key === 'risk') {
-    return getRiskMeta(value).short || getRiskMeta(value).label || value
+    const meta = getRiskMeta(value)
+    const short = meta.short || meta.label || value
+    return localizeClassicCellValue('risk', short, locale)
   }
-  return value
+  return localizeClassicCellValue(key, value, locale)
 }
 
 export async function ensureSetadlePool(): Promise<SetadleSpecies[]> {
@@ -604,6 +667,7 @@ export function resolveGuess(pool: SetadleSpecies[], query: string): SetadleSpec
   const q = query.trim()
   if (!q) return null
   const qf = fold(q)
+  if (!qf) return null
   const exact = pool.find((p) => fold(p.taxon) === qf || fold(p.common) === qf)
   if (exact) return exact
   const starts = pool.filter(
@@ -613,20 +677,30 @@ export function resolveGuess(pool: SetadleSpecies[], query: string): SetadleSpec
   const inc = pool.find(
     (p) => fold(p.common).includes(qf) || fold(p.taxon).includes(qf),
   )
-  return inc || null
+  if (inc) return inc
+  // Second-guess: top typeahead hit (partial / accent-folded)
+  const ta = typeaheadPool(pool, q, 1)
+  return ta[0] || null
 }
 
 export function typeaheadPool(pool: SetadleSpecies[], query: string, limit = 8): SetadleSpecies[] {
-  const q = fold(query.trim())
-  if (q.length < 1) return []
+  const raw = query.trim()
+  const q = fold(raw)
+  // Empty query: surface a stable head of the pool (discoverability / focused input)
+  if (q.length < 1) {
+    return pool.slice(0, limit)
+  }
   const scored = pool
     .map((p) => {
       const c = fold(p.common)
       const t = fold(p.taxon)
+      const tokens = `${c} ${t}`.split(/\s+/).filter(Boolean)
       let s = 0
       if (c === q || t === q) s = 100
       else if (c.startsWith(q) || t.startsWith(q)) s = 80
+      else if (tokens.some((tok) => tok.startsWith(q))) s = 70
       else if (c.includes(q) || t.includes(q)) s = 40
+      else if (tokens.some((tok) => tok.includes(q))) s = 30
       return { p, s }
     })
     .filter((x) => x.s > 0)

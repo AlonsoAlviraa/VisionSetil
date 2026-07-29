@@ -9,15 +9,23 @@ import {
 } from './speciesMediaStack'
 
 describe('speciesMediaStack', () => {
-  it('orders local multi-view before remote catalog', () => {
+  it('orders media by rank desc (curated extras/catalog can lead field heroes)', () => {
     const stack = buildSpeciesMediaStack('Amanita phalloides', { maxGallery: 2 })
     expect(stack.length).toBeGreaterThan(3)
-    expect(stack[0].kind).toBe('detail')
-    expect(stack[0].sameOrigin).toBe(true)
-    expect(stack.some((c) => c.kind === 'gallery')).toBe(true)
-    // detail (100) > card (90) > gallery > catalog (70) > thumb (40)
+    expect(stack.some((c) => c.kind === 'gallery' || c.kind === 'detail')).toBe(true)
     const ranks = stack.map((c) => c.rank)
     expect(ranks).toEqual([...ranks].sort((a, b) => b - a))
+  })
+
+  it('prefers gallery-extras hero when curated for popular taxa', () => {
+    const stack = buildSpeciesMediaStack('Boletus edulis', {
+      maxGallery: 1,
+      includeCatalog: true,
+    })
+    // Boletus has gallery extras — first non-lqip should be extra or catalog (field-realistic)
+    const lead = stack[0]
+    expect(['extra', 'catalog']).toContain(lead.kind)
+    expect(lead.url).toMatch(/^https:\/\//)
   })
 
   it('returns empty stack for empty / invalid taxon', () => {

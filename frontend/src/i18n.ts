@@ -38,11 +38,19 @@ void i18n.use(initReactI18next).init({
     en: { common: en },
   },
   lng: typeof window !== 'undefined' ? detectInitialLocale() : 'es',
-  fallbackLng: 'es',
+  // ca/eu partial packs fall through to ES then EN so missing keys never crash
+  fallbackLng: {
+    ca: ['es', 'en'],
+    eu: ['es', 'en'],
+    en: ['es'],
+    default: ['es'],
+  },
   defaultNS: 'common',
   ns: ['common'],
   interpolation: { escapeValue: false },
   returnNull: false,
+  // Prefer empty string over "key.path" flash for missing leaf keys
+  returnEmptyString: false,
 })
 
 export function setAppLocale(locale: AppLocale): void {

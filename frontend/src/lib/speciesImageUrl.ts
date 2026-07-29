@@ -1,6 +1,7 @@
 /** Canonical public media URL helper — prefers static /media (Vite serves repo media/). */
 
 import { scientificNameToSlug } from './slug'
+import { canonicalTaxonName } from './taxonSynonyms'
 
 export type SpeciesImageVariant = 'thumb' | 'card' | 'detail' | 'lqip'
 export type PlaceholderKind = 'default' | 'toxic' | 'deadly' | 'unknown'
@@ -21,7 +22,14 @@ export function mediaPublicPrefix(): string {
 export function normalizeSlug(slugOrScientific: string): string {
   if (!slugOrScientific) return ''
   if (slugOrScientific.includes(' ')) {
-    return scientificNameToSlug(slugOrScientific)
+    // Resolve curated synonyms so photos join SSOT media paths
+    return scientificNameToSlug(canonicalTaxonName(slugOrScientific))
+  }
+  // Slug form of a known synonym (e.g. coprinopsis-atramentaria)
+  const asName = slugOrScientific.replace(/-/g, ' ')
+  const canon = canonicalTaxonName(asName)
+  if (canon.toLowerCase() !== asName.toLowerCase()) {
+    return scientificNameToSlug(canon)
   }
   return slugOrScientific.toLowerCase().trim()
 }

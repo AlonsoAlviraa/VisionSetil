@@ -1,8 +1,11 @@
 import { FormEvent, useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '../auth/AuthContext'
+import { deadlyPriorityViews } from '../lib/diagnosticViews'
 
 export function RegisterPage() {
+  const { t } = useTranslation()
   const { register, isAuthenticated } = useAuth()
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
@@ -11,6 +14,7 @@ export function RegisterPage() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
+  const priorityViews = deadlyPriorityViews().slice(0, 3)
 
   useEffect(() => {
     if (isAuthenticated) navigate('/comunidad', { replace: true })
@@ -36,20 +40,59 @@ export function RegisterPage() {
   }
 
   return (
-    <div className="page-auth page-atelier-shell">
+    <div className="page-auth page-atelier-shell" data-testid="register-page">
       <div className="auth-atelier">
         <div className="page-header">
           <p className="atelier-kicker" style={{ color: 'var(--ink-mute)' }}>
-            Cuenta
+            {t('auth.kicker', { defaultValue: 'Cuenta' })}
           </p>
-          <h1 className="page-title">Crear cuenta</h1>
-          <p className="page-subtitle">
-            Únete a la comunidad. Espacio educativo — nunca permiso de consumo.
+          <h1 className="page-title">
+            {t('auth.registerTitle', { defaultValue: 'Crear cuenta' })}
+          </h1>
+          <p className="page-subtitle" data-testid="register-orientation-policy">
+            {t('auth.registerSubtitle', {
+              defaultValue:
+                'Únete a la comunidad. Espacio educativo — nunca permiso de consumo ni recolección. Solo orientación de campo.',
+            })}
           </p>
         </div>
+
+        <section
+          className="atelier-panel auth-multiview-tip"
+          data-testid="register-multiview-tip"
+          role="note"
+        >
+          <p>
+            {t('auth.multiviewTip', {
+              defaultValue:
+                'Al Identificar: prioriza láminas, perfil/pie y base (volva/anillo). Multi-foto sin esas vistas no basta para confusiones mortales — nunca consumo.',
+            })}
+          </p>
+          <div className="lookalike-item__diag-views" data-testid="register-multiview-priority">
+            {priorityViews.map((view) => (
+              <span
+                key={view}
+                className="lookalike-item__diag-badge lookalike-item__diag-badge--static"
+                data-slot={view}
+              >
+                {t(`identify.views.${view}`, { defaultValue: view })}
+              </span>
+            ))}
+          </div>
+          <p className="muted" style={{ marginTop: '0.5rem' }}>
+            <Link to="/identificar" data-testid="register-cta-identify">
+              {t('nav.identify', { defaultValue: 'Identificar multi-vista' })}
+            </Link>
+            {' · '}
+            <Link to="/educacion" data-testid="register-cta-edu">
+              {t('nav.education', { defaultValue: 'Educación' })}
+            </Link>
+          </p>
+        </section>
+
         <form className="auth-form-atelier" onSubmit={onSubmit}>
           <label>
-            Email
+            {t('auth.email', { defaultValue: 'Email' })}
             <input
               type="email"
               value={email}
@@ -58,7 +101,7 @@ export function RegisterPage() {
             />
           </label>
           <label>
-            Usuario
+            {t('auth.username', { defaultValue: 'Usuario' })}
             <input
               value={username}
               onChange={(e) => setUsername(e.target.value)}
@@ -67,11 +110,11 @@ export function RegisterPage() {
             />
           </label>
           <label>
-            Nombre visible (opcional)
+            {t('auth.displayName', { defaultValue: 'Nombre visible (opcional)' })}
             <input value={displayName} onChange={(e) => setDisplayName(e.target.value)} />
           </label>
           <label>
-            Contraseña (mín. 8)
+            {t('auth.passwordMin', { defaultValue: 'Contraseña (mín. 8)' })}
             <input
               type="password"
               value={password}
@@ -86,10 +129,13 @@ export function RegisterPage() {
             </p>
           )}
           <button className="btn-atelier btn-atelier--primary btn-atelier--block" type="submit" disabled={busy}>
-            {busy ? 'Creando…' : 'Registrarme'}
+            {busy
+              ? t('auth.registerBusy', { defaultValue: 'Creando…' })
+              : t('auth.registerSubmit', { defaultValue: 'Registrarme' })}
           </button>
           <p className="auth-form-atelier__foot">
-            ¿Ya tienes cuenta? <Link to="/login">Inicia sesión</Link>
+            {t('auth.hasAccount', { defaultValue: '¿Ya tienes cuenta?' })}{' '}
+            <Link to="/login">{t('auth.loginLink', { defaultValue: 'Inicia sesión' })}</Link>
           </p>
         </form>
       </div>

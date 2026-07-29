@@ -5,6 +5,9 @@
 import { beforeAll, describe, expect, it } from 'vitest'
 import {
   CANONICAL_RISK_LABELS,
+  displayCommonName,
+  getSpeciesBySlug,
+  getSpeciesByTaxon,
   isCatalogLoaded,
   loadSpeciesCatalog,
   riskFromV2,
@@ -12,6 +15,7 @@ import {
   speciesCatalog,
   speciesCatalogMeta,
 } from './speciesCatalog'
+import { scientificNameToSlug } from '../lib/slug'
 import { searchCatalogRanked } from '../lib/catalogSearch'
 import expandedJson from './speciesCatalog.json'
 
@@ -97,6 +101,38 @@ describe('speciesCatalog code-split loader', () => {
     expect(hits.length).toBeGreaterThan(0)
     const ranked = searchCatalogRanked(speciesCatalog, { query: 'níscalo', limit: 5 })
     expect(ranked.length).toBeGreaterThan(0)
+  })
+
+  it('slug ↔ taxon round-trips without broken names', async () => {
+    const list = await loadSpeciesCatalog()
+    const phallo = list.find((s) => s.taxon === 'Amanita phalloides')
+    expect(phallo).toBeTruthy()
+    expect(getSpeciesBySlug(phallo!.slug)?.taxon).toBe('Amanita phalloides')
+    expect(getSpeciesBySlug(scientificNameToSlug('Amanita phalloides'))?.taxon).toBe(
+      'Amanita phalloides',
+    )
+    expect(getSpeciesBySlug('Amanita phalloides')?.taxon).toBe('Amanita phalloides')
+    // Synonym slug / taxon → SSOT
+    expect(getSpeciesBySlug('coprinopsis-atramentaria')?.taxon).toBe('Coprinus atramentarius')
+    expect(getSpeciesByTaxon('Coprinopsis atramentaria')?.taxon).toBe('Coprinus atramentarius')
+    // SSOT lookalikes wired into FE catalog (encyclopedia ficha tab depends on this)
+    expect(Array.isArray(phallo!.lookalikes)).toBe(true)
+    expect((phallo!.lookalikes || []).length).toBeGreaterThan(0)
+    expect((phallo!.lookalikes || []).some((n) => /citrina|caesarea|vaginata/i.test(n))).toBe(
+      true,
+    )
+    // Multi-word + no blank common display
+    for (const s of list.slice(0, 40)) {
+      expect(s.taxon).toBeTruthy()
+      expect(s.taxon).not.toMatch(/undefined|null/i)
+      expect(s.slug).toBe(scientificNameToSlug(s.taxon) || s.slug)
+      expect(displayCommonName(s, 'es')).toBeTruthy()
+      expect(displayCommonName(s, 'en')).toBeTruthy()
+      expect(displayCommonName(s, 'en')).not.toMatch(/undefined|null/i)
+    }
+    // EN death cap when available
+    const enName = displayCommonName(phallo!, 'en')
+    expect(enName.toLowerCase()).toMatch(/death|cap|amanita phalloides/)
   })
 
   it('idempotent second load returns same length', async () => {

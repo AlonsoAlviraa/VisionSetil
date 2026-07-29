@@ -1,6 +1,6 @@
 {
   "catalog_version": "2.2.0",
-  "generated_at": "2026-07-22T14:00:23.413262+00:00",
+  "generated_at": "2026-07-27T20:49:56.934382+00:00",
   "locale_default": "es",
   "supported_locales": [
     "es",
@@ -8,7 +8,7 @@
     "eu",
     "en"
   ],
-  "count": 520,
+  "count": 523,
   "layers": [
     "fe_seed",
     "iberia_common",
@@ -1917,7 +1917,12 @@
       "toxicity_notes": {
         "es": "Contiene amatoxinas en bajas cantidades. Peligrosa."
       },
-      "lookalikes": []
+      "lookalikes": [
+        {
+          "scientific_name": "Amanita phalloides",
+          "note_key": "No es mortal; volva y olor distintos"
+        }
+      ]
     },
     {
       "id": "amanita-codinae",
@@ -2596,6 +2601,14 @@
         {
           "scientific_name": "Amanita caesarea",
           "note_key": "comestible, sin lunares que persisten"
+        },
+        {
+          "scientific_name": "Amanita pantherina",
+          "note_key": "Anillo, volva y base del pie"
+        },
+        {
+          "scientific_name": "Amanita fulva",
+          "note_key": "Anillo/volva y color; no es amanita mortal tipica"
         }
       ]
     },
@@ -2715,7 +2728,12 @@
         "es": []
       },
       "toxicity_notes": {},
-      "lookalikes": [],
+      "lookalikes": [
+        {
+          "scientific_name": "Amanita proxima",
+          "note_key": "Proxima peligrosa en SW iberico"
+        }
+      ],
       "source": "iberia_common_curated"
     },
     {
@@ -2790,7 +2808,16 @@
       "toxicity_notes": {
         "es": "Ácido iboténico y muscimol. Neurotóxica."
       },
-      "lookalikes": []
+      "lookalikes": [
+        {
+          "scientific_name": "Amanita muscaria",
+          "note_key": "Anillo, volva y base del pie"
+        },
+        {
+          "scientific_name": "Amanita rubescens",
+          "note_key": "TOXICO; volva y enrojecimiento"
+        }
+      ]
     },
     {
       "id": "amanita-phalloides",
@@ -2880,6 +2907,18 @@
         {
           "scientific_name": "Amanita caesarea",
           "note_key": "joven"
+        },
+        {
+          "scientific_name": "Amanita citrina",
+          "note_key": "MORTAL; volva y laminas blancas vs citrina"
+        },
+        {
+          "scientific_name": "Amanita vaginata",
+          "note_key": "MORTAL; anillo y volva vs vaginata"
+        },
+        {
+          "scientific_name": "Volvopluteus gloiocephalus",
+          "note_key": "MORTAL; laminas blancas vs rosadas"
         }
       ]
     },
@@ -3064,7 +3103,12 @@
       "toxicity_notes": {
         "es": "Especie de riesgo toxicológico. No consumir. Confirmar siempre con experto."
       },
-      "lookalikes": [],
+      "lookalikes": [
+        {
+          "scientific_name": "Amanita ovoidea",
+          "note_key": "TOXICO/MORTAL regional; no confundir ovoidea"
+        }
+      ],
       "source": "iberia_common_curated"
     },
     {
@@ -3131,7 +3175,12 @@
       "toxicity_notes": {
         "es": "Tóxica cruda. Cocinar siempre bien."
       },
-      "lookalikes": []
+      "lookalikes": [
+        {
+          "scientific_name": "Amanita pantherina",
+          "note_key": "Enrojece al corte; no es pantherina"
+        }
+      ]
     },
     {
       "id": "amanita-strobiliformis",
@@ -3363,7 +3412,20 @@
         "es": []
       },
       "toxicity_notes": {},
-      "lookalikes": [],
+      "lookalikes": [
+        {
+          "scientific_name": "Amanita phalloides",
+          "note_key": "Sin anillo; no es phalloides"
+        },
+        {
+          "scientific_name": "Amanita virosa",
+          "note_key": "Sin anillo; no es virosa"
+        },
+        {
+          "scientific_name": "Amanita verna",
+          "note_key": "Sin anillo; no es verna"
+        }
+      ],
       "source": "iberia_common_curated"
     },
     {
@@ -3444,6 +3506,10 @@
         {
           "scientific_name": "Agaricus campestris",
           "note_key": "comestible, sin volva"
+        },
+        {
+          "scientific_name": "Amanita vaginata",
+          "note_key": "MORTAL; anillo y volva"
         }
       ]
     },
@@ -3526,6 +3592,10 @@
         {
           "scientific_name": "Agaricus arvensis",
           "note_key": "comestible, sin volva"
+        },
+        {
+          "scientific_name": "Amanita vaginata",
+          "note_key": "MORTAL; anillo y base del pie"
         }
       ]
     },
@@ -3707,7 +3777,20 @@
       "toxicity_notes": {
         "es": "Tóxica en crudo. Cocinar siempre bien. Descartar el pie."
       },
-      "lookalikes": []
+      "lookalikes": [
+        {
+          "scientific_name": "Galerina marginata",
+          "note_key": "MORTAL sobre madera"
+        },
+        {
+          "scientific_name": "Hypholoma fasciculare",
+          "note_key": "Banda anular y sabor amargo en hypholoma"
+        },
+        {
+          "scientific_name": "Armillaria lutea",
+          "note_key": "Complejo armillaria"
+        }
+      ]
     },
     {
       "id": "armillaria-ostoyae",
@@ -4339,6 +4422,18 @@
         {
           "scientific_name": "Boletus erythropus",
           "note_key": "comestible con cocción"
+        },
+        {
+          "scientific_name": "Cortinarius rubellus",
+          "note_key": "MORTAL, cortina y pie"
+        },
+        {
+          "scientific_name": "Imleria badia",
+          "note_key": "Bayo vs edulis"
+        },
+        {
+          "scientific_name": "Leccinum scabrum",
+          "note_key": "No es leccinum de abedul"
         }
       ]
     },
@@ -4406,7 +4501,12 @@
       "toxicity_notes": {
         "es": "Tóxico crudo. Cocinar siempre bien."
       },
-      "lookalikes": []
+      "lookalikes": [
+        {
+          "scientific_name": "Boletus edulis",
+          "note_key": "Azulea al corte; no es edulis"
+        }
+      ]
     },
     {
       "id": "boletus-impolitus",
@@ -4665,7 +4765,7 @@
       "wikidata_id": null,
       "vernacular_names": {
         "es": [
-          "Hongo pinícola",
+          "Hondo pinícola",
           "Boletus de pino",
           "Pinate"
         ],
@@ -5073,7 +5173,12 @@
       "toxicity_notes": {
         "es": "Gastrointestinal severo. Evitar."
       },
-      "lookalikes": []
+      "lookalikes": [
+        {
+          "scientific_name": "Boletus edulis",
+          "note_key": "TOXICO; no es boleto comestible"
+        }
+      ]
     },
     {
       "id": "boletus-subtomentosus",
@@ -5691,6 +5796,10 @@
         {
           "scientific_name": "Entoloma sinuatum",
           "note_key": "tóxico, láminas rosadas"
+        },
+        {
+          "scientific_name": "Inocybe erubescens",
+          "note_key": "Inocybe peligrosa en prados"
         }
       ]
     },
@@ -5902,6 +6011,18 @@
         {
           "scientific_name": "Hygrophoropsis aurantiaca",
           "note_key": "falso chantarela, ligeramente tóxico"
+        },
+        {
+          "scientific_name": "Omphalotus olearius",
+          "note_key": "TOXICO, laminas vs pliegues"
+        },
+        {
+          "scientific_name": "Cortinarius orellanus",
+          "note_key": "Pliegues vs laminas; cortinario mortal"
+        },
+        {
+          "scientific_name": "Craterellus tubaeformis",
+          "note_key": "Rebozuelo vs trompeta amarilla"
         }
       ]
     },
@@ -6511,7 +6632,16 @@
       "toxicity_notes": {
         "es": "Especie de riesgo toxicológico. No consumir. Confirmar siempre con experto."
       },
-      "lookalikes": [],
+      "lookalikes": [
+        {
+          "scientific_name": "Macrolepiota procera",
+          "note_key": "TOXICO; esporada verdosa"
+        },
+        {
+          "scientific_name": "Chlorophyllum rhacodes",
+          "note_key": "TOXICO; esporada verdosa"
+        }
+      ],
       "source": "iberia_common_curated"
     },
     {
@@ -6579,7 +6709,16 @@
       "toxicity_notes": {
         "es": "Causa intolerancia a algunas personas. Probar poca cantidad primero."
       },
-      "lookalikes": []
+      "lookalikes": [
+        {
+          "scientific_name": "Chlorophyllum molybdites",
+          "note_key": "Esporada distinta; no confiar"
+        },
+        {
+          "scientific_name": "Chlorophyllum olivieri",
+          "note_key": "No confiar solo en escamas"
+        }
+      ]
     },
     {
       "id": "choiromyces-meandriformis",
@@ -7020,6 +7159,10 @@
         {
           "scientific_name": "Marasmius oreades",
           "note_key": "comestible, láminas no decurrentes, umbón"
+        },
+        {
+          "scientific_name": "Clitopilus prunulus",
+          "note_key": "Senderuela vs prunulus"
         }
       ]
     },
@@ -7309,7 +7452,12 @@
         "es": []
       },
       "toxicity_notes": {},
-      "lookalikes": [],
+      "lookalikes": [
+        {
+          "scientific_name": "Entoloma sinuatum",
+          "note_key": "Láminas y pie; entoloma tóxico"
+        }
+      ],
       "source": "iberia_common_curated"
     },
     {
@@ -7488,7 +7636,12 @@
       "toxicity_notes": {
         "es": "Especie de riesgo toxicológico. No consumir. Confirmar siempre con experto."
       },
-      "lookalikes": [],
+      "lookalikes": [
+        {
+          "scientific_name": "Marasmius oreades",
+          "note_key": "Senderuela vs clitocybe"
+        }
+      ],
       "source": "iberia_common_curated"
     },
     {
@@ -7558,6 +7711,10 @@
         {
           "scientific_name": "Clitocybe dealbata",
           "note_key": "tóxica"
+        },
+        {
+          "scientific_name": "Entoloma sinuatum",
+          "note_key": "No es entoloma toxico"
         }
       ]
     },
@@ -7684,7 +7841,12 @@
       "toxicity_notes": {
         "es": "Especie de riesgo toxicológico. No consumir. Confirmar siempre con experto."
       },
-      "lookalikes": [],
+      "lookalikes": [
+        {
+          "scientific_name": "Galerina marginata",
+          "note_key": "MORTAL; pequenos pardos sobre madera"
+        }
+      ],
       "source": "iberia_common_curated"
     },
     {
@@ -7961,7 +8123,12 @@
       "toxicity_notes": {
         "es": "Coprina → efecto antabús con alcohol (náuseas, taquicardia)."
       },
-      "lookalikes": []
+      "lookalikes": [
+        {
+          "scientific_name": "Coprinus comatus",
+          "note_key": "Alcohol + coprino reaccion peligrosa"
+        }
+      ]
     },
     {
       "id": "coprinus-comatus",
@@ -8028,7 +8195,7 @@
       "toxicity_notes": {},
       "lookalikes": [
         {
-          "scientific_name": "Coprinus atramentarus",
+          "scientific_name": "Coprinus atramentarius",
           "note_key": "tóxico con alcohol"
         }
       ]
@@ -9146,7 +9313,12 @@
       "toxicity_notes": {
         "es": "Orellanina. Insuficiencia renal irreversible."
       },
-      "lookalikes": []
+      "lookalikes": [
+        {
+          "scientific_name": "Cantharellus cibarius",
+          "note_key": "MORTAL; cortina y esporada"
+        }
+      ]
     },
     {
       "id": "cortinarius-praestans",
@@ -9336,7 +9508,16 @@
       "toxicity_notes": {
         "es": "Orellanina. Insuficiencia renal irreversible. MORTAL."
       },
-      "lookalikes": []
+      "lookalikes": [
+        {
+          "scientific_name": "Boletus edulis",
+          "note_key": "No es boleto; cortinario mortal"
+        },
+        {
+          "scientific_name": "Lepista nuda",
+          "note_key": "Cortina y color; no es pie azul"
+        }
+      ]
     },
     {
       "id": "cortinarius-saginus",
@@ -10131,7 +10312,12 @@
         ]
       },
       "toxicity_notes": {},
-      "lookalikes": []
+      "lookalikes": [
+        {
+          "scientific_name": "Cantharellus cibarius",
+          "note_key": "Pliegues y color; no confiar solo en trompeta"
+        }
+      ]
     },
     {
       "id": "cuphophyllus-virgineus",
@@ -11045,6 +11231,18 @@
         {
           "scientific_name": "Calocybe gambosa",
           "note_key": "comestible, láminas blancas"
+        },
+        {
+          "scientific_name": "Clitopilus prunulus",
+          "note_key": "TOXICO; laminas y olor"
+        },
+        {
+          "scientific_name": "Clitocybe nebularis",
+          "note_key": "No es clitocybe de bosque"
+        },
+        {
+          "scientific_name": "Pluteus cervinus",
+          "note_key": "No es pluteus de madera"
         }
       ]
     },
@@ -11359,7 +11557,16 @@
         "es": []
       },
       "toxicity_notes": {},
-      "lookalikes": [],
+      "lookalikes": [
+        {
+          "scientific_name": "Ganoderma lucidum",
+          "note_key": "Políporos / yesqueros educativos"
+        },
+        {
+          "scientific_name": "Trametes versicolor",
+          "note_key": "Yesquero vs cola de pavo"
+        }
+      ],
       "source": "iberia_common_curated"
     },
     {
@@ -11441,6 +11648,18 @@
         {
           "scientific_name": "Kuehneromyces mutabilis",
           "note_key": "comestible, NUNCA recolectar setas de troncos sin experto"
+        },
+        {
+          "scientific_name": "Armillaria mellea",
+          "note_key": "No confundir con seta de miel"
+        },
+        {
+          "scientific_name": "Conocybe filaris",
+          "note_key": "Ambos mortales; no confiar en color"
+        },
+        {
+          "scientific_name": "Armillaria lutea",
+          "note_key": "Galerina mortal; no es armillaria"
         }
       ]
     },
@@ -11573,7 +11792,12 @@
         ]
       },
       "toxicity_notes": {},
-      "lookalikes": []
+      "lookalikes": [
+        {
+          "scientific_name": "Fomitopsis pinicola",
+          "note_key": "No es ID de consumo"
+        }
+      ]
     },
     {
       "id": "ganoderma-resinaceum",
@@ -12075,6 +12299,10 @@
         {
           "scientific_name": "Morchella esculenta",
           "note_key": "comestible, sombrero más alveolado regular"
+        },
+        {
+          "scientific_name": "Morchella elata",
+          "note_key": "TOXICO/MORTAL; camaras vs costillas"
         }
       ]
     },
@@ -14136,7 +14364,12 @@
       "toxicity_notes": {
         "es": "Ligeramente tóxica. Gastrointestinal leve."
       },
-      "lookalikes": []
+      "lookalikes": [
+        {
+          "scientific_name": "Cantharellus cibarius",
+          "note_key": "Falso rebozuelo; laminas verdaderas"
+        }
+      ]
     },
     {
       "id": "hygrophorus-agathosmus",
@@ -15034,7 +15267,20 @@
       "toxicity_notes": {
         "es": "Síndrome gastrointestinal severo. Toxinas desconocidas."
       },
-      "lookalikes": []
+      "lookalikes": [
+        {
+          "scientific_name": "Armillaria mellea",
+          "note_key": "TOXICO; no es seta de miel"
+        },
+        {
+          "scientific_name": "Kuehneromyces mutabilis",
+          "note_key": "TOXICO; no es pholiota comestible"
+        },
+        {
+          "scientific_name": "Pleurotus ostreatus",
+          "note_key": "Hypholoma amargo tóxico"
+        }
+      ]
     },
     {
       "id": "hypholoma-lateritium",
@@ -15160,7 +15406,20 @@
         ]
       },
       "toxicity_notes": {},
-      "lookalikes": []
+      "lookalikes": [
+        {
+          "scientific_name": "Boletus edulis",
+          "note_key": "Poro y cutícula; boletus vs bayo"
+        },
+        {
+          "scientific_name": "Cortinarius rubellus",
+          "note_key": "MORTAL confusión educativa con boleto"
+        },
+        {
+          "scientific_name": "Paxillus involutus",
+          "note_key": "No es paxillus enrollado"
+        }
+      ]
     },
     {
       "id": "infundibulicybe-geotropa",
@@ -15573,7 +15832,12 @@
       "toxicity_notes": {
         "es": "Especie de riesgo toxicológico. No consumir. Confirmar siempre con experto."
       },
-      "lookalikes": [],
+      "lookalikes": [
+        {
+          "scientific_name": "Calocybe gambosa",
+          "note_key": "MORTAL/TOXICO; no es seta de San Jorge"
+        }
+      ],
       "source": "iberia_common_curated"
     },
     {
@@ -16196,6 +16460,10 @@
         {
           "scientific_name": "Galerina marginata",
           "note_key": "MORTAL"
+        },
+        {
+          "scientific_name": "Hypholoma fasciculare",
+          "note_key": "Hypholoma amargo toxico"
         }
       ]
     },
@@ -16262,7 +16530,12 @@
         ]
       },
       "toxicity_notes": {},
-      "lookalikes": []
+      "lookalikes": [
+        {
+          "scientific_name": "Laccaria amethystina",
+          "note_key": "Color; láminas cerosas en ambas"
+        }
+      ]
     },
     {
       "id": "lacrymaria-lacrymabunda",
@@ -16699,6 +16972,10 @@
         {
           "scientific_name": "Lactarius sanguifluus",
           "note_key": "comestible, mejor"
+        },
+        {
+          "scientific_name": "Lactarius deterrimus",
+          "note_key": "Níscalo vs deterrimus"
         }
       ]
     },
@@ -16765,7 +17042,16 @@
         ]
       },
       "toxicity_notes": {},
-      "lookalikes": []
+      "lookalikes": [
+        {
+          "scientific_name": "Lactarius deliciosus",
+          "note_key": "Látex y pinar; confusión clásica"
+        },
+        {
+          "scientific_name": "Lactarius torminosus",
+          "note_key": "Látex y borde; no confiar"
+        }
+      ]
     },
     {
       "id": "lactarius-fluens",
@@ -17599,7 +17885,12 @@
         ]
       },
       "toxicity_notes": {},
-      "lookalikes": []
+      "lookalikes": [
+        {
+          "scientific_name": "Lactarius deliciosus",
+          "note_key": "Latex y habitat de pinar"
+        }
+      ]
     },
     {
       "id": "lactarius-semisanguifluus",
@@ -17846,7 +18137,12 @@
       "toxicity_notes": {
         "es": "Síndrome gastrointestinal severo."
       },
-      "lookalikes": []
+      "lookalikes": [
+        {
+          "scientific_name": "Lactarius deliciosus",
+          "note_key": "Latex blanco y pelos en margen"
+        }
+      ]
     },
     {
       "id": "lactarius-uvidus",
@@ -18314,7 +18610,12 @@
         ]
       },
       "toxicity_notes": {},
-      "lookalikes": []
+      "lookalikes": [
+        {
+          "scientific_name": "Hypholoma fasciculare",
+          "note_key": "Sobre madera: amargor vs políporo"
+        }
+      ]
     },
     {
       "id": "leccinellum-crocipodium",
@@ -18726,7 +19027,12 @@
         ]
       },
       "toxicity_notes": {},
-      "lookalikes": []
+      "lookalikes": [
+        {
+          "scientific_name": "Boletus edulis",
+          "note_key": "Pie escuamoso vs edulis; abedul"
+        }
+      ]
     },
     {
       "id": "leccinum-versipelle",
@@ -19051,6 +19357,14 @@
         {
           "scientific_name": "Macrolepiota procera",
           "note_key": "comestible, grande"
+        },
+        {
+          "scientific_name": "Lepiota castanea",
+          "note_key": "Ambas peligrosas si pequeñas"
+        },
+        {
+          "scientific_name": "Lepiota cristata",
+          "note_key": "No confiar en lepiota pequeña"
         }
       ]
     },
@@ -19108,7 +19422,12 @@
         "es": []
       },
       "toxicity_notes": {},
-      "lookalikes": [],
+      "lookalikes": [
+        {
+          "scientific_name": "Lepiota brunneoincarnata",
+          "note_key": "Lepiota pequeña: riesgo mortal"
+        }
+      ],
       "source": "iberia_fallback_list"
     },
     {
@@ -19236,7 +19555,12 @@
       "toxicity_notes": {
         "es": "Especie de riesgo toxicológico. No consumir. Confirmar siempre con experto."
       },
-      "lookalikes": [],
+      "lookalikes": [
+        {
+          "scientific_name": "Lepiota brunneoincarnata",
+          "note_key": "Olor y escamas; lepiotas pequeñas"
+        }
+      ],
       "source": "iberia_common_curated"
     },
     {
@@ -19464,7 +19788,12 @@
         "es": []
       },
       "toxicity_notes": {},
-      "lookalikes": [],
+      "lookalikes": [
+        {
+          "scientific_name": "Macrolepiota procera",
+          "note_key": "MORTAL si pequena"
+        }
+      ],
       "source": "iberia_fallback_list"
     },
     {
@@ -19585,7 +19914,12 @@
         "es": []
       },
       "toxicity_notes": {},
-      "lookalikes": [],
+      "lookalikes": [
+        {
+          "scientific_name": "Cortinarius rubellus",
+          "note_key": "Pie y esporada; cortinario mortal"
+        }
+      ],
       "source": "iberia_common_curated"
     },
     {
@@ -20049,7 +20383,12 @@
         "es": []
       },
       "toxicity_notes": {},
-      "lookalikes": [],
+      "lookalikes": [
+        {
+          "scientific_name": "Scleroderma citrinum",
+          "note_key": "Corte: gleba distinta"
+        }
+      ],
       "source": "iberia_common_curated"
     },
     {
@@ -20600,6 +20939,18 @@
         {
           "scientific_name": "Chlorophyllum molybdites",
           "note_key": "tóxico, esporas verdes"
+        },
+        {
+          "scientific_name": "Lepiota brunneoincarnata",
+          "note_key": "MORTAL si pequena; anillo movil"
+        },
+        {
+          "scientific_name": "Lepiota subincarnata",
+          "note_key": "Lepiota pequena mortal"
+        },
+        {
+          "scientific_name": "Chlorophyllum olivieri",
+          "note_key": "Parasol vs chlorophyllum"
         }
       ]
     },
@@ -20671,6 +21022,10 @@
         {
           "scientific_name": "Clitocybe rivulosa",
           "note_key": "tóxico, también en círculos"
+        },
+        {
+          "scientific_name": "Clitocybe dealbata",
+          "note_key": "Senderuela vs clitocybe toxica"
         }
       ]
     },
@@ -21261,7 +21616,12 @@
         ]
       },
       "toxicity_notes": {},
-      "lookalikes": []
+      "lookalikes": [
+        {
+          "scientific_name": "Gyromitra esculenta",
+          "note_key": "Colmenilla verdadera; no gyromitra"
+        }
+      ]
     },
     {
       "id": "morchella-esculenta",
@@ -21334,7 +21694,16 @@
         ]
       },
       "toxicity_notes": {},
-      "lookalikes": []
+      "lookalikes": [
+        {
+          "scientific_name": "Gyromitra esculenta",
+          "note_key": "Costillas vs camaras"
+        },
+        {
+          "scientific_name": "Verpa conica",
+          "note_key": "Costillas vs campana libre"
+        }
+      ]
     },
     {
       "id": "morchella-importuna",
@@ -22104,7 +22473,12 @@
       "toxicity_notes": {
         "es": "Antígeno paxílico → anemia hemolítica. Acumulado, MORTAL."
       },
-      "lookalikes": []
+      "lookalikes": [
+        {
+          "scientific_name": "Imleria badia",
+          "note_key": "Paxillus vs boleto; toxicidad acumulativa"
+        }
+      ]
     },
     {
       "id": "peziza-badia",
@@ -22410,7 +22784,12 @@
         "es": []
       },
       "toxicity_notes": {},
-      "lookalikes": [],
+      "lookalikes": [
+        {
+          "scientific_name": "Clathrus ruber",
+          "note_key": "Gasteromicetos; no consumo"
+        }
+      ],
       "source": "iberia_common_curated"
     },
     {
@@ -23156,7 +23535,12 @@
         ]
       },
       "toxicity_notes": {},
-      "lookalikes": []
+      "lookalikes": [
+        {
+          "scientific_name": "Hypholoma fasciculare",
+          "note_key": "Sobre madera: ostra vs hypholoma"
+        }
+      ]
     },
     {
       "id": "pleurotus-pulmonarius",
@@ -23282,7 +23666,12 @@
         ]
       },
       "toxicity_notes": {},
-      "lookalikes": []
+      "lookalikes": [
+        {
+          "scientific_name": "Entoloma sinuatum",
+          "note_key": "Láminas rosadas vs entoloma"
+        }
+      ]
     },
     {
       "id": "pluteus-salicinus",
@@ -24961,7 +25350,12 @@
         ]
       },
       "toxicity_notes": {},
-      "lookalikes": []
+      "lookalikes": [
+        {
+          "scientific_name": "Russula emetica",
+          "note_key": "No es emetica; sabor y cuticula"
+        }
+      ]
     },
     {
       "id": "russula-decolorans",
@@ -25207,7 +25601,16 @@
       "toxicity_notes": {
         "es": "Síndrome gastrointestinal. Sabor picante."
       },
-      "lookalikes": []
+      "lookalikes": [
+        {
+          "scientific_name": "Russula cyanoxantha",
+          "note_key": "TOXICO; picor fuerte"
+        },
+        {
+          "scientific_name": "Russula ochroleuca",
+          "note_key": "No es ochroleuca por color solo"
+        }
+      ]
     },
     {
       "id": "russula-fellea",
@@ -25926,7 +26329,12 @@
         "es": []
       },
       "toxicity_notes": {},
-      "lookalikes": [],
+      "lookalikes": [
+        {
+          "scientific_name": "Russula emetica",
+          "note_key": "Picor y cutícula; russulas educacionales"
+        }
+      ],
       "source": "iberia_common_curated"
     },
     {
@@ -27491,7 +27899,12 @@
       "toxicity_notes": {
         "es": "Especie de riesgo toxicológico. No consumir. Confirmar siempre con experto."
       },
-      "lookalikes": [],
+      "lookalikes": [
+        {
+          "scientific_name": "Lycoperdon perlatum",
+          "note_key": "Falsa vs verdadera pedo de lobo"
+        }
+      ],
       "source": "iberia_common_curated"
     },
     {
@@ -28300,7 +28713,12 @@
         ]
       },
       "toxicity_notes": {},
-      "lookalikes": []
+      "lookalikes": [
+        {
+          "scientific_name": "Suillus luteus",
+          "note_key": "Anillo y pinar; suillus"
+        }
+      ]
     },
     {
       "id": "suillus-luteus",
@@ -28365,7 +28783,16 @@
         ]
       },
       "toxicity_notes": {},
-      "lookalikes": []
+      "lookalikes": [
+        {
+          "scientific_name": "Suillus grevillei",
+          "note_key": "Láminas/poros y anillo"
+        },
+        {
+          "scientific_name": "Boletus edulis",
+          "note_key": "Anillo vs edulis sin anillo"
+        }
+      ]
     },
     {
       "id": "suillus-mediterraneensis",
@@ -29026,7 +29453,12 @@
         ]
       },
       "toxicity_notes": {},
-      "lookalikes": []
+      "lookalikes": [
+        {
+          "scientific_name": "Fomitopsis pinicola",
+          "note_key": "Políporos en madera; no consumo"
+        }
+      ]
     },
     {
       "id": "tremella-mesenterica",
@@ -29612,8 +30044,12 @@
       },
       "lookalikes": [
         {
-          "scientific_name": "Tricholoma sulfureum",
+          "scientific_name": "Tricholoma sulphureum",
           "note_key": "tóxico, huele a gas"
+        },
+        {
+          "scientific_name": "Amanita phalloides",
+          "note_key": "MORTAL; volva y anillo"
         }
       ]
     },
@@ -30603,7 +31039,12 @@
       "toxicity_notes": {
         "es": "Especie de riesgo toxicológico. No consumir. Confirmar siempre con experto."
       },
-      "lookalikes": [],
+      "lookalikes": [
+        {
+          "scientific_name": "Tricholoma equestre",
+          "note_key": "Olor a gas; no es equestre"
+        }
+      ],
       "source": "iberia_common_curated"
     },
     {
@@ -31529,7 +31970,12 @@
         "es": []
       },
       "toxicity_notes": {},
-      "lookalikes": [],
+      "lookalikes": [
+        {
+          "scientific_name": "Amanita phalloides",
+          "note_key": "Laminas rosadas; no es amanita"
+        }
+      ],
       "source": "iberia_common_curated"
     },
     {
@@ -31824,6 +32270,249 @@
       "toxicity_notes": {},
       "lookalikes": [],
       "source": "iberia_common_curated"
+    },
+    {
+      "id": "armillaria-lutea",
+      "scientific_name": "Armillaria lutea",
+      "slug": "armillaria-lutea",
+      "family": "Physalacriaceae",
+      "genus": "Armillaria",
+      "risk_level": "risky_lookalikes",
+      "edibility_code": "comestible_con_cautela",
+      "categories": [
+        "comestible",
+        "bosque",
+        "otono",
+        "ml40",
+        "educativo"
+      ],
+      "iberian_relevance": "high",
+      "featured": false,
+      "icon": "🍯",
+      "image_slug": "armillaria-lutea",
+      "ml_taxon_key": "Armillaria lutea",
+      "gbif_usage_key": null,
+      "wikidata_id": null,
+      "vernacular_names": {
+        "es": [
+          "Armillaria",
+          "Armillaria lutea"
+        ],
+        "en": [
+          "Armillaria lutea"
+        ],
+        "ca": [],
+        "eu": []
+      },
+      "tagline": {
+        "es": "Ficha educativa (ML-40): Armillaria lutea. Solo orientación.",
+        "en": "Educational fiche (ML-40): Armillaria lutea. Orientation only."
+      },
+      "description": {
+        "es": "Armillaria lutea: entrada ampliada para cobertura del modelo E20 (40 clases). Basada en ficha cercana Armillaria mellea. No autoriza consumo. Seta que crece en racimos sobre troncos y tocones. Parasita árboles vivos. Comestible bien cocinada, tóxica en crudo. El pie debe descartarse por fibroso.",
+        "en": "Armillaria lutea: expanded for E20 model coverage. Orientation only — never eat from an app."
+      },
+      "morphology": {
+        "cap": {
+          "es": "Convexo, miel-amarillento a pardo, con escamas oscuras."
+        },
+        "stem": {
+          "es": "Largo, fibroso, con anillo blanco bien formado."
+        },
+        "hymenium": {
+          "es": "Láminas decurrentes, blancas a rosadas."
+        }
+      },
+      "habitat": {
+        "es": "Troncos y tocones de planifolios y coníferas"
+      },
+      "season": {
+        "es": "Otoño"
+      },
+      "key_features": {
+        "es": [
+          "Crece en racimos sobre troncos",
+          "Anillo bien desarrollado",
+          "Sombrero color miel con escamas",
+          "Cocinar SIEMPRE (tóxica en crudo)"
+        ]
+      },
+      "toxicity_notes": {
+        "es": "Tóxica en crudo. Cocinar siempre bien. Descartar el pie."
+      },
+      "lookalikes": [
+        {
+          "scientific_name": "Armillaria mellea",
+          "note_key": "Armillaria: anillo y racimos"
+        },
+        {
+          "scientific_name": "Galerina marginata",
+          "note_key": "MORTAL sobre madera vs armillaria"
+        }
+      ],
+      "catalog_source": "ml40_stub_expand",
+      "expanded_at": "2026-07-27T20:47:54.445320+00:00"
+    },
+    {
+      "id": "chlorophyllum-olivieri",
+      "scientific_name": "Chlorophyllum olivieri",
+      "slug": "chlorophyllum-olivieri",
+      "family": "Agaricaceae",
+      "genus": "Chlorophyllum",
+      "risk_level": "risky_lookalikes",
+      "edibility_code": "comestible_con_cautela",
+      "categories": [
+        "comestible",
+        "bosque",
+        "verano",
+        "otono",
+        "peligroso",
+        "ml40",
+        "educativo"
+      ],
+      "iberian_relevance": "high",
+      "featured": false,
+      "icon": "🦎",
+      "image_slug": "chlorophyllum-olivieri",
+      "ml_taxon_key": "Chlorophyllum olivieri",
+      "gbif_usage_key": null,
+      "wikidata_id": null,
+      "vernacular_names": {
+        "es": [
+          "Chlorophyllum",
+          "Chlorophyllum olivieri"
+        ],
+        "en": [
+          "Chlorophyllum olivieri"
+        ],
+        "ca": [],
+        "eu": []
+      },
+      "tagline": {
+        "es": "Ficha educativa (ML-40): Chlorophyllum olivieri. Solo orientación.",
+        "en": "Educational fiche (ML-40): Chlorophyllum olivieri. Orientation only."
+      },
+      "description": {
+        "es": "Chlorophyllum olivieri: entrada ampliada para cobertura del modelo E20 (40 clases). Basada en ficha cercana Chlorophyllum rhacodes. No autoriza consumo. Parasol con sombrero muy escamoso. La carne vira al rojo vino al corte. Comestible para algunos, tóxico para otros (intolerancia).",
+        "en": "Chlorophyllum olivieri: expanded for E20 model coverage. Orientation only — never eat from an app."
+      },
+      "morphology": {
+        "cap": {
+          "es": "Muy escamoso, escamas pardo-claras sobre fondo blanco."
+        },
+        "stem": {
+          "es": "Largo, con anillo móvil, base bulbosa."
+        },
+        "hymenium": {
+          "es": "Láminas libres, blancas."
+        }
+      },
+      "habitat": {
+        "es": "Bosques de coníferas, jardines, bordes"
+      },
+      "season": {
+        "es": "Verano y otoño"
+      },
+      "key_features": {
+        "es": [
+          "Sombrero MUY escamoso",
+          "Carne vira a ROJO al corte",
+          "Anillo móvil en el pie",
+          "Intolerancia en algunas personas"
+        ]
+      },
+      "toxicity_notes": {
+        "es": "Causa intolerancia a algunas personas. Probar poca cantidad primero."
+      },
+      "lookalikes": [
+        {
+          "scientific_name": "Chlorophyllum rhacodes",
+          "note_key": "Parasoles; esporada y corte"
+        },
+        {
+          "scientific_name": "Macrolepiota procera",
+          "note_key": "Tamaño y anillo; lepiotoides"
+        }
+      ],
+      "catalog_source": "ml40_stub_expand",
+      "expanded_at": "2026-07-27T20:47:54.445320+00:00"
+    },
+    {
+      "id": "laccaria-amethystina",
+      "scientific_name": "Laccaria amethystina",
+      "slug": "laccaria-amethystina",
+      "family": "Hydnangiaceae",
+      "genus": "Laccaria",
+      "risk_level": "low",
+      "edibility_code": "buen_comestible",
+      "categories": [
+        "comestible",
+        "bosque",
+        "verano",
+        "otono",
+        "ml40",
+        "educativo"
+      ],
+      "iberian_relevance": "high",
+      "featured": false,
+      "icon": "🌸",
+      "image_slug": "laccaria-amethystina",
+      "ml_taxon_key": "Laccaria amethystina",
+      "gbif_usage_key": null,
+      "wikidata_id": null,
+      "vernacular_names": {
+        "es": [
+          "Laccaria",
+          "Laccaria amethystina"
+        ],
+        "en": [
+          "Laccaria amethystina"
+        ],
+        "ca": [],
+        "eu": []
+      },
+      "tagline": {
+        "es": "Ficha educativa (ML-40): Laccaria amethystina. Solo orientación.",
+        "en": "Educational fiche (ML-40): Laccaria amethystina. Orientation only."
+      },
+      "description": {
+        "es": "Laccaria amethystina: entrada ampliada para cobertura del modelo E20 (40 clases). Basada en ficha cercana Laccaria laccata. No autoriza consumo. Pequeña seta rosada/anaranjada muy común en bosques. Se distingue por sus láminas gruesas, cerosas y espaciadas. Muy comestible aunque de poca sustancia.",
+        "en": "Laccaria amethystina: expanded for E20 model coverage. Orientation only — never eat from an app."
+      },
+      "morphology": {
+        "cap": {
+          "es": "Pequeño (2-6cm), rosado-anaranjado, deprimido en el centro con la edad."
+        },
+        "stem": {
+          "es": "Delgado, fibroso, color rosado."
+        },
+        "hymenium": {
+          "es": "Láminas gruesas, espaciadas, cerosas, rosadas."
+        }
+      },
+      "habitat": {
+        "es": "Bosques de todo tipo"
+      },
+      "season": {
+        "es": "Verano a otoño"
+      },
+      "key_features": {
+        "es": [
+          "Láminas gruesas y espaciadas (cerosas)",
+          "Color rosado-anaranjado",
+          "Pequeño tamaño",
+          "Muy común"
+        ]
+      },
+      "toxicity_notes": {},
+      "lookalikes": [
+        {
+          "scientific_name": "Laccaria laccata",
+          "note_key": "Lacaria violeta vs anaranjada"
+        }
+      ],
+      "catalog_source": "ml40_stub_expand",
+      "expanded_at": "2026-07-27T20:47:54.445320+00:00"
     }
   ]
 }

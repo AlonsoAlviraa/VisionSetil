@@ -4,9 +4,10 @@
  */
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import axios from 'axios'
 import { entriesNeedingReview, loadHistory } from '../lib/observationHistory'
-import { decisionLabelEs } from '../lib/decisionLabels'
+import { decisionLabel } from '../lib/decisionLabels'
 import {
   buildHandoffFromHistory,
   copyHandoffSummary,
@@ -62,6 +63,8 @@ function priorityLabelEs(priority?: string): string {
 }
 
 export function ExpertReviewPage() {
+  const { t, i18n } = useTranslation()
+  const locale = i18n.resolvedLanguage || i18n.language || 'es'
   const [params] = useSearchParams()
   const handoffId = params.get('handoff')
   const [remote, setRemote] = useState<ReviewRow[]>([])
@@ -158,56 +161,71 @@ export function ExpertReviewPage() {
   return (
     <div className="page-expert-review page-atelier-shell">
       <header className="mkt-page-head mkt-mesh">
-        <p className="mkt-kicker">Revisión experta</p>
-        <h1>Segunda opinión humana</h1>
+        <p className="mkt-kicker">
+          {t('expert.kicker', { defaultValue: 'Revisión experta' })}
+        </p>
+        <h1>
+          {t('expert.title', {
+            defaultValue: 'Empaqueta evidencia para un micólogo',
+          })}
+        </h1>
         <p>
-          Empaqueta evidencia multi-vista y compártela con un micólogo. Orientación solamente — no
-          certifica ni autoriza consumo.
+          {t('expert.subtitle', {
+            defaultValue:
+              'Handoff local y cola remota. Solo orientación — nunca permiso de consumo.',
+          })}
         </p>
       </header>
 
       <div className="feature-card-neo safety-disclaimer" role="note">
-        Un micólogo de carne y hueso debe validar en el campo. La app no sustituye criterio humano.
+        {t('expert.safetyBanner', {
+          defaultValue:
+            'Un micólogo de carne y hueso debe validar en el campo. La app no sustituye criterio humano.',
+        })}
       </div>
 
       {/* 1) Active handoff */}
       {activeDraft ? (
         <article className="atelier-panel expert-card expert-card--featured">
           <p className="atelier-kicker" style={{ color: 'var(--ink-mute)' }}>
-            Borrador listo
+            {t('expert.draftReady', { defaultValue: 'Borrador listo' })}
           </p>
-          <h2>Evidencia empaquetada</h2>
+          <h2>{t('expert.packagedTitle', { defaultValue: 'Evidencia empaquetada' })}</h2>
           {activeDraft.top_species ? (
             <SpeciesNameBlock taxon={activeDraft.top_species} size="md" showFamily={false} />
           ) : (
-            <p>Sin especie top</p>
+            <p>{t('expert.noTopSpecies', { defaultValue: 'Sin especie top' })}</p>
           )}
           <ul className="expert-meta-list">
             <li>
-              <span>Decisión</span>
-              <strong>{decisionLabelEs(activeDraft.decision)}</strong>
+              <span>{t('expert.decision', { defaultValue: 'Decisión' })}</span>
+              <strong>{decisionLabel(activeDraft.decision, locale)}</strong>
             </li>
             {activeDraft.mode != null && (
               <li>
-                <span>Modo</span>
-                <strong data-testid="handoff-mode">{handoffModeLabelEs(activeDraft.mode)}</strong>
+                <span>{t('expert.mode', { defaultValue: 'Modo' })}</span>
+                <strong data-testid="handoff-mode">
+                  {locale.startsWith('en')
+                    ? activeDraft.mode
+                    : handoffModeLabelEs(activeDraft.mode)}
+                </strong>
               </li>
             )}
             <li>
-              <span>Vistas</span>
+              <span>{t('expert.views', { defaultValue: 'Vistas' })}</span>
               <strong>
                 {activeDraft.view_types?.length
                   ? activeDraft.view_types.join(', ')
-                  : 'Sin etiquetas'}
+                  : t('expert.noLabels', { defaultValue: 'Sin etiquetas' })}
               </strong>
             </li>
             <li>
-              <span>Fotos</span>
+              <span>{t('expert.photos', { defaultValue: 'Fotos' })}</span>
               <strong>{activeDraft.preview_count}</strong>
             </li>
             {activeDraft.top_confidence != null && (
               <li>
-                <span>Confianza</span>
+                <span>{t('expert.confidence', { defaultValue: 'Confianza' })}</span>
                 <strong>{(activeDraft.top_confidence * 100).toFixed(1)}%</strong>
               </li>
             )}
@@ -254,6 +272,58 @@ export function ExpertReviewPage() {
             </p>
           )}
 
+          {(activeDraft.lookalike_diagnostics?.some((d) => d.critical_views.length > 0) ??
+            false) && (
+            <div
+              className="lookalike-item__diag expert-card__diag"
+              data-testid="expert-lookalike-diag"
+            >
+              <p className="lookalike-item__diag-label">
+                {t('expert.pairDiagTitle', {
+                  defaultValue: 'Vistas diagnósticas (educativo · no consumo)',
+                })}
+              </p>
+              <ul className="expert-card__diag-list">
+                {activeDraft.lookalike_diagnostics!
+                  .filter((d) => d.critical_views.length > 0)
+                  .slice(0, 4)
+                  .map((d) => (
+                    <li key={d.mate} data-pair-id={d.pair_id || undefined}>
+                      <strong>{d.mate}</strong>
+                      {d.why ? <span className="muted"> — {d.why}</span> : null}
+                      <div className="lookalike-item__diag-views">
+                        {d.critical_views.map((view) => (
+                          <span
+                            key={view}
+                            className="lookalike-item__diag-badge lookalike-item__diag-badge--static"
+                            data-slot={view}
+                          >
+                            {t(`identify.views.${view}`, { defaultValue: view })}
+                          </span>
+                        ))}
+                      </div>
+                      {d.missing_critical_views.length > 0 && (
+                        <p className="muted expert-card__diag-miss">
+                          {t('expert.missingDiagViews', {
+                            defaultValue: 'Faltan en el paquete: {{views}}',
+                            views: d.missing_critical_views
+                              .map((v) => t(`identify.views.${v}`, { defaultValue: v }))
+                              .join(', '),
+                          })}
+                        </p>
+                      )}
+                    </li>
+                  ))}
+              </ul>
+              <p className="lookalike-item__diag-policy muted">
+                {t('result.pairDiagPolicy', {
+                  defaultValue:
+                    'Educativo: multi-foto sin estas vistas no basta — solo orientación, nunca consumo.',
+                })}
+              </p>
+            </div>
+          )}
+
           {activeDraft.preview_urls?.[0] && (
             <div className="handoff-previews">
               {activeDraft.preview_urls.slice(0, 4).map((src, i) => (
@@ -268,20 +338,20 @@ export function ExpertReviewPage() {
               className="btn-atelier btn-atelier--primary"
               onClick={() => void onCopy(activeDraft)}
             >
-              Copiar resumen
+              {t('expert.copySummary', { defaultValue: 'Copiar resumen' })}
             </button>
             <button
               type="button"
               className="btn-atelier btn-atelier--ghost"
               onClick={() => downloadHandoffJson(activeDraft)}
             >
-              Descargar JSON
+              {t('expert.downloadJson', { defaultValue: 'Descargar JSON' })}
             </button>
             <Link to="/historial" className="btn-atelier btn-atelier--ghost">
-              Abrir cuaderno
+              {t('expert.openNotebook', { defaultValue: 'Abrir cuaderno' })}
             </Link>
             <Link to="/identificar" className="btn-atelier btn-atelier--ghost">
-              Nueva identificación
+              {t('expert.newIdentify', { defaultValue: 'Nueva identificación' })}
             </Link>
           </div>
           {copyStatus && (
@@ -290,16 +360,21 @@ export function ExpertReviewPage() {
             </p>
           )}
           <details className="expert-summary-preview">
-            <summary>Vista previa del texto</summary>
+            <summary>
+              {t('expert.textPreview', { defaultValue: 'Vista previa del texto' })}
+            </summary>
             <pre>{formatHandoffSummary(activeDraft)}</pre>
           </details>
         </article>
       ) : (
         <div className="atelier-panel expert-card">
           <EmptyState
-            title="Sin borrador activo"
-            description="Identifica una seta dudosa y pulsa «Revisión experta» en el resultado, o empaqueta un caso desde el cuaderno."
-            actionLabel="Identificar"
+            title={t('expert.emptyDraftTitle', { defaultValue: 'Sin borrador activo' })}
+            description={t('expert.emptyDraftBody', {
+              defaultValue:
+                'Identifica una seta dudosa y pulsa «Revisión experta» en el resultado, o empaqueta un caso desde el cuaderno.',
+            })}
+            actionLabel={t('nav.identify', { defaultValue: 'Identificar' })}
             actionTo="/identificar"
           />
         </div>
@@ -308,15 +383,20 @@ export function ExpertReviewPage() {
       {/* 2) Local + server queues */}
       <div className="expert-grid">
         <section className="atelier-panel expert-card">
-          <h2>Cola local</h2>
+          <h2>{t('expert.localQueue', { defaultValue: 'Cola local' })}</h2>
           <p className="expert-card__lead">
-            Casos de este dispositivo con rechazo, riesgo o bandera de revisión.
+            {t('expert.localQueueLead', {
+              defaultValue:
+                'Casos de este dispositivo con rechazo, riesgo o bandera de revisión.',
+            })}
           </p>
           {localQueue.length === 0 ? (
             <EmptyState
-              title="Nada pendiente aquí"
-              description="Identifica una seta dudosa y empaqueta la evidencia."
-              actionLabel="Identificar"
+              title={t('expert.emptyLocalTitle', { defaultValue: 'Nada pendiente aquí' })}
+              description={t('expert.emptyLocalBody', {
+                defaultValue: 'Identifica una seta dudosa y empaqueta la evidencia.',
+              })}
+              actionLabel={t('nav.identify', { defaultValue: 'Identificar' })}
               actionTo="/identificar"
             />
           ) : (
@@ -324,9 +404,15 @@ export function ExpertReviewPage() {
               {localQueue.slice(0, 10).map((e) => (
                 <li key={e.id} className="expert-case">
                   <div>
-                    <strong>{decisionLabelEs(e.result.decision)}</strong>
-                    <span className="muted"> · {new Date(e.timestamp).toLocaleString()}</span>
-                    <p>{e.result.predictions?.[0]?.species || 'Sin especie top'}</p>
+                    <strong>{decisionLabel(e.result.decision, locale)}</strong>
+                    <span className="muted">
+                      {' '}
+                      · {new Date(e.timestamp).toLocaleString(locale.startsWith('en') ? 'en-GB' : 'es-ES')}
+                    </span>
+                    <p>
+                      {e.result.predictions?.[0]?.species ||
+                        t('expert.noTopSpecies', { defaultValue: 'Sin especie top' })}
+                    </p>
                   </div>
                   <div className="expert-case__actions">
                     <button
@@ -334,10 +420,10 @@ export function ExpertReviewPage() {
                       className="btn-atelier btn-atelier--primary"
                       onClick={() => packageLocal(e.id)}
                     >
-                      Empaquetar
+                      {t('expert.package', { defaultValue: 'Empaquetar' })}
                     </button>
                     <Link to="/historial" className="btn-atelier btn-atelier--ghost">
-                      Ver
+                      {t('expert.view', { defaultValue: 'Ver' })}
                     </Link>
                   </div>
                 </li>
@@ -345,19 +431,21 @@ export function ExpertReviewPage() {
             </ul>
           )}
           <Link to="/historial" className="expert-card__link">
-            Abrir cuaderno
+            {t('expert.openNotebook', { defaultValue: 'Abrir cuaderno' })}
           </Link>
         </section>
 
         <section className="atelier-panel expert-card">
           <div className="expert-card__head">
-            <h2>Cola del servidor</h2>
+            <h2>{t('expert.serverQueue', { defaultValue: 'Cola del servidor' })}</h2>
             <button
               type="button"
               className="btn-atelier btn-atelier--ghost"
               onClick={() => void loadRemote()}
             >
-              {loading ? 'Cargando…' : 'Actualizar'}
+              {loading
+                ? t('expert.loading', { defaultValue: 'Cargando…' })
+                : t('expert.refresh', { defaultValue: 'Actualizar' })}
             </button>
           </div>
           {error && (
@@ -367,8 +455,13 @@ export function ExpertReviewPage() {
           )}
           {!loading && !error && remote.length === 0 && (
             <EmptyState
-              title="Cola vacía o no conectada"
-              description="Cuando el backend esté disponible, verás aquí los casos asignados. Mientras tanto usa handoffs locales."
+              title={t('expert.serverEmptyTitle', {
+                defaultValue: 'Cola vacía o no conectada',
+              })}
+              description={t('expert.serverEmptyBody', {
+                defaultValue:
+                  'Cuando el backend esté disponible, verás aquí los casos asignados. Mientras tanto usa handoffs locales.',
+              })}
             />
           )}
           {remote.length > 0 && (
@@ -381,10 +474,19 @@ export function ExpertReviewPage() {
                       label={priorityLabelEs(row.priority)}
                     />
                     <p>
-                      Caso {String(row.id ?? i + 1)} · {statusLabelEs(row.status)}
+                      {t('expert.caseLabel', {
+                        defaultValue: 'Caso {{id}}',
+                        id: String(row.id ?? i + 1),
+                      })}{' '}
+                      · {statusLabelEs(row.status)}
                     </p>
                     {row.observation_id != null && (
-                      <span className="muted">Observación {row.observation_id}</span>
+                      <span className="muted">
+                        {t('expert.observation', {
+                          defaultValue: 'Observación {{id}}',
+                          id: row.observation_id,
+                        })}
+                      </span>
                     )}
                   </div>
                 </li>
@@ -397,19 +499,25 @@ export function ExpertReviewPage() {
       {/* 3) Recent handoffs */}
       {drafts.length > 0 && (
         <section className="atelier-panel expert-card" style={{ marginTop: '1rem' }}>
-          <h2>Handoffs recientes</h2>
+          <h2>{t('expert.recentHandoffs', { defaultValue: 'Handoffs recientes' })}</h2>
           <ul className="expert-case-list">
             {drafts.slice(0, 8).map((d) => (
               <li key={d.id} className="expert-case">
                 <div>
-                  <strong>{d.top_species || decisionLabelEs(d.decision)}</strong>
-                  <span className="muted"> · {new Date(d.created_at).toLocaleString()}</span>
+                  <strong>{d.top_species || decisionLabel(d.decision, locale)}</strong>
+                  <span className="muted">
+                    {' '}
+                    ·{' '}
+                    {new Date(d.created_at).toLocaleString(
+                      locale.startsWith('en') ? 'en-GB' : 'es-ES',
+                    )}
+                  </span>
                 </div>
                 <Link
                   to={`/revision-experta?handoff=${encodeURIComponent(d.id)}`}
                   className="btn-atelier btn-atelier--ghost"
                 >
-                  Abrir
+                  {t('expert.open', { defaultValue: 'Abrir' })}
                 </Link>
               </li>
             ))}
@@ -427,7 +535,8 @@ export function ExpertReviewPage() {
               aria-expanded={mlOpen}
               onClick={() => setMlOpen((v) => !v)}
             >
-              Estado del modelo {mlOpen ? '▾' : '▸'}
+              {t('expert.mlStatus', { defaultValue: 'Estado del modelo' })}{' '}
+              {mlOpen ? '▾' : '▸'}
             </button>
           </h2>
           <div className="expert-card__head-actions">
@@ -436,10 +545,10 @@ export function ExpertReviewPage() {
               className="btn-atelier btn-atelier--ghost"
               onClick={() => void loadMlHealth()}
             >
-              Actualizar
+              {t('expert.refresh', { defaultValue: 'Actualizar' })}
             </button>
             <Link to="/ml" className="btn-atelier btn-atelier--ghost">
-              Detalle técnico
+              {t('expert.mlTechDetail', { defaultValue: 'Detalle técnico' })}
             </Link>
           </div>
         </div>
@@ -453,18 +562,24 @@ export function ExpertReviewPage() {
               <div className="ml-health-stat">
                 <span>Ready</span>
                 <strong>
-                  {ml.ready === null ? '…' : ml.ready ? 'Listo' : 'Degradado'}
+                  {ml.ready === null
+                    ? '…'
+                    : ml.ready
+                      ? t('expert.mlReady', { defaultValue: 'Listo' })
+                      : t('expert.mlDegraded', { defaultValue: 'Degradado' })}
                 </strong>
               </div>
               <div className="ml-health-stat">
-                <span>Modelos</span>
+                <span>{t('expert.mlModels', { defaultValue: 'Modelos' })}</span>
                 <strong>{ml.models}</strong>
               </div>
             </div>
             {ml.details && <p className="muted ml-health-details">{ml.details}</p>}
             <p className="muted">
-              Si ves “mock” o “degraded”, las pistas de Identificar son demo — nunca permiso de
-              consumo.
+              {t('expert.mlDisclaimer', {
+                defaultValue:
+                  'Si ves “mock” o “degraded”, las pistas de Identificar son demo — nunca permiso de consumo.',
+              })}
             </p>
           </>
         )}

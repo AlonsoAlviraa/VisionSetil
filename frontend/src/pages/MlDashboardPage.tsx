@@ -2,9 +2,12 @@
  * Mega ML dashboard — live model stack health from /models/status + /readyz.
  * Never hardcodes green; shows mock vs real honestly.
  */
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
+import { ML_LAB_METRICS_DISCLAIMER_ES } from '../lib/safetyCopy'
+import { normalizeEceResidual } from '../lib/eceHonesty'
+import { normalizeS9LiveReject } from '../lib/s9LiveRejectHonesty'
 
 const API_BASE = import.meta.env.VITE_API_URL || '/api'
 const API_KEY = import.meta.env.VITE_API_KEY || ''
@@ -55,6 +58,215 @@ type ModelsStatus = {
     training_map_at_3?: number
     training_num_classes?: number
     training_honesty?: string
+    training_primary_run?: string
+    product_unlock?: boolean
+    unlock_eligible_advisory?: boolean
+    eligible_but_locked?: boolean
+    operator_action?: string
+    residual_lock_reasons?: string[]
+    live_reject_rate?: number | null
+    live_reject_n?: number
+    live_reject_status?: string
+    ece?: number | null
+    ece_band?: string
+    ece_status?: string
+    e21_ready?: boolean
+    e21_launched?: boolean
+    e21_status?: string
+    open_set_status?: string
+    open_set_conf_thr?: number
+    open_set_margin_thr?: number
+    open_set_entropy_thr?: number
+    open_set_holdout_reject_rate?: number
+    lookalike_mate_in_topk_rate?: number
+  }
+  ece_residual?: {
+    status?: string
+    test_ece?: number | null
+    band?: string
+    temperature?: number | null
+    product_unlock?: boolean
+    guidance?: {
+      show_confidence?: boolean
+      deemphasize_confidence?: boolean
+      summary_es?: string
+      summary_en?: string
+    }
+    residual_actions?: string[]
+    honesty?: string
+    policy?: string
+  }
+  open_set?: {
+    status?: string
+    calibrated?: boolean
+    active_conf_thr?: number
+    active_margin_thr?: number
+    active_entropy_thr?: number
+    holdout_reject_rate?: number
+    holdout_acc_keep?: number
+    lookalike_mate_in_topk_rate?: number
+    true_in_topk_rate?: number
+    product_unlock?: boolean
+    source_experiment?: string
+    centroids_loaded?: boolean
+    centroids_source?: string
+    centroids_shape?: number[]
+  }
+  live_reject_monitor?: {
+    status?: string
+    n_entries?: number
+    n_entries_7d?: number
+    reject_rate?: number | null
+    reject_rate_7d?: number | null
+    reasons?: Record<string, number>
+    reason_histogram?: Record<string, number>
+    top_reason?: string | null
+    health_flags?: string[]
+    modes?: Record<string, number>
+    n_real_mode?: number
+    n_mock_mode?: number
+    n_blocked_mode?: number
+    traffic_depth?: string
+    traffic_note?: string
+    multiview?: {
+      n_with_view_labels?: number
+      n_multiview_ge2?: number
+      n_diag_any?: number
+      n_diag_full_gills_front_detail?: number
+      view_label_rate?: number | null
+      multiview_ge2_rate?: number | null
+      diag_full_rate?: number | null
+      priority_views?: string[]
+      note?: string
+    }
+    windows?: Record<
+      string,
+      {
+        n_entries?: number
+        reject_rate?: number | null
+        top_reason?: string | null
+      }
+    >
+    product_unlock?: boolean
+  }
+  multiview_product?: {
+    recommended_min_for_field_id?: number
+    full_packet?: number
+    soft_submit_min_photos?: number
+    benchmark?: {
+      map3_1?: number
+      map3_2?: number
+      map3_4?: number
+      reject_1?: number
+      reject_4?: number
+      map3_4_minus_1?: number
+      torch_ok?: boolean
+      gates_pass?: boolean
+    }
+    paired_inventory?: {
+      true_leave_one_photo_out?: boolean
+      blocker?: string | null
+      train_multi_ge2?: number
+      val_multi_ge2?: number
+    }
+    paired_loo_eval?: {
+      torch_ok?: boolean
+      packs_ge2?: number
+      packs_ge4?: number
+      map3_1?: number
+      map3_2?: number
+      map3_4?: number
+      reject_1?: number
+      reject_4?: number
+      deltas?: Record<string, number>
+      loo_summary?: {
+        full4_map_at_3?: number
+        loo_mean_map_at_3?: number
+        delta_map3_full_minus_loo?: number
+      }
+      n_eval_packs?: number
+      n_species?: number
+      sampling?: string
+    }
+    paired_same_occurrence_ready?: boolean
+    paired_loo_deadly?: {
+      torch_ok?: boolean
+      map3_1?: number
+      map3_4?: number
+      deltas?: Record<string, number>
+      n_eval_packs?: number
+      n_species?: number
+      note?: string
+    }
+    deadly_multiview_caveat?: boolean
+    field_holdout_m3?: {
+      protocol?: string
+      gates_pass?: boolean
+      readiness?: { status?: string; torch_field_eval_ok?: boolean }
+      headline?: {
+        map3_1?: number
+        map3_4?: number
+        map3_4_minus_1?: number
+        loo_delta_map3_full_minus_leave1?: number
+      }
+      deadly_multiview_caveat?: boolean
+      product_unlock?: boolean
+      policy?: string
+      status?: string
+      hint?: string
+    }
+  }
+  product_unlock_eval?: {
+    product_unlock?: boolean
+    unlock_eligible_advisory?: boolean
+    eligible_but_locked?: boolean
+    can_auto_unlock?: boolean
+    operator_cycle_required?: boolean
+    operator_action?: string
+    residual_lock_reasons?: string[]
+    reasons?: string[]
+    policy?: string
+    metrics_path?: string
+    forage_permission?: boolean
+    consumption_permission?: boolean
+    checks?: Record<string, boolean>
+    checklist?: Array<{
+      id?: string
+      status?: string
+      pass?: boolean
+      detail?: string
+    }>
+  }
+  e21_readiness?: {
+    product_unlock?: boolean
+    can_auto_unlock?: boolean
+    e21_launched?: boolean
+    kaggle_push?: boolean
+    ready_for_e21_schedule?: boolean
+    status?: string
+    plan_doc?: string
+    operator_action?: string
+    baseline?: {
+      test_map_at_3?: number | null
+      safety_recall_deadly_at_3?: number | null
+      version?: string
+    }
+    policy?: string
+  }
+  operator_unlock_ops?: {
+    product_unlock?: boolean
+    can_auto_unlock?: boolean
+    forage_permission?: boolean
+    consumption_permission?: boolean
+    policy?: string
+    operator_runbook_path?: string
+    checklist_json_path?: string
+    checklist_md_path?: string
+    regenerate_command?: string
+    metrics_ssot_path?: string
+    metrics_path_evaluated?: string
+    metrics_note?: string
+    note?: string
   }
   training_metrics?: {
     honesty?: string
@@ -781,6 +993,22 @@ export function MlDashboardPage() {
   const train = status?.training_metrics
   const tm = train?.primary?.metrics
   const gbifCounts = train?.sources_registry?.gbif_probe_snapshot?.counts
+  /** M2 ECE residual — fail-closed confidence guidance · never unlock */
+  const eceResidual = useMemo(
+    () =>
+      normalizeEceResidual(
+        status?.ece_residual ?? {
+          test_ece: tm?.test_ece,
+          band: summary?.ece_band,
+          status: summary?.ece_status || 'disk_metrics',
+        },
+      ),
+    [status?.ece_residual, tm?.test_ece, summary?.ece_band, summary?.ece_status],
+  )
+  const s9Live = useMemo(
+    () => normalizeS9LiveReject(status?.live_reject_monitor),
+    [status?.live_reject_monitor],
+  )
 
   return (
     <div className="page-ml-dashboard page-atelier-shell">
@@ -789,6 +1017,13 @@ export function MlDashboardPage() {
         <h1 className="page-title">Dashboard ML</h1>
         <p className="page-subtitle">
           Estado real del stack de modelos. Si es mock, se dice mock — sin maquillaje.
+        </p>
+        <p
+          className="safety-disclaimer ml-dash-lab-disclaimer"
+          role="note"
+          data-testid="ml-lab-metrics-disclaimer"
+        >
+          <strong>Lab ≠ producto.</strong> {ML_LAB_METRICS_DISCLAIMER_ES}
         </p>
       </div>
 
@@ -845,6 +1080,142 @@ export function MlDashboardPage() {
             /readyz: {ready.ready ? 'listo' : 'degradado'} · models={ready.checks?.models || '—'}
           </p>
         )}
+        <p className="muted" data-testid="ml-product-unlock-status">
+          product_unlock: <code>{String(summary?.product_unlock ?? false)}</code>
+          {summary?.unlock_eligible_advisory != null
+            ? ` · unlock_eligible_advisory=${String(summary.unlock_eligible_advisory)}`
+            : ''}
+          {summary?.eligible_but_locked != null
+            ? ` · eligible_but_locked=${String(summary.eligible_but_locked)}`
+            : status?.product_unlock_eval?.eligible_but_locked != null
+              ? ` · eligible_but_locked=${String(status.product_unlock_eval.eligible_but_locked)}`
+              : ''}
+          {summary?.training_primary_run
+            ? ` · primary_run=${summary.training_primary_run}`
+            : ''}
+        </p>
+        {(status?.open_set || summary?.open_set_status) && (
+          <p className="muted" data-testid="ml-open-set-status">
+            Open-set Identify:{' '}
+            <code>{status?.open_set?.status || summary?.open_set_status || '—'}</code>
+            {' · conf≥'}
+            {status?.open_set?.active_conf_thr ?? summary?.open_set_conf_thr ?? '—'}
+            {' · margin≥'}
+            {status?.open_set?.active_margin_thr ?? summary?.open_set_margin_thr ?? '—'}
+            {' · H≤'}
+            {status?.open_set?.active_entropy_thr ?? summary?.open_set_entropy_thr ?? '—'}
+            {status?.open_set?.holdout_reject_rate != null ||
+            summary?.open_set_holdout_reject_rate != null
+              ? ` · holdout reject ${pct(
+                  status?.open_set?.holdout_reject_rate ?? summary?.open_set_holdout_reject_rate,
+                  1,
+                )}`
+              : ''}
+            {status?.open_set?.lookalike_mate_in_topk_rate != null ||
+            summary?.lookalike_mate_in_topk_rate != null
+              ? ` · mate@3 ${pct(
+                  status?.open_set?.lookalike_mate_in_topk_rate ??
+                    summary?.lookalike_mate_in_topk_rate,
+                  1,
+                )}`
+              : ''}
+            {status?.open_set?.centroids_loaded
+              ? ` · centroids ${status.open_set.centroids_source || 'yes'}`
+              : ''}
+          </p>
+        )}
+        {status?.live_reject_monitor && (
+          <p className="muted" data-testid="ml-live-reject-status">
+            Live Identify reject (S9):{' '}
+            <code>{status.live_reject_monitor.status || summary?.live_reject_status || '—'}</code>
+            {status.live_reject_monitor.n_entries != null || summary?.live_reject_n != null
+              ? ` · n=${status.live_reject_monitor.n_entries ?? summary?.live_reject_n}`
+              : ''}
+            {status.live_reject_monitor.reject_rate != null || summary?.live_reject_rate != null
+              ? ` · rate ${pct(
+                  status.live_reject_monitor.reject_rate ?? summary?.live_reject_rate,
+                  1,
+                )}`
+              : ' · no feedback log yet / SKIP empty'}
+            {status.live_reject_monitor.n_entries_7d != null
+              ? ` · 7d n=${status.live_reject_monitor.n_entries_7d}`
+              : ''}
+            {status.live_reject_monitor.reject_rate_7d != null
+              ? ` · 7d rate ${pct(status.live_reject_monitor.reject_rate_7d, 1)}`
+              : ''}
+            {status.live_reject_monitor.top_reason
+              ? ` · top=${status.live_reject_monitor.top_reason}`
+              : ''}
+            {(status.live_reject_monitor.health_flags || []).length > 0
+              ? ` · flags=${(status.live_reject_monitor.health_flags || []).join(',')}`
+              : ''}
+            {' · never unlocks'}
+          </p>
+        )}
+        {status?.multiview_product?.benchmark && (
+          <p className="muted" data-testid="ml-multiview-bench">
+            Multi-view bench MAP@3 1/2/4:{' '}
+            {pct(status.multiview_product.benchmark.map3_1, 1)} /{' '}
+            {pct(status.multiview_product.benchmark.map3_2, 1)} /{' '}
+            {pct(status.multiview_product.benchmark.map3_4, 1)}
+            {status.multiview_product.benchmark.map3_4_minus_1 != null
+              ? ` · Δ(4−1)=${pct(status.multiview_product.benchmark.map3_4_minus_1, 1)}`
+              : ''}
+            {status.multiview_product.benchmark.torch_ok != null
+              ? ` · torch_ok=${String(status.multiview_product.benchmark.torch_ok)}`
+              : ''}
+            {status.multiview_product.paired_inventory
+              ? ` · paired_LOO=${String(status.multiview_product.paired_inventory.true_leave_one_photo_out)}`
+              : ''}
+            {status.multiview_product.paired_loo_eval?.torch_ok
+              ? ` · GBIF same-occ MAP@3 1/2/4=${pct(status.multiview_product.paired_loo_eval.map3_1, 1)}/${pct(status.multiview_product.paired_loo_eval.map3_2, 1)}/${pct(status.multiview_product.paired_loo_eval.map3_4, 1)} (n=${status.multiview_product.paired_loo_eval.n_eval_packs} spp=${status.multiview_product.paired_loo_eval.n_species ?? '—'})`
+              : ''}
+            {status.multiview_product.paired_loo_eval?.loo_summary?.delta_map3_full_minus_loo !=
+            null
+              ? ` · LOO Δ full−leave1=${pct(status.multiview_product.paired_loo_eval.loo_summary.delta_map3_full_minus_loo, 2)}`
+              : ''}
+            {status.multiview_product.deadly_multiview_caveat
+              ? ' · deadly multi-view ΔMAP@3≈0 (lookalikes+open-set still required)'
+              : ''}
+            {status.multiview_product.field_holdout_m3?.gates_pass != null
+              ? ` · M3 field holdout gates=${String(status.multiview_product.field_holdout_m3.gates_pass)}`
+              : ''}
+            {status.multiview_product.field_holdout_m3?.headline?.map3_4_minus_1 != null
+              ? ` · M3 ΔMAP@3(4−1)=${pct(status.multiview_product.field_holdout_m3.headline.map3_4_minus_1, 1)}`
+              : ''}
+          </p>
+        )}
+        {status?.multiview_product?.field_holdout_m3 && (
+          <section
+            className="atelier-panel"
+            style={{ marginTop: '0.75rem' }}
+            data-testid="ml-field-holdout-m3"
+          >
+            <h3 className="ml-dash-subh">M3 same-specimen field holdout</h3>
+            <p className="muted" data-testid="ml-field-holdout-protocol">
+              Protocol:{' '}
+              <code>
+                {status.multiview_product.field_holdout_m3.protocol ||
+                  'same_specimen_field_holdout_m3'}
+              </code>
+              {' · '}
+              status=
+              {status.multiview_product.field_holdout_m3.readiness?.status ||
+                status.multiview_product.field_holdout_m3.status ||
+                '—'}
+              {' · gates_pass='}
+              {String(status.multiview_product.field_holdout_m3.gates_pass ?? '—')}
+              {' · product_unlock=false'}
+            </p>
+            <p className="muted">
+              Same GBIF occurrence multi-photo (not labeled gills/front slots). Multi-view
+              gains ≠ deadly-safe ID · never consumption.
+              {status.multiview_product.field_holdout_m3.deadly_multiview_caveat
+                ? ' Deadly subset flat — keep lookalikes + open-set.'
+                : ''}
+            </p>
+          </section>
+        )}
       </section>
 
       <div className="ml-dash-grid">
@@ -867,6 +1238,282 @@ export function MlDashboardPage() {
           }
         />
       </div>
+
+      <section
+        className="atelier-panel ml-dash-operator-unlock"
+        style={{ marginTop: '1rem' }}
+        data-testid="ml-operator-unlock-panel"
+      >
+        <h2>Operator unlock (fail-closed)</h2>
+        <p className="muted" data-testid="ml-operator-unlock-policy">
+          Policy:{' '}
+          <code>
+            {status?.product_unlock_eval?.policy ||
+              status?.operator_unlock_ops?.policy ||
+              'orientation_only_never_consume'}
+          </code>
+          {' · '}
+          product_unlock=<code>{String(summary?.product_unlock ?? false)}</code>
+          {' · '}
+          can_auto_unlock=
+          <code>
+            {String(
+              status?.product_unlock_eval?.can_auto_unlock ??
+                status?.operator_unlock_ops?.can_auto_unlock ??
+                false,
+            )}
+          </code>
+          {' · '}
+          forage/consumption=
+          <code data-testid="ml-forage-consumption">
+            {String(
+              status?.operator_unlock_ops?.forage_permission ??
+                status?.product_unlock_eval?.forage_permission ??
+                false,
+            )}
+            /
+            {String(
+              status?.operator_unlock_ops?.consumption_permission ??
+                status?.product_unlock_eval?.consumption_permission ??
+                false,
+            )}
+          </code>
+        </p>
+        <dl className="ml-dash-meta">
+          <div>
+            <dt>unlock_eligible_advisory</dt>
+            <dd data-testid="ml-unlock-eligible-advisory">
+              {String(
+                summary?.unlock_eligible_advisory ??
+                  status?.product_unlock_eval?.unlock_eligible_advisory ??
+                  false,
+              )}
+            </dd>
+          </div>
+          <div>
+            <dt>eligible_but_locked</dt>
+            <dd data-testid="ml-eligible-but-locked">
+              {String(
+                summary?.eligible_but_locked ??
+                  status?.product_unlock_eval?.eligible_but_locked ??
+                  false,
+              )}
+            </dd>
+          </div>
+          <div>
+            <dt>E21 scale readiness</dt>
+            <dd data-testid="ml-e21-readiness">
+              <code>
+                {status?.e21_readiness?.status || summary?.e21_status || '—'}
+              </code>
+              {' · ready='}
+              {String(
+                status?.e21_readiness?.ready_for_e21_schedule ??
+                  summary?.e21_ready ??
+                  false,
+              )}
+              {' · launched='}
+              <code data-testid="ml-e21-launched">
+                {String(
+                  status?.e21_readiness?.e21_launched ??
+                    summary?.e21_launched ??
+                    false,
+                )}
+              </code>
+              {status?.e21_readiness?.baseline?.test_map_at_3 != null
+                ? ` · baseline MAP@3=${Number(
+                    status.e21_readiness.baseline.test_map_at_3,
+                  ).toFixed(3)}`
+                : ''}
+              {status?.e21_readiness?.baseline?.safety_recall_deadly_at_3 != null
+                ? ` · deadly@3=${Number(
+                    status.e21_readiness.baseline.safety_recall_deadly_at_3,
+                  ).toFixed(3)}`
+                : ''}
+              {' · unlock=false (never auto)'}
+            </dd>
+          </div>
+          <div>
+            <dt>S9 live reject</dt>
+            <dd data-testid="ml-operator-s9-summary">
+              <code>
+                {status?.live_reject_monitor?.status ||
+                  summary?.live_reject_status ||
+                  '—'}
+              </code>
+              {status?.live_reject_monitor?.n_entries != null || summary?.live_reject_n != null
+                ? ` · n=${status?.live_reject_monitor?.n_entries ?? summary?.live_reject_n}`
+                : ''}
+              {status?.live_reject_monitor?.reject_rate != null ||
+              summary?.live_reject_rate != null
+                ? ` · rate ${pct(
+                    status?.live_reject_monitor?.reject_rate ?? summary?.live_reject_rate,
+                    1,
+                  )}`
+                : ' · SKIP empty / no log'}
+            </dd>
+          </div>
+          <div>
+            <dt>Operator action</dt>
+            <dd data-testid="ml-operator-action">
+              {summary?.operator_action ||
+                status?.product_unlock_eval?.operator_action ||
+                'review checklist + S9; never auto-unlock'}
+            </dd>
+          </div>
+        </dl>
+        {(() => {
+          const locks =
+            summary?.residual_lock_reasons ||
+            status?.product_unlock_eval?.residual_lock_reasons ||
+            []
+          if (!locks.length) return null
+          return (
+            <div data-testid="ml-residual-lock-reasons">
+              <h3 className="ml-dash-subhead">Residual lock reasons</h3>
+              <ul className="ml-dash-candidates">
+                {locks.map((r) => (
+                  <li key={r}>
+                    <code>{r}</code>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        })()}
+        {status?.product_unlock_eval?.checklist &&
+          status.product_unlock_eval.checklist.length > 0 && (
+            <div data-testid="ml-unlock-checklist">
+              <h3 className="ml-dash-subhead">Checklist (from /models/status)</h3>
+              <ul className="ml-dash-candidates">
+                {status.product_unlock_eval.checklist.map((row) => (
+                  <li key={String(row.id || row.detail)}>
+                    <code>{row.id || 'criterion'}</code> ·{' '}
+                    <strong>{row.status || (row.pass ? 'PASS' : 'FAIL')}</strong>
+                    {row.detail ? ` — ${row.detail}` : ''}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        <div
+          className={`ml-s9-ops-panel ml-s9-ops-panel--${s9Live.trafficDepth}`}
+          data-testid="ml-s9-ops-panel"
+          data-traffic-depth={s9Live.trafficDepth}
+          data-product-unlock="false"
+          style={{ marginTop: '0.75rem' }}
+        >
+          <h3 className="ml-dash-subhead">S9 live reject (ops)</h3>
+          <p
+            className="ml-dash-warn"
+            role="status"
+            data-testid="ml-s9-traffic-note"
+          >
+            Profundidad tráfico: <code data-testid="ml-s9-traffic-depth">{s9Live.trafficDepth}</code>
+            {' · '}
+            {s9Live.noteEs} product_unlock=false
+          </p>
+          <dl className="ml-dash-meta">
+            <dt>Windows</dt>
+            <dd data-testid="ml-s9-windows">
+              {status?.live_reject_monitor?.windows
+                ? (['24h', '7d', '30d', 'all'] as const).map((w) => {
+                    const win = status?.live_reject_monitor?.windows?.[w]
+                    if (!win) return null
+                    return (
+                      <span key={w} style={{ marginRight: '0.75rem' }}>
+                        <code>{w}</code> n={win.n_entries ?? 0}
+                        {win.reject_rate != null ? ` r=${pct(win.reject_rate, 1)}` : ''}
+                      </span>
+                    )
+                  })
+                : '— (no windows / empty log)'}
+            </dd>
+            <dt>Modes</dt>
+            <dd data-testid="ml-s9-modes">
+              real={s9Live.nReal} · mock={s9Live.nMock}
+              {status?.live_reject_monitor?.n_blocked_mode != null
+                ? ` · blocked=${status.live_reject_monitor.n_blocked_mode}`
+                : ''}
+            </dd>
+            <dt>Reasons</dt>
+            <dd data-testid="ml-s9-reasons">
+              {status?.live_reject_monitor?.reasons &&
+              Object.keys(status.live_reject_monitor.reasons).length > 0
+                ? Object.entries(status.live_reject_monitor.reasons)
+                    .slice(0, 6)
+                    .map(([k, v]) => `${k}:${v}`)
+                    .join(' · ')
+                : '—'}
+            </dd>
+            <dt>Health flags</dt>
+            <dd data-testid="ml-s9-health-flags">
+              {(status?.live_reject_monitor?.health_flags || s9Live.healthFlags).join(', ') ||
+                '—'}
+            </dd>
+            <dt>Multiview (logged views)</dt>
+            <dd data-testid="ml-s9-multiview">
+              {status?.live_reject_monitor?.multiview
+                ? [
+                    `labeled=${status.live_reject_monitor.multiview.n_with_view_labels ?? 0}`,
+                    `≥2 views=${status.live_reject_monitor.multiview.n_multiview_ge2 ?? 0}`,
+                    `diag any=${status.live_reject_monitor.multiview.n_diag_any ?? 0}`,
+                    `diag full g/f/d=${status.live_reject_monitor.multiview.n_diag_full_gills_front_detail ?? 0}`,
+                  ].join(' · ')
+                : '— (no view_coverage in log yet)'}
+            </dd>
+          </dl>
+          <p className="muted" style={{ fontSize: '0.85rem' }}>
+            Advisory only · empty log = SKIP · never product_unlock · multi-foto without
+            gills/front/detail ≠ deadly-safe. Report:{' '}
+            <code>python -m kaggle.ml_qa.live_reject_monitor --write</code>
+          </p>
+        </div>
+
+        <div data-testid="ml-operator-runbook">
+          <h3 className="ml-dash-subhead">Runbook &amp; regenerate</h3>
+          <p className="muted">
+            Runbook path:{' '}
+            <code data-testid="ml-operator-runbook-path">
+              {status?.operator_unlock_ops?.operator_runbook_path ||
+                'docs/OPERATOR_UNLOCK_RUNBOOK.md'}
+            </code>
+          </p>
+          <p className="muted">
+            Metrics SSOT (E20 package path):{' '}
+            <code data-testid="ml-operator-metrics-ssot">
+              {status?.operator_unlock_ops?.metrics_path_evaluated ||
+                status?.operator_unlock_ops?.metrics_ssot_path ||
+                status?.product_unlock_eval?.metrics_path ||
+                'kaggle/kernel_output_v20/models/metrics.json'}
+            </code>
+          </p>
+          <p className="muted">
+            Checklist artifacts:{' '}
+            <code>
+              {status?.operator_unlock_ops?.checklist_md_path ||
+                'eval/reports/ml_experiments/operator_unlock_checklist.md'}
+            </code>
+            {' · '}
+            <code>
+              {status?.operator_unlock_ops?.checklist_json_path ||
+                'eval/reports/ml_experiments/operator_unlock_checklist.json'}
+            </code>
+          </p>
+          <p>
+            Regenerate:{' '}
+            <code data-testid="ml-operator-regenerate-cmd">
+              {status?.operator_unlock_ops?.regenerate_command ||
+                'python -m kaggle.ml_qa.gate_eval'}
+            </code>
+          </p>
+          <p className="muted" role="note">
+            Human decision gate only — never auto-flip product_unlock. Orientation only · never
+            consumption · never forage permission. GTM form URL (
+            <code>VITE_BETA_FEEDBACK_URL</code>) is separate from unlock.
+          </p>
+        </div>
+      </section>
 
       <QualityGateTile
         gate={qualityGate}
@@ -949,7 +1596,9 @@ export function MlDashboardPage() {
           </div>
           <div>
             <span>ECE</span>
-            <strong>{tm?.test_ece != null ? Number(tm.test_ece).toFixed(3) : '—'}</strong>
+            <strong data-testid="ml-metric-ece">
+              {tm?.test_ece != null ? Number(tm.test_ece).toFixed(3) : '—'}
+            </strong>
           </div>
           <div>
             <span>Recall mortales</span>
@@ -980,6 +1629,91 @@ export function MlDashboardPage() {
             ))}
           </ul>
         )}
+      </section>
+
+      <section
+        className={`atelier-panel ml-ece-residual ml-ece-residual--${eceResidual.band}`}
+        style={{ marginTop: '1rem' }}
+        data-testid="ml-ece-residual"
+        data-band={eceResidual.band}
+        data-product-unlock="false"
+        aria-label="ECE residual honesty"
+      >
+        <h2>ECE residual (calibración · M2)</h2>
+        <p className="muted">
+          Banda <code data-testid="ml-ece-band">{eceResidual.band}</code>
+          {' · '}
+          ECE{' '}
+          <strong data-testid="ml-ece-value">
+            {eceResidual.ece != null ? eceResidual.ece.toFixed(4) : '—'}
+          </strong>
+          {' · '}
+          product_unlock=<code>false</code>
+        </p>
+        <p className="ml-dash-warn" role="status" data-testid="ml-ece-summary">
+          {eceResidual.summary}
+        </p>
+        <p className="muted">
+          {status?.ece_residual?.honesty ||
+            'Soft MAP/deadly pueden PASS con ECE alto (shift de dominio). La UI de confianza debe ser humilde. Solo orientación — nunca consumo.'}
+        </p>
+        {!!status?.ece_residual?.residual_actions?.length && (
+          <ol className="ml-dash-howto" data-testid="ml-ece-actions">
+            {status.ece_residual.residual_actions.slice(0, 5).map((a) => (
+              <li key={a}>{a}</li>
+            ))}
+          </ol>
+        )}
+      </section>
+
+      <section
+        className="atelier-panel"
+        style={{ marginTop: '1rem' }}
+        data-testid="ml-model-card-nomenclature"
+        aria-label="Model card nomenclature"
+      >
+        <h2>Model card · nomenclatura (Index Fungorum)</h2>
+        <p className="muted" data-testid="ml-if-citation">
+          Nomenclatural data: Index Fungorum (Royal Botanic Gardens, Kew). Taxonomic
+          name backbone for educational orientation only — not consumption permission.
+          Product SSOT names are not auto-overwritten. Full card:{' '}
+          <code>docs/MODEL_CARD.md</code> · <code>docs/INDEX_FUNGORUM.md</code>
+        </p>
+        <ul className="ml-dash-candidates">
+          <li>
+            <code>docs/MODEL_CARD.md</code> · § Index Fungorum citation
+          </li>
+          <li>
+            <code>docs/INDEX_FUNGORUM.md</code> · API + attribution rules
+          </li>
+          <li>
+            API product:{' '}
+            <code>/nomenclature/resolve</code> · <code>/nomenclature/attribution</code> ·{' '}
+            <code>/models/data-sources</code> → nomenclature
+          </li>
+          <li>
+            Upstream:{' '}
+            <a
+              href="https://www.indexfungorum.org/"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-testid="ml-if-home-link"
+            >
+              indexfungorum.org
+            </a>{' '}
+            ·{' '}
+            <a
+              href="https://www.indexfungorum.org/ixfwebservice/fungus.asmx"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              fungus.asmx
+            </a>
+          </li>
+        </ul>
+        <p className="muted" role="note" data-testid="ml-if-policy">
+          product_unlock=false · names only · never edible mapping from IF fields.
+        </p>
       </section>
 
       <section className="atelier-panel" style={{ marginTop: '1rem' }}>
@@ -1086,8 +1820,16 @@ export function MlDashboardPage() {
             <dd>{String(status?.config?.model_fallback_to_mock ?? '—')}</dd>
           </div>
           <div>
-            <dt>Open-set thr</dt>
+            <dt>Open-set thr (cosine)</dt>
             <dd>{String(status?.config?.open_set_threshold ?? '—')}</dd>
+          </div>
+          <div>
+            <dt>Open-set conf/margin (activo)</dt>
+            <dd>
+              {String(status?.open_set?.active_conf_thr ?? summary?.open_set_conf_thr ?? '—')} /{' '}
+              {String(status?.open_set?.active_margin_thr ?? summary?.open_set_margin_thr ?? '—')}
+              {status?.open_set?.status ? ` (${status.open_set.status})` : ''}
+            </dd>
           </div>
           <div>
             <dt>API</dt>
@@ -1105,7 +1847,7 @@ export function MlDashboardPage() {
         <ol className="ml-dash-howto">
           <li>
             Coloca checkpoints en{' '}
-            <code>kaggle/kernel_output_v9/models/best.pt</code> o configura{' '}
+            <code>kaggle/kernel_output_v20/models/best.pt</code> (E20 holdout) o configura{' '}
             <code>MULTI_VIEW_WEIGHTS_PATH</code>.
           </li>
           <li>

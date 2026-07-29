@@ -13,6 +13,7 @@ import {
   clearOfflinePackCache,
   isOfflinePackInstalled,
   offlinePackAssetUrls,
+  offlinePackMultiviewHonesty,
   offlinePackPhotoUrls,
   readOfflinePackMeta,
   writeOfflinePackMeta,
@@ -68,6 +69,7 @@ export function OfflinePackPage() {
   const visible = showAll ? entries : entries.slice(0, TOP_N)
   const photoCount = offlinePackPhotoUrls(entries).length
   const assetCount = offlinePackAssetUrls(entries).length
+  const multiviewHonesty = useMemo(() => offlinePackMultiviewHonesty(entries), [entries])
   const installed = isOfflinePackInstalled(meta)
   const progressPct =
     progress && progress.total > 0 ? Math.round((progress.done / progress.total) * 100) : 0
@@ -215,6 +217,101 @@ export function OfflinePackPage() {
           </li>
         </ul>
       </div>
+
+      <div
+        className="atelier-panel offline-multiview-honesty lookalike-item__diag"
+        role="note"
+        data-testid="offline-multiview-honesty"
+        data-product-unlock="false"
+      >
+        <p className="offline-scope-note__title">
+          {t('offline.multiviewTitle', {
+            defaultValue: 'Multi-vista offline (estudio, no ID de campo)',
+          })}
+        </p>
+        <p className="muted" style={{ margin: '0.35rem 0' }}>
+          {t('offline.multiviewNote', {
+            defaultValue: multiviewHonesty.note_es,
+          })}
+        </p>
+        <div className="lookalike-item__diag-views">
+          <span className="lookalike-item__diag-label">
+            {t('offline.priorityViews', {
+              defaultValue: 'Vistas prioritarias en campo (cuando tengas red):',
+            })}
+          </span>
+          {multiviewHonesty.priority_views.map((view) => (
+            <span
+              key={view}
+              className="lookalike-item__diag-badge lookalike-item__diag-badge--static"
+              data-slot={view}
+            >
+              {t(`identify.views.${view}`, { defaultValue: view })}
+            </span>
+          ))}
+        </div>
+        <p className="muted" style={{ margin: '0.45rem 0 0', fontSize: '0.85rem' }}>
+          {t('offline.multiviewStats', {
+            defaultValue:
+              'Pack: {{n}} fichas · alto riesgo {{high}} · mortales {{deadly}} · galería prefetch ≤{{angles}} ángulos/ficha (estudio).',
+            n: multiviewHonesty.n_entries,
+            high: multiviewHonesty.n_high_risk,
+            deadly: multiviewHonesty.n_deadly,
+            angles: multiviewHonesty.gallery_angles_max,
+          })}
+        </p>
+        <p className="lookalike-item__diag-policy muted">
+          {t('result.pairDiagPolicy', {
+            defaultValue:
+              'Educativo: multi-foto sin estas vistas no basta — solo orientación, nunca consumo.',
+          })}
+        </p>
+        <p style={{ margin: '0.55rem 0 0' }}>
+          <Link to="/educacion" className="btn-atelier btn-atelier--ghost">
+            {t('offline.learnMultiview', { defaultValue: 'Aprender multi-vista' })}
+          </Link>{' '}
+          <Link to="/identificar" className="btn-atelier btn-atelier--ghost">
+            {t('nav.identify', { defaultValue: 'Identificar' })}
+          </Link>
+        </p>
+      </div>
+
+      {/* Encyclopedia offline depth — study only, never offline food-safe AI ID */}
+      <section
+        className="atelier-panel offline-ency-depth"
+        data-testid="offline-ency-depth"
+        aria-label={t('offline.encyDepthAria', {
+          defaultValue: 'Profundidad de enciclopedia offline',
+        })}
+      >
+        <p className="offline-scope-note__title">
+          {t('offline.encyDepthTitle', {
+            defaultValue: 'Enciclopedia offline = estudio de fichas',
+          })}
+        </p>
+        <p className="muted" style={{ margin: '0.35rem 0' }}>
+          {t('offline.encyDepthBody', {
+            defaultValue:
+              'Con red: filtra por láminas/poros/riesgo en Enciclopedia. Sin red: el pack cachea fotos y fichas prioritarias para estudiar. Nunca identifica setas offline ni autoriza consumo.',
+          })}
+        </p>
+        <div className="offline-ency-depth__actions">
+          <Link
+            to="/enciclopedia"
+            className="btn-atelier btn-atelier--primary"
+            data-testid="offline-cta-encyclopedia"
+          >
+            {t('nav.encyclopedia', { defaultValue: 'Enciclopedia' })}
+          </Link>
+          <Link
+            to="/lookalikes"
+            className="btn-atelier btn-atelier--ghost"
+            data-testid="offline-cta-lookalikes"
+          >
+            {t('nav.lookalikes', { defaultValue: 'Lookalikes' })}
+          </Link>
+        </div>
+      </section>
 
       {installed && meta ? (
         <div

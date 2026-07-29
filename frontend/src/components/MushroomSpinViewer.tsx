@@ -1,40 +1,20 @@
 /**
- * @deprecated Prefer PhotoSpinViewer — real field photos only.
- * Thin wrapper kept so old imports keep working without procedural 3D.
+ * @deprecated Unmounted — product uses SpeciesGallery / SpeciesPhotoCard (2D only).
+ * Renders nothing so legacy imports cannot revive spin/studio chrome.
  */
-import { PhotoSpinViewer, type PhotoSpinViewerProps } from './PhotoSpinViewer'
-
 export type MushroomSpinViewerProps = {
-  height?: number
-  autoRotate?: boolean
-  label?: string
-  riskLabel?: string
-  className?: string
-  /** Scientific name for real photo fetch */
   taxon?: string
-  showChrome?: boolean
-  capStyle?: string
-  capColor?: string
-  stemColor?: string
+  scientificName?: string
+  height?: number
+  riskLabel?: string
+  label?: string
+  autoPlay?: boolean
+  className?: string
+  [key: string]: unknown
 }
 
-export function MushroomSpinViewer({
-  height = 400,
-  autoRotate = true,
-  label,
-  riskLabel,
-  className,
-  taxon = 'Amanita phalloides',
-}: MushroomSpinViewerProps) {
-  const props: PhotoSpinViewerProps = {
-    taxon,
-    height,
-    autoPlay: autoRotate,
-    label: label || `Fotos reales de ${taxon}`,
-    riskLabel,
-    className,
-  }
-  return <PhotoSpinViewer {...props} />
+export function MushroomSpinViewer(_props: MushroomSpinViewerProps) {
+  return null
 }
 
 export default MushroomSpinViewer

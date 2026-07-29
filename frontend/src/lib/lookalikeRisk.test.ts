@@ -1,8 +1,11 @@
 import { beforeAll, describe, expect, it } from 'vitest'
 import { loadSpeciesCatalog } from '../data/speciesCatalog'
 import {
+  collectSsotLookalikeNames,
   lookalikeSummary,
+  lookalikeSummaryForIdentify,
   rankLookalikes,
+  rankLookalikesForIdentify,
   rankLookalikesHydrated,
   summarizeLookalikes,
 } from './lookalikeRisk'
@@ -64,6 +67,46 @@ describe('lookalikeRisk hydration (B-34)', () => {
 
   it('dedupes case-insensitive names', () => {
     const ranked = rankLookalikes(['Amanita phalloides', 'amanita phalloides', '  '])
+    expect(ranked.length).toBe(1)
+  })
+
+  it('resolves Coprinopsis atramentaria alias to SSOT Coprinus atramentarius', () => {
+    const ranked = rankLookalikes(['Coprinopsis atramentaria'])
+    expect(ranked.length).toBe(1)
+    expect(ranked[0]!.name).toBe('Coprinus atramentarius')
+    expect(ranked[0]!.in_catalog).toBe(true)
+  })
+
+  it('collects SSOT lookalikes for predicted taxa (B-43 FE)', () => {
+    const names = collectSsotLookalikeNames(['Amanita caesarea'])
+    expect(names.length).toBeGreaterThan(0)
+    expect(names.some((n) => /phalloides/i.test(n))).toBe(true)
+    // Does not include the prediction itself
+    expect(names.every((n) => n.toLowerCase() !== 'amanita caesarea')).toBe(true)
+  })
+
+  it('rankLookalikesForIdentify fills empty API list from SSOT', () => {
+    const ranked = rankLookalikesForIdentify([], ['Amanita caesarea'])
+    expect(ranked.length).toBeGreaterThan(0)
+    expect(ranked.some((r) => /phalloides/i.test(r.name))).toBe(true)
+    const sum = lookalikeSummaryForIdentify([], ['Amanita caesarea'])
+    expect(sum.total).toBe(ranked.length)
+  })
+
+  it('rankLookalikesForIdentify unions API + SSOT without dupes', () => {
+    const ranked = rankLookalikesForIdentify(
+      ['Amanita phalloides', 'Amanita phalloides'],
+      ['Amanita caesarea'],
+    )
+    const phallo = ranked.filter((r) => /phalloides/i.test(r.name))
+    expect(phallo.length).toBe(1)
+  })
+
+  it('dedupes synonym + canonical as one lookalike', () => {
+    const ranked = rankLookalikes([
+      'Coprinopsis atramentaria',
+      'Coprinus atramentarius',
+    ])
     expect(ranked.length).toBe(1)
   })
 })

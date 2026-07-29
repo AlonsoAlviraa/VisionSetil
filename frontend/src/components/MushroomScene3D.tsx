@@ -1,36 +1,16 @@
 /**
- * @deprecated Prefer PhotoSpinViewer — real field photos only.
- * Stub kept so accidental imports compile without Three.js (Wave B).
+ * @deprecated Removed — VisionSetil is a 2D field-photo product.
+ * Renders nothing so any accidental import cannot show 3D chrome.
  */
 export interface MushroomScene3DProps {
-  height?: number
-  autoRotate?: boolean
-  label?: string
-  riskLabel?: string
+  taxon?: string
   className?: string
-  variant?: string
-  capStyle?: string
-  capColor?: string
-  stemColor?: string
+  height?: number
+  [key: string]: unknown
 }
 
-export function MushroomScene3D({
-  height = 280,
-  label = 'Fotos reales preferidas',
-  className = '',
-}: MushroomScene3DProps) {
-  return (
-    <div
-      className={`mushroom-scene-stub ${className}`.trim()}
-      style={{ height, display: 'grid', placeItems: 'center' }}
-      role="img"
-      aria-label={label}
-    >
-      <p className="muted" style={{ padding: '1rem', textAlign: 'center', fontSize: '0.9rem' }}>
-        Vista 3D retirada. Usa el visor de fotos reales de campo.
-      </p>
-    </div>
-  )
+export function MushroomScene3D(_props: MushroomScene3DProps) {
+  return null
 }
 
 export default MushroomScene3D

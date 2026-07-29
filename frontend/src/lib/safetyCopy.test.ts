@@ -5,6 +5,40 @@ import { describe, expect, it } from 'vitest'
 import { readFileSync, readdirSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 import { FORBIDDEN_CONSUMPTION_PHRASES } from './riskLabels'
+import {
+  ENCYCLOPEDIA_FOOD_FILTER_NOTE_EN,
+  ENCYCLOPEDIA_FOOD_FILTER_NOTE_ES,
+  ML_LAB_METRICS_DISCLAIMER_EN,
+  ML_LAB_METRICS_DISCLAIMER_ES,
+  ORIENTATION_STICKY_EN,
+  ORIENTATION_STICKY_ES,
+  orientationStickyLine,
+} from './safetyCopy'
+
+describe('safetyCopy helpers', () => {
+  it('orientation sticky denies consumption (ES + EN)', () => {
+    expect(orientationStickyLine().toLowerCase()).toMatch(/orientaci[oó]n|nunca/)
+    expect(ORIENTATION_STICKY_ES.toLowerCase()).toContain('nunca')
+    expect(ORIENTATION_STICKY_ES.toLowerCase()).not.toMatch(/puedes comer|safe to eat/)
+    expect(orientationStickyLine('en').toLowerCase()).toMatch(/orientation|never/)
+    expect(ORIENTATION_STICKY_EN.toLowerCase()).toContain('never')
+    expect(ORIENTATION_STICKY_EN.toLowerCase()).not.toMatch(/safe to eat|puedes comer/)
+  })
+
+  it('ML lab disclaimer does not unlock identify/consume', () => {
+    const s = ML_LAB_METRICS_DISCLAIMER_ES.toLowerCase()
+    expect(s).toMatch(/no desbloquean|orientation/)
+    expect(s).not.toMatch(/puedes comer|safe to eat|apto para consum/)
+    const en = ML_LAB_METRICS_DISCLAIMER_EN.toLowerCase()
+    expect(en).toMatch(/do not unlock|orientation/)
+    expect(en).not.toMatch(/safe to eat|puedes comer/)
+  })
+
+  it('encyclopedia food note is orientation-only', () => {
+    expect(ENCYCLOPEDIA_FOOD_FILTER_NOTE_ES.toLowerCase()).toMatch(/no son permiso/)
+    expect(ENCYCLOPEDIA_FOOD_FILTER_NOTE_EN.toLowerCase()).toMatch(/not permission/)
+  })
+})
 
 function walkTsx(dir: string, acc: string[] = []): string[] {
   for (const name of readdirSync(dir)) {

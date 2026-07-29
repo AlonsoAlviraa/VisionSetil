@@ -20,8 +20,11 @@ import {
   register as apiRegister,
   type AuthUser,
 } from '../api/auth'
-
-const TOKEN_KEY = 'visionsetil_session_token'
+import {
+  applySessionAfterAuth,
+  clearStoredSessionToken,
+  readStoredSessionToken,
+} from './sessionTokenPolicy'
 
 type AuthContextValue = {
   user: AuthUser | null
@@ -46,7 +49,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const cookieMode = isAuthCookieMode()
   const [user, setUser] = useState<AuthUser | null>(null)
   const [token, setToken] = useState<string | null>(() =>
-    cookieMode ? null : localStorage.getItem(TOKEN_KEY),
+    readStoredSessionToken(localStorage, cookieMode),
   )
   const [loading, setLoading] = useState(true)
 
@@ -68,7 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             msg,
           )
         if (isAuthFail) {
-          if (!cookieMode) localStorage.removeItem(TOKEN_KEY)
+          if (!cookieMode) clearStoredSessionToken(localStorage)
           if (!cancelled) {
             setToken(null)
             setUser(null)
@@ -87,14 +90,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = useCallback(
     async (loginId: string, password: string) => {
       const res = await apiLogin(loginId, password)
-      if (cookieMode) {
-        // Never persist raw token when using HttpOnly cookies
-        localStorage.removeItem(TOKEN_KEY)
-        setToken(null)
-      } else {
-        localStorage.setItem(TOKEN_KEY, res.token)
-        setToken(res.token)
-      }
+      applySessionAfterAuth(localStorage, cookieMode, res.token)
+      setToken(cookieMode ? null : res.token)
       setUser(res.user)
     },
     [cookieMode],
@@ -108,13 +105,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       display_name?: string
     }) => {
       const res = await apiRegister(data)
-      if (cookieMode) {
-        localStorage.removeItem(TOKEN_KEY)
-        setToken(null)
-      } else {
-        localStorage.setItem(TOKEN_KEY, res.token)
-        setToken(res.token)
-      }
+      applySessionAfterAuth(localStorage, cookieMode, res.token)
+      setToken(cookieMode ? null : res.token)
       setUser(res.user)
     },
     [cookieMode],
@@ -126,7 +118,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch {
       // ignore network errors on logout
     }
-    localStorage.removeItem(TOKEN_KEY)
+    clearStoredSessionToken(localStorage)
     setToken(null)
     setUser(null)
   }, [token, cookieMode])
@@ -156,6 +148,5 @@ export function useAuth(): AuthContextValue {
 }
 
 export function getStoredToken(): string | null {
-  if (isAuthCookieMode()) return null
-  return localStorage.getItem(TOKEN_KEY)
+  return readStoredSessionToken(localStorage, isAuthCookieMode())
 }

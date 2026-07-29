@@ -79,6 +79,29 @@ describe('setadle', () => {
     expect(ta.length).toBeGreaterThan(0)
   })
 
+  it('typeahead handles empty query, accents, and partial matches', async () => {
+    await loadSpeciesCatalog()
+    const pool = buildSetadlePool()
+    // Empty query: discoverability head (no crash)
+    expect(typeaheadPool(pool, '', 5).length).toBeGreaterThan(0)
+    expect(typeaheadPool(pool, '   ', 3).length).toBeGreaterThan(0)
+
+    const lac = pool.find((p) => p.taxon === 'Lactarius deliciosus') || pool[0]
+    // Accent / partial: second-guess via resolveGuess
+    if (lac.common) {
+      const partial = lac.common.slice(0, Math.min(4, lac.common.length))
+      const ta = typeaheadPool(pool, partial, 8)
+      expect(ta.length).toBeGreaterThan(0)
+      const g = resolveGuess(pool, partial)
+      expect(g).toBeTruthy()
+    }
+    // Accent-folded niscalo-style if present
+    const accentHits = typeaheadPool(pool, 'niscalo', 10)
+    if (pool.some((p) => /lactarius deliciosus/i.test(p.taxon))) {
+      expect(accentHits.some((p) => /lactarius/i.test(p.taxon))).toBe(true)
+    }
+  })
+
   it('normalizes legacy emoji mode to habitat', () => {
     expect(normalizeSetadleMode('emoji')).toBe('habitat')
     expect(normalizeSetadleMode('habitat')).toBe('habitat')

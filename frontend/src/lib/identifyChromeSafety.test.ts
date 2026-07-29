@@ -5,14 +5,18 @@
  * Policy: docs/SAFETY_POLICY.md § Safety-by-surface (D16 / D-B16).
  */
 import { describe, expect, it } from 'vitest'
-import { readFileSync } from 'node:fs'
-import { join } from 'node:path'
+import { existsSync, readFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-const root = join(process.cwd(), 'src')
-const repoDocs = join(process.cwd(), '..', 'docs')
+/** Resolve frontend/src and repo docs regardless of vitest cwd (repo root vs frontend). */
+const srcRoot = join(dirname(fileURLToPath(import.meta.url)), '..')
+const repoDocs = existsSync(join(srcRoot, '..', '..', 'docs'))
+  ? join(srcRoot, '..', '..', 'docs')
+  : join(process.cwd(), 'docs')
 
 function readSrc(rel: string) {
-  return readFileSync(join(root, rel), 'utf8')
+  return readFileSync(join(srcRoot, rel), 'utf8')
 }
 
 function readDocs(rel: string) {
@@ -88,6 +92,17 @@ describe('Identify chrome safety (B-35 / D-B16)', () => {
   it('dead Identify food-row chrome is not referenced in ResultCard', () => {
     const card = readSrc('components/ResultCard.tsx')
     expect(card).not.toMatch(/result-food-row/)
+  })
+
+  it('Identify surfaces have no educational recipe CTA', () => {
+    const RECIPE_CTA =
+      /speciesRecipes|getSpeciesRecipes|hasEducationalRecipes|detail\.recipes|Recetas \(enlaces|species-recipes/
+    const hits: string[] = []
+    for (const rel of IDENTIFY_SURFACE_SOURCES) {
+      const text = readSrc(rel)
+      if (RECIPE_CTA.test(text)) hits.push(rel)
+    }
+    expect(hits).toEqual([])
   })
 })
 

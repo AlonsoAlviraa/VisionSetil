@@ -1,0 +1,1392 @@
+{
+  "version": "1.1.0",
+  "policy": "Open-license multi-view stills for encyclopedia gallery enrichment. Orientation only — never consumption. Attribution required.",
+  "species": {
+    "boletus-edulis": {
+      "taxon": "Boletus edulis",
+      "slug": "boletus-edulis",
+      "photos": [
+        {
+          "role": "hero",
+          "url": "https://commons.wikimedia.org/wiki/Special:FilePath/AD2009Sep13_Boletus_edulis_01.jpg",
+          "license": "Public Domain (CC0/PD-self)",
+          "creator": "Bernie (User:Wilder Kaiser)",
+          "attribution_text": "Bernie (Wilder Kaiser) / Public Domain / Wikimedia Commons",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:AD2009Sep13_Boletus_edulis_01.jpg"
+        },
+        {
+          "role": "front",
+          "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Boletus_edulis_steinpilz.jpg",
+          "license": "CC BY 3.0",
+          "creator": "Holger Krisp",
+          "attribution_text": "Holger Krisp / CC BY 3.0 / Wikimedia Commons",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Boletus_edulis_steinpilz.jpg"
+        },
+        {
+          "role": "profile",
+          "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Gemeine_Steinpilz_(Boletus_edulis).JPG",
+          "license": "CC BY 3.0",
+          "creator": "Holger Krisp",
+          "attribution_text": "Holger Krisp / CC BY 3.0 / Wikimedia Commons",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Gemeine_Steinpilz_(Boletus_edulis).JPG"
+        },
+        {
+          "role": "pores",
+          "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Boletus_edulis_pores_aging.jpg",
+          "license": "CC BY-SA 4.0",
+          "creator": "Ude",
+          "attribution_text": "Ude / CC BY-SA 4.0 / Wikimedia Commons",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Boletus_edulis_pores_aging.jpg"
+        },
+        {
+          "role": "gills",
+          "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Boletus.edulis2.-.lindsey.jpg",
+          "license": "CC BY-SA 3.0",
+          "creator": "James Lindsey",
+          "attribution_text": "James Lindsey at Ecology of Commanster / CC BY-SA 3.0 / Wikimedia Commons",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Boletus.edulis2.-.lindsey.jpg"
+        },
+        {
+          "role": "detail",
+          "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Boletus_edulis_herkkutatti.jpg",
+          "license": "CC BY-SA 4.0",
+          "creator": "Alinja",
+          "attribution_text": "Alinja / CC BY-SA 4.0 / Wikimedia Commons",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Boletus_edulis_herkkutatti.jpg"
+        },
+        {
+          "role": "detail",
+          "url": "https://commons.wikimedia.org/wiki/Special:FilePath/AD2009Sep13_Boletus_edulis_04.jpg",
+          "license": "Public Domain (CC0/PD-self)",
+          "creator": "Ernie (User:Wilder Kaiser)",
+          "attribution_text": "Ernie (Wilder Kaiser) / Public Domain / Wikimedia Commons",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:AD2009Sep13_Boletus_edulis_04.jpg"
+        },
+        {
+          "role": "pores",
+          "url": "https://commons.wikimedia.org/wiki/Special:FilePath/AD2009Sep13_Boletus_edulis_06.jpg",
+          "license": "Public Domain (CC0/PD-self)",
+          "creator": "Bernie (User:Wilder Kaiser)",
+          "attribution_text": "Bernie (Wilder Kaiser) / Public Domain / Wikimedia Commons",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:AD2009Sep13_Boletus_edulis_06.jpg"
+        },
+        {
+          "role": "habitat",
+          "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Boletus_edulis_IT.jpg",
+          "license": "CC BY-SA 4.0",
+          "creator": "ReddishClover",
+          "attribution_text": "ReddishClover / CC BY-SA 4.0 / Wikimedia Commons",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Boletus_edulis_IT.jpg"
+        },
+        {
+          "role": "habitat",
+          "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Boletus_edulis_(Tillegem).jpg",
+          "license": "CC BY-SA 4.0",
+          "creator": "Hans Hillewaert",
+          "attribution_text": "© Hans Hillewaert / CC BY-SA 4.0 / Wikimedia Commons",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Boletus_edulis_(Tillegem).jpg"
+        }
+      ]
+    },
+    "cantharellus-cibarius": {
+      "taxon": "Cantharellus cibarius",
+      "slug": "cantharellus-cibarius",
+      "photos": [
+        {
+          "role": "hero",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/a/aa/2007-07-14_Cantharellus_cibarius.jpg",
+          "license": "CC BY-SA 3.0",
+          "creator": "Andreas Kunze",
+          "attribution_text": "Andreas Kunze / CC BY-SA 3.0 / Wikimedia Commons",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:2007-07-14_Cantharellus_cibarius.jpg"
+        },
+        {
+          "role": "gills",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/0/02/2007-07-14_Cantharellus_cibarius_Detail.jpg",
+          "license": "CC BY-SA 3.0",
+          "creator": "Andreas Kunze",
+          "attribution_text": "Andreas Kunze / CC BY-SA 3.0 / Wikimedia Commons",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:2007-07-14_Cantharellus_cibarius_Detail.jpg"
+        },
+        {
+          "role": "profile",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/6/67/Pfifferling_Cantharellus_cibarius.jpg",
+          "license": "CC BY 3.0",
+          "creator": "Holger Krisp",
+          "attribution_text": "Holger Krisp / CC BY 3.0 / Wikimedia Commons",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Pfifferling_Cantharellus_cibarius.jpg"
+        },
+        {
+          "role": "habitat",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/1/19/Cantharellus_cibarius_-_group.jpg",
+          "license": "CC BY 3.0",
+          "creator": "Phobulos",
+          "attribution_text": "Phobulos / CC BY 3.0 / Wikimedia Commons",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Cantharellus_cibarius_-_group.jpg"
+        },
+        {
+          "role": "habitat",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/c/c0/Cantharellus-cibarius-0296.jpg",
+          "license": "CC BY-SA 3.0",
+          "creator": "Mars 2002",
+          "attribution_text": "Mars 2002 / CC BY-SA 3.0 / Wikimedia Commons",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Cantharellus-cibarius-0296.jpg"
+        },
+        {
+          "role": "front",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/7/7a/Cantharellus_cibarius_Hanekam_DSCF2185.JPG",
+          "license": "CC BY 2.5",
+          "creator": "Teun Spaans",
+          "attribution_text": "Teun Spaans / CC BY 2.5 / Wikimedia Commons",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Cantharellus_cibarius_Hanekam_DSCF2185.JPG"
+        },
+        {
+          "role": "gills",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/7/78/Cantharellus_cibarius_Hanekam_DSCF2186.JPG",
+          "license": "CC BY 2.5",
+          "creator": "Teun Spaans",
+          "attribution_text": "Teun Spaans / CC BY 2.5 / Wikimedia Commons",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Cantharellus_cibarius_Hanekam_DSCF2186.JPG"
+        },
+        {
+          "role": "detail",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/b/bb/Cantharellus-cibarius-0303.jpg",
+          "license": "CC BY-SA 3.0",
+          "creator": "Mars 2002",
+          "attribution_text": "Mars 2002 / CC BY-SA 3.0 / Wikimedia Commons",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Cantharellus-cibarius-0303.jpg"
+        },
+        {
+          "role": "habitat",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/9/9a/Chanterelle_Cantharellus_cibarius.jpg",
+          "license": "CC BY-SA 3.0",
+          "creator": "Strobilomyces",
+          "attribution_text": "Strobilomyces / CC BY-SA 3.0 / Wikimedia Commons",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Chanterelle_Cantharellus_cibarius.jpg"
+        },
+        {
+          "role": "habitat",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/4/40/Cantharellus_cibarius_86024381.jpg",
+          "license": "CC BY 4.0",
+          "creator": "Nina Filippova",
+          "attribution_text": "Nina Filippova / CC BY 4.0 / iNaturalist via Wikimedia Commons",
+          "source": "Wikimedia Commons (via iNaturalist)",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Cantharellus_cibarius_86024381.jpg"
+        }
+      ]
+    },
+    "lactarius-deliciosus": {
+      "taxon": "Lactarius deliciosus",
+      "slug": "lactarius-deliciosus",
+      "photos": [
+        {
+          "role": "hero",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Echte_Reizker_Lactarius_deliciosus.JPG",
+          "license": "CC BY 3.0",
+          "creator": "Holger Krisp",
+          "attribution_text": "Holger Krisp / Wikimedia Commons (CC BY 3.0)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Echte_Reizker_Lactarius_deliciosus.JPG"
+        },
+        {
+          "role": "gills",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/e/e3/Lactarius_deliciosus_1_%281%29.jpg",
+          "license": "CC BY 2.0",
+          "creator": "Ian Sutton",
+          "attribution_text": "Ian Sutton / Flickr via Wikimedia Commons (CC BY 2.0)",
+          "source": "Wikimedia Commons / Flickr",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Lactarius_deliciosus_1_(1).jpg"
+        },
+        {
+          "role": "front",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/e/e4/Lactarius_deliciosus_2010_G1.jpg",
+          "license": "Public Domain",
+          "creator": "George Chernilevsky",
+          "attribution_text": "George Chernilevsky / Wikimedia Commons (Public Domain)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Lactarius_deliciosus_2010_G1.jpg"
+        },
+        {
+          "role": "habitat",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/d/d5/Lactarius-deliciosus-Finland.jpg",
+          "license": "CC BY-SA 3.0",
+          "creator": "Petri Tapola",
+          "attribution_text": "Photo Petri Tapola / Wikimedia Commons (CC BY-SA 3.0)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Lactarius-deliciosus-Finland.jpg"
+        },
+        {
+          "role": "detail",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/d/da/Lactarius_deliciosus_sliced_email.jpg",
+          "license": "CC BY-SA 2.5",
+          "creator": "Cas Liber",
+          "attribution_text": "Cas Liber / Wikimedia Commons (CC BY-SA 2.5)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Lactarius_deliciosus_sliced_email.jpg"
+        },
+        {
+          "role": "detail",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/e/e9/Lactarius_deliciosus_cut.jpg",
+          "license": "CC BY-SA 3.0",
+          "creator": "Roberto Zanon",
+          "attribution_text": "Roberto Zanon / Wikimedia Commons (CC BY-SA 3.0)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Lactarius_deliciosus_cut.jpg"
+        },
+        {
+          "role": "gallery",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/a/ad/2009-09-28_Lactarius_deliciosus_cropped.jpg",
+          "license": "CC BY 2.0",
+          "creator": "furtwangl (derivative: Ak ccm)",
+          "attribution_text": "furtwangl / Flickr via Wikimedia Commons (CC BY 2.0); cropped derivative by Ak ccm",
+          "source": "Wikimedia Commons / Flickr",
+          "source_url": "https://commons.wikimedia.org/wiki/File:2009-09-28_Lactarius_deliciosus_cropped.jpg"
+        },
+        {
+          "role": "habitat",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/1/1f/Lactarius_deliciosus_20100928w.JPG",
+          "license": "CC BY-SA 3.0",
+          "creator": "Strobilomyces",
+          "attribution_text": "Strobilomyces / Wikimedia Commons (CC BY-SA 3.0)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Lactarius_deliciosus_20100928w.JPG"
+        },
+        {
+          "role": "front",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/9/90/Lactarius_deliciosus_%2832969568082%29.jpg",
+          "license": "CC BY-SA 2.0",
+          "creator": "Lukas Large",
+          "attribution_text": "Lukas Large / Flickr via Wikimedia Commons (CC BY-SA 2.0)",
+          "source": "Wikimedia Commons / Flickr",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Lactarius_deliciosus_(32969568082).jpg"
+        },
+        {
+          "role": "gallery",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/5/56/Lactarius_deliciosus_%2832330405744%29.jpg",
+          "license": "CC BY 2.0",
+          "creator": "Dick Culbert",
+          "attribution_text": "Dick Culbert / Flickr via Wikimedia Commons (CC BY 2.0)",
+          "source": "Wikimedia Commons / Flickr",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Lactarius_deliciosus_(32330405744).jpg"
+        }
+      ]
+    },
+    "amanita-caesarea": {
+      "taxon": "Amanita caesarea",
+      "slug": "amanita-caesarea",
+      "photos": [
+        {
+          "role": "hero",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/f/f7/Amanita_caesarea.JPG",
+          "license": "CC BY-SA 3.0",
+          "creator": "Archenzo",
+          "attribution_text": "Archenzo / Wikimedia Commons (CC BY-SA 3.0)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Amanita_caesarea.JPG"
+        },
+        {
+          "role": "front",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/9/92/Amanita_caesarea_1.JPG",
+          "license": "CC BY-SA 3.0",
+          "creator": "Archenzo",
+          "attribution_text": "Archenzo / Wikimedia Commons (CC BY-SA 3.0)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Amanita_caesarea_1.JPG"
+        },
+        {
+          "role": "habitat",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/3/31/Oronges.jpg",
+          "license": "CC BY-SA 3.0",
+          "creator": "Yaqui",
+          "attribution_text": "Yaqui / Wikimedia Commons (CC BY-SA 3.0)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Oronges.jpg"
+        },
+        {
+          "role": "habitat",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/a/a1/Amanita-caesarea_02.JPG",
+          "license": "CC BY-SA 3.0",
+          "creator": "Traumrune",
+          "attribution_text": "© Traumrune / Wikimedia Commons (CC BY-SA 3.0)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Amanita-caesarea_02.JPG"
+        },
+        {
+          "role": "gills",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/5/51/Amanite_Oronge_01.jpg",
+          "license": "CC BY-SA 3.0",
+          "creator": "Tifred25",
+          "attribution_text": "Tifred25 / Wikimedia Commons (CC BY-SA 3.0)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Amanite_Oronge_01.jpg"
+        },
+        {
+          "role": "detail",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/1/1f/2008-06-29_Amanita_caesarea_%28Scop._-_Fr.%29_Pers_37595.jpg",
+          "license": "CC BY-SA 3.0",
+          "creator": "Gerhard Koller (Gerhard)",
+          "attribution_text": "Gerhard Koller (Mushroom Observer) / Wikimedia Commons (CC BY-SA 3.0)",
+          "source": "Wikimedia Commons / Mushroom Observer",
+          "source_url": "https://commons.wikimedia.org/wiki/File:2008-06-29_Amanita_caesarea_(Scop._-_Fr.)_Pers_37595.jpg"
+        },
+        {
+          "role": "gallery",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/4/41/Amanita_caesarea_3.jpg",
+          "license": "CC BY 4.0",
+          "creator": "exonie",
+          "attribution_text": "exonie / iNaturalist via Wikimedia Commons (CC BY 4.0)",
+          "source": "Wikimedia Commons / iNaturalist",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Amanita_caesarea_3.jpg"
+        },
+        {
+          "role": "gallery",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/5/5c/Amanita_caesarea_collection_Turc.jpg",
+          "license": "CC BY 4.0",
+          "creator": "Asrın Akıncıoğlu",
+          "attribution_text": "Asrın Akıncıoğlu / iNaturalist via Wikimedia Commons (CC BY 4.0)",
+          "source": "Wikimedia Commons / iNaturalist",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Amanita_caesarea_collection_Turc.jpg"
+        }
+      ]
+    },
+    "macrolepiota-procera": {
+      "taxon": "Macrolepiota procera",
+      "slug": "macrolepiota-procera",
+      "photos": [
+        {
+          "role": "hero",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/c/cf/Parasol-Macrolepiota-procera.jpg",
+          "license": "CC BY 3.0",
+          "creator": "Holger Krisp",
+          "attribution_text": "Holger Krisp / Wikimedia Commons / CC BY 3.0",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Parasol-Macrolepiota-procera.jpg"
+        },
+        {
+          "role": "front",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/a/a4/Macrolepiota-procera.jpg",
+          "license": "CC BY-SA 4.0",
+          "creator": "Chrumps",
+          "attribution_text": "Chrumps / Wikimedia Commons / CC BY-SA 4.0",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Macrolepiota-procera.jpg"
+        },
+        {
+          "role": "profile",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/6/6a/Macrolepiota_procera_2013_G1.jpg",
+          "license": "Public Domain (CC0-equivalent PD-self)",
+          "creator": "George Chernilevsky",
+          "attribution_text": "George Chernilevsky / Wikimedia Commons / Public Domain",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Macrolepiota_procera_2013_G1.jpg"
+        },
+        {
+          "role": "detail",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/f/f1/Parasol-Macrolepiota-procera-stem-ring-crop-tall.jpg",
+          "license": "CC BY 3.0",
+          "creator": "Holger Krisp",
+          "attribution_text": "Holger Krisp / Wikimedia Commons / CC BY 3.0",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Parasol-Macrolepiota-procera-stem-ring-crop-tall.jpg"
+        },
+        {
+          "role": "detail",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/c/c3/Parasol-Macrolepiota-procera-stem-ring-crop.jpg",
+          "license": "CC BY 3.0",
+          "creator": "Holger Krisp",
+          "attribution_text": "Holger Krisp / Wikimedia Commons / CC BY 3.0",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Parasol-Macrolepiota-procera-stem-ring-crop.jpg"
+        },
+        {
+          "role": "gills",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/a/a9/Macrolepiota_procera_gills_2012-10-08.jpg",
+          "license": "CC BY-SA 3.0",
+          "creator": "PumpkinSky",
+          "attribution_text": "PumpkinSky / Wikimedia Commons / CC BY-SA 3.0",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Macrolepiota_procera_gills_2012-10-08.jpg"
+        },
+        {
+          "role": "habitat",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/1/1d/2014.10.03.-04-Edertal_Kleinern--Gemeiner_Riesenschirmling.jpg",
+          "license": "CC BY-SA 4.0",
+          "creator": "Andreas Eichler",
+          "attribution_text": "Andreas Eichler / Wikimedia Commons / CC BY-SA 4.0",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:2014.10.03.-04-Edertal_Kleinern--Gemeiner_Riesenschirmling.jpg"
+        },
+        {
+          "role": "habitat",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/0/07/Macrolepiota_procera-group-Ejdzej-2006.jpg",
+          "license": "CC BY-SA 3.0",
+          "creator": "Ejdzej",
+          "attribution_text": "Ejdzej / Wikimedia Commons / CC BY-SA 3.0",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Macrolepiota_procera-group-Ejdzej-2006.jpg"
+        },
+        {
+          "role": "front",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/3/30/MacrolepiotaProcera.JPG",
+          "license": "CC BY-SA 3.0",
+          "creator": "Archenzo",
+          "attribution_text": "Archenzo / Wikimedia Commons / CC BY-SA 3.0",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:MacrolepiotaProcera.JPG"
+        },
+        {
+          "role": "detail",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/7/79/Macrolepiota_procera_cap.JPG",
+          "license": "CC BY-SA 3.0",
+          "creator": "J Milburn",
+          "attribution_text": "J Milburn / Wikimedia Commons / CC BY-SA 3.0",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Macrolepiota_procera_cap.JPG"
+        }
+      ]
+    },
+    "pleurotus-ostreatus": {
+      "taxon": "Pleurotus ostreatus",
+      "slug": "pleurotus-ostreatus",
+      "photos": [
+        {
+          "role": "hero",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/f/f6/Pleurotus_ostreatus_JPG7.jpg",
+          "license": "CC BY-SA 3.0",
+          "creator": "Jean-Pol Grandmont",
+          "attribution_text": "Jean-Pol Grandmont / Wikimedia Commons (CC BY-SA 3.0)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Pleurotus_ostreatus_JPG7.jpg"
+        },
+        {
+          "role": "gills",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/1/1d/Pleurotus_ostreatus_%28Oyster_Mushroom%29%2C_gills_from_below._Sycamore_tree_host.jpg",
+          "license": "CC BY-SA 4.0",
+          "creator": "Rosser1954",
+          "attribution_text": "Rosser1954 / Wikimedia Commons (CC BY-SA 4.0)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Pleurotus_ostreatus_(Oyster_Mushroom),_gills_from_below._Sycamore_tree_host.jpg"
+        },
+        {
+          "role": "front",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/7/7e/Pleurotus_ostreatus_-_lindsey.jpg",
+          "license": "CC BY-SA 3.0",
+          "creator": "James Lindsey",
+          "attribution_text": "James Lindsey at Ecology of Commanster / Wikimedia Commons (CC BY-SA 3.0)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Pleurotus_ostreatus_-_lindsey.jpg"
+        },
+        {
+          "role": "habitat",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/f/f0/Pleurotus_ostreatus_Vlist_Nl.jpg",
+          "license": "CC BY-SA 3.0",
+          "creator": "Duimdog",
+          "attribution_text": "Duimdog / Wikimedia Commons (CC BY-SA 3.0)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Pleurotus_ostreatus_Vlist_Nl.jpg"
+        },
+        {
+          "role": "detail",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/5/55/20210718_Pleurotus_ostreatus_116-138.jpg",
+          "license": "CC BY-SA 3.0",
+          "creator": "Zinnmann",
+          "attribution_text": "Zinnmann / Wikimedia Commons (CC BY-SA 3.0)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:20210718_Pleurotus_ostreatus_116-138.jpg"
+        },
+        {
+          "role": "habitat",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/d/dc/Pleurotus_ostreatus_%28Oyster_Mushroom%29_of_different_ages._Sycamore_tree_host.jpg",
+          "license": "CC BY-SA 4.0",
+          "creator": "Rosser1954",
+          "attribution_text": "Rosser1954 / Wikimedia Commons (CC BY-SA 4.0)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Pleurotus_ostreatus_(Oyster_Mushroom)_of_different_ages._Sycamore_tree_host.jpg"
+        },
+        {
+          "role": "gallery",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/4/4b/Pleurotus_ostreatus_109035502.jpg",
+          "license": "CC BY-SA 4.0",
+          "creator": "dallenstein",
+          "attribution_text": "dallenstein via iNaturalist / Wikimedia Commons (CC BY-SA 4.0)",
+          "source": "Wikimedia Commons / iNaturalist",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Pleurotus_ostreatus_109035502.jpg"
+        },
+        {
+          "role": "gallery",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/5/50/Pleurotus_ostreatus_1.JPG",
+          "license": "CC BY-SA 3.0",
+          "creator": "Archenzo",
+          "attribution_text": "Archenzo / Wikimedia Commons (CC BY-SA 3.0)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Pleurotus_ostreatus_1.JPG"
+        }
+      ]
+    },
+    "agaricus-campestris": {
+      "taxon": "Agaricus campestris",
+      "slug": "agaricus-campestris",
+      "photos": [
+        {
+          "role": "hero",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/f/f2/2010-08-07_Agaricus_campestris_cropped.jpg",
+          "license": "CC BY-SA 3.0",
+          "creator": "Andreas Kunze",
+          "attribution_text": "Andreas Kunze / Wikimedia Commons / CC BY-SA 3.0",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:2010-08-07_Agaricus_campestris_cropped.jpg"
+        },
+        {
+          "role": "habitat",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/3/38/2010-08-07_Agaricus_campestris.jpg",
+          "license": "CC BY-SA 3.0",
+          "creator": "Andreas Kunze",
+          "attribution_text": "Andreas Kunze / Wikimedia Commons / CC BY-SA 3.0",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:2010-08-07_Agaricus_campestris.jpg"
+        },
+        {
+          "role": "gills",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/f/fc/2010-08-07_Agaricus_campestris_gills.jpg",
+          "license": "CC BY-SA 3.0",
+          "creator": "Andreas Kunze",
+          "attribution_text": "Andreas Kunze / Wikimedia Commons / CC BY-SA 3.0",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:2010-08-07_Agaricus_campestris_gills.jpg"
+        },
+        {
+          "role": "front",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/3/34/Agaricus_campestris_051011A.JPG",
+          "license": "CC BY-SA 3.0",
+          "creator": "Strobilomyces",
+          "attribution_text": "Strobilomyces / Wikimedia Commons / CC BY-SA 3.0",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Agaricus_campestris_051011A.JPG"
+        },
+        {
+          "role": "habitat",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/9/92/Agaricus_campestris_garden_050830B.JPG",
+          "license": "CC BY-SA 3.0",
+          "creator": "Strobilomyces",
+          "attribution_text": "Strobilomyces / Wikimedia Commons / CC BY-SA 3.0",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Agaricus_campestris_garden_050830B.JPG"
+        },
+        {
+          "role": "gills",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/4/44/Agaricus.campestris2.-.lindsey.jpg",
+          "license": "CC BY-SA 3.0",
+          "creator": "James Lindsey",
+          "attribution_text": "James Lindsey at Ecology of Commanster / Wikimedia Commons / CC BY-SA 3.0",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Agaricus.campestris2.-.lindsey.jpg"
+        },
+        {
+          "role": "gills",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/0/0e/Agaricus_campestris_IMG_20200912_170142.jpg",
+          "license": "CC BY-SA 4.0",
+          "creator": "Accuruss",
+          "attribution_text": "Accuruss / Wikimedia Commons / CC BY-SA 4.0",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Agaricus_campestris_IMG_20200912_170142.jpg"
+        },
+        {
+          "role": "detail",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/c/cb/Agaricus_Campestris_tray.jpg",
+          "license": "CC BY-SA 4.0",
+          "creator": "Nissimnanach",
+          "attribution_text": "Nissimnanach / Wikimedia Commons / CC BY-SA 4.0",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Agaricus_Campestris_tray.jpg"
+        },
+        {
+          "role": "profile",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/7/79/Agaricus_campestris_collection_2.jpg",
+          "license": "CC BY 4.0",
+          "creator": "Konrad Schultz",
+          "attribution_text": "Konrad Schultz / Wikimedia Commons / CC BY 4.0",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Agaricus_campestris_collection_2.jpg"
+        },
+        {
+          "role": "habitat",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/c/cc/Agaricus_campestris_226499626.jpg",
+          "license": "CC BY 4.0",
+          "creator": "Rick Farwell",
+          "attribution_text": "Rick Farwell / iNaturalist via Wikimedia Commons / CC BY 4.0",
+          "source": "Wikimedia Commons (from iNaturalist)",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Agaricus_campestris_226499626.jpg"
+        }
+      ]
+    },
+    "morchella-esculenta": {
+      "taxon": "Morchella esculenta",
+      "slug": "morchella-esculenta",
+      "photos": [
+        {
+          "role": "hero",
+          "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Speise-Morchel_Morchella_esculenta.jpg",
+          "license": "CC BY 3.0",
+          "creator": "Holger Krisp",
+          "attribution_text": "Holger Krisp / Wikimedia Commons (CC BY 3.0)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Speise-Morchel_Morchella_esculenta.jpg"
+        },
+        {
+          "role": "habitat",
+          "url": "https://commons.wikimedia.org/wiki/Special:FilePath/2026-04-04_Z5-3750E_Achim-Lammerts_Morchella-esculenta.jpg",
+          "license": "CC BY-SA 4.0",
+          "creator": "Achim Lammerts",
+          "attribution_text": "Achim Lammerts / Wikimedia Commons (CC BY-SA 4.0)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:2026-04-04_Z5-3750E_Achim-Lammerts_Morchella-esculenta.jpg"
+        },
+        {
+          "role": "detail",
+          "url": "https://commons.wikimedia.org/wiki/Special:FilePath/2026-04-05_Z5-3990E_Achim-Lammerts_Morchella-esculenta.jpg",
+          "license": "CC BY-SA 4.0",
+          "creator": "Achim Lammerts",
+          "attribution_text": "Achim Lammerts / Wikimedia Commons (CC BY-SA 4.0)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:2026-04-05_Z5-3990E_Achim-Lammerts_Morchella-esculenta.jpg"
+        },
+        {
+          "role": "front",
+          "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Morchella_esculenta_300405.jpg",
+          "license": "CC BY-SA 2.5",
+          "creator": "Bernd Haynold",
+          "attribution_text": "Bernd Haynold / Wikimedia Commons (CC BY-SA 2.5)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Morchella_esculenta_300405.jpg"
+        },
+        {
+          "role": "front",
+          "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Morchella_esculenta_270408.jpg",
+          "license": "CC BY-SA 3.0",
+          "creator": "Bernd Haynold",
+          "attribution_text": "Bernd Haynold / Wikimedia Commons (CC BY-SA 3.0)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Morchella_esculenta_270408.jpg"
+        },
+        {
+          "role": "habitat",
+          "url": "https://commons.wikimedia.org/wiki/Special:FilePath/2011-04-30_Morchella_esculenta.jpg",
+          "license": "CC BY-SA 3.0",
+          "creator": "Andreas Kunze",
+          "attribution_text": "Andreas Kunze / Wikimedia Commons (CC BY-SA 3.0)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:2011-04-30_Morchella_esculenta.jpg"
+        },
+        {
+          "role": "habitat",
+          "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Horn-Bad_Meinberg_-_2021-05-17_-_Brautberg_(DSC03899).jpg",
+          "license": "CC BY-SA 4.0",
+          "creator": "Tsungam",
+          "attribution_text": "Tsungam / Wikimedia Commons (CC BY-SA 4.0)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Horn-Bad_Meinberg_-_2021-05-17_-_Brautberg_(DSC03899).jpg"
+        },
+        {
+          "role": "detail",
+          "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Classic_Yellow_Morel_(Morchella_esculenta)_-_Flickr_-_Jay_Sturner.jpg",
+          "license": "CC BY 2.0",
+          "creator": "Jay Sturner",
+          "attribution_text": "Jay Sturner / Flickr via Wikimedia Commons (CC BY 2.0)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Classic_Yellow_Morel_(Morchella_esculenta)_-_Flickr_-_Jay_Sturner.jpg"
+        },
+        {
+          "role": "habitat",
+          "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Morchella_esculenta_36795275.jpg",
+          "license": "CC BY 4.0",
+          "creator": "Tom Zucker-Scharff",
+          "attribution_text": "Tom Zucker-Scharff / iNaturalist via Wikimedia Commons (CC BY 4.0)",
+          "source": "Wikimedia Commons (from iNaturalist)",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Morchella_esculenta_36795275.jpg"
+        },
+        {
+          "role": "front",
+          "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Morchella_esculenta_40137975.jpg",
+          "license": "CC BY 4.0",
+          "creator": "Duncan Noble",
+          "attribution_text": "Duncan Noble / iNaturalist via Wikimedia Commons (CC BY 4.0)",
+          "source": "Wikimedia Commons (from iNaturalist)",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Morchella_esculenta_40137975.jpg"
+        }
+      ]
+    },
+    "craterellus-cornucopioides": {
+      "taxon": "Craterellus cornucopioides",
+      "slug": "craterellus-cornucopioides",
+      "photos": [
+        {
+          "role": "hero",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/0/05/Black_trumpet_Craterellus_cornucopioides.jpg",
+          "license": "CC BY 3.0",
+          "creator": "Holger Krisp",
+          "attribution_text": "Holger Krisp / Wikimedia Commons (CC BY 3.0)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Black_trumpet_Craterellus_cornucopioides.jpg"
+        },
+        {
+          "role": "habitat",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/0/07/Herbsttrompete_Craterellus_cornucopioides.jpg",
+          "license": "CC BY 3.0",
+          "creator": "Holger Krisp",
+          "attribution_text": "Holger Krisp / Wikimedia Commons (CC BY 3.0)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Herbsttrompete_Craterellus_cornucopioides.jpg"
+        },
+        {
+          "role": "habitat",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/c/cc/Black_chanterelle_%28Craterellus_cornucopioides%29.jpg",
+          "license": "CC BY-SA 4.0",
+          "creator": "Jörg Scholl",
+          "attribution_text": "Jörg Scholl / Wikimedia Commons (CC BY-SA 4.0)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Black_chanterelle_(Craterellus_cornucopioides).jpg"
+        },
+        {
+          "role": "front",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/c/ca/Craterellus_cornucopioides_JPG1.jpg",
+          "license": "CC BY 3.0",
+          "creator": "Jean-Pol GRANDMONT",
+          "attribution_text": "Jean-Pol GRANDMONT / Wikimedia Commons (CC BY 3.0)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Craterellus_cornucopioides_JPG1.jpg"
+        },
+        {
+          "role": "detail",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/6/64/Totentrompeten_Herbsttrompeten.jpg",
+          "license": "CC BY-SA 3.0",
+          "creator": "Lebrac",
+          "attribution_text": "Lebrac / Wikimedia Commons (CC BY-SA 3.0)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Totentrompeten_Herbsttrompeten.jpg"
+        },
+        {
+          "role": "gills",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/a/a5/Craterellus_cornucopioides.jpeg",
+          "license": "CC BY-SA 3.0",
+          "creator": "Kristian Peters",
+          "attribution_text": "Kristian Peters / Wikimedia Commons (CC BY-SA 3.0)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Craterellus_cornucopioides.jpeg"
+        },
+        {
+          "role": "profile",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/8/86/Black_Trumpet.JPG",
+          "license": "CC BY-SA 3.0",
+          "creator": "Igorgrujovski",
+          "attribution_text": "Igorgrujovski / Wikimedia Commons (CC BY-SA 3.0)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Black_Trumpet.JPG"
+        },
+        {
+          "role": "habitat",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/9/98/Craterellus_cornucopioides_01_by-dpc.jpg",
+          "license": "CC BY 3.0",
+          "creator": "David Perez",
+          "attribution_text": "David Perez / Wikimedia Commons (CC BY 3.0)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Craterellus_cornucopioides_01_by-dpc.jpg"
+        },
+        {
+          "role": "habitat",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/6/69/Trompettes%28Ain%29.JPG",
+          "license": "CC BY-SA 3.0",
+          "creator": "Classiccardinal",
+          "attribution_text": "Classiccardinal / Wikimedia Commons (CC BY-SA 3.0)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Trompettes(Ain).JPG"
+        },
+        {
+          "role": "front",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/7/79/Herbsttrompete_Craterellus_cornucopioides_2.jpg",
+          "license": "CC BY 4.0",
+          "creator": "Holger Krisp",
+          "attribution_text": "Holger Krisp / Wikimedia Commons (CC BY 4.0)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Herbsttrompete_Craterellus_cornucopioides_2.jpg"
+        }
+      ]
+    },
+    "hydnum-repandum": {
+      "taxon": "Hydnum repandum",
+      "slug": "hydnum-repandum",
+      "photos": [
+        {
+          "role": "hero",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/f/fa/Hydnum_repandum_semmelstoppelpilz.jpg",
+          "license": "CC BY 3.0",
+          "creator": "Holger Krisp",
+          "attribution_text": "Holger Krisp / Wikimedia Commons / CC BY 3.0",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Hydnum_repandum_semmelstoppelpilz.jpg"
+        },
+        {
+          "role": "habitat",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/3/31/Semmel-Stoppelpilz_Semmelgelber_Stacheling_Hydnum_repandum.JPG",
+          "license": "CC BY 3.0",
+          "creator": "Holger Krisp",
+          "attribution_text": "Holger Krisp / Wikimedia Commons / CC BY 3.0",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Semmel-Stoppelpilz_Semmelgelber_Stacheling_Hydnum_repandum.JPG"
+        },
+        {
+          "role": "front",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/b/bd/Hydnum-repandum-semmel-stoppelpilz.jpg",
+          "license": "CC BY 3.0",
+          "creator": "Holger Krisp",
+          "attribution_text": "Holger Krisp / Wikimedia Commons / CC BY 3.0",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Hydnum-repandum-semmel-stoppelpilz.jpg"
+        },
+        {
+          "role": "profile",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/b/b9/Hedgehog_fungi2.jpg",
+          "license": "Public domain",
+          "creator": "D J Kelly",
+          "attribution_text": "D J Kelly / Wikimedia Commons / Public domain",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Hedgehog_fungi2.jpg"
+        },
+        {
+          "role": "gills",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/6/62/Hedgehog_fungi.jpg",
+          "license": "Public domain",
+          "creator": "D J Kelly",
+          "attribution_text": "D J Kelly / Wikimedia Commons / Public domain",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Hedgehog_fungi.jpg"
+        },
+        {
+          "role": "detail",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/f/fa/Hydnum_repandum_78164.jpg",
+          "license": "CC BY-SA 3.0",
+          "creator": "Amadej Trnkoczy",
+          "attribution_text": "Amadej Trnkoczy (Mushroom Observer) / Wikimedia Commons / CC BY-SA 3.0",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Hydnum_repandum_78164.jpg"
+        },
+        {
+          "role": "detail",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/1/1d/Hydnum_repandum._The_Hedgehog_Fungus_spore_bearing_spines_structures.jpg",
+          "license": "CC BY-SA 4.0",
+          "creator": "Roger Griffith (Rosser1954)",
+          "attribution_text": "Roger Griffith (Rosser1954) / Wikimedia Commons / CC BY-SA 4.0",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Hydnum_repandum._The_Hedgehog_Fungus_spore_bearing_spines_structures.jpg"
+        },
+        {
+          "role": "habitat",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/8/89/Hydnum.repandum.-.lindsey.jpg",
+          "license": "CC BY-SA 3.0",
+          "creator": "James Lindsey",
+          "attribution_text": "James Lindsey (Ecology of Commanster) / Wikimedia Commons / CC BY-SA 3.0",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Hydnum.repandum.-.lindsey.jpg"
+        },
+        {
+          "role": "gallery",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/3/3c/2012-08-29_Hydnum_repandum_L_256175_crop.jpg",
+          "license": "CC BY-SA 3.0",
+          "creator": "Alan Rockefeller",
+          "attribution_text": "Alan Rockefeller (Mushroom Observer) / Wikimedia Commons / CC BY-SA 3.0",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:2012-08-29_Hydnum_repandum_L_256175_crop.jpg"
+        },
+        {
+          "role": "front",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/b/b9/Hydnum_repandum_JPG1.jpg",
+          "license": "CC BY 3.0",
+          "creator": "Jean-Pol GRANDMONT",
+          "attribution_text": "Jean-Pol GRANDMONT / Wikimedia Commons / CC BY 3.0",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Hydnum_repandum_JPG1.jpg"
+        }
+      ]
+    },
+    "coprinus-comatus": {
+      "taxon": "Coprinus comatus",
+      "slug": "coprinus-comatus",
+      "photos": [
+        {
+          "role": "hero",
+          "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Coprinus_comatus_edible231022.jpg",
+          "license": "CC BY-SA 4.0",
+          "creator": "Lollo98",
+          "attribution_text": "Lollo98 / Wikimedia Commons (CC BY-SA 4.0)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Coprinus_comatus_edible231022.jpg"
+        },
+        {
+          "role": "front",
+          "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Coprinus_comatus-6.jpg",
+          "license": "CC BY-SA 4.0",
+          "creator": "Eugene Zelenko",
+          "attribution_text": "Eugene Zelenko / Wikimedia Commons (CC BY-SA 4.0)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Coprinus_comatus-6.jpg"
+        },
+        {
+          "role": "front",
+          "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Coprinus_comatus_G4.JPG",
+          "license": "CC BY-SA 3.0",
+          "creator": "Jerzy Opioła",
+          "attribution_text": "Jerzy Opioła / Wikimedia Commons (CC BY-SA 3.0)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Coprinus_comatus_G4.JPG"
+        },
+        {
+          "role": "detail",
+          "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Coprinus_comatus_-_adelaide_zoo.jpg",
+          "license": "CC BY-SA 3.0",
+          "creator": "Peripitus",
+          "attribution_text": "Peripitus / Wikimedia Commons (CC BY-SA 3.0)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Coprinus_comatus_-_adelaide_zoo.jpg"
+        },
+        {
+          "role": "gills",
+          "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Coprinus_comatus,_the_shaggy_ink_cap,_lawyer%27s_wig,_or_shaggy_mane_mushroom.jpg",
+          "license": "CC BY-SA 4.0",
+          "creator": "Bigredwine1",
+          "attribution_text": "Bigredwine1 / Wikimedia Commons (CC BY-SA 4.0)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Coprinus_comatus,_the_shaggy_ink_cap,_lawyer%27s_wig,_or_shaggy_mane_mushroom.jpg"
+        },
+        {
+          "role": "habitat",
+          "url": "https://commons.wikimedia.org/wiki/Special:FilePath/From_edible_youth_to_inky_shadow_-_Coprinus_comatus.jpg",
+          "license": "CC BY 4.0",
+          "creator": "Berser25",
+          "attribution_text": "Berser25 / Wikimedia Commons (CC BY 4.0) — deliquescence sequence",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:From_edible_youth_to_inky_shadow_-_Coprinus_comatus.jpg"
+        },
+        {
+          "role": "habitat",
+          "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Emerging_Shaggy_ink_cap._(51167046003).jpg",
+          "license": "Public Domain",
+          "creator": "Bernard Spragg. NZ",
+          "attribution_text": "Bernard Spragg. NZ / Flickr via Wikimedia Commons (Public Domain Mark)",
+          "source": "Wikimedia Commons (via Flickr)",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Emerging_Shaggy_ink_cap._(51167046003).jpg"
+        },
+        {
+          "role": "gallery",
+          "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Coprinus_comatus-001.jpg",
+          "license": "CC BY-SA 3.0",
+          "creator": "JJ Harrison",
+          "attribution_text": "JJ Harrison / Wikimedia Commons (CC BY-SA 3.0)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Coprinus_comatus-001.jpg"
+        }
+      ]
+    },
+    "boletus-aereus": {
+      "taxon": "Boletus aereus",
+      "slug": "boletus-aereus",
+      "photos": [
+        {
+          "role": "hero",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Bronze_Roehrling.jpg",
+          "license": "Copyrighted free use",
+          "creator": "Achim Bollmann",
+          "attribution_text": "Achim Bollmann / Copyrighted free use (Wikimedia Commons)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Bronze_Roehrling.jpg"
+        },
+        {
+          "role": "pores",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/d/de/BOLETUS_AEREUS_Bull._Fr._%286083526611%29.jpg",
+          "license": "CC BY 2.0",
+          "creator": "GLJIVARSKO DRUSTVO NIS",
+          "attribution_text": "GLJIVARSKO DRUSTVO NIS / CC BY 2.0 (Wikimedia Commons / Flickr)",
+          "source": "Wikimedia Commons (from Flickr)",
+          "source_url": "https://commons.wikimedia.org/wiki/File:BOLETUS_AEREUS_Bull._Fr._(6083526611).jpg"
+        },
+        {
+          "role": "detail",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/b/bc/BOLETUS_AEREUS_Bull._%289106875143%29.jpg",
+          "license": "CC BY 2.0",
+          "creator": "GLJIVARSKO DRUSTVO NIS",
+          "attribution_text": "GLJIVARSKO DRUSTVO NIS / CC BY 2.0 (Wikimedia Commons / Flickr)",
+          "source": "Wikimedia Commons (from Flickr)",
+          "source_url": "https://commons.wikimedia.org/wiki/File:BOLETUS_AEREUS_Bull._(9106875143).jpg"
+        },
+        {
+          "role": "front",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/3/3b/Boletus_aereus_Italy.jpg",
+          "license": "Public domain",
+          "creator": "Roberto Petruzzo",
+          "attribution_text": "Roberto Petruzzo / Public domain (Wikimedia Commons)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Boletus_aereus_Italy.jpg"
+        },
+        {
+          "role": "habitat",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/a/a9/Boletus_aereus_IT.JPG",
+          "license": "Public domain",
+          "creator": "Roberto Petruzzo",
+          "attribution_text": "Roberto Petruzzo / Public domain (Wikimedia Commons)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Boletus_aereus_IT.JPG"
+        },
+        {
+          "role": "habitat",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/3/39/Boletus_aereus_-italy-lazio%28vt%29-02.JPG",
+          "license": "CC BY-SA 3.0",
+          "creator": "Ilceramista",
+          "attribution_text": "Ilceramista / CC BY-SA 3.0 (Wikimedia Commons)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Boletus_aereus_-italy-lazio(vt)-02.JPG"
+        },
+        {
+          "role": "detail",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/1/13/Boletus_aereus1.jpg",
+          "license": "CC BY-SA 3.0",
+          "creator": "J.F. Gaffard (Jeffdelonge)",
+          "attribution_text": "J.F. Gaffard / CC BY-SA 3.0 (Wikimedia Commons)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Boletus_aereus1.jpg"
+        },
+        {
+          "role": "profile",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/2/25/Boletus_aereus_437478.jpg",
+          "license": "CC BY-SA 3.0",
+          "creator": "Susanne Sourell (suse)",
+          "attribution_text": "Susanne Sourell / CC BY-SA 3.0 (Mushroom Observer / Wikimedia Commons)",
+          "source": "Wikimedia Commons (from Mushroom Observer)",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Boletus_aereus_437478.jpg"
+        },
+        {
+          "role": "habitat",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/f/fa/Boletus_aereus_Bull_512322_crop.jpg",
+          "license": "CC BY-SA 3.0",
+          "creator": "Davide Puddu",
+          "attribution_text": "Davide Puddu / CC BY-SA 3.0 (Mushroom Observer / Wikimedia Commons)",
+          "source": "Wikimedia Commons (from Mushroom Observer)",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Boletus_aereus_Bull_512322_crop.jpg"
+        },
+        {
+          "role": "habitat",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/f/f2/Boletus_aereus_solo.jpg",
+          "license": "CC BY 4.0",
+          "creator": "Dimitǎr Boevski (exonie)",
+          "attribution_text": "Dimitǎr Boevski / CC BY 4.0 (iNaturalist / Wikimedia Commons)",
+          "source": "Wikimedia Commons (from iNaturalist)",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Boletus_aereus_solo.jpg"
+        }
+      ]
+    },
+    "leccinum-scabrum": {
+      "taxon": "Leccinum scabrum",
+      "slug": "leccinum-scabrum",
+      "photos": [
+        {
+          "role": "hero",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/5/50/Gemeine_Birkenpilz_Leccinum_scabrum.jpg",
+          "license": "CC BY 3.0",
+          "creator": "Holger Krisp",
+          "attribution_text": "Holger Krisp / Wikimedia Commons / CC BY 3.0",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Gemeine_Birkenpilz_Leccinum_scabrum.jpg"
+        },
+        {
+          "role": "front",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/3/39/Leccinum_scabrum_Birkenpilz.jpg",
+          "license": "CC BY 3.0",
+          "creator": "Holger Krisp",
+          "attribution_text": "Holger Krisp / Wikimedia Commons / CC BY 3.0",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Leccinum_scabrum_Birkenpilz.jpg"
+        },
+        {
+          "role": "pores",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/2/2f/Leccinum_scabrum_-_horizontal_%28aka%29.jpg",
+          "license": "CC BY-SA 2.5",
+          "creator": "André Karwath (Aka)",
+          "attribution_text": "André Karwath aka Aka / Wikimedia Commons / CC BY-SA 2.5",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Leccinum_scabrum_-_horizontal_(aka).jpg"
+        },
+        {
+          "role": "profile",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/3/37/Leccinum_scabrum_-_standing_%28aka%29.jpg",
+          "license": "CC BY-SA 2.5",
+          "creator": "André Karwath (Aka)",
+          "attribution_text": "André Karwath aka Aka / Wikimedia Commons / CC BY-SA 2.5",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Leccinum_scabrum_-_standing_(aka).jpg"
+        },
+        {
+          "role": "habitat",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/a/a8/Leccinum_scabrum_18092009_crop.jpg",
+          "license": "CC BY-SA 3.0",
+          "creator": "Sylfred1977 (derivative: Ak ccm)",
+          "attribution_text": "Sylfred1977 / Wikimedia Commons / CC BY-SA 3.0",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Leccinum_scabrum_18092009_crop.jpg"
+        },
+        {
+          "role": "habitat",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/5/5c/Ko%C5%BAlarz_babka-Leccinum_scabrum-Ejdzej-1.jpg",
+          "license": "CC BY 3.0",
+          "creator": "Ejdzej",
+          "attribution_text": "Ejdzej / Wikimedia Commons / CC BY 3.0",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Ko%C5%BAlarz_babka-Leccinum_scabrum-Ejdzej-1.jpg"
+        },
+        {
+          "role": "detail",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/7/76/Ko%C5%BAlarz_babka-Leccinum_scabrum-Ejdzej-2.jpg",
+          "license": "CC BY 3.0",
+          "creator": "Ejdzej",
+          "attribution_text": "Ejdzej / Wikimedia Commons / CC BY 3.0",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Ko%C5%BAlarz_babka-Leccinum_scabrum-Ejdzej-2.jpg"
+        },
+        {
+          "role": "front",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/3/33/2007-10-13_Leccinum_scabrum_%28Bull.%29_Gray_12300_crop.jpg",
+          "license": "CC BY-SA 3.0",
+          "creator": "vesna maric (kalipso)",
+          "attribution_text": "vesna maric (kalipso) / Mushroom Observer / Wikimedia Commons / CC BY-SA 3.0",
+          "source": "Wikimedia Commons (via Mushroom Observer)",
+          "source_url": "https://commons.wikimedia.org/wiki/File:2007-10-13_Leccinum_scabrum_(Bull.)_Gray_12300_crop.jpg"
+        },
+        {
+          "role": "habitat",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/f/f0/Leccinum_scabrum_%28Brown_birch_bolete%29_-_Flickr_-_S._Rae.jpg",
+          "license": "CC BY 2.0",
+          "creator": "S. Rae",
+          "attribution_text": "S. Rae / Flickr / Wikimedia Commons / CC BY 2.0",
+          "source": "Wikimedia Commons (via Flickr)",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Leccinum_scabrum_(Brown_birch_bolete)_-_Flickr_-_S._Rae.jpg"
+        },
+        {
+          "role": "detail",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/4/4a/Leccinum_scabrum_JPG7.jpg",
+          "license": "CC BY-SA 3.0",
+          "creator": "Jean-Pol GRANDMONT",
+          "attribution_text": "Jean-Pol GRANDMONT / Wikimedia Commons / CC BY-SA 3.0",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Leccinum_scabrum_JPG7.jpg"
+        }
+      ]
+    },
+    "imleria-badia": {
+      "taxon": "Imleria badia",
+      "slug": "imleria-badia",
+      "photos": [
+        {
+          "role": "hero",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/2/2e/Boletus_badius_JPG1.jpg",
+          "license": "CC BY-SA 3.0",
+          "creator": "Jean-Pol GRANDMONT",
+          "attribution_text": "Jean-Pol GRANDMONT / Wikimedia Commons / CC BY-SA 3.0",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Boletus_badius_JPG1.jpg"
+        },
+        {
+          "role": "pores",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/7/70/Imleria_badia_%28%3DBoletus_badius%29_pores_%2832746432720%29.jpg",
+          "license": "CC BY-SA 2.0",
+          "creator": "Lukas Large",
+          "attribution_text": "Lukas Large / Wikimedia Commons (via Flickr) / CC BY-SA 2.0",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Imleria_badia_(%3DBoletus_badius)_pores_(32746432720).jpg"
+        },
+        {
+          "role": "pores",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/6/63/Rourky.jpg",
+          "license": "CC BY 3.0",
+          "creator": "Horst74",
+          "attribution_text": "Horst74 / Wikimedia Commons / CC BY 3.0",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Rourky.jpg"
+        },
+        {
+          "role": "pores",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/7/77/Boletus_badius_02.jpg",
+          "license": "CC BY-SA 3.0",
+          "creator": "Roberto Zanon",
+          "attribution_text": "Roberto Zanon / Wikimedia Commons / CC BY-SA 3.0",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Boletus_badius_02.jpg"
+        },
+        {
+          "role": "pores",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/5/56/Bay_Bolete%2C_Boletus_badius_%2821195318373%29.jpg",
+          "license": "CC BY-SA 2.0",
+          "creator": "AJC1",
+          "attribution_text": "AJC1 / Wikimedia Commons (via Flickr) / CC BY-SA 2.0",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Bay_Bolete,_Boletus_badius_(21195318373).jpg"
+        },
+        {
+          "role": "habitat",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/f/fc/Maronenr%C3%B6hling.jpg",
+          "license": "CC BY 3.0",
+          "creator": "Holger Krisp (H. Krisp)",
+          "attribution_text": "Holger Krisp / Wikimedia Commons / CC BY 3.0",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Maronenr%C3%B6hling.jpg"
+        },
+        {
+          "role": "front",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/c/cd/2007-07-14_Imleria_badia_2.jpg",
+          "license": "CC BY-SA 3.0",
+          "creator": "Andreas Kunze",
+          "attribution_text": "Andreas Kunze / Wikimedia Commons / CC BY-SA 3.0",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:2007-07-14_Imleria_badia_2.jpg"
+        },
+        {
+          "role": "profile",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/f/f5/Imleria_badia_LC0375.jpg",
+          "license": "CC BY-SA 3.0 DE",
+          "creator": "Jörg Hempel",
+          "attribution_text": "Jörg Hempel / Wikimedia Commons / CC BY-SA 3.0 DE",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Imleria_badia_LC0375.jpg"
+        },
+        {
+          "role": "detail",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/1/16/2025-11-04_D500-1630_Achim-Lammerts_Imleria-badia.jpg",
+          "license": "CC BY-SA 4.0",
+          "creator": "Achim Lammerts",
+          "attribution_text": "Achim Lammerts / Wikimedia Commons / CC BY-SA 4.0",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:2025-11-04_D500-1630_Achim-Lammerts_Imleria-badia.jpg"
+        },
+        {
+          "role": "habitat",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/2/2d/Imleria_badia_241196348.jpg",
+          "license": "CC BY 4.0",
+          "creator": "Petr Harant",
+          "attribution_text": "Petr Harant / iNaturalist via Wikimedia Commons / CC BY 4.0",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Imleria_badia_241196348.jpg"
+        }
+      ]
+    },
+    "suillus-luteus": {
+      "taxon": "Suillus luteus",
+      "slug": "suillus-luteus",
+      "photos": [
+        {
+          "role": "hero",
+          "url": "https://commons.wikimedia.org/wiki/Special:FilePath/2025-10-15_D500-1030_Achim-Lammerts_Suillus-luteus.jpg",
+          "license": "CC BY-SA 4.0",
+          "creator": "Achim Lammerts (Syntaxys)",
+          "attribution_text": "© Achim Lammerts (Syntaxys) / Wikimedia Commons (CC BY-SA 4.0)",
+          "source": "Wikimedia Commons (also on iNaturalist)",
+          "source_url": "https://commons.wikimedia.org/wiki/File:2025-10-15_D500-1030_Achim-Lammerts_Suillus-luteus.jpg"
+        },
+        {
+          "role": "pores",
+          "url": "https://commons.wikimedia.org/wiki/Special:FilePath/2025-10-15_D500-1036_Achim-Lammerts_Suillus-luteus.jpg",
+          "license": "CC BY-SA 4.0",
+          "creator": "Achim Lammerts (Syntaxys)",
+          "attribution_text": "© Achim Lammerts (Syntaxys) / Wikimedia Commons (CC BY-SA 4.0) — hymenium after partial-veil removal",
+          "source": "Wikimedia Commons (also on iNaturalist)",
+          "source_url": "https://commons.wikimedia.org/wiki/File:2025-10-15_D500-1036_Achim-Lammerts_Suillus-luteus.jpg"
+        },
+        {
+          "role": "front",
+          "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Suillus_luteus_2010_G2.jpg",
+          "license": "Public domain (PD-self)",
+          "creator": "George Chernilevsky",
+          "attribution_text": "George Chernilevsky / Wikimedia Commons (Public domain) — Quality image",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Suillus_luteus_2010_G2.jpg"
+        },
+        {
+          "role": "habitat",
+          "url": "https://commons.wikimedia.org/wiki/Special:FilePath/2012-10-12_Suillus_luteus_(L.)_Roussel_271431.jpg",
+          "license": "CC BY-SA 3.0",
+          "creator": "Amy Earl (amye)",
+          "attribution_text": "Amy Earl / Mushroom Observer via Wikimedia Commons (CC BY-SA 3.0)",
+          "source": "Mushroom Observer via Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:2012-10-12_Suillus_luteus_(L.)_Roussel_271431.jpg"
+        },
+        {
+          "role": "detail",
+          "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Sullius_luteus_cross_section_crop.jpg",
+          "license": "CC BY-SA 4.0",
+          "creator": "Tim Sage (timsage)",
+          "attribution_text": "Tim Sage / iNaturalist via Wikimedia Commons (CC BY-SA 4.0) — peronate partial-veil ring in section",
+          "source": "iNaturalist via Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Sullius_luteus_cross_section_crop.jpg"
+        },
+        {
+          "role": "detail",
+          "url": "https://commons.wikimedia.org/wiki/Special:FilePath/2012-10-09_Suillus_luteus_(L.)_Roussel_270283.jpg",
+          "license": "CC BY-SA 3.0",
+          "creator": "Dave W",
+          "attribution_text": "Dave W / Mushroom Observer via Wikimedia Commons (CC BY-SA 3.0) — longitudinal section",
+          "source": "Mushroom Observer via Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:2012-10-09_Suillus_luteus_(L.)_Roussel_270283.jpg"
+        },
+        {
+          "role": "gallery",
+          "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Suillus_luteus_475376.jpg",
+          "license": "CC BY-SA 3.0",
+          "creator": "walt sturgeon (Mycowalt)",
+          "attribution_text": "walt sturgeon (Mycowalt) / Mushroom Observer via Wikimedia Commons (CC BY-SA 3.0)",
+          "source": "Mushroom Observer via Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Suillus_luteus_475376.jpg"
+        },
+        {
+          "role": "gallery",
+          "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Suillus_luteus_113280.jpg",
+          "license": "CC BY-SA 3.0",
+          "creator": "Tim Sage (T. Sage)",
+          "attribution_text": "Tim Sage / Mushroom Observer via Wikimedia Commons (CC BY-SA 3.0) — characteristic ring",
+          "source": "Mushroom Observer via Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Suillus_luteus_113280.jpg"
+        },
+        {
+          "role": "gallery",
+          "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Suillus_luteus_236097787.jpg",
+          "license": "CC BY 4.0",
+          "creator": "Alexis Tinker-Tsavalas (alexis_orion)",
+          "attribution_text": "Alexis Tinker-Tsavalas / iNaturalist via Wikimedia Commons (CC BY 4.0)",
+          "source": "iNaturalist via Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Suillus_luteus_236097787.jpg"
+        },
+        {
+          "role": "gallery",
+          "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Suillus_luteus_1.jpg",
+          "license": "CC BY-SA 4.0",
+          "creator": "Dmitry Brant",
+          "attribution_text": "Dmitry Brant / Wikimedia Commons (CC BY-SA 4.0)",
+          "source": "Wikimedia Commons",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Suillus_luteus_1.jpg"
+        }
+      ]
+    }
+  }
+}

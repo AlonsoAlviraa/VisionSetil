@@ -2,8 +2,9 @@
  * Educational mushroom quiz — Preguntados-style.
  * Food-quality mode uses ONLY documented records from foodQuality registry
  * (mushroomDatabase + poisonousSpecies). Never invents "comestible".
+ * Season mode uses educational phenology only — never a harvest calendar.
  */
-import { getSpeciesByTaxon, loadSpeciesCatalog } from '../data/speciesCatalog'
+import { getSpeciesByTaxon, loadSpeciesCatalog, speciesCatalog } from '../data/speciesCatalog'
 
 /** Optional hydrate for slug resolution (code-split catalog). */
 export async function ensureQuizCatalog() {
@@ -15,6 +16,12 @@ import {
   type FoodClass,
   type FoodQualityRecord,
 } from './foodQuality'
+import { CLASSIC_LOOKALIKE_PAIRS } from './lookalikeStudio'
+import { findDiagnosticPair } from './diagnosticViews'
+import type { CanonicalView } from './multiViewSlots'
+import { parseSeasonTokens } from './phenology'
+import { SEASON_META, type SeasonId } from './seasonRadar'
+import { resolveSpeciesMeta } from './speciesMeta'
 
 export const QUIZ_SECONDS = 30
 export const QUIZ_OPTION_COUNT = 4
@@ -24,7 +31,7 @@ export const DAILY_MATCH_ROUNDS = 6
 export const QUIZ_BEST_KEY = 'visionsetil_quiz_best'
 export const QUIZ_DAILY_BEST_KEY = 'visionsetil_quiz_daily_best'
 
-export type QuizMode = 'name' | 'photo' | 'food'
+export type QuizMode = 'name' | 'photo' | 'food' | 'lookalike' | 'season'
 export type QuizPlayKind = 'daily' | 'free'
 
 /** Food-quality buckets for the game (A–D). No "sin datos". */
@@ -105,7 +112,73 @@ export type FoodRound = {
   sourceNote: string
 }
 
-export type QuizRound = NameRound | PhotoRound | FoodRound
+/** Educational classic-pair round — never invents lookalikes; no ML. */
+export type LookalikeRound = {
+  mode: 'lookalike'
+  prompt: string
+  subject: QuizSpecies
+  mate: QuizSpecies
+  why: string
+  /** Pair-specific multi-view slots that discriminate (from diagnostic map). */
+  critical_views: CanonicalView[]
+  /** Diagnostic map pair id when known. */
+  pair_id: string | null
+  options: QuizSpecies[]
+  correctId: string
+}
+
+/** Educational season options (phenology study — never harvest permission). */
+export const QUIZ_SEASON_OPTIONS: Array<{
+  id: SeasonId
+  label: string
+  hint: string
+  letter: string
+  color: string
+}> = [
+  {
+    id: 'primavera',
+    label: SEASON_META.primavera.labelEs,
+    hint: SEASON_META.primavera.months + ' · solo educativo',
+    letter: 'A',
+    color: 'teal',
+  },
+  {
+    id: 'verano',
+    label: SEASON_META.verano.labelEs,
+    hint: SEASON_META.verano.months + ' · solo educativo',
+    letter: 'B',
+    color: 'slate',
+  },
+  {
+    id: 'otono',
+    label: SEASON_META.otono.labelEs,
+    hint: SEASON_META.otono.months + ' · no es recolección',
+    letter: 'C',
+    color: 'orange',
+  },
+  {
+    id: 'invierno',
+    label: SEASON_META.invierno.labelEs,
+    hint: SEASON_META.invierno.months + ' · solo educativo',
+    letter: 'D',
+    color: 'red',
+  },
+]
+
+/** Seek-style phenology challenge — window típica, never harvest calendar. */
+export type SeasonRound = {
+  mode: 'season'
+  prompt: string
+  subject: QuizSpecies
+  options: typeof QUIZ_SEASON_OPTIONS
+  /** Primary answer (first active season). */
+  correctId: SeasonId
+  /** All seasons documented for the taxon (any accepted as correct). */
+  acceptedIds: SeasonId[]
+  seasonNote: string
+}
+
+export type QuizRound = NameRound | PhotoRound | FoodRound | LookalikeRound | SeasonRound
 
 export type RoundResult = {
   correct: boolean
@@ -165,10 +238,56 @@ export function rngFromDaily(date: Date = new Date()): () => number {
   return mulberry32(dailySeed(date))
 }
 
-/** Rotate modes for daily rounds: food → name → photo (educational mix). */
+/** Rotate modes for daily rounds: food → name → photo → lookalike → season. */
 export function dailyModeForRound(roundIndex: number): QuizMode {
-  const modes: QuizMode[] = ['food', 'name', 'photo']
+  const modes: QuizMode[] = ['food', 'name', 'photo', 'lookalike', 'season']
   return modes[roundIndex % modes.length]
+}
+
+function taxonToQuizSpecies(taxon: string): QuizSpecies | null {
+  const cat = getSpeciesByTaxon(taxon)
+  if (!cat) return null
+  const food = (cat.food_class as FoodClass | null | undefined) || null
+  // Lookalike subjects need catalog resolution; food_class may be sparse.
+  // Use documented food when present, else educational unknown bucket for pool typing.
+  const fc: FoodClass = food || 'no_comestible'
+  return {
+    taxon: cat.taxon,
+    slug: cat.slug,
+    common: cat.common_names?.[0] || cat.taxon,
+    food_class: fc,
+    food_label: cat.food_label || fc,
+    sources: ['species_catalog_v2 lookalikes'],
+    risk_label: cat.risk_label || 'dangerous_or_unknown',
+  }
+}
+
+/** Classic pairs fully resolvable in catalog (both sides). */
+export function listResolvableLookalikePairs(): Array<{
+  a: QuizSpecies
+  b: QuizSpecies
+  why: string
+  id: string
+}> {
+  const out: Array<{ a: QuizSpecies; b: QuizSpecies; why: string; id: string }> = []
+  for (const p of CLASSIC_LOOKALIKE_PAIRS) {
+    const a = taxonToQuizSpecies(p.taxa[0])
+    const b = taxonToQuizSpecies(p.taxa[1])
+    if (!a || !b) continue
+    out.push({ a, b, why: p.why, id: p.id })
+  }
+  // Also SSOT catalog lookalikes for food-pool taxa
+  for (const s of speciesCatalog) {
+    for (const mate of s.lookalikes || []) {
+      const a = taxonToQuizSpecies(s.taxon)
+      const b = taxonToQuizSpecies(mate)
+      if (!a || !b) continue
+      const id = `ssot-${a.slug}-${b.slug}`
+      if (out.some((x) => x.id === id || (x.a.taxon === a.taxon && x.b.taxon === b.taxon))) continue
+      out.push({ a, b, why: 'Par de confusión documentado en catálogo (educativo)', id })
+    }
+  }
+  return out
 }
 
 /**
@@ -362,6 +481,109 @@ export function buildFoodRound(pool: QuizSpecies[], rng: () => number = Math.ran
   }
 }
 
+export function buildLookalikeRound(
+  pool: QuizSpecies[],
+  rng: () => number = Math.random,
+): LookalikeRound {
+  if (pool.length < QUIZ_OPTION_COUNT) throw new Error('Quiz pool too small')
+  const pairs = listResolvableLookalikePairs()
+  if (pairs.length === 0) {
+    // Fail closed to photo mode if no curated pairs (should not happen with SSOT)
+    const photo = buildPhotoRound(pool, rng)
+    return {
+      mode: 'lookalike',
+      prompt: 'Par lookalike no disponible — modo foto educativo',
+      subject: photo.subject,
+      mate: photo.subject,
+      why: 'Sin pares curados en catálogo',
+      critical_views: [],
+      pair_id: null,
+      options: photo.options,
+      correctId: photo.correctId,
+    }
+  }
+  const pair = pairs[Math.floor(rng() * pairs.length)]
+  // 50%: show A ask for B, or reverse
+  const flip = rng() < 0.5
+  const subject = flip ? pair.b : pair.a
+  const mate = flip ? pair.a : pair.b
+  const distractors = pickDistinct(pool, QUIZ_OPTION_COUNT - 1, new Set([subject.taxon, mate.taxon]), rng)
+  // Ensure we have enough options even if pool overlaps mates
+  while (distractors.length < QUIZ_OPTION_COUNT - 1) {
+    const filler = pickSubject(pool, rng)
+    if (
+      filler.taxon !== subject.taxon &&
+      filler.taxon !== mate.taxon &&
+      !distractors.some((d) => d.taxon === filler.taxon)
+    ) {
+      distractors.push(filler)
+    }
+    if (distractors.length >= QUIZ_OPTION_COUNT - 1) break
+  }
+  const options = shuffle([mate, ...distractors.slice(0, QUIZ_OPTION_COUNT - 1)], rng)
+  const diag = findDiagnosticPair(subject.taxon, mate.taxon)
+  return {
+    mode: 'lookalike',
+    prompt: `«${subject.common}» se confunde con… (educación · no consumo)`,
+    subject,
+    mate,
+    why: diag?.why || pair.why,
+    critical_views: diag?.critical_views ?? [],
+    pair_id: diag?.pair_id ?? pair.id ?? null,
+    options,
+    correctId: mate.taxon,
+  }
+}
+
+/** Resolve educational season string for a quiz subject (catalog + meta). */
+export function seasonLabelForQuizTaxon(taxon: string): string {
+  const cat = getSpeciesByTaxon(taxon)
+  const meta = resolveSpeciesMeta({
+    taxon,
+    description: cat?.description,
+    season: cat?.season,
+    common_names: cat?.common_names,
+    family: cat?.family,
+    risk_label: cat?.risk_label,
+    food_class: cat?.food_class,
+    documented_edibility: cat?.documented_edibility,
+  })
+  return meta.season || ''
+}
+
+/**
+ * Seek-style season challenge: pick a typical fruiting season window.
+ * Educational phenology only — never a harvest/collection calendar.
+ */
+export function buildSeasonRound(
+  pool: QuizSpecies[],
+  rng: () => number = Math.random,
+): SeasonRound {
+  if (pool.length < QUIZ_OPTION_COUNT) throw new Error('Quiz pool too small')
+  let subject = pickSubject(pool, rng)
+  let seasons = parseSeasonTokens(seasonLabelForQuizTaxon(subject.taxon))
+  // Prefer subjects with a parseable educational season
+  for (let i = 0; i < 12 && seasons.length === 0; i++) {
+    subject = pickSubject(pool, rng)
+    seasons = parseSeasonTokens(seasonLabelForQuizTaxon(subject.taxon))
+  }
+  if (seasons.length === 0) {
+    // Fail closed to a generic otoño educational default for documented pool taxa
+    seasons = ['otono']
+  }
+  const primary = seasons[Math.floor(rng() * seasons.length)]
+  return {
+    mode: 'season',
+    prompt:
+      '¿En qué temporada típica se observa? (ventana educativa · no es calendario de recolección)',
+    subject,
+    options: QUIZ_SEASON_OPTIONS,
+    correctId: primary,
+    acceptedIds: seasons,
+    seasonNote: seasonLabelForQuizTaxon(subject.taxon) || SEASON_META[primary].labelEs,
+  }
+}
+
 export function buildRound(
   mode: QuizMode,
   pool: QuizSpecies[],
@@ -369,6 +591,8 @@ export function buildRound(
 ): QuizRound {
   if (mode === 'name') return buildNameRound(pool, rng)
   if (mode === 'photo') return buildPhotoRound(pool, rng)
+  if (mode === 'lookalike') return buildLookalikeRound(pool, rng)
+  if (mode === 'season') return buildSeasonRound(pool, rng)
   return buildFoodRound(pool, rng)
 }
 
@@ -378,7 +602,14 @@ export function scoreAnswer(
   secondsLeft: number,
   timedOut = false,
 ): RoundResult {
-  const correct = !timedOut && pickedId != null && pickedId === round.correctId
+  let correct = false
+  if (!timedOut && pickedId != null) {
+    if (round.mode === 'season') {
+      correct = round.acceptedIds.includes(pickedId as SeasonId)
+    } else {
+      correct = pickedId === round.correctId
+    }
+  }
   let correctLabel = ''
   let pickedLabel: string | null = null
 
@@ -387,6 +618,17 @@ export function scoreAnswer(
       QUIZ_FOOD_OPTIONS.find((o) => o.id === round.correctId)?.label || String(round.correctId)
     pickedLabel = pickedId
       ? QUIZ_FOOD_OPTIONS.find((o) => o.id === pickedId)?.label || pickedId
+      : null
+  } else if (round.mode === 'season') {
+    correctLabel =
+      QUIZ_SEASON_OPTIONS.find((o) => o.id === round.correctId)?.label || String(round.correctId)
+    if (round.acceptedIds.length > 1) {
+      correctLabel = round.acceptedIds
+        .map((id) => QUIZ_SEASON_OPTIONS.find((o) => o.id === id)?.label || id)
+        .join(' · ')
+    }
+    pickedLabel = pickedId
+      ? QUIZ_SEASON_OPTIONS.find((o) => o.id === pickedId)?.label || pickedId
       : null
   } else {
     const opts = round.options

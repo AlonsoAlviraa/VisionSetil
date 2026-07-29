@@ -232,6 +232,9 @@ export default defineConfig({
         // App shell only — catalog JSON / species webp stay runtime (audit P3/P5)
         globPatterns: ['**/*.{js,css,html,ico,svg,woff2}'],
         globIgnores: ['**/species_catalog*.json', '**/*catalog*', '**/*.map'],
+        // SPA deep links under SW control (Path A PWA); API/media stay network
+        navigateFallback: 'index.html',
+        navigateFallbackDenylist: [/^\/api(?:\/|$)/, /^\/media(?:\/|$)/],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,

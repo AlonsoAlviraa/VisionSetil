@@ -30,7 +30,10 @@ export type RankedLookalike = {
   slug: string | null
   risk_label: RiskLabel
   score: number
+  /** Spanish-primary commons (catalog). */
   common_names: string[]
+  /** English commons when available — prefer for EN UI. */
+  common_names_en: string[]
   in_catalog: boolean
   /** Catalog family when known (for ficha subtitle). */
   family: string | null
@@ -45,6 +48,10 @@ export type LookalikeSummary = {
   top: RankedLookalike | null
 }
 
+import { canonicalTaxonName } from './taxonSynonyms'
+
+export { canonicalTaxonName } from './taxonSynonyms'
+
 function slugifyTaxon(name: string): string {
   return name
     .trim()
@@ -54,10 +61,11 @@ function slugifyTaxon(name: string): string {
 }
 
 function findCatalogEntry(name: string): CatalogSpecies | undefined {
-  const slug = slugifyTaxon(name)
+  const canonical = canonicalTaxonName(name)
+  const slug = slugifyTaxon(canonical)
   const bySlug = getSpeciesBySlug(slug)
   if (bySlug) return bySlug
-  const lower = name.trim().toLowerCase()
+  const lower = canonical.toLowerCase()
   return speciesCatalog.find((s) => s.taxon.toLowerCase() === lower)
 }
 
@@ -71,6 +79,7 @@ function toRanked(name: string, entry: CatalogSpecies | undefined): RankedLookal
     risk_label: risk,
     score: RISK_RANK[risk] ?? 0,
     common_names: entry?.common_names ?? [],
+    common_names_en: entry?.common_names_en ?? [],
     in_catalog: Boolean(entry),
     family: entry?.family ?? entry?.family_es ?? null,
     risk_placeholder: placeholder,
@@ -83,7 +92,7 @@ export function rankLookalikes(names: string[]): RankedLookalike[] {
   const seen = new Set<string>()
   const ranked: RankedLookalike[] = []
   for (const raw of names) {
-    const name = raw?.trim()
+    const name = canonicalTaxonName(raw ?? '')
     if (!name) continue
     const key = name.toLowerCase()
     if (seen.has(key)) continue
@@ -114,10 +123,54 @@ export function summarizeLookalikes(ranked: RankedLookalike[]): LookalikeSummary
   }
 }
 
+/**
+ * Collect curated SSOT lookalike scientific names for predicted taxa.
+ * Never invents pairs — only catalog.lookalikes on known rows.
+ */
+export function collectSsotLookalikeNames(predictionTaxa: string[] | null | undefined): string[] {
+  const out: string[] = []
+  const seen = new Set<string>()
+  for (const raw of predictionTaxa || []) {
+    const entry = findCatalogEntry(raw ?? '')
+    if (!entry?.lookalikes?.length) continue
+    for (const lk of entry.lookalikes) {
+      const name = canonicalTaxonName(lk)
+      if (!name) continue
+      const key = name.toLowerCase()
+      if (seen.has(key)) continue
+      // Never list the prediction itself as its own lookalike
+      const predKey = canonicalTaxonName(raw ?? '').toLowerCase()
+      if (key === predKey) continue
+      seen.add(key)
+      out.push(name)
+    }
+  }
+  return out
+}
+
+/**
+ * Identify / History: union API dangerous_lookalikes with SSOT lookalikes of top
+ * predictions (parity with BE B-43 hydrate). Synonym-deduped + risk-ranked.
+ */
+export function rankLookalikesForIdentify(
+  apiNames: string[] | null | undefined,
+  predictionTaxa: string[] | null | undefined,
+): RankedLookalike[] {
+  const merged = [...(apiNames || []), ...collectSsotLookalikeNames(predictionTaxa)]
+  return rankLookalikes(merged)
+}
+
 /** Merge prediction taxon lookalikes from catalog descriptions is out of scope;
  * this only ranks API-provided dangerous_lookalikes strings. */
 export function lookalikeSummary(names: string[]): LookalikeSummary {
   return summarizeLookalikes(rankLookalikes(names))
+}
+
+export function lookalikeSummaryForIdentify(
+  apiNames: string[] | null | undefined,
+  predictionTaxa: string[] | null | undefined,
+): LookalikeSummary {
+  return summarizeLookalikes(rankLookalikesForIdentify(apiNames, predictionTaxa))
 }
 
 export async function lookalikeSummaryHydrated(names: string[]): Promise<LookalikeSummary> {

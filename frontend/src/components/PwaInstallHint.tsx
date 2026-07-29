@@ -2,6 +2,8 @@
  * Phase D-15 / U6 — soft install prompt when beforeinstallprompt is available.
  * Fallback tips for iOS / browsers without BIP. Link to offline pack.
  * Dismissable; never blocks product chrome. Educational PWA shell only.
+ * Beta: Home also shows always-visible install steps (docs/HOSTING_DEPLOY_BETA.md).
+ * Not an App Store / APK download path — orientation only.
  */
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
@@ -122,10 +124,10 @@ export function PwaInstallHint() {
         aria-label={t('pwa.region', { defaultValue: 'Instalar app' })}
         data-testid="pwa-install-hint"
       >
-        <p className="pwa-install-hint__text">
+        <p className="pwa-install-hint__text" data-testid="pwa-install-multiview-note">
           {t('pwa.hint', {
             defaultValue:
-              'Instala VisionSetil para acceso rápido y packs offline de estudio (no identifica sin red).',
+              'Instala VisionSetil para acceso rápido y packs offline de estudio (no identifica sin red). Offline ≠ multi-vista de campo: prioriza láminas/perfil/base — solo orientación, nunca consumo.',
           })}
         </p>
         <div className="pwa-install-hint__actions">
@@ -139,6 +141,9 @@ export function PwaInstallHint() {
           </button>
           <Link to="/offline" className="btn-atelier btn-atelier--ghost">
             {t('pwa.offlinePack', { defaultValue: 'Pack offline' })}
+          </Link>
+          <Link to="/identificar" className="btn-atelier btn-atelier--ghost" data-testid="pwa-install-identify">
+            {t('nav.identify', { defaultValue: 'Identificar multi-vista' })}
           </Link>
           <button type="button" className="btn-atelier btn-atelier--ghost" onClick={() => dismiss(false)}>
             {t('pwa.later', { defaultValue: 'Ahora no' })}
@@ -156,15 +161,18 @@ export function PwaInstallHint() {
         aria-label={t('pwa.region', { defaultValue: 'Instalar app' })}
         data-testid="pwa-install-ios-tip"
       >
-        <p className="pwa-install-hint__text">
+        <p className="pwa-install-hint__text" data-testid="pwa-ios-multiview-note">
           {t('pwa.iosHint', {
             defaultValue:
-              'En iPhone/iPad: toca Compartir → «Añadir a pantalla de inicio». Luego descarga el pack offline para estudiar sin red.',
+              'En iPhone/iPad: toca Compartir → «Añadir a pantalla de inicio». Pack offline es estudio (no ID de campo multi-vista). Láminas/perfil/base — solo orientación, nunca consumo.',
           })}
         </p>
         <div className="pwa-install-hint__actions">
           <Link to="/offline" className="btn-atelier btn-atelier--primary">
             {t('pwa.offlinePack', { defaultValue: 'Pack offline' })}
+          </Link>
+          <Link to="/identificar" className="btn-atelier btn-atelier--ghost" data-testid="pwa-ios-identify">
+            {t('nav.identify', { defaultValue: 'Identificar multi-vista' })}
           </Link>
           <button type="button" className="btn-atelier btn-atelier--ghost" onClick={() => dismiss(true)}>
             {t('pwa.later', { defaultValue: 'Ahora no' })}

@@ -3,6 +3,10 @@
 interface ImportMetaEnv {
   readonly VITE_API_URL?: string
   readonly VITE_API_KEY?: string
+  /** Public HTTPS app URL for invites / GTM (see docs/HOSTING_DEPLOY_BETA.md). */
+  readonly VITE_PUBLIC_APP_URL?: string
+  /** Beta cohort feedback form (Google Form / Typeform). */
+  readonly VITE_BETA_FEEDBACK_URL?: string
   readonly VITE_MEDIA_PUBLIC_PREFIX?: string
   readonly VITE_FEATURE_SPECIES_MEDIA?: string
   readonly VITE_FEATURE_I18N?: string

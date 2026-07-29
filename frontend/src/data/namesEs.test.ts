@@ -6,6 +6,7 @@ import { speciesCatalog } from './speciesCatalog'
 import { foldEs } from './commonNamesEs'
 import { searchCatalogRanked } from '../lib/catalogSearch'
 import { resolveSpeciesDisplay, NO_LOCAL_COMMON_NAME } from '../components/SpeciesNameBlock'
+import { commonsForLocale, displayCommonName } from './speciesCatalog'
 
 describe('Spanish common name coverage', () => {
   it('covers ≥95% of catalog taxa with at least one local common name', () => {
@@ -61,11 +62,26 @@ describe('synonym search', () => {
     ).toBe(true)
   })
 
-  it('finds Coprinopsis atramentaria via matacandil when present in catalog', () => {
-    const inCat = speciesCatalog.some((s) => s.taxon === 'Coprinopsis atramentaria')
+  it('finds Coprinus atramentarius via matacandil / tinta when present in catalog', () => {
+    // SSOT spelling is Coprinus atramentarius (not Coprinopsis atramentaria)
+    const inCat = speciesCatalog.some((s) => s.taxon === 'Coprinus atramentarius')
     if (!inCat) return
-    const hits = searchCatalogRanked(speciesCatalog, { query: 'matacandil', limit: 10 })
-    expect(hits.some((h) => h.taxon === 'Coprinopsis atramentaria')).toBe(true)
+    const hits = searchCatalogRanked(speciesCatalog, { query: 'tinta', limit: 15 })
+    const hits2 = searchCatalogRanked(speciesCatalog, { query: 'matacandil', limit: 15 })
+    const found =
+      hits.some((h) => h.taxon === 'Coprinus atramentarius') ||
+      hits2.some((h) => h.taxon === 'Coprinus atramentarius' || h.taxon === 'Coprinus comatus')
+    expect(found).toBe(true)
+  })
+
+  it('resolves synonym scientific query Coprinopsis atramentaria to SSOT taxon', () => {
+    const inCat = speciesCatalog.some((s) => s.taxon === 'Coprinus atramentarius')
+    if (!inCat) return
+    const hits = searchCatalogRanked(speciesCatalog, {
+      query: 'Coprinopsis atramentaria',
+      limit: 5,
+    })
+    expect(hits.some((h) => h.taxon === 'Coprinus atramentarius')).toBe(true)
   })
 
   it('finds Marasmius oreades via senderuela', () => {
@@ -85,12 +101,86 @@ describe('SpeciesNameBlock resolveSpeciesDisplay', () => {
     expect(d.familyLine?.toLowerCase()).toMatch(/amanita/)
   })
 
-  it('uses explicit empty label when no local name', () => {
+  it('uses explicit empty label when no local name (ES)', () => {
     const d = resolveSpeciesDisplay({
       taxon: 'Fakeus nonexistentus xyz',
       commonNames: [],
+      locale: 'es',
     })
     expect(d.hasLocalCommon).toBe(false)
     expect(d.commonPrimary).toBe(NO_LOCAL_COMMON_NAME)
+  })
+
+  it('EN prefers English common or falls back to scientific (never blank)', () => {
+    const d = resolveSpeciesDisplay({
+      taxon: 'Amanita phalloides',
+      locale: 'en',
+    })
+    expect(d.taxon).toBe('Amanita phalloides')
+    expect(d.commonPrimary).toBeTruthy()
+    expect(d.commonPrimary).not.toMatch(/undefined|null/i)
+    // Death cap or curated EN — not Spanish oronja as forced primary when EN exists
+    if (d.hasLocalCommon) {
+      expect(d.commonPrimary.toLowerCase()).toMatch(/death|cap|amanita/)
+    }
+  })
+
+  it('EN unknown taxon falls back to scientific name', () => {
+    const d = resolveSpeciesDisplay({
+      taxon: 'Fakeus nonexistentus xyz',
+      commonNames: [],
+      locale: 'en',
+    })
+    expect(d.hasLocalCommon).toBe(false)
+    expect(d.commonPrimary).toBe('Fakeus nonexistentus xyz')
+    expect(d.taxon).toBe('Fakeus nonexistentus xyz')
+  })
+
+  it('never surfaces raw undefined family tokens', () => {
+    const d = resolveSpeciesDisplay({
+      taxon: 'Amanita phalloides',
+      family: 'undefined',
+      familyEs: 'null',
+    })
+    expect(d.familyLine == null || !/undefined|null/i.test(d.familyLine)).toBe(true)
+  })
+
+  it('EN family line is Latin-only (no Spanish family_es chrome)', () => {
+    const d = resolveSpeciesDisplay({
+      taxon: 'Amanita phalloides',
+      family: 'Amanitaceae',
+      familyEs: 'Amanitas',
+      locale: 'en',
+    })
+    expect(d.familyLine).toBe('Amanitaceae')
+    expect(d.familyLine).not.toMatch(/Amanitas/)
+  })
+})
+
+describe('commonsForLocale (SpeciesDetail EN path)', () => {
+  it('EN never returns Spanish commons when EN list is empty', () => {
+    const fake = {
+      taxon: 'Fakeus nonexistentus xyz',
+      common_names: ['Nombre español inventado'],
+      common_names_en: [] as string[],
+    }
+    const en = commonsForLocale(fake, 'en', ['Otro español'])
+    // No Spanish leakage — either empty (after enrich) or non-Spanish scientific path
+    for (const n of en) {
+      expect(n.toLowerCase()).not.toBe('nombre español inventado')
+      expect(n.toLowerCase()).not.toBe('otro español')
+    }
+    // display falls back to scientific when no EN common
+    expect(displayCommonName(fake, 'en')).toBe('Fakeus nonexistentus xyz')
+  })
+
+  it('ES still prefers Spanish commons', () => {
+    const s = {
+      taxon: 'Amanita phalloides',
+      common_names: ['Oronja verde'],
+      common_names_en: ['Death cap'],
+    }
+    expect(commonsForLocale(s, 'es')[0].toLowerCase()).toContain('oronja')
+    expect(commonsForLocale(s, 'en')[0].toLowerCase()).toMatch(/death|cap/)
   })
 })

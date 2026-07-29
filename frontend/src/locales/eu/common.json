@@ -20,7 +20,11 @@
     "community": "Komunitatea",
     "experts": "Adituak",
     "ml": "ML panela",
-    "more": "Gehiago"
+    "more": "Gehiago",
+    "wordle": "Perretxiko Wordle",
+    "blurb": {
+      "wordle": "Izen arruntak · hizkuntzaren arabera"
+    }
   },
   "actions": {
     "search": "Bilatu",
@@ -681,5 +685,32 @@
   },
   "a11y": {
     "skipToContent": "Jauzi edukira"
+  },
+  "wordle": {
+    "loading": "Pool-a kargatzen…",
+    "emptyPool": "Ez dago espeziearik pool-ean.",
+    "backSetadle": "Itzuli Setadle-ra",
+    "kicker": "Perretxiko Wordle · hezigarria · {{n}}. erronda",
+    "title": "Perretxiko Wordle",
+    "lead": "Asmatu izen arrunta (espaziorik gabe) {{max}} saiotan. Berdea = ondo, anbarra = beste tokian. Asmatu edo huts egin ondoren, hurrengoa automatikoki. Izena aplikazioaren hizkuntzaren araberakoa da.",
+    "streak": "Bolada",
+    "day": "Gaur",
+    "daily": "Egunerokoa",
+    "streakMode": "Bolada amaigabea",
+    "toSetadle": "Beste Setadle moduak",
+    "letters": "{{n}} letra",
+    "hintFamily": "Pista: izen arrunta zure hizkuntzan",
+    "boardAria": "Taula",
+    "errLength": "Hitzak {{n}} letra ditu (espaziorik gabe).",
+    "errDup": "Hitz hori jada saiatu zara.",
+    "won": "Asmatu duzu!",
+    "lost": "Saiakerak amaitu dira",
+    "nextIn": "Hurrengoa {{s}} s-an…",
+    "nextNow": "Hurrengoa kargatzen…",
+    "nextNowBtn": "Hurrengoa orain",
+    "openFiche": "Ireki fitxa",
+    "safety": "Joko hezigarria soilik. Ez du biltzeko edo jateko baimenik ematen.",
+    "kbAria": "Teklatua",
+    "enter": "Bidali"
   }
 }

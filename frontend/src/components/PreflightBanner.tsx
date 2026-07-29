@@ -2,10 +2,12 @@
  * Identify preflight advisory banner (B-11 / B-15 polish).
  * Never hard-blocks submit for gate — only offline disables (see canSubmitPreflight).
  * B-15: offline retry control + slightly clearer network vs empty-response copy.
+ * v1.5.10: multiview diagnostic tip (educational; never forage).
  */
 import { useTranslation } from 'react-i18next'
 import { offlineDetailI18nKey, type PreflightState } from '../lib/preflight'
 import { IconAlert, IconFlip, IconInfo } from './icons'
+import { deadlyPriorityViews } from '../lib/diagnosticViews'
 
 const KNOWN_GATE_CODES = [
   'no_metrics',
@@ -36,6 +38,7 @@ type Props = {
  */
 export function PreflightBanner({ state, className = '', onRetry }: Props) {
   const { t } = useTranslation()
+  const priorityViews = deadlyPriorityViews().slice(0, 3)
 
   // Avoid flash of "unknown" on first paint before fetch settles.
   if (state.loading && state.fetched_at === 0) {
@@ -47,6 +50,7 @@ export function PreflightBanner({ state, className = '', onRetry }: Props) {
   const showMetricsWarning =
     state.metrics_warning && (mode === 'real' || mode === 'mock')
   const retrying = mode === 'offline' && state.loading
+  const showMultiviewTip = mode !== 'offline'
 
   const bodyKey =
     mode === 'offline'
@@ -134,6 +138,31 @@ export function PreflightBanner({ state, className = '', onRetry }: Props) {
         >
           {t('honesty.preflight.metrics_warning')}
         </p>
+      )}
+
+      {showMultiviewTip && (
+        <div
+          className="preflight-banner__multiview"
+          data-testid="preflight-multiview-tip"
+        >
+          <p className="preflight-banner__multiview-text">
+            {t('honesty.preflight.multiview_tip', {
+              defaultValue:
+                'Multi-vista: prioriza láminas, perfil y base. Más fotos sin esas vistas no bastan — solo orientación, nunca consumo.',
+            })}
+          </p>
+          <div className="lookalike-item__diag-views preflight-banner__multiview-views">
+            {priorityViews.map((view) => (
+              <span
+                key={view}
+                className="lookalike-item__diag-badge lookalike-item__diag-badge--static"
+                data-slot={view}
+              >
+                {t(`identify.views.${view}`, { defaultValue: view })}
+              </span>
+            ))}
+          </div>
+        </div>
       )}
     </div>
   )

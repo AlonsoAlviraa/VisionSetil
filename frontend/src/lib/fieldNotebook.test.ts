@@ -65,6 +65,21 @@ describe('field notebook', () => {
     expect(updated[0].tags).toContain('pinar')
   })
 
+  it('stores privacy-safe notebook pin (coords only, no EXIF)', () => {
+    const pin = {
+      lat: 41.76,
+      lng: -2.46,
+      source: 'gps' as const,
+      privacy: 'coords_only_no_exif' as const,
+      accuracy_m: 10,
+    }
+    const updated = updateHistoryNotebook([sampleEntry()], 'h1', { pin })
+    expect(updated[0].pin?.lat).toBeCloseTo(41.76)
+    expect(updated[0].pin?.privacy).toBe('coords_only_no_exif')
+    const cleared = updateHistoryNotebook(updated, 'h1', { pin: null })
+    expect(cleared[0].pin).toBeNull()
+  })
+
   it('exports JSON with policy disclaimer and entry notes', () => {
     const entries = updateHistoryNotebook([sampleEntry()], 'h1', {
       notes: 'Notas de campo',

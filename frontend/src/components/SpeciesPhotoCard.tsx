@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import type { CatalogSpecies } from '../data/speciesCatalog'
+import { displayCommonName } from '../data/speciesCatalog'
 import { getFoodQuality } from '../lib/foodQuality'
 import { SpeciesNameBlock, NO_LOCAL_COMMON_NAME } from './SpeciesNameBlock'
 import { RiskChip } from './RiskChip'
@@ -25,9 +27,11 @@ type Props = {
  * Safe loads: referrerPolicy no-referrer, cascade on error by URL → SVG terminal.
  */
 export function SpeciesPhotoCard({ species, priority = false }: Props) {
-  const common = species.common_names[0]?.trim()
+  const { i18n } = useTranslation()
+  const locale = i18n.resolvedLanguage || i18n.language || 'es'
+  const common = displayCommonName(species, locale)
   const food = getFoodQuality(species.taxon)
-  const alt = `${common || NO_LOCAL_COMMON_NAME} — ${species.taxon}`
+  const alt = `${common || species.taxon} — ${species.taxon}`
   const terminal = speciesPhotoErrorFallback(species.taxon, species.risk_label)
 
   const stack = useMemo(

@@ -138,13 +138,16 @@
   }
 }
 
+/* Legacy name: flat photo frame only (no 3D scene) */
 .hero-3d-frame {
   position: relative;
   min-height: 300px;
   border-radius: var(--radius);
   overflow: hidden;
   border: 1px solid rgba(155, 225, 93, 0.25);
-  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.35);
+  box-shadow: none;
+  transform: none;
+  perspective: none;
 }
 
 .hero-content {
@@ -772,6 +775,32 @@
 .mv-warn {
   color: var(--warning-text, #b45309);
   font-weight: 600;
+}
+
+/* Progressive soft multi-view coach (v1.5 beta try-first) */
+.mv-progressive-coach {
+  margin: 0.65rem 0 0.35rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 12px;
+  font-size: 0.88rem;
+  line-height: 1.4;
+  color: var(--text);
+  background: color-mix(in srgb, var(--primary, #3f6b4a) 8%, var(--surface-alt, #f6f3ec));
+  border: 1px solid color-mix(in srgb, var(--primary, #3f6b4a) 22%, var(--border));
+}
+.mv-progressive-coach--empty,
+.mv-progressive-coach--single_need_critical {
+  background: color-mix(in srgb, var(--warning-text, #b45309) 10%, var(--surface-alt, #f6f3ec));
+  border-color: color-mix(in srgb, var(--warning-text, #b45309) 28%, var(--border));
+}
+.mv-progressive-coach--full {
+  background: color-mix(in srgb, var(--primary, #3f6b4a) 12%, var(--surface-alt, #f6f3ec));
+}
+.mv-progressive-coach__soft {
+  display: inline;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-weight: 500;
 }
 
 .mv-grid {

@@ -17,6 +17,12 @@ describe('speciesImageUrl', () => {
     )
   })
 
+  it('resolves synonym scientific names to SSOT media slug', () => {
+    expect(speciesImageUrl('Coprinopsis atramentaria', 'card')).toContain(
+      '/species/coprinus-atramentarius/card.webp',
+    )
+  })
+
   it('builds placeholder urls with .webp for Workbox', () => {
     expect(placeholderImageUrl('deadly')).toBe('/media/placeholders/deadly.webp')
   })

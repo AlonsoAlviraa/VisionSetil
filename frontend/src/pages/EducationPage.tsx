@@ -1,9 +1,10 @@
 /**
- * Education — safety, anatomy, seasons, emergency.
+ * Education — safety, anatomy, seasons, multi-view diagnostics, emergency.
  * Wave A: no cooking/dosing/consumption-permission language.
  */
-import { useState, type ReactNode } from 'react'
+import { useMemo, useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import {
   IconAlert,
   IconBan,
@@ -22,6 +23,12 @@ import {
   IconStem,
   IconSun,
 } from '../components/icons'
+import {
+  deadlyCoach,
+  deadlyDiagnosticPairs,
+  deadlyPriorityViews,
+  diagnosticPolicy,
+} from '../lib/diagnosticViews'
 
 interface AccordionItem {
   q: string
@@ -174,14 +181,25 @@ const faqItems: AccordionItem[] = [
 ]
 
 export function EducationPage() {
+  const { t, i18n } = useTranslation()
+  const locale = i18n.resolvedLanguage || i18n.language || 'es'
   const [openFaq, setOpenFaq] = useState<number | null>(0)
+
+  const priorityViews = useMemo(() => deadlyPriorityViews().slice(0, 3), [])
+  const deadlyPairs = useMemo(() => deadlyDiagnosticPairs().slice(0, 8), [])
+  const coach = useMemo(() => deadlyCoach(locale), [locale])
 
   return (
     <div className="page-education page-atelier-shell">
       <div className="page-header">
-        <h1 className="page-title">Aprende micología</h1>
+        <h1 className="page-title">
+          {t('education.title', { defaultValue: 'Educación de seguridad' })}
+        </h1>
         <p className="page-subtitle">
-          Caracteres, riesgo y cabeza fría. Educación de campo — no recetario.
+          {t('education.subtitle', {
+            defaultValue:
+              'Reglas de campo, anatomía y calendario. Orientación — nunca permiso de consumo.',
+          })}
         </p>
       </div>
 
@@ -274,6 +292,95 @@ export function EducationPage() {
               <span>{tip.text}</span>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section
+        className="edu-section edu-multiview-diag"
+        data-testid="edu-multiview-diagnostic"
+        aria-label={t('education.multiviewDiagAria', {
+          defaultValue: 'Multi-vista diagnóstica (educativo)',
+        })}
+      >
+        <h2 className="edu-section-title">
+          <IconGills size={22} />
+          {t('education.multiviewDiagTitle', {
+            defaultValue: 'Multi-vista que sí discrimina',
+          })}
+        </h2>
+        <p className="edu-intro" data-testid="edu-deadly-coach">
+          {coach}
+        </p>
+        <p className="edu-intro muted">
+          {t('education.multiviewDiagLead', {
+            defaultValue:
+              'Más fotos sin láminas, perfil y base no mejoran la seguridad con confusiones mortales. Solo orientación — nunca consumo.',
+          })}
+        </p>
+        <div className="edu-priority-views" data-testid="edu-priority-views">
+          <span className="lookalike-item__diag-label">
+            {t('education.priorityViews', { defaultValue: 'Prioridad de captura:' })}
+          </span>
+          {priorityViews.map((view) => (
+            <span
+              key={view}
+              className="lookalike-item__diag-badge lookalike-item__diag-badge--static"
+              data-slot={view}
+            >
+              {t(`identify.views.${view}`, { defaultValue: view })}
+            </span>
+          ))}
+        </div>
+        {deadlyPairs.length > 0 && (
+          <div className="edu-diag-pairs" data-testid="edu-diag-pairs">
+            {deadlyPairs.map((pair) => (
+              <article
+                key={pair.id}
+                className="edu-diag-pair atelier-panel"
+                data-pair-id={pair.id}
+              >
+                <h3 className="edu-diag-pair__taxa">
+                  {pair.taxa.slice(0, 2).join(' ↔ ')}
+                </h3>
+                {pair.why ? <p className="edu-diag-pair__why muted">{pair.why}</p> : null}
+                <div className="lookalike-item__diag-views">
+                  {(pair.critical_views || []).slice(0, 4).map((view) => (
+                    <span
+                      key={view}
+                      className="lookalike-item__diag-badge lookalike-item__diag-badge--static"
+                      data-slot={view}
+                    >
+                      {t(`identify.views.${view}`, { defaultValue: view })}
+                    </span>
+                  ))}
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+        <p className="lookalike-item__diag-policy muted" data-policy={diagnosticPolicy()}>
+          {t('result.pairDiagPolicy', {
+            defaultValue:
+              'Educativo: multi-foto sin estas vistas no basta — solo orientación, nunca consumo.',
+          })}
+        </p>
+        <div className="edu-cta-cards" style={{ marginTop: '0.75rem' }}>
+          <Link to="/identificar" className="edu-cta-card atelier-panel">
+            <strong>{t('nav.identify', { defaultValue: 'Identificar' })}</strong>
+            <span>
+              {t('education.tryMultiview', {
+                defaultValue: 'Prueba el asistente multi-vista (open-set puede abstenerse).',
+              })}
+            </span>
+          </Link>
+          <Link to="/lookalikes" className="edu-cta-card atelier-panel">
+            <strong>Lookalike Studio</strong>
+            <span>
+              {t('education.openStudio', {
+                defaultValue: 'Compara confusiones clásicas con vistas críticas.',
+              })}
+            </span>
+          </Link>
         </div>
       </section>
 

@@ -20,7 +20,11 @@
     "community": "Comunitat",
     "experts": "Experts",
     "ml": "Dashboard ML",
-    "more": "Més"
+    "more": "Més",
+    "wordle": "Wordle de bolets",
+    "blurb": {
+      "wordle": "Noms comuns · segueix l'idioma"
+    }
   },
   "actions": {
     "search": "Cercar",
@@ -681,5 +685,32 @@
   },
   "a11y": {
     "skipToContent": "Salta al contingut"
+  },
+  "wordle": {
+    "loading": "Carregant pool…",
+    "emptyPool": "No hi ha espècies al pool.",
+    "backSetadle": "Tornar a Setadle",
+    "kicker": "Wordle de bolets · educatiu · ronda {{n}}",
+    "title": "Wordle de bolets",
+    "lead": "Endevina el nom comú (sense espais) en {{max}} intents. Verd = bé, ambre = altra posició. En encertar o fallar, passa al següent. El nom depèn de l'idioma de l'app.",
+    "streak": "Ratxa",
+    "day": "Avui",
+    "daily": "Diari",
+    "streakMode": "Ratxa infinita",
+    "toSetadle": "Altres modes Setadle",
+    "letters": "{{n}} lletres",
+    "hintFamily": "Pista: nom comú en el teu idioma",
+    "boardAria": "Taulell",
+    "errLength": "La paraula té {{n}} lletres (sense espais).",
+    "errDup": "Ja has provat aquesta paraula.",
+    "won": "Correcte!",
+    "lost": "S'han acabat els intents",
+    "nextIn": "Següent en {{s}} s…",
+    "nextNow": "Carregant següent…",
+    "nextNowBtn": "Següent ara",
+    "openFiche": "Veure fitxa",
+    "safety": "Només joc educatiu. No autoritza recol·lecció ni consum.",
+    "kbAria": "Teclat",
+    "enter": "Enviar"
   }
 }

@@ -9,6 +9,7 @@ import {
   buildSeasonOfflinePackEntries,
   isOfflinePackInstalled,
   offlinePackAssetUrls,
+  offlinePackMultiviewHonesty,
   offlinePackPhotoUrls,
   normalizeOfflineUrl,
   type OfflinePackMeta,
@@ -30,6 +31,19 @@ describe('offline pack', () => {
     const firstTaxa = pack.slice(0, 5).map((e) => e.taxon.toLowerCase())
     const t0 = PHOTO_TIER_T0.map((t) => t.toLowerCase())
     expect(firstTaxa.some((t) => t0.includes(t))).toBe(true)
+  })
+
+  it('multiview honesty never unlocks and prefers gills/front diagnostics', () => {
+    const pack = buildOfflinePackEntries(40)
+    const h = offlinePackMultiviewHonesty(pack)
+    expect(h.product_unlock).toBe(false)
+    expect(h.priority_views[0]).toBe('gills')
+    expect(h.priority_views).toContain('front')
+    expect(h.gallery_angles_prefetched).toBe(true)
+    expect(h.n_entries).toBe(pack.length)
+    expect(h.note_es.toLowerCase()).toMatch(/orientaci|nunca consumo|no es identificaci/)
+    expect(h.note_en.toLowerCase()).toMatch(/orientation|never consumption|not offline/)
+    expect(h.policy).toMatch(/orientation_only/)
   })
 
   it('exposes common name + family without consumption language', () => {

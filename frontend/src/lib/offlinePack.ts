@@ -2,6 +2,7 @@
  * Offline pack for España (S5 + Phase D-14 / U6) — season pack + T0/T1 priority.
  * Pure helpers + Cache API when available. Educational / PWA shell only.
  * Does not classify offline — study/reference only (not food-safe ID).
+ * v1.5.8: multi-view diagnostic honesty notes (never = deadly-safe ID offline).
  */
 import { loadSpeciesCatalog, speciesCatalog } from '../data/speciesCatalog'
 import { getCatalogPhotoUrl } from './speciesImageService'
@@ -19,6 +20,9 @@ import {
 } from './speciesImageUrl'
 import { scientificNameToSlug } from './slug'
 import { speciesMetaJsonUrl } from './speciesAttribution'
+import { deadlyPriorityViews, diagnosticPolicy } from './diagnosticViews'
+import type { CanonicalView } from './multiViewSlots'
+import { toRiskLabel } from './riskLabels'
 
 export async function ensureOfflineCatalog() {
   return loadSpeciesCatalog()
@@ -80,6 +84,51 @@ export function buildOfflinePackEntries(limit = 80): OfflinePackEntry[] {
     if (rows.length >= limit) break
   }
   return rows.slice(0, limit)
+}
+
+/** Educational multi-view honesty for offline study packs (never forage permission). */
+export type OfflineMultiviewHonesty = {
+  policy: string
+  priority_views: CanonicalView[]
+  n_entries: number
+  n_high_risk: number
+  n_deadly: number
+  /** True when pack prefetches multi-angle gallery assets (study only). */
+  gallery_angles_prefetched: boolean
+  gallery_angles_max: number
+  note_es: string
+  note_en: string
+  product_unlock: false
+}
+
+/**
+ * Summarize multi-view honesty for an offline pack list.
+ * Gallery prefetch ≠ multi-view Identify; ≠ deadly-safe ID offline.
+ */
+export function offlinePackMultiviewHonesty(
+  entries: OfflinePackEntry[],
+): OfflineMultiviewHonesty {
+  let n_high = 0
+  let n_deadly = 0
+  for (const e of entries) {
+    const risk = toRiskLabel(e.risk_label)
+    if (risk === 'deadly') n_deadly += 1
+    if (risk === 'deadly' || risk === 'poisonous' || risk === 'toxic') n_high += 1
+  }
+  return {
+    policy: diagnosticPolicy(),
+    priority_views: deadlyPriorityViews().slice(0, 3),
+    n_entries: entries.length,
+    n_high_risk: n_high,
+    n_deadly,
+    gallery_angles_prefetched: true,
+    gallery_angles_max: OFFLINE_GALLERY_MAX,
+    note_es:
+      'El pack prefetcha varias ángulos de ficha para estudiar sin red. No es identificación offline ni multi-vista de campo: sin láminas/perfil/base reales no hay discriminación de mortales. Solo orientación — nunca consumo.',
+    note_en:
+      'The pack prefetches several ficha angles for offline study. Not offline ID or field multi-view: without real gills/profile/base views there is no deadly discrimination. Orientation only — never consumption.',
+    product_unlock: false,
+  }
 }
 
 /**

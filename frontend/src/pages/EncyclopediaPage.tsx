@@ -1,43 +1,42 @@
-/** Encyclopedia — family browse, ranked search, photo grid (async catalog code-split). */
-import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
-import { countByRisk } from '../data/speciesCatalog'
+/** Encyclopedia — family browse, ranked search, flat 2D photo grid only. */
+import { useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import { countByRisk, displayCommonName } from '../data/speciesCatalog'
 import { useSpeciesCatalog } from '../hooks/useSpeciesCatalog'
 import { listFamilies, searchCatalogRanked } from '../lib/catalogSearch'
 import { getRiskMeta, type RiskLabel } from '../lib/riskLabels'
 import { getFoodQuality, type FoodClass, foodQualityStats } from '../lib/foodQuality'
+import { encyclopediaFoodFilterNote } from '../lib/safetyCopy'
 import { SpeciesPhotoCard } from '../components/SpeciesPhotoCard'
 import { ENCYCLOPEDIA_FIRST_PAGE_SIZE } from '../data/photoTiers'
-import { photoPriorityScore } from '../lib/speciesMediaStack'
+import { buildEmptyEncyclopediaBrowseList } from '../lib/encyclopediaPopularity'
 import { EmptyState } from '../components/EmptyState'
 import { IconMushroom } from '../components/icons'
 import { Skeleton } from '../components/ui/Skeleton'
-
-const PhotoSpinViewer = lazy(() =>
-  import('../components/PhotoSpinViewer').then((m) => ({ default: m.PhotoSpinViewer })),
-)
-
-const RISK_FILTERS: Array<{ id: 'all' | RiskLabel; label: string }> = [
-  { id: 'all', label: 'Todos' },
-  { id: 'deadly', label: 'Mortal' },
-  { id: 'poisonous', label: 'Tóxica' },
-  { id: 'toxic', label: 'Tóxica' },
-  { id: 'unknown_or_risky', label: 'Sin ficha de riesgo' },
-  { id: 'dangerous_or_unknown', label: 'Precaución' },
-]
-
-const FOOD_FILTERS: Array<{ id: 'all' | FoodClass | 'documented'; label: string }> = [
-  { id: 'all', label: 'Cualquier calidad' },
-  { id: 'documented', label: 'Solo documentadas' },
-  { id: 'comestible', label: 'Comestible' },
-  { id: 'no_comestible', label: 'No comestible' },
-  { id: 'toxica', label: 'Tóxica' },
-  { id: 'mortal', label: 'Mortal' },
-]
+import { scientificNameToSlug } from '../lib/slug'
+import { deadlyPriorityViews } from '../lib/diagnosticViews'
+import {
+  countByStudyTrait,
+  filterByStudyTrait,
+  STUDY_TRAIT_OPTIONS,
+  STUDY_TRAIT_POLICY_ES,
+  type StudyTraitId,
+} from '../lib/studyTraits'
+import {
+  ifSearchHintFromResolve,
+  looksLikeScientificQuery,
+  resolveIndexFungorumName,
+  type IfSearchHint,
+} from '../lib/indexFungorum'
 
 const PAGE_SIZE = ENCYCLOPEDIA_FIRST_PAGE_SIZE
 const FAMILY_CHIPS_DEFAULT = 7
 
 export function EncyclopediaPage() {
+  const { t, i18n } = useTranslation()
+  const locale = i18n.resolvedLanguage || i18n.language || 'es'
+  const priorityViews = useMemo(() => deadlyPriorityViews().slice(0, 3), [])
   const { catalog: speciesCatalog, meta: speciesCatalogMeta, loading: catalogLoading } =
     useSpeciesCatalog()
   const [query, setQuery] = useState('')
@@ -46,17 +45,105 @@ export function EncyclopediaPage() {
   const [risk, setRisk] = useState<'all' | RiskLabel>('all')
   const [food, setFood] = useState<'all' | FoodClass | 'documented'>('all')
   const [family, setFamily] = useState<string>('all')
+  /** Educational morphology shortlist (gills/pores/…) — never forage. */
+  const [trait, setTrait] = useState<StudyTraitId | 'all'>('all')
   const [page, setPage] = useState(0)
-  const [studioOpen, setStudioOpen] = useState(false)
   const [moreFamilies, setMoreFamilies] = useState(false)
+  /** P17: live Index Fungorum hints for scientific queries (names only). */
+  const [ifHint, setIfHint] = useState<IfSearchHint | null>(null)
 
   useEffect(() => {
-    const t = window.setTimeout(() => setDebouncedQuery(query), 150)
-    return () => window.clearTimeout(t)
+    const timer = window.setTimeout(() => setDebouncedQuery(query), 150)
+    return () => window.clearTimeout(timer)
   }, [query])
+
+  // Debounced IF resolve — scientific-looking queries only; fail-soft offline
+  useEffect(() => {
+    const q = debouncedQuery.trim()
+    if (!q || !looksLikeScientificQuery(q)) {
+      setIfHint(null)
+      return
+    }
+    const ac = new AbortController()
+    let cancelled = false
+    const t = window.setTimeout(() => {
+      void resolveIndexFungorumName(q, ac.signal).then((res) => {
+        if (cancelled) return
+        const hint = ifSearchHintFromResolve(res)
+        setIfHint(hint.hints.length > 0 ? hint : null)
+      })
+    }, 280)
+    return () => {
+      cancelled = true
+      ac.abort()
+      window.clearTimeout(t)
+    }
+  }, [debouncedQuery])
 
   const counts = useMemo(() => countByRisk(), [speciesCatalog])
   const foodStats = useMemo(() => foodQualityStats(), [])
+  const traitCounts = useMemo(() => countByStudyTrait(speciesCatalog), [speciesCatalog])
+
+  const riskFilters = useMemo(
+    () =>
+      [
+        { id: 'all' as const, label: t('encyclopedia.riskAll', { defaultValue: 'Todos' }) },
+        {
+          id: 'deadly' as const,
+          label: t('encyclopedia.riskDeadly', { defaultValue: 'Mortal' }),
+        },
+        {
+          id: 'poisonous' as const,
+          label: t('encyclopedia.riskToxic', { defaultValue: 'Tóxica' }),
+        },
+        {
+          id: 'toxic' as const,
+          label: t('encyclopedia.riskToxic', { defaultValue: 'Tóxica' }),
+        },
+        {
+          id: 'unknown_or_risky' as const,
+          label: t('encyclopedia.riskUnknown', { defaultValue: 'Sin ficha de riesgo' }),
+        },
+        {
+          id: 'dangerous_or_unknown' as const,
+          label: t('encyclopedia.riskCaution', { defaultValue: 'Precaución' }),
+        },
+      ] satisfies Array<{ id: 'all' | RiskLabel; label: string }>,
+    [t],
+  )
+
+  const foodFilters = useMemo(
+    () =>
+      [
+        {
+          id: 'all' as const,
+          label: t('encyclopedia.foodAny', { defaultValue: 'Cualquier ficha' }),
+        },
+        {
+          id: 'documented' as const,
+          label: t('encyclopedia.foodDocumented', { defaultValue: 'Solo documentadas' }),
+        },
+        {
+          id: 'comestible' as const,
+          label: t('encyclopedia.foodEdibleDoc', {
+            defaultValue: 'Documentadas (orientación)',
+          }),
+        },
+        {
+          id: 'no_comestible' as const,
+          label: t('encyclopedia.foodNotSuitable', { defaultValue: 'No aptas (ficha)' }),
+        },
+        {
+          id: 'toxica' as const,
+          label: t('encyclopedia.foodToxic', { defaultValue: 'Tóxica' }),
+        },
+        {
+          id: 'mortal' as const,
+          label: t('encyclopedia.foodDeadly', { defaultValue: 'Mortal' }),
+        },
+      ] satisfies Array<{ id: 'all' | FoodClass | 'documented'; label: string }>,
+    [t],
+  )
 
   const families = useMemo(
     () => listFamilies(speciesCatalog, risk),
@@ -64,30 +151,40 @@ export function EncyclopediaPage() {
   )
 
   const allResults = useMemo(() => {
-    // Cap ranked results for grid (windowed pages via page * PAGE_SIZE)
+    const q = debouncedQuery.trim()
+    const foodKeep =
+      food === 'all'
+        ? undefined
+        : (taxon: string) => {
+            const fq = getFoodQuality(taxon)
+            if (food === 'documented') return Boolean(fq)
+            return fq?.food_class === food
+          }
+
+    // Empty browse: FULL filtered catalog + popularity sort (no limit-200 / risk-boost cutoff).
+    if (!q) {
+      let list = buildEmptyEncyclopediaBrowseList(speciesCatalog, {
+        risk,
+        family,
+        foodKeep,
+      })
+      list = filterByStudyTrait(list, trait)
+      return list
+    }
+
+    // Non-empty query: relevance ranking + optional IF nomenclature hints (P17).
     let list = searchCatalogRanked(speciesCatalog, {
       query: debouncedQuery,
       risk,
       family,
       limit: 200,
       boostHighRisk: true,
+      nomenclatureHints: ifHint?.hints,
     })
-    if (food !== 'all') {
-      list = list.filter((s) => {
-        const q = getFoodQuality(s.taxon)
-        if (food === 'documented') return Boolean(q)
-        return q?.food_class === food
-      })
-    }
-    // Browse mode (no text query): premium multi-view packs first, then rest
-    if (!debouncedQuery.trim()) {
-      list = [...list].sort(
-        (a, b) =>
-          photoPriorityScore(b.slug || b.taxon) - photoPriorityScore(a.slug || a.taxon),
-      )
-    }
+    if (foodKeep) list = list.filter((s) => foodKeep(s.taxon))
+    list = filterByStudyTrait(list, trait)
     return list
-  }, [speciesCatalog, debouncedQuery, risk, family, food])
+  }, [speciesCatalog, debouncedQuery, risk, family, food, trait, ifHint])
 
   const results = useMemo(
     () => allResults.slice(0, (page + 1) * PAGE_SIZE),
@@ -97,6 +194,9 @@ export function EncyclopediaPage() {
   const featured = allResults[0]
   const featuredRisk = featured ? getRiskMeta(featured.risk_label) : null
   const hasMore = results.length < allResults.length
+  const featuredCommon = featured
+    ? displayCommonName(featured, locale)
+    : ''
 
   const visibleFamilies = moreFamilies
     ? families.filter((f) => f.family !== 'Sin familia')
@@ -118,27 +218,95 @@ export function EncyclopediaPage() {
     setFood(v)
     setPage(0)
   }
+  const onTrait = (v: StudyTraitId | 'all') => {
+    setTrait(v)
+    setPage(0)
+  }
+
+  const foodNote = encyclopediaFoodFilterNote(locale)
 
   return (
     <div className="page-encyclopedia encyclopedia-shell">
       <header className="mkt-page-head mkt-mesh">
-        <p className="mkt-kicker">Catálogo · riesgo claro</p>
-        <h1>Enciclopedia de setas</h1>
+        <p className="mkt-kicker">
+          {t('encyclopedia.kicker', { defaultValue: 'Catálogo · riesgo claro' })}
+        </p>
+        <h1>
+          {t('encyclopedia.titlePage', { defaultValue: 'Enciclopedia de setas' })}
+        </h1>
         <p>
           {catalogLoading ? (
-            'Cargando catálogo…'
+            t('encyclopedia.loading', { defaultValue: 'Cargando catálogo…' })
           ) : (
-            <span data-testid="encyclopedia-count">{speciesCatalogMeta.count} taxones</span>
+            <span data-testid="encyclopedia-count">
+              {t('encyclopedia.taxaCount', {
+                defaultValue: '{{count}} taxones',
+                count: speciesCatalogMeta.count,
+              })}
+            </span>
           )}{' '}
-          · {foodStats.total_documented} con calidad documentada. Solo orientación de campo.
+          {t('encyclopedia.documentedSuffix', {
+            defaultValue: '· {{n}} con calidad documentada. Solo orientación de campo.',
+            n: foodStats.total_documented,
+          })}
         </p>
       </header>
+
+      <section
+        className="mkt-multiview-strip encyclopedia-multiview-tip"
+        data-testid="encyclopedia-multiview-tip"
+        aria-label={t('encyclopedia.multiviewAria', {
+          defaultValue: 'Multi-vista en fichas',
+        })}
+      >
+        <p className="mkt-multiview-strip__text">
+          <strong>
+            {t('encyclopedia.multiviewTitle', {
+              defaultValue: 'Al estudiar fichas: 3 vistas que discriminan',
+            })}
+          </strong>{' '}
+          {t('encyclopedia.multiviewBody', {
+            defaultValue:
+              'En confusiones mortales prioriza láminas, perfil/pie y base (volva/anillo). La galería de la ficha orienta; no autoriza consumo ni recolección.',
+          })}
+        </p>
+        <div
+          className="mkt-multiview-strip__views lookalike-item__diag-views"
+          data-testid="encyclopedia-multiview-priority"
+        >
+          {priorityViews.map((view) => (
+            <span
+              key={view}
+              className="lookalike-item__diag-badge lookalike-item__diag-badge--static"
+              data-slot={view}
+            >
+              {t(`identify.views.${view}`, { defaultValue: view })}
+            </span>
+          ))}
+        </div>
+        <div className="mkt-multiview-strip__actions">
+          <Link
+            to="/identificar"
+            className="mkt-btn mkt-btn--primary mkt-btn--sm"
+            data-testid="encyclopedia-cta-identify"
+          >
+            {t('encyclopedia.ctaIdentify', { defaultValue: 'Identificar multi-vista' })}
+          </Link>
+          <Link
+            to="/educacion"
+            className="mkt-btn mkt-btn--ghost mkt-btn--sm"
+            data-testid="encyclopedia-cta-edu"
+          >
+            {t('encyclopedia.ctaEdu', { defaultValue: 'Educación multi-vista' })}
+          </Link>
+        </div>
+      </section>
 
       {catalogLoading && (
         <div
           className="species-photo-grid ency-skeleton-grid"
           aria-busy="true"
-          aria-label="Cargando especies"
+          aria-label={t('encyclopedia.loadingAria', { defaultValue: 'Cargando especies' })}
           data-testid="ency-skeleton-grid"
         >
           {Array.from({ length: 8 }).map((_, i) => (
@@ -151,93 +319,97 @@ export function EncyclopediaPage() {
         </div>
       )}
 
-      <div className="ency-studio-toggle-row">
-        <button
-          type="button"
-          className="result-layer__toggle"
-          aria-expanded={studioOpen}
-          onClick={() => setStudioOpen((v) => !v)}
+      {/* Featured: flat field-photo card only (no procedural spin viewer) */}
+      {featured && !catalogLoading && (
+        <section
+          className="ency-featured-flat"
+          data-testid="ency-featured-flat"
+          aria-label={t('encyclopedia.featuredAria', {
+            defaultValue: 'Especie destacada (fotos 2D)',
+          })}
         >
-          <span>
-            {featured
-              ? `Destacada: ${featured.common_names[0] || featured.taxon}`
-              : 'Vista 360 de destacada'}
-          </span>
-          <span aria-hidden="true">{studioOpen ? '−' : '+'}</span>
-        </button>
-      </div>
-
-      {studioOpen && (
-        <div className="ency-studio">
-          <div className="ency-studio__spin">
-            <Suspense
-              fallback={
-                <div className="skeleton-atelier skeleton-atelier--spin" aria-hidden>
-                  <div className="skeleton-atelier__shimmer" />
-                </div>
-              }
-            >
-              <PhotoSpinViewer
-                taxon={featured?.taxon || 'Amanita phalloides'}
-                height={280}
-                riskLabel={featured?.risk_label || 'deadly'}
-                label={
-                  featured
-                    ? `Fotos reales de ${featured.taxon}`
-                    : 'Fotos reales de seta'
-                }
-                autoPlay
-              />
-            </Suspense>
+          <p className="ency-featured-flat__kicker">
+            {t('encyclopedia.featured', {
+              defaultValue: 'Destacada: {{name}}',
+              name: featuredCommon || featured.taxon,
+            })}
+          </p>
+          <div className="ency-featured-flat__grid">
+            <SpeciesPhotoCard species={featured} priority />
           </div>
-          <div className="ency-studio__copy">
-            {featured ? (
+          <p className="ency-featured-flat__meta">
+            <em>{featured.taxon}</em>
+            {featuredRisk ? (
               <>
-                <h2 className="ency-studio__taxon">{featured.taxon}</h2>
-                <p className="ency-studio__common">
-                  {featured.common_names.slice(0, 3).join(' · ') || 'Sin nombre común local'}
-                </p>
-                {featured.family && (
-                  <button
-                    type="button"
-                    className="family-chip"
-                    title={featured.family}
-                    onClick={() => onFamily(featured.family!)}
-                  >
-                    {featured.family_es || featured.family}
-                  </button>
-                )}{' '}
-                {featuredRisk && (
-                  <span className={`risk-chip ${featuredRisk.className}`}>
-                    {featuredRisk.label}
-                  </span>
-                )}
+                {' · '}
+                <span className={`risk-chip ${featuredRisk.className}`}>
+                  {featuredRisk.label}
+                </span>
               </>
-            ) : (
-              <p>Prueba otra búsqueda o familia.</p>
-            )}
-          </div>
+            ) : null}
+            {' · '}
+            <Link
+              to={`/enciclopedia/${featured.slug || scientificNameToSlug(featured.taxon)}`}
+              className="ency-featured-flat__link"
+            >
+              {t('encyclopedia.openFiche', { defaultValue: 'Abrir ficha' })}
+            </Link>
+          </p>
+        </section>
+      )}
+
+      {ifHint && debouncedQuery.trim() && (
+        <div
+          className="ency-if-search-hint"
+          data-testid="ency-if-search-hint"
+          role="status"
+        >
+          <p className="ency-if-search-hint__title">
+            {ifHint.differs && ifHint.currentName
+              ? t('encyclopedia.ifSearchDiffers', {
+                  defaultValue:
+                    'Index Fungorum nombre actual: {{name}} · ranking potenciado (solo nomenclatura)',
+                  name: ifHint.currentName,
+                })
+              : t('encyclopedia.ifSearchHint', {
+                  defaultValue:
+                    'Pistas nomenclaturales Index Fungorum (Kew) · no sobrescribe el catálogo SSOT',
+                })}
+          </p>
+          <p className="ency-if-search-hint__policy">
+            {t('encyclopedia.ifSearchPolicy', {
+              defaultValue:
+                'Solo nombres científicos · nunca permiso de consumo ni identificación de campo',
+            })}
+          </p>
         </div>
       )}
 
-      <div className="encyclopedia-toolbar ency-toolbar ency-toolbar--sticky" data-testid="ency-toolbar">
+      <div
+        className="encyclopedia-toolbar ency-toolbar ency-toolbar--sticky"
+        data-testid="ency-toolbar"
+      >
         <div className="search-box" style={{ flex: 1, minWidth: 200 }}>
           <input
             type="search"
-            placeholder="Níscalo, oronja, Amanita…"
+            placeholder={t('encyclopedia.searchPlaceholderShort', {
+              defaultValue: 'Níscalo, oronja, Amanita…',
+            })}
             value={query}
             onChange={(e) => onQuery(e.target.value)}
-            aria-label="Buscar especies"
+            aria-label={t('encyclopedia.searchAria', { defaultValue: 'Buscar especies' })}
           />
         </div>
         <label className="ency-risk-select">
-          Familia
+          {t('encyclopedia.familyLabel', { defaultValue: 'Familia' })}
           <select
             value={family}
             onChange={(e) => onFamily(e.target.value)}
-            aria-label="Filtrar por familia"
+            aria-label={t('encyclopedia.familyFilter', { defaultValue: 'Familia:' })}
           >
-            <option value="all">Todas las familias</option>
+            <option value="all">
+              {t('encyclopedia.familyAll', { defaultValue: 'Todas las familias' })}
+            </option>
             {families.map((f) => (
               <option key={f.family} value={f.family}>
                 {f.family_es}
@@ -250,13 +422,13 @@ export function EncyclopediaPage() {
           </select>
         </label>
         <label className="ency-risk-select">
-          Riesgo
+          {t('encyclopedia.riskLabel', { defaultValue: 'Riesgo' })}
           <select
             value={risk}
             onChange={(e) => onRisk(e.target.value as 'all' | RiskLabel)}
-            aria-label="Filtrar por riesgo"
+            aria-label={t('encyclopedia.riskFilter', { defaultValue: 'Riesgo:' })}
           >
-            {RISK_FILTERS.map((f) => (
+            {riskFilters.map((f) => (
               <option key={f.id} value={f.id}>
                 {f.label}
                 {f.id !== 'all' && counts[f.id] != null ? ` (${counts[f.id]})` : ''}
@@ -265,13 +437,16 @@ export function EncyclopediaPage() {
           </select>
         </label>
         <label className="ency-risk-select">
-          Calidad
+          {t('encyclopedia.foodLabel', { defaultValue: 'Ficha documental' })}
           <select
             value={food}
             onChange={(e) => onFood(e.target.value as 'all' | FoodClass | 'documented')}
-            aria-label="Filtrar por calidad alimenticia documentada"
+            aria-label={t('encyclopedia.foodAria', {
+              defaultValue: 'Filtrar por ficha documental (orientación, no consumo)',
+            })}
+            title={foodNote}
           >
-            {FOOD_FILTERS.map((f) => (
+            {foodFilters.map((f) => (
               <option key={f.id} value={f.id}>
                 {f.label}
                 {f.id === 'comestible' ? ` (${foodStats.by_class.comestible})` : ''}
@@ -285,13 +460,62 @@ export function EncyclopediaPage() {
         </label>
       </div>
 
+      {/* Educational morphology shortlists (competitive: trait study filters) */}
+      <section
+        className="ency-trait-filters"
+        data-testid="ency-trait-filters"
+        aria-label={t('encyclopedia.traitAria', {
+          defaultValue: 'Filtros de estudio por himenio',
+        })}
+      >
+        <div className="ency-trait-filters__head">
+          <p className="ency-trait-filters__title">
+            {t('encyclopedia.traitTitle', {
+              defaultValue: 'Estudio por forma del himenio',
+            })}
+          </p>
+          <p className="ency-trait-filters__policy" data-testid="ency-trait-policy" role="note">
+            {t('encyclopedia.traitPolicy', { defaultValue: STUDY_TRAIT_POLICY_ES })}
+          </p>
+        </div>
+        <div className="ency-trait-chip-row" role="list">
+          <button
+            type="button"
+            role="listitem"
+            className={`ency-trait-chip ${trait === 'all' ? 'ency-trait-chip--active' : ''}`}
+            data-testid="ency-trait-all"
+            onClick={() => onTrait('all')}
+          >
+            {t('encyclopedia.traitAll', { defaultValue: 'Todos' })}
+            <span className="ency-trait-chip__n">{traitCounts.all}</span>
+          </button>
+          {STUDY_TRAIT_OPTIONS.map((opt) => (
+            <button
+              key={opt.id}
+              type="button"
+              role="listitem"
+              title={t(opt.blurbKey, { defaultValue: opt.blurbFallback })}
+              className={`ency-trait-chip ency-trait-chip--${opt.id} ${
+                trait === opt.id ? 'ency-trait-chip--active' : ''
+              }`}
+              data-testid={`ency-trait-${opt.id}`}
+              data-trait={opt.id}
+              onClick={() => onTrait(opt.id)}
+            >
+              {t(opt.labelKey, { defaultValue: opt.labelFallback })}
+              <span className="ency-trait-chip__n">{traitCounts[opt.id]}</span>
+            </button>
+          ))}
+        </div>
+      </section>
+
       <div className="family-chip-row" role="list">
         <button
           type="button"
           className={`family-chip ${family === 'all' ? 'family-chip--active' : ''}`}
           onClick={() => onFamily('all')}
         >
-          Todas
+          {t('encyclopedia.familyAllChip', { defaultValue: 'Todas' })}
         </button>
         {visibleFamilies.map((f) => (
           <button
@@ -312,17 +536,36 @@ export function EncyclopediaPage() {
             className="family-chip family-chip--more"
             onClick={() => setMoreFamilies((v) => !v)}
           >
-            {moreFamilies ? 'Menos' : 'Más familias'}
+            {moreFamilies
+              ? t('encyclopedia.fewerFamilies', { defaultValue: 'Menos' })
+              : t('encyclopedia.moreFamilies', { defaultValue: 'Más familias' })}
           </button>
         )}
       </div>
 
       <p className="results-count">
-        {allResults.length} {allResults.length === 1 ? 'especie' : 'especies'}
+        {allResults.length}{' '}
+        {allResults.length === 1
+          ? t('encyclopedia.speciesOne', { defaultValue: 'especie' })
+          : t('encyclopedia.speciesMany', { defaultValue: 'especies' })}
         {family !== 'all'
           ? ` · ${families.find((x) => x.family === family)?.family_es || family}`
           : ''}
-        {results.length < allResults.length ? ` · mostrando ${results.length}` : ''}
+        {trait !== 'all'
+          ? ` · ${t(
+              STUDY_TRAIT_OPTIONS.find((o) => o.id === trait)?.labelKey || 'encyclopedia.traitAll',
+              {
+                defaultValue:
+                  STUDY_TRAIT_OPTIONS.find((o) => o.id === trait)?.labelFallback || trait,
+              },
+            )}`
+          : ''}
+        {results.length < allResults.length
+          ? ` · ${t('encyclopedia.showingN', {
+              defaultValue: 'mostrando {{n}}',
+              n: results.length,
+            })}`
+          : ''}
       </p>
 
       {results.length > 0 ? (
@@ -343,21 +586,28 @@ export function EncyclopediaPage() {
                 className="btn-atelier btn-atelier--primary"
                 onClick={() => setPage((p) => p + 1)}
               >
-                Cargar más ({allResults.length - results.length} restantes)
+                {t('encyclopedia.loadMoreRest', {
+                  defaultValue: 'Cargar más ({{n}} restantes)',
+                  n: allResults.length - results.length,
+                })}
               </button>
             </div>
           )}
         </>
       ) : (
         <EmptyState
-          title="Sin coincidencias"
-          description="Prueba otra familia, nombre científico o nombre común en español."
+          title={t('encyclopedia.emptyTitle', { defaultValue: 'Sin coincidencias' })}
+          description={t('encyclopedia.emptyBody', {
+            defaultValue: 'Prueba otra familia, nombre científico o nombre común.',
+          })}
           icon={<IconMushroom size={28} />}
-          actionLabel="Limpiar filtros"
+          actionLabel={t('encyclopedia.clearFilters', { defaultValue: 'Limpiar filtros' })}
           onAction={() => {
             onQuery('')
             onFamily('all')
             onRisk('all')
+            onFood('all')
+            onTrait('all')
           }}
         />
       )}

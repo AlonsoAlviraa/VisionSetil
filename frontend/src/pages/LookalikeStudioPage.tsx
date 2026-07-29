@@ -2,9 +2,10 @@
  * Lookalike Studio — classic confusions + side-by-side compare.
  * Photography-first, risk-honest (RiskChip only), one-tap classic pairs.
  */
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { recordStudyActivity } from '../lib/studyBadges'
 import {
   addToStudioSelection,
   availableClassicPairs,
@@ -22,13 +23,19 @@ import { searchCatalogRanked } from '../lib/catalogSearch'
 import { useSpeciesCatalog } from '../hooks/useSpeciesCatalog'
 import { getRiskMeta } from '../lib/riskLabels'
 import { SpeciesNameBlock } from '../components/SpeciesNameBlock'
+import { commonsForLocale, displayCommonName } from '../data/speciesCatalog'
 import { RiskChip } from '../components/RiskChip'
 import { SpeciesThumb } from '../components/SpeciesThumb'
 import { EmptyState } from '../components/EmptyState'
 import { IconSearch, IconMushroom } from '../components/icons'
+import {
+  diagnosticForLookalikeMate,
+  findDiagnosticPair,
+} from '../lib/diagnosticViews'
 
 export function LookalikeStudioPage() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const locale = i18n.resolvedLanguage || i18n.language || 'es'
   const { catalog: speciesCatalog, loading: catalogLoading } = useSpeciesCatalog()
   const [query, setQuery] = useState('')
   const [selection, setSelection] = useState<StudioTaxonCard[]>([])
@@ -41,6 +48,32 @@ export function LookalikeStudioPage() {
     if (catalogLoading || speciesCatalog.length === 0) return []
     return availableClassicPairs()
   }, [catalogLoading, speciesCatalog.length])
+
+  /** Pair-specific critical_views for current studio selection (educational). */
+  const selectionDiag = useMemo(() => {
+    if (selection.length < 2) return null
+    const a = selection[0].taxon
+    const b = selection[1].taxon
+    const direct = findDiagnosticPair(a, b)
+    if (direct) return direct
+    // Try reverse + third taxon mates against first
+    for (let i = 1; i < selection.length; i++) {
+      const hit =
+        findDiagnosticPair(a, selection[i].taxon) ||
+        diagnosticForLookalikeMate([a], selection[i].taxon)
+      if (hit) return hit
+    }
+    return null
+  }, [selection])
+
+  // Study badge: once per page visit when a valid compare is ready (local, privacy-first)
+  const lookalikeCounted = useRef(false)
+  useEffect(() => {
+    if (lookalikeCounted.current) return
+    if (!canCompare(selection)) return
+    lookalikeCounted.current = true
+    recordStudyActivity('lookalike')
+  }, [selection])
 
   const suggestions = useMemo(() => {
     if (catalogLoading || speciesCatalog.length === 0) return []
@@ -148,6 +181,25 @@ export function LookalikeStudioPage() {
               </div>
               <span className="lookalike-classic-card__label">{pair.label}</span>
               <span className="lookalike-classic-card__why">{pair.why}</span>
+              {(() => {
+                const diag =
+                  pair.taxa.length >= 2
+                    ? findDiagnosticPair(pair.taxa[0], pair.taxa[1])
+                    : null
+                if (!diag?.critical_views?.length) return null
+                return (
+                  <span
+                    className="lookalike-classic-card__diag-views"
+                    data-testid={`studio-classic-diag-${pair.id}`}
+                  >
+                    {diag.critical_views.slice(0, 3).map((v) => (
+                      <span key={v} className="lookalike-item__diag-badge lookalike-item__diag-badge--static">
+                        {t(`identify.views.${v}`, { defaultValue: v })}
+                      </span>
+                    ))}
+                  </span>
+                )
+              })()}
             </button>
           ))}
         </div>
@@ -203,7 +255,7 @@ export function LookalikeStudioPage() {
                 >
                   <SpeciesThumb taxon={s.taxon} riskLabel={s.risk_label} size={40} />
                   <span className="lookalike-typeahead__text">
-                    <strong>{s.common_names[0] || s.taxon}</strong>
+                    <strong>{displayCommonName(s, locale)}</strong>
                     <em>{s.taxon}</em>
                   </span>
                   <RiskChip risk={s.risk_label} />
@@ -242,7 +294,7 @@ export function LookalikeStudioPage() {
                 <SpeciesThumb
                   taxon={s.taxon}
                   riskLabel={s.risk_label}
-                  size={280}
+                  fill
                   className="lookalike-studio-card__thumb"
                   variant="card"
                 />
@@ -254,7 +306,7 @@ export function LookalikeStudioPage() {
               <div className="lookalike-studio-card__body">
                 <SpeciesNameBlock
                   taxon={s.taxon}
-                  commonNames={s.common_names}
+                  commonNames={commonsForLocale(s, locale)}
                   family={s.family}
                   familyEs={s.family_es}
                   size="md"
@@ -295,7 +347,7 @@ export function LookalikeStudioPage() {
                   {selection.map((s) => (
                     <th key={s.taxon} scope="col">
                       <span className="lookalike-th-common">
-                        {s.common_names[0] || s.taxon.split(' ')[0]}
+                        {displayCommonName(s, locale)}
                       </span>
                       <em>{s.taxon}</em>
                     </th>
@@ -323,10 +375,48 @@ export function LookalikeStudioPage() {
               </tbody>
             </table>
           </div>
-          {activePairId && (
-            <p className="lookalike-pair-note">
-              {classics.find((c) => c.id === activePairId)?.why}
-            </p>
+          {(activePairId || selectionDiag) && (
+            <div className="lookalike-pair-note-block">
+              {activePairId && (
+                <p className="lookalike-pair-note">
+                  {classics.find((c) => c.id === activePairId)?.why}
+                </p>
+              )}
+              {selectionDiag && selectionDiag.critical_views.length > 0 && (
+                <div
+                  className="lookalike-item__diag"
+                  data-testid={`studio-selection-diag-${selectionDiag.pair_id}`}
+                  data-pair-id={selectionDiag.pair_id}
+                  data-pair-source={selectionDiag.source}
+                >
+                  {!activePairId && selectionDiag.why ? (
+                    <p className="lookalike-item__diag-why muted">{selectionDiag.why}</p>
+                  ) : null}
+                  <div className="lookalike-item__diag-views">
+                    <span className="lookalike-item__diag-label">
+                      {t('result.pairCriticalViews', {
+                        defaultValue: 'Vistas que discriminan:',
+                      })}
+                    </span>
+                    {selectionDiag.critical_views.map((view) => (
+                      <span
+                        key={view}
+                        className="lookalike-item__diag-badge lookalike-item__diag-badge--static"
+                        data-slot={view}
+                      >
+                        {t(`identify.views.${view}`, { defaultValue: view })}
+                      </span>
+                    ))}
+                  </div>
+                  <p className="lookalike-item__diag-policy muted">
+                    {t('result.pairDiagPolicy', {
+                      defaultValue:
+                        'Educativo: multi-foto sin estas vistas no basta — solo orientación, nunca consumo.',
+                    })}
+                  </p>
+                </div>
+              )}
+            </div>
           )}
         </div>
       )}
@@ -348,7 +438,7 @@ export function LookalikeStudioPage() {
               >
                 <SpeciesThumb taxon={s.taxon} riskLabel={s.risk_label} size={36} />
                 <span className="lookalike-suggest-chip__text">
-                  <strong>{s.common_names[0] || s.taxon.split(' ')[0]}</strong>
+                  <strong>{displayCommonName(s, locale)}</strong>
                   <small>{s.taxon}</small>
                 </span>
                 <RiskChip risk={s.risk_label} />

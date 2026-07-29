@@ -4,15 +4,25 @@
  * does not force the full payload into the main chunk.
  */
 import { enrichCommonNames } from './commonNamesEs'
+import { enrichCommonNamesEn } from './commonNamesEn'
 import { familyForTaxon } from './genusFamilyMap'
 import { familyNameEs } from './familyNamesEs'
 import { getPhotoTier, type PhotoTier } from './photoTiers'
+import { normalizeSlugParam, scientificNameToSlug } from '../lib/slug'
+import { canonicalTaxonName } from '../lib/taxonSynonyms'
 
 export type CatalogSpecies = {
   taxon: string
   slug: string
   rank: string
+  /** Spanish-primary common names (local UI). */
   common_names: string[]
+  /** English common names when available (EN locale). */
+  common_names_en?: string[]
+  /** Catalan vernaculars when available (CA locale). */
+  common_names_ca?: string[]
+  /** Basque vernaculars when available (EU locale). */
+  common_names_eu?: string[]
   risk_label: string
   family?: string | null
   family_es?: string | null
@@ -32,6 +42,11 @@ export type CatalogSpecies = {
   /** Legacy / SSOT edibility code when present. */
   documented_edibility?: string | null
   edibility_code?: string | null
+  /**
+   * Curated lookalike scientific names from SSOT (educational only).
+   * Never invent pairs; empty means none curated — not "safe".
+   */
+  lookalikes?: string[]
 }
 
 export type SpeciesCatalogFile = {
@@ -70,14 +85,16 @@ function hydrateSpecies(data: SpeciesCatalogFile): CatalogSpecies[] {
   return data.species.map((s) => {
     const taxon = polishTaxon(s.taxon)
     const common_names = enrichCommonNames(taxon, s.common_names || [])
+    const common_names_en = enrichCommonNamesEn(taxon, s.common_names_en || [])
+    const common_names_ca = (s.common_names_ca || [])
+      .map((c) => String(c || '').trim())
+      .filter(Boolean)
+    const common_names_eu = (s.common_names_eu || [])
+      .map((c) => String(c || '').trim())
+      .filter(Boolean)
     const family = familyForTaxon(taxon, s.family)
     const family_es = family ? familyNameEs(family) : familyNameEs(null)
-    const slug =
-      s.slug ||
-      taxon
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-|-$/g, '')
+    const slug = scientificNameToSlug(s.slug || taxon) || scientificNameToSlug(taxon)
     const photo_tier = getPhotoTier(taxon, s.risk_label)
     return {
       ...s,
@@ -86,6 +103,9 @@ function hydrateSpecies(data: SpeciesCatalogFile): CatalogSpecies[] {
       family,
       family_es,
       common_names,
+      common_names_en,
+      common_names_ca: common_names_ca.length ? common_names_ca : undefined,
+      common_names_eu: common_names_eu.length ? common_names_eu : undefined,
       display_name: common_names[0] || taxon,
       photo_tier,
     }
@@ -170,37 +190,65 @@ function foodClassFromEdibility(edib: string): string | null {
   return null
 }
 
+/** Normalize SSOT lookalikes ({scientific_name, note_key} | string) → string[]. */
+export function normalizeLookalikeNames(raw: unknown): string[] {
+  if (!Array.isArray(raw)) return []
+  const out: string[] = []
+  for (const lk of raw) {
+    let name = ''
+    if (typeof lk === 'string') name = lk.trim()
+    else if (lk && typeof lk === 'object') {
+      const o = lk as Record<string, unknown>
+      name = String(o.scientific_name || o.taxon || '').trim()
+    }
+    if (name.includes(' (')) name = name.split(' (', 1)[0].trim()
+    if (name && !out.includes(name)) out.push(name)
+  }
+  return out
+}
+
 function fromV2Record(rec: Record<string, unknown>): CatalogSpecies {
-  const taxon = String(rec.scientific_name || rec.taxon || '').trim()
+  const taxon = polishTaxon(String(rec.scientific_name || rec.taxon || '').trim())
   const slug =
-    String(rec.slug || '') ||
-    taxon
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-|-$/g, '')
+    scientificNameToSlug(String(rec.slug || '') || taxon) || scientificNameToSlug(taxon)
   const vern = (rec.vernacular_names || {}) as Record<string, string[]>
-  const fromVern = [
-    ...(vern.es || []),
-    ...(vern.en || []),
-    ...(vern.ca || []),
-    ...(vern.eu || []),
-  ].filter(Boolean)
-  const unique = Array.from(new Set(fromVern))
+  // Keep locales separate (Wordle + UI adapt per language — never mix CA/EU into ES bag)
+  const fromEs = [...(vern.es || [])].filter(Boolean)
+  const fromEn = [...(vern.en || [])].filter(Boolean)
+  const fromCa = [...(vern.ca || [])].filter(Boolean)
+  const fromEu = [...(vern.eu || [])].filter(Boolean)
   const risk_level = String(rec.risk_level || 'unknown')
   const edibility_code = String(rec.edibility_code || 'desconocido')
   const risk_label = riskFromV2(risk_level, edibility_code)
-  // Enrich missing family + Spanish commons (parity with hydrateSpecies / tests)
+  // Enrich missing family + Spanish / English commons (parity with hydrateSpecies / tests)
   const family = familyForTaxon(taxon, rec.family ? String(rec.family) : null)
-  const common_names = enrichCommonNames(taxon, unique.length ? unique : [taxon])
+  const common_names = enrichCommonNames(taxon, fromEs)
+  const common_names_en = enrichCommonNamesEn(taxon, fromEn)
+  const common_names_ca = fromCa.map((c) => String(c).trim()).filter(Boolean)
+  const common_names_eu = fromEu.map((c) => String(c).trim()).filter(Boolean)
   const descMap = (rec.description || {}) as Record<string, string>
   const description = descMap.es || descMap.en || ''
   const photo_tier = getPhotoTier(taxon, risk_label)
   const foodClass = foodClassFromEdibility(edibility_code)
+  const lookalikes = normalizeLookalikeNames(rec.lookalikes)
+  // Educational season (string or localized map { es, en, ... }) — never harvest guidance.
+  const seasonRaw = rec.season
+  let season: string | null = null
+  if (typeof seasonRaw === 'string' && seasonRaw.trim()) {
+    season = seasonRaw.trim()
+  } else if (seasonRaw && typeof seasonRaw === 'object') {
+    const sm = seasonRaw as Record<string, unknown>
+    const pick = sm.es || sm.en || Object.values(sm).find((v) => typeof v === 'string')
+    if (typeof pick === 'string' && pick.trim()) season = pick.trim()
+  }
   return {
     taxon,
     slug,
     rank: 'species',
     common_names,
+    common_names_en,
+    common_names_ca: common_names_ca.length ? common_names_ca : undefined,
+    common_names_eu: common_names_eu.length ? common_names_eu : undefined,
     risk_label,
     family,
     family_es: family ? familyNameEs(family) : familyNameEs(null),
@@ -212,6 +260,8 @@ function fromV2Record(rec: Record<string, unknown>): CatalogSpecies {
     food_class: foodClass,
     food_label: foodClass,
     food_sources: null,
+    season,
+    lookalikes,
   }
 }
 
@@ -299,16 +349,117 @@ export function familyCoverageStats(): {
 }
 
 export function getSpeciesBySlug(slug: string): CatalogSpecies | undefined {
-  const key = slug.toLowerCase().trim()
+  if (!slug) return undefined
+  const key = normalizeSlugParam(slug)
+  if (!key) return undefined
+  // Synonym slug (e.g. coprinopsis-atramentaria) → SSOT slug
+  const asName = key.replace(/-/g, ' ')
+  const canonSlug = scientificNameToSlug(canonicalTaxonName(asName))
   return (
     speciesCatalog.find((s) => s.slug === key) ||
-    speciesCatalog.find((s) => s.taxon.toLowerCase().replace(/\s+/g, '-') === key)
+    speciesCatalog.find((s) => scientificNameToSlug(s.taxon) === key) ||
+    (canonSlug && canonSlug !== key
+      ? speciesCatalog.find((s) => s.slug === canonSlug)
+      : undefined) ||
+    // Fallback: direct case-insensitive slug match (pre-normalized catalogs)
+    speciesCatalog.find((s) => s.slug.toLowerCase() === slug.toLowerCase().trim())
   )
 }
 
 export function getSpeciesByTaxon(taxon: string): CatalogSpecies | undefined {
-  const key = taxon.trim().toLowerCase()
-  return speciesCatalog.find((s) => s.taxon.toLowerCase() === key)
+  const raw = taxon.trim()
+  const key = raw.toLowerCase()
+  if (!key || key === 'undefined' || key === 'null') return undefined
+  const canon = canonicalTaxonName(raw)
+  const canonKey = canon.toLowerCase()
+  return (
+    speciesCatalog.find((s) => s.taxon.toLowerCase() === key) ||
+    (canonKey !== key
+      ? speciesCatalog.find((s) => s.taxon.toLowerCase() === canonKey)
+      : undefined) ||
+    speciesCatalog.find((s) => scientificNameToSlug(s.taxon) === scientificNameToSlug(raw)) ||
+    speciesCatalog.find((s) => scientificNameToSlug(s.taxon) === scientificNameToSlug(canon))
+  )
+}
+
+/** Locale-aware primary common name; never blank/undefined. Falls back to scientific. */
+export function displayCommonName(
+  s: Pick<CatalogSpecies, 'taxon' | 'common_names' | 'common_names_en' | 'display_name'>,
+  locale?: string,
+): string {
+  const names = commonsForLocale(s, locale)
+  return names[0] || s.taxon
+}
+
+/**
+ * Common-name list for UI overrides (SpeciesNameBlock / detail).
+ * EN: only English commons — never leak Spanish vernaculars.
+ * Empty EN list → caller should pass [] so resolveSpeciesDisplay falls back to scientific.
+ */
+export function localeLang(locale?: string): 'es' | 'en' | 'ca' | 'eu' {
+  const l = (locale || 'es').toLowerCase()
+  if (l.startsWith('en')) return 'en'
+  if (l.startsWith('ca')) return 'ca'
+  if (l.startsWith('eu')) return 'eu'
+  return 'es'
+}
+
+function dedupeNames(list: string[]): string[] {
+  const seen = new Set<string>()
+  const out: string[] = []
+  for (const n of list) {
+    const t = (n == null ? '' : String(n).trim())
+    if (!t || t === 'undefined' || t === 'null') continue
+    const k = t.toLowerCase()
+    if (seen.has(k)) continue
+    seen.add(k)
+    out.push(t)
+  }
+  return out
+}
+
+export function commonsForLocale(
+  s: {
+    taxon?: string
+    common_names?: string[] | null
+    common_names_en?: string[] | null
+    common_names_ca?: string[] | null
+    common_names_eu?: string[] | null
+    display_name?: string | null
+  },
+  locale?: string,
+  /** Optional rich-DB Spanish names — used only for non-EN locales. */
+  richCommonNames?: string[] | null,
+): string[] {
+  const lang = localeLang(locale)
+  if (lang === 'en') {
+    const fromCat = dedupeNames(s.common_names_en || [])
+    if (fromCat.length) return fromCat
+    // Enrichment without Spanish catalog list
+    return enrichCommonNamesEn(s.taxon || '', [])
+  }
+  if (lang === 'ca') {
+    const ca = dedupeNames(s.common_names_ca || [])
+    if (ca.length) return ca
+    // Fallback chain: ES → EN enrichment (never invent Catalan)
+    const es = dedupeNames([...(s.common_names || []), ...(richCommonNames || [])])
+    if (es.length) return es
+    if (s.display_name?.trim()) return [s.display_name.trim()]
+    return enrichCommonNames(s.taxon || '', [])
+  }
+  if (lang === 'eu') {
+    const eu = dedupeNames(s.common_names_eu || [])
+    if (eu.length) return eu
+    const es = dedupeNames([...(s.common_names || []), ...(richCommonNames || [])])
+    if (es.length) return es
+    if (s.display_name?.trim()) return [s.display_name.trim()]
+    return enrichCommonNames(s.taxon || '', [])
+  }
+  // Spanish (default)
+  const es = dedupeNames([...(s.common_names || []), ...(richCommonNames || [])])
+  if (es.length) return es
+  if (s.display_name?.trim()) return [s.display_name.trim()]
+  return enrichCommonNames(s.taxon || '', [])
 }
 
 export function searchSpecies(query: string, limit = 40): CatalogSpecies[] {
@@ -319,6 +470,7 @@ export function searchSpecies(query: string, limit = 40): CatalogSpecies[] {
       (s) =>
         s.taxon.toLowerCase().includes(q) ||
         s.common_names.some((c) => c.toLowerCase().includes(q)) ||
+        (s.common_names_en || []).some((c) => c.toLowerCase().includes(q)) ||
         (s.family && s.family.toLowerCase().includes(q)),
     )
     .slice(0, limit)

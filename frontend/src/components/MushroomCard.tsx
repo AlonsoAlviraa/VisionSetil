@@ -17,7 +17,7 @@ export function MushroomCard({ species, slug: slugProp, riskLevel }: MushroomCar
   const alt = `${species.commonNames[0] || species.scientificName} (${species.scientificName})`
 
   return (
-    <Link to={`/enciclopedia/${slug}`} className="mushroom-card card-3d-tilt card-glow">
+    <Link to={`/enciclopedia/${slug}`} className="mushroom-card card-glow">
       <div className="mushroom-card-image">
         <SpeciesImage
           scientificName={species.scientificName}

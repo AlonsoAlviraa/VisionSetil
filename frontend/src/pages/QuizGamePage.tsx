@@ -41,6 +41,8 @@ import {
   startMatch,
   type MatchState,
 } from '../lib/quizMatch'
+import { recordStudyActivity } from '../lib/studyBadges'
+import { StudyBadgesPanel } from '../components/StudyBadgesPanel'
 
 const LETTERS = ['A', 'B', 'C', 'D'] as const
 const LETTER_COLORS = ['tri-a', 'tri-b', 'tri-c', 'tri-d'] as const
@@ -243,6 +245,12 @@ export function QuizGamePage() {
     dailyRoundsRef.current = null
   }
 
+  // Seek-style study streak when a match finishes (educational only)
+  useEffect(() => {
+    if (uiPhase !== 'finished') return
+    recordStudyActivity('quiz')
+  }, [uiPhase])
+
   useEffect(() => {
     if (uiPhase !== 'playing' || !round || locked) return
     const handler = (e: KeyboardEvent) => {
@@ -251,7 +259,7 @@ export function QuizGamePage() {
       const idx = map[k]
       if (idx == null) return
       e.preventDefault()
-      if (round.mode === 'food') {
+      if (round.mode === 'food' || round.mode === 'season') {
         const opt = round.options[idx]
         if (opt) onPick(opt.id)
       } else {
@@ -399,6 +407,22 @@ export function QuizGamePage() {
                     }),
                     icon: '3',
                   },
+                  {
+                    id: 'lookalike' as const,
+                    title: t('quiz.modeLookalike', { defaultValue: 'Lookalikes' }),
+                    desc: t('quiz.modeLookalikeDesc', {
+                      defaultValue: 'Confusiones clásicas documentadas',
+                    }),
+                    icon: '4',
+                  },
+                  {
+                    id: 'season' as const,
+                    title: t('quiz.modeSeason', { defaultValue: '¿Temporada?' }),
+                    desc: t('quiz.modeSeasonDesc', {
+                      defaultValue: 'Ventana educativa (no recolección)',
+                    }),
+                    icon: '5',
+                  },
                 ] as const
               ).map((m) => (
                 <button
@@ -432,6 +456,7 @@ export function QuizGamePage() {
                 defaultValue: 'Mazo: {{count}} setas documentadas · *referencia educativa, no permiso de consumo',
               })}
             </p>
+            <StudyBadgesPanel compact />
           </section>
         )}
 
@@ -527,7 +552,15 @@ export function QuizGamePage() {
                   ? t('quiz.kickerPhoto', { defaultValue: 'Elige la foto' })
                   : round.mode === 'name'
                     ? t('quiz.kickerName', { defaultValue: 'Elige el nombre' })
-                    : t('quiz.kickerFood', { defaultValue: 'Calidad documentada' })}
+                    : round.mode === 'lookalike'
+                      ? t('quiz.kickerLookalike', {
+                          defaultValue: 'Confusión documentada · no consumo',
+                        })
+                      : round.mode === 'season'
+                        ? t('quiz.kickerSeason', {
+                            defaultValue: 'Temporada educativa · no recolección',
+                          })
+                        : t('quiz.kickerFood', { defaultValue: 'Calidad documentada' })}
               </p>
               <h2>
                 {round.mode === 'photo'
@@ -537,10 +570,17 @@ export function QuizGamePage() {
                     })
                   : round.mode === 'name'
                     ? t('quiz.prompt.name', { defaultValue: round.prompt })
-                    : t('quiz.prompt.food', { defaultValue: round.prompt })}
+                    : round.mode === 'lookalike'
+                      ? t('quiz.prompt.lookalike', { defaultValue: round.prompt })
+                      : round.mode === 'season'
+                        ? t('quiz.prompt.season', { defaultValue: round.prompt })
+                        : t('quiz.prompt.food', { defaultValue: round.prompt })}
               </h2>
 
-              {(round.mode === 'name' || round.mode === 'food') && (
+              {(round.mode === 'name' ||
+                round.mode === 'food' ||
+                round.mode === 'lookalike' ||
+                round.mode === 'season') && (
                 <div className="quiz-question-card__media">
                   <QuizPhoto
                     taxon={round.subject.taxon}
@@ -589,7 +629,7 @@ export function QuizGamePage() {
               </div>
             )}
 
-            {round.mode === 'name' && (
+            {(round.mode === 'name' || round.mode === 'lookalike') && (
               <div className="quiz-answers quiz-answers--text">
                 {round.options.map((opt, i) => {
                   const letter = LETTERS[i]
@@ -661,6 +701,46 @@ export function QuizGamePage() {
               </div>
             )}
 
+            {round.mode === 'season' && (
+              <div className="quiz-answers quiz-answers--risk" data-testid="quiz-season-answers">
+                {round.options.map((opt, i) => {
+                  const letter = opt.letter || LETTERS[i]
+                  const tri = LETTER_COLORS[i]
+                  const isCorrect =
+                    result && (round.acceptedIds as string[]).includes(opt.id)
+                  const isPicked = result?.pickedLabel === opt.label
+                  return (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      className={`quiz-answer quiz-answer--text quiz-answer--risk-${opt.color} ${tri} ${
+                        result
+                          ? isCorrect
+                            ? 'is-correct'
+                            : isPicked
+                              ? 'is-wrong'
+                              : 'is-dim'
+                          : ''
+                      }`}
+                      disabled={uiPhase !== 'playing' || locked}
+                      onClick={() => onPick(opt.id)}
+                      data-testid={`quiz-season-opt-${opt.id}`}
+                    >
+                      <span className={`quiz-answer__letter ${tri}`}>{letter}</span>
+                      <span className="quiz-answer__body">
+                        <strong>
+                          {t(`quiz.season.${opt.id}.label`, { defaultValue: opt.label })}
+                        </strong>
+                        <em>
+                          {t(`quiz.season.${opt.id}.hint`, { defaultValue: opt.hint })}
+                        </em>
+                      </span>
+                    </button>
+                  )
+                })}
+              </div>
+            )}
+
             {uiPhase === 'reveal' && result && (
               <div
                 className={`quiz-feedback ${result.correct ? 'is-ok' : 'is-ko'}`}
@@ -705,6 +785,54 @@ export function QuizGamePage() {
                   {round.mode === 'food' && (
                     <p className="quiz-feedback__source">
                       {t('quiz.source', { defaultValue: 'Fuente' })}: {round.sourceNote}
+                    </p>
+                  )}
+                  {round.mode === 'lookalike' && (
+                    <div className="quiz-feedback__lookalike" data-testid="quiz-lookalike-feedback">
+                      <p className="quiz-feedback__source">
+                        {t('quiz.lookalikeWhy', { defaultValue: 'Por qué se confunden' })}: {round.why}
+                        {' · '}
+                        {t('quiz.lookalikeMate', { defaultValue: 'Par' })}: {round.mate.common} (
+                        {round.mate.taxon})
+                      </p>
+                      {round.critical_views.length > 0 && (
+                        <div
+                          className="lookalike-item__diag quiz-feedback__diag"
+                          data-testid="quiz-lookalike-diag"
+                          data-pair-id={round.pair_id || undefined}
+                        >
+                          <div className="lookalike-item__diag-views">
+                            <span className="lookalike-item__diag-label">
+                              {t('result.pairCriticalViews', {
+                                defaultValue: 'Vistas que discriminan:',
+                              })}
+                            </span>
+                            {round.critical_views.map((view) => (
+                              <span
+                                key={view}
+                                className="lookalike-item__diag-badge lookalike-item__diag-badge--static"
+                                data-slot={view}
+                              >
+                                {t(`identify.views.${view}`, { defaultValue: view })}
+                              </span>
+                            ))}
+                          </div>
+                          <p className="lookalike-item__diag-policy muted">
+                            {t('result.pairDiagPolicy', {
+                              defaultValue:
+                                'Educativo: multi-foto sin estas vistas no basta — solo orientación, nunca consumo.',
+                            })}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  {round.mode === 'season' && (
+                    <p className="quiz-feedback__source">
+                      {t('quiz.seasonNote', {
+                        defaultValue: 'Ventana educativa (no recolección)',
+                      })}
+                      : {round.seasonNote}
                     </p>
                   )}
                 </div>

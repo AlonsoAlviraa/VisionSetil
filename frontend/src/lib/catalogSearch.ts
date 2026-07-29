@@ -1,10 +1,17 @@
 /**
  * Ranked encyclopedia search: scientific + common + family + risk + family filter.
+ * P17: optional Index Fungorum / curated nomenclature hints boost ranking
+ * (names only · never overwrites SSOT · never consumption).
  */
 import type { CatalogSpecies } from '../data/speciesCatalog'
 import { familyNameEs } from '../data/familyNamesEs'
 import { foldEs } from '../data/commonNamesEs'
+import {
+  nomenclatureQueryVariants,
+  scoreTaxonAgainstNomenclatureVariants,
+} from './indexFungorum'
 import { toRiskLabel, type RiskLabel } from './riskLabels'
+import { aliasesForTaxon, canonicalTaxonName } from './taxonSynonyms'
 
 export type CatalogSearchOptions = {
   query?: string
@@ -14,6 +21,11 @@ export type CatalogSearchOptions = {
   limit?: number
   offset?: number
   boostHighRisk?: boolean
+  /**
+   * Extra nomenclature names (IF current name, synonyms from live resolve).
+   * Used only as ranking aliases — never product unlock / forage.
+   */
+  nomenclatureHints?: string[]
 }
 
 export type RankedSpecies = CatalogSpecies & { matchScore: number }
@@ -25,18 +37,48 @@ export type FamilyCount = {
   count: number
 }
 
-function scoreSpecies(s: CatalogSpecies, q: string, boostHighRisk: boolean): number {
+function scoreSpecies(
+  s: CatalogSpecies,
+  q: string,
+  boostHighRisk: boolean,
+  nomenclatureVariants: readonly string[],
+): number {
   let score = 0
   const taxon = s.taxon.toLowerCase()
   const family = (s.family || '').toLowerCase()
-  const commons = s.common_names.map((c) => c.toLowerCase())
+  const commons = [
+    ...s.common_names.map((c) => c.toLowerCase()),
+    ...(s.common_names_en || []).map((c) => c.toLowerCase()),
+  ]
   if (!q) {
     score = 1
   } else {
     const qNorm = foldEs(q)
+    // Curated synonym → SSOT (e.g. Coprinopsis atramentaria → Coprinus atramentarius)
+    const qCanon = canonicalTaxonName(q).toLowerCase()
+    if (qCanon !== q && taxon === qCanon) score += 100
     if (taxon === q) score += 100
     else if (taxon.startsWith(q)) score += 80
     else if (taxon.includes(q)) score += 50
+    else if (qCanon !== q && taxon.startsWith(qCanon)) score += 80
+    else if (qCanon !== q && taxon.includes(qCanon)) score += 50
+    // Reverse curated aliases (IF-style current names stored as synonym keys)
+    for (const alias of aliasesForTaxon(s.taxon)) {
+      if (alias === q) score += 105
+      else if (alias.startsWith(q) || q.startsWith(alias)) score += 75
+      else if (q.length >= 4 && alias.includes(q)) score += 45
+    }
+    // Live / extra IF nomenclature hints only (exclude raw q already scored above)
+    const extras = nomenclatureVariants.filter((v) => v !== q && v !== qCanon)
+    if (extras.length > 0) {
+      const ifBoost = scoreTaxonAgainstNomenclatureVariants(s.taxon, extras)
+      if (ifBoost > 0) score += ifBoost
+      // Map IF current / synonym → SSOT via curated synonym table
+      for (const v of extras) {
+        const vCanon = canonicalTaxonName(v).toLowerCase()
+        if (vCanon !== v && taxon === vCanon) score += 100
+      }
+    }
     for (const c of commons) {
       const cNorm = foldEs(c)
       if (c === q || cNorm === qNorm) score += 90
@@ -82,6 +124,7 @@ export function searchCatalogRanked(
   const limit = options.limit ?? 40
   const offset = Math.max(0, options.offset ?? 0)
   const boost = options.boostHighRisk ?? true
+  const nomenclatureVariants = nomenclatureQueryVariants(q, options.nomenclatureHints)
 
   let rows = species
   if (risk !== 'all') {
@@ -98,7 +141,7 @@ export function searchCatalogRanked(
 
   const ranked: RankedSpecies[] = []
   for (const s of rows) {
-    const matchScore = scoreSpecies(s, q, boost)
+    const matchScore = scoreSpecies(s, q, boost, nomenclatureVariants)
     if (q && matchScore <= 0) continue
     if (!q && matchScore <= 0) continue
     ranked.push({ ...s, matchScore })

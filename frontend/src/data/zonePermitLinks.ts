@@ -113,7 +113,7 @@ const L = {
   },
   montesDeSoriaAsoc: {
     label: 'Asociación Montes de Soria · permisos',
-    url: 'http://asociacionmontesdesoria.com/permiso-de-recoleccion-de-setas/',
+    url: 'https://asociacionmontesdesoria.com/permiso-de-recoleccion-de-setas/',
     kind: 'permit' as const,
   },
   // CyL provincia a provincia (códigos MicologíaCyL)
@@ -157,6 +157,41 @@ const L = {
     url: 'https://permisos.micologiacyl.es/acotado/camarzana-de-tera-y-otros',
     kind: 'permit' as const,
   },
+  permisosDemandaSanMillan: {
+    label: 'Permisos Demanda – San Millán (Burgos)',
+    url: 'https://permisos.micologiacyl.es/acotado/demanda-san-millan',
+    kind: 'permit' as const,
+  },
+  permisosValleMena: {
+    label: 'Permisos Valle de Mena (Burgos)',
+    url: 'https://permisos.micologiacyl.es/acotado/valle-de-mena',
+    kind: 'permit' as const,
+  },
+  permisosSanZadornil: {
+    label: 'Permisos San Zadornil (Burgos)',
+    url: 'https://permisos.micologiacyl.es/acotado/san-zadornil',
+    kind: 'permit' as const,
+  },
+  permisosTriollo: {
+    label: 'Permisos Junta Vecinal de Triollo (Palencia)',
+    url: 'https://permisos.micologiacyl.es/acotado/junta-vecinal-triollo',
+    kind: 'permit' as const,
+  },
+  permisosRiberaCanedo: {
+    label: 'Permisos Ribera de Cañedo (Salamanca)',
+    url: 'https://permisos.micologiacyl.es/acotado/ribera-de-canedo',
+    kind: 'permit' as const,
+  },
+  permisosMontesSegovia: {
+    label: 'Permisos Montes de Segovia',
+    url: 'https://permisos.micologiacyl.es/acotado/montes-de-segovia',
+    kind: 'permit' as const,
+  },
+  permisosMontesSegoviaJunta: {
+    label: 'Permisos Montes CyL en Segovia',
+    url: 'https://permisos.micologiacyl.es/acotado/montes-comunidad-castilla-y-leon-en-segovia',
+    kind: 'permit' as const,
+  },
 
   // Cataluña
   gencatBolets: {
@@ -169,6 +204,21 @@ const L = {
     url: 'https://mediambient.gencat.cat/',
     kind: 'info' as const,
   },
+  altPirineuRegulacio: {
+    label: 'Alt Pirineu · regulación de actividades (bolets)',
+    url: 'https://parcsnaturals.gencat.cat/ca/xarxa-de-parcs/alt-pirineu/gaudeix-del-parc/consells/regulacio-activitats/',
+    kind: 'permit' as const,
+  },
+  portsRegulacio: {
+    label: 'Parc Natural dels Ports · regulación de actividades',
+    url: 'https://parcsnaturals.gencat.cat/ca/xarxa-de-parcs/ports/gaudeix-del-parc/consells/regulacio-dactivitats/',
+    kind: 'info' as const,
+  },
+  cadiBoletaire: {
+    label: 'Cadí–Moixeró · tradición boletaire',
+    url: 'https://parcsnaturals.gencat.cat/ca/xarxa-de-parcs/cadi/el-parc/patrimoni-natural-i-cultural/fongs-i-liquens/tradicio-boletaire/',
+    kind: 'info' as const,
+  },
 
   // Navarra
   navarraMedio: {
@@ -176,10 +226,35 @@ const L = {
     url: 'https://www.navarra.es/es/medio-ambiente',
     kind: 'info' as const,
   },
+  navarraSetas: {
+    label: 'Navarra · setas y hongos (red de acotados)',
+    url: 'https://www.navarra.es/es/medio-ambiente/setas-y-hongos',
+    kind: 'info' as const,
+  },
   iratiInfo: {
-    label: 'Selva de Irati · información turística',
-    url: 'https://www.irati.org/',
+    label: 'Selva de Irati · micología',
+    url: 'https://www.irati.org/micologia/',
     kind: 'tourism' as const,
+  },
+  ultzamaPermisos: {
+    label: 'Parque Micológico Ultzama · permisos',
+    url: 'https://parquemicologicoultzama.com/es/permisos',
+    kind: 'permit' as const,
+  },
+  erroPermisos: {
+    label: 'Parque Micológico Erro · permiso diario',
+    url: 'https://www.parquemicologicoerro.com/producto/permiso-diario/',
+    kind: 'permit' as const,
+  },
+  aezkoaPermisos: {
+    label: 'Valle de Aezkoa · productos naturales',
+    url: 'https://aezkoa.org/areas/productos-naturales/',
+    kind: 'permit' as const,
+  },
+  abaurreaPermisos: {
+    label: 'Acotado Abaurregaina · reservas',
+    url: 'https://reservas.redexploranavarra.es/esp-AcotadoAbaurreagaina',
+    kind: 'permit' as const,
   },
 
   // País Vasco
@@ -188,12 +263,161 @@ const L = {
     url: 'https://www.euskadi.eus/gobierno-vasco/medio-ambiente/',
     kind: 'info' as const,
   },
+  gorbeiaPermisos: {
+    label: 'Parque Micológico Gorbeialdea · permisos',
+    url: 'https://www.gorbeiamikologia.eus/es/permisos/',
+    kind: 'permit' as const,
+  },
+  asparrenaPark: {
+    label: 'Parque Micológico Asparrena–San Millán',
+    url: 'https://www.asparrena.eus/ocio-y-turismo/parque-micologico-asparrena-san-millan',
+    kind: 'permit' as const,
+  },
+  arraiaCoto: {
+    label: 'Coto de setas Arraia-Maeztu',
+    url: 'https://www.arraia-maeztu.eus/servicios/coto-de-setas/',
+    kind: 'permit' as const,
+  },
+  arcenaPermisos: {
+    label: 'Sierra de Árcena · solicitud de permisos',
+    url: 'https://micolosa.net/sierra-de-arcena/solicitud-de-permisos/',
+    kind: 'permit' as const,
+  },
+  nanclaresPermisos: {
+    label: 'Coto Nanclares · tickets',
+    url: 'https://cotonanclares.com/',
+    kind: 'permit' as const,
+  },
 
   // Galicia
   xuntaMedio: {
     label: 'Xunta · medio rural / montes',
     url: 'https://mediorural.xunta.gal/',
     kind: 'info' as const,
+  },
+  mycoGalicia: {
+    label: 'MycoGalicia · coutos micolóxicos',
+    url: 'https://mycogalicia.es/coutos/',
+    kind: 'permit' as const,
+  },
+  mycoBeade: {
+    label: 'Couto Beade · permisos',
+    url: 'https://mycogalicia.es/coutos/couto-micoloxico-beade/',
+    kind: 'permit' as const,
+  },
+  mycoMatama: {
+    label: 'Couto Matamá · permisos',
+    url: 'https://mycogalicia.es/coutos/couto-micoloxico-matama/',
+    kind: 'permit' as const,
+  },
+  mycoRebordelo: {
+    label: 'Coutos Rebordelo · permisos',
+    url: 'https://mycogalicia.es/coutos/couto-micoloxico-souto-san-brais-e-souto-pereiral/',
+    kind: 'permit' as const,
+  },
+  mycoBarona: {
+    label: 'Couto Baroña · permisos',
+    url: 'https://mycogalicia.es/coutos/couto-micoloxico-baronha/',
+    kind: 'permit' as const,
+  },
+  aveigaTurismo: {
+    label: 'A Veiga · turismo micolóxico (Tregumelos)',
+    url: 'https://www.mieldetrevinca.com/turismo/',
+    kind: 'tourism' as const,
+  },
+
+  // Aragón municipal / comarcal
+  maestrazgoPases: {
+    label: 'Maestrazgo · pases de setas',
+    url: 'https://comarcamaestrazgo.org/pases-setas/',
+    kind: 'permit' as const,
+  },
+  maestrazgoInfo: {
+    label: 'Turismo Maestrazgo · micología',
+    url: 'https://turismomaestrazgo.org/micologia/',
+    kind: 'tourism' as const,
+  },
+  ansoSetas: {
+    label: 'Ansó · permisos de setas',
+    url: 'https://www.xn--ans-ina.es/setas',
+    kind: 'permit' as const,
+  },
+  nogueruelasCoto: {
+    label: 'Nogueruelas · coto micológico',
+    url: 'https://www.nogueruelas.es/institucional/coto-micologico-nogueruelas/',
+    kind: 'permit' as const,
+  },
+  mosqueruelaPermisos: {
+    label: 'Mosqueruela · venta de permisos',
+    url: 'https://mosqueruela.es/venta-de-permisos-de-recogida-de-setas/',
+    kind: 'permit' as const,
+  },
+  puenteJaca: {
+    label: 'Puente la Reina de Jaca · coto de hongos',
+    url: 'https://puentelareinadejaca.com/',
+    kind: 'permit' as const,
+  },
+  loarreSetas: {
+    label: 'Loarre · setas',
+    url: 'https://www.loarre.es/setas',
+    kind: 'permit' as const,
+  },
+  planSetas: {
+    label: 'Plan · trámite setas (sede)',
+    url: 'https://plan.sedipualba.es/carpetaciudadana/tramite.aspx?idtramite=28170',
+    kind: 'permit' as const,
+  },
+  canfrancMicologia: {
+    label: 'Canfranc · micología / turismo',
+    url: 'https://www.canfranc.es/turismo_canfranc_pirineos.php?idRec=36',
+    kind: 'permit' as const,
+  },
+  hechoSetas: {
+    label: 'Valle de Hecho · trámite setas',
+    url: 'https://hecho.sedipualba.es/carpetaciudadana/tramite.aspx?idtramite=23432',
+    kind: 'permit' as const,
+  },
+  biescasSetas: {
+    label: 'Biescas · setas y hongos',
+    url: 'https://www.turismobiescas.com/noticias/setas-y-hongos-todo-lo-que-hay-que-saber/',
+    kind: 'permit' as const,
+  },
+  tramacastillaMicologia: {
+    label: 'Tramacastilla de Tena · micología',
+    url: 'https://www.tramacastilladetena.es/actividades-tramacastilla.php?Nombre=Micolog%C3%ADa',
+    kind: 'info' as const,
+  },
+
+  // Andalucía municipal
+  juzcarOrdenanza: {
+    label: 'Júzcar · ordenanza aprovechamiento setas (PDF)',
+    url: 'https://static.malaga.es/municipios/subidas/archivos/9/7/arc_33179.pdf',
+    kind: 'permit' as const,
+  },
+  lojaSolicitudes: {
+    label: 'Loja · impresos y solicitudes',
+    url: 'http://www.aytoloja.org/ayuntamiento/impresosysolicitudes.htm',
+    kind: 'permit' as const,
+  },
+  alhamaSede: {
+    label: 'Alhama de Granada · sede electrónica',
+    url: 'https://alhamadegranada.sedelectronica.es/',
+    kind: 'permit' as const,
+  },
+  bazaOrdenanza: {
+    label: 'Baza · ordenanza fiscal recogida de setas (PN)',
+    url: 'https://ayuntamientodebaza.es/download/1108/ordenanzas-fiscales/5325/44-ordenanza-fiscal-reguladora-recogida-de-setas-en-parque-natural.pdf',
+    kind: 'permit' as const,
+  },
+  bayarcalTablon: {
+    label: 'Bayárcal · tablón / ordenanzas',
+    url: 'https://www.dipalme.org/Servicios/cmsdipro/index.nsf/tablon.xsp?p=SedeBayarcal&documentId=75A179470D6AC04EC1257F8B003FFA36',
+    kind: 'permit' as const,
+  },
+  castillonuevoOrdenanza: {
+    label: 'Castillonuevo · ordenanza acotado',
+    url: 'https://castillonuevo.com/2023/09/24/ordenanza-reguladora-del-acotado-para-el-aprovechamiento-de-hongos-setas-y-demas-productos-naturales-en-el-termino-municipal-de-castillonuevo/',
+    kind: 'permit' as const,
   },
 
   // Asturias
@@ -327,6 +551,172 @@ const BY_ZONE_ID: Record<string, ZoneResourcePack> = {
     links: [L.micoAragonPermisos, L.albarracinPark, L.albarracinInfo, L.micoAragon, L.aragonGov, L.aragonDecree],
   },
 
+  // ── Scraped national cotos ──
+  'coto-ar-moncayo': {
+    note: 'Parque micológico del Moncayo. Confirma venta de permisos de la temporada en MicoAragón o la comarca.',
+    links: [L.moncayoPark, L.micoAragon, L.micoAragonPermisos, L.aragonGov, L.aragonDecree],
+  },
+  'coto-ar-maestrazgo': {
+    note: 'Coto comarcal del Maestrazgo (Teruel). Pases turísticos oficiales.',
+    links: [L.maestrazgoPases, L.maestrazgoInfo, L.aragonGov, L.aragonDecree, L.micoAragon],
+  },
+  'coto-ar-anso-fago': {
+    note: 'Mancomunidad Forestal Ansó–Fago. Permisos municipales/mancomunidad.',
+    links: [L.ansoSetas, L.aragonGov, L.aragonDecree],
+  },
+  'coto-ar-nogueruelas': {
+    note: 'Coto municipal de Nogueruelas (Gúdar–Javalambre).',
+    links: [L.nogueruelasCoto, L.aragonGov, L.aragonDecree, L.micoAragon],
+  },
+  'coto-ar-mosqueruela': {
+    note: 'Coto municipal de Mosqueruela con venta online de abonos.',
+    links: [L.mosqueruelaPermisos, L.aragonGov, L.aragonDecree],
+  },
+  'coto-ar-puente-jaca': {
+    note: 'Coto del Carrascal de Javierregay (Puente la Reina de Jaca).',
+    links: [L.puenteJaca, L.aragonGov, L.aragonDecree],
+  },
+  'coto-ar-loarre': {
+    note: 'Coto de Loarre — remite a MicoAragón; confirma producto de temporada.',
+    links: [L.loarreSetas, L.micoAragon, L.micoAragonPermisos, L.aragonGov],
+  },
+  'coto-ar-plan': {
+    note: 'Permiso diario vía sede electrónica del Ayuntamiento de Plan.',
+    links: [L.planSetas, L.aragonGov, L.aragonDecree],
+  },
+  'coto-ar-canfranc': {
+    note: 'Coto municipal de Canfranc / Canal Roya.',
+    links: [L.canfrancMicologia, L.aragonGov, L.aragonDecree],
+  },
+  'coto-ar-hecho': {
+    note: 'Trámite setas del Ayuntamiento de Valle de Hecho.',
+    links: [L.hechoSetas, L.aragonGov, L.aragonDecree],
+  },
+  'coto-ar-biescas': {
+    note: 'Autorizaciones municipales en Biescas (presencial).',
+    links: [L.biescasSetas, L.aragonGov, L.aragonDecree],
+  },
+  'coto-ar-tramacastilla-tena': {
+    note: 'Ordenanza de Tramacastilla de Tena; confirma expedición actual.',
+    links: [L.tramacastillaMicologia, L.aragonGov, L.aragonDecree],
+  },
+  'coto-cat-viros': {
+    note: 'Acotado Bosc de Virós — tiquet diario del Parc Natural de l’Alt Pirineu.',
+    links: [L.altPirineuRegulacio, L.gencatBolets, L.gencatMedi],
+  },
+  'coto-cat-esterri-cardos': {
+    note: 'Acotado Vall d’Esterri de Cardós — tiquet del parc.',
+    links: [L.altPirineuRegulacio, L.gencatBolets, L.gencatMedi],
+  },
+  'coto-cat-alt-pirineu': {
+    note: 'Regulación de bolets del Parc Natural de l’Alt Pirineu.',
+    links: [L.altPirineuRegulacio, L.gencatBolets, L.gencatMedi],
+  },
+  'coto-cat-ports': {
+    note: 'Els Ports: propiedad y señalización; no hay tienda de permisos de parque.',
+    links: [L.portsRegulacio, L.gencatBolets, L.gencatMedi],
+  },
+  'coto-cat-cadi': {
+    note: 'Cadí–Moixeró: tradición boletaire; respeta propiedad y regulación local.',
+    links: [L.cadiBoletaire, L.gencatBolets, L.gencatMedi],
+  },
+  'coto-ga-beade': {
+    note: 'Couto Micolóxico de Beade (Montes de Vigo) — MycoGalicia.',
+    links: [L.mycoBeade, L.mycoGalicia, L.xuntaMedio],
+  },
+  'coto-ga-matama': {
+    note: 'Couto Micolóxico de Matamá — MycoGalicia.',
+    links: [L.mycoMatama, L.mycoGalicia, L.xuntaMedio],
+  },
+  'coto-ga-rebordelo': {
+    note: 'Coutos Souto de San Brais e Souto do Pereiral — MycoGalicia.',
+    links: [L.mycoRebordelo, L.mycoGalicia, L.xuntaMedio],
+  },
+  'coto-ga-barona': {
+    note: 'Couto Micolóxico de Baroña — MycoGalicia.',
+    links: [L.mycoBarona, L.mycoGalicia, L.xuntaMedio],
+  },
+  'coto-ga-forgoselo': {
+    note: 'Monte Forgoselo: verifica expedición con la AVV; directorio MycoGalicia.',
+    links: [L.mycoGalicia, L.xuntaMedio],
+  },
+  'coto-ga-aveiga': {
+    note: 'A Veiga (Tregumelos): autorización turística municipal.',
+    links: [L.aveigaTurismo, L.xuntaMedio],
+  },
+  'coto-na-ultzama': {
+    note: 'Parque Micológico Ultzama — permisos online oficiales.',
+    links: [L.ultzamaPermisos, L.navarraSetas, L.navarraMedio],
+  },
+  'coto-na-erro': {
+    note: 'Parque Micológico Erro–Roncesvalles — permiso diario online.',
+    links: [L.erroPermisos, L.navarraSetas, L.navarraMedio],
+  },
+  'coto-na-aezkoa': {
+    note: 'Acotado Junta del Valle de Aezkoa (Monte Aezkoa / Irati).',
+    links: [L.aezkoaPermisos, L.iratiInfo, L.navarraSetas],
+  },
+  'coto-na-salazar': {
+    note: 'Acotado Valle de Salazar (Irati) — Casa del Valle.',
+    links: [L.iratiInfo, L.navarraSetas, L.navarraMedio],
+  },
+  'coto-na-roncal': {
+    note: 'Valle de Roncal: régimen foral de acotados; verifica junta actual.',
+    links: [L.navarraSetas, L.navarraMedio],
+  },
+  'coto-na-abaurrea-alta': {
+    note: 'Acotado Abaurregaina — Red Explora Navarra.',
+    links: [L.abaurreaPermisos, L.navarraSetas, L.navarraMedio],
+  },
+  'coto-na-castillonuevo': {
+    note: 'Acotado Castillonuevo / Gazteluberri — ordenanza municipal.',
+    links: [L.castillonuevoOrdenanza, L.navarraSetas, L.navarraMedio],
+  },
+  'coto-na-urraul-alto': {
+    note: 'Acotado Urraul Alto — ayuntamiento y puntos autorizados.',
+    links: [L.navarraSetas, L.navarraMedio],
+  },
+  'coto-pv-gorbeialdea': {
+    note: 'Parque Micológico de Gorbeialdea — permisos online.',
+    links: [L.gorbeiaPermisos, L.euskadiMedio],
+  },
+  'coto-pv-asparrena': {
+    note: 'Parque Micológico Asparrena–Apota (Aizkorri-Aratz).',
+    links: [L.asparrenaPark, L.euskadiMedio],
+  },
+  'coto-pv-arraia': {
+    note: 'Coto de setas Arraia-Maeztu (Montaña Alavesa).',
+    links: [L.arraiaCoto, L.euskadiMedio],
+  },
+  'coto-pv-arcena': {
+    note: 'Coto Sierra de Árcena / Consierra de Árcena.',
+    links: [L.arcenaPermisos, L.euskadiMedio],
+  },
+  'coto-pv-nanclares': {
+    note: 'Coto micológico Nanclares–Montevite–Ollávarre.',
+    links: [L.nanclaresPermisos, L.euskadiMedio],
+  },
+  'coto-an-juzcar': {
+    note: 'Monte Lomas y Ferreiras (Júzcar) — autorización municipal.',
+    links: [L.juzcarOrdenanza, L.juntaAndalucia],
+  },
+  'coto-an-loja': {
+    note: 'Montes públicos de Loja (Sierra de Loja) — solicitud municipal.',
+    links: [L.lojaSolicitudes, L.juntaAndalucia],
+  },
+  'coto-an-alhama': {
+    note: 'Monte Público Sierras – Alhama de Granada (licencias limitadas).',
+    links: [L.alhamaSede, L.juntaAndalucia],
+  },
+  'coto-an-baza': {
+    note: 'Montes de Baza en PN Sierra de Baza — ordenanza fiscal de setas.',
+    links: [L.bazaOrdenanza, L.juntaAndalucia],
+  },
+  'coto-an-bayarcal': {
+    note: 'Montes públicos de Bayárcal — autorización y tasa municipal.',
+    links: [L.bayarcalTablon, L.juntaAndalucia],
+  },
+
   // ── Castilla y León — acotados MicoCyL ──
   'park-montes-soria': {
     note: 'Parque Micológico Montes de Soria: permisos recreativos y de temporada online.',
@@ -366,6 +756,18 @@ const BY_ZONE_ID: Record<string, ZoneResourcePack> = {
     note: 'Acotado Montes de Oca (Burgos).',
     links: [L.permisosMontesOca, L.micologiaCylExpedicion, L.jcylMicologia],
   },
+  'cyl-bu-demanda-san-millan': {
+    note: 'Acotado Demanda – San Millán (BU-50017).',
+    links: [L.permisosDemandaSanMillan, L.micologiaCylExpedicion, L.micologiaCylVisor, L.jcylMicologia],
+  },
+  'cyl-bu-valle-mena': {
+    note: 'Acotado Valle de Mena (BU-50019).',
+    links: [L.permisosValleMena, L.micologiaCylExpedicion, L.jcylMicologia],
+  },
+  'cyl-bu-san-zadornil': {
+    note: 'Acotado San Zadornil (BU-50003).',
+    links: [L.permisosSanZadornil, L.micologiaCylExpedicion, L.jcylMicologia],
+  },
   'cyl-bu-merindades': {
     note: 'Merindades: localiza el acotado exacto en el visor MicologíaCyL.',
     links: [L.micologiaCylVisor, L.micologiaCylExpedicion, L.jcylMicologia],
@@ -390,21 +792,25 @@ const BY_ZONE_ID: Record<string, ZoneResourcePack> = {
     note: 'Fuentes Carrionas: ENP + acotados CyL colindantes.',
     links: [L.permisosVelilla, L.micologiaCylVisor, L.jcylMicologia],
   },
+  'cyl-pa-triollo': {
+    note: 'Acotado Junta Vecinal de Triollo (PA-50033).',
+    links: [L.permisosTriollo, L.micologiaCylExpedicion, L.jcylMicologia],
+  },
   'cyl-sa-francia-bejar': {
     note: 'Parque micológico Sierras de Francia, Béjar, Quilamas y El Rebollar.',
     links: [L.permisosFranciaBejar, L.micologiaCylExpedicion, L.micocyl, L.jcylMicologia],
   },
   'cyl-sa-ribera-canedo': {
-    note: 'Acotado Ribera de Cañedo (Salamanca).',
-    links: [L.micologiaCylExpedicion, L.micocyl, L.micologiaCylVisor, L.jcylMicologia],
+    note: 'Acotado Ribera de Cañedo (SA-50005).',
+    links: [L.permisosRiberaCanedo, L.micologiaCylExpedicion, L.micocyl, L.jcylMicologia],
   },
   'cyl-sg-montes-segovia': {
-    note: 'Acotado Montes de Segovia (reconocimiento mutuo con montes Junta en algunos casos).',
-    links: [L.micologiaCylExpedicion, L.micologiaCylVisor, L.micocyl, L.jcylMicologia],
+    note: 'Acotado Montes de Segovia (SG-50002) — reconocimiento mutuo con SG-50005 en algunos casos.',
+    links: [L.permisosMontesSegovia, L.permisosMontesSegoviaJunta, L.micologiaCylExpedicion, L.jcylMicologia],
   },
   'cyl-sg-montes-junta': {
-    note: 'Montes de la Junta en Segovia.',
-    links: [L.micologiaCylExpedicion, L.micologiaCylVisor, L.jcylMicologia],
+    note: 'Montes de la Comunidad en Segovia (SG-50005).',
+    links: [L.permisosMontesSegoviaJunta, L.permisosMontesSegovia, L.micologiaCylExpedicion, L.jcylMicologia],
   },
   'cyl-so-montes-soria': {
     note: 'Parque Micológico Montes de Soria (PMSO-50001).',
@@ -507,24 +913,24 @@ const BY_ZONE_ID: Record<string, ZoneResourcePack> = {
 
   // ── Navarra / Irati ──
   'pirineo-navarro': {
-    note: 'Selva de Irati: consulta Gobierno de Navarra y normas del monte.',
-    links: [L.iratiInfo, L.navarraMedio],
+    note: 'Selva de Irati: acotados de Aezkoa/Salazar y normas forales.',
+    links: [L.iratiInfo, L.aezkoaPermisos, L.navarraSetas, L.navarraMedio],
   },
   'navarra-hayedo-irati': {
-    note: 'Irati zona norte: espacio sensible; informa en turismo / medio ambiente.',
-    links: [L.iratiInfo, L.navarraMedio],
+    note: 'Irati zona norte: acotados del valle y medio ambiente foral.',
+    links: [L.iratiInfo, L.aezkoaPermisos, L.navarraSetas, L.navarraMedio],
   },
   'navarra-irati-sur': {
     note: 'Irati accesos sur: normativa foral y gestores locales.',
-    links: [L.iratiInfo, L.navarraMedio],
+    links: [L.iratiInfo, L.navarraSetas, L.navarraMedio],
   },
   'navarra-ultzama': {
-    note: 'Ultzama: montes y posibles regulaciones municipales.',
-    links: [L.navarraMedio],
+    note: 'Ultzama: parque micológico con permisos online.',
+    links: [L.ultzamaPermisos, L.navarraSetas, L.navarraMedio],
   },
   'navarra-bertiz': {
     note: 'Parque Natural de Bertiz: consulta restricciones de uso.',
-    links: [L.navarraMedio],
+    links: [L.navarraMedio, L.navarraSetas],
   },
 
   // ── Asturias / Cantabria / Picos ──
@@ -567,20 +973,20 @@ const BY_ZONE_ID: Record<string, ZoneResourcePack> = {
 
   // ── País Vasco ──
   'pv-gorbeia': {
-    note: 'Parque Natural de Gorbeia: normativa foral / ENP.',
-    links: [L.euskadiMedio],
+    note: 'Gorbeia: ENP + Parque Micológico de Gorbeialdea (permisos comarcales).',
+    links: [L.gorbeiaPermisos, L.euskadiMedio],
   },
   'bizkaia-gorbeia': {
-    note: 'Gorbeia (Bizkaia).',
-    links: [L.euskadiMedio],
+    note: 'Gorbeia (Bizkaia) / entorno Gorbeialdea.',
+    links: [L.gorbeiaPermisos, L.euskadiMedio],
   },
   'pv-urkiola': {
     note: 'Parque Natural de Urkiola.',
     links: [L.euskadiMedio],
   },
   'pais-vaso-izki': {
-    note: 'Parque Natural de Izki (Álava).',
-    links: [L.euskadiMedio],
+    note: 'Parque Natural de Izki (Álava); cotos cercanos en Montaña Alavesa.',
+    links: [L.arraiaCoto, L.euskadiMedio],
   },
   'gipuzkoa-aiako': {
     note: 'Aiako Harria – Jaizkibel.',
@@ -589,34 +995,34 @@ const BY_ZONE_ID: Record<string, ZoneResourcePack> = {
 
   // ── Galicia ──
   'galicia-courel': {
-    note: 'Serra do Courel: consulta montes y Xunta.',
-    links: [L.xuntaMedio],
+    note: 'Serra do Courel: consulta montes, Xunta y MycoGalicia.',
+    links: [L.mycoGalicia, L.xuntaMedio],
   },
   'galicia-baixa-limia': {
     note: 'Baixa Limia – Xurés.',
-    links: [L.xuntaMedio],
+    links: [L.xuntaMedio, L.mycoGalicia],
   },
   'galicia-ancares': {
     note: 'Ancares (Galicia–León): doble normativa posible.',
-    links: [L.xuntaMedio, L.jcylMicologia],
+    links: [L.xuntaMedio, L.jcylMicologia, L.mycoGalicia],
   },
   'galicia-costadamorte': {
-    note: 'Costa da Morte: montes y ayuntamientos.',
-    links: [L.xuntaMedio],
+    note: 'Costa da Morte: montes, CMVMC y MycoGalicia.',
+    links: [L.mycoBarona, L.mycoGalicia, L.xuntaMedio],
   },
   'ourense-ribeira-sacra': {
-    note: 'Ribeira Sacra.',
-    links: [L.xuntaMedio],
+    note: 'Ribeira Sacra / Ourense: montes y posible regulación local (p. ej. A Veiga).',
+    links: [L.aveigaTurismo, L.xuntaMedio, L.mycoGalicia],
   },
   'pontevedra-groba': {
-    note: 'Serra da Groba.',
-    links: [L.xuntaMedio],
+    note: 'Serra da Groba / Vigo: coutos MycoGalicia cercanos.',
+    links: [L.mycoBeade, L.mycoMatama, L.mycoGalicia, L.xuntaMedio],
   },
 
   // ── Cataluña ──
   'pirineo-catalan': {
-    note: 'Pirineo catalán: recomendaciones Gencat; algunos montes con carnet piloto histórico.',
-    links: [L.gencatBolets, L.gencatMedi],
+    note: 'Pirineo catalán: Alt Pirineu con acotados de tiquet; resto Gencat / propiedad.',
+    links: [L.altPirineuRegulacio, L.gencatBolets, L.gencatMedi],
   },
 
   // ── La Rioja ──
@@ -659,20 +1065,20 @@ const BY_REGION: Record<string, ZoneResourcePack> = {
     links: [L.gencatBolets, L.gencatMedi],
   },
   Navarra: {
-    note: 'Normativa foral y montes locales. Irati y ENP tienen reglas propias.',
-    links: [L.navarraMedio, L.iratiInfo],
+    note: 'Red de acotados forales y parques micológicos (Ultzama, Erro, valles de Irati…). Permisos de gestores locales — VisionSetil no vende permisos.',
+    links: [L.navarraSetas, L.ultzamaPermisos, L.iratiInfo, L.navarraMedio],
   },
   'País Vasco': {
-    note: 'Normativa autonómica y parques naturales forales.',
-    links: [L.euskadiMedio],
+    note: 'Normativa foral y parques/cotos micológicos comarcales (Gorbeialdea, Asparrena, Arraia…).',
+    links: [L.gorbeiaPermisos, L.euskadiMedio],
   },
   Galicia: {
-    note: 'Consulta montes de la Xunta y ordenanzas municipales.',
-    links: [L.xuntaMedio],
+    note: 'Coutos de CMVMC vía MycoGalicia y ordenanzas municipales; montes de la Xunta.',
+    links: [L.mycoGalicia, L.xuntaMedio],
   },
   'Galicia / Castilla y León': {
     note: 'Zona limítrofe: puede aplicar normativa gallega y/o castellanoleonesa.',
-    links: [L.xuntaMedio, L.micologiaCyl, L.jcylMicologia],
+    links: [L.xuntaMedio, L.mycoGalicia, L.micologiaCyl, L.jcylMicologia],
   },
   Asturias: {
     note: 'ENP y montes del Principado. Picos de Europa: Parque Nacional.',
@@ -695,15 +1101,15 @@ const BY_REGION: Record<string, ZoneResourcePack> = {
     links: [L.guadarrama, L.madridMedio, L.micologiaCyl, L.jcylMicologia],
   },
   Andalucía: {
-    note: 'Junta de Andalucía · montes y ENP.',
-    links: [L.juntaAndalucia],
+    note: 'Junta de Andalucía · montes y ENP. Varios ayuntamientos (Loja, Baza, Júzcar…) exigen autorización municipal.',
+    links: [L.juntaAndalucia, L.bazaOrdenanza],
   },
   'Comunidad Valenciana': {
     note: 'Hasta ciertos kilos puede no requerir autorización forestal; verifica ENP y GVA.',
     links: [L.gvaMedio],
   },
   'Comunitat Valenciana': {
-    note: 'Normativa GVA y parques naturales.',
+    note: 'Normativa GVA y parques naturales (mismo marco que Comunidad Valenciana).',
     links: [L.gvaMedio],
   },
   Extremadura: {
@@ -723,7 +1129,7 @@ const BY_REGION: Record<string, ZoneResourcePack> = {
     links: [L.balearsMedio],
   },
   'Illes Balears': {
-    note: 'Govern Illes Balears · medi ambient.',
+    note: 'Govern Illes Balears · medi ambient (mismo marco que Islas Baleares).',
     links: [L.balearsMedio],
   },
   Canarias: {
@@ -830,10 +1236,40 @@ function heuristicPack(zone: {
       links: [L.permisosRioCea, L.micologiaCylExpedicion, L.micologiaCylVisor, L.jcylMicologia],
     }
   }
-  if (b.includes('irati')) {
+  if (b.includes('irati') || b.includes('aezkoa') || b.includes('salazar')) {
     return {
-      note: 'Selva de Irati: normas forales y del monte.',
-      links: [L.iratiInfo, L.navarraMedio],
+      note: 'Irati / valles navarros: acotados de junta y normas forales.',
+      links: [L.iratiInfo, L.aezkoaPermisos, L.navarraSetas, L.navarraMedio],
+    }
+  }
+  if (b.includes('ultzama')) {
+    return {
+      note: 'Parque Micológico Ultzama.',
+      links: [L.ultzamaPermisos, L.navarraSetas],
+    }
+  }
+  if (b.includes('gorbeia') || b.includes('gorbeialdea')) {
+    return {
+      note: 'Gorbeialdea / Gorbeia: parque micológico comarcal.',
+      links: [L.gorbeiaPermisos, L.euskadiMedio],
+    }
+  }
+  if (b.includes('mycogalicia') || b.includes('couto') || b.includes('beade') || b.includes('matama')) {
+    return {
+      note: 'Coutos gallegos MycoGalicia / CMVMC.',
+      links: [L.mycoGalicia, L.xuntaMedio],
+    }
+  }
+  if (b.includes('alt pirineu') || b.includes('viros') || b.includes('esterri')) {
+    return {
+      note: 'Alt Pirineu: acotados con tiquet diario.',
+      links: [L.altPirineuRegulacio, L.gencatBolets],
+    }
+  }
+  if (b.includes('maestrazgo')) {
+    return {
+      note: 'Maestrazgo (Teruel): pases comarcales de setas.',
+      links: [L.maestrazgoPases, L.maestrazgoInfo, L.aragonGov],
     }
   }
   if (b.includes('picos de europa') || b.includes('valdeon') || b.includes('liebana')) {

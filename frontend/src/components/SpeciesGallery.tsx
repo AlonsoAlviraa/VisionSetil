@@ -1,4 +1,7 @@
-/** Multi-photo gallery with lightbox — SpeciesImage cascade + a11y (D-06). U5: attribution. */
+/** Multi-photo gallery with lightbox — SpeciesImage cascade + a11y (D-06). U5: attribution.
+ * Multi-photo upgrades: open-license role-tagged extras from speciesGalleryExtras.json
+ * merge after local/API frames so thin packs still show many distinct views.
+ */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
@@ -14,6 +17,10 @@ import {
   hasAttributionMeta,
   normalizeAttributionMeta,
 } from '../lib/speciesAttribution'
+import {
+  getGalleryExtras,
+  mergeGalleryWithExtras,
+} from '../lib/speciesGalleryExtras'
 import { SpeciesImage } from './SpeciesImage'
 import { ImageAttribution, type ImageAttributionMeta } from './ui/ImageAttribution'
 
@@ -58,7 +65,8 @@ async function buildStaticGallery(slug: string): Promise<GalleryItem[]> {
     url: heroUrl,
     thumb_url: thumb,
   })
-  for (let i = 1; i <= 4; i++) {
+  // Probe more local gallery slots when present (thin packs often only have 01)
+  for (let i = 1; i <= 8; i++) {
     const url = galleryImageUrl(slug, i)
     if (await probeImage(url)) {
       items.push({ role: 'gallery', url, thumb_url: url })
@@ -123,7 +131,26 @@ async function fetchGallery(
 
   const catalogMeta = attributionFromCatalog(scientificName || slug)
   const meta = coalesceAttribution(apiMeta, fileMeta, catalogMeta)
-  const items = apiItems ?? staticItems ?? []
+  const baseItems = apiItems ?? staticItems ?? []
+
+  // Multi-photo upgrade: append open-license role-tagged extras (pores/gills/habitat/etc.)
+  // so thin local packs (gallery/01 only) still show many different photos.
+  const extras = getGalleryExtras(slug)
+  const items = mergeGalleryWithExtras(
+    baseItems,
+    extras,
+    (p) => ({
+      role: p.role || 'gallery',
+      url: p.url,
+      thumb_url: p.url,
+      license: p.license,
+      creator: p.creator,
+      attribution_text: p.attribution_text,
+      source: p.source,
+      source_url: p.source_url,
+    }),
+    { maxTotal: 16 },
+  )
 
   // Stamp hero/gallery items with resolved meta when they lack their own
   if (meta && items.length) {

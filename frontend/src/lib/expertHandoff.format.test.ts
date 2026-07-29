@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   buildExpertHandoff,
+  buildLookalikeDiagnostics,
   formatHandoffSummary,
   HAND_OFF_DISCLAIMER,
 } from './expertHandoff'
@@ -42,5 +43,41 @@ describe('formatHandoffSummary', () => {
     expect(text).toContain('cap, gills')
     expect(text.toLowerCase()).not.toMatch(/segura para comer|safe to eat|puedes comer/)
     expect(text).toMatch(/No es permiso de consumo/i)
+  })
+
+  it('packages lookalike critical_views for mapped pairs (caesarea↔phalloides)', () => {
+    const draft = buildExpertHandoff({
+      result: baseResult({
+        predictions: [
+          { species: 'Amanita caesarea', confidence: 0.55, risk_label: 'unknown_or_risky' },
+        ],
+        dangerous_lookalikes: ['Amanita phalloides'],
+      }),
+      viewTypes: ['habitat'],
+    })
+    expect(draft.lookalike_diagnostics?.length).toBeGreaterThan(0)
+    const d = draft.lookalike_diagnostics!.find((x) => /phalloides/i.test(x.mate))
+    expect(d).toBeTruthy()
+    expect(d!.critical_views).toContain('gills')
+    expect(d!.missing_critical_views).toContain('gills')
+    const text = formatHandoffSummary(draft)
+    expect(text).toMatch(/Diagnóstico multi-vista|vistas discriminantes/i)
+    expect(text.toLowerCase()).toMatch(/gills/)
+    expect(text.toLowerCase()).not.toMatch(/permiso de consumo.*otorgado|safe to eat/)
+  })
+})
+
+describe('buildLookalikeDiagnostics', () => {
+  it('returns empty critical_views when pair not in map', () => {
+    const diags = buildLookalikeDiagnostics(
+      baseResult({
+        predictions: [{ species: 'Trametes versicolor', confidence: 0.9 }],
+        dangerous_lookalikes: ['Boletus edulis'],
+      }),
+      [],
+    )
+    expect(diags).toHaveLength(1)
+    expect(diags[0].critical_views).toEqual([])
+    expect(diags[0].pair_id).toBeNull()
   })
 })

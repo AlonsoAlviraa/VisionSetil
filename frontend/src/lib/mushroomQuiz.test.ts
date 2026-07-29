@@ -4,11 +4,14 @@ import {
   DAILY_QUIZ_SECONDS,
   QUIZ_OPTION_COUNT,
   QUIZ_SECONDS,
+  QUIZ_SEASON_OPTIONS,
   buildDailyChallenge,
   buildFoodRound,
+  buildLookalikeRound,
   buildNameRound,
   buildPhotoRound,
   buildQuizPool,
+  buildSeasonRound,
   dailyModeForRound,
   dailySeed,
   dayKey,
@@ -18,6 +21,7 @@ import {
   scoreAnswer,
   writeDailyBest,
 } from './mushroomQuiz'
+import { loadSpeciesCatalog } from '../data/speciesCatalog'
 import { foodQualityStats } from './foodQuality'
 
 describe('mushroomQuiz with documented food quality', () => {
@@ -54,6 +58,75 @@ describe('mushroomQuiz with documented food quality', () => {
     expect(n.options).toHaveLength(QUIZ_OPTION_COUNT)
     expect(p.options).toHaveLength(QUIZ_OPTION_COUNT)
     expect(n.subject.taxon).toBe(n.correctId)
+  })
+
+  it('daily rotation includes lookalike and season modes', () => {
+    const modes = [0, 1, 2, 3, 4].map(dailyModeForRound)
+    expect(modes).toContain('lookalike')
+    expect(modes).toContain('food')
+    expect(modes).toContain('season')
+  })
+
+  it('builds lookalike rounds from curated pairs after catalog load', async () => {
+    await loadSpeciesCatalog()
+    const r = buildLookalikeRound(pool, () => 0.33)
+    expect(r.mode).toBe('lookalike')
+    expect(r.options.length).toBe(QUIZ_OPTION_COUNT)
+    expect(r.why.length).toBeGreaterThan(3)
+    expect(r.options.some((o) => o.taxon === r.correctId)).toBe(true)
+    expect(r.subject.taxon).not.toBe(r.mate.taxon)
+    // critical_views array always present; classic map pairs often populate it
+    expect(Array.isArray(r.critical_views)).toBe(true)
+  })
+
+  it('lookalike rounds attach pair critical_views when diagnostic map has the pair', async () => {
+    await loadSpeciesCatalog()
+    // Deterministic: try several seeds until we hit a mapped classic pair
+    let found = false
+    for (let seed = 0; seed < 40; seed++) {
+      const r = buildLookalikeRound(pool, () => (seed * 0.017 + 0.11) % 1)
+      if (r.critical_views.length > 0) {
+        expect(r.critical_views).toContain('gills')
+        expect(r.pair_id).toBeTruthy()
+        expect(r.why.toLowerCase()).not.toMatch(/permiso de consumo|safe to eat/)
+        found = true
+        break
+      }
+    }
+    expect(found).toBe(true)
+  })
+
+  it('builds season rounds as educational phenology (never harvest calendar)', async () => {
+    await loadSpeciesCatalog()
+    const r = buildSeasonRound(pool, () => 0.22)
+    expect(r.mode).toBe('season')
+    expect(r.options).toHaveLength(QUIZ_SEASON_OPTIONS.length)
+    expect(r.acceptedIds.length).toBeGreaterThan(0)
+    expect(r.prompt.toLowerCase()).toMatch(/educativ|no es calendario|recolecci/)
+    expect(r.prompt.toLowerCase()).not.toMatch(/safe to eat|permiso de consumo/)
+    const ok = scoreAnswer(r, r.acceptedIds[0], 10, false)
+    expect(ok.correct).toBe(true)
+    const wrongId = QUIZ_SEASON_OPTIONS.map((o) => o.id).find((id) => !r.acceptedIds.includes(id))
+    if (wrongId) {
+      expect(scoreAnswer(r, wrongId, 10, false).correct).toBe(false)
+    }
+  })
+
+  it('lookalike prompt framing is educational / no consumption', async () => {
+    await loadSpeciesCatalog()
+    const r = buildLookalikeRound(pool, () => 0.1)
+    expect(r.prompt.toLowerCase()).toMatch(/educaci[oó]n|no consumo/)
+    // Correct answer is a curated mate taxon string, not free text invention
+    expect(typeof r.correctId).toBe('string')
+    expect(r.correctId.split(' ').length).toBeGreaterThanOrEqual(2)
+  })
+
+  it('food pool never invents comestible without sources', () => {
+    const p = buildQuizPool()
+    for (const s of p.filter((x) => x.food_class === 'comestible')) {
+      expect(s.sources.length).toBeGreaterThan(0)
+      expect(s.sources.join(' ')).not.toMatch(/invent|fake|placeholder/i)
+    }
   })
 
   it('scores food answers', () => {

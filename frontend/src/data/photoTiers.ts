@@ -54,7 +54,7 @@ export const PHOTO_TIER_T1: readonly string[] = [
   'Chlorophyllum molybdites',
   'Clitocybe nebularis',
   'Clitocybe rivulosa',
-  'Coprinopsis atramentaria',
+  'Coprinus atramentarius',
   'Cortinarius orellanus',
   'Cortinarius rubellus',
   'Cortinarius speciosissimus',

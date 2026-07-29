@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { stackBadgeEs, stackModeFromModelStack } from './modelStackLabel'
+import { stackBadge, stackBadgeEs, stackModeFromModelStack } from './modelStackLabel'
 import type { ModelStack } from '../api/types'
 
 const mockStack: ModelStack = {
@@ -25,6 +25,12 @@ describe('modelStackLabel (Wave D)', () => {
   it('detects real backends as loaded', () => {
     expect(stackModeFromModelStack(realStack)).toBe('loaded')
     expect(stackBadgeEs(realStack).label).toMatch(/cargado/i)
+    expect(stackBadge(realStack, 'en').label.toLowerCase()).toMatch(/loaded/)
+  })
+
+  it('returns English stack labels under en locale', () => {
+    expect(stackBadge(mockStack, 'en').label.toLowerCase()).toMatch(/demo|mock/)
+    expect(stackBadge(mockStack, 'en').hint.toLowerCase()).not.toMatch(/sin pesos/)
   })
 
   it('detects mixed stacks', () => {

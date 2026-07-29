@@ -66,4 +66,15 @@ describe('lookalike studio', () => {
     expect(peers.length).toBeGreaterThan(0)
     expect(peers.every((p) => p.taxon !== 'Amanita phalloides')).toBe(true)
   })
+
+  it('SSOT catalog lookalikes prefer curated mates for deadly taxa', async () => {
+    await loadSpeciesCatalog()
+    const peers = suggestStudioPeers('Amanita phalloides', 8)
+    const taxa = peers.map((p) => p.taxon)
+    // Expanded SSOT includes citrina / vaginata educational confusions
+    expect(taxa.some((t) => /citrina|vaginata|caesarea|volvopluteus/i.test(t))).toBe(true)
+    const pairs = availableClassicPairs()
+    expect(pairs.some((p) => p.id === 'phalloides-citrina')).toBe(true)
+    expect(pairs.some((p) => p.id === 'gambosa-inocybe')).toBe(true)
+  })
 })

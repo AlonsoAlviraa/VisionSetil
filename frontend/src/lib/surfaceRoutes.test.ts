@@ -30,7 +30,9 @@ const SURFACES: Array<{ name: string; path: string; pageHint: string }> = [
   { name: 'Quiz game', path: '/reto', pageHint: 'QuizGamePage' },
   { name: 'Setadle hub', path: '/setadle', pageHint: 'SetadlePage' },
   { name: 'Setadle mode', path: '/setadle/:mode', pageHint: 'SetadlePage' },
+  { name: 'Mushroom Wordle', path: '/wordle', pageHint: 'MushroomWordlePage' },
   { name: 'ML dashboard', path: '/ml', pageHint: 'MlDashboardPage' },
+  { name: 'Beta feedback', path: '/beta-feedback', pageHint: 'BetaFeedbackPage' },
   { name: 'Not found', path: '*', pageHint: 'NotFoundPage' },
 ]
 

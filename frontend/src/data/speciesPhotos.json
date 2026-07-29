@@ -1,6 +1,6 @@
 {
   "version": "3.0.0",
-  "generated": "2026-07-23",
+  "generated": "2026-07-27",
   "policy": "open-license mycology photos; orientation only — never consumption",
   "photos": {
     "agaricus arvensis": {
@@ -33,10 +33,12 @@
     },
     "agaricus campestris": {
       "taxon": "Agaricus campestris",
-      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/613392795/original.jpg",
-      "provider": "gbif",
-      "license": "http://creativecommons.org/licenses/by/4.0/",
-      "slug": "agaricus-campestris"
+      "url": "https://upload.wikimedia.org/wikipedia/commons/f/f2/2010-08-07_Agaricus_campestris_cropped.jpg",
+      "provider": "wikipedia_en",
+      "license": "CC BY-SA 3.0",
+      "slug": "agaricus-campestris",
+      "creator": "Andreas Kunze",
+      "attribution_text": "Andreas Kunze / Wikimedia Commons / CC BY-SA 3.0"
     },
     "agaricus cupreobrunneus": {
       "taxon": "Agaricus cupreobrunneus",
@@ -201,9 +203,9 @@
     },
     "amanita caesarea": {
       "taxon": "Amanita caesarea",
-      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/673503189/original.jpg",
-      "provider": "gbif",
-      "license": "http://creativecommons.org/licenses/by/4.0/",
+      "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Amanita_caesarea_2010_G1.jpg",
+      "provider": "wikimedia_commons",
+      "license": "CC BY-SA",
       "slug": "amanita-caesarea"
     },
     "amanita ceciliae": {
@@ -474,17 +476,22 @@
     },
     "boletus aereus": {
       "taxon": "Boletus aereus",
-      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/621149268/original.jpg",
-      "provider": "gbif",
-      "license": "http://creativecommons.org/licenses/by/4.0/",
-      "slug": "boletus-aereus"
+      "url": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Bronze_Roehrling.jpg",
+      "provider": "wikipedia_en",
+      "license": "Copyrighted free use",
+      "slug": "boletus-aereus",
+      "creator": "Achim Bollmann",
+      "attribution_text": "Achim Bollmann / Copyrighted free use (DGfM Pilz des Jahres 2008; Wikimedia Commons)"
     },
     "boletus edulis": {
       "taxon": "Boletus edulis",
-      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/605242970/original.jpg",
-      "provider": "gbif",
-      "license": "http://creativecommons.org/publicdomain/zero/1.0/",
-      "slug": "boletus-edulis"
+      "url": "https://commons.wikimedia.org/wiki/Special:FilePath/AD2009Sep13_Boletus_edulis_01.jpg",
+      "provider": "wikipedia_en",
+      "license": "Public Domain (CC0/PD-self)",
+      "slug": "boletus-edulis",
+      "note": "Field steinpilz hero — classic porcini silhouette",
+      "creator": "Bernie (User:Wilder Kaiser / Bernie Kohl)",
+      "attribution_text": "Bernie (Wilder Kaiser) / Public Domain / Wikimedia Commons"
     },
     "boletus erythropus": {
       "taxon": "Boletus erythropus",
@@ -657,9 +664,11 @@
     "cantharellus cibarius": {
       "taxon": "Cantharellus cibarius",
       "url": "https://upload.wikimedia.org/wikipedia/commons/a/aa/2007-07-14_Cantharellus_cibarius.jpg",
-      "provider": "wikipedia_es",
-      "license": "wikipedia-page-image",
-      "slug": "cantharellus-cibarius"
+      "provider": "wikipedia_en",
+      "license": "CC BY-SA 3.0",
+      "slug": "cantharellus-cibarius",
+      "creator": "Andreas Kunze",
+      "attribution_text": "Andreas Kunze / CC BY-SA 3.0 / Wikimedia Commons"
     },
     "cantharellus cinereus": {
       "taxon": "Cantharellus cinereus",
@@ -1125,10 +1134,12 @@
     },
     "craterellus cornucopioides": {
       "taxon": "Craterellus cornucopioides",
-      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/609426859/original.jpg",
-      "provider": "gbif",
-      "license": "http://creativecommons.org/licenses/by/4.0/",
-      "slug": "craterellus-cornucopioides"
+      "url": "https://upload.wikimedia.org/wikipedia/commons/0/05/Black_trumpet_Craterellus_cornucopioides.jpg",
+      "provider": "wikipedia_en",
+      "license": "CC BY 3.0",
+      "slug": "craterellus-cornucopioides",
+      "creator": "Holger Krisp",
+      "attribution_text": "Holger Krisp / Wikimedia Commons (CC BY 3.0)"
     },
     "craterellus lutescens": {
       "taxon": "Craterellus lutescens",
@@ -1517,10 +1528,12 @@
     },
     "hydnum repandum": {
       "taxon": "Hydnum repandum",
-      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/609651828/original.jpg",
-      "provider": "gbif",
-      "license": "http://creativecommons.org/publicdomain/zero/1.0/",
-      "slug": "hydnum-repandum"
+      "url": "https://upload.wikimedia.org/wikipedia/commons/f/fa/Hydnum_repandum_semmelstoppelpilz.jpg",
+      "provider": "wikipedia_en",
+      "license": "CC BY 3.0",
+      "slug": "hydnum-repandum",
+      "creator": "Holger Krisp",
+      "attribution_text": "Holger Krisp / Wikimedia Commons / CC BY 3.0"
     },
     "hydnum rufescens": {
       "taxon": "Hydnum rufescens",
@@ -1713,10 +1726,12 @@
     },
     "imleria badia": {
       "taxon": "Imleria badia",
-      "url": "https://static.inaturalist.org/photos/590048379/large.jpg",
-      "provider": "inaturalist_obs",
-      "license": "cc-by",
-      "slug": "imleria-badia"
+      "url": "https://upload.wikimedia.org/wikipedia/commons/2/2e/Boletus_badius_JPG1.jpg",
+      "provider": "wikipedia_en",
+      "license": "CC BY-SA 3.0",
+      "slug": "imleria-badia",
+      "creator": "Jean-Pol GRANDMONT",
+      "attribution_text": "Jean-Pol GRANDMONT / Wikimedia Commons / CC BY-SA 3.0"
     },
     "infundibulicybe geotropa": {
       "taxon": "Infundibulicybe geotropa",
@@ -1888,10 +1903,12 @@
     },
     "lactarius deliciosus": {
       "taxon": "Lactarius deliciosus",
-      "url": "https://upload.wikimedia.org/wikipedia/commons/8/89/Lactarius_deliciosus.jpg",
-      "provider": "wikipedia_es",
-      "license": "wikipedia-page-image",
-      "slug": "lactarius-deliciosus"
+      "url": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Echte_Reizker_Lactarius_deliciosus.JPG",
+      "provider": "wikipedia_en",
+      "license": "CC BY 3.0",
+      "slug": "lactarius-deliciosus",
+      "creator": "Holger Krisp",
+      "attribution_text": "Holger Krisp / Wikimedia Commons (CC BY 3.0)"
     },
     "lactarius deterrimus": {
       "taxon": "Lactarius deterrimus",
@@ -2126,10 +2143,12 @@
     },
     "leccinum scabrum": {
       "taxon": "Leccinum scabrum",
-      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/611965300/original.jpg",
-      "provider": "gbif",
-      "license": "http://creativecommons.org/licenses/by/4.0/",
-      "slug": "leccinum-scabrum"
+      "url": "https://upload.wikimedia.org/wikipedia/commons/5/50/Gemeine_Birkenpilz_Leccinum_scabrum.jpg",
+      "provider": "wikipedia_en",
+      "license": "CC BY 3.0",
+      "slug": "leccinum-scabrum",
+      "creator": "Holger Krisp",
+      "attribution_text": "Holger Krisp / Wikimedia Commons / CC BY 3.0"
     },
     "leccinum versipelle": {
       "taxon": "Leccinum versipelle",
@@ -2343,10 +2362,12 @@
     },
     "macrolepiota procera": {
       "taxon": "Macrolepiota procera",
-      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/650351338/original.jpg",
-      "provider": "gbif",
-      "license": "http://creativecommons.org/licenses/by/4.0/",
-      "slug": "macrolepiota-procera"
+      "url": "https://upload.wikimedia.org/wikipedia/commons/c/cf/Parasol-Macrolepiota-procera.jpg",
+      "provider": "wikipedia_en",
+      "license": "CC BY 3.0",
+      "slug": "macrolepiota-procera",
+      "creator": "Holger Krisp",
+      "attribution_text": "Holger Krisp / Wikimedia Commons / CC BY 3.0"
     },
     "marasmius oreades": {
       "taxon": "Marasmius oreades",
@@ -2427,10 +2448,12 @@
     },
     "morchella esculenta": {
       "taxon": "Morchella esculenta",
-      "url": "https://static.inaturalist.org/photos/129041775/large.jpeg",
-      "provider": "inaturalist_obs",
-      "license": "cc-by",
-      "slug": "morchella-esculenta"
+      "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Speise-Morchel_Morchella_esculenta.jpg",
+      "provider": "wikipedia_en",
+      "license": "CC BY 3.0",
+      "slug": "morchella-esculenta",
+      "creator": "Holger Krisp",
+      "attribution_text": "Holger Krisp / Wikimedia Commons (CC BY 3.0)"
     },
     "morchella importuna": {
       "taxon": "Morchella importuna",
@@ -2630,9 +2653,9 @@
     },
     "pleurotus ostreatus": {
       "taxon": "Pleurotus ostreatus",
-      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/605179412/original.jpg",
-      "provider": "gbif",
-      "license": "http://creativecommons.org/licenses/by/4.0/",
+      "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Pleurotus_ostreatus_JPG1.jpg",
+      "provider": "wikimedia_commons",
+      "license": "CC BY-SA",
       "slug": "pleurotus-ostreatus"
     },
     "pleurotus pulmonarius": {
@@ -3232,10 +3255,12 @@
     },
     "suillus luteus": {
       "taxon": "Suillus luteus",
-      "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/12823339/large.jpeg",
-      "provider": "inaturalist",
-      "license": "cc-by",
-      "slug": "suillus-luteus"
+      "url": "https://commons.wikimedia.org/wiki/Special:FilePath/2025-10-15_D500-1030_Achim-Lammerts_Suillus-luteus.jpg",
+      "provider": "wikipedia_en",
+      "license": "CC BY-SA 4.0",
+      "slug": "suillus-luteus",
+      "creator": "Achim Lammerts (Syntaxys)",
+      "attribution_text": "© Achim Lammerts (Syntaxys) / Wikimedia Commons (CC BY-SA 4.0)"
     },
     "suillus mediterraneensis": {
       "taxon": "Suillus mediterraneensis",

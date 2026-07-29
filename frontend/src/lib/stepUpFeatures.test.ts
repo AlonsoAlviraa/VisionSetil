@@ -1,11 +1,15 @@
 import { describe, expect, it } from 'vitest'
 import {
+  FULL_PACKET_PHOTOS,
+  RECOMMENDED_MIN_FOR_FIELD_ID,
   assessMultiViewReadiness,
+  multiViewQualityHint,
   buildViewTypesOrder,
   CANONICAL_VIEWS,
   nextCameraSlot,
   orderedSlotKeys,
   resolveCameraTargetSlot,
+  progressiveMultiViewCoach,
 } from './multiViewSlots'
 import { hasHighRiskLookalike, lookalikeSummary, rankLookalikes } from './lookalikeRisk'
 import {
@@ -101,6 +105,126 @@ describe('multiViewSlots guided capture', () => {
     expect(both.missingRequired).toEqual([])
     expect(both.warningCodes).toContain('missing_habitat')
     expect(both.warningCodes).toContain('missing_detail')
+  })
+
+  it('bench-informed quality hints for 1 vs 2 vs 4 photos', () => {
+    expect(RECOMMENDED_MIN_FOR_FIELD_ID).toBe(2)
+    expect(FULL_PACKET_PHOTOS).toBe(4)
+    expect(multiViewQualityHint(1, 'es')).toMatch(/Una sola foto/i)
+    expect(multiViewQualityHint(2, 'es')).toMatch(/Buen comienzo/i)
+    expect(multiViewQualityHint(4, 'en')).toMatch(/Full 4-photo/i)
+    const one = assessMultiViewReadiness({
+      gills: { fileName: 'g.jpg', previewUrl: 'blob:g' },
+    })
+    expect(one.warnings.some((w) => /Una sola foto|inferior/i.test(w))).toBe(true)
+  })
+
+  it('pre-submit soft coach flags weak packets without hard-blocking', async () => {
+    const { preSubmitMultiViewCoach, preSubmitFreeModeCoach } = await import(
+      './multiViewSlots'
+    )
+    const empty = preSubmitMultiViewCoach({})
+    expect(empty.code).toBe('empty')
+    expect(empty.needsSoftConfirm).toBe(false)
+
+    const single = preSubmitMultiViewCoach({
+      gills: { fileName: 'g.jpg', previewUrl: 'blob:g' },
+    })
+    expect(single.needsSoftConfirm).toBe(true)
+    expect(single.severity).toBe('missing_critical')
+    expect(single.confirmBodyEs.toLowerCase()).toMatch(/orientaci|nunca/)
+
+    const pair = preSubmitMultiViewCoach({
+      gills: { fileName: 'g.jpg', previewUrl: 'blob:g' },
+      front: { fileName: 'f.jpg', previewUrl: 'blob:f' },
+    })
+    expect(pair.needsSoftConfirm).toBe(false)
+    expect(pair.code).toBe('ready')
+    expect(pair.confirmBodyEn.toLowerCase()).toMatch(/never consumption|orientation/)
+
+    const freeOne = preSubmitFreeModeCoach(1)
+    expect(freeOne.needsSoftConfirm).toBe(true)
+    expect(freeOne.code).toBe('single_photo')
+    expect(freeOne.confirmBodyEs.toLowerCase()).toMatch(/modo libre|orientaci/)
+    expect(preSubmitFreeModeCoach(2).needsSoftConfirm).toBe(false)
+
+    const {
+      freeModeViewTypesHeuristic,
+      capturePacketDensity,
+      formatViewTypesShort,
+      freeModeCaptureCoachLine,
+    } = await import('./multiViewSlots')
+    expect(freeModeViewTypesHeuristic(1)).toEqual(['gills'])
+    expect(freeModeViewTypesHeuristic(2)).toEqual(['gills', 'front'])
+    expect(freeModeViewTypesHeuristic(4)).toEqual(['gills', 'front', 'habitat', 'detail'])
+    expect(freeModeViewTypesHeuristic(9)).toHaveLength(4)
+
+    // P14 capture packet density + free coach line (orientation only)
+    const weak = capturePacketDensity(['gills'], 1)
+    expect(weak.density).toBe('weak')
+    expect(weak.criticalDone).toBe(1)
+    expect(weak.missingCritical).toContain('front')
+    const ok = capturePacketDensity(['gills', 'front'], 2)
+    expect(ok.density).toBe('ok')
+    expect(ok.criticalDone).toBe(2)
+    const full = capturePacketDensity(['gills', 'front', 'habitat', 'detail'], 4)
+    expect(full.density).toBe('full')
+    expect(formatViewTypesShort(['gills', 'front'], 'en')).toMatch(/gills.*profile/i)
+    expect(formatViewTypesShort(['gills', 'front'], 'es')).toMatch(/láminas.*perfil/i)
+    const freeLine = freeModeCaptureCoachLine(1, 'es')
+    expect(freeLine.density.density).toBe('weak')
+    expect(freeLine.lineEs.toLowerCase()).toMatch(/paquete débil|nunca consumo|orientaci/)
+    expect(freeModeCaptureCoachLine(2, 'en').lineEn.toLowerCase()).toMatch(
+      /orientation|never consumption/,
+    )
+  })
+
+  it('progressive coach stages: empty → single → pair → full (soft always)', () => {
+    const empty = progressiveMultiViewCoach({})
+    expect(empty.stage).toBe(0)
+    expect(empty.code).toBe('empty')
+    expect(empty.softSubmitAllowed).toBe(false)
+    expect(empty.nextView).toBe('gills')
+    expect(empty.headlineEs.toLowerCase()).toMatch(/láminas|inferior|debajo/)
+
+    const single = progressiveMultiViewCoach({
+      gills: { fileName: 'g.jpg', previewUrl: 'blob:g' },
+    })
+    expect(single.stage).toBe(1)
+    expect(single.code).toBe('single_need_critical')
+    expect(single.softSubmitAllowed).toBe(true)
+    expect(single.nextView).toBe('front')
+    expect(single.headlineEn.toLowerCase()).toMatch(/soft submit|abstain/)
+
+    const pair = progressiveMultiViewCoach({
+      gills: { fileName: 'g.jpg', previewUrl: 'blob:g' },
+      front: { fileName: 'f.jpg', previewUrl: 'blob:f' },
+    })
+    expect(pair.stage).toBe(2)
+    expect(pair.code).toBe('pair_add_optional')
+    expect(pair.softSubmitAllowed).toBe(true)
+    expect(pair.requiredDone).toBe(2)
+
+    const almost = progressiveMultiViewCoach({
+      gills: { fileName: 'g.jpg', previewUrl: 'blob:g' },
+      front: { fileName: 'f.jpg', previewUrl: 'blob:f' },
+      habitat: { fileName: 'h.jpg', previewUrl: 'blob:h' },
+    })
+    expect(almost.stage).toBe(3)
+    expect(almost.code).toBe('almost_full')
+
+    const full = progressiveMultiViewCoach({
+      gills: { fileName: 'g.jpg', previewUrl: 'blob:g' },
+      front: { fileName: 'f.jpg', previewUrl: 'blob:f' },
+      habitat: { fileName: 'h.jpg', previewUrl: 'blob:h' },
+      detail: { fileName: 'd.jpg', previewUrl: 'blob:d' },
+    })
+    expect(full.stage).toBe(4)
+    expect(full.code).toBe('full')
+    expect(full.filled).toBe(4)
+    expect(full.nextView).toBeNull()
+    expect(full.headlineEs.toLowerCase()).toMatch(/nunca|no autoriza|consumo/)
+    expect(full.headlineEn.toLowerCase()).toMatch(/never consumption|still never/)
   })
 
   it('B-27 nextCameraSlot: missing required first, then optional', () => {
