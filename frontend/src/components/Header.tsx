@@ -50,6 +50,18 @@ const moreNavGroups: MoreNavGroup[] = [
         blurb: 'nav.blurb.lookalikes',
       },
       {
+        to: '/juegos',
+        labelKey: 'nav.games',
+        fallback: 'Juegos',
+        blurb: 'nav.blurb.games',
+      },
+      {
+        to: '/setadle',
+        labelKey: 'nav.setadle',
+        fallback: 'Setadle',
+        blurb: 'nav.blurb.setadle',
+      },
+      {
         to: '/reto',
         labelKey: 'nav.quiz',
         fallback: 'Reto',
