@@ -173,7 +173,7 @@ function AppShell() {
           </ErrorBoundary>
         </main>
         <BottomNav />
-        <footer className="footer footer--v16">
+        <footer className="footer footer--v16 footer--cn-compact">
           <div className="footer-content">
             <p className="footer-brand">{t('app.name', { defaultValue: 'VisionSetil' })}</p>
             <p>
@@ -182,6 +182,7 @@ function AppShell() {
                   'Orientación de campo, no permiso de consumo. Ante la duda, un micólogo de carne y hueso.',
               })}
             </p>
+            {/* Keep test contracts; visually hidden by CSS (bottom nav is primary) */}
             <nav className="footer-links" aria-label="Footer">
               <Link to="/identificar">{t('nav.tryIdentify', { defaultValue: 'Probar Identificar' })}</Link>
               <Link to="/enciclopedia">{t('nav.encyclopedia', { defaultValue: 'Enciclopedia' })}</Link>
@@ -219,7 +220,7 @@ function AppShell() {
             >
               {t('app.footerMultiview', {
                 defaultValue:
-                  'Multi-vista de campo: láminas · perfil · base. Más fotos sin ellas no bastan — solo orientación, nunca consumo.',
+                  'Multi-vista: láminas · perfil · base. Solo orientación, nunca consumo.',
               })}
             </p>
             <p
@@ -227,8 +228,7 @@ function AppShell() {
               data-testid="footer-index-fungorum"
             >
               {t('app.indexFungorumAttr', {
-                defaultValue:
-                  'Nomenclatura de referencia: Index Fungorum (RBG Kew) — solo nombres, nunca consumo.',
+                defaultValue: 'Nomenclatura: Index Fungorum — solo nombres.',
               })}{' '}
               <a
                 href="https://www.indexfungorum.org/"
@@ -239,7 +239,6 @@ function AppShell() {
               </a>
             </p>
             <p className="footer-meta">
-              {t('app.poweredBy', { defaultValue: 'Micología · Riesgo · Comunidad' })} ·
               v1.9.9 · {new Date().getFullYear()}
             </p>
           </div>

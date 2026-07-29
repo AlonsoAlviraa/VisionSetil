@@ -93,11 +93,15 @@ export function HomePage() {
           </div>
           <Link
             to="/identificar"
-            className="cn-btn cn-btn--primary cn-btn--lg"
+            className="cn-btn cn-btn--lg"
             data-testid="home-cta-identify"
           >
-            {t('home.ctaTryIdentify', { defaultValue: 'Probar Identificar' })}
-            <span aria-hidden="true">→</span>
+            <span>
+              {t('home.ctaTryIdentify', { defaultValue: 'Probar Identificar' })}
+            </span>
+            <span className="cn-btn__orb" aria-hidden="true">
+              ⊕
+            </span>
           </Link>
         </div>
       </section>

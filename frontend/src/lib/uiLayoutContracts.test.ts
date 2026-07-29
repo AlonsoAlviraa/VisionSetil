@@ -44,7 +44,7 @@ describe('UI layout contracts (marketing + lookalike)', () => {
     expect(home).toMatch(/to="\/enciclopedia"/)
     expect(home).toMatch(/to="\/mapa"/)
     expect(home).toMatch(/cn-home-hero/)
-    expect(home).toMatch(/cn-btn--primary/)
+    expect(home).toMatch(/cn-btn--lg/)
     expect(home).toMatch(/data-testid="home-orientation-sticky"/)
   })
 
