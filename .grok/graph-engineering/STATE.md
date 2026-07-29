@@ -6,7 +6,7 @@
 
 ## Active graph version
 
-`v1.10.3-photo-nav-audit`
+`v1.10.4-competitive-world`
 
 ## Current status
 
@@ -19,6 +19,10 @@
 | Mapa | **KEEP CURRENT** | user lock |
 | product_unlock | **BLOCKED** | false |
 | Competitive audit | **SHIPPED** | `docs/design/COMPETITIVE_AUDIT_2026.md` |
+| Top10 web + apps | **SHIPPED** | `docs/design/COMPETITIVE_TOP10_WEB_AND_APPS.md` |
+| Season strip + family guide | **SHIPPED** | Home + Enciclopedia |
+| Open study links | **SHIPPED** | Ficha → Wiki / iNat / GBIF |
+| World resources hub | **SHIPPED** | Más → 10 webs/apps |
 
 ## Audit findings (this cycle)
 

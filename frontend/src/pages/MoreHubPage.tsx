@@ -6,6 +6,7 @@ import {
   isBetaExternalForm,
   isBetaMailto,
 } from '../lib/betaFeedback'
+import { WORLD_MUSHROOM_RESOURCES } from '../lib/openStudyLinks'
 
 type Item = {
   to: string
@@ -321,6 +322,44 @@ export function MoreHubPage() {
             </section>
           ))}
         </div>
+
+        <section
+          className="more-hub-group more-hub-world"
+          data-testid="more-hub-world"
+        >
+          <h2 className="more-hub-group__title">
+            {t('more.worldTitle', {
+              defaultValue: 'Recursos del mundo',
+            })}
+          </h2>
+          <p className="more-hub-world__lead">
+            {t('more.worldLead', {
+              defaultValue:
+                'Las webs y apps de setas más usadas. Solo estudio y comparación: no copiamos sus fotos con copyright ni damos permiso de consumo.',
+            })}
+          </p>
+          <ul className="more-hub-list more-hub-world__list">
+            {WORLD_MUSHROOM_RESOURCES.map((r) => (
+              <li key={r.id}>
+                <a
+                  href={r.href}
+                  className="more-hub-list__link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-testid={`more-world-${r.id}`}
+                >
+                  <span className="more-hub-list__text">
+                    <span className="more-hub-list__label">{r.name}</span>
+                    <span className="more-hub-list__blurb">{r.blurbEs}</span>
+                  </span>
+                  <span className="more-hub-list__chev" aria-hidden="true">
+                    ↗
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
 
         <div className="more-hub-cta">
           <Link to="/identificar" className="cn-btn cn-btn--primary cn-btn--block more-hub-cta__btn">

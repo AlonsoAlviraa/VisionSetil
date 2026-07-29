@@ -9,6 +9,7 @@ import { getRiskMeta, type RiskLabel } from '../lib/riskLabels'
 import { getFoodQuality, type FoodClass, foodQualityStats } from '../lib/foodQuality'
 import { encyclopediaFoodFilterNote } from '../lib/safetyCopy'
 import { SpeciesPhotoCard } from '../components/SpeciesPhotoCard'
+import { FamilyGuideStrip } from '../components/FamilyGuideStrip'
 import { ENCYCLOPEDIA_FIRST_PAGE_SIZE } from '../data/photoTiers'
 import { buildEmptyEncyclopediaBrowseList } from '../lib/encyclopediaPopularity'
 import { EmptyState } from '../components/EmptyState'
@@ -306,6 +307,17 @@ export function EncyclopediaPage() {
           </Link>
         </div>
       </section>
+
+      {!catalogLoading && speciesCatalog.length > 0 && (
+        <FamilyGuideStrip
+          catalog={speciesCatalog}
+          onSelectFamily={(f) => {
+            setFamily(f)
+            setPage(0)
+          }}
+          maxFamilies={8}
+        />
+      )}
 
       {catalogLoading && (
         <div

@@ -5,6 +5,7 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { SpeciesImage } from '../components/SpeciesImage'
+import { SeasonalTopStrip } from '../components/SeasonalTopStrip'
 import { FREE_IDENTIFY_PER_DAY } from '../lib/entitlements'
 import { deadlyPriorityViews } from '../lib/diagnosticViews'
 
@@ -183,6 +184,10 @@ export function HomePage() {
             })}
           </p>
         </section>
+      </div>
+
+      <div className="cn-page-pad">
+        <SeasonalTopStrip limit={8} />
       </div>
 
       {/* Contract hooks for tests / freemium stats + discover links (sr-only) */}

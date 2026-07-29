@@ -19,6 +19,7 @@ import { getRiskMeta, isSevereRisk, toRiskLabel } from '../lib/riskLabels'
 import { getMushroomByScientificName } from '../data/mushroomDatabase'
 import { scientificNameToSlug } from '../lib/slug'
 import { SpeciesGallery } from '../components/SpeciesGallery'
+import { OpenStudyLinks } from '../components/OpenStudyLinks'
 import { SpeciesNameBlock } from '../components/SpeciesNameBlock'
 import { RiskChip } from '../components/RiskChip'
 import { LookalikeCompare } from '../components/LookalikeCompare'
@@ -327,6 +328,8 @@ export function SpeciesDetailPage() {
           />
         </div>
       </section>
+
+      <OpenStudyLinks taxon={scientificName} />
 
       {meta ? (
         <dl className="species-meta-grid" aria-label={t('detail.metaGrid', { defaultValue: 'Ficha rápida' })}>
