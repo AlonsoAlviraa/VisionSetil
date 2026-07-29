@@ -1,5 +1,11 @@
 # Graph evolution log
 
+## v1.12.0 — home-visual-redesign (2026-07-29)
+
+- Home visual-first: short lead, three doors, season photos; residual beta kit in `.cn-home-kit` (hidden).
+- ES/EN copy shortened; Games/Más headers compressed.
+- App + web CSS: taller heroes, less chrome noise.
+
 ## v1.11.0 — dual-app-stitch (2026-07-29)
 
 **MINOR bump:** architectural shift — dual App/Web split into two separate Vite builds.
