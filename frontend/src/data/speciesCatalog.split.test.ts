@@ -20,7 +20,7 @@ import { searchCatalogRanked } from '../lib/catalogSearch'
 import expandedJson from './speciesCatalog.json'
 
 /** Expected SSOT size from data/species_catalog/species_catalog_v2.json */
-const SSOT_COUNT = 520
+const SSOT_COUNT = 523
 const CANONICAL = new Set<string>(CANONICAL_RISK_LABELS)
 
 describe('speciesCatalog code-split loader', () => {

@@ -4,7 +4,11 @@
  * Overrides legacy atelier/global so the product looks intentional everywhere.
  */
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap');
+/* Stitch canonical: Playfair Display (headlines) + Source Serif 4 (body).
+   DM Sans removed (v1.11 — body is serif per Stitch "Nocturno Premium OLED
+   Mycology"). Material Symbols Outlined added for icon parity. */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap');
 
 /* ── Tokens ─────────────────────────────────────────────────────────────── */
 html {
@@ -15,26 +19,57 @@ html {
 html[data-theme='dark'],
 html[data-theme='light'],
 html[data-skin='campo-nocturno'] {
-  --cn-bg: #101511;
-  --cn-bg-deep: #0a0f0b;
-  --cn-surface: #1c211c;
+  /* ── Stitch "Nocturno Premium OLED Mycology" canonical tokens (v1.11) ── */
+  /* Override neutral = true OLED body background */
+  --cn-bg: #0f1410;
+  --cn-bg-deep: #0f1410;
+  /* M3 surface tiers */
+  --cn-surface: #101511;
+  --cn-surface-dim: #101511;
+  --cn-surface-bright: #353a36;
+  --cn-surface-lowest: #0a0f0b;
+  --cn-surface-low: #181d19;
   --cn-surface-high: #262b27;
   --cn-surface-highest: #313631;
-  --cn-surface-low: #181d19;
+  --cn-surface-variant: #313631;
+  /* Primary (moss) family */
   --cn-moss: #8fbc8f;
   --cn-moss-bright: #aad8a9;
   --cn-on-moss: #0e3817;
-  --cn-cream: #dfe4dd;
+  --cn-primary-fixed: #bfefbe;
+  --cn-primary-fixed-dim: #a4d2a4;
+  --cn-primary-container: #234c29;
+  --cn-on-primary-container: #a4d2a4;
+  --cn-surface-tint: #a4d2a4;
+  /* Cream accent — warm highlight on titles (text-cream in Stitch) */
+  --cn-cream: #e8dcc8;
+  --cn-on-surface: #dfe4dd;
   --cn-muted: #c2c9be;
-  --cn-outline: #424940;
+  --cn-on-surface-variant: #c2c9be;
+  /* Secondary / tertiary families */
+  --cn-secondary: #d1c5b2;
+  --cn-on-secondary: #363022;
+  --cn-secondary-container: #4d4637;
+  --cn-tertiary: #c3cfc8;
+  --cn-tertiary-container: #a8b3ad;
+  /* Outline */
+  --cn-outline: #8c9389;
   --cn-outline-soft: rgba(66, 73, 64, 0.55);
+  --cn-outline-variant: #424940;
+  /* Danger / error family */
   --cn-danger: #ffb4ab;
   --cn-danger-bg: #93000a;
+  --cn-error-container: #93000a;
+  --cn-on-error-container: #ffdad6;
+  --cn-on-error: #690005;
   --cn-warn-bg: #5c2a2a;
-  --cn-secondary: #d1c5b2;
+
+  /* Fonts — Stitch: Playfair Display (display) + Source Serif 4 (body). */
   --font-display: 'Playfair Display', Georgia, serif;
   --font-serif: 'Source Serif 4', Georgia, serif;
-  --font-sans: 'DM Sans', system-ui, sans-serif;
+  /* Kept as alias for legacy selectors that expect a sans var; points to serif
+     so the product reads as Stitch intends (no sans body font). */
+  --font-sans: 'Source Serif 4', Georgia, serif;
 
   /* App shell width = design phone canvas; grows carefully */
   --cn-shell: min(100%, 26.5rem);
@@ -42,11 +77,22 @@ html[data-skin='campo-nocturno'] {
   --cn-nav-h: 4.5rem;
   --cn-header-h: 3.25rem;
   --cn-warn-h: 1.85rem;
-  --cn-radius: 1rem;
-  --cn-radius-lg: 1.35rem;
+  /* Radii — Stitch ROUND_EIGHT: default 8px, feature 16px, hero 24px, pills full */
+  --cn-radius: 0.5rem;
+  --cn-radius-lg: 1rem;
+  --cn-radius-xl: 1.5rem;
+  --cn-radius-full: 9999px;
+  /* Spacing scale — Stitch designMd (px) */
+  --cn-space-xs: 0.25rem;
+  --cn-space-sm: 0.75rem;
+  --cn-space-base: 0.5rem;
+  --cn-space-md: 1.5rem;
+  --cn-space-lg: 2.5rem;
+  --cn-space-xl: 4rem;
+  --cn-margin-mobile: 1.25rem;
 
   --bg: var(--cn-bg);
-  --bg-gradient: #0a0f0b;
+  --bg-gradient: #0f1410;
   --surface: var(--cn-surface);
   --surface-alt: var(--cn-surface-high);
   --text: var(--cn-cream);
@@ -59,7 +105,10 @@ html[data-skin='campo-nocturno'] {
   --ink: var(--cn-cream);
   --ink-mute: var(--cn-muted);
   --cream: var(--cn-bg);
-  --glass: rgba(28, 33, 28, 0.72);
+  /* Glass — Stitch: #1A2420 at 60% + 20px backdrop blur + moss-tinted border */
+  --glass: rgba(26, 36, 32, 0.6);
+  --glass-border: rgba(143, 188, 143, 0.1);
+  --glass-blur: 20px;
   --shadow-soft: 0 4px 24px rgba(0, 0, 0, 0.4);
   --shadow-lift: 0 16px 48px rgba(0, 0, 0, 0.5);
   --radius-lg: var(--cn-radius-lg);
@@ -85,7 +134,8 @@ body,
   margin: 0;
   background: var(--cn-bg-deep) !important;
   color: var(--cn-cream) !important;
-  font-family: var(--font-sans) !important;
+  /* Stitch: body is Source Serif 4, not sans. */
+  font-family: var(--font-serif) !important;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
@@ -147,12 +197,12 @@ body {
   margin: 0 !important;
   padding: 0.4rem var(--cn-gutter) !important;
   text-align: center;
-  font-size: 0.625rem !important;
+  font-size: 0.6875rem !important;
   font-weight: 700 !important;
   letter-spacing: 0.12em !important;
   text-transform: uppercase !important;
   background: rgba(147, 0, 10, 0.92) !important;
-  color: var(--cn-danger) !important;
+  color: var(--cn-on-error-container) !important;
   border: none !important;
   border-radius: 0 !important;
   position: sticky;
@@ -709,9 +759,12 @@ button[aria-pressed='true'] {
 .cn-home-hero__title {
   margin: 0 !important;
   font-family: var(--font-display);
-  font-size: clamp(2.1rem, 9vw, 2.75rem) !important;
+  /* Stitch display-lg: 48 / 56 / 700 on desktop; scales down on phone */
+  font-size: clamp(2.1rem, 11vw, 3rem) !important;
   line-height: 1.05 !important;
-  color: #fff !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em !important;
+  color: var(--cn-cream) !important;
   text-shadow: 0 2px 18px rgba(0, 0, 0, 0.45);
 }
 
@@ -851,6 +904,144 @@ button[aria-pressed='true'] {
   font-size: 0.72rem;
   color: var(--cn-muted);
   font-weight: 600;
+}
+
+/* ── Home pixel-match additions (v1.11 — Stitch screens-b-v2/01-home) ──── */
+
+/* Hero CTA: glass pill with 48px primary-container circle orb holding a
+   filled center_focus_strong icon. */
+.cn-home-hero__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.4rem 0.35rem 1.5rem !important;
+  margin-top: 0.2rem;
+  text-decoration: none;
+  color: var(--cn-cream);
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+.cn-home-hero__cta:hover {
+  background: rgba(26, 36, 32, 0.75);
+  transform: translateY(-1px);
+}
+.cn-home-hero__cta:active {
+  transform: scale(0.97);
+}
+.cn-home-hero__cta-label {
+  white-space: nowrap;
+}
+.cn-home-hero__cta-orb {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--cn-radius-full);
+  background: var(--cn-primary-container);
+  color: var(--cn-moss-bright);
+  flex-shrink: 0;
+}
+
+/* Trust row — icon + uppercase label variant (Stitch border-t row, not pills) */
+.cn-home-trust--icons {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.85rem var(--cn-gutter);
+  margin: 0;
+  border-top: 1px solid rgba(66, 73, 64, 0.2);
+  border-bottom: 1px solid rgba(66, 73, 64, 0.2);
+}
+.cn-home-trust__item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--cn-outline);
+}
+.cn-home-trust__item--danger {
+  color: var(--cn-danger);
+}
+.cn-home-trust__label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cn-outline);
+}
+
+/* Quick access — glass card variant (centered icon + label) */
+.cn-home-quick--grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.65rem;
+}
+.cn-home-quick__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem 0.5rem;
+  text-decoration: none;
+  color: var(--cn-cream);
+  text-align: center;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+.cn-home-quick__card:hover {
+  transform: translateY(-2px);
+  background: rgba(26, 36, 32, 0.8);
+}
+.cn-home-quick__card .cn-home-quick__icon {
+  color: var(--cn-moss-bright);
+}
+.cn-home-quick__label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--cn-secondary);
+}
+
+/* Atmospheric highlight card — decorative forest icon + overlapping avatars */
+.cn-home-obs {
+  position: relative;
+  overflow: hidden;
+}
+.cn-home-obs__deco {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  opacity: 0.12;
+  pointer-events: none;
+}
+.cn-home-obs__avatars {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin: 0.75rem 0 0.4rem;
+}
+.cn-home-obs__avatar {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: var(--cn-radius-full);
+  border: 2px solid var(--cn-bg);
+  background: var(--cn-surface-high);
+  margin-left: -0.5rem;
+}
+.cn-home-obs__avatar:first-child {
+  margin-left: 0;
+}
+.cn-home-obs__avatar:nth-child(2) {
+  background: var(--cn-primary-container);
+}
+.cn-home-obs__avatar:nth-child(3) {
+  background: var(--cn-secondary-container);
+}
+.cn-home-obs__avatar-count {
+  margin-left: 0.5rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--cn-moss-bright);
 }
 
 .cn-home-contracts,
@@ -1107,15 +1298,48 @@ button[aria-pressed='true'] {
 .page-identify--cn .mv-slot,
 .page-identify--cn .multi-view-slot,
 .page-identify--cn .wizard-slot {
-  background: #141a15 !important;
+  /* Stitch: aspect-square glass-card with framing-guide dashed overlay */
+  background: var(--glass) !important;
   border: 1.5px dashed rgba(143, 188, 143, 0.35) !important;
-  border-radius: var(--cn-radius) !important;
+  border-radius: var(--cn-radius-lg) !important;
   min-height: 7rem;
+  aspect-ratio: 1 / 1;
+  position: relative;
 }
 
+/* Wizard grid: 2x2 per Stitch multi-vista layout */
+.page-identify--cn .multi-view-grid,
+.page-identify--cn .mv-grid,
+.page-identify--cn .wizard-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 0.75rem !important;
+}
+
+/* Metadata chips — glass pills with icon */
+.page-identify--cn .identify-metadata-chip,
+.page-identify--cn .metadata-chip {
+  background: var(--glass) !important;
+  border: 1px solid rgba(143, 188, 143, 0.2) !important;
+  border-radius: var(--cn-radius-full) !important;
+  padding: 0.4rem 0.85rem !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* Primary analyze action — moss fill, rounded-2xl, shine-sweep */
 .page-identify--cn .analyze-actions .btn-atelier--primary,
 .page-identify--cn button[data-testid='identify-analyze'] {
   width: 100%;
+  background: var(--cn-moss-bright) !important;
+  color: var(--cn-on-moss) !important;
+  border: none !important;
+  border-radius: var(--cn-radius-lg) !important;
+  font-weight: 700 !important;
+  padding: 1rem !important;
+  position: relative;
+  overflow: hidden;
 }
 
 .risk-chip,
@@ -1137,6 +1361,225 @@ button[aria-pressed='true'] {
   display: grid !important;
   grid-template-columns: 1fr 1fr !important;
   gap: 0.6rem !important;
+}
+
+/* v1.11: family-banded galleries (First-Nature pattern) */
+.ency-family-section {
+  margin-bottom: 1.5rem;
+}
+.ency-family-section__title {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--cn-moss-bright);
+  margin: 0 0 0.6rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--glass-border);
+}
+.ency-family-section__title .cn-icon {
+  color: var(--cn-moss);
+  font-size: 18px;
+}
+.ency-family-section__count {
+  margin-left: auto;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--cn-muted);
+  font-family: var(--font-serif);
+}
+
+/* Group-by-family toggle button */
+.ency-group-toggle-row {
+  margin: 0.75rem 0;
+}
+.ency-group-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  border-radius: var(--cn-radius-full);
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  color: var(--cn-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.ency-group-toggle:hover {
+  background: rgba(26, 36, 32, 0.8);
+  color: var(--cn-cream);
+}
+.ency-group-toggle--active {
+  background: var(--cn-primary-container);
+  border-color: rgba(143, 188, 143, 0.3);
+  color: var(--cn-moss-bright);
+}
+
+/* ── Dichotomous key (v1.11 — educational MushroomExpert-lite) ─────────── */
+.dichotomous-key {
+  padding: 1.25rem;
+  border-radius: var(--cn-radius-xl);
+  margin: 1rem 0;
+}
+.dichotomous-key__head {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+.dichotomous-key__head .cn-icon {
+  color: var(--cn-moss-bright);
+  flex-shrink: 0;
+}
+.dichotomous-key__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+}
+.dichotomous-key__subtitle {
+  margin: 0.15rem 0 0;
+  font-size: 0.85rem;
+  color: var(--cn-muted);
+}
+.dichotomous-key__policy {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0 0 1rem;
+  padding: 0.6rem 0.85rem;
+  border-radius: var(--cn-radius);
+  background: rgba(147, 0, 10, 0.25);
+  color: var(--cn-on-error-container);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+.dichotomous-key__policy .cn-icon {
+  color: var(--cn-danger);
+  font-size: 16px;
+}
+.dichotomous-key__question {
+  margin-bottom: 1.1rem;
+}
+.dichotomous-key__question-title {
+  margin: 0 0 0.25rem;
+  font-family: var(--font-serif);
+  font-size: 0.98rem;
+  color: var(--cn-cream);
+  font-weight: 600;
+}
+.dichotomous-key__question-hint {
+  margin: 0 0 0.6rem;
+  font-size: 0.8rem;
+  color: var(--cn-muted);
+  line-height: 1.4;
+}
+.dichotomous-key__options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.dichotomous-key__option {
+  padding: 0.55rem 1.1rem;
+  border-radius: var(--cn-radius-full);
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  color: var(--cn-muted);
+  font-size: 0.82rem;
+  font-weight: 600;
+  font-family: var(--font-serif);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+.dichotomous-key__option:hover {
+  color: var(--cn-cream);
+  transform: translateY(-1px);
+}
+.dichotomous-key__option--active {
+  background: var(--cn-moss);
+  border-color: var(--cn-moss);
+  color: var(--cn-on-moss);
+}
+.dichotomous-key__results {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--glass-border);
+}
+.dichotomous-key__results-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+.dichotomous-key__results-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  color: var(--cn-moss-bright);
+}
+.dichotomous-key__reset {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.75rem;
+  padding: 0.4rem 0.8rem !important;
+}
+.dichotomous-key__empty {
+  color: var(--cn-muted);
+  font-size: 0.85rem;
+  font-style: italic;
+}
+.dichotomous-key__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.dichotomous-key__item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: var(--cn-radius-lg);
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+}
+.dichotomous-key__item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+  min-width: 0;
+}
+.dichotomous-key__item-name {
+  font-family: var(--font-serif);
+  font-size: 0.9rem;
+  color: var(--cn-cream);
+}
+.dichotomous-key__item-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: var(--cn-radius-full);
+  background: var(--cn-primary-container);
+  color: var(--cn-moss-bright);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.dichotomous-key__results-note {
+  margin: 0.85rem 0 0;
+  font-size: 0.76rem;
+  color: var(--cn-muted);
+  font-style: italic;
+  line-height: 1.4;
 }
 
 .page-encyclopedia--cn .species-photo-card {
@@ -1668,6 +2111,86 @@ a {
   line-height: 1.4;
 }
 
+/* Home residual beta kit (privacy / install / diff) */
+.cn-home-aux {
+  margin: 0.85rem 0 1rem;
+}
+
+.home-privacy-strip {
+  padding: 0.75rem 0.9rem;
+  border-radius: var(--cn-radius);
+  background: rgba(143, 188, 143, 0.08);
+  border: 1px solid rgba(143, 188, 143, 0.22);
+  font-size: 0.85rem;
+  color: var(--cn-muted);
+  line-height: 1.4;
+}
+
+.mkt-diff__title {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+}
+
+.mkt-diff__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.mkt-diff__list li {
+  padding: 0.75rem 0.85rem;
+  border-radius: var(--cn-radius);
+  background: var(--cn-surface);
+  border: 1px solid var(--cn-outline-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.mkt-diff__list strong {
+  color: var(--cn-moss-bright);
+  font-size: 0.9rem;
+}
+
+.mkt-diff__list span {
+  font-size: 0.82rem;
+  color: var(--cn-muted);
+  line-height: 1.35;
+}
+
+.home-install-guide {
+  padding: 1rem !important;
+}
+
+.home-install-guide h2 {
+  margin: 0 0 0.35rem;
+  font-size: 1.05rem;
+  font-family: var(--font-display);
+}
+
+.home-install-guide p {
+  margin: 0.25rem 0;
+  font-size: 0.85rem;
+  color: var(--cn-muted);
+  line-height: 1.4;
+}
+
+.home-install-guide__url a {
+  color: var(--cn-moss-bright) !important;
+  word-break: break-all;
+}
+
+.home-beta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
 .app--mode-web .seasonal-top-strip__grid {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.85rem;
@@ -1728,4 +2251,211 @@ a {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* ── Stitch utility layer (v1.11) ──────────────────────────────────────── */
+/* Reusable primitives matching screens-b-v2 so JSX can compose the design
+   without inline Tailwind. These are additive — they do not override existing
+   component rules unless the Stitch class is explicitly applied. */
+
+/* Atmospheric glassmorphism card — the core surface of the night skin. */
+.cn-glass,
+.glass-card {
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--cn-radius-lg);
+}
+
+/* Warm cream highlight text — Stitch "text-cream" on hero/result titles. */
+.cn-text-cream,
+.text-cream {
+  color: var(--cn-cream) !important;
+}
+
+/* Material Symbols Outlined icon helper.
+   Usage: <span className="cn-icon" aria-hidden="true">center_focus_strong</span>
+   Fill via .cn-icon--filled (FILL 1). */
+.cn-icon {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  font-size: 24px;
+}
+.cn-icon--filled {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+.cn-icon--lg {
+  font-size: 32px;
+}
+.cn-icon--sm {
+  font-size: 18px;
+}
+
+/* Framing guide overlay for multi-view capture slots (dashed moss border). */
+.cn-framing-guide,
+.framing-guide {
+  border: 1.5px dashed rgba(143, 188, 143, 0.4);
+  border-radius: var(--cn-radius-lg);
+}
+
+/* Mesh background for atmospheric panels. */
+.cn-mesh-bg,
+.mesh-bg {
+  background: radial-gradient(circle at 50% 50%, #1a2420, #121412);
+}
+
+/* Safe-area padding for notched devices (bottom nav, FABs). */
+.cn-pb-safe,
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Pill shape (chips, status, CTAs). */
+.cn-pill {
+  border-radius: var(--cn-radius-full);
+}
+
+/* Shine-sweep animation for primary CTA buttons (Identify "Analizar"). */
+@keyframes cn-shine-sweep {
+  0% {
+    transform: translateX(-120%);
+  }
+  60%,
+  100% {
+    transform: translateX(120%);
+  }
+}
+.cn-shine-sweep {
+  position: relative;
+  overflow: hidden;
+}
+.cn-shine-sweep::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.18) 50%,
+    transparent 70%
+  );
+  animation: cn-shine-sweep 2.4s ease-in-out infinite;
+}
+
+/* ── ResultCard pixel-match (v1.11 — Stitch screens-b-v2/03-resultado) ──── */
+/* Applied as additive glass layer over the existing safety-critical JSX; the
+   component logic (decisions, lookalikes, open-set) is untouched. */
+
+.result-card.result-card--layered {
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--cn-radius-xl);
+  padding: 1.25rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decision banner — glass pill "Open-set aceptado / rechazado" */
+.decision-banner {
+  border-radius: var(--cn-radius-full);
+  background: var(--glass) !important;
+  border: 1px solid var(--glass-border) !important;
+  padding: 0.85rem 1.25rem !important;
+}
+.decision-banner.accepted .decision-banner__title {
+  color: var(--cn-moss-bright);
+}
+/* Pulsing primary dot for accepted / open-set accepted */
+.decision-banner.accepted::before {
+  content: '';
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: var(--cn-radius-full);
+  background: var(--cn-moss-bright);
+  margin-right: 0.5rem;
+  animation: cn-pulse-dot 2s ease-in-out infinite;
+  vertical-align: middle;
+}
+@keyframes cn-pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* Risk chip — error-container per Stitch */
+.danger-callout--deadly,
+.danger-callout--compact {
+  background: rgba(147, 0, 10, 0.9) !important;
+  color: var(--cn-on-error-container) !important;
+  border: 1px solid rgba(147, 0, 10, 0.95) !important;
+  border-radius: var(--cn-radius-lg) !important;
+  padding: 0.85rem 1.1rem !important;
+}
+
+/* Prediction items — glass-card rows */
+.prediction-item {
+  background: var(--glass) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: var(--cn-radius-lg) !important;
+  padding: 0.75rem !important;
+  gap: 0.75rem !important;
+}
+.prediction-item.top-match {
+  border-color: rgba(143, 188, 143, 0.2) !important;
+}
+
+/* Prediction species name — italic cream per Stitch */
+.prediction-info .species-name-block__scientific {
+  color: var(--cn-cream) !important;
+  font-style: italic;
+}
+
+/* Lookalike items — glass-card rows with 96px-ish thumb */
+.lookalike-item {
+  background: var(--glass) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: var(--cn-radius-lg) !important;
+  padding: 0.75rem !important;
+}
+
+/* Next-actions grid — 2 cols (Studio + community) */
+.lookalike-next-actions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.65rem;
+  margin-top: 0.85rem;
+}
+@media (max-width: 380px) {
+  .lookalike-next-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Primary CTA buttons — moss fill, rounded-2xl */
+.result-card .btn-atelier--primary {
+  background: var(--cn-moss) !important;
+  color: var(--cn-on-moss) !important;
+  border: none !important;
+  border-radius: var(--cn-radius-lg) !important;
+  font-weight: 700 !important;
+}
+.result-card .btn-atelier--ghost {
+  background: var(--glass) !important;
+  color: var(--cn-cream) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: var(--cn-radius-lg) !important;
 }

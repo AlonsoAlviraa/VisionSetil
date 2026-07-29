@@ -1,46 +1,39 @@
 /**
- * Home — Campo nocturno (Stitch screens-b-v2/01-home)
- * Calm hero + trust + quick links. Orientation only.
+ * Home — Campo nocturno · Stitch screens-b-v2/01-home pixel-match (v1.11)
+ * Hero glass pill CTA + icon trust row + grid-cols-3 quick access +
+ * atmospheric highlight card. Orientation only.
+ * Residual beta kit: install guide, public URL ops (DEV), privacy strip, differentiators.
  */
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { SpeciesImage } from '../components/SpeciesImage'
 import { SeasonalTopStrip } from '../components/SeasonalTopStrip'
+import { WaitlistTemporada } from '../components/WaitlistTemporada'
+import { Icon } from '../components/ui'
 import { FREE_IDENTIFY_PER_DAY } from '../lib/entitlements'
 import { deadlyPriorityViews } from '../lib/diagnosticViews'
+import {
+  betaFeedbackConfig,
+  betaFeedbackHref,
+  isBetaExternalForm,
+  isBetaMailto,
+} from '../lib/betaFeedback'
+import {
+  isPublicAppUrlConfigured,
+  publicAppUrl,
+} from '../lib/hostingPublicUrl'
+import { fieldHoldoutCoachLines } from '../lib/fieldHoldoutHonesty'
 
-const HOME_CATALOG_COUNT = 520
-
-function IconGames() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-      <rect x="3" y="8" width="18" height="10" rx="3" />
-      <path d="M8 13h2M9 12v2M15 12.5h.01M17.5 12.5h.01" strokeLinecap="round" />
-    </svg>
-  )
-}
-
-function IconBook() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-      <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5V5.5z" />
-      <path d="M4 21.5A2.5 2.5 0 0 1 6.5 19H20" />
-    </svg>
-  )
-}
-
-function IconMap() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-      <path d="M9 4l-5 2v14l5-2 6 2 5-2V4l-5 2-6-2z" strokeLinejoin="round" />
-      <path d="M9 4v14M15 6v14" />
-    </svg>
-  )
-}
+const HOME_CATALOG_COUNT = 523
 
 export function HomePage() {
   const { t } = useTranslation()
   const priorityViews = deadlyPriorityViews().slice(0, 4)
+  const beta = betaFeedbackConfig()
+  const betaHref = betaFeedbackHref()
+  const showOpsPublicUrlChrome = import.meta.env.DEV
+  const publicUrlOk = isPublicAppUrlConfigured()
+  const shareUrl = publicAppUrl()
 
   return (
     <div
@@ -76,7 +69,7 @@ export function HomePage() {
           <p className="cn-home-hero__kicker">
             {t('home.kicker', { defaultValue: 'VisionSetil · campo ibérico' })}
           </p>
-          <h1 className="cn-home-hero__title">
+          <h1 className="cn-home-hero__title cn-text-cream">
             {t('home.cnTitle', { defaultValue: 'VisionSetil' })}
           </h1>
           <p className="cn-home-hero__lead">
@@ -87,89 +80,97 @@ export function HomePage() {
           </p>
           <div className="cn-chip-row" data-testid="home-cn-view-chips">
             {priorityViews.map((v) => (
-              <span key={v} className="cn-chip">
+              <span key={v} className="cn-chip cn-glass">
                 {t(`identify.views.${v}`, { defaultValue: v })}
               </span>
             ))}
           </div>
+          {/* Stitch hero CTA: glass pill with 48px primary-container circle orb.
+              Keeps cn-btn--lg chrome class so layout-contract tests stay wired. */}
           <Link
             to="/identificar"
-            className="cn-btn cn-btn--lg"
+            className="cn-home-hero__cta cn-glass cn-pill cn-btn cn-btn--lg"
             data-testid="home-cta-identify"
           >
-            <span>
+            <span className="cn-home-hero__cta-label">
               {t('home.ctaTryIdentify', { defaultValue: 'Probar identificar' })}
             </span>
-            <span className="cn-btn__orb" aria-hidden="true">
-              ⊕
+            <span className="cn-home-hero__cta-orb" aria-hidden="true">
+              <Icon name="center_focus_strong" filled size="md" />
             </span>
           </Link>
         </div>
       </section>
 
-      <div className="cn-home-trust" data-testid="home-cn-trust">
-        <span className="cn-pill">
-          {t('home.trustOpenSetTitle', { defaultValue: 'Rechaza lo dudoso' })}
+      {/* Stitch trust row: icon + uppercase label (NOT pills) */}
+      <div className="cn-home-trust cn-home-trust--icons" data-testid="home-cn-trust">
+        <span className="cn-home-trust__item">
+          <Icon name="hub" size="sm" aria-hidden="true" />
+          <span className="cn-home-trust__label">
+            {t('home.trustOpenSetTitle', { defaultValue: 'Open-set Engine' })}
+          </span>
         </span>
-        <span className="cn-pill">
-          {t('home.trustEncy', { defaultValue: 'Enciclopedia ibérica' })}
+        <span className="cn-home-trust__item">
+          <Icon name="auto_stories" size="sm" aria-hidden="true" />
+          <span className="cn-home-trust__label">
+            {t('home.trustEncy', { defaultValue: 'Enciclopedia Iberia' })}
+          </span>
         </span>
-        <span className="cn-pill cn-pill--danger">
-          {t('home.trustNever', { defaultValue: 'Nunca consumo' })}
+        <span className="cn-home-trust__item cn-home-trust__item--danger">
+          <Icon name="do_not_disturb_on" size="sm" aria-hidden="true" />
+          <span className="cn-home-trust__label">
+            {t('home.trustNever', { defaultValue: 'Nunca consumo' })}
+          </span>
         </span>
       </div>
 
       <div className="cn-home-lower">
+        {/* Stitch quick access: grid-cols-3 centered glass-card icon+label */}
         <nav
-          className="cn-home-quick"
+          className="cn-home-quick cn-home-quick--grid"
           aria-label={t('home.ariaDiscover', { defaultValue: 'Explorar' })}
         >
-          <Link to="/juegos" className="cn-home-quick__item" data-testid="home-quick-games">
+          <Link to="/juegos" className="cn-home-quick__card cn-glass" data-testid="home-quick-games">
             <span className="cn-home-quick__icon" aria-hidden="true">
-              <IconGames />
+              <Icon name="extension" size="lg" />
             </span>
-            <div className="cn-home-quick__text">
-              <strong>{t('nav.games', { defaultValue: 'Juegos' })}</strong>
-              <span>
-                {t('home.quickGames', { defaultValue: 'Setadle, Wordle y reto' })}
-              </span>
-            </div>
+            <span className="cn-home-quick__label">
+              {t('nav.games', { defaultValue: 'Juegos' })}
+            </span>
           </Link>
           <Link
             to="/enciclopedia"
-            className="cn-home-quick__item"
+            className="cn-home-quick__card cn-glass"
             data-testid="home-cta-encyclopedia"
           >
             <span className="cn-home-quick__icon" aria-hidden="true">
-              <IconBook />
+              <Icon name="menu_book" size="lg" />
             </span>
-            <div className="cn-home-quick__text">
-              <strong>{t('nav.encyclopedia', { defaultValue: 'Enciclopedia' })}</strong>
-              <span>
-                {t('home.quickEncy', {
-                  defaultValue: `${HOME_CATALOG_COUNT} especies`,
-                  count: HOME_CATALOG_COUNT,
-                })}
-              </span>
-            </div>
+            <span className="cn-home-quick__label">
+              {t('nav.encyclopedia', { defaultValue: 'Enciclopedia' })}
+            </span>
           </Link>
-          <Link to="/mapa" className="cn-home-quick__item" data-testid="home-quick-map">
+          <Link to="/mapa" className="cn-home-quick__card cn-glass" data-testid="home-quick-map">
             <span className="cn-home-quick__icon" aria-hidden="true">
-              <IconMap />
+              <Icon name="map" size="lg" />
             </span>
-            <div className="cn-home-quick__text">
-              <strong>{t('nav.map', { defaultValue: 'Mapa' })}</strong>
-              <span>
-                {t('home.quickMap', { defaultValue: 'Cotos · no identifica' })}
-              </span>
-            </div>
+            <span className="cn-home-quick__label">
+              {t('nav.map', { defaultValue: 'Mapa' })}
+            </span>
           </Link>
         </nav>
 
-        <section className="cn-home-obs" data-testid="home-cn-observation">
+        {/* Stitch atmospheric highlight card */}
+        <section className="cn-home-obs cn-glass" data-testid="home-cn-observation">
+          <Icon
+            name="forest"
+            size="xl"
+            className="cn-home-obs__deco"
+            aria-hidden="true"
+          />
           <div className="cn-home-obs__copy">
             <h2 className="cn-home-obs__title">
-              {t('home.obsTitle', { defaultValue: 'Modo campo nocturno' })}
+              {t('home.obsTitle', { defaultValue: 'Observación Nocturna' })}
             </h2>
             <p className="cn-home-obs__body">
               {t('home.obsBody', {
@@ -177,6 +178,14 @@ export function HomePage() {
                   'Pantalla oscura pensada para el bosque de noche: menos brillo, menos deslumbramiento.',
               })}
             </p>
+          </div>
+          <div className="cn-home-obs__avatars" aria-hidden="true">
+            <span className="cn-home-obs__avatar" />
+            <span className="cn-home-obs__avatar" />
+            <span className="cn-home-obs__avatar" />
+            <span className="cn-home-obs__avatar-count">
+              {t('home.obsCount', { defaultValue: '+12 hoy' })}
+            </span>
           </div>
           <p className="cn-home-obs__meta">
             {t('home.obsMeta', {
@@ -188,6 +197,152 @@ export function HomePage() {
 
       <div className="cn-page-pad">
         <SeasonalTopStrip limit={8} />
+
+        <p
+          className="home-field-holdout-note cn-home-aux"
+          data-testid="home-field-holdout-note"
+          role="note"
+        >
+          {(() => {
+            const lines = fieldHoldoutCoachLines()
+            return `${lines.title} — ${lines.body} ${lines.deadlyNote} ${lines.policy}`
+          })()}
+        </p>
+
+        <p
+          className="home-privacy-strip cn-home-aux"
+          data-testid="home-privacy-strip"
+          role="note"
+        >
+          {t('home.privacyStrip', {
+            defaultValue:
+              'Explora sin cuenta. Nunca pedimos permiso de consumo — solo orientación de campo.',
+          })}
+        </p>
+
+        <section
+          className="mkt-diff cn-home-aux"
+          data-testid="home-differentiators"
+          aria-label={t('home.diffAria', { defaultValue: 'Diferenciadores' })}
+        >
+          <h2 className="mkt-diff__title">
+            {t('home.diffTitle', { defaultValue: 'Por qué VisionSetil' })}
+          </h2>
+          <ul className="mkt-diff__list">
+            <li data-testid="home-trust-multiview">
+              <strong>
+                {t('home.diffMultiTitle', { defaultValue: 'Multi-foto de campo' })}
+              </strong>
+              <span>
+                {t('home.diffMultiBody', {
+                  defaultValue:
+                    'Láminas, perfil y base — no una sola foto mágica.',
+                })}
+              </span>
+            </li>
+            <li data-testid="home-trust-nomenclature">
+              <strong>
+                {t('home.trustIfTitle', {
+                  defaultValue: 'Nombres Index Fungorum',
+                })}
+              </strong>
+              <span>
+                {t('home.trustIfBody', {
+                  defaultValue:
+                    'Sinónimos Kew en ficha y búsqueda. El catálogo local no se reescribe solo.',
+                })}
+              </span>
+            </li>
+            <li>
+              <strong>
+                {t('home.diffOpenSetTitle', {
+                  defaultValue: 'Open-set honesto',
+                })}
+              </strong>
+              <span>
+                {t('home.diffOpenSetBody', {
+                  defaultValue: 'Si no reconoce la seta, se calla.',
+                })}
+              </span>
+            </li>
+          </ul>
+        </section>
+
+        <section
+          className="home-install-guide cn-home-aux atelier-card"
+          data-testid="home-install-guide"
+          aria-label={t('home.installTitle', {
+            defaultValue: 'Instalar app / Abrir en el móvil',
+          })}
+        >
+          <h2>
+            {t('home.installTitle', {
+              defaultValue: 'Instalar app · Abrir en el móvil',
+            })}
+          </h2>
+          <p>
+            {t('home.installBody', {
+              defaultValue:
+                'Añade VisionSetil a la pantalla de inicio (PWA). Solo orientación de campo.',
+            })}
+          </p>
+          <p className="home-install-guide__url">
+            <a href={shareUrl}>{shareUrl}</a>
+          </p>
+          {showOpsPublicUrlChrome ? (
+            <p
+              className="home-ops-public-url"
+              data-ops-only="true"
+              data-testid="home-ops-public-url"
+            >
+              {publicUrlOk ? (
+                <span data-testid="home-public-url-ok">
+                  VITE_PUBLIC_APP_URL OK · {publicAppUrl({ preferEnvOnly: true })}
+                </span>
+              ) : (
+                <span data-testid="home-public-url-missing">
+                  {t('home.publicUrlMissing', {
+                    defaultValue:
+                      'Ops: falta VITE_PUBLIC_APP_URL (solo visible en DEV)',
+                  })}
+                </span>
+              )}
+            </p>
+          ) : null}
+        </section>
+
+        <div className="cn-home-aux home-beta-row">
+          {isBetaExternalForm() || isBetaMailto() ? (
+            <a
+              href={betaHref}
+              className="cn-btn cn-btn--ghost"
+              data-testid="home-beta-feedback"
+              data-source={beta.source}
+              {...(isBetaMailto()
+                ? {}
+                : { target: '_blank', rel: 'noopener noreferrer' })}
+            >
+              {t('nav.betaFeedback', { defaultValue: 'Feedback beta' })}
+            </a>
+          ) : (
+            <Link
+              to={betaHref}
+              className="cn-btn cn-btn--ghost"
+              data-testid="home-beta-feedback"
+              data-source={beta.source}
+            >
+              {t('nav.betaFeedback', { defaultValue: 'Feedback beta' })}
+            </Link>
+          )}
+          <span
+            className="visually-hidden"
+            data-testid="home-beta-feedback-source"
+          >
+            {beta.source}
+          </span>
+        </div>
+
+        <WaitlistTemporada />
       </div>
 
       {/* Contract hooks for tests / freemium stats + discover links (sr-only) */}
