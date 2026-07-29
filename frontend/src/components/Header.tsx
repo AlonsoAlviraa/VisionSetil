@@ -4,6 +4,8 @@ import { NavLink, Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import { useTranslation } from 'react-i18next'
 import { LanguageSwitcher } from './LanguageSwitcher'
+import { LayoutModeToggle } from './LayoutModeToggle'
+import type { LayoutMode } from '../lib/layoutMode'
 
 const THEME_KEY = 'visionsetil_theme'
 
@@ -223,7 +225,12 @@ function LogoMark() {
   )
 }
 
-export function Header() {
+type HeaderProps = {
+  layoutMode?: LayoutMode
+  onLayoutModeChange?: (mode: LayoutMode) => void
+}
+
+export function Header({ layoutMode = 'app', onLayoutModeChange }: HeaderProps = {}) {
   const { t } = useTranslation()
   const { user, isAuthenticated, logout, loading } = useAuth()
   const location = useLocation()
@@ -388,6 +395,9 @@ export function Header() {
         </div>
 
         <div className="header-actions">
+          {onLayoutModeChange ? (
+            <LayoutModeToggle mode={layoutMode} onChange={onLayoutModeChange} compact />
+          ) : null}
           {!loading && isAuthenticated && user && (
             <span className="header-user" title={user.email}>
               {user.display_name || user.username}
@@ -420,6 +430,7 @@ export function Header() {
             className="btn-icon"
             type="button"
             onClick={toggleTheme}
+            data-testid="theme-toggle"
             aria-label={theme === 'light' ? t('actions.darkMode') : t('actions.lightMode')}
             title={theme === 'light' ? t('actions.darkMode') : t('actions.lightMode')}
           >

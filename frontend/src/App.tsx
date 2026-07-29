@@ -1,4 +1,4 @@
-/** App shell — colleague product routes + local i18n / media reliability. */
+/** App shell — dual layout: store app shell + wide web page. */
 import { lazy, Suspense } from 'react'
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -9,6 +9,7 @@ import { ApiStatusBanner } from './components/ApiStatusBanner'
 import { DocumentTitle } from './components/DocumentTitle'
 import { PwaInstallHint } from './components/PwaInstallHint'
 import { ErrorBoundary } from './components/ErrorBoundary'
+import { useLayoutMode } from './hooks/useLayoutMode'
 import {
   betaFeedbackHref,
   isBetaExternalForm,
@@ -130,6 +131,7 @@ function IdentifyFab() {
 
 function AppShell() {
   const { t } = useTranslation()
+  const { mode, setMode } = useLayoutMode()
 
   return (
     <>
@@ -137,8 +139,19 @@ function AppShell() {
       <a href="#main-content" className="skip-link">
         {t('a11y.skipToContent', { defaultValue: 'Saltar al contenido' })}
       </a>
-      <div className="app app--campo-nocturno app--has-bottom-nav app--stitch-b" data-skin="campo-nocturno">
-        <Header />
+      <div
+        className={[
+          'app',
+          'app--campo-nocturno',
+          'app--has-bottom-nav',
+          'app--stitch-b',
+          mode === 'app' ? 'app--mode-app' : 'app--mode-web',
+        ].join(' ')}
+        data-skin="campo-nocturno"
+        data-layout-mode={mode}
+        data-testid="app-shell"
+      >
+        <Header layoutMode={mode} onLayoutModeChange={setMode} />
         <ApiStatusBanner />
         <PwaInstallHint />
         <main className="container cn-main" id="main-content" tabIndex={-1}>
@@ -172,6 +185,7 @@ function AppShell() {
             </Suspense>
           </ErrorBoundary>
         </main>
+        {/* BottomNav: visible in app mode; web CSS hides on desktop, shows on phone */}
         <BottomNav />
         <footer className="footer footer--v16 footer--cn-compact">
           <div className="footer-content">

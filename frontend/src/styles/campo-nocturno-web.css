@@ -1,0 +1,655 @@
+/**
+ * VisionSetil · Campo nocturno — WEB mode
+ * Full browser page: wide content, large spacing, multi-column, very readable.
+ * Only applies under .app--mode-web (store shell stays in campo-nocturno.css).
+ */
+
+/* ── Shell: full width page ─────────────────────────────────────────────── */
+.app--mode-web.app--campo-nocturno {
+  max-width: none !important;
+  padding: 0 !important;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(143, 188, 143, 0.12), transparent 55%),
+    #0a0f0b !important;
+}
+
+.app--mode-web {
+  --cn-shell: min(100% - 3rem, 72rem);
+  --cn-gutter: clamp(1.25rem, 3vw, 2.5rem);
+  --cn-nav-h: 0px;
+  --cn-page-max: min(100%, 72rem);
+  --cn-home-max: min(100%, 72rem);
+  --cn-footer-max: min(100%, 72rem);
+  --cn-hero-min-h: min(52vh, 28rem);
+  --cn-content-wide: min(100% - 3rem, 72rem);
+  --cn-radius: 1.15rem;
+  --cn-radius-lg: 1.5rem;
+}
+
+/* Header / main / footer expand */
+.app--mode-web > .header,
+.app--mode-web > main.cn-main,
+.app--mode-web > main.container,
+.app--mode-web > .footer,
+.app--mode-web > .api-status-banner,
+.app--mode-web > .pwa-install-hint {
+  max-width: var(--cn-content-wide) !important;
+  width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.app--mode-web > .header {
+  position: sticky !important;
+  top: 0;
+  z-index: 50;
+  background: rgba(10, 15, 11, 0.9) !important;
+  border-bottom: 1px solid rgba(143, 188, 143, 0.16) !important;
+  backdrop-filter: blur(18px) !important;
+}
+
+.app--mode-web .header-inner {
+  max-width: var(--cn-content-wide) !important;
+  margin: 0 auto !important;
+  padding: 0.75rem var(--cn-gutter) !important;
+  min-height: 4rem;
+}
+
+.app--mode-web .header-brand h1,
+.app--mode-web .header-brand-text h1 {
+  font-size: 1.45rem !important;
+}
+
+/* Desktop primary nav visible in web mode */
+.app--mode-web .header-nav--desktop-primary {
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+.app--mode-web .nav-link {
+  font-size: 0.92rem !important;
+  padding: 0.5rem 0.95rem !important;
+}
+
+/* Main */
+.app--mode-web > main.cn-main,
+.app--mode-web > main.container {
+  padding: 0.5rem 0 3.5rem !important;
+  background: transparent !important;
+  min-height: auto !important;
+}
+
+/* Hide bottom nav in web — top nav is primary */
+.app--mode-web .cn-bottom-nav,
+.app--mode-web .bottom-nav {
+  display: none !important;
+}
+
+.app--mode-web.app--has-bottom-nav {
+  padding-bottom: 0 !important;
+}
+
+/* Optional FAB back for web deep links */
+.app--mode-web .fab-identify {
+  display: inline-flex !important;
+  position: fixed !important;
+  right: 1.5rem !important;
+  bottom: 1.5rem !important;
+  z-index: 90;
+  gap: 0.45rem;
+  align-items: center;
+  padding: 0.85rem 1.25rem !important;
+  border-radius: 999px !important;
+  background: var(--cn-moss) !important;
+  color: var(--cn-on-moss) !important;
+  font-weight: 700 !important;
+  text-decoration: none !important;
+  box-shadow: 0 10px 32px rgba(143, 188, 143, 0.35) !important;
+  border: none !important;
+}
+
+/* Warn strip full width of content */
+.app--mode-web .cn-warn-strip,
+.app--mode-web .home-orientation-sticky {
+  max-width: var(--cn-content-wide) !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  font-size: 0.72rem !important;
+  letter-spacing: 0.14em !important;
+  min-height: 2.15rem;
+  padding: 0.55rem var(--cn-gutter) !important;
+}
+
+/* Page shells: generous padding */
+.app--mode-web .cn-page,
+.app--mode-web .page-atelier-shell,
+.app--mode-web .page-games-hub,
+.app--mode-web .page-more-hub,
+.app--mode-web .page-identify,
+.app--mode-web .page-encyclopedia,
+.app--mode-web .page-detail,
+.app--mode-web .page-setadle,
+.app--mode-web .page-wordle,
+.app--mode-web .page-quiz,
+.app--mode-web .page-lookalike,
+.app--mode-web .page-education,
+.app--mode-web .page-offline,
+.app--mode-web .page-community,
+.app--mode-web .page-history,
+.app--mode-web .page-login,
+.app--mode-web .page-register,
+.app--mode-web .page-ml,
+.app--mode-web .page-map {
+  max-width: none !important;
+  padding: 0.5rem var(--cn-gutter) 2.5rem !important;
+}
+
+.app--mode-web .mkt-page-head,
+.app--mode-web .page-header,
+.app--mode-web .cn-page-head {
+  padding: 1.5rem 0 1.25rem !important;
+  max-width: 48rem;
+}
+
+.app--mode-web .mkt-page-head__title,
+.app--mode-web .cn-page-head__title,
+.app--mode-web .page-title,
+.app--mode-web h1 {
+  font-size: clamp(1.85rem, 3vw, 2.45rem) !important;
+  margin-bottom: 0.55rem !important;
+}
+
+.app--mode-web .mkt-page-head p,
+.app--mode-web .cn-page-head__lead,
+.app--mode-web .page-subtitle {
+  font-size: 1.05rem !important;
+  line-height: 1.55 !important;
+  max-width: 42rem;
+}
+
+.app--mode-web .mkt-kicker,
+.app--mode-web .cn-kicker {
+  font-size: 0.75rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+/* Cards: larger padding / radius */
+.app--mode-web .atelier-card,
+.app--mode-web .atelier-panel,
+.app--mode-web .result-card,
+.app--mode-web .games-hub-card,
+.app--mode-web .more-hub-list__link,
+.app--mode-web .rule-card,
+.app--mode-web .anatomy-detail-card,
+.app--mode-web .edu-section,
+.app--mode-web .preflight-banner,
+.app--mode-web .identify-region,
+.app--mode-web .history-card,
+.app--mode-web .history-entry {
+  border-radius: 1.15rem !important;
+  padding: 1.15rem 1.25rem !important;
+}
+
+.app--mode-web .cn-btn,
+.app--mode-web .mkt-btn--primary,
+.app--mode-web .btn-atelier--primary {
+  min-height: 3rem;
+  padding: 0.9rem 1.5rem;
+  font-size: 1rem;
+}
+
+.app--mode-web .cn-btn--lg {
+  max-width: 22rem;
+  min-height: 3.4rem;
+  font-size: 1.02rem;
+}
+
+/* ── HOME web: two-column hero + wide sections ──────────────────────────── */
+.app--mode-web .cn-home {
+  padding: 0 0 2rem !important;
+}
+
+.app--mode-web .cn-home-hero {
+  margin: 1rem var(--cn-gutter) 1.5rem;
+  min-height: min(56vh, 32rem);
+  border-radius: 1.5rem;
+  display: grid;
+  grid-template-columns: 1.15fr 0.95fr;
+  overflow: hidden;
+}
+
+.app--mode-web .cn-home-hero__media {
+  position: relative;
+  min-height: 22rem;
+}
+
+.app--mode-web .cn-home-hero__media img,
+.app--mode-web .cn-home-hero__media .species-image,
+.app--mode-web .cn-home-hero__img {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  opacity: 0.9;
+}
+
+.app--mode-web .cn-home-hero__scrim {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(10, 15, 11, 0.35) 45%,
+    rgba(10, 15, 11, 0.96) 100%
+  );
+}
+
+.app--mode-web .cn-home-hero__content {
+  position: relative;
+  z-index: 2;
+  padding: 2.25rem 2rem;
+  justify-content: center;
+  background: linear-gradient(160deg, rgba(28, 33, 28, 0.5), rgba(10, 15, 11, 0.92));
+}
+
+.app--mode-web .cn-home-hero__title {
+  font-size: clamp(2.5rem, 4vw, 3.5rem) !important;
+}
+
+.app--mode-web .cn-home-hero__lead {
+  max-width: 28rem !important;
+  font-size: 1.1rem !important;
+  line-height: 1.5 !important;
+}
+
+.app--mode-web .cn-home-trust {
+  margin: 0 var(--cn-gutter) 1.5rem;
+  gap: 1rem 1.75rem;
+}
+
+.app--mode-web .cn-pill {
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  padding: 0.5rem 0;
+}
+
+.app--mode-web .cn-home-lower {
+  display: grid;
+  grid-template-columns: 1.2fr 0.9fr;
+  gap: 1.25rem;
+  margin: 0 var(--cn-gutter) 2rem;
+  align-items: stretch;
+}
+
+.app--mode-web .cn-home-quick {
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.85rem;
+}
+
+.app--mode-web .cn-home-quick__item {
+  padding: 1.35rem 1rem;
+  border-radius: 1.15rem;
+  gap: 0.55rem;
+}
+
+.app--mode-web .cn-home-quick__item strong {
+  font-size: 1rem;
+}
+
+.app--mode-web .cn-home-quick__item span {
+  display: block; /* show sublabels on web */
+  font-size: 0.78rem;
+  color: var(--cn-muted);
+  line-height: 1.3;
+}
+
+.app--mode-web .cn-home-quick__icon {
+  width: 2.25rem;
+  height: 2.25rem;
+}
+
+.app--mode-web .cn-home-obs {
+  padding: 1.75rem 1.5rem;
+  border-radius: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100%;
+}
+
+.app--mode-web .cn-home-obs__title {
+  font-size: 1.55rem;
+}
+
+.app--mode-web .cn-home-obs__body {
+  font-size: 1rem;
+  max-width: none;
+}
+
+/* ── Games: 3 photo cards ───────────────────────────────────────────────── */
+.app--mode-web .games-hub-grid {
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  margin: 0.75rem 0 2rem;
+}
+
+.app--mode-web .games-hub-card--photo,
+.app--mode-web .games-hub-card__content {
+  min-height: 18rem;
+}
+
+.app--mode-web .games-hub-card__title {
+  font-size: 1.65rem;
+}
+
+.app--mode-web .games-hub-card__body {
+  font-size: 0.95rem;
+}
+
+/* ── Más: 2-column groups ───────────────────────────────────────────────── */
+.app--mode-web .more-hub-groups {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem 2.5rem;
+}
+
+.app--mode-web .more-hub-list__link {
+  padding: 1.1rem 1.15rem !important;
+}
+
+.app--mode-web .more-hub-list__label {
+  font-size: 1.05rem;
+}
+
+.app--mode-web .more-hub-list__blurb {
+  font-size: 0.88rem;
+}
+
+.app--mode-web .more-hub-cta {
+  margin-top: 2rem;
+}
+
+.app--mode-web .more-hub-cta__btn {
+  max-width: 24rem;
+  min-height: 3.25rem;
+}
+
+/* ── Encyclopedia ───────────────────────────────────────────────────────── */
+.app--mode-web .page-encyclopedia--cn .species-photo-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 1rem !important;
+}
+
+.app--mode-web .page-encyclopedia--cn .ency-toolbar,
+.app--mode-web .page-encyclopedia--cn .encyclopedia-multiview-tip {
+  padding: 1.15rem 1.25rem !important;
+  margin-bottom: 1.15rem;
+}
+
+/* ── Identify ───────────────────────────────────────────────────────────── */
+.app--mode-web .page-identify--cn .identify-cn-head {
+  max-width: 48rem;
+}
+
+.app--mode-web .page-identify--cn .identify-honesty-flow {
+  max-width: 56rem;
+}
+
+.app--mode-web .page-identify--cn .identify-region {
+  padding: 1.25rem !important;
+  margin-bottom: 1rem;
+}
+
+.app--mode-web .page-identify--cn .mv-slot,
+.app--mode-web .page-identify--cn .wizard-slot {
+  min-height: 9rem;
+}
+
+.app--mode-web .page-identify--cn .analyze-actions .btn-atelier--primary {
+  width: auto;
+  min-width: 14rem;
+}
+
+/* ── Education / history / lookalike ────────────────────────────────────── */
+.app--mode-web .page-education .rules-grid {
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.app--mode-web .page-education .anatomy-grid {
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.app--mode-web .page-history .atelier-stat-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.85rem;
+  margin-bottom: 1.25rem;
+}
+
+.app--mode-web .page-history .history-entry,
+.app--mode-web .page-history .history-card {
+  display: grid;
+  grid-template-columns: 12rem 1fr;
+  gap: 0;
+  margin-bottom: 1rem;
+}
+
+.app--mode-web .page-history .history-entry img,
+.app--mode-web .page-history .photo-frame img {
+  aspect-ratio: 1;
+  height: 100%;
+  min-height: 8rem;
+}
+
+.app--mode-web .page-lookalike .lookalike-hero {
+  max-width: 48rem;
+}
+
+.app--mode-web .page-lookalike .compare-grid {
+  gap: 1rem;
+}
+
+/* Games interiors centered readable */
+.app--mode-web .page-wordle,
+.app--mode-web .page-setadle,
+.app--mode-web .page-quiz {
+  max-width: 40rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Map full usable */
+.app--mode-web .page-map {
+  padding-left: var(--cn-gutter) !important;
+  padding-right: var(--cn-gutter) !important;
+}
+
+.app--mode-web .page-map .leaflet-container {
+  min-height: min(72vh, 42rem);
+  border-radius: 1.15rem !important;
+}
+
+/* Species detail */
+.app--mode-web .page-detail .species-hero img,
+.app--mode-web .page-detail .detail-hero img {
+  max-height: 28rem;
+  width: 100%;
+  object-fit: cover;
+  border-radius: 1.15rem;
+}
+
+/* Footer: show links in web mode */
+.app--mode-web .footer,
+.app--mode-web .footer--v16 {
+  max-width: var(--cn-content-wide) !important;
+  padding: 2rem var(--cn-gutter) 2.5rem !important;
+  border-top: 1px solid rgba(143, 188, 143, 0.18) !important;
+  font-size: 0.88rem !important;
+}
+
+.app--mode-web .footer-links {
+  position: static !important;
+  width: auto !important;
+  height: auto !important;
+  overflow: visible !important;
+  clip: auto !important;
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 0.55rem 1.15rem;
+  margin: 0.85rem 0 0.5rem;
+}
+
+.app--mode-web .footer-brand {
+  font-size: 1.15rem !important;
+}
+
+.app--mode-web .footer-meta {
+  font-size: 0.8rem;
+  opacity: 0.85;
+}
+
+/* Layout mode toggle chrome */
+.layout-mode-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 999px;
+  background: rgba(28, 33, 28, 0.9);
+  border: 1px solid rgba(143, 188, 143, 0.28);
+}
+
+.layout-mode-toggle__btn {
+  appearance: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.4rem 0.7rem;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--cn-muted, #c2c9be);
+  line-height: 1;
+}
+
+.layout-mode-toggle__btn.is-active {
+  background: var(--cn-moss, #8fbc8f);
+  color: var(--cn-on-moss, #0e3817);
+}
+
+.layout-mode-toggle__btn:focus-visible {
+  outline: 2px solid var(--cn-moss-bright, #aad8a9);
+  outline-offset: 2px;
+}
+
+/* Badge hint near toggle in web */
+.app--mode-web .layout-mode-badge {
+  display: none;
+}
+
+/* Web medium: stack home hero if needed */
+@media (max-width: 1024px) {
+  .app--mode-web {
+    --cn-shell: min(100% - 2rem, 56rem);
+    --cn-content-wide: min(100% - 2rem, 56rem);
+  }
+
+  .app--mode-web .cn-home-hero {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .app--mode-web .cn-home-hero__media {
+    min-height: 16rem;
+  }
+
+  .app--mode-web .cn-home-hero__scrim {
+    background: linear-gradient(
+      180deg,
+      rgba(10, 15, 11, 0.1) 0%,
+      rgba(10, 15, 11, 0.92) 100%
+    );
+  }
+
+  .app--mode-web .cn-home-hero__content {
+    position: absolute;
+    inset: auto 0 0 0;
+    background: transparent;
+  }
+
+  .app--mode-web .cn-home-lower {
+    grid-template-columns: 1fr;
+  }
+
+  .app--mode-web .games-hub-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .app--mode-web .page-encyclopedia--cn .species-photo-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+
+  .app--mode-web .page-education .rules-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .app--mode-web .more-hub-groups {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* If user forces web on phone, keep readable but not tiny-phone-only */
+@media (max-width: 640px) {
+  .app--mode-web {
+    --cn-gutter: 1rem;
+    --cn-content-wide: 100%;
+  }
+
+  .app--mode-web .header-nav--desktop-primary {
+    display: none !important;
+  }
+
+  .app--mode-web .cn-bottom-nav,
+  .app--mode-web .bottom-nav {
+    display: flex !important;
+  }
+
+  .app--mode-web > main.cn-main,
+  .app--mode-web > main.container {
+    padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  .app--mode-web .games-hub-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .app--mode-web .page-encyclopedia--cn .species-photo-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  .app--mode-web .page-education .rules-grid,
+  .app--mode-web .page-education .anatomy-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .app--mode-web .page-history .history-entry,
+  .app--mode-web .page-history .history-card {
+    grid-template-columns: 1fr;
+  }
+
+  .app--mode-web .fab-identify {
+    bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  .app--mode-web .footer-links {
+    display: none !important;
+  }
+}

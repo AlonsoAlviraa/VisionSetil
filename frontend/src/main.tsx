@@ -21,6 +21,8 @@ import './styles/atelier.css'
 import './styles/marketing.css'
 /** Option B Campo nocturno — after marketing so night shell wins */
 import './styles/campo-nocturno.css'
+/** Web (browser) layout layer — only under .app--mode-web */
+import './styles/campo-nocturno-web.css'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
