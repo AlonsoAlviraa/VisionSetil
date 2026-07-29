@@ -1670,3 +1670,14 @@ Operator executes checklist (not autonomous). S9 traffic after deploy. E21 optio
 
 **product_unlock remains false.**
 
+
+## v1.9.11 — operator dry-run + stale MAP warning fix (2026-07-29)
+
+- Pushed thematic release snapshot to origin/main
+- Local operator dry-run: smoke_beta_preview PASS · E20 Identify pytest PASS · POST /classify mode=real open-set reject · product_unlock false
+- Fixed hardcoded MultiView warning MAP@3~7.6% (v9) when E20 soft gates PASS
+- training_sources_registry current_checkpoint → E20
+- OPERATOR_BETA_CHECKLIST status board updated (HTTPS/form/cohort still human)
+
+**product_unlock remains false.**
+

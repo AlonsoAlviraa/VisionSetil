@@ -1,14 +1,15 @@
 {
   "schema_version": "1.0",
-  "updated": "2026-07-17",
+  "updated": "2026-07-29",
   "purpose": "Inventario de fuentes para entrenar/evaluar VisionSetil. No inventa filas de datos.",
   "current_checkpoint": {
-    "path": "kaggle/kernel_output_v9/models/best.pt",
-    "metrics_path": "kaggle/kernel_output_v9/models/metrics.json",
-    "history_path": "kaggle/kernel_output_v9/models/training_history.json",
-    "databases_used": ["fungitastic", "fungiclef"],
-    "subsample": { "max_species": 500, "max_obs_per_species": 8 },
-    "honest_quality_note": "MAP@3 test ~0.076; pocas obs/clase — necesita más datos y más training, no solo load de pesos."
+    "path": "kaggle/kernel_output_v20/models/best.pt",
+    "metrics_path": "kaggle/kernel_output_v20/models/metrics.json",
+    "history_path": "kaggle/kernel_output_v20/models/training_history.json",
+    "protocol": "source_holdout_e20",
+    "databases_used": ["fungitastic", "fungiclef", "gbif_es_holdout_test"],
+    "num_classes": 40,
+    "honest_quality_note": "E20 honest: MAP@3 ~0.860 · deadly@3 ~0.927 · ECE ~0.188 (high). product_unlock=false · orientation only. Legacy v9 MAP~0.07 is NOT the serve baseline."
   },
   "ml_ready_public": [
     {

@@ -1167,13 +1167,60 @@ class MultiViewMushroomClassifier:
         top1 = float(primary.confidence) if primary else 0.0
         top2 = float(candidates[1].confidence) if len(candidates) > 1 else 0.0
         margin = max(0.0, top1 - top2)
-        open_set = OpenSetResponse(
-            is_unknown_or_uncertain=bool(is_unknown),
-            reason=(
+
+        # Live quality gate (E20 sibling metrics when real weights) — never hardcode v9 MAP~7.6%.
+        gate: dict[str, Any] = {}
+        try:
+            from app.ml.quality_gate import quality_gate_status
+
+            gate = quality_gate_status(
+                loaded_weights_path=self.resolved_weights_path if self.is_real else None
+            )
+        except Exception:
+            gate = {}
+        map_at_3 = gate.get("test_map_at_3")
+        try:
+            map_f = float(map_at_3) if map_at_3 is not None else None
+        except (TypeError, ValueError):
+            map_f = None
+        metrics_ok = bool(gate.get("metrics_acceptable")) and bool(
+            gate.get("species_id_allowed", True)
+        )
+        if self.is_real and metrics_ok:
+            ckpt_quality = "e20_source_holdout_soft_gates_pass"
+            thr_status = "multiview_calibrated_e20_holdout"
+            open_reason = (
+                "low_confidence_or_margin_multiview"
+                if is_unknown
+                else "accepted_with_orientation_only"
+            )
+            hr_reason = (
+                "Open-set abstuvo o evidencia incompleta — revisión humana recomendada. "
+                "Solo orientación; nunca permiso de consumo."
+                if is_unknown
+                else "Orientación multi-view con pesos reales — validación experta si hay riesgo."
+            )
+        else:
+            ckpt_quality = "checkpoint_quality_below_gate_or_mock"
+            thr_status = (
+                "multiview_uncalibrated_or_below_gate"
+                if self.is_real
+                else "multiview_mock_path"
+            )
+            open_reason = (
                 "low_confidence_or_margin_multiview_few_shot"
                 if is_unknown
                 else "accepted_with_orientation_only"
-            ),
+            )
+            map_txt = f"{map_f:.1%}" if map_f is not None else "n/d"
+            hr_reason = (
+                f"Modelo multi-view bajo quality gate (MAP@3 test ~{map_txt}) — "
+                "revisión humana obligatoria. Solo orientación."
+            )
+
+        open_set = OpenSetResponse(
+            is_unknown_or_uncertain=bool(is_unknown),
+            reason=open_reason,
             top1_confidence=top1,
             top2_confidence=top2,
             margin=margin,
@@ -1182,9 +1229,10 @@ class MultiViewMushroomClassifier:
             reasons=[
                 f"score={cosine_score:.4f}",
                 f"conf_thr={getattr(settings, 'multiview_open_set_conf_thr', None)}",
-                "checkpoint_quality=few_shot_unacceptable_for_species_id",
+                f"checkpoint_quality={ckpt_quality}",
+                f"is_real={self.is_real}",
             ],
-            thresholds_status="multiview_calibrated_v9_battery",
+            thresholds_status=thr_status,
         )
         human_review = HumanReviewResponse(
             recommended=True,
@@ -1193,16 +1241,22 @@ class MultiViewMushroomClassifier:
                 if is_unknown or (primary and primary.risk_level in ("critical", "high", "deadly"))
                 else "medium"
             ),
-            reason=(
-                "Modelo multi-view en régimen few-shot (MAP@3~0.08) — revisión humana obligatoria."
-            ),
+            reason=hr_reason,
         )
         warnings = list(explanation.warnings or [])
-        warnings.insert(
-            0,
-            "Calidad del modelo actual INACEPTABLE para identificación de especie "
-            "(MAP@3 test ~7.6%). Solo orientación; abstenerse de decisiones de campo.",
-        )
+        if not (self.is_real and metrics_ok):
+            map_txt = f"{map_f:.1%}" if map_f is not None else "~n/d"
+            warnings.insert(
+                0,
+                "Calidad del modelo actual INACEPTABLE para identificación de especie "
+                f"(MAP@3 test {map_txt}). Solo orientación; abstenerse de decisiones de campo.",
+            )
+        else:
+            # Always reaffirm orientation-only even when soft gates pass.
+            warnings.insert(
+                0,
+                "Resultado solo orientativo (orientation only). Nunca permiso de consumo ni forrajeo.",
+            )
         if any((c.risk_level or "") in ("critical", "deadly", "high") for c in candidates):
             warnings.insert(
                 0,

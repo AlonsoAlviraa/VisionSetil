@@ -21,14 +21,29 @@ Companions:
 
 | Step | Item | Owner | Status |
 |------|------|-------|--------|
-| 0 | Read policy: orientation only / never forage | Operator | ☐ |
-| 1 | Deploy preview HTTPS (Path A preferred) | Operator | ☐ |
-| 2 | Env: `VITE_PUBLIC_APP_URL` + `VITE_API_URL` + backend prod guards | Operator | ☐ |
-| 3 | Env: `VITE_BETA_FEEDBACK_URL` (real form, not mailto) | Operator | ☐ |
-| 4 | Structural smoke + live Identify smoke | Operator | ☐ |
-| 5 | Small cohort (5–10) dry run | Operator | ☐ |
+| 0 | Read policy: orientation only / never forage | Operator | ✅ (docs + copy) |
+| 1 | Deploy preview HTTPS (Path A preferred) | Operator | ⏳ **blocked** — needs your domain/VPS |
+| 2 | Env: `VITE_PUBLIC_APP_URL` + `VITE_API_URL` + backend prod guards | Operator | ⏳ set on deploy host |
+| 3 | Env: `VITE_BETA_FEEDBACK_URL` (real form, not mailto) | Operator | ⏳ create form URL |
+| 4 | Structural smoke + live Identify smoke | Operator | ✅ **local dry-run 2026-07-29** (see below) |
+| 5 | Small cohort (5–10) dry run | Operator | ☐ after HTTPS URL |
 | 6 | Expand to 20–40 if dry run OK | Operator | ☐ |
 | — | product_unlock | System | **false** (do not flip for beta) |
+| — | git release snapshot | Graph | ✅ pushed `main` (4 thematic commits → + honesty fix) |
+
+### Local dry-run log (agent, 2026-07-29)
+
+| Check | Result |
+|-------|--------|
+| `git push origin main` | **done** (`3dca692..88a538a` + follow-up honesty fix) |
+| `scripts/smoke_beta_preview.ps1` | **PASS** |
+| torch+timm in `.venv-ci` | installed (CPU) for real MultiView |
+| pytest `test_e20_real_identify_smoke` + lookalike + S9 | **PASS** (19) |
+| `GET /health` | 200 |
+| `GET /models/status` | MultiView **real_multiview_v8** · E20 `best.pt` · open-set calibrated · `product_unlock=false` · `unlock_eligible_advisory=true` |
+| `POST /classify` (eval fixture images) | 200 · `mode=real` · `decision=rejected` (open-set) · `safety_level=unsafe_to_consume` · quality_gate ACCEPTABLE MAP@3≈0.860 |
+| Stale warning MAP@3~7.6% on real path | **fixed** in `multi_view_classifier._build_response` |
+| Public HTTPS / form / cohort invites | **still operator** (no domain/form secrets in agent env) |
 
 ---
 

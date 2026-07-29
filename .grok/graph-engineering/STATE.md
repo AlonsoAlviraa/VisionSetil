@@ -1,12 +1,12 @@
-# VisionSetil Graph Engineering — STATE
+﻿# VisionSetil Graph Engineering â€” STATE
 
 **Mode:** Graph Engineering (process-synced)  
 **Updated:** 2026-07-29  
-**Goal:** Canon docs + operator beta checklist · never product_unlock · never forage
+**Goal:** Canon docs + operator beta checklist Â· never product_unlock Â· never forage
 
 ## Active graph version
 
-`v1.9.10-canon-process-sync`
+`v1.9.11-operator-dry-run`
 
 ## Current status
 
@@ -14,7 +14,7 @@
 |------|--------|--------|
 | Graph process (PROCESS.md) | **SHIPPED** | v1.9.10 |
 | MEMORY / VISION / ROADMAP anti time-travel | **SHIPPED** | Aligned to E20 + v1.9.9 lineage |
-| Operator beta checklist | **SHIPPED** (docs) | `docs/OPERATOR_BETA_CHECKLIST.md` — execution residual |
+| Operator beta checklist | **SHIPPED** (docs) | `docs/OPERATOR_BETA_CHECKLIST.md` â€” execution residual |
 | IF / ECE / M3 / S9 schema | **SHIPPED** | v1.9.x |
 | Product unlock | **BLOCKED** | false |
 
@@ -48,11 +48,12 @@ Always **false**.
 
 1. **Operator:** execute `docs/OPERATOR_BETA_CHECKLIST.md` (deploy + form + smoke Identify + small cohort)  
 2. Grow S9 under real Identify traffic (schema ready)  
-3. Kew official CSV optional · E21 only if operator schedules GPU  
+3. Kew official CSV optional Â· E21 only if operator schedules GPU  
 4. Labeled view-slot holdout (M4) if FT mounts  
 
 ## Process pointer
 
 - `.grok/graph-engineering/PROCESS.md`  
 - `.grok/graph-engineering/BACKLOG.md`  
-- Thematic git commits (ml / catalog / frontend / docs) — not monoblock  
+- Thematic git commits (ml / catalog / frontend / docs) â€” not monoblock  
+
