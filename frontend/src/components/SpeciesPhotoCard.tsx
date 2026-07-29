@@ -40,8 +40,10 @@ export function SpeciesPhotoCard({ species, priority = false }: Props) {
         maxGallery: 2,
         includeCatalog: true,
         riskLabel: species.risk_label,
-        maxCandidates: 6,
+        maxCandidates: 8,
+        // Local /media first (real webp), then remote with Commons-allowed sizes
         quality: 'display',
+        preferLocal: true,
       }),
     [species.taxon, species.risk_label],
   )

@@ -2,21 +2,24 @@ import { describe, expect, it } from 'vitest'
 import { qualityForVariant, upgradePhotoUrl } from './speciesImageService'
 
 describe('upgradePhotoUrl — paint-speed remotes', () => {
-  it('converts full Wikimedia commons files to sized thumbs', () => {
+  it('converts full Wikimedia commons files to allow-listed thumb sizes', () => {
     const full =
       'https://upload.wikimedia.org/wikipedia/commons/4/40/Pieczarka_polowa_vongrzanka.JPG'
+    // Commons rejects non-allowlisted sizes (320/640 → HTTP 400 → "Sin foto real")
     expect(upgradePhotoUrl(full, 'thumb')).toBe(
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Pieczarka_polowa_vongrzanka.JPG/320px-Pieczarka_polowa_vongrzanka.JPG',
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Pieczarka_polowa_vongrzanka.JPG/250px-Pieczarka_polowa_vongrzanka.JPG',
     )
-    expect(upgradePhotoUrl(full, 'display')).toContain('/640px-')
+    expect(upgradePhotoUrl(full, 'display')).toContain('/500px-')
     expect(upgradePhotoUrl(full, 'hd')).toContain('/1280px-')
   })
 
-  it('downsizes existing wiki thumbs (including 3840px heroes)', () => {
+  it('downsizes existing wiki thumbs to allow-listed px (not 320/640)', () => {
     const huge =
       'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Agaricus_augustus_2011_G1.jpg/3840px-Agaricus_augustus_2011_G1.jpg'
-    expect(upgradePhotoUrl(huge, 'thumb')).toContain('/320px-')
-    expect(upgradePhotoUrl(huge, 'display')).toContain('/640px-')
+    expect(upgradePhotoUrl(huge, 'thumb')).toContain('/250px-')
+    expect(upgradePhotoUrl(huge, 'display')).toContain('/500px-')
+    expect(upgradePhotoUrl(huge, 'thumb')).not.toContain('/320px-')
+    expect(upgradePhotoUrl(huge, 'display')).not.toContain('/640px-')
   })
 
   it('downgrades iNaturalist large/original to small/medium', () => {

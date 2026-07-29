@@ -155,7 +155,7 @@ export function SpeciesImage({
   const kind = riskFromProps(riskLevel)
   const mediaOn = featureFlags.SPECIES_MEDIA && Boolean(slug)
   const quality = qualityProp ?? qualityForVariant(variant)
-  // Sized remote — thumb for cards, display for detail (never multi-MB originals)
+  // Sized remote with Commons-allowlisted px (250/500/1280 — never 320/640)
   const catalogUrl = useMemo(
     () => (preferCatalog ? getCatalogPhotoUrlHd(scientificName, quality) : null),
     [scientificName, preferCatalog, quality],

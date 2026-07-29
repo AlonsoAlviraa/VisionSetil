@@ -71,10 +71,15 @@ export function getCatalogPhotoUrl(taxon: string): string | null {
   return entry?.url || null
 }
 
-/** Wiki thumb width per quality — never ship multi‑MB originals in grids. */
+/**
+ * Wiki thumb widths — MUST be on Commons' allow-list or upload returns HTTP 400
+ * ("Use thumbnail sizes listed on https://w.wiki/GHai").
+ * Allowed set includes: 20, 40, 60, 120, 250, 330, 500, 960, 1280, 1920, …
+ * Never use 320/640 — those 400 and the UI falls through to "Sin foto real".
+ */
 const WIKI_PX: Record<PhotoDisplayQuality, number> = {
-  thumb: 320,
-  display: 640,
+  thumb: 250,
+  display: 500,
   hd: 1280,
 }
 

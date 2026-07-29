@@ -80,19 +80,30 @@ export function buildSpeciesMediaStack(
     includeLqip?: boolean
     /** Remote size for catalog/extras (grid should use thumb). */
     quality?: PhotoDisplayQuality
+    /**
+     * Prefer same-origin /media first (encyclopedia grid).
+     * Avoids Wikimedia 400/429 on first paint; remote catalog remains fallback.
+     */
+    preferLocal?: boolean
   },
 ): MediaCandidate[] {
   const slug = scientificNameToSlug(taxon)
   if (!slug) return []
   const maxG = opts?.maxGallery ?? 4
   const quality: PhotoDisplayQuality = opts?.quality ?? 'thumb'
+  const preferLocal = opts?.preferLocal === true
   const out: MediaCandidate[] = []
 
-  // 0) Field-realistic open-license extras FIRST when curated (fixes weak local heroes)
+  // Local pack ranks: highest when preferLocal (fast real photos, no third-party)
+  const localDetailRank = preferLocal ? 160 : 90
+  const localCardRank = preferLocal ? 155 : 85
+  const catalogRank = preferLocal ? 120 : 140
+
+  // 0) Field-realistic open-license extras when curated
   const extras = getGalleryExtras(slug)
   extras.forEach((p, idx) => {
     const roleBoost =
-      p.role === 'hero' ? 120 : p.role === 'front' ? 115 : p.role === 'gills' ? 112 : 100
+      p.role === 'hero' ? 118 : p.role === 'front' ? 115 : p.role === 'gills' ? 112 : 100
     out.push({
       url: upgradePhotoUrl(p.url, quality),
       kind: 'extra',
@@ -102,7 +113,21 @@ export function buildSpeciesMediaStack(
     })
   })
 
-  // 1) Remote catalog (speciesPhotos.json / Wiki / iNat) — real field photos first
+  // 1) Local same-origin pack (real webp derivatives; Vite 404s stubs so cascade continues)
+  out.push({
+    url: speciesImageUrl(slug, 'detail'),
+    kind: 'detail',
+    rank: localDetailRank,
+    sameOrigin: true,
+  })
+  out.push({
+    url: speciesImageUrl(slug, 'card'),
+    kind: 'card',
+    rank: localCardRank,
+    sameOrigin: true,
+  })
+
+  // 2) Remote catalog — sized with Commons-allowed px only
   if (opts?.includeCatalog !== false) {
     const cat = getCatalogPhotoUrl(taxon) || getCatalogPhotoUrl(slug.replace(/-/g, ' '))
     if (cat) {
@@ -110,41 +135,37 @@ export function buildSpeciesMediaStack(
       out.push({
         url: sized,
         kind: 'catalog',
-        // Highest: product must show real photos, never brand plates
-        rank: 140,
+        rank: catalogRank,
         sameOrigin: false,
       })
-      // Fallback if sized thumb 404s (some Commons files lack certain px sizes)
-      if (sized !== cat) {
+      // Alternate allowed sizes if first fails
+      if (quality !== 'display') {
         out.push({
           url: upgradePhotoUrl(cat, 'display'),
           kind: 'catalog',
-          rank: 135,
+          rank: catalogRank - 3,
           sameOrigin: false,
         })
+      }
+      if (quality !== 'thumb') {
+        out.push({
+          url: upgradePhotoUrl(cat, 'thumb'),
+          kind: 'catalog',
+          rank: catalogRank - 5,
+          sameOrigin: false,
+        })
+      }
+      // Raw URL last among remotes (may 429 on full files — still better than plate)
+      if (sized !== cat) {
         out.push({
           url: cat,
           kind: 'catalog',
-          rank: 132,
+          rank: catalogRank - 8,
           sameOrigin: false,
         })
       }
     }
   }
-
-  // 2) Local same-origin pack (real derivatives when present; Vite 404s stubs for cascade)
-  out.push({
-    url: speciesImageUrl(slug, 'detail'),
-    kind: 'detail',
-    rank: 90,
-    sameOrigin: true,
-  })
-  out.push({
-    url: speciesImageUrl(slug, 'card'),
-    kind: 'card',
-    rank: 85,
-    sameOrigin: true,
-  })
 
   // 3) Local gallery multi-view (01…n)
   for (let i = 1; i <= maxG; i++) {
@@ -220,6 +241,8 @@ export function mediaStackWithTerminal(
     maxCandidates?: number
     /** Remote size — default thumb for encyclopedia grids */
     quality?: PhotoDisplayQuality
+    /** Prefer /media first (encyclopedia) */
+    preferLocal?: boolean
   },
 ): MediaCandidate[] {
   const base = uniqueMediaStack(
@@ -227,6 +250,7 @@ export function mediaStackWithTerminal(
       maxGallery: opts?.maxGallery ?? 3,
       includeCatalog: opts?.includeCatalog !== false,
       quality: opts?.quality ?? 'thumb',
+      preferLocal: opts?.preferLocal,
     }),
   )
   const limited =
