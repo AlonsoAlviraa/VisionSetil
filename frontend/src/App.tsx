@@ -16,13 +16,19 @@ import {
   isBetaExternalForm,
   isBetaMailto,
 } from './lib/betaFeedback'
-/** D-16: Home stays eager for FCP; all other product routes are lazy. */
+/**
+ * Primary nav routes are EAGER — avoids "Failed to fetch dynamically imported module"
+ * when Vite restarts mid-session (bottom-nav destinations must never blank the app).
+ */
 import { HomePage } from './pages/HomePage'
+import { IdentifyPage } from './pages/IdentifyPage'
+import { EncyclopediaPage } from './pages/EncyclopediaPage'
+import { GamesHubPage } from './pages/GamesHubPage'
+import { MoreHubPage } from './pages/MoreHubPage'
+import SpainMapPage from './pages/SpainMapPage'
 
 /**
- * Lazy import with retries — Vite "Failed to fetch dynamically imported module"
- * happens when the dev server restarts or a tab stays open after HMR death.
- * One soft retry, then one full reload of the chunk URL (bust cache).
+ * Secondary routes stay lazy with retries (dev-server blips / HMR death).
  */
 function lazyPage<T extends React.ComponentType<unknown>>(
   loader: () => Promise<{ default: T } | Record<string, T>>,
@@ -39,12 +45,10 @@ function lazyPage<T extends React.ComponentType<unknown>>(
     try {
       return await load()
     } catch (first) {
-      // brief pause for Vite to come back
-      await new Promise((r) => setTimeout(r, 400))
+      await new Promise((r) => setTimeout(r, 500))
       try {
         return await load()
       } catch {
-        // Last resort: hard navigation so the browser refetches index + modules
         if (typeof window !== 'undefined' && !sessionStorage.getItem('vs-lazy-reload')) {
           sessionStorage.setItem('vs-lazy-reload', '1')
           window.location.reload()
@@ -56,11 +60,8 @@ function lazyPage<T extends React.ComponentType<unknown>>(
   })
 }
 
-const IdentifyPage = lazyPage(() => import('./pages/IdentifyPage'), 'IdentifyPage')
-const EncyclopediaPage = lazyPage(() => import('./pages/EncyclopediaPage'), 'EncyclopediaPage')
 const SpeciesDetailPage = lazyPage(() => import('./pages/SpeciesDetailPage'), 'SpeciesDetailPage')
 const EducationPage = lazyPage(() => import('./pages/EducationPage'), 'EducationPage')
-const SpainMapPage = lazyPage(() => import('./pages/SpainMapPage'))
 const HistoryPage = lazyPage(() => import('./pages/HistoryPage'), 'HistoryPage')
 const ExpertReviewPage = lazyPage(() => import('./pages/ExpertReviewPage'), 'ExpertReviewPage')
 const LoginPage = lazyPage(() => import('./pages/LoginPage'), 'LoginPage')
@@ -74,8 +75,6 @@ const MushroomWordlePage = lazyPage(() => import('./pages/MushroomWordlePage'), 
 const NotFoundPage = lazyPage(() => import('./pages/NotFoundPage'), 'NotFoundPage')
 const MlDashboardPage = lazyPage(() => import('./pages/MlDashboardPage'), 'MlDashboardPage')
 const BetaFeedbackPage = lazyPage(() => import('./pages/BetaFeedbackPage'), 'BetaFeedbackPage')
-const GamesHubPage = lazyPage(() => import('./pages/GamesHubPage'), 'GamesHubPage')
-const MoreHubPage = lazyPage(() => import('./pages/MoreHubPage'), 'MoreHubPage')
 
 function PageFallback() {
   return (

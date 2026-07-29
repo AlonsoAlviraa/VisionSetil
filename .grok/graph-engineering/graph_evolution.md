@@ -1802,3 +1802,18 @@ Operator executes checklist (not autonomous). S9 traffic after deploy. E21 optio
 ### Policy
 orientation only · never product_unlock · never forage · no commercial scrape.
 
+
+## v1.14.0-stable-dev-runtime (2026-07-29)
+
+**Trigger:** user — connection refused, GamesHub dynamic import fail, servers dying with agent jobs.
+
+### Shipped
+- `scripts/dev-watchdog.ps1`: polls health every 4s; restarts API/App/Web if down; logs to `logs/dev-watchdog.log`.
+- `scripts/start-watchdog.vbs` + `start-visionsetil.bat`: fully detached start (survives IDE/agent).
+- Primary nav **eager** (Home, Identify, Encyclopedia, Games, Map, More) — eliminates failed dynamic import on main tabs.
+- Secondary routes: lazy + retry + hard reload on chunk fetch fail.
+- `npm run preview:app` / `stable` for production-like local serve.
+
+### Policy
+orientation only · never product_unlock · never forage.
+

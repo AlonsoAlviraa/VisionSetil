@@ -11,20 +11,21 @@
 | O6 | Unlock decision | Operator |
 | O7 | Kew CSV | Operator |
 
-## Residual audit (v1.13.0) — SHIPPED this cycle
+## Residual audit (v1.13.0) — SHIPPED
 
 | # | Item | Status |
 |---|------|--------|
-| R1 | CA/EU locale key parity (was ~54%) | **SHIPPED** (auto-fill; native polish residual) |
-| R2 | Segmented ErrorBoundary per route | **SHIPPED** |
-| R3 | Product aria-labels via i18n | **SHIPPED** |
-| R4 | Mojibake ModelInsights + MultiViewWizard | **SHIPPED** |
-| R5 | Lazy speciesPhotos.json hydrate | **SHIPPED** |
-| R6 | DocumentTitle full route table | **SHIPPED** |
-| R7 | Rate limiter in-memory lock | **SHIPPED** |
-| R8 | SQLite busy_timeout = connect timeout | **SHIPPED** |
-| R9 | Alembic baseline | **SHIPPED** |
-| R10 | Canonical API error handlers | **SHIPPED** |
+| R1–R10 | CA/EU, ErrorBoundary, a11y, mojibake, photos lazy, DocumentTitle, rate lock, SQLite, Alembic, errors | **SHIPPED** |
+
+## Runtime stability (v1.14.0) — SHIPPED this cycle
+
+| # | Item | Status |
+|---|------|--------|
+| S1 | Windows watchdog keeps 8000/5173/5174 alive | **SHIPPED** |
+| S2 | start-visionsetil.bat + VBS detach | **SHIPPED** |
+| S3 | Eager bottom-nav routes (no dynamic GamesHub fail) | **SHIPPED** |
+| S4 | Lazy retry + ErrorBoundary hard reload | **SHIPPED** |
+| S5 | npm preview:app / stable scripts | **SHIPPED** |
 
 ## Product FE (Campo nocturno)
 
