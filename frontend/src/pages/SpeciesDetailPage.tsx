@@ -365,7 +365,6 @@ export function SpeciesDetailPage() {
         </dl>
       ) : null}
 
-      <section
       {/* Index Fungorum nomenclature panel (Kew) */}
       {ifNomen?.ok && ifNomen.best ? (
         <section

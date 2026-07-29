@@ -42,6 +42,19 @@ describe('no 3D model studio on primary product surfaces', () => {
     expect(scene).not.toMatch(/Vista 3D|WebGL|three\.js|canvas.*3d/i)
   })
 
+  it('PhotoSpinViewer is a null stub (no 360 turntable / fake 3D studio)', () => {
+    const spin = read('components/PhotoSpinViewer.tsx')
+    expect(spin).toMatch(/return null/)
+    expect(spin).not.toMatch(/resolveSpinPhotoSet|frameIndexFromDrag/)
+    expect(spin).not.toMatch(/dragging|preloadImages|useState/)
+  })
+
+  it('mycology placeholder is flat text plate, not mushroom geometry', () => {
+    const ph = read('data/mycologyPlaceholder.ts')
+    expect(ph).toMatch(/Sin foto real/)
+    expect(ph).not.toMatch(/ellipse cx=|circle cx=.*r=48/)
+  })
+
   it('TiltCard3D is flat passthrough without preserve-3d class', () => {
     const tilt = read('components/TiltCard3D.tsx')
     expect(tilt).toMatch(/@deprecated|Flat passthrough|flat/i)
