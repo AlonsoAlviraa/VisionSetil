@@ -1428,6 +1428,184 @@ button[aria-pressed='true'] {
 .ency-group-toggle-row {
   margin: 0.75rem 0;
 }
+
+/* ── Featured species grid (v1.11 — photo-first Home showcase) ─────────── */
+.featured-species-grid {
+  margin: 0 0 1.25rem;
+}
+.featured-species-grid__head {
+  margin-bottom: 0.85rem;
+}
+.featured-species-grid__kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0 0 0.25rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cn-moss);
+}
+.featured-species-grid__kicker .cn-icon {
+  font-size: 16px;
+  color: var(--cn-moss);
+}
+.featured-species-grid__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  color: var(--cn-cream);
+}
+.featured-species-grid .species-photo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+}
+
+/* ── Games hub: study progress + deadly confusions (v1.11) ─────────────── */
+.games-study-panel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.1rem 1.25rem !important;
+  margin: 0 var(--cn-gutter) 1rem;
+  border-radius: var(--cn-radius-lg);
+}
+.games-study-panel__streak {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.games-study-panel__streak .cn-icon {
+  color: #e8c17a;
+}
+.games-study-panel__streak-num {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--cn-cream);
+}
+.games-study-panel__streak-label {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--cn-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.games-study-panel__stats {
+  display: flex;
+  gap: 1.25rem;
+  margin-left: auto;
+}
+.games-study-panel__stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.games-study-panel__stat-num {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  color: var(--cn-moss-bright);
+}
+.games-study-panel__stat-label {
+  font-size: 0.68rem;
+  color: var(--cn-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.games-study-panel__hint,
+.games-study-panel__best {
+  flex-basis: 100%;
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--cn-muted);
+}
+.games-study-panel__best {
+  color: var(--cn-moss);
+  font-weight: 600;
+}
+
+/* Deadly confusions block */
+.games-deadly-block {
+  margin: 1.25rem var(--cn-gutter) 1rem;
+}
+.games-deadly-block__head {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  margin-bottom: 0.85rem;
+}
+.games-deadly-block__head .cn-icon {
+  color: var(--cn-danger);
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+}
+.games-deadly-block__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+}
+.games-deadly-block__lead {
+  margin: 0.15rem 0 0;
+  font-size: 0.82rem;
+  color: var(--cn-muted);
+}
+.games-deadly-block__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.games-deadly-block__item {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--cn-radius-lg);
+  overflow: hidden;
+}
+.games-deadly-block__item.risk-deadly {
+  border-color: rgba(147, 0, 10, 0.35);
+}
+.games-deadly-block__link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.85rem;
+  text-decoration: none;
+  color: var(--cn-cream);
+}
+.games-deadly-block__media {
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--cn-radius);
+  overflow: hidden;
+  flex-shrink: 0;
+  position: relative;
+}
+.games-deadly-block__img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+.games-deadly-block__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  flex: 1;
+  min-width: 0;
+}
+.games-deadly-block__taxon {
+  font-family: var(--font-serif);
+  font-size: 0.9rem;
+  color: var(--cn-cream);
+}
+.games-deadly-block__link > .cn-icon {
+  color: var(--cn-muted);
+  flex-shrink: 0;
+}
 .ency-group-toggle {
   display: inline-flex;
   align-items: center;
@@ -1616,7 +1794,8 @@ button[aria-pressed='true'] {
   line-height: 1.4;
 }
 
-.page-encyclopedia--cn .species-photo-card {
+/* Encyclopedia / featured cards — full mushroom visible (no mid-crop) */
+.species-photo-card {
   overflow: hidden;
   padding: 0 !important;
   display: flex;
@@ -1624,22 +1803,52 @@ button[aria-pressed='true'] {
   text-decoration: none !important;
   color: inherit !important;
   position: relative;
+  background: var(--cn-surface) !important;
+  border: 1px solid var(--cn-outline-soft) !important;
+  border-radius: var(--cn-radius-lg) !important;
 }
 
-.page-encyclopedia--cn .species-photo-card__frame {
+.species-photo-card__frame {
   position: relative;
   width: 100%;
-  aspect-ratio: 1 / 1.05 !important;
+  /* Portrait: better for setas standing upright */
+  aspect-ratio: 4 / 5 !important;
+  overflow: hidden;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 55%, rgba(143, 188, 143, 0.08), transparent 70%),
+    linear-gradient(165deg, #1c241d 0%, #0f1410 100%) !important;
+}
+
+.species-photo-card__img {
+  width: 100% !important;
+  height: 100% !important;
+  /* contain = entire photo visible; cover was cutting caps/stems */
+  object-fit: contain !important;
+  object-position: center center !important;
+  display: block;
+  background: transparent !important;
+}
+
+.page-encyclopedia--cn .species-photo-card,
+.featured-species-grid .species-photo-card {
   overflow: hidden;
 }
 
-.page-encyclopedia--cn .species-photo-card__img {
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: cover !important;
-  display: block;
+.page-encyclopedia--cn .species-photo-card__frame,
+.featured-species-grid .species-photo-card__frame {
+  aspect-ratio: 4 / 5 !important;
 }
 
+.page-encyclopedia--cn .species-photo-card__img,
+.featured-species-grid .species-photo-card__img {
+  object-fit: contain !important;
+  object-position: center center !important;
+}
+
+.species-photo-card__chips,
 .page-encyclopedia--cn .species-photo-card__chips {
   position: absolute;
   top: 0.45rem;
@@ -1647,8 +1856,24 @@ button[aria-pressed='true'] {
   z-index: 2;
 }
 
+.species-photo-card__angles {
+  position: absolute;
+  right: 0.4rem;
+  bottom: 0.4rem;
+  z-index: 2;
+  padding: 0.2rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  background: rgba(10, 15, 11, 0.72);
+  color: var(--cn-cream);
+  border: 1px solid rgba(143, 188, 143, 0.25);
+  cursor: pointer;
+}
+
+.species-photo-card__body,
 .page-encyclopedia--cn .species-photo-card__body {
-  padding: 0.5rem 0.55rem 0.7rem;
+  padding: 0.55rem 0.6rem 0.75rem;
 }
 
 .page-encyclopedia--cn .ency-toolbar,
@@ -1839,59 +2064,116 @@ button[aria-pressed='true'] {
   padding: 1.15rem !important;
 }
 
-/* ── Footer: compact, not a wall of links ───────────────────────────────── */
+/* ── Footer: centered, hierarchical, links visible as pills ────────────── */
 .footer,
 .footer--v16 {
   width: 100% !important;
   max-width: none !important;
   margin: 0 !important;
-  background: transparent !important;
-  border-top: 1px solid var(--cn-outline-soft) !important;
+  background: var(--cn-surface-low) !important;
+  border-top: 1px solid var(--glass-border) !important;
   color: var(--cn-muted) !important;
-  font-size: 0.72rem !important;
-  padding: 0.85rem var(--cn-gutter) calc(0.5rem + env(safe-area-inset-bottom, 0px)) !important;
+  font-family: var(--font-serif) !important;
+  font-size: 0.78rem !important;
+  line-height: 1.5;
+  padding: 1.75rem var(--cn-gutter) calc(1.25rem + env(safe-area-inset-bottom, 0px)) !important;
   order: 99;
   box-sizing: border-box !important;
+  text-align: center;
 }
 
 .footer-content {
-  max-width: none;
-  margin: 0;
+  max-width: var(--cn-shell, 30rem);
+  margin: 0 auto;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
 }
 
 .footer-brand {
   font-family: var(--font-display) !important;
-  color: var(--cn-moss-bright) !important;
-  font-size: 0.95rem !important;
-  margin: 0 0 0.25rem !important;
+  color: var(--cn-cream) !important;
+  font-size: 1.15rem !important;
+  letter-spacing: 0.02em;
+  margin: 0 !important;
 }
 
 .footer a {
   color: var(--cn-moss-bright) !important;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+.footer a:hover {
+  color: var(--cn-cream) !important;
 }
 
+/* Disclaimer paragraph */
+.footer-content > p:not(.footer-brand):not(.footer-meta):not(.footer-links) {
+  margin: 0 !important;
+  max-width: 22rem;
+  color: var(--cn-on-surface-variant) !important;
+  line-height: 1.45;
+}
+
+/* Links: visible centered pill grid */
 .footer-links {
-  /* keep in DOM for tests; collapse visually */
-  position: absolute !important;
-  width: 1px !important;
-  height: 1px !important;
-  overflow: hidden !important;
-  clip: rect(0, 0, 0, 0) !important;
+  position: static !important;
+  width: auto !important;
+  height: auto !important;
+  overflow: visible !important;
+  clip: auto !important;
+  display: flex !important;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem 0.5rem;
+  margin: 0.35rem 0 0.15rem !important;
+  max-width: 24rem;
+}
+.footer-links a {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--cn-radius-full);
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--cn-on-surface-variant) !important;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+.footer-links a:hover {
+  background: rgba(143, 188, 143, 0.14);
+  color: var(--cn-moss-bright) !important;
+  transform: translateY(-1px);
 }
 
 .footer-meta,
 .footer-multiview-note,
 .footer-if-attribution {
   font-size: 0.68rem;
-  line-height: 1.35;
-  opacity: 0.8;
-  margin: 0.3rem 0 0 !important;
+  line-height: 1.4;
+  opacity: 0.75;
+  margin: 0.15rem 0 0 !important;
+  max-width: 22rem;
 }
 
-.footer-content > p:not(.footer-brand):not(.footer-meta) {
-  margin: 0.25rem 0 !important;
-  line-height: 1.35;
+.footer-multiview-note {
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--glass-border);
+  margin-top: 0.5rem !important;
+  color: var(--cn-secondary);
+}
+
+.footer-if-attribution a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.footer-meta:last-child {
+  font-family: var(--font-display);
+  letter-spacing: 0.04em;
+  color: var(--cn-outline);
 }
 
 /* Banners */
@@ -2854,4 +3136,149 @@ html[data-skin='campo-nocturno'] .container {
   color: var(--cn-cream) !important;
   border: 1px solid var(--glass-border) !important;
   border-radius: var(--cn-radius-lg) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   v1.12 — IDENTIFY FLOW SIMPLIFICATION (industry pattern: camera-first, minimal text)
+   Centralize honesty into ONE persistent warn-strip; collapse the 7 redundant
+   repetitions. Logic stays in the DOM (tests read source), only visuals change.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* 1. Hide the 3-step flow nav (Estado → Captura → Resultado) — redundant */
+.page-identify .identify-flow-steps {
+  display: none !important;
+}
+
+/* 2. Compact the header: keep title, hide lead paragraph + chips + pro-check.
+   Honesty is already in the persistent warn-strip above. */
+.page-identify .identify-cn-head > p:not(.mkt-kicker) {
+  /* lead paragraph — collapse to sr-only (text stays for tests) */
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+.page-identify .identify-cn-head .mkt-page-head__chips {
+  display: none !important;
+}
+.page-identify .identify-pro-check {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* 3. Collapse redundant honesty notes (capture density policy, field-holdout,
+   ECE) — keep DOM for tests, hide visually. The warn-strip covers the policy. */
+.page-identify .identify-capture-density__policy,
+.page-identify .home-field-holdout-note,
+.page-identify .result-ece-sticky {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* 4. Collapse wizard stacked coaches into a compact summary.
+   Keep the density chip (useful signal), hide the wall of coach text. */
+.page-identify .mv-coach,
+.page-identify .mv-coach-deadly,
+.page-identify .mv-quality-hint,
+.page-identify .mv-progress-line {
+  font-size: 0.78rem !important;
+  opacity: 0.85;
+  padding: 0.5rem 0.75rem !important;
+  margin: 0.35rem 0 !important;
+}
+
+/* 5. Compact preflight banner — collapse verbose detail, keep mode chip */
+.page-identify .preflight-banner {
+  padding: 0.6rem 0.85rem !important;
+  margin-bottom: 0.5rem !important;
+}
+.page-identify .preflight-banner__title {
+  font-size: 0.82rem !important;
+  margin: 0 !important;
+}
+.page-identify .preflight-banner__detail,
+.page-identify .preflight-banner__metrics-warning,
+.page-identify .preflight-multiview-tip {
+  font-size: 0.72rem !important;
+  opacity: 0.7;
+  margin: 0.2rem 0 0 !important;
+}
+
+/* 6. Sticky analyze bar — CTA always reachable once there's ≥1 photo.
+   Applies to both wizard and free mode analyze-actions. */
+.page-identify .analyze-actions {
+  position: sticky !important;
+  bottom: 0;
+  z-index: 40;
+  background: linear-gradient(180deg, transparent 0%, var(--cn-bg) 35%) !important;
+  padding: 0.75rem 0 calc(0.5rem + env(safe-area-inset-bottom, 0px)) !important;
+  margin-top: 0.5rem !important;
+}
+.page-identify .analyze-actions .btn-atelier--primary,
+.page-identify .analyze-actions .cn-btn--primary,
+.page-identify .analyze-actions [data-testid='identify-analyze'] {
+  width: 100%;
+  min-height: 3rem !important;
+  font-size: 1.05rem !important;
+  font-weight: 700 !important;
+  border-radius: var(--cn-radius-lg) !important;
+}
+
+/* 7. Mode toggle — make guided mode an inviting secondary option */
+.page-identify .capture-mode-toggle {
+  display: flex !important;
+  gap: 0.4rem;
+  margin: 0.5rem 0 !important;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--cn-radius-full);
+  padding: 0.3rem;
+  width: fit-content;
+}
+.page-identify .capture-mode-toggle button {
+  border: none !important;
+  background: transparent !important;
+  color: var(--cn-muted) !important;
+  padding: 0.5rem 1rem !important;
+  border-radius: var(--cn-radius-full) !important;
+  font-size: 0.82rem !important;
+  font-weight: 600 !important;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.page-identify .capture-mode-toggle button.active,
+.page-identify .capture-mode-toggle button[aria-pressed='true'] {
+  background: var(--cn-moss) !important;
+  color: var(--cn-on-moss) !important;
+}
+
+/* 8. Wizard slots — compact framing guides (icon instead of 2 sentences) */
+.page-identify .mv-slot__guide,
+.page-identify .wizard-slot__guide {
+  font-size: 0.72rem !important;
+  max-height: 2.5rem;
+  overflow: hidden;
+}
+.page-identify .mv-hint {
+  font-size: 0.72rem !important;
+  opacity: 0.7;
 }

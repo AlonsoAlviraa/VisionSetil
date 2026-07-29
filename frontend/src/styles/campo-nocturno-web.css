@@ -655,6 +655,20 @@
   padding: 0.55rem 1.2rem !important;
 }
 
+/* v1.11: featured species grid — wider on web */
+.app--mode-web .featured-species-grid .species-photo-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 1.15rem !important;
+}
+.app--mode-web .featured-species-grid__title {
+  font-size: clamp(1.85rem, 3vw, 2.6rem) !important;
+}
+.app--mode-web .cn-home-featured {
+  max-width: var(--cn-content-wide);
+  margin: 0 auto var(--web-space-section) !important;
+  padding: 0 var(--cn-gutter) !important;
+}
+
 .app--mode-web .family-guide-strip__grid {
   grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr)) !important;
   gap: 1.15rem !important;
@@ -705,23 +719,34 @@
   border-radius: var(--web-radius) !important;
 }
 
-/* Footer: airy, short */
+/* Footer: centered, airy, hierarchical on web */
 .app--mode-web .footer,
 .app--mode-web .footer--v16 {
   max-width: none !important;
   margin-top: 2rem !important;
-  padding: 2.5rem var(--cn-gutter) 3rem !important;
+  padding: 2.75rem var(--cn-gutter) 3rem !important;
   border-top: 1px solid var(--glass-border) !important;
+  background: var(--cn-surface-low) !important;
   font-family: var(--font-serif) !important;
   font-size: 0.88rem !important;
+  text-align: center;
 }
 
 .app--mode-web .footer-content {
-  max-width: none !important;
+  max-width: var(--cn-content-narrow) !important;
   width: 100% !important;
-  margin: 0 !important;
+  margin: 0 auto !important;
   padding: 0 !important;
   box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 0.7rem !important;
+}
+
+.app--mode-web .footer-content > p:not(.footer-brand):not(.footer-meta):not(.footer-links) {
+  max-width: 30rem !important;
+  color: var(--cn-on-surface-variant) !important;
 }
 
 .app--mode-web .footer-links {
@@ -732,28 +757,46 @@
   clip: auto !important;
   display: flex !important;
   flex-wrap: wrap;
-  gap: 0.75rem 1.5rem;
-  margin: 1rem 0 0.75rem;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  margin: 0.5rem 0 0.25rem !important;
 }
 
 .app--mode-web .footer-links a {
+  display: inline-block;
+  padding: 0.45rem 1rem !important;
+  border-radius: var(--cn-radius-full) !important;
+  background: var(--glass) !important;
+  border: 1px solid var(--glass-border) !important;
   color: var(--cn-on-surface-variant) !important;
-  text-decoration: none;
-  transition: color 0.15s ease;
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
 }
 .app--mode-web .footer-links a:hover {
+  background: rgba(143, 188, 143, 0.14) !important;
   color: var(--cn-moss-bright) !important;
+  transform: translateY(-1px);
 }
 
 .app--mode-web .footer-brand {
   font-family: var(--font-display) !important;
-  font-size: 1.25rem !important;
+  font-size: 1.5rem !important;
   color: var(--cn-cream) !important;
+  letter-spacing: 0.02em;
+}
+
+.app--mode-web .footer-multiview-note {
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--glass-border);
+  max-width: 30rem !important;
+  color: var(--cn-secondary) !important;
 }
 
 .app--mode-web .footer-meta {
-  max-width: 36rem;
-  opacity: 0.7;
+  max-width: 30rem;
+  opacity: 0.75;
 }
 
 /* ── Responsive web ─────────────────────────────────────────────────────── */
@@ -870,13 +913,27 @@
   gap: 0.75rem;
 }
 
-/* Encyclopedia cards — consistent aspect + hover lift on web */
+/* Encyclopedia cards — full photo visible + soft hover on web */
 .app--mode-web .species-photo-card {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 .app--mode-web .species-photo-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-3px);
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+  border-color: rgba(143, 188, 143, 0.35) !important;
+}
+.app--mode-web .species-photo-card__frame {
+  aspect-ratio: 4 / 5 !important;
+  min-height: 11rem;
+}
+.app--mode-web .species-photo-card__img {
+  object-fit: contain !important;
+  object-position: center center !important;
+}
+/* Do not zoom-crop on hover (atelier scale was cutting photos) */
+.app--mode-web .species-photo-card:hover .species-photo-card__img,
+.app--mode-web .species-photo-card:hover .species-photo-card__media img {
+  transform: none !important;
 }
 
 /* Setadle / Wordle — center game board on web */

@@ -41,8 +41,8 @@ export function SpeciesPhotoCard({ species, priority = false }: Props) {
         includeCatalog: true,
         riskLabel: species.risk_label,
         maxCandidates: 4,
-        // Encyclopedia grid: small remotes (320/small) so cards paint fast
-        quality: 'thumb',
+        // Medium remotes: sharp enough in portrait contain frames, still light
+        quality: 'display',
       }),
     [species.taxon, species.risk_label],
   )
@@ -85,7 +85,8 @@ export function SpeciesPhotoCard({ species, priority = false }: Props) {
 
   return (
     <Link to={`/enciclopedia/${species.slug}`} className="species-photo-card">
-      <div className="species-photo-card__frame" style={{ aspectRatio: '1/1', overflow: 'hidden' }}>
+      {/* Portrait frame + contain (CSS) so mushrooms are not cropped mid-body */}
+      <div className="species-photo-card__frame">
         <img
           key={useInline ? 'inline' : current?.url || 'fb'}
           src={src}
@@ -95,7 +96,7 @@ export function SpeciesPhotoCard({ species, priority = false }: Props) {
           decoding={priority ? 'sync' : 'async'}
           {...(priority ? { fetchPriority: 'high' as const } : {})}
           referrerPolicy="no-referrer"
-          sizes="(max-width: 600px) 45vw, 200px"
+          sizes="(max-width: 600px) 48vw, (max-width: 1100px) 22vw, 240px"
           onError={useInline || terminalSrc ? undefined : onError}
           data-media-kind={
             useInline || terminalSrc ? 'illustration' : current?.kind || 'illustration'
