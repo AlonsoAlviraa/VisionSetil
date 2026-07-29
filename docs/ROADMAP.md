@@ -1,189 +1,162 @@
 # ROADMAP — VisionSetil
 
-> Documento vivo. Se actualiza al final de cada sprint.
+> Documento vivo. **Canon de estado:** `.grok/graph-engineering/STATE.md`.  
+> Última alineación: **2026-07-29** · graph **`v1.9.9-s9-log-schema`** (+ process sync docs).  
+> Policy forever: `orientation_only` · **product_unlock = false** hasta ciclo operador humano.
 
 ---
 
-## Phase E — Quality + AuthZ + depth (active)
+## 0. Norte actual (léeme primero)
 
 | Campo | Valor |
-| --- | --- |
-| **Estado** | **En curso / closeout en árbol** (post audit + Phase D) |
-| **Doc** | [`docs/PHASE_E_QUALITY_AUTHZ.md`](./PHASE_E_QUALITY_AUTHZ.md) |
-| **Horizonte** | ~3–4 semanas · E-00…E-18 |
-| **Foco** | CI verde, AuthZ observations/reviews/uploads, token hash, encyc perf, media honesty |
-| **Rama** | `merge/best-of-both` |
+|-------|--------|
+| **Graph version** | `v1.9.9` (S9 log schema shipped) |
+| **ML serve protocol** | E20 source-holdout · MultiView v8 · 40 classes |
+| **Soft gates E20** | MAP@3 ≈ **0.860** PASS · deadly@3 ≈ **0.927** PASS |
+| **product_unlock** | **false** (`unlock_eligible_advisory` only) |
+| **Producto** | Beta-ready en código · residual **operador** (deploy + form + cohorte) |
+| **E21** | Readiness only · **no lanzado** |
 
-| Track | Entrega | Estado |
-| --- | --- | --- |
-| **T0–T1** | Audit ship + vitest/CI | ✅ |
-| **T2** | AuthZ observations + review roles + auth uploads + token hash | ✅ |
-| **T3** | HttpOnly cookies | ⏳ deferred |
-| **T4** | Encyc debounce + page 12 + catalog v2-only | ✅ |
-| **T5–T7** | Media residual / ML ops / product polish | 🔄 partial |
+### Métricas E20 honestas (no inventar otras en docs)
+
+| Key | Value |
+|-----|------:|
+| test_map_at_3 | ~0.860 |
+| safety_recall_deadly_at_1 | ~0.788 |
+| safety_recall_deadly_at_3 | ~0.927 |
+| n_deadly | 2580 |
+| ECE | ~0.188 (band **high**) |
+| Field holdout MAP@3 1→4 | ~0.85 → ~0.92 (deadly subset flat caveat) |
+
+Fuentes: `kaggle/kernel_output_v20/models/metrics.json` (local), `eval/reports/ml_experiments/e20_unlock_eval.json`, `field_multiview_holdout.json`.
+
+### Residual priorizado
+
+| # | Item | Owner | Doc |
+|---|------|-------|-----|
+| O1 | Deploy preview HTTPS (Path A Caddy) | **Operador** | `HOSTING_DEPLOY_BETA.md` |
+| O2 | `VITE_PUBLIC_APP_URL` + `VITE_BETA_FEEDBACK_URL` | **Operador** | `GTM_BETA_COHORT.md` |
+| O3 | Smoke Identify real en URL pública | **Operador** | `OPERATOR_BETA_CHECKLIST.md` |
+| O4 | Cohorte 20–40 (try ~10 min) | **Operador** | `GTM_BETA_COHORT.md` |
+| O5 | Unlock decision (si aplica; sigue orientation-only) | **Operador** | `OPERATOR_UNLOCK_RUNBOOK.md` |
+| O6 | Kew / CSV oficial IF (opcional) | **Operador** | `INDEX_FUNGORUM.md` |
+| M1 | Crecer S9 con tráfico Identify real | Producto + ops | schema v1.9.9 listo |
+| M4 | Holdout view-slots etiquetados | ML | necesita FT media local |
+| E21 | Scale holdout opcional | Operador GPU | `E21_SCALE_PLAN.md` |
+
+Checklist ejecutable: **`docs/OPERATOR_BETA_CHECKLIST.md`**.
 
 ---
 
-## Phase D — Funciones + belleza visual (shipped MVP mes)
+## 1. Graph Engineering — qué está shipped (v1.0 → v1.9.9)
+
+Resumen por franja (detalle en `.grok/graph-engineering/graph_evolution.md`):
+
+| Rango | Entrega |
+|-------|---------|
+| **v1.0–1.3** | Workflows, lookalike SSOT, dual deadly honesty, E20 complete + postprocess + serve path |
+| **v1.3.x** | Open-set calibrado, ArcFace centroids, S8/S9, dashboard v20, feedback JSONL |
+| **v1.4.x** | Multiview bench, LOO field, deadly diagnostic map, ResultCard critical_views |
+| **v1.5.x** | Beta try-first, GTM kit, hosting decision, operator unlock package, multiview honesty global |
+| **v1.6–1.8** | Traits, soft coach, GPS pins, camera framing, community consensus, capture density |
+| **v1.9.x** | Index Fungorum, model card Kew, ECE chrome Identify, field holdout M3, S9 schema |
+
+**No reabrir** como “próximo sprint” lo que ya figura SHIPPED en STATE/BACKLOG (P15–P19, M2–M3, ECE, S9 schema).
+
+---
+
+## 2. Fases históricas (cerradas — no “active”)
+
+### Phase E — Quality + AuthZ (shipped / closeout)
 
 | Campo | Valor |
-| --- | --- |
-| **Estado** | **W1–W4 entregado** (post A/B/C MVP) — closeout en doc |
-| **Doc** | [`docs/PHASE_D_30D_FEATURES_AND_BEAUTY.md`](./PHASE_D_30D_FEATURES_AND_BEAUTY.md) |
-| **Horizonte** | 30 días · ~18 PRs (D-01…D-18) |
-| **Foco** | Design system unificado, polish top surfaces, notebook/quiz/mapa/offline, PWA/a11y |
-| **Fuera de foco residual** | Crawl masivo `ok_real` (opcional); D-13 community light |
-| **Rama** | `merge/best-of-both` |
+|-------|--------|
+| **Estado** | **Cerrada en árbol de producto** (CI, AuthZ, encyc, media honesty base) |
+| **Doc** | `docs/PHASE_E_QUALITY_AUTHZ.md` |
+| **Nota** | Residual E-08 cookies sigue opt-in; no bloquea beta orientation |
 
-| Semana | Entrega | Estado |
-| --- | --- | --- |
-| **W1** | Tokens, UI kit, Home media path, Encyc skeletons, media badges | ✅ |
-| **W2** | Detail tabs, lookalikes, Identify density, i18n chrome | ✅ |
-| **W3** | Notebook v2, Quiz daily, Mapa hotspots | ✅ |
-| **W4** | Offline season pack, PWA install/icons, perf routes, a11y skip, docs | ✅ |
+### Phase D — Features + belleza (shipped)
 
----
+| Campo | Valor |
+|-------|--------|
+| **Estado** | **W1–W4 entregado** |
+| **Doc** | `docs/PHASE_D_30D_FEATURES_AND_BEAUTY.md` |
 
-## Estado Actual — Fase 7 (Frontend MVP + Mega Training + Seguridad)
+### Phase B/C y “Fase 7” legacy
 
-### ✅ Logros del sprint
+Documentadas en sus PHASE_*.md. Las métricas antiguas (MAP@3 ~0.07, Identify “blocked”) **ya no son el baseline** — superadas por E20 + quality gate ACCEPTABLE en métricas.
 
-| Área                     | Entregable                                                        | Estado |
-| ------------------------ | ----------------------------------------------------------------- | ------ |
-| **Configuración**        | Migración a `pydantic-settings`, `.env.example`, `docs/configuration.md` | ✅ |
-| **Seguridad**            | Validación magic bytes en uploads, anti path traversal, tests de seguridad | ✅ |
-| **Seguridad**            | Security headers middleware (HSTS, CSP, X-Frame-Options, XSS) + API key auth + rate limiting | ✅ |
-| **Observabilidad**       | Request-id middleware, logging JSON estructurado, `/health` + `/readyz` + `/metrics` | ✅ |
-| **CI/CD**                | GitHub Actions matrix (Python 3.11/3.12/3.13), ruff + black + pytest | ✅ |
-| **Contenerización**      | `Dockerfile.cpu` multi-stage, `.dockerignore`, `docker-compose.yml` + `docker-compose.prod.yml` | ✅ |
-| **Frontend**             | React + TypeScript + Vite SPA, PWA offline-first, camera capture, multi-image upload, redesigned UI | ✅ |
-| **Frontend**             | Metadata form (hábitat, sustrato, olor, árboles cercanos), result cards con feedback | ✅ |
-| **Backend**              | `POST /classify` endpoint simplificado (frontend → pipeline completo en 1 llamada) | ✅ |
-| **ML Training**          | Mega Training Pipeline: ConvNeXt/DINOv2/EfficientNet + focal loss + label smoothing | ✅ |
-| **ML Training**          | Métricas FungiCLEF reales: MAP@3, top-k acc, balanced acc, macro/micro F1 | ✅ |
-| **ML Training**          | Anti-leak splitting (observation + session aware), best checkpoint on MAP@3 | ✅ |
-| **Calidad de código**    | Ruff (0 errores en archivos modificados), 101/101 tests pasan     | ✅ |
-| **Documentación**        | README reestructurado, ROADMAP, `configuration.md`, docs técnicos  | ✅ |
+### Sprints N+1…N+4 (texto legacy)
 
-### 📊 Métricas del sprint
+Los ítems genéricos “scaffold frontend / rate limit / MLflow…” del roadmap 2026-07 están **superados o reencuadrados**:
 
-- **Tests:** 101/101 pasando (0 fallos)
-- **Cobertura de linting:** 0 errores de ruff en archivos del backend
-- **Frontend:** TypeScript compila limpio, 103 módulos, bundle 268 KB (86 KB gzip)
-- **Deuda técnica crítica:** Eliminada
+| Legacy | Estado 2026-07-29 |
+|--------|-------------------|
+| FE multi-vista + PWA | **Shipped** (+ soft coach, density, ECE) |
+| Rate limit / API key / security headers | **Shipped** |
+| Modelos reales en serve | **E20 real path** (40 clases) |
+| Calibración open-set | **Shipped** (E20 holdout thr) |
+| MLflow / K8s multi-tenant | **Backlog lejano** (no bloquea beta) |
 
 ---
 
-## Próximos Sprints
+## 3. Próximos tracks (solo residual real)
 
-### Sprint N+1 — Robustez de Modelos y Data Pipeline
+### Track A — Closed beta operador (P0)
 
-**Objetivo:** Cerrar la brecha entre mocks y modelos reales en GPU.
+1. Completar `OPERATOR_BETA_CHECKLIST.md`  
+2. No blast cohorte sin HTTPS estable  
+3. No reclamar forage / edible en invites  
 
-| ID    | Tarea                                                      | Prioridad | Esfuerzo |
-| ----- | ---------------------------------------------------------- | --------- | -------- |
-| ML-1  | Integrar pesos reales de YOLOE-26 en CI (GPU runner)      | Alta      | L        |
-| ML-2  | Fine-tuning de DINOv3 con dataset FungiCLEF 2025           | Alta      | XL       |
-| ML-3  | Construcción de índice de especies con prototypes reales   | Alta      | M        |
-| ML-4  | Calibración de umbrales open-set con dataset de validación | Media     | M        |
-| ML-5  | Benchmark end-to-end en dataset 1.000 observaciones        | Alta      | L        |
-| DP-1  | Pipeline de data augmentation para entrenamiento           | Media     | M        |
-| DP-2  | Versionado de datasets con DVC                             | Baja      | S        |
+### Track B — Live honesty (P1)
 
-**Definition of Done:**
+1. Tráfico Identify → S9 windows 24h/7d/30d con `traffic_depth` > sparse  
+2. Revisar reject reasons + multiview coverage en dashboard  
+3. Mantener ECE high → sin % engañosos en ResultCard  
 
-- Modelos reales cargan en CI sin mock fallbacks.
-- Índice de especies tiene ≥500 especies con prototypes verificados.
-- Benchmark de 1.000 casos ejecuta en <30 min en GPU.
+### Track C — ML scale opcional (P2)
 
----
+1. `python scripts/e21_readiness.py` (advisory)  
+2. Solo operador lanza GPU E21  
+3. Nuevo holdout dual deadly + open-set re-calib; unlock sigue false  
 
-### Sprint N+2 — Frontend MVP y API Gateway
+### Track D — Product polish autónomo (P3)
 
-**Objetivo:** Exponer el pipeline a usuarios finales vía mini-app.
-
-| ID    | Tarea                                                      | Prioridad | Esfuerzo |
-| ----- | ---------------------------------------------------------- | --------- | -------- |
-| FE-1  | Scaffold frontend (React/Vite o Next.js)                   | Alta      | M        |
-| FE-2  | Flujo de captura multi-vista (sombrero, láminas, pie, base) | Alta      | L        |
-| FE-3  | Pantalla de resultados con explicaciones y avisos          | Alta      | M        |
-| FE-4  | Integración con API: upload + classify-advanced            | Alta      | M        |
-| FE-5  | PWA offline-first con cache de observaciones               | Media     | L        |
-| GW-1  | Rate limiting en endpoints de clasificación                | Alta      | S        |
-| GW-2  | API key authentication para acceso externo                 | Media     | M        |
-| GW-3  | WebSocket para progreso de clasificación async              | Baja      | M        |
-
-**Definition of Done:**
-
-- Usuario puede subir fotos y recibir clasificación en <15s.
-- Frontend desplegado en Vercel/Netlify.
-- Rate limiting activo en producción.
+Solo si residual operador no bloquea: residual FE i18n parity, a11y, perf.  
+**Autónomo NUNCA:** deploy prod, form secrets, flip unlock, push E21.
 
 ---
 
-### Sprint N+3 — MLOps y Monitoring en Producción
+## 4. Principios de priorización
 
-**Objetivo:** Observabilidad de modelos en producción y feedback loop.
-
-| ID    | Tarea                                                      | Prioridad | Esfuerzo |
-| ----- | ---------------------------------------------------------- | --------- | -------- |
-| MO-1  | Integrar MLflow para tracking de experimentos              | Alta      | M        |
-| MO-2  | Dashboard de métricas en vivo (Grafana/Prometheus)         | Alta      | L        |
-| MO-3  | Alerting de drift en distribuciones de embedding           | Media     | M        |
-| MO-4  | Pipeline de re-entrenamiento automatizado (CI/CD ML)       | Media     | XL       |
-| MO-5  | A/B testing framework para nuevos modelos                  | Baja      | L        |
-| MO-6  | Data logging para feedback de expertos (human review loop) | Alta      | M        |
+1. Seguridad y honesty de métricas primero  
+2. Fail-closed unlock y language de orientación  
+3. Tráfico real S9 > features cosméticas  
+4. Un ciclo graph = un ship medible + tests + append `graph_evolution.md`  
+5. Docs canónicos (VISION / MEMORY / ROADMAP / STATE) sin time-travel  
 
 ---
 
-### Sprint N+4 — Escalabilidad y Multi-tenant
+## 5. Riesgos actuales
 
-**Objetivo:** Soportar múltiples organizaciones y alta disponibilidad.
-
-| ID    | Tarea                                                      | Prioridad | Esfuerzo |
-| ----- | ---------------------------------------------------------- | --------- | -------- |
-| SC-1  | Migrar a PostgreSQL con connection pooling                 | Alta      | M        |
-| SC-2  | Redis para caché distribuida de embeddings                 | Alta      | M        |
-| SC-3  | Queue asíncrono para clasificación (Celery/RQ)             | Alta      | L        |
-| SC-4  | Multi-tenant: aislamiento de datos por organización        | Media     | XL       |
-| SC-5  | Auto-scaling en Kubernetes (HPA)                           | Media     | L        |
-| SC-6  | CDN para servir imágenes estáticas y crops                 | Baja      | S        |
+| Riesgo | Mitigación |
+|--------|------------|
+| Docs desfasados confunden agents | STATE SSOT + este ROADMAP alineado |
+| ECE high → falsa confianza UI | `eceHonesty` hide % |
+| Deadly multiview flat | Lookalikes + open-set + never forage |
+| Unlock malentendido | Runbook + checklist + `product_unlock=false` forzado |
+| Cohorte sin hosting | Checklist O1–O3 gate invites |
 
 ---
 
-### Backlog — Mejoras Continuas
+## 6. Referencias rápidas
 
-| ID    | Tarea                                                      | Prioridad |
-| ----- | ---------------------------------------------------------- | --------- |
-| BK-1  | Soporte para audio (descripción de voz del usuario)        | Baja      |
-| BK-2  | Integración con iNaturalist API para enriquecimiento       | Baja      |
-| BK-3  | Microscopio USB support para esporas                       | Baja      |
-| BK-4  | Modo colaborativo: identificación grupal                   | Baja      |
-| BK-5  | Internacionalización (i18n): EN, FR, DE, IT, PT            | Media     |
-| BK-6  | Accesibilidad WCAG 2.1 AA                                  | Media     |
-| BK-7  | Tests E2E con Playwright                                   | Media     |
-| BK-8  | Migrar a ASGI server con uvicorn workers en prod           | Media     |
+- `.grok/graph-engineering/PROCESS.md` — proceso del bucle  
+- `.grok/graph-engineering/BACKLOG.md` — backlog corto  
+- `MEMORY.md` — decisiones y lecciones (bitácora)  
+- `VISION.md` — misión y límites  
+- `docs/MODEL_CARD.md` — intended use  
 
 ---
 
-## Principios de Priorización
-
-1.  **Seguridad primero:** Cualquier cambio que afecte la política de seguridad (consumo, lookalikes mortales) tiene prioridad máxima.
-2.  **Modelos reales > mocks:** Priorizar tareas que reduzcan dependencia de mocks.
-3.  **Feedback loop:** Valorar tareas que conectan expertos → modelos → usuarios.
-4.  **Reproducibilidad:** Todo experimento debe ser reproducible con un solo comando.
-
----
-
-## Riesgos Técnicos
-
-| Riesgo                                        | Probabilidad | Impacto | Mitigación                          |
-| --------------------------------------------- | ------------ | ------- | ----------------------------------- |
-| GPU no disponible en CI                       | Alta         | Alto    | Usar runners cloud con GPUspot      |
-| Dataset FungiCLEF 2025 con etiquetas ruidosas | Media        | Medio   | Auditoría manual de subconjunto     |
-| Latencia alta de modelos reales en CPU        | Alta         | Medio   | Queue asíncrono + cache agresivo    |
-| Overfitting a dataset de benchmark            | Media        | Alto    | Validación cruzada con datasets dispares |
-
----
-
-_Última actualización: Fin del Sprint Fase 7 — Frontend MVP + Mega Training Pipeline + Seguridad_
+_Última actualización: 2026-07-29 — Graph Engineering process sync (anti time-travel)._

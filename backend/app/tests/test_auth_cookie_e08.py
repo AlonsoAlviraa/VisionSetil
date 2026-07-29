@@ -58,9 +58,31 @@ def test_login_sets_httponly_cookie(cookie_client: TestClient):
     assert body.get("token") == ""
     assert body.get("token_type") == "cookie"
     assert "visionsetil_session" in cookie_client.cookies
+    # Cookie mode must not return a usable bearer secret for localStorage
+    assert not body.get("token")
+    set_cookie = reg.headers.get("set-cookie") or ""
+    # Starlette TestClient exposes jar; headers may include httponly flag
+    assert "visionsetil_session" in set_cookie or "visionsetil_session" in cookie_client.cookies
     me = cookie_client.get("/auth/me")
     assert me.status_code == 200
     assert me.json()["username"] == "cookieuser"
+
+
+def test_cookie_mode_me_without_authorization_header(cookie_client: TestClient):
+    """Session continues via cookie alone — no Authorization bearer required."""
+    reg = cookie_client.post(
+        "/auth/register",
+        json={
+            "email": "cookieme@test.local",
+            "username": "cookieme",
+            "password": "password123",
+        },
+    )
+    assert reg.status_code == 201
+    # Explicitly no Authorization header
+    me = cookie_client.get("/auth/me", headers={})
+    assert me.status_code == 200
+    assert me.json()["username"] == "cookieme"
 
 
 def test_logout_clears_cookie(cookie_client: TestClient):

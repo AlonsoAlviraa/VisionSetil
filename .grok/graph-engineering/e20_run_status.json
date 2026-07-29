@@ -1,0 +1,11 @@
+{
+  "slug": "alonsoalviraaaa/visionsetil-exp-v20-source-holdout",
+  "checked_at": "2026-07-28T11:21:20.450600+00:00",
+  "has_metrics": true,
+  "product_unlock": false,
+  "unlock_eligible_advisory": true,
+  "reasons": [
+    "all_checks_pass_but_product_unlock_forced_false_until_operator_cycle"
+  ],
+  "eval_report": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\eval\\reports\\ml_experiments\\e20_unlock_eval.json"
+}

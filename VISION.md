@@ -1,12 +1,14 @@
-# 🍄 VisionSetil — Visión del Producto
+# VisionSetil — Visión del Producto
 
-> **Documento fundacional para Loop Engineering.** Define QUÉ es VisionSetil, POR QUÉ existe, y QUÉ NO es.
+> **Documento fundacional.** Define QUÉ es VisionSetil, POR QUÉ existe, y QUÉ NO es.  
+> **Canon vivo de estado:** `.grok/graph-engineering/STATE.md` (hoy `v1.9.9` → process sync).  
+> **No usar MEMORY/ROADMAP antiguos como fuente de métricas ML** — ver STATE + `eval/reports/ml_experiments/`.
 
 ---
 
 ## 1. Declaración de Misión
 
-**VisionSetil** es un sistema de **identificación orientativa de setas** desde fotografías, diseñado con una filosofía *safety-first*. El objetivo no es reemplazar al micólogo experto, sino ofrecer una **primera orientación** rigurosa, conservadora y educativa que priorice siempre la seguridad del usuario.
+**VisionSetil** es un sistema de **identificación orientativa de setas** desde fotografías, con filosofía *safety-first*. No reemplaza al micólogo experto: ofrece una **primera orientación** rigurosa, conservadora y educativa.
 
 > **Una identificación incorrecta puede costar una vida.** Cada decisión de diseño se toma bajo este axioma.
 
@@ -19,37 +21,69 @@
 | Las setas son difíciles de identificar visualmente, incluso para expertos | Confusión entre especies comestibles y mortales |
 | Las apps existentes dan falsa confianza ("segura para comer") | Intoxicaciones graves, incluso fatales |
 | La identificación requiere múltiples ángulos (laminillas, sombrero, pie, hábitat) | Una sola foto no es suficiente |
-| No existen sistemas que combinen multi-vista + metadata + open-set rejection | Falsos positivos peligrosos |
+| Falta multi-vista + metadata + open-set rejection + honesty de métricas | Falsos positivos peligrosos y claims inflados |
 
 ---
 
 ## 3. La Solución: VisionSetil
 
 ### 3.1 Arquitectura Multi-Vista
-El usuario sube **hasta 4 vistas** de la misma seta:
-- 🌀 **Laminillas** (gills) — parte inferior del sombrero
-- 📸 **Frontal** (front) — vista completa de perfil
-- 🌿 **Hábitat** (habitat) — entorno donde crece
-- 🔍 **Detalle** (detail) — primer plano del sombrero/pie
 
-El modelo fusiona todas las vistas mediante **attention pooling** + **metadata** (hábitat, sustrato, olor, país) para producir una predicción más robusta.
+Hasta **4 vistas** de la misma seta:
+
+- **Laminillas** (gills)
+- **Frontal** (front / perfil)
+- **Hábitat** (habitat)
+- **Detalle** (detail)
+
+El modelo MultiView fusiona vistas (attention pooling) + metadata cuando aplica. Producto: wizard + free mode con *soft coach* (nunca bloqueo duro por defecto).
+
+**Honesty:** más fotos ayudan en general (field holdout MAP@3 sube); en subconjunto **deadly** el multi-view puede ser flat — no implica permiso de consumo.
 
 ### 3.2 Safety Policy Inviolable
-- **Nunca** se usa el lenguaje "segura para consumir"
+
+- **Nunca** lenguaje "segura para consumir" / forrajeo permitido
 - Toda salida es `orientation_only` y `unsafe_to_consume`
-- Las especies mortales (deadly) **siempre** se flaggean con advertencia crítica
-- El **recall de deadly debe ser 100%** — es preferible un falso positivo a un falso negativo
+- Especies mortales siempre con advertencia crítica
+- `product_unlock` es **fail-closed** (false hasta decisión humana explícita; ver `docs/OPERATOR_UNLOCK_RUNBOOK.md`)
+- Preferible rechazo / falso positivo de peligro a falso negativo mortal
 
 ### 3.3 Open-Set Rejection
-El sistema **rechaza** observaciones de las que no está seguro (threshold de confianza calibrado), en lugar de forzar una predicción. Un "no lo sé" es una respuesta válida y segura.
+
+El sistema **rechaza** cuando no está seguro (conf / margin / entropy calibrados sobre holdout E20). Un "no lo sé" es respuesta válida y segura.
+
+### 3.4 Lookalikes + nomenclatura
+
+- Grafo SSOT de confusiones educativas (catalog lookalikes + diagnostic critical_views)
+- Index Fungorum (Kew): nombres / sinónimos / atribución — **no** sustituye risk chips ni el modelo
 
 ---
 
-## 4. Métrica Norte (North Star Metric)
+## 4. Métricas Norte (honestas)
 
-- **MAP@3** (Mean Average Precision @ 3) — métrica oficial de FungiCLEF
-- Objetivo: maximizar MAP@3 manteniendo **safety recall deadly = 100%**
-- Toda métrica reportada con **IC 95%** (bootstrap con 1000 iteraciones)
+| Métrica | Rol |
+|---------|-----|
+| **MAP@3** | North star identificación (protocolo FungiCLEF-style) |
+| **safety_recall_deadly_at_3** (+ `_at_1`) | Dual deadly honesty (set industrial ∩ label2idx) |
+| **Open-set reject + acc_keep** | Calibración live Identify |
+| **ECE band** | Si high/unknown → no chrome de % de confianza engañoso |
+| **S9 live reject** | Histograma de abstenciones bajo tráfico real |
+
+Protocolo de referencia actual: **E20 source-holdout** (train packs no-GBIF / test GBIF ES puro).
+
+### Snapshot E20 (lab, honest)
+
+| Key | Value |
+|-----|------:|
+| test_map_at_3 | **~0.860** |
+| safety_recall_deadly_at_1 | **~0.788** |
+| safety_recall_deadly_at_3 | **~0.927** |
+| n_deadly (test) | 2580 |
+| ECE | **~0.188** (band high) |
+| Soft gates MAP≥0.25 · deadly@3≥0.90 | **PASS** |
+| product_unlock | **false** (policy + operator cycle) |
+
+Aspiración de producto: maximizar MAP@3 y deadly recall **sin** inventar 100% no medido. Soft gates ≠ forage OK.
 
 ---
 
@@ -57,54 +91,77 @@ El sistema **rechaza** observaciones de las que no está seguro (threshold de co
 
 | Usuario | Necesidad | Cómo lo resuelve VisionSetil |
 |---------|-----------|------------------------------|
-| **Senderista curioso** | "¿Qué seta es esta?" | Interfaz simple, multi-vista guiada, advertencias claras |
-| **Micólogo aficionado** | Confirmar hipótesis | Top-3 predicciones con score, metadata taxonómica |
-| **Investigador / repositorio de datos** | Dataset anotado de observaciones | Export de observaciones para Kaggle, feedback loop de revisión humana |
-| **Comunidad micológica** | Aprender y compartir | Colección personal, batch compare, educación |
+| Senderista curioso | "¿Qué seta es esta?" | Identify multi-vista, advertencias, open-set |
+| Micólogo aficionado | Confirmar hipótesis | Top-k + lookalikes + ficha + IF links |
+| Beta tester / cohorte | Probar 10 min + feedback | GTM try-first + form + PWA install |
+| Operador / research | Métricas y unlock honestos | ML dashboard, pro tester S1–S14, runbooks |
 
 ---
 
-## 6. Límites del Producto (Lo que VisionSetil NO es)
+## 6. Límites del Producto
 
-| ❌ No es | ✅ Sí es |
-|----------|---------|
-| Una guía de consumo | Una herramienta de orientación taxonómica |
-| Un reemplazo del experto | Un primer filtro conservador |
-| Un sistema de 100% de precisión | Un sistema que admite incertidumbre (open-set) |
-| Un producto médico | Una herramienta educativa de campo |
+| No es | Sí es |
+|-------|--------|
+| Guía de consumo | Orientación taxonómica de campo |
+| Reemplazo del experto | Primer filtro conservador |
+| Precisión 100% | Sistema que admite incertidumbre |
+| Producto médico | Herramienta educativa |
+| Auto-unlock por métricas | Unlock solo por operador humano |
 
 ---
 
-## 7. Estado Actual (v0.2.0 → v0.3.0)
+## 7. Estado actual (graph `v1.9.9` + process sync)
 
-- ✅ Backend FastAPI con 12 routers, 15+ servicios, middleware de seguridad
-- ✅ Frontend React 18 PWA en español con flujo multi-vista
-- ✅ Pipeline de entrenamiento en Kaggle (mega_training_v5.py)
-- ✅ Safety policy implementada en todo el stack
-- ✅ Tests de seguridad, clasificación, multi-vista
-- 🔄 Sprint actual: robustez de modelos + data pipeline
-- 📅 Roadmap: MLOps, monitoring, escalabilidad multi-tenant
+**Producto (beta-ready en código):**
+
+- Backend FastAPI (classify, models/status, species, media, nomenclature IF, auth, community…)
+- Frontend React 18 PWA (Identify, enciclopedia, lookalike studio, juegos, mapa, offline, ML dash)
+- Safety + multiview honesty en superficies principales
+- Catalog SSOT ~523 taxa; modelo serve **40** clases (ML-40 allowlist)
+- GTM + hosting docs listos; **deploy / form URL / cohorte = residual operador**
+
+**ML:**
+
+- Pesos E20 MultiView v8 (`kernel_output_v20`) preferidos en discovery
+- Quality gate ACCEPTABLE en métricas E20 (species_id_allowed a nivel métricas)
+- Open-set calibrado; S9 schema listo para tráfico real
+- E21: readiness only, **no lanzado**
+
+**Graph Engineering:**
+
+- Proceso autónomo documentado en `.grok/graph-engineering/`
+- Fuente de verdad de versión/residual: `STATE.md` + `BACKLOG.md` + `graph_evolution.md`
 
 ---
 
 ## 8. Principios de Diseño
 
-1. **Safety over accuracy** — Si hay conflicto, gana la seguridad
-2. **Conservative over confident** — Mejor rechazar que adivinar
-3. **Multi-view over single-view** — Más información = mejor decisión
-4. **Transparent over opaque** — El usuario debe entender el nivel de certeza
-5. **Educated over ignorant** — Cada predicción viene con contexto educativo
-6. **Reproducible over ad-hoc** — Todo entrenamiento con config JSON versionada
+1. **Safety over accuracy** — Si hay conflicto, gana la seguridad  
+2. **Conservative over confident** — Mejor rechazar que adivinar  
+3. **Multi-view over single-view** — Más información = mejor decisión (con caveats deadly)  
+4. **Transparent over opaque** — El usuario entiende certeza e incertidumbre  
+5. **Educated over ignorant** — Contexto educativo y lookalikes  
+6. **Reproducible over ad-hoc** — Config versionada + reports en `eval/`  
+7. **Fail-closed unlock** — Nunca `product_unlock=true` automático  
 
 ---
 
-## 9. Referencias Clave
+## 9. Referencias clave
 
-- `docs/SAFETY_POLICY.md` — Política de seguridad completa
-- `docs/ROADMAP.md` — Roadmap de sprints (N+1 a N+4 + Backlog)
-- `docs/product_spec.md` — Especificación de producto detallada
-- `docs/KAGGLE_FIX_PROMPT.md` — Prompt de fix + sprints + reglas duras
+| Doc | Uso |
+|-----|-----|
+| `.grok/graph-engineering/STATE.md` | Versión activa + residual |
+| `.grok/graph-engineering/PROCESS.md` | Cómo opera el graph engineering |
+| `docs/ROADMAP.md` | Roadmap alineado a STATE |
+| `MEMORY.md` | Decisiones / bugs / lecciones (no métricas SSOT) |
+| `docs/SAFETY_POLICY.md` | Política de seguridad |
+| `docs/MODEL_CARD.md` | Intended use + citas (IF Kew) |
+| `docs/OPERATOR_UNLOCK_RUNBOOK.md` | Unlock humano |
+| `docs/OPERATOR_BETA_CHECKLIST.md` | Deploy preview + form + smoke + cohorte |
+| `docs/HOSTING_DEPLOY_BETA.md` | Path A hosting |
+| `docs/GTM_BETA_COHORT.md` | Invitaciones beta |
+| `docs/E21_SCALE_PLAN.md` | Escala opcional (no lanzado) |
 
 ---
 
-*Documento vivo. Actualizado por el Loop Engineering Agent.*
+*Documento vivo. Actualizado con Graph Engineering process sync (2026-07-29). Estado ML/producto siempre revalidar en STATE.*

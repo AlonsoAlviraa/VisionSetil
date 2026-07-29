@@ -1,6 +1,8 @@
 # 🏗️ VisionSetil — Arquitectura del Sistema
 
-> **Mapa técnico para Loop Engineering.** Define la estructura completa del sistema, componentes, dependencias y flujos.
+> **Mapa técnico.** Define la estructura del sistema, componentes, dependencias y flujos.  
+> **Estado vivo / métricas:** `.grok/graph-engineering/STATE.md` (E20 soft gates PASS · product_unlock false).  
+> **No usar** snapshots de Phase E (MAP~0.07 / Identify blocked) como baseline actual.
 
 ---
 

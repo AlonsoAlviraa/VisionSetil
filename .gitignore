@@ -80,6 +80,12 @@ kaggle/kernel_output_v11_dl/
 
 # Local agent / session noise
 .grok/sessions/
+.hypothesis/
+node_modules/
+
+# Live classify feedback logs (keep fixtures only)
+data/feedback/classification_log.jsonl
+backend/data/feedback/classification_log.jsonl
 
 # Large intermediate training checkpoints
 **/checkpoint_latest.pt

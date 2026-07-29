@@ -1,0 +1,52 @@
+# VisionSetil Path A default — single HTTPS origin (SPA + /api + /media)
+# Docs: docs/HOSTING_DEPLOY_BETA.md
+#
+# Usage (on VPS, from monorepo root after building frontend):
+#   export BETA_DOMAIN=beta.yourdomain.example
+#   export BACKEND_UPSTREAM=127.0.0.1:8000
+#   export FRONTEND_DIST=./frontend/dist
+#   export MEDIA_ROOT=./media
+#   caddy run --config deploy/Caddyfile
+#
+# Caddy provisions TLS for real hostnames automatically.
+# Local smoke without TLS: set BETA_DOMAIN=localhost and use http://localhost
+#
+# Policy: orientation only — never forage/consumption permission.
+
+{
+	# Optional: email for Let's Encrypt; set in production
+	# email ops@yourdomain.example
+}
+
+{$BETA_DOMAIN:localhost} {
+	encode gzip zstd
+
+	# ── FastAPI (strip /api prefix to match Vite dev proxy rewrite) ──
+	handle_path /api/* {
+		reverse_proxy {$BACKEND_UPSTREAM:127.0.0.1:8000}
+	}
+
+	# ── Species media (monorepo media/ at /media/*) ──
+	handle_path /media/* {
+		root * {$MEDIA_ROOT:./media}
+		file_server
+	}
+
+	# ── SPA (Vite production build) — deep links need try_files ──
+	handle {
+		root * {$FRONTEND_DIST:./frontend/dist}
+		try_files {path} /index.html
+		file_server
+	}
+
+	header {
+		# Basic hardening; adjust CSP later if needed
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+	}
+
+	log {
+		output stdout
+		format console
+	}
+}
