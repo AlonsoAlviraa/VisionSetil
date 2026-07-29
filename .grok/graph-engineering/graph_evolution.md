@@ -1,5 +1,33 @@
 # Graph evolution log
 
+## v1.11.0 — dual-app-stitch (2026-07-29)
+
+**MINOR bump:** architectural shift — dual App/Web split into two separate Vite builds.
+
+**Shipped (autonomous cycle):**
+
+1. **Dual build split (B11)** — refactored `vite.config.ts` to a `createViteConfig(target)` factory; `vite.config.ts` (app, port 5173, PWA) + `vite.web.config.ts` (web, port 5174, no SW). New entries: `index-app.html` / `index-web.html` + `main-app.tsx` / `main-web.tsx`. `App.tsx` gains a `forcedMode` prop driven by `VITE_LAYOUT_MODE` (build-time). Scripts: `dev:app`, `dev:web`, `build:app`, `build:web`. Outputs: `dist-app/` + `dist-web/`.
+
+2. **Stitch design tokens SSOT (B12)** — rewrote `campo-nocturno.css` :root from the canonical `gen-01-home.out.json`: OLED body `#0F1410`, Source Serif 4 body font (DM Sans removed), glass `rgba(26,36,32,0.6)` + blur20 + moss border, cream accent `#E8DCC8`, radius scale 8/16/24/full, full M3 primary/secondary/tertiary/surface sets, warn-strip text `#ffdad6`.
+
+3. **Material Symbols (B13)** — `@import` Material Symbols Outlined; new `Icon` component (`components/ui/Icon.tsx`); Home migrated from inline SVG to glyphs (`extension`, `menu_book`, `map`, `center_focus_strong`, `hub`, `auto_stories`, `do_not_disturb_on`, `forest`).
+
+4. **Home pixel-match (B14)** — hero CTA → glass pill + 48px primary-container orb; trust row → icon + uppercase label (not pills); quick access → grid-cols-3 glass cards; added Atmospheric Highlight Card; hero title → display-lg (48px Playfair).
+
+5. **Encyclopedia families (B15)** — `groupByFamily` toggle; family-banded galleries (First-Nature pattern) with ES family headers + counts.
+
+6. **Dichotomous key (B16)** — new `lib/dichotomousKey.ts` + `components/DichotomousKey.tsx`; hymenium-type questions narrow the catalog to study hints; integrated in Education page. Never confirms consumption.
+
+7. **Identify + Result pixel-match (B5)** — glass result-card + decision pill (pulsing dot) + risk chip error-container + lookalike glass rows + next-actions grid-cols-2; wizard slots → glass aspect-square grid-cols-2 with framing guides.
+
+**Distillation (legal UX patterns only — C1-C4):** photo-first cascade confirmed SHIPPED (no residual); encyclopedia families SHIPPED; season strip confirmed on Home; dichotomous key SHIPPED.
+
+**Policy honored:** X1-X3 forbidden (no scraping paid apps / proprietary content). All competitive patterns distilled from the existing audit docs as UX-only.
+
+**Verification:** `tsc --noEmit` clean; `build:app` + `build:web` green (dist-app with SW, dist-web without); vitest same pass/fail as baseline (12 preexisting failures unrelated — catalog/publicUrl content tests).
+
+**product_unlock:** still false.
+
 ## v1.10.5 — open-api-harvest (2026-07-29)
 
 - **Policy lock:** no scrape of commercial mushroom apps/models (Picture Mushroom, Shroomify, etc.).

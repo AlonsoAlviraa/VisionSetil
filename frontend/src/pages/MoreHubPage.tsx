@@ -244,7 +244,7 @@ export function MoreHubPage() {
     <div className="cn-page page-more-hub" data-testid="more-hub-page">
       <p className="cn-warn-strip" role="note">
         {t('more.orientation', {
-          defaultValue: 'Solo orientación · nunca permiso de consumo',
+          defaultValue: 'Solo orientación · nunca consumo',
         })}
       </p>
       <header className="cn-page-head cn-page-pad">
@@ -252,12 +252,11 @@ export function MoreHubPage() {
           {t('nav.more', { defaultValue: 'Más' })}
         </p>
         <h1 className="cn-page-head__title">
-          {t('more.title', { defaultValue: 'Más herramientas' })}
+          {t('more.title', { defaultValue: 'Más' })}
         </h1>
         <p className="cn-page-head__lead" role="note">
           {t('more.policy', {
-            defaultValue:
-              'Todo el mapa del producto. Identificar y los juegos orientan: nunca dan permiso de consumo.',
+            defaultValue: 'Todo el producto, en un solo sitio.',
           })}
         </p>
       </header>

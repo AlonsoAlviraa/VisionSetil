@@ -10,12 +10,13 @@
 .app--mode-web.app--campo-nocturno {
   max-width: none !important;
   padding: 0 !important;
-  background: #0b100c !important;
+  background: var(--cn-bg) !important;
 }
 
 .app--mode-web {
   --cn-gutter: clamp(1.5rem, 4vw, 3.5rem);
   --cn-content-wide: min(100% - 2 * var(--cn-gutter), 76rem);
+  --cn-content-narrow: min(100% - 2 * var(--cn-gutter), 42rem);
   --cn-nav-h: 0px;
   --cn-hero-min-h: min(92vh, 54rem);
   --web-space-section: clamp(3.5rem, 8vw, 7rem);
@@ -40,15 +41,15 @@
   box-shadow: none !important;
 }
 
-/* ── Header: airy bar ───────────────────────────────────────────────────── */
+/* ── Header: airy glass bar ─────────────────────────────────────────────── */
 .app--mode-web > .header {
   position: sticky !important;
   top: 0;
   z-index: 50;
-  background: rgba(11, 16, 12, 0.72) !important;
-  border-bottom: 1px solid rgba(232, 220, 200, 0.08) !important;
-  backdrop-filter: blur(20px) saturate(1.2) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(1.2) !important;
+  background: var(--glass) !important;
+  border-bottom: 1px solid var(--glass-border) !important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.2) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.2) !important;
 }
 
 .app--mode-web .header-inner {
@@ -60,9 +61,10 @@
 
 .app--mode-web .header-brand h1,
 .app--mode-web .header-brand-text h1 {
+  font-family: var(--font-display) !important;
   font-size: 1.5rem !important;
   letter-spacing: -0.03em;
-  color: #e8dcc8 !important;
+  color: var(--cn-cream) !important;
 }
 
 .app--mode-web .header-nav--desktop-primary {
@@ -76,20 +78,28 @@
 }
 
 .app--mode-web .nav-link {
+  font-family: var(--font-serif) !important;
   font-size: 0.95rem !important;
   padding: 0.55rem 1.05rem !important;
-  color: rgba(232, 220, 200, 0.72) !important;
+  color: var(--cn-on-surface-variant) !important;
   font-weight: 500 !important;
+  border-radius: var(--cn-radius) !important;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.app--mode-web .nav-link:hover {
+  color: var(--cn-cream) !important;
+  background: rgba(143, 188, 143, 0.08) !important;
 }
 
 .app--mode-web .nav-link--active {
-  color: #aad8a9 !important;
-  background: rgba(143, 188, 143, 0.12) !important;
+  color: var(--cn-moss-bright) !important;
+  background: rgba(143, 188, 143, 0.14) !important;
 }
 
 .app--mode-web .nav-link--cta {
-  background: #8fbc8f !important;
-  color: #0e3817 !important;
+  background: var(--cn-moss) !important;
+  color: var(--cn-on-moss) !important;
   font-weight: 700 !important;
 }
 
@@ -150,14 +160,20 @@
   gap: 0.5rem;
   align-items: center;
   padding: 1rem 1.4rem !important;
-  border-radius: 999px !important;
-  background: #8fbc8f !important;
-  color: #0e3817 !important;
+  border-radius: var(--cn-radius-full) !important;
+  background: var(--cn-moss) !important;
+  color: var(--cn-on-moss) !important;
+  font-family: var(--font-serif) !important;
   font-weight: 700 !important;
   font-size: 0.95rem !important;
   text-decoration: none !important;
   box-shadow: 0 12px 40px rgba(143, 188, 143, 0.4) !important;
   border: none !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.app--mode-web .fab-identify:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 16px 48px rgba(143, 188, 143, 0.5) !important;
 }
 
 /* Warn strip thin elegant */
@@ -166,6 +182,7 @@
   letter-spacing: 0.16em !important;
   padding: 0.55rem var(--cn-gutter) !important;
   background: rgba(92, 42, 42, 0.85) !important;
+  color: var(--cn-on-error-container) !important;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -507,26 +524,22 @@
   display: none !important; /* less text */
 }
 
-/* ── Collapse dense residual kit on web (keep DOM for tests) ────────────── */
-.app--mode-web .home-field-holdout-note,
-.app--mode-web .home-privacy-strip,
-.app--mode-web .mkt-diff,
-.app--mode-web .home-install-guide,
-.app--mode-web .home-beta-row,
-.app--mode-web .home-ops-public-url,
-.app--mode-web .cn-home-aux .waitlist-temporada,
-.app--mode-web [data-testid='waitlist-temporada'],
-.app--mode-web .waitlist-temporada {
-  /* Visually hide without removing from DOM (tests read source, not layout) */
-  position: absolute !important;
-  width: 1px !important;
-  height: 1px !important;
-  padding: 0 !important;
-  margin: -1px !important;
-  overflow: hidden !important;
-  clip: rect(0, 0, 0, 0) !important;
-  white-space: nowrap !important;
-  border: 0 !important;
+/* Residual kit already collapsed via .cn-home-kit on all shells */
+
+.app--mode-web .cn-home--v12 .cn-home-hero {
+  margin: 0 !important;
+  border-radius: 0 !important;
+  min-height: min(92vh, 54rem) !important;
+  height: min(92vh, 54rem);
+}
+
+.app--mode-web .cn-home--v12 .cn-home-hero__lead {
+  max-width: 18rem !important;
+  font-size: 1.25rem !important;
+}
+
+.app--mode-web .cn-home--v12 .cn-home-hero__title {
+  font-size: clamp(3.5rem, 8vw, 6rem) !important;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════

@@ -1628,21 +1628,106 @@ button[aria-pressed='true'] {
 }
 
 /* ── Games interiors / education / history / etc. ───────────────────────── */
+/* v1.11 B6: deeper Stitch glass skin for Wordle / Setadle / Quiz */
 .page-wordle .wordle-cell,
 .page-wordle .tile {
-  background: var(--cn-surface-high) !important;
-  border: 2px solid rgba(143, 188, 143, 0.3) !important;
+  background: var(--glass) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  backdrop-filter: blur(var(--glass-blur));
+  border: 2px solid var(--glass-border) !important;
   color: var(--cn-cream) !important;
-  border-radius: 0.4rem !important;
+  border-radius: var(--cn-radius) !important;
   font-weight: 800 !important;
+  font-family: var(--font-display);
+  font-size: 1.5rem !important;
+  transition: transform 0.12s ease, background 0.2s ease;
+}
+.page-wordle .wordle-cell:hover,
+.page-wordle .tile:hover {
+  transform: scale(1.03);
 }
 
+/* Wordle states — Stitch palette: correct=moss, present=secondary(cream), absent=dim */
 .page-wordle .wordle-cell.is-correct,
 .page-wordle .tile.correct {
   background: var(--cn-moss) !important;
   color: var(--cn-on-moss) !important;
+  border-color: var(--cn-moss) !important;
+  box-shadow: 0 0 12px rgba(143, 188, 143, 0.4);
+}
+.page-wordle .wordle-cell.is-present,
+.page-wordle .wordle-cell.is-misplaced,
+.page-wordle .tile.present,
+.page-wordle .tile.misplaced {
+  background: var(--cn-secondary) !important;
+  color: var(--cn-on-secondary) !important;
+  border-color: var(--cn-secondary) !important;
+}
+.page-wordle .wordle-cell.is-absent,
+.page-wordle .wordle-cell.empty,
+.page-wordle .tile.absent {
+  background: var(--cn-surface-low) !important;
+  color: var(--cn-muted) !important;
+  border-color: var(--cn-outline-variant) !important;
 }
 
+/* Wordle keyboard */
+.page-wordle .keyboard-key,
+.page-wordle .key-btn {
+  background: var(--glass) !important;
+  border: 1px solid var(--glass-border) !important;
+  color: var(--cn-cream) !important;
+  border-radius: var(--cn-radius-sm, 0.4rem) !important;
+  font-weight: 700 !important;
+}
+
+/* Setadle mode cards — glass tiles with icon */
+.page-setadle .setadle-mode-card {
+  background: var(--glass) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border) !important;
+  border-radius: var(--cn-radius-lg) !important;
+  padding: 1.25rem !important;
+  transition: transform 0.15s ease, background 0.15s ease;
+  text-decoration: none;
+  color: var(--cn-cream);
+}
+.page-setadle .setadle-mode-card:hover {
+  transform: translateY(-2px);
+  background: rgba(26, 36, 32, 0.8) !important;
+  border-color: rgba(143, 188, 143, 0.25) !important;
+}
+.page-setadle .setadle-mode-card__title {
+  font-family: var(--font-display);
+  color: var(--cn-moss-bright);
+}
+.page-setadle .setadle-mode-card__desc {
+  font-family: var(--font-serif);
+  color: var(--cn-muted);
+}
+
+/* Setadle guess tiles (Classic mode) — mirror Wordle tile styling */
+.page-setadle .setadle-tile,
+.page-setadle .guess-cell {
+  background: var(--glass) !important;
+  border: 2px solid var(--glass-border) !important;
+  color: var(--cn-cream) !important;
+  border-radius: var(--cn-radius) !important;
+  font-weight: 800 !important;
+  font-family: var(--font-display);
+}
+
+/* Setadle clue card */
+.page-setadle .clue-card,
+.page-setadle .trait-clue {
+  background: var(--glass) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: var(--cn-radius-lg) !important;
+  padding: 0.85rem 1.1rem !important;
+}
+
+/* Quiz options — glass pills */
 .page-quiz .quiz-option,
 .page-quiz .option-btn {
   background: var(--cn-surface-high) !important;
@@ -2065,9 +2150,55 @@ a {
   font-weight: 650;
 }
 
+/* v1.11 B7: ficha (species detail) night gallery — glass sections + tiles */
 .open-study-links {
   margin: 0.75rem 0 1rem;
   padding: 1rem !important;
+}
+
+/* Species detail sections elevated to glass cards */
+.species-detail-section {
+  background: var(--glass) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border) !important;
+  border-radius: var(--cn-radius-lg) !important;
+  padding: 1.1rem !important;
+  margin-bottom: 0.85rem !important;
+}
+.species-detail-section h2,
+.species-detail-section h3 {
+  font-family: var(--font-display);
+  color: var(--cn-moss-bright);
+}
+
+/* Gallery thumbnails — rounded glass tiles */
+.species-detail-gallery,
+.photo-gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+.gallery-thumb,
+.photo-gallery img,
+.species-detail-gallery img {
+  border-radius: var(--cn-radius) !important;
+  border: 1px solid var(--glass-border) !important;
+  object-fit: cover;
+  aspect-ratio: 1 / 1;
+  transition: transform 0.15s ease;
+}
+.gallery-thumb:hover,
+.photo-gallery img:hover {
+  transform: scale(1.04);
+}
+
+/* Ficha hero / title — cream italic like Stitch result card */
+.species-detail-header__name,
+.ficha-title {
+  font-family: var(--font-display);
+  color: var(--cn-cream);
+  font-style: italic;
 }
 
 .open-study-links__title {
@@ -2111,7 +2242,59 @@ a {
   line-height: 1.4;
 }
 
-/* Home residual beta kit (privacy / install / diff) */
+/* ── v1.12 Home: residual kit collapsed (contracts stay in DOM) ─────────── */
+.cn-home-kit {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.cn-home--v12 .cn-home-hero {
+  min-height: min(78vh, 36rem);
+  border-radius: 1.35rem;
+  margin: 0.55rem var(--cn-gutter) 1rem;
+}
+
+.cn-home--v12 .cn-home-hero__title {
+  font-size: clamp(2.4rem, 9vw, 3.35rem) !important;
+  letter-spacing: -0.03em;
+}
+
+.cn-home--v12 .cn-home-hero__lead {
+  font-size: 1.05rem !important;
+  max-width: 16rem;
+  line-height: 1.35 !important;
+}
+
+.cn-home--v12 .cn-home-trust {
+  justify-content: center;
+  gap: 1.25rem 1.75rem;
+  margin-bottom: 1rem;
+}
+
+.cn-home--v12 .cn-home-lower {
+  margin-bottom: 1.25rem;
+}
+
+.cn-home--v12 .cn-home-season {
+  margin-bottom: 1.5rem;
+}
+
+.cn-home--v12 .seasonal-top-strip__lead,
+.cn-home--v12 .seasonal-top-strip__note {
+  display: none;
+}
+
+.cn-home--v12 .seasonal-top-strip__title {
+  font-size: 1.35rem;
+}
+
 .cn-home-aux {
   margin: 0.85rem 0 1rem;
 }

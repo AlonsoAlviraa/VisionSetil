@@ -10,8 +10,7 @@ const GAMES = [
     titleKey: 'games.setadleTitle',
     titleFb: 'Setadle',
     bodyKey: 'games.setadleBody',
-    bodyFb:
-      'Puzzle diario con pistas de hábitat y forma. Solo educación: no identifica setas reales.',
+    bodyFb: 'Puzzle diario de hábitat y forma.',
     ctaKey: 'games.play',
     ctaFb: 'Jugar',
     badgeKey: 'games.badgeDaily',
@@ -24,10 +23,9 @@ const GAMES = [
     titleKey: 'games.wordleTitle',
     titleFb: 'Wordle de setas',
     bodyKey: 'games.wordleBody',
-    bodyFb:
-      'Adivina el nombre en letras. Sirve para vocabulario, no para salir a recolectar.',
+    bodyFb: 'Nombres, letra a letra.',
     ctaKey: 'games.playWordle',
-    ctaFb: 'Jugar Wordle',
+    ctaFb: 'Jugar',
     badgeKey: 'games.badgePopular',
     badgeFb: 'Popular',
     taxon: 'Amanita muscaria',
@@ -38,10 +36,9 @@ const GAMES = [
     titleKey: 'games.quizTitle',
     titleFb: 'Reto diario',
     bodyKey: 'games.quizBody',
-    bodyFb:
-      'Preguntas sobre confusiones y multi-vista. Entrena el ojo, no el plato.',
+    bodyFb: 'Confusiones y multi-vista.',
     ctaKey: 'games.playQuiz',
-    ctaFb: 'Abrir reto',
+    ctaFb: 'Abrir',
     badgeKey: 'games.badgeChallenge',
     badgeFb: 'Reto',
     taxon: 'Morchella esculenta',
@@ -55,20 +52,19 @@ export function GamesHubPage() {
     <div className="cn-page page-games-hub" data-testid="games-hub-page">
       <p className="cn-warn-strip" role="note">
         {t('games.orientation', {
-          defaultValue: 'Juegos educativos · nunca permiso de consumo',
+          defaultValue: 'Solo educación · nunca consumo',
         })}
       </p>
       <header className="cn-page-head cn-page-pad">
         <p className="cn-kicker mkt-kicker">
-          {t('games.kicker', { defaultValue: 'Juegos de campo' })}
+          {t('games.kicker', { defaultValue: 'Juegos' })}
         </p>
         <h1 className="cn-page-head__title">
           {t('games.title', { defaultValue: 'Entrena el ojo' })}
         </h1>
         <p className="cn-page-head__lead">
           {t('games.policy', {
-            defaultValue:
-              'Aprende nombres, hábitats y confusiones. No sustituye a Identificar y no autoriza consumo.',
+            defaultValue: 'Aprende jugando. No identifica setas reales.',
           })}
         </p>
       </header>
