@@ -5114,9 +5114,14 @@ body {
 }
 
 .page-map--map-first .map-leaflet-host--hero {
-  min-height: min(78vh, 900px) !important;
-  height: calc(100vh - var(--header-h, 64px) - 6.25rem) !important;
+  min-height: min(82vh, 960px) !important;
+  height: calc(100dvh - var(--header-h, 64px) - 3.5rem) !important;
   max-height: none;
+}
+
+.page-map--map-first .map-leaflet-host--expanded {
+  min-height: 100dvh !important;
+  height: 100dvh !important;
 }
 
 /* Hide legacy zone-name rails if any CSS remnant remains */

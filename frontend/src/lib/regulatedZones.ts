@@ -5,6 +5,7 @@
 import { cylCotosZones } from '../data/cylCotosZones'
 import { mycologicalParksZones } from '../data/mycologicalParksZones'
 import { scrapedCotosZones } from '../data/scrapedCotosZones'
+import { extraCotosZones } from '../data/extraCotosZones'
 import type { MushroomZone } from '../data/mushroomZones'
 import { getZoneResourcePack, type ZoneResourcePack } from '../data/zonePermitLinks'
 
@@ -19,10 +20,13 @@ export type RegulatedZoneRow = {
 
 const COTO_CYL_IDS = new Set(cylCotosZones.map((z) => z.id))
 const PARK_IDS = new Set(mycologicalParksZones.map((z) => z.id))
-const SCRAPED_IDS = new Set(scrapedCotosZones.map((z) => z.id))
+const SCRAPED_IDS = new Set([
+  ...scrapedCotosZones.map((z) => z.id),
+  ...extraCotosZones.map((z) => z.id),
+])
 
-/** Cap for directory UI (raised from legacy 40 to cover national inventory). */
-export const REGULATED_DIRECTORY_CAP = 120
+/** Cap for directory UI (covers national inventory + 2026 extras). */
+export const REGULATED_DIRECTORY_CAP = 160
 
 export function classifyRegulatedZone(zone: MushroomZone): RegulatedZoneKind {
   if (COTO_CYL_IDS.has(zone.id) || zone.id.startsWith('cyl-')) return 'coto_cyl'
@@ -63,7 +67,12 @@ function safeResourcePack(zone: MushroomZone): ZoneResourcePack {
 export function listRegulatedZones(): RegulatedZoneRow[] {
   const seen = new Set<string>()
   const out: RegulatedZoneRow[] = []
-  for (const zone of [...cylCotosZones, ...mycologicalParksZones, ...scrapedCotosZones]) {
+  for (const zone of [
+    ...cylCotosZones,
+    ...mycologicalParksZones,
+    ...scrapedCotosZones,
+    ...extraCotosZones,
+  ]) {
     if (!zone?.id || seen.has(zone.id)) continue
     seen.add(zone.id)
     const resources = safeResourcePack(zone)
@@ -105,7 +114,8 @@ export function regulatedZoneStats() {
     byRegion,
     cylCount: cylCotosZones.length,
     parksSourceCount: mycologicalParksZones.length,
-    scrapedCount: scrapedCotosZones.length,
+    scrapedCount: scrapedCotosZones.length + extraCotosZones.length,
+    extraCount: extraCotosZones.length,
   }
 }
 

@@ -132,16 +132,24 @@ const ZONE_FOCUS_ZOOM = 10
 function MapController({
   zone,
   regionFocus,
+  expanded,
 }: {
   zone: MushroomZone | null
   /** Fit map to these points when region filter changes (e.g. all Soria zones). */
   regionFocus: { key: string; points: Array<{ lat: number; lng: number }> } | null
+  /** Fullscreen / expand — reflow tiles */
+  expanded?: boolean
 }) {
   const map = useMap()
   useEffect(() => {
     const t = window.setTimeout(() => map.invalidateSize({ animate: false }), 100)
     return () => window.clearTimeout(t)
   }, [map])
+
+  useEffect(() => {
+    const t = window.setTimeout(() => map.invalidateSize({ animate: false }), 180)
+    return () => window.clearTimeout(t)
+  }, [map, expanded])
 
   // Click / select zone → always fly to THAT place (not stay zoomed on previous area)
   useEffect(() => {
@@ -927,16 +935,33 @@ export default function SpainMapPage() {
     setMapZoom((prev) => (prev === z ? prev : z))
   }, [])
 
-  // Esc cierra la tarjeta de zona (sin listado inferior de nombres)
+  // Esc: cierra ficha de zona; si no hay ficha, sale del mapa ampliado
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key !== 'Escape' || !selectedZone) return
-      e.preventDefault()
-      setSelectedZone(null)
+      if (e.key !== 'Escape') return
+      if (selectedZone) {
+        e.preventDefault()
+        setSelectedZone(null)
+        return
+      }
+      if (mapExpanded) {
+        e.preventDefault()
+        setMapExpanded(false)
+      }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [selectedZone])
+  }, [selectedZone, mapExpanded])
+
+  // Lock body scroll when map is expanded
+  useEffect(() => {
+    if (!mapExpanded) return
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = prev
+    }
+  }, [mapExpanded])
 
   const sheetOpen = Boolean(selectedZone)
 
@@ -1019,8 +1044,11 @@ export default function SpainMapPage() {
     )
   }, [handleSelectZone])
 
-  // Map-first: no bottom zone-name rail — maximize map area.
-  const mapHeight = 'calc(100vh - var(--header-h, 64px) - 6.25rem)'
+  /** Expanded map = near full-viewport; default already taller than legacy card. */
+  const [mapExpanded, setMapExpanded] = useState(false)
+  const mapHeight = mapExpanded
+    ? '100dvh'
+    : 'calc(100dvh - var(--header-h, 64px) - 3.5rem)'
 
   const regulatedRows = useMemo(() => listRegulatedZones(), [])
   const regulatedStats = useMemo(() => regulatedZoneStats(), [])
@@ -1040,7 +1068,7 @@ export default function SpainMapPage() {
     <div
       className={`page-map page-map--immersive page-map--map-first page-atelier-shell${
         sheetOpen ? ' page-map--sheet-open' : ''
-      }`}
+      }${mapExpanded ? ' page-map--expanded' : ''}`}
     >
       {/* Unified chrome: one mode, filters + climate on zone click */}
       <header className="map-chrome">
@@ -1420,7 +1448,11 @@ export default function SpainMapPage() {
 
       {/* Full-bleed map — detail only when a zone is selected (sheet / float) */}
       <div className="map-layout map-layout--solo">
-        <div className="map-container-wrapper map-container-wrapper--hero">
+        <div
+          className={`map-container-wrapper map-container-wrapper--hero${
+            mapExpanded ? ' map-container-wrapper--expanded' : ''
+          }`}
+        >
           {filteredZones.length === 0 && (
             <div
               className="map-empty-filter"
@@ -1496,6 +1528,29 @@ export default function SpainMapPage() {
             </div>
           </div>
 
+          <div className="map-overlay map-overlay--expand" role="group">
+            <div className="map-glass map-glass--expand">
+              <button
+                type="button"
+                className={`map-chip map-chip--expand ${mapExpanded ? 'is-active' : ''}`}
+                data-testid="map-expand-toggle"
+                aria-pressed={mapExpanded}
+                title={
+                  mapExpanded
+                    ? t('map.exitExpand', { defaultValue: 'Salir de pantalla completa (Esc)' })
+                    : t('map.expandHint', {
+                        defaultValue: 'Ampliar mapa a casi toda la pantalla',
+                      })
+                }
+                onClick={() => setMapExpanded((v) => !v)}
+              >
+                {mapExpanded
+                  ? t('map.exitExpandShort', { defaultValue: 'Cerrar mapa' })
+                  : t('map.expandShort', { defaultValue: 'Ampliar mapa' })}
+              </button>
+            </div>
+          </div>
+
           {loadingAlerts && (
             <div className="map-load-progress" role="status" aria-live="polite">
               <div className="map-load-progress__bar" style={{ width: `${loadProgress}%` }} />
@@ -1517,11 +1572,13 @@ export default function SpainMapPage() {
             fadeAnimation={false}
             markerZoomAnimation={false}
             zoomAnimation
-            className="map-leaflet-host map-leaflet-host--hero"
+            className={`map-leaflet-host map-leaflet-host--hero${
+              mapExpanded ? ' map-leaflet-host--expanded' : ''
+            }`}
             style={{
               height: mapHeight,
               width: '100%',
-              borderRadius: '16px',
+              borderRadius: mapExpanded ? '0' : '16px',
               zIndex: 1,
             }}
           >
@@ -1578,6 +1635,7 @@ export default function SpainMapPage() {
             <MapController
               zone={selectedZone}
               regionFocus={selectedZone ? null : regionFocus}
+              expanded={mapExpanded}
             />
             <ZoomTracker onZoom={handleZoom} />
             <FlyToCluster target={clusterFly} />

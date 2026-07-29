@@ -9,6 +9,7 @@ import {
 import { cylCotosZones } from '../data/cylCotosZones'
 import { mycologicalParksZones } from '../data/mycologicalParksZones'
 import { scrapedCotosZones } from '../data/scrapedCotosZones'
+import { extraCotosZones } from '../data/extraCotosZones'
 import { getZoneResourcePack } from '../data/zonePermitLinks'
 
 describe('regulated zones B2B', () => {
@@ -20,8 +21,14 @@ describe('regulated zones B2B', () => {
     )
     expect(stats.cylCount).toBe(cylCotosZones.length)
     expect(stats.parksSourceCount).toBe(mycologicalParksZones.length)
-    expect(stats.scrapedCount).toBe(scrapedCotosZones.length)
+    expect(stats.scrapedCount).toBe(
+      scrapedCotosZones.length + extraCotosZones.length,
+    )
+    expect(stats.extraCount).toBe(extraCotosZones.length)
     expect(stats.total).toBeGreaterThan(40)
+    expect(rows.some((r) => r.zone.id.startsWith('coto-lr-') || r.zone.id.startsWith('coto-ex-'))).toBe(
+      true,
+    )
     expect(stats.withPermit).toBeGreaterThan(20)
     // Montes de Soria present
     expect(rows.some((r) => /soria/i.test(r.zone.name) || r.zone.id.includes('soria'))).toBe(

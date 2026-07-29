@@ -36,11 +36,13 @@ import { moreZones } from './moreZones'
 import { mycologicalParksZones } from './mycologicalParksZones'
 import { cylCotosZones } from './cylCotosZones'
 import { scrapedCotosZones } from './scrapedCotosZones'
+import { extraCotosZones } from './extraCotosZones'
 
 export const mushroomZones: MushroomZone[] = [
   ...cylCotosZones,
   ...mycologicalParksZones,
   ...scrapedCotosZones,
+  ...extraCotosZones,
   ...additionalZones,
   ...moreZones,
   // ─── NORTE / CORDILLERA CANTÁBRICA ───
