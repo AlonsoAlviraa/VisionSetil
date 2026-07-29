@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>VisionSetil - Identificaci├│n Experta</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&amp;family=Plus+Jakarta+Sans:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary": "#63000a",
+                        "on-secondary-container": "#795932",
+                        "tertiary-fixed-dim": "#ffb3ae",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed-variant": "#304e2e",
+                        "error-container": "#ffdad6",
+                        "on-primary-fixed": "#052107",
+                        "primary-fixed": "#c9ecc1",
+                        "surface": "#fcf9f2",
+                        "on-tertiary-fixed-variant": "#8b191d",
+                        "on-secondary-fixed": "#2b1700",
+                        "surface-container-highest": "#e5e2db",
+                        "on-surface-variant": "#434840",
+                        "surface-variant": "#e5e2db",
+                        "surface-bright": "#fcf9f2",
+                        "primary": "#173317",
+                        "on-tertiary-container": "#ff928b",
+                        "error": "#ba1a1a",
+                        "on-primary-container": "#98b991",
+                        "on-primary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed": "#410004",
+                        "secondary": "#785832",
+                        "surface-tint": "#486644",
+                        "on-secondary-fixed-variant": "#5e411d",
+                        "on-background": "#1c1c18",
+                        "secondary-fixed-dim": "#e9bf90",
+                        "inverse-on-surface": "#f3f0e9",
+                        "on-surface": "#1c1c18",
+                        "outline-variant": "#c3c8be",
+                        "tertiary-fixed": "#ffdad7",
+                        "secondary-fixed": "#ffddb9",
+                        "tertiary-container": "#86151a",
+                        "on-tertiary": "#ffffff",
+                        "inverse-surface": "#31312c",
+                        "secondary-container": "#fed2a2",
+                        "primary-container": "#2d4a2b",
+                        "on-error": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "primary-fixed-dim": "#aed0a7",
+                        "surface-dim": "#dcdad3",
+                        "surface-container": "#f0eee7",
+                        "background": "#fcf9f2",
+                        "outline": "#737970",
+                        "surface-container-high": "#ebe8e1",
+                        "surface-container-low": "#f6f3ec",
+                        "inverse-primary": "#aed0a7"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "container-margin": "20px",
+                        "gutter": "12px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "unit": "4px",
+                        "lg": "24px",
+                        "xl": "40px"
+                    },
+                    "fontFamily": {
+                        "headline-sm": ["Playfair Display"],
+                        "label-md": ["Plus Jakarta Sans"],
+                        "body-sm": ["Plus Jakarta Sans"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "display-lg": ["Playfair Display"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "headline-md": ["Playfair Display"]
+                    },
+                    "fontSize": {
+                        "headline-sm": ["22px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-md": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                        "headline-md-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        body {
+            background-color: #fcf9f2;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .bento-card {
+            box-shadow: 0px 4px 20px rgba(45, 74, 43, 0.08);
+        }
+        .safe-bottom {
+            padding-bottom: calc(4rem + env(safe-area-inset-bottom));
+        }
+        .photo-label {
+            backdrop-filter: blur(4px);
+            background: rgba(252, 249, 242, 0.85);
+        }
+    </style>
+</head>
+<body class="font-body-md text-on-surface">
+<!-- Top AppBar (Identity) -->
+<header class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-container-margin h-16 bg-surface dark:bg-surface-dim shadow-sm">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-primary">menu</span>
+<h1 class="font-headline-md-mobile text-headline-md-mobile text-primary">VisionSetil</h1>
+</div>
+<span class="material-symbols-outlined text-primary">search</span>
+</header>
+<!-- Warning Sticky Bar -->
+<div class="sticky top-16 left-0 w-full z-40 flex items-center justify-center py-2 px-4 text-center bg-tertiary-container dark:bg-tertiary">
+<span class="material-symbols-outlined text-on-tertiary-container mr-2 text-[18px]">warning</span>
+<span class="font-label-md text-label-md text-on-tertiary-container uppercase tracking-wider">Solo orientaci├│n, nunca consumo</span>
+</div>
+<main class="pt-2 px-container-margin safe-bottom">
+<!-- Hero Section -->
+<section class="mt-lg">
+<div class="relative rounded-xl overflow-hidden bento-card aspect-[4/3] group">
+<img alt="Imagen principal de un bosque h├║medo con setas silvestres" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDj3YETmj3dfHdP8snr-J8GRCnRdwN5eFloHGcZ3M6hUqjPZ9lWnyI9nOMfoTSLsWFFqdPm7IgZU6fwKC1rb9izz9rlCZoAeJH8SZI09RwztS0zAPlLIcZfRqfuoyjGhVqDFZhdKeQLtRMf5OHYwUJTrshimlVJx2pjOPBrATtOqDgKPDuka4sbSREBZ3n4PrjZTJVbTT0TyuZlVRt-VDGpM44mt2IBTXNxjzFp5ioQZxZAhsqvcDef0WUjn2WMA5aqI1CL03o97Hc0"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-lg w-full">
+<h2 class="font-headline-md text-headline-md-mobile text-white mb-md">Identifica con multi-vista</h2>
+<button class="bg-primary-container text-on-primary-container font-label-md text-label-md px-xl py-3 rounded-full flex items-center gap-sm active:scale-95 transition-transform">
+                        Probar Identificar
+                        <span class="material-symbols-outlined text-[18px]">center_focus_strong</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Photo Grid Section (Asymmetric Bento) -->
+<section class="mt-xl">
+<div class="flex items-center justify-between mb-md">
+<h3 class="font-headline-sm text-headline-sm text-primary">Detalles del campo</h3>
+<span class="font-label-md text-label-md text-secondary">Ver todo</span>
+</div>
+<div class="grid grid-cols-2 gap-md">
+<!-- Laminillas -->
+<div class="relative rounded-xl overflow-hidden bento-card h-40 bg-white">
+<img alt="Primer plano macro de las l├íminas debajo del sombrero de un hongo silvestre" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQ0esEUR6uhuuNJbbyxAMcuEGB5PaoNSA5ZrVOgUodS9HaCw3VBO3RO2PKVkU5DweINVnKWDiPbkfLkAsdnEM-L59DCJAbzUFPktiFRQFSsWRrgUZ2LR0lt-GRMKVcmz-XfDGH4iQ7u1lMfM6Znt87WPMKNF3f9PI4KnJLsTGEzXfQmevdWVZRvkkUrw8rosdx9ls7UoC3fvNNuDAfj1pkd-v_fJbhpMwhWrF6ovLkYqpNRgsveI4GZWrLsP2M7bK9Y1PVsa4aF1Dz"/>
+<div class="absolute bottom-2 left-2 px-3 py-1 rounded-full photo-label">
+<span class="font-label-md text-label-md text-primary">Laminillas</span>
+</div>
+</div>
+<!-- Perfil -->
+<div class="relative rounded-xl overflow-hidden bento-card h-40 bg-white">
+<img alt="Vista lateral completa de un hongo emergiendo del suelo del bosque" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5WHYEbMShTuCryu70XQYZT5bebo-tyBat5tGViFgnkT7gMnMvt0s0LzJx3aoOLLq6b1UdAc38L303WAra226Y4U56G1JWyIjf0eWMCUK4_FmnuT4u8abeXLqZSvJiHZZnf6j2DvEeOLdwLyd3f4LHiy7Egm1a2QuuAKYdD-QpYlEqbh_pbhM27jLu-spFeYiz88uCPHXuK5qivwZ262QNrpYi-5vl2zdmtxC4dCqJFdX3lfJP3wfA76otd-wZ3MWrBqq002Fk1_OA"/>
+<div class="absolute bottom-2 left-2 px-3 py-1 rounded-full photo-label">
+<span class="font-label-md text-label-md text-primary">Perfil</span>
+</div>
+</div>
+<!-- H├íbitat -->
+<div class="relative rounded-xl overflow-hidden bento-card h-40 bg-white">
+<img alt="Vista de gran angular del entorno forestal donde crecen las setas" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDT9lnOBWRVjTJXXcsd1Q735wqFkKDlp6v3dXajBKCl2hzgysswStrM4aNgkfpjQ582Uh4PPMwHUYJj8xg0uZC8tjjxrB_LoTOtyOFGWbjquEyfHh2B3EqTLAO6TqOuwLBEeYaFjEpOv9OUudr1UnEJK5sCuVbLvLqH062scluWYDZzwYXottP4ELurL3jDgtrjN019EQ4CIkr2sXelfCqxjduXkpNxnaI19yFzVNP7nr_YD0SYBb2We-G-uYFepRuk0UHzP8ZOil-e"/>
+<div class="absolute bottom-2 left-2 px-3 py-1 rounded-full photo-label">
+<span class="font-label-md text-label-md text-primary">H├íbitat</span>
+</div>
+</div>
+<!-- Detalle -->
+<div class="relative rounded-xl overflow-hidden bento-card h-40 bg-white">
+<img alt="Detalle en primer plano de la textura y manchas en la superficie de la seta" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCIgZupCquvf5_QAvxJaYpPX3jJ3yR-VRW-aoVcrg1f9d1PkWClJG1tkkc6zP8PS6r_FHEalg6D0gS5ZKcq91x4HlyCCB9oNux8vqhZrku754eVJCCn1_bG123ZrvElEDyAD3-r-GfD9JJqnJ2MwP1ghy4idbck1P1Bu-KbvkbG1yfJsmTswg2PXu01dneI0SAobHHs6TNqDZL2yc-BoP3dxtyZRkYeenJn7pUA3ngPh1PrWTre_A9QwHq4EX5WGUpPay9anekBEkh4"/>
+<div class="absolute bottom-2 left-2 px-3 py-1 rounded-full photo-label">
+<span class="font-label-md text-label-md text-primary">Detalle</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Risk Indicators -->
+<section class="mt-xl p-lg bg-surface-container rounded-xl bento-card">
+<h3 class="font-headline-sm text-headline-sm text-primary mb-md">Estado de Toxicidad</h3>
+<div class="flex flex-wrap gap-sm">
+<!-- Moderado -->
+<div class="flex items-center gap-sm bg-[#FED2A2] px-4 py-2 rounded-full border border-secondary/20">
+<span class="material-symbols-outlined text-secondary text-[20px]">report</span>
+<span class="font-label-md text-label-md text-on-secondary-container">Riesgo Moderado</span>
+</div>
+<!-- Alta Toxicidad -->
+<div class="flex items-center gap-sm bg-tertiary px-4 py-2 rounded-full shadow-md">
+<span class="material-symbols-outlined text-white text-[20px]">skull</span>
+<span class="font-label-md text-label-md text-white">Alta Toxicidad</span>
+</div>
+</div>
+<p class="mt-md font-body-sm text-body-sm text-on-surface-variant italic">
+                Nota: Algunas especies presentan toxinas latentes. Consulte siempre a un experto local.
+            </p>
+</section>
+<!-- Trust Row -->
+<section class="mt-xl py-lg flex items-center justify-center border-t border-surface-variant gap-md">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-container text-[24px]" style="font-variation-settings: 'FILL' 1;">book</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface-variant">Fuente Verificada</span>
+<span class="font-body-md font-bold text-primary">Basado en la Enciclopedia de Iberia</span>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pt-2 pb-safe-area-inset-bottom bg-surface dark:bg-surface-dim rounded-t-xl shadow-[0px_-4px_20px_rgba(45,74,43,0.08)]">
+<!-- Identificar (Active) -->
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">visibility</span>
+<span class="font-label-md text-label-md">Identificar</span>
+</a>
+<!-- Bosque -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">forest</span>
+<span class="font-label-md text-label-md">Bosque</span>
+</a>
+<!-- Gu├¡a -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">book_2</span>
+<span class="font-label-md text-label-md">Gu├¡a</span>
+</a>
+<!-- Perfil -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-md text-label-md">Perfil</span>
+</a>
+</nav>
+<script>
+        // Micro-interactions for tactile feedback
+        document.querySelectorAll('button, a').forEach(el => {
+            el.addEventListener('touchstart', () => {
+                el.style.opacity = '0.7';
+            });
+            el.addEventListener('touchend', () => {
+                el.style.opacity = '1';
+            });
+        });
+    </script>
+</body></html>

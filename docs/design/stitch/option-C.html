@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VisionSetil - Ficha de orientaci├│n</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&amp;family=JetBrains+Mono:wght@400;500&amp;family=Hanken+Grotesk:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface": "#fbf8fc",
+                    "surface-tint": "#006781",
+                    "outline": "#6f787d",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-dim": "#dcd9dd",
+                    "on-surface": "#1b1b1e",
+                    "inverse-primary": "#81d1f0",
+                    "on-error": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "primary-container": "#0e7490",
+                    "tertiary-container": "#965e1c",
+                    "tertiary": "#794602",
+                    "on-error-container": "#93000a",
+                    "primary": "#005a71",
+                    "surface-variant": "#e4e1e6",
+                    "on-tertiary-container": "#ffe8d6",
+                    "error": "#ba1a1a",
+                    "on-background": "#1b1b1e",
+                    "on-tertiary-fixed-variant": "#693c00",
+                    "on-primary-fixed": "#001f29",
+                    "secondary-fixed-dim": "#ffb3ad",
+                    "tertiary-fixed-dim": "#ffb86f",
+                    "secondary": "#a53936",
+                    "on-primary-container": "#d3f1ff",
+                    "on-secondary-fixed": "#410004",
+                    "primary-fixed-dim": "#81d1f0",
+                    "on-surface-variant": "#3f484c",
+                    "error-container": "#ffdad6",
+                    "inverse-surface": "#303033",
+                    "surface-bright": "#fbf8fc",
+                    "primary-fixed": "#b9eaff",
+                    "on-tertiary-fixed": "#2c1600",
+                    "on-secondary-fixed-variant": "#852221",
+                    "surface-container-high": "#eae7eb",
+                    "on-primary": "#ffffff",
+                    "secondary-container": "#fe7c74",
+                    "surface-container-low": "#f6f2f7",
+                    "outline-variant": "#bec8cd",
+                    "on-primary-fixed-variant": "#004d62",
+                    "surface-container-highest": "#e4e1e6",
+                    "inverse-on-surface": "#f3f0f4",
+                    "on-secondary-container": "#721315",
+                    "tertiary-fixed": "#ffdcbd",
+                    "background": "#fbf8fc",
+                    "surface-container": "#f0edf1",
+                    "on-secondary": "#ffffff",
+                    "secondary-fixed": "#ffdad7"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0px",
+                    "lg": "0px",
+                    "xl": "0px",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-mobile": "16px",
+                    "baseline": "4px",
+                    "column-gap": "32px",
+                    "gutter": "24px",
+                    "margin-desktop": "64px"
+            },
+            "fontFamily": {
+                    "headline-lg-mobile": ["\"Source Serif 4\""],
+                    "label-mono": ["JetBrains Mono"],
+                    "body-data": ["Hanken Grotesk"],
+                    "headline-lg": ["\"Source Serif 4\""],
+                    "caption-italic": ["\"Source Serif 4\""],
+                    "display-scientific": ["\"Source Serif 4\""]
+            },
+            "fontSize": {
+                    "headline-lg-mobile": ["24px", {"lineHeight": "30px", "fontWeight": "600"}],
+                    "label-mono": ["13px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "body-data": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg": ["30px", {"lineHeight": "36px", "fontWeight": "600"}],
+                    "caption-italic": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "display-scientific": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #FAFAF8;
+            color: #18181B;
+            -webkit-font-smoothing: antialiased;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .paper-border {
+            border: 1px solid #18181B;
+        }
+        .paper-divider {
+            border-bottom: 1px solid #18181B;
+        }
+        .scientific-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+        }
+        .ink-button {
+            background-color: #18181B;
+            color: #FAFAF8;
+            transition: all 0.2s ease;
+        }
+        .ink-button:hover {
+            background-color: #3f3f46;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky z-50 bg-surface border-b border-outline flex flex-col gap-2 px-margin-mobile md:px-margin-desktop py-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary cursor-pointer">menu</span>
+<div class="flex flex-col">
+<span class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-on-surface tracking-tight md:font-headline-lg md:text-headline-lg">VisionSetil</span>
+<span class="font-label-mono text-label-mono text-on-surface-variant uppercase">Ficha de orientaci├│n</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant">search</span>
+</div>
+</div>
+</header>
+<main class="max-w-[1440px] mx-auto px-margin-mobile md:px-margin-desktop py-12">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-column-gap">
+<!-- Marginalia Column (Desktop only) -->
+<aside class="hidden md:block md:col-span-3">
+<div class="sticky top-32 flex flex-col gap-6">
+<div class="border-t-2 border-black pt-4">
+<p class="font-label-mono text-label-mono uppercase tracking-widest text-on-surface-variant">Referencia</p>
+<p class="font-body-data text-body-data mt-2">Expediente N.┬║ 442-B</p>
+<p class="font-body-data text-body-data">Fecha: 24 Oct 2023</p>
+</div>
+<div class="border-t border-outline-variant pt-4">
+<p class="font-label-mono text-label-mono uppercase tracking-widest text-on-surface-variant">Localizaci├│n</p>
+<p class="font-body-data text-body-data mt-2 italic">Bosque caducifolio h├║medo, 850msnm.</p>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<div class="md:col-span-9 flex flex-col gap-12">
+<!-- Hero Section: Scientific Specimen -->
+<section class="flex flex-col gap-6">
+<div class="paper-border p-2">
+<img alt="Specimen reference image" class="w-full aspect-[16/9] object-cover filter contrast-[1.05] grayscale-[0.2]" src="https://lh3.googleusercontent.com/aida/AP1WRLv9F1NngRZMGjTxRQYKiPvpD7A9hSxejzmW887CYfr7Y6IAC6tnmHS3l84f8AUutQQSCx6UODZ1xoPa_jSCsIzRVlLtubWlezlz-q9rZyVRFHLD5-TSETsFZ9lGDkJiIInVZKFvho-EvyyhKECC0SYj9iFGIFbH6Rr8mcC5QUHns1ylOeCOT01qbDLfmwrbrPJ_P-kTqN8NMMGoOlPv1WfI5CB7unldQNB-As5mKnuhGilDHqalB1yoKgs"/>
+</div>
+<div class="flex flex-col md:flex-row justify-between items-baseline gap-4">
+<h1 class="font-display-scientific text-display-scientific italic">*Amanita muscaria var. muscaria*</h1>
+<div class="bg-[#7F1D1D] text-white px-4 py-1.5 font-label-mono text-label-mono tracking-wider flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">report</span>
+                            RIESGO: MORTAL
+                        </div>
+</div>
+<div class="paper-divider w-full"></div>
+</section>
+<!-- Section 1: Identificaci├│n de campo -->
+<section class="flex flex-col gap-8">
+<div class="flex items-center gap-4">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg uppercase tracking-tight">Identificaci├│n de campo</h2>
+<div class="flex-grow h-px bg-outline-variant"></div>
+</div>
+<!-- 2x2 Photo Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Slot 1: Laminillas -->
+<div class="paper-border bg-surface-container-low p-3 flex flex-col gap-3 group">
+<div class="relative overflow-hidden aspect-square">
+<img alt="Laminillas detail" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida/AP1WRLtvM2vL8cNySfrV2w8XfFy_m0vNQ6NkIM_PTiPqd2DBFnwL9IuVkEDaeVFcnKF3S2Ps773EjbX87ktbnGd6QaDx-QIP1rJ2Lb4wmgM6mNi17YT7I0CHDfTX7qar_9N98Wt-JNI3Wt4bTa8qKKU1NqZYkiN9qQ7qkhrw4Ja_pVxIfdAtQYcBHGB0zzO0ioh_t6hAVznahR_WPozcN_f0pETJIY0TcKzaQrCrwWMdYO9FIvg_XnmAOlPrYsra"/>
+<div class="absolute top-2 right-2 bg-primary p-1">
+<span class="material-symbols-outlined text-white text-lg" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</div>
+<div class="flex justify-between items-center px-1">
+<span class="font-label-mono text-label-mono uppercase">Laminillas</span>
+<span class="font-body-data text-sm text-on-surface-variant">Capturado</span>
+</div>
+</div>
+<!-- Slot 2: Perfil -->
+<div class="paper-border bg-surface-container-low p-3 flex flex-col gap-3 group">
+<div class="relative overflow-hidden aspect-square">
+<img alt="Perfil detail" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida/AP1WRLtRnCHC_Q9UNDRgHkcrs-sLsx5BAHNNzjXY2gBM89lv7dhcYVyjGu-E3w7EweTrShVePTmQPm87d30v5NV8KhLJEZuIEPQjIn4xoflLOsWsqrnmJQ9UMkETfE7i9dygtx06VCwJXN_XFs9W2CN_xnqZQGwUUnqBcuKoMVYQbzVucd6MK-82T_fA-y9Ic-rxXuU5WIqVgcIdHLLyMVMdtCVdPk265EvaiBm1opyK6K6fEae_A6rW_DgjEnA"/>
+<div class="absolute top-2 right-2 bg-primary p-1">
+<span class="material-symbols-outlined text-white text-lg" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</div>
+<div class="flex justify-between items-center px-1">
+<span class="font-label-mono text-label-mono uppercase">Perfil</span>
+<span class="font-body-data text-sm text-on-surface-variant">Capturado</span>
+</div>
+</div>
+<!-- Slot 3: H├íbitat -->
+<div class="paper-border bg-surface-container-low p-3 flex flex-col gap-3 group">
+<div class="relative overflow-hidden aspect-square">
+<img alt="H├íbitat detail" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida/AP1WRLu4DSAlNRfhxOQ5YYjs6lCpsuM_kBItJq1iFKNnCjeVCwqTzksGt6BU5ZCmVX4VAadGLm5HuhGnDwk49LQHZM22DoMdlN3qzOWiDCqxiCo1Bp7tn0TPev0OGqYhMvd7gJXDIoq7iLNDKqhItpE5FGZZuRVn4By08h_JEduzDA_DfCWw-AKCFpROABAvx3nCn7nvq0gHuAuDjZQ9syCXsSdYLKp1ITjnvASQeUh9lBepXdLc-Eiygh6IgY0"/>
+<div class="absolute top-2 right-2 bg-primary p-1">
+<span class="material-symbols-outlined text-white text-lg" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</div>
+<div class="flex justify-between items-center px-1">
+<span class="font-label-mono text-label-mono uppercase">H├íbitat</span>
+<span class="font-body-data text-sm text-on-surface-variant">Capturado</span>
+</div>
+</div>
+<!-- Slot 4: Detalle -->
+<div class="paper-border bg-surface-container-low p-3 flex flex-col gap-3 group">
+<div class="relative overflow-hidden aspect-square">
+<img alt="Detalle detail" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida/AP1WRLvFsZU-B-2sHcMCEltwm4lp_depThybb8Xxr1kpRzy8wtMHWqf5_5iupOo1DC4U9dQjPns0NIWtDY6pz87JV_HTQoiqDRyXLKjU61EjV09mjLTVpTs6RFv0fT3UVZhuYgbZIB4Eh5MDIi_6rHa_MCjDist8cCGEZWpizabmkZymbkyoRpsCFFeOgfsuDEnwL87F7UD1muO13aiw7ikC8Q-KSmMFIEqScCEIj6-XS56XoI7SOAzcnqjvbNYB"/>
+<div class="absolute top-2 right-2 bg-primary p-1">
+<span class="material-symbols-outlined text-white text-lg" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</div>
+<div class="flex justify-between items-center px-1">
+<span class="font-label-mono text-label-mono uppercase">Detalle</span>
+<span class="font-body-data text-sm text-on-surface-variant">Capturado</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 2: Dossier de resultados -->
+<section class="flex flex-col gap-8 mb-24">
+<div class="flex items-center gap-4">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg uppercase tracking-tight">Dossier de resultados</h2>
+<div class="flex-grow h-px bg-outline-variant"></div>
+</div>
+<div class="flex flex-col gap-8">
+<!-- Recommendation Info Box -->
+<div class="bg-primary-container/10 p-8 border-l-4 border-primary-container flex gap-6 items-start">
+<span class="material-symbols-outlined text-primary-container text-3xl">info</span>
+<div class="flex flex-col gap-2">
+<h3 class="font-label-mono text-label-mono uppercase font-bold text-primary-container">Recomendaci├│n de abstenci├│n</h3>
+<p class="font-body-data text-body-data leading-relaxed text-on-surface">
+                                    La identificaci├│n visual confirma rasgos caracter├¡sticos de la familia Amanitaceae. Se desaconseja categ├│ricamente cualquier forma de ingesti├│n o contacto mucoso con el ejemplar. Esta especie contiene alcaloides neurot├│xicos persistentes que pueden provocar cuadros graves de intoxicaci├│n gastrointestinal y sintomatolog├¡a muscar├¡nica severa.
+                                </p>
+</div>
+</div>
+<!-- Technical Metadata Table -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-12 border-t border-outline-variant pt-8">
+<div class="flex flex-col gap-4">
+<div class="flex justify-between border-b border-dashed border-outline-variant pb-2">
+<span class="font-label-mono text-label-mono uppercase text-on-surface-variant">Orden</span>
+<span class="font-body-data">Agaricales</span>
+</div>
+<div class="flex justify-between border-b border-dashed border-outline-variant pb-2">
+<span class="font-label-mono text-label-mono uppercase text-on-surface-variant">Familia</span>
+<span class="font-body-data">Amanitaceae</span>
+</div>
+<div class="flex justify-between border-b border-dashed border-outline-variant pb-2">
+<span class="font-label-mono text-label-mono uppercase text-on-surface-variant">Esporada</span>
+<span class="font-body-data">Blanca</span>
+</div>
+</div>
+<div class="flex flex-col gap-4">
+<p class="font-caption-italic text-caption-italic italic text-on-surface-variant">
+                                    "La superficie del sombrero es de color rojo brillante con restos de volva blancos (puntos), volvi├®ndose amarillenta con la edad o la lluvia intensa."
+                                </p>
+<button class="ink-button py-3 px-6 font-label-mono text-label-mono uppercase tracking-widest self-start mt-2">
+                                    Archivar reporte completo
+                                </button>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 bg-surface border-t border-outline flex justify-around items-stretch w-full md:hidden">
+<a class="flex flex-col items-center justify-center text-on-primary-container bg-primary-container rounded-none py-2 px-4 transition-colors duration-150" href="#">
+<span class="material-symbols-outlined">biotech</span>
+<span class="font-label-mono text-label-mono">Identificar</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant py-2 px-4 hover:bg-surface-container-high transition-colors duration-150 active:scale-95" href="#">
+<span class="material-symbols-outlined">folder_open</span>
+<span class="font-label-mono text-label-mono">Archivo</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant py-2 px-4 hover:bg-surface-container-high transition-colors duration-150 active:scale-95" href="#">
+<span class="material-symbols-outlined">map</span>
+<span class="font-label-mono text-label-mono">Mapa</span>
+</a>
+</nav>
+<script>
+        // Micro-interaction for hover effects on grid items
+        document.querySelectorAll('.paper-border').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.borderColor = '#005a71';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.borderColor = '#18181B';
+            });
+        });
+    </script>
+</body></html>

@@ -4,7 +4,16 @@
 
 **Policy forever:** never edible green lights · open-set is a feature · no 3D model studio.
 
-Mockups: `docs/design/proposals/option-A.png` · `option-B.png` · `option-C.png`
+**Stitch project:** `12549746111619294405` (account VisionSetil FE redesign options)  
+**Stitch screenshots (authoritative):**
+
+| Option | Screenshot | HTML export |
+|--------|------------|-------------|
+| A | `docs/design/proposals/option-A-stitch.png` | `docs/design/stitch/option-A.html` |
+| B | `docs/design/proposals/option-B-stitch.png` | `docs/design/stitch/option-B.html` |
+| C | `docs/design/proposals/option-C-stitch.png` | `docs/design/stitch/option-C.html` |
+
+Earlier draft mockups (Imagine): `option-A-bosque-claro.jpg` etc. Prefer **Stitch** versions for handoff.
 
 ---
 

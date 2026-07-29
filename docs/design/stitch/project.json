@@ -1,0 +1,12 @@
+﻿{
+  "projectId": "12549746111619294405",
+  "projectTitle": "VisionSetil FE redesign options 2026-07-29",
+  "stitchUrlHint": "https://stitch.withgoogle.com (open project from your account)",
+  "screens": {
+    "A_bosque_claro": "1ec0c27d21ca49269b9629f986f17ea3",
+    "B_campo_nocturno": "30762c4028d04605a97a2bb729e71121",
+    "C_guia_de_campo": "7c6ded3c784c4537949424d8aa853757"
+  },
+  "generated": "2026-07-29",
+  "policy": "orientation_only_never_consume"
+}
