@@ -14,16 +14,16 @@
 }
 
 .app--mode-web {
-  /* Fill the monitor: wide canvas, generous gutters, no thin center column */
-  --cn-gutter: clamp(1.75rem, 5vw, 4.5rem);
-  --cn-content-wide: min(100% - 2 * var(--cn-gutter), 90rem);
-  --cn-content-narrow: min(100% - 2 * var(--cn-gutter), 48rem);
+  /* Fill the entire monitor — gutters only, never a centered content column */
+  --cn-gutter: clamp(1.25rem, 2.5vw, 3rem);
+  --cn-content-wide: 100%;
+  --cn-content-narrow: min(42rem, 100%);
   --cn-shell: 100%;
-  --max-width: var(--cn-content-wide);
+  --max-width: 100%;
   --cn-nav-h: 0px;
   --cn-hero-min-h: min(88vh, 52rem);
-  --web-space-section: clamp(3rem, 7vw, 6rem);
-  --web-space-block: clamp(1.75rem, 4vw, 3rem);
+  --web-space-section: clamp(2.5rem, 5vw, 5rem);
+  --web-space-block: clamp(1.5rem, 3vw, 2.5rem);
   --web-radius: 1.5rem;
   --web-radius-xl: 2rem;
 }
@@ -56,10 +56,12 @@
 }
 
 .app--mode-web .header-inner {
-  max-width: var(--cn-content-wide) !important;
-  margin: 0 auto !important;
+  max-width: none !important;
+  width: 100% !important;
+  margin: 0 !important;
   padding: 1rem var(--cn-gutter) !important;
   min-height: 4.25rem;
+  box-sizing: border-box !important;
 }
 
 .app--mode-web .header-brand h1,
@@ -129,15 +131,17 @@
 .app--mode-web .page-setadle,
 .app--mode-web .page-wordle,
 .app--mode-web .page-quiz {
-  max-width: var(--cn-content-wide) !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
+  max-width: none !important;
+  width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
   padding-left: var(--cn-gutter) !important;
   padding-right: var(--cn-gutter) !important;
   padding-bottom: var(--web-space-section) !important;
+  box-sizing: border-box !important;
 }
 
-/* Home: full width page — sections use content-wide, hero full-bleed */
+/* Home: full-bleed hero + full-width bands (gutters only) */
 .app--mode-web .cn-home {
   max-width: none !important;
   width: 100% !important;
@@ -149,11 +153,13 @@
 .app--mode-web .cn-home-trust,
 .app--mode-web .cn-page-pad,
 .app--mode-web .cn-home-season {
-  max-width: var(--cn-content-wide) !important;
+  max-width: none !important;
   width: 100% !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
-  box-sizing: border-box;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding-left: var(--cn-gutter) !important;
+  padding-right: var(--cn-gutter) !important;
+  box-sizing: border-box !important;
 }
 
 .app--mode-web .cn-bottom-nav,
@@ -248,9 +254,12 @@
 
 .app--mode-web .cn-home-hero__content {
   position: absolute !important;
-  inset: auto auto 0 0 !important;
+  left: 0 !important;
+  right: auto !important;
+  bottom: 0 !important;
   z-index: 2;
-  max-width: min(36rem, 48vw);
+  width: min(44rem, 52vw) !important;
+  max-width: none !important;
   padding: clamp(2rem, 5vw, 4.5rem) var(--cn-gutter)
     clamp(2.5rem, 6vw, 5rem) !important;
   display: flex;
@@ -258,6 +267,7 @@
   align-items: flex-start;
   gap: 0.85rem;
   background: transparent !important;
+  box-sizing: border-box !important;
 }
 
 .app--mode-web .cn-home-hero__kicker {
@@ -324,16 +334,18 @@
   color: var(--cn-on-moss) !important;
 }
 
-/* Trust row: minimal, elegant, centered under hero */
+/* Trust row: minimal, elegant under hero — full width band */
 .app--mode-web .cn-home-trust {
-  max-width: var(--cn-content-wide);
-  margin: var(--web-space-block) auto !important;
+  max-width: none !important;
+  width: 100% !important;
+  margin: var(--web-space-block) 0 !important;
   padding: 0 var(--cn-gutter) !important;
   display: flex !important;
-  justify-content: center;
+  justify-content: flex-start;
   flex-wrap: wrap;
   gap: 2.5rem 3.5rem !important;
   border: none !important;
+  box-sizing: border-box !important;
 }
 
 .app--mode-web .cn-home-trust__item {
@@ -360,15 +372,17 @@
   color: var(--cn-danger) !important;
 }
 
-/* Lower band: 3 big photo portals */
+/* Lower band: 3 big photo portals — stretch across the monitor */
 .app--mode-web .cn-home-lower {
-  max-width: var(--cn-content-wide);
-  margin: 0 auto var(--web-space-section) !important;
+  max-width: none !important;
+  width: 100% !important;
+  margin: 0 0 var(--web-space-section) !important;
   padding: 0 var(--cn-gutter) !important;
   display: grid !important;
   grid-template-columns: 1.35fr 0.85fr !important;
   gap: 1.25rem !important;
   align-items: stretch;
+  box-sizing: border-box !important;
 }
 
 .app--mode-web .cn-home-quick,
@@ -467,11 +481,13 @@
   opacity: 0.8;
 }
 
-/* Season strip — magazine photo rail */
+/* Season strip — magazine photo rail, full width */
 .app--mode-web .cn-page-pad {
-  max-width: var(--cn-content-wide);
-  margin: 0 auto;
+  max-width: none !important;
+  width: 100% !important;
+  margin: 0 !important;
   padding: 0 var(--cn-gutter) !important;
+  box-sizing: border-box !important;
 }
 
 .app--mode-web .seasonal-top-strip {
@@ -505,7 +521,7 @@
 }
 
 .app--mode-web .seasonal-top-strip__grid {
-  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr)) !important;
   gap: 1.15rem !important;
 }
 
@@ -623,7 +639,7 @@
 }
 
 .app--mode-web .page-encyclopedia--cn .species-photo-grid {
-  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr)) !important;
   gap: 1.15rem !important;
 }
 
@@ -640,7 +656,7 @@
 }
 
 .app--mode-web .family-guide-strip__grid {
-  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr)) !important;
   gap: 1.15rem !important;
 }
 
@@ -701,9 +717,11 @@
 }
 
 .app--mode-web .footer-content {
-  max-width: var(--cn-content-wide);
-  margin: 0 auto;
+  max-width: none !important;
+  width: 100% !important;
+  margin: 0 !important;
   padding: 0 !important;
+  box-sizing: border-box !important;
 }
 
 .app--mode-web .footer-links {
@@ -808,4 +826,87 @@
   .app--mode-web .footer-links {
     display: none !important;
   }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   v1.11 — WEB ADAPTATIONS FOR NEW COMPONENTS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Dichotomous key — wider 2-column option layout on desktop */
+.app--mode-web .dichotomous-key {
+  max-width: var(--cn-content-narrow);
+  margin: 1.5rem auto !important;
+  padding: 2rem !important;
+}
+.app--mode-web .dichotomous-key__options {
+  gap: 0.75rem;
+}
+.app--mode-web .dichotomous-key__option {
+  font-size: 0.95rem !important;
+  padding: 0.75rem 1.4rem !important;
+}
+.app--mode-web .dichotomous-key__list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+.app--mode-web .dichotomous-key__results-note {
+  max-width: var(--cn-content-narrow);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Result card — constrain to readable column on web, elevate glass */
+.app--mode-web .result-card.result-card--layered {
+  max-width: var(--cn-content-narrow);
+  margin: 1.5rem auto !important;
+}
+.app--mode-web .lookalike-next-actions {
+  grid-template-columns: 1fr 1fr !important;
+}
+.app--mode-web .predictions ul {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+/* Encyclopedia cards — consistent aspect + hover lift on web */
+.app--mode-web .species-photo-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.app--mode-web .species-photo-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* Setadle / Wordle — center game board on web */
+.app--mode-web .page-setadle,
+.app--mode-web .page-wordle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.app--mode-web .page-setadle > *,
+.app--mode-web .page-wordle > * {
+  max-width: var(--cn-content-narrow);
+  width: 100%;
+}
+
+/* Species detail (ficha) — 2-column layout on wide screens */
+.app--mode-web .page-detail,
+.app--mode-web .species-detail {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 2rem;
+  align-items: start;
+}
+@media (max-width: 860px) {
+  .app--mode-web .page-detail,
+  .app--mode-web .species-detail {
+    grid-template-columns: 1fr;
+  }
+}
+.app--mode-web .species-detail-gallery,
+.app--mode-web .photo-gallery {
+  grid-template-columns: repeat(4, 1fr) !important;
 }

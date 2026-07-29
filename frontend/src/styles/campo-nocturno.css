@@ -71,10 +71,10 @@ html[data-skin='campo-nocturno'] {
      so the product reads as Stitch intends (no sans body font). */
   --font-sans: 'Source Serif 4', Georgia, serif;
 
-  /* Fluid product width — full phone on small screens, wide page on desktop
-     (no more 26.5rem phone pill with empty side gutters on big monitors). */
+  /* Full-bleed product width — fill the monitor; only gutters, never a
+     centered phone pill or 80rem column with empty side voids. */
   --cn-shell: 100%;
-  --cn-gutter: 1.1rem;
+  --cn-gutter: clamp(1rem, 2.5vw, 2.5rem);
   --cn-nav-h: 4.5rem;
   --cn-header-h: 3.25rem;
   --cn-warn-h: 1.85rem;
@@ -118,7 +118,22 @@ html[data-skin='campo-nocturno'] {
   --danger: var(--cn-danger);
   --deadly: #ff8a80;
   --warning: #e8c17a;
+  /* Override legacy global/premium/redesign caps (960/1080/1200px) */
   --max-width: 100%;
+}
+
+/* Kill premium.css `.container { max-width: 1200px !important }` and friends */
+html[data-skin='campo-nocturno'] .container,
+html[data-skin='campo-nocturno'] main.container,
+.app--campo-nocturno .container,
+.app--campo-nocturno main.container,
+.app--campo-nocturno > main.container,
+.app--campo-nocturno > main.cn-main {
+  max-width: none !important;
+  width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  align-items: stretch !important;
 }
 
 /* ── Global reset of legacy chrome ──────────────────────────────────────── */
@@ -211,9 +226,10 @@ body {
   z-index: 60;
   line-height: 1.25;
   width: 100%;
-  max-width: var(--cn-shell);
-  margin-left: auto !important;
-  margin-right: auto !important;
+  max-width: none;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  box-sizing: border-box;
 }
 
 /* Identify pro-check becomes soft note, not a second red bar */
@@ -241,8 +257,8 @@ body {
   top: 0;
   z-index: 50;
   width: 100% !important;
-  max-width: var(--cn-shell) !important;
-  margin: 0 auto !important;
+  max-width: none !important;
+  margin: 0 !important;
   min-height: var(--cn-header-h);
   background: rgba(16, 21, 17, 0.82) !important;
   border-bottom: 1px solid rgba(255, 180, 171, 0.14) !important;
@@ -375,12 +391,14 @@ body {
 .app--campo-nocturno > main.cn-main,
 .app--stitch-b > main.container {
   width: 100% !important;
-  max-width: var(--cn-shell) !important;
-  margin: 0 auto !important;
+  max-width: none !important;
+  margin: 0 !important;
   padding: 0 0 calc(var(--cn-nav-h) + 1rem) !important;
   flex: 1 1 auto;
   display: block !important;
   gap: 0 !important;
+  align-items: stretch !important;
+  box-sizing: border-box !important;
 }
 
 .app--has-bottom-nav {
@@ -391,12 +409,12 @@ body {
 .cn-bottom-nav,
 .bottom-nav {
   position: fixed !important;
-  left: 50% !important;
-  right: auto !important;
+  left: 0 !important;
+  right: 0 !important;
   bottom: 0 !important;
-  transform: translateX(-50%);
+  transform: none;
   width: 100%;
-  max-width: var(--cn-shell);
+  max-width: none;
   z-index: 100;
   display: flex !important;
   justify-content: space-around;
@@ -695,12 +713,16 @@ button[aria-pressed='true'] {
 
 .cn-home-hero {
   position: relative;
-  margin: 0.55rem var(--cn-gutter) 0.85rem;
+  margin: 0 0 0.85rem;
+  width: 100%;
+  max-width: none;
   min-height: min(70dvh, 32rem);
-  border-radius: var(--cn-radius-lg);
+  border-radius: 0;
   overflow: hidden;
-  border: 1px solid var(--cn-outline-soft);
+  border: none;
+  border-bottom: 1px solid var(--cn-outline-soft);
   background: var(--cn-surface);
+  box-sizing: border-box;
 }
 
 .cn-home-hero__media {
@@ -741,11 +763,14 @@ button[aria-pressed='true'] {
   right: 0;
   bottom: 0;
   z-index: 2;
-  padding: 1.25rem 1.1rem 1.3rem;
+  padding: 1.25rem var(--cn-gutter) 1.5rem;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 0.3rem;
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
 }
 
 .cn-home-hero__kicker {
@@ -800,7 +825,11 @@ button[aria-pressed='true'] {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
-  margin: 0 var(--cn-gutter) 0.85rem;
+  margin: 0 0 0.85rem;
+  padding: 0 var(--cn-gutter);
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
 }
 
 .cn-pill {
@@ -825,7 +854,11 @@ button[aria-pressed='true'] {
   display: flex;
   flex-direction: column;
   gap: 0.85rem;
-  margin: 0 var(--cn-gutter) 1rem;
+  margin: 0 0 1rem;
+  padding: 0 var(--cn-gutter);
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
 }
 
 .cn-home-quick {
@@ -1810,14 +1843,15 @@ button[aria-pressed='true'] {
 .footer,
 .footer--v16 {
   width: 100% !important;
-  max-width: var(--cn-shell) !important;
-  margin: 0 auto !important;
+  max-width: none !important;
+  margin: 0 !important;
   background: transparent !important;
   border-top: 1px solid var(--cn-outline-soft) !important;
   color: var(--cn-muted) !important;
   font-size: 0.72rem !important;
   padding: 0.85rem var(--cn-gutter) calc(0.5rem + env(safe-area-inset-bottom, 0px)) !important;
   order: 99;
+  box-sizing: border-box !important;
 }
 
 .footer-content {
@@ -1863,8 +1897,10 @@ button[aria-pressed='true'] {
 /* Banners */
 .api-status-banner,
 .pwa-install-hint {
-  max-width: var(--cn-shell);
-  margin: 0 auto;
+  max-width: none;
+  width: 100%;
+  margin: 0;
+  box-sizing: border-box;
   background: var(--cn-surface) !important;
   border-color: var(--cn-outline-soft) !important;
   color: var(--cn-cream) !important;
@@ -1903,32 +1939,43 @@ a {
 @media (min-width: 640px) {
   :root {
     --cn-shell: 100%;
-    --cn-gutter: clamp(1.15rem, 3vw, 2rem);
+    --cn-gutter: clamp(1.15rem, 2.5vw, 2rem);
     --cn-hero-min-h: min(68vh, 34rem);
   }
 
   .cn-home-hero {
     min-height: min(68vh, 34rem);
-    margin-left: var(--cn-gutter);
-    margin-right: var(--cn-gutter);
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
   }
 
   .cn-home-lower {
     display: grid;
     grid-template-columns: 1.2fr 0.9fr;
     gap: 1rem;
-    margin-left: var(--cn-gutter);
-    margin-right: var(--cn-gutter);
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: var(--cn-gutter);
+    padding-right: var(--cn-gutter);
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .cn-home-trust {
-    margin-left: var(--cn-gutter);
-    margin-right: var(--cn-gutter);
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: var(--cn-gutter);
+    padding-right: var(--cn-gutter);
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .cn-page-pad {
     padding-left: var(--cn-gutter);
     padding-right: var(--cn-gutter);
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .seasonal-top-strip__grid {
@@ -1951,18 +1998,21 @@ a {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   DESKTOP (≥960px): REAL web width — no phone pill, no empty side gutters
+   DESKTOP (≥960px): fill the monitor — gutters only, no centered column
    ═══════════════════════════════════════════════════════════════════════════ */
 @media (min-width: 960px) {
-  :root {
+  :root,
+  html[data-skin='campo-nocturno'] {
     --cn-shell: 100%;
-    --cn-gutter: clamp(1.5rem, 3.5vw, 3rem);
+    --cn-gutter: clamp(1.25rem, 2.2vw, 2.75rem);
     --cn-nav-h: 0px;
-    --max-width: min(100% - 2 * var(--cn-gutter), 80rem);
+    --max-width: 100%;
   }
 
   .app--campo-nocturno {
     padding: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
   }
 
   .app--campo-nocturno > .header,
@@ -1983,9 +2033,12 @@ a {
     min-height: auto !important;
     padding-bottom: 3rem !important;
     max-width: none !important;
+    width: 100% !important;
+    display: block !important;
+    align-items: stretch !important;
   }
 
-  /* Inner content uses a readable max width but still WIDE (~80rem) */
+  /* Pages fill the viewport; only side padding (no max-width auto-center) */
   .cn-page,
   .page-atelier-shell,
   .page-games-hub,
@@ -2001,24 +2054,29 @@ a {
   .page-setadle,
   .page-wordle,
   .page-quiz {
-    max-width: var(--max-width) !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
     padding-left: var(--cn-gutter) !important;
     padding-right: var(--cn-gutter) !important;
+    box-sizing: border-box !important;
   }
 
   .cn-home {
     max-width: none !important;
+    width: 100% !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
   }
 
   .header-inner {
-    max-width: var(--max-width);
-    margin: 0 auto;
-    padding-left: var(--cn-gutter);
-    padding-right: var(--cn-gutter);
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding-left: var(--cn-gutter) !important;
+    padding-right: var(--cn-gutter) !important;
+    box-sizing: border-box !important;
   }
 
   /* Top nav on desktop; bottom nav off */
@@ -2040,35 +2098,52 @@ a {
     bottom: 1.5rem !important;
   }
 
-  .cn-home-hero {
+  /* Hero edge-to-edge (no side inset that reads as "phone frame") */
+  .cn-home-hero,
+  .cn-home--v12 .cn-home-hero {
     min-height: min(78vh, 42rem);
-    margin: 0 var(--cn-gutter) 1.25rem;
-    border-radius: 1.5rem;
+    margin: 0 0 1.25rem !important;
+    border-radius: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
   }
 
-  .cn-home-lower {
-    max-width: var(--max-width);
-    margin-left: auto;
-    margin-right: auto;
-    padding: 0 var(--cn-gutter);
+  .cn-home-hero__content {
+    max-width: min(42rem, 55%) !important;
+    padding: 2rem var(--cn-gutter) 2.5rem !important;
+  }
+
+  .cn-home-lower,
+  .cn-home--v12 .cn-home-lower {
+    width: 100% !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 0 var(--cn-gutter) !important;
+    box-sizing: border-box !important;
+    display: grid !important;
     grid-template-columns: 1.35fr 0.85fr;
     gap: 1.25rem;
   }
 
   .cn-home-trust {
-    max-width: var(--max-width);
-    margin-left: auto;
-    margin-right: auto;
-    padding: 0 var(--cn-gutter);
+    width: 100% !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 0 var(--cn-gutter) !important;
+    box-sizing: border-box !important;
   }
 
   .cn-page-pad,
   .cn-home-season {
-    max-width: var(--max-width);
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: var(--cn-gutter);
-    padding-right: var(--cn-gutter);
+    width: 100% !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: var(--cn-gutter) !important;
+    padding-right: var(--cn-gutter) !important;
+    box-sizing: border-box !important;
   }
 
   .seasonal-top-strip__grid {
@@ -2077,7 +2152,7 @@ a {
   }
 
   .page-encyclopedia--cn .species-photo-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
     gap: 1rem !important;
   }
 
@@ -2103,9 +2178,10 @@ a {
 }
 
 @media (min-width: 1200px) {
-  :root {
-    --max-width: min(100% - 2 * var(--cn-gutter), 88rem);
-    --cn-gutter: clamp(2rem, 4vw, 4rem);
+  :root,
+  html[data-skin='campo-nocturno'] {
+    --max-width: 100%;
+    --cn-gutter: clamp(1.5rem, 2.5vw, 3rem);
   }
 
   .cn-home-hero {
@@ -2113,22 +2189,48 @@ a {
   }
 
   .page-encyclopedia--cn .species-photo-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
   }
 
   .seasonal-top-strip__grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .family-guide-strip__grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 }
 
-/* Kill legacy atelier/global narrow containers that leave empty sides */
+@media (min-width: 1600px) {
+  :root,
+  html[data-skin='campo-nocturno'] {
+    --cn-gutter: clamp(1.75rem, 2.8vw, 3.5rem);
+  }
+
+  .page-encyclopedia--cn .species-photo-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+  }
+
+  .seasonal-top-strip__grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  .games-hub-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.35rem;
+  }
+}
+
+/* Kill legacy atelier/global/premium narrow containers that leave empty sides */
 .app--campo-nocturno main.container,
 .app--campo-nocturno .container,
-.app--stitch-b main.container {
+.app--stitch-b main.container,
+html[data-skin='campo-nocturno'] .container {
   width: 100% !important;
   max-width: none !important;
   margin-left: 0 !important;
   margin-right: 0 !important;
+  box-sizing: border-box !important;
 }
 
 /* ── Competitive strips: season + family guide + open study ─────────────── */
@@ -2355,31 +2457,42 @@ a {
   border: 0 !important;
 }
 
+/* v12 home: full-width canvas — no floating inset card on wide screens */
 .cn-home--v12 .cn-home-hero {
   min-height: min(78vh, 36rem);
-  border-radius: 1.35rem;
-  margin: 0.55rem var(--cn-gutter) 1rem;
+  border-radius: 0;
+  margin: 0 0 1rem;
+  width: 100%;
+  max-width: none;
 }
 
 .cn-home--v12 .cn-home-hero__title {
-  font-size: clamp(2.4rem, 9vw, 3.35rem) !important;
+  font-size: clamp(2.4rem, 6vw, 4.25rem) !important;
   letter-spacing: -0.03em;
 }
 
 .cn-home--v12 .cn-home-hero__lead {
   font-size: 1.05rem !important;
-  max-width: 16rem;
+  max-width: min(28rem, 90%);
   line-height: 1.35 !important;
 }
 
 .cn-home--v12 .cn-home-trust {
-  justify-content: center;
-  gap: 1.25rem 1.75rem;
+  justify-content: flex-start;
+  gap: 1.25rem 2rem;
   margin-bottom: 1rem;
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
+  padding-left: var(--cn-gutter);
+  padding-right: var(--cn-gutter);
 }
 
 .cn-home--v12 .cn-home-lower {
   margin-bottom: 1.25rem;
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
 }
 
 .cn-home--v12 .cn-home-season {
