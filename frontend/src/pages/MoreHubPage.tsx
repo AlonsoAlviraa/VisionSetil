@@ -262,66 +262,68 @@ export function MoreHubPage() {
       </header>
 
       <div className="cn-page-pad">
-        {GROUPS.map((g) => (
-          <section key={g.id} className="more-hub-group" data-testid={`more-hub-${g.id}`}>
-            <h2 className="more-hub-group__title">
-              {t(g.titleKey, { defaultValue: g.titleFb })}
-            </h2>
-            <ul className="more-hub-list">
-              {g.items.map((item) => {
-                const isBeta = item.to === '/beta-feedback'
-                const body = (
-                  <>
-                    <span className="more-hub-list__icon" aria-hidden="true">
-                      <MoreIcon name={item.icon} />
-                    </span>
-                    <span className="more-hub-list__text">
-                      <span className="more-hub-list__label">
-                        {t(item.labelKey, { defaultValue: item.fallback })}
+        <div className="more-hub-groups">
+          {GROUPS.map((g) => (
+            <section key={g.id} className="more-hub-group" data-testid={`more-hub-${g.id}`}>
+              <h2 className="more-hub-group__title">
+                {t(g.titleKey, { defaultValue: g.titleFb })}
+              </h2>
+              <ul className="more-hub-list">
+                {g.items.map((item) => {
+                  const isBeta = item.to === '/beta-feedback'
+                  const body = (
+                    <>
+                      <span className="more-hub-list__icon" aria-hidden="true">
+                        <MoreIcon name={item.icon} />
                       </span>
-                      <span className="more-hub-list__blurb">
-                        {t(item.blurbKey, { defaultValue: item.blurbFb })}
+                      <span className="more-hub-list__text">
+                        <span className="more-hub-list__label">
+                          {t(item.labelKey, { defaultValue: item.fallback })}
+                        </span>
+                        <span className="more-hub-list__blurb">
+                          {t(item.blurbKey, { defaultValue: item.blurbFb })}
+                        </span>
                       </span>
-                    </span>
-                    <span className="more-hub-list__chev" aria-hidden="true">
-                      ›
-                    </span>
-                  </>
-                )
-                if (isBeta && betaExternal) {
+                      <span className="more-hub-list__chev" aria-hidden="true">
+                        ›
+                      </span>
+                    </>
+                  )
+                  if (isBeta && betaExternal) {
+                    return (
+                      <li key={item.to}>
+                        <a
+                          href={betaHref}
+                          className="more-hub-list__link"
+                          data-testid={item.testId}
+                          {...(isBetaMailto()
+                            ? {}
+                            : { target: '_blank', rel: 'noopener noreferrer' })}
+                        >
+                          {body}
+                        </a>
+                      </li>
+                    )
+                  }
                   return (
                     <li key={item.to}>
-                      <a
-                        href={betaHref}
+                      <Link
+                        to={item.to}
                         className="more-hub-list__link"
                         data-testid={item.testId}
-                        {...(isBetaMailto()
-                          ? {}
-                          : { target: '_blank', rel: 'noopener noreferrer' })}
                       >
                         {body}
-                      </a>
+                      </Link>
                     </li>
                   )
-                }
-                return (
-                  <li key={item.to}>
-                    <Link
-                      to={item.to}
-                      className="more-hub-list__link"
-                      data-testid={item.testId}
-                    >
-                      {body}
-                    </Link>
-                  </li>
-                )
-              })}
-            </ul>
-          </section>
-        ))}
+                })}
+              </ul>
+            </section>
+          ))}
+        </div>
 
         <div className="more-hub-cta">
-          <Link to="/identificar" className="cn-btn cn-btn--primary cn-btn--block">
+          <Link to="/identificar" className="cn-btn cn-btn--primary cn-btn--block more-hub-cta__btn">
             {t('more.ctaIdentify', { defaultValue: 'Acceder a Identificar' })}
           </Link>
         </div>

@@ -114,57 +114,67 @@ export function HomePage() {
         </span>
       </div>
 
-      <nav
-        className="cn-home-quick"
-        aria-label={t('home.ariaDiscover', { defaultValue: 'Explorar' })}
-      >
-        <Link to="/juegos" className="cn-home-quick__item" data-testid="home-quick-games">
-          <span className="cn-home-quick__icon" aria-hidden="true">
-            <IconGames />
-          </span>
-          <strong>{t('nav.games', { defaultValue: 'Juegos' })}</strong>
-          <span>{t('home.quickGames', { defaultValue: 'Setadle · Wordle · Reto' })}</span>
-        </Link>
-        <Link
-          to="/enciclopedia"
-          className="cn-home-quick__item"
-          data-testid="home-cta-encyclopedia"
+      <div className="cn-home-lower">
+        <nav
+          className="cn-home-quick"
+          aria-label={t('home.ariaDiscover', { defaultValue: 'Explorar' })}
         >
-          <span className="cn-home-quick__icon" aria-hidden="true">
-            <IconBook />
-          </span>
-          <strong>{t('nav.encyclopedia', { defaultValue: 'Enciclopedia' })}</strong>
-          <span>
-            {t('home.quickEncy', {
-              defaultValue: `${HOME_CATALOG_COUNT} taxones`,
-            })}
-          </span>
-        </Link>
-        <Link to="/mapa" className="cn-home-quick__item" data-testid="home-quick-map">
-          <span className="cn-home-quick__icon" aria-hidden="true">
-            <IconMap />
-          </span>
-          <strong>{t('nav.map', { defaultValue: 'Mapa' })}</strong>
-          <span>{t('home.quickMap', { defaultValue: 'Cotos · no ID' })}</span>
-        </Link>
-      </nav>
+          <Link to="/juegos" className="cn-home-quick__item" data-testid="home-quick-games">
+            <span className="cn-home-quick__icon" aria-hidden="true">
+              <IconGames />
+            </span>
+            <div className="cn-home-quick__text">
+              <strong>{t('nav.games', { defaultValue: 'Juegos' })}</strong>
+              <span>{t('home.quickGames', { defaultValue: 'Setadle · Wordle · Reto' })}</span>
+            </div>
+          </Link>
+          <Link
+            to="/enciclopedia"
+            className="cn-home-quick__item"
+            data-testid="home-cta-encyclopedia"
+          >
+            <span className="cn-home-quick__icon" aria-hidden="true">
+              <IconBook />
+            </span>
+            <div className="cn-home-quick__text">
+              <strong>{t('nav.encyclopedia', { defaultValue: 'Enciclopedia' })}</strong>
+              <span>
+                {t('home.quickEncy', {
+                  defaultValue: `${HOME_CATALOG_COUNT} taxones`,
+                })}
+              </span>
+            </div>
+          </Link>
+          <Link to="/mapa" className="cn-home-quick__item" data-testid="home-quick-map">
+            <span className="cn-home-quick__icon" aria-hidden="true">
+              <IconMap />
+            </span>
+            <div className="cn-home-quick__text">
+              <strong>{t('nav.map', { defaultValue: 'Mapa' })}</strong>
+              <span>{t('home.quickMap', { defaultValue: 'Cotos · no ID' })}</span>
+            </div>
+          </Link>
+        </nav>
 
-      <section className="cn-home-obs" data-testid="home-cn-observation">
-        <h2 className="cn-home-obs__title">
-          {t('home.obsTitle', { defaultValue: 'Observación Nocturna' })}
-        </h2>
-        <p className="cn-home-obs__body">
-          {t('home.obsBody', {
-            defaultValue:
-              'Optimizado para low-toxins. El brillo de la interfaz no interfiere con la visión nocturna de campo.',
-          })}
-        </p>
-        <p className="cn-home-obs__meta">
-          {t('home.obsMeta', {
-            defaultValue: '← Observaciones hoy · solo orientación',
-          })}
-        </p>
-      </section>
+        <section className="cn-home-obs" data-testid="home-cn-observation">
+          <div className="cn-home-obs__copy">
+            <h2 className="cn-home-obs__title">
+              {t('home.obsTitle', { defaultValue: 'Observación Nocturna' })}
+            </h2>
+            <p className="cn-home-obs__body">
+              {t('home.obsBody', {
+                defaultValue:
+                  'Optimizado para low-toxins. El brillo de la interfaz no interfiere con la visión nocturna de campo.',
+              })}
+            </p>
+          </div>
+          <p className="cn-home-obs__meta">
+            {t('home.obsMeta', {
+              defaultValue: '← Observaciones hoy · solo orientación',
+            })}
+          </p>
+        </section>
+      </div>
 
       {/* Contract hooks for tests / freemium stats + discover links (sr-only) */}
       <nav className="cn-home-contracts" aria-hidden="true" data-testid="home-discover-hub">
