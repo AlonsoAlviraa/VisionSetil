@@ -1,6 +1,7 @@
-/** Games hub — Setadle, Wordle, Reto (Option B product map). */
+/** Games hub — Setadle, Wordle, Reto (Option B Stitch style). */
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { SpeciesImage } from '../components/SpeciesImage'
 
 const GAMES = [
   {
@@ -13,6 +14,7 @@ const GAMES = [
     ctaKey: 'games.play',
     ctaFb: 'Jugar Setadle',
     tone: 'amber' as const,
+    taxon: 'Cantharellus cibarius',
   },
   {
     to: '/wordle',
@@ -24,6 +26,7 @@ const GAMES = [
     ctaKey: 'games.playWordle',
     ctaFb: 'Jugar Wordle',
     tone: 'moss' as const,
+    taxon: 'Amanita muscaria',
   },
   {
     to: '/reto',
@@ -35,6 +38,7 @@ const GAMES = [
     ctaKey: 'games.playQuiz',
     ctaFb: 'Abrir reto',
     tone: 'primary' as const,
+    taxon: 'Morchella esculenta',
   },
 ] as const
 
@@ -42,7 +46,7 @@ export function GamesHubPage() {
   const { t } = useTranslation()
 
   return (
-    <div className="page-games-hub page-atelier-shell" data-testid="games-hub-page">
+    <div className="page-games-hub page-atelier-shell page-games-hub--cn" data-testid="games-hub-page">
       <p className="cn-orientation home-orientation-sticky" role="note">
         {t('games.orientation', {
           defaultValue: 'Solo orientación educativa · nunca consumo',
@@ -67,18 +71,29 @@ export function GamesHubPage() {
         {GAMES.map((g) => (
           <li key={g.to}>
             <article
-              className={`games-hub-card games-hub-card--${g.tone}`}
+              className={`games-hub-card games-hub-card--photo games-hub-card--${g.tone}`}
               data-testid={g.testId}
             >
-              <h2 className="games-hub-card__title">
-                {t(g.titleKey, { defaultValue: g.titleFb })}
-              </h2>
-              <p className="games-hub-card__body">
-                {t(g.bodyKey, { defaultValue: g.bodyFb })}
-              </p>
-              <Link to={g.to} className="mkt-btn mkt-btn--primary mkt-btn--sm">
-                {t(g.ctaKey, { defaultValue: g.ctaFb })}
-              </Link>
+              <div className="games-hub-card__media" aria-hidden="true">
+                <SpeciesImage
+                  scientificName={g.taxon}
+                  alt=""
+                  variant="card"
+                  layout="fill"
+                  preferCatalog
+                />
+              </div>
+              <div className="games-hub-card__content">
+                <h2 className="games-hub-card__title">
+                  {t(g.titleKey, { defaultValue: g.titleFb })}
+                </h2>
+                <p className="games-hub-card__body">
+                  {t(g.bodyKey, { defaultValue: g.bodyFb })}
+                </p>
+                <Link to={g.to} className="mkt-btn mkt-btn--primary mkt-btn--sm">
+                  {t(g.ctaKey, { defaultValue: g.ctaFb })}
+                </Link>
+              </div>
             </article>
           </li>
         ))}

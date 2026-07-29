@@ -394,6 +394,45 @@ html[data-theme='dark'] .page-identify .btn-analyze {
   border-color: rgba(143, 188, 143, 0.4) !important;
 }
 
+.games-hub-card--photo {
+  position: relative;
+  overflow: hidden;
+  min-height: 14rem;
+  padding: 0;
+}
+
+.games-hub-card__media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.games-hub-card__media img,
+.games-hub-card__media .species-image,
+.games-hub-card__media picture {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  opacity: 0.45;
+}
+
+.games-hub-card__content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.15rem;
+  min-height: 14rem;
+  background: linear-gradient(
+    180deg,
+    rgba(10, 15, 11, 0.35) 0%,
+    rgba(10, 15, 11, 0.88) 55%,
+    rgba(10, 15, 11, 0.96) 100%
+  );
+  justify-content: flex-end;
+}
+
 /* More hub */
 .more-hub-group {
   margin: 1.15rem 0;
