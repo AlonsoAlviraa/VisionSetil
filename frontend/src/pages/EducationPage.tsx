@@ -29,6 +29,7 @@ import {
   deadlyPriorityViews,
   diagnosticPolicy,
 } from '../lib/diagnosticViews'
+import { DichotomousKey } from '../components/DichotomousKey'
 
 interface AccordionItem {
   q: string
@@ -303,6 +304,17 @@ export function EducationPage() {
         </div>
       </section>
 
+      {/* v1.11: educational dichotomous key (MushroomExpert-lite) */}
+      <section
+        className="edu-section edu-dichotomous"
+        data-testid="edu-dichotomous-key"
+        aria-label={t('education.dichotomousAria', {
+          defaultValue: 'Clave dicotómica educativa',
+        })}
+      >
+        <DichotomousKey />
+      </section>
+
       <section
         className="edu-section edu-multiview-diag"
         data-testid="edu-multiview-diagnostic"
@@ -414,7 +426,10 @@ export function EducationPage() {
         </div>
       </section>
 
-      <section className="edu-section edu-cta-grid" aria-label="Seguir aprendiendo">
+      <section
+        className="edu-section edu-cta-grid"
+        aria-label={t('a11y.keepLearning', { defaultValue: 'Seguir aprendiendo' })}
+      >
         <h2 className="edu-section-title">
           <IconBook size={22} />
           Seguir aprendiendo

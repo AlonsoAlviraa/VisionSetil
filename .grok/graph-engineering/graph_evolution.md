@@ -1,8 +1,57 @@
 # Graph evolution log
 
+## v1.13 — mega industrial audit + security hardening (2026-07-29)
+
+**Scope:** 3 parallel auditors (backend, frontend, data/ML) + CI/CD review. Found 11 high-severity issues. Fixed 7 immediately; 4 residual documented.
+
+**FIXED (this cycle):**
+1. **CRITICAL — Lookalike graph bidirectionality**: 5 asymmetric edges fixed (0 remaining). Most severe: `cortinarius rubellus` (DEADLY) was not warning about `imleria badia` confusion. Users viewing the deadly species' sheet would miss a critical safety warning. All 135 directed edges now bidirectional.
+2. **CRITICAL — AuthZ bypass closed**: `/observations/{id}/classify` and `/classify-advanced` (admin/internal endpoints exposing ungated raw predictions) were accessible to any classify-tier key. Added regex-based admin scope enforcement in `security_scopes.py`.
+3. **CRITICAL — /jobs raw exposure**: `GET /jobs/{id}/result` returned ungated `raw` field to classify-tier keys. Now strips `raw` unless caller has admin scope (`routes_jobs.py`).
+4. **HIGH — request_id correlation fixed**: `RequestIDMiddleware` never called `bind_request_id()` → all structured logs showed `request_id: "-"`. Now bound via ContextVar with try/finally cleanup.
+5. **HIGH — global exception handler**: Added `@app.exception_handler(Exception)` → uncaught 500s now log with request_id context + return structured `{error, request_id}` envelope.
+6. **HIGH — CORS headers hardened**: `allow_headers` restricted from `["*"]` to explicit list (Content-Type, Authorization, X-API-Key, X-Session-Token, X-Request-ID).
+7. **MEDIUM — silent fallback logging**: Added `logger.warning()` to 3 silent `except Exception: pass` blocks in safety/ML path (open_set thresholds, candidate pool, quality gate).
+8. **HIGH — catalog-load error surface**: `FeaturedSpeciesGrid` now shows error state (not infinite loading) when catalog chunk fails to load.
+
+**AUDIT FINDINGS (residual — documented for future cycles):**
+
+Backend:
+- Rate limiter in-memory dict has no lock (race condition under concurrency) — Redis path safe.
+- SQLite busy_timeout 5s vs engine timeout 30s mismatch; no NullPool for file-SQLite.
+- No Alembic migrations (hand-rolled ALTER TABLE with blanket except:pass).
+- Error response shapes inconsistent across endpoints.
+
+Frontend:
+- **CA/EU locales 46% incomplete** (592/1097 keys) — silently falls back to Spanish.
+- Single shared error boundary (any lazy page crash blanks all routes).
+- Hardcoded Spanish aria-labels on ~15 components (invisible to sighted devs).
+- Mojibake in client.ts, types.ts, ModelInsightsPanel.tsx (UTF-8 encoding regression).
+- img onClick without role/tabIndex/onKeyDown (keyboard inaccessible lightbox).
+- 1MB main bundle — speciesPhotos.json + catalog resolver eagerly imported.
+- DocumentTitle covers only 9/20 routes; no per-page meta description.
+
+Data/ML:
+- Nightly join report stale (2026-07-22, points at v9 not v20) — misleading 32.6% coverage.
+- At shipped multiview threshold, open-set deadly_reject_rate = 0.0 (offset by lookalike + HR layers).
+- 100% of taxa missing `gbif_usage_key` (field unused downstream).
+
+**Verification:** backend imports OK (109 routes); security_scopes tests pass; frontend tsc clean.
+
 ## v1.12.0 — home-visual-redesign (2026-07-29)
 
 - Home visual-first: short lead, three doors, season photos; residual beta kit in `.cn-home-kit` (hidden).
+
+## v1.12.1 — density + completeness cycle (2026-07-29)
+
+**Audit finding:** all 8 secondary pages audited are real, complete implementations (no stubs/mocks). User feedback "se ve horrible / faltan funcionalidades" mapped to **visual density + presentation**, not missing features.
+
+**Shipped:**
+1. **FeaturedSpeciesGrid** (`components/FeaturedSpeciesGrid.tsx`) — photo-first showcase of top-8 popular taxa on Home (real catalog photos via `HIGH_SEARCH_TAXA`). App = 2-col grid, web = 4-col.
+2. **GamesHub enrichment** — was the thinnest page (120 lines). Added: (a) study progress panel (real local streak + stats from `lib/studyBadges`), (b) "Confusiones que matan" block with deadly/poisonous taxa from catalog + risk chips → links to fichas.
+3. **Web CSS complete rewrite** — replaced all hardcoded colors with Stitch tokens. Glassmorphism coherent across header, cards, FAB, footer. Web rules for new components (dichotomous key, result card, encyclopedia families, featured grid, species detail 2-col).
+
+**Verification:** tsc clean · both builds green · 570/570 tests pass.
 - ES/EN copy shortened; Games/Más headers compressed.
 - App + web CSS: taller heroes, less chrome noise.
 
@@ -1740,3 +1789,16 @@ Operator executes checklist (not autonomous). S9 traffic after deploy. E21 optio
 - Spain map page visual system **not** restyled to Stitch map mock
 
 **product_unlock remains false.**
+
+## v1.13.0-residual-audit-fix (2026-07-29)
+
+**Trigger:** user mega-audit of residual FE/BE findings + graph engineering close-out.
+
+### Shipped
+- **FE R1–R6:** CA/EU 100% key coverage; per-route ErrorBoundary; a11y i18n; mojibake fix; dynamic speciesPhotos; DocumentTitle 20+ routes.
+- **BE R7–R10:** RateLimit lock; SQLite 30s/30000ms align; Alembic baseline; error_body handlers.
+- **Docs:** `docs/audits/MEGA_AUDIT_RESIDUAL_v1.13.0.md`.
+
+### Policy
+orientation only · never product_unlock · never forage · no commercial scrape.
+

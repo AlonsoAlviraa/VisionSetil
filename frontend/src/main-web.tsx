@@ -24,14 +24,21 @@ import './styles/campo-nocturno.css'
 /** Web (browser) layout layer — only under .app--mode-web */
 import './styles/campo-nocturno-web.css'
 import { warmCriticalSpeciesImages } from './lib/imageWarm'
+import { hydrateSpeciesPhotos } from './lib/speciesImageService'
 
-// Kick image cache for home hero + first grid thumbs before first paint settles
-warmCriticalSpeciesImages()
+async function boot() {
+  await hydrateSpeciesPhotos().catch(() => {
+    /* local_media / placeholders still work */
+  })
+  warmCriticalSpeciesImages()
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <ErrorBoundary surface="root">
-      <App forcedMode={FORCED_LAYOUT_MODE ?? 'web'} />
-    </ErrorBoundary>
-  </React.StrictMode>,
-)
+  ReactDOM.createRoot(document.getElementById('root')!).render(
+    <React.StrictMode>
+      <ErrorBoundary surface="root">
+        <App forcedMode={FORCED_LAYOUT_MODE ?? 'web'} />
+      </ErrorBoundary>
+    </React.StrictMode>,
+  )
+}
+
+void boot()

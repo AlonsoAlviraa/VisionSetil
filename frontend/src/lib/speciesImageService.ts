@@ -1,8 +1,10 @@
 /**
  * Unified mycology image resolver (Phase A).
  * Order: local /media WebP → speciesPhotos.json → (optional) live Wiki/iNat → SVG placeholder.
+ *
+ * speciesPhotos.json is loaded via dynamic import (code-split) to keep the main
+ * bundle under control (~150KB JSON no longer eagerly in main chunk).
  */
-import photosDb from '../data/speciesPhotos.json'
 import { mycologyPlaceholderDataUri } from '../data/mycologyPlaceholder'
 import {
   getPhotoTier,
@@ -52,8 +54,34 @@ type PhotosFile = {
   stats?: { with_photo?: number; total?: number; missing?: number }
 }
 
-const db = photosDb as PhotosFile
+/** Empty until `hydrateSpeciesPhotos()` (or test setter) loads the catalog. */
+let db: PhotosFile = { version: 'pending', photos: {} }
+let hydratePromise: Promise<void> | null = null
 const runtimeCache = new Map<string, ResolvedSpeciesImage>()
+
+/**
+ * Lazy-load speciesPhotos.json into memory (one-shot).
+ * Call from main-app/main-web before first paint settles.
+ */
+export function hydrateSpeciesPhotos(): Promise<void> {
+  if (Object.keys(db.photos).length > 0 && db.version !== 'pending') {
+    return Promise.resolve()
+  }
+  if (!hydratePromise) {
+    hydratePromise = import('../data/speciesPhotos.json').then((mod) => {
+      db = (mod.default || mod) as PhotosFile
+      runtimeCache.clear()
+    })
+  }
+  return hydratePromise
+}
+
+/** Vitest / node: inject catalog without dynamic import timing races. */
+export function __setPhotosDbForTests(data: PhotosFile): void {
+  db = data
+  runtimeCache.clear()
+  hydratePromise = Promise.resolve()
+}
 
 export function catalogPhotoStats() {
   return {

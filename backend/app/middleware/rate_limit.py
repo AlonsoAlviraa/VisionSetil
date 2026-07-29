@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import logging
 import os
+import threading
 import time
 from collections import defaultdict
 from collections.abc import Awaitable, Callable
@@ -107,6 +108,9 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
             }
         self.trust_proxy = bool(trust_proxy)
         self._requests: dict[str, list[float]] = defaultdict(list)
+        # In-memory path is shared across concurrent requests — lock cleans races
+        # that could under/over-count near the limit (audit residual).
+        self._lock = threading.Lock()
         self._redis = None
 
         redis_url = redis_url or os.getenv("REDIS_URL", "")
@@ -154,6 +158,28 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         self._requests[key] = [ts for ts in self._requests[key] if ts > cutoff]
         return len(self._requests[key])
 
+    def _memory_check_and_record(self, key: str, now: float) -> tuple[int, float, bool]:
+        """Atomic cleanup + limit check + record under lock.
+
+        Returns (count_before_this_request, oldest_ts, allowed).
+        """
+        with self._lock:
+            count = self._cleanup_window(key, now)
+            oldest_ts = self._requests[key][0] if self._requests[key] else now
+            if count >= self._limit_for_key_bucket(key):
+                return count, oldest_ts, False
+            self._requests[key].append(now)
+            return count, oldest_ts, True
+
+    def _limit_for_key_bucket(self, key: str) -> int:
+        # key format: "{bucket}:{ip}"
+        bucket = key.split(":", 1)[0] if ":" in key else "general"
+        if bucket == "classify":
+            return self.classify_max_requests
+        if bucket == "auth":
+            return self.auth_max_requests
+        return self.max_requests
+
     def _redis_check_and_record(self, key: str, now: float) -> tuple[int, float]:
         redis_key = f"ratelimit:{key}"
         pipe = self._redis.pipeline()
@@ -177,38 +203,45 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         client_key = self._get_client_key(request)
         limit = self._limit_for_request(request)
         now = time.time()
+        allowed = True
+        count = 0
+        oldest_ts = now
 
         if self._redis is not None:
             try:
                 count, oldest_ts = self._redis_check_and_record(client_key, now)
+                # Redis records eagerly; compare pre-add count (zcard before zadd is results[1])
+                # Our pipeline returns count before add — if already at limit, we still added.
+                # Re-check: if count >= limit before our add, reject (count is pre-add).
+                if count >= limit:
+                    allowed = False
             except Exception as exc:  # noqa: BLE001
                 logger.warning("RateLimitMiddleware: Redis error (%s) — falling back", exc)
-                count = self._cleanup_window(client_key, now)
-                self._requests[client_key].append(now)
-                oldest_ts = self._requests[client_key][0] if self._requests[client_key] else now
+                count, oldest_ts, allowed = self._memory_check_and_record(client_key, now)
+                limit = self._limit_for_key_bucket(client_key)
         else:
-            count = self._cleanup_window(client_key, now)
-            oldest_ts = self._requests[client_key][0] if self._requests[client_key] else now
+            count, oldest_ts, allowed = self._memory_check_and_record(client_key, now)
+            limit = self._limit_for_key_bucket(client_key)
 
-        if count >= limit:
+        if not allowed:
             retry_after = int(self.window_seconds - (now - oldest_ts))
+            bucket = _bucket_for_path(request.url.path)
             return JSONResponse(
                 status_code=HTTP_429_TOO_MANY_REQUESTS,
                 content={
                     "error": "rate_limit_exceeded",
                     "message": f"Rate limit: {limit} requests per {self.window_seconds}s",
+                    "status": HTTP_429_TOO_MANY_REQUESTS,
                     "retry_after_seconds": max(retry_after, 1),
-                    "bucket": "classify" if _is_classify_path(request.url.path) else "general",
+                    "bucket": bucket,
                 },
                 headers={
                     "Retry-After": str(max(retry_after, 1)),
                     "X-RateLimit-Limit": str(limit),
                     "X-RateLimit-Remaining": "0",
+                    "X-RateLimit-Bucket": bucket,
                 },
             )
-
-        if self._redis is None:
-            self._requests[client_key].append(now)
 
         response = await call_next(request)
 

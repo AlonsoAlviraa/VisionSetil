@@ -204,7 +204,7 @@ export function MultiViewWizard({ assignments, onAssign, onClear, onOpenCamera }
               ┬À{' '}
               {t('identify.missingCritical', {
                 views: readiness.missingRequired.map(labelOf).join(', '),
-                defaultValue: `faltan cr├¡ticas: ${readiness.missingRequired.map(labelOf).join(', ')}`,
+                defaultValue: `faltan críticas: ${readiness.missingRequired.map(labelOf).join(', ')}`,
               })}
             </span>
           )}

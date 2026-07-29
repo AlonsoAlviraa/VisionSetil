@@ -3,6 +3,7 @@
  * Professional field UX — SVG icons, no emoji chrome.
  */
 import { useState, useRef, useCallback, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   IconAlert,
   IconCheck,
@@ -60,6 +61,7 @@ export function CameraCapture({
   onMultiViewCapture,
   slotLabel,
 }: CameraCaptureProps) {
+  const { t } = useTranslation()
   const videoRef = useRef<HTMLVideoElement>(null)
   const streamRef = useRef<MediaStream | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -184,13 +186,21 @@ export function CameraCapture({
                 ? `Capturar: ${slotLabel}`
                 : 'Capturar con cámara'}
           </h3>
-          <button className="btn-camera-close" onClick={onClose} aria-label="Cerrar cámara">
+          <button
+            className="btn-camera-close"
+            onClick={onClose}
+            aria-label={t('a11y.closeCamera', { defaultValue: 'Cerrar cámara' })}
+          >
             <IconClose size={18} />
           </button>
         </div>
 
         {guidedMode && (
-          <div className="multiview-progress" role="list" aria-label="Progreso de vistas">
+          <div
+            className="multiview-progress"
+            role="list"
+            aria-label={t('a11y.viewProgress', { defaultValue: 'Progreso de vistas' })}
+          >
             {VIEW_STEPS.map((s, idx) => (
               <div
                 key={s.id}

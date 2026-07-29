@@ -8,8 +8,9 @@ import { BottomNav } from './components/BottomNav'
 import { ApiStatusBanner } from './components/ApiStatusBanner'
 import { DocumentTitle } from './components/DocumentTitle'
 import { PwaInstallHint } from './components/PwaInstallHint'
-import { ErrorBoundary } from './components/ErrorBoundary'
+import { ErrorBoundary, withRouteBoundary } from './components/ErrorBoundary'
 import { useLayoutMode } from './hooks/useLayoutMode'
+import type { LayoutMode } from './lib/layoutMode'
 import {
   betaFeedbackHref,
   isBetaExternalForm,
@@ -129,9 +130,15 @@ function IdentifyFab() {
   )
 }
 
-function AppShell() {
+function AppShell({ forcedMode }: { forcedMode?: LayoutMode }) {
   const { t } = useTranslation()
-  const { mode, setMode } = useLayoutMode()
+  const reactive = useLayoutMode()
+  // Dual-build split (v1.11): each Vite app can force its layout mode at build
+  // time via VITE_LAYOUT_MODE. When forced, the runtime toggle is disabled and
+  // the mode class is static — Header already hides LayoutModeToggle when
+  // onLayoutModeChange is omitted.
+  const mode = forcedMode ?? reactive.mode
+  const setMode = forcedMode ? undefined : reactive.setMode
 
   return (
     <>
@@ -158,29 +165,71 @@ function AppShell() {
           <ErrorBoundary surface="routes">
             <Suspense fallback={<PageFallback />}>
               <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/identificar" element={<IdentifyPage />} />
-                <Route path="/historial" element={<HistoryPage />} />
-                <Route path="/revision-experta" element={<ExpertReviewPage />} />
-                <Route path="/comunidad" element={<CommunityPage />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/registro" element={<RegisterPage />} />
-                <Route path="/enciclopedia" element={<EncyclopediaPage />} />
-                <Route path="/enciclopedia/:slug" element={<SpeciesDetailPage />} />
-                <Route path="/mapa" element={<SpainMapPage />} />
-                <Route path="/educacion" element={<EducationPage />} />
-                <Route path="/offline" element={<OfflinePackPage />} />
-                <Route path="/lookalikes" element={<LookalikeStudioPage />} />
-                <Route path="/juegos" element={<GamesHubPage />} />
-                <Route path="/mas" element={<MoreHubPage />} />
-                <Route path="/reto" element={<QuizGamePage />} />
-                <Route path="/setadle" element={<SetadlePage />} />
-                <Route path="/setadle/wordle" element={<MushroomWordlePage />} />
-                <Route path="/setadle/:mode" element={<SetadlePage />} />
-                <Route path="/wordle" element={<MushroomWordlePage />} />
-                <Route path="/ml" element={<MlDashboardPage />} />
-                <Route path="/beta-feedback" element={<BetaFeedbackPage />} />
-                <Route path="*" element={<NotFoundPage />} />
+                <Route path="/" element={withRouteBoundary('home', <HomePage />)} />
+                <Route
+                  path="/identificar"
+                  element={withRouteBoundary('identify', <IdentifyPage />)}
+                />
+                <Route
+                  path="/historial"
+                  element={withRouteBoundary('history', <HistoryPage />)}
+                />
+                <Route
+                  path="/revision-experta"
+                  element={withRouteBoundary('expert-review', <ExpertReviewPage />)}
+                />
+                <Route
+                  path="/comunidad"
+                  element={withRouteBoundary('community', <CommunityPage />)}
+                />
+                <Route path="/login" element={withRouteBoundary('login', <LoginPage />)} />
+                <Route
+                  path="/registro"
+                  element={withRouteBoundary('register', <RegisterPage />)}
+                />
+                <Route
+                  path="/enciclopedia"
+                  element={withRouteBoundary('encyclopedia', <EncyclopediaPage />)}
+                />
+                <Route
+                  path="/enciclopedia/:slug"
+                  element={withRouteBoundary('species-detail', <SpeciesDetailPage />)}
+                />
+                <Route path="/mapa" element={withRouteBoundary('map', <SpainMapPage />)} />
+                <Route
+                  path="/educacion"
+                  element={withRouteBoundary('education', <EducationPage />)}
+                />
+                <Route
+                  path="/offline"
+                  element={withRouteBoundary('offline', <OfflinePackPage />)}
+                />
+                <Route
+                  path="/lookalikes"
+                  element={withRouteBoundary('lookalikes', <LookalikeStudioPage />)}
+                />
+                <Route path="/juegos" element={withRouteBoundary('games', <GamesHubPage />)} />
+                <Route path="/mas" element={withRouteBoundary('more', <MoreHubPage />)} />
+                <Route path="/reto" element={withRouteBoundary('quiz', <QuizGamePage />)} />
+                <Route path="/setadle" element={withRouteBoundary('setadle', <SetadlePage />)} />
+                <Route
+                  path="/setadle/wordle"
+                  element={withRouteBoundary('wordle', <MushroomWordlePage />)}
+                />
+                <Route
+                  path="/setadle/:mode"
+                  element={withRouteBoundary('setadle-mode', <SetadlePage />)}
+                />
+                <Route
+                  path="/wordle"
+                  element={withRouteBoundary('wordle', <MushroomWordlePage />)}
+                />
+                <Route path="/ml" element={withRouteBoundary('ml', <MlDashboardPage />)} />
+                <Route
+                  path="/beta-feedback"
+                  element={withRouteBoundary('beta-feedback', <BetaFeedbackPage />)}
+                />
+                <Route path="*" element={withRouteBoundary('not-found', <NotFoundPage />)} />
               </Routes>
             </Suspense>
           </ErrorBoundary>
@@ -197,7 +246,10 @@ function AppShell() {
               })}
             </p>
             {/* Keep test contracts; visually hidden by CSS (bottom nav is primary) */}
-            <nav className="footer-links" aria-label="Footer">
+            <nav
+              className="footer-links"
+              aria-label={t('a11y.footerNav', { defaultValue: 'Enlaces del pie' })}
+            >
               <Link to="/identificar">{t('nav.tryIdentify', { defaultValue: 'Probar Identificar' })}</Link>
               <Link to="/enciclopedia">{t('nav.encyclopedia', { defaultValue: 'Enciclopedia' })}</Link>
               <Link to="/educacion" data-testid="footer-education">
@@ -265,11 +317,11 @@ function AppShell() {
   )
 }
 
-function App() {
+function App({ forcedMode }: { forcedMode?: LayoutMode } = {}) {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <AppShell />
+        <AppShell forcedMode={forcedMode} />
       </BrowserRouter>
     </AuthProvider>
   )

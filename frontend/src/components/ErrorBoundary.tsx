@@ -1,5 +1,6 @@
 /**
- * Root/route error boundary — fail closed to a safe shell (no white screen).
+ * Segmented error boundary — fail closed to a safe shell (no white screen).
+ * Wrap root AND individual routes so one crash does not blank the whole app.
  * Copy is orientation-only; no consumption language.
  */
 import { Component, type ErrorInfo, type ReactNode } from 'react'
@@ -9,6 +10,8 @@ type Props = {
   children: ReactNode
   /** Optional compact surface label for debugging */
   surface?: string
+  /** Compact inline recovery (route-level) vs full-page shell (root) */
+  variant?: 'page' | 'inline'
 }
 
 type State = {
@@ -38,15 +41,25 @@ export class ErrorBoundary extends Component<Props, State> {
   render() {
     if (!this.state.hasError) return this.props.children
 
+    const inline = this.props.variant === 'inline'
     return (
-      <div className="error-boundary-shell" role="alert">
+      <div
+        className={`error-boundary-shell${inline ? ' error-boundary-shell--inline' : ''}`}
+        role="alert"
+        data-surface={this.props.surface || 'root'}
+      >
         <div className="error-boundary-shell__card atelier-card">
           <p className="atelier-kicker">Algo falló</p>
-          <h1>No pudimos mostrar esta pantalla</h1>
+          <h1>{inline ? 'Esta sección no se pudo mostrar' : 'No pudimos mostrar esta pantalla'}</h1>
           <p>
             Es un fallo de la aplicación, no un diagnóstico de setas. Puedes reintentar o volver al
             inicio. Ante la duda, consulta a un micólogo de carne y hueso.
           </p>
+          {this.props.surface ? (
+            <p className="error-boundary-shell__detail muted">
+              Superficie: <code>{this.props.surface}</code>
+            </p>
+          ) : null}
           {this.state.message ? (
             <p className="error-boundary-shell__detail">
               <code>{this.state.message}</code>
@@ -67,4 +80,13 @@ export class ErrorBoundary extends Component<Props, State> {
       </div>
     )
   }
+}
+
+/** Wrap a route element so failures stay inside that surface. */
+export function withRouteBoundary(surface: string, element: ReactNode): ReactNode {
+  return (
+    <ErrorBoundary surface={surface} variant="inline">
+      {element}
+    </ErrorBoundary>
+  )
 }

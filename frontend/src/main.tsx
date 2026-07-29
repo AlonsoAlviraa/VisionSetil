@@ -24,13 +24,18 @@ import './styles/campo-nocturno.css'
 /** Web (browser) layout layer — only under .app--mode-web */
 import './styles/campo-nocturno-web.css'
 import { warmCriticalSpeciesImages } from './lib/imageWarm'
+import { hydrateSpeciesPhotos } from './lib/speciesImageService'
 
-warmCriticalSpeciesImages()
+async function boot() {
+  await hydrateSpeciesPhotos().catch(() => undefined)
+  warmCriticalSpeciesImages()
+  ReactDOM.createRoot(document.getElementById('root')!).render(
+    <React.StrictMode>
+      <ErrorBoundary surface="root">
+        <App />
+      </ErrorBoundary>
+    </React.StrictMode>,
+  )
+}
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <ErrorBoundary surface="root">
-      <App />
-    </ErrorBoundary>
-  </React.StrictMode>,
-)
+void boot()

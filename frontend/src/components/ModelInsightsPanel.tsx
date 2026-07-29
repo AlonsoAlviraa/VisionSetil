@@ -117,7 +117,7 @@ export function ModelInsightsPanel({ result, viewTypes = [], className = '' }: P
   return (
     <section
       className={`model-insights model-insights--mode-${mode} model-insights--${modeTone} ${className}`.trim()}
-      aria-label="Informaci├│n del modelo"
+      aria-label="Información del modelo"
       data-testid="model-insights-panel"
       data-mode={mode}
       data-show-confidence={showConfidence ? 'true' : 'false'}
@@ -125,7 +125,7 @@ export function ModelInsightsPanel({ result, viewTypes = [], className = '' }: P
     >
       <header className="model-insights__head">
         <IconMicroscope size={18} />
-        <h3>C├│mo decide el modelo</h3>
+        <h3>Cómo decide el modelo</h3>
         <span
           className={`result-mode-banner__chip result-mode-banner__chip--${mode}`}
           data-testid="model-insights-mode"
@@ -163,7 +163,7 @@ export function ModelInsightsPanel({ result, viewTypes = [], className = '' }: P
           </div>
         )}
         <div className="model-insights__card">
-          <span className="model-insights__label">Decisi├│n</span>
+          <span className="model-insights__label">Decisión</span>
           <strong data-testid="model-insights-decision">{decisionLabel}</strong>
         </div>
         <div className="model-insights__card">
@@ -211,7 +211,7 @@ export function ModelInsightsPanel({ result, viewTypes = [], className = '' }: P
             <div className="model-insights__card">
               <span className="model-insights__label">M├®tricas OK</span>
               <strong data-testid="model-insights-metrics-ok">
-                {gate.metrics_acceptable ? 's├¡' : 'no'}
+                {gate.metrics_acceptable ? 'sí' : 'no'}
               </strong>
             </div>
             <div className="model-insights__card">
@@ -285,7 +285,7 @@ export function ModelInsightsPanel({ result, viewTypes = [], className = '' }: P
 
       {result.recommend_human_review && (
         <p className="model-insights__review" role="status">
-          <IconAlert size={14} /> Se recomienda revisi├│n humana.
+          <IconAlert size={14} /> Se recomienda revisión humana.
         </p>
       )}
     </section>

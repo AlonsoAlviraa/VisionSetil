@@ -6,7 +6,8 @@ import os
 import uuid
 from pathlib import Path
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 
@@ -27,7 +28,12 @@ from app.api.routes_observations import router as observations_router
 from app.api.routes_species import router as species_router
 from app.api.routes_uploads import router as uploads_router
 from app.core.config import get_settings, warn_if_quality_gate_block_disabled
-from app.core.logging import configure_logging
+from app.core.errors import (
+    http_exception_handler,
+    unhandled_exception_handler,
+    validation_exception_handler,
+)
+from app.core.logging import configure_logging, bind_request_id
 from app.db.database import init_db
 from app.middleware.api_key_auth import APIKeyMiddleware
 from app.middleware.rate_limit import RateLimitMiddleware
@@ -63,6 +69,11 @@ app = FastAPI(
     openapi_url=None if _is_prod else "/openapi.json",
 )
 
+# Canonical error shapes (audit residual)
+app.add_exception_handler(HTTPException, http_exception_handler)
+app.add_exception_handler(RequestValidationError, validation_exception_handler)
+app.add_exception_handler(Exception, unhandled_exception_handler)
+
 
 class RequestIDMiddleware(BaseHTTPMiddleware):
     """Propagate a correlation id to logs and responses."""
@@ -70,9 +81,15 @@ class RequestIDMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         request_id = request.headers.get(settings.request_id_header) or str(uuid.uuid4())
         request.state.request_id = request_id
-        response = await call_next(request)
-        response.headers[settings.request_id_header] = request_id
-        return response
+        # Bind into the ContextVar so structured logs carry the correlation id
+        # (audit fix: previously never bound → logs always showed request_id "-").
+        bind_request_id(request_id)
+        try:
+            response = await call_next(request)
+            response.headers[settings.request_id_header] = request_id
+            return response
+        finally:
+            bind_request_id(None)
 
 
 app.add_middleware(RequestIDMiddleware)
@@ -85,7 +102,8 @@ app.add_middleware(
     allow_origins=_cors_origins,
     allow_credentials=_allow_credentials,
     allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE"],
-    allow_headers=["*"],
+    # Audit fix: restrict to headers actually used instead of wildcard.
+    allow_headers=["Content-Type", "Authorization", "X-API-Key", "X-Session-Token", "X-Request-ID"],
 )
 
 # Rate limiting (Sprint N+2 + B-17 preflight)
@@ -157,6 +175,9 @@ _API_ROUTERS = (
 for _router in _API_ROUTERS:
     app.include_router(_router)
     app.include_router(_router, prefix="/api")
+
+
+# Unhandled Exception → app.core.errors.unhandled_exception_handler (registered above)
 
 
 @app.get("/")

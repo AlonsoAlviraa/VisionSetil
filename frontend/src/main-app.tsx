@@ -23,14 +23,23 @@ import './styles/marketing.css'
 /** Option B Campo nocturno — after marketing so night shell wins */
 import './styles/campo-nocturno.css'
 import { warmCriticalSpeciesImages } from './lib/imageWarm'
+import { hydrateSpeciesPhotos } from './lib/speciesImageService'
 
-// Kick image cache for home hero + first grid thumbs before first paint settles
-warmCriticalSpeciesImages()
+async function boot() {
+  // Code-split photo catalog (~150KB) — keep it out of the main bundle
+  await hydrateSpeciesPhotos().catch(() => {
+    /* local_media / placeholders still work */
+  })
+  // Kick image cache for home hero + first grid thumbs
+  warmCriticalSpeciesImages()
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <ErrorBoundary surface="root">
-      <App forcedMode={FORCED_LAYOUT_MODE ?? 'app'} />
-    </ErrorBoundary>
-  </React.StrictMode>,
-)
+  ReactDOM.createRoot(document.getElementById('root')!).render(
+    <React.StrictMode>
+      <ErrorBoundary surface="root">
+        <App forcedMode={FORCED_LAYOUT_MODE ?? 'app'} />
+      </ErrorBoundary>
+    </React.StrictMode>,
+  )
+}
+
+void boot()

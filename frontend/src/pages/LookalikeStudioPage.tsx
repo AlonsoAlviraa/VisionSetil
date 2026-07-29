@@ -167,7 +167,10 @@ export function LookalikeStudioPage() {
       </header>
 
       {/* Classic one-tap confusions */}
-      <section className="lookalike-classics" aria-label="Confusiones clásicas">
+      <section
+        className="lookalike-classics"
+        aria-label={t('a11y.classicLookalikes', { defaultValue: 'Confusiones clásicas' })}
+      >
         <h2 className="lookalike-classics__title">
           {t('lookalike.classicsTitle', { defaultValue: 'Confusiones clásicas' })}
         </h2>

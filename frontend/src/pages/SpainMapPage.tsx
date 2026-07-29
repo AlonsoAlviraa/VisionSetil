@@ -402,7 +402,10 @@ function ZoneDetailBody({
       </header>
 
       {/* Climate block — explains Favorable / Desfavorable with real metrics */}
-      <section className="zone-climate" aria-label="Condiciones meteorológicas">
+      <section
+        className="zone-climate"
+        aria-label={t('a11y.weatherConditions', { defaultValue: 'Condiciones meteorológicas' })}
+      >
         <h3 className="zone-climate__title">
           {t('map.climateTitle', {
             defaultValue: 'Condiciones ahora (orientativas)',
@@ -546,7 +549,10 @@ function ZoneDetailBody({
         </div>
       )}
 
-      <section className="zone-resources" aria-label="Permisos e información">
+      <section
+        className="zone-resources"
+        aria-label={t('a11y.permitsInfo', { defaultValue: 'Permisos e información' })}
+      >
         <h3 className="zone-resources__title">
           {t('map.permitsTitle', {
             defaultValue: 'Permisos e información oficial',
@@ -685,6 +691,8 @@ export default function SpainMapPage() {
   const [showHotspots, setShowHotspots] = useState(true)
   const [showMarkers, setShowMarkers] = useState(true)
   const [onlyHotspots, setOnlyHotspots] = useState(false)
+  /** Expanded map = near full-viewport; declared early so keydown/scroll effects can read it. */
+  const [mapExpanded, setMapExpanded] = useState(false)
   const [mapZoom, setMapZoom] = useState(SPAIN_ZOOM)
   const [clusterFly, setClusterFly] = useState<{
     lat: number
@@ -1045,7 +1053,6 @@ export default function SpainMapPage() {
   }, [handleSelectZone])
 
   /** Expanded map = near full-viewport; default already taller than legacy card. */
-  const [mapExpanded, setMapExpanded] = useState(false)
   const mapHeight = mapExpanded
     ? '100dvh'
     : 'calc(100dvh - var(--header-h, 64px) - 3.5rem)'
@@ -1343,7 +1350,9 @@ export default function SpainMapPage() {
         <section
           className="map-regulated-dir atelier-panel"
           data-testid="map-regulated-directory"
-          aria-label="Directorio de cotos y parques micológicos"
+          aria-label={t('a11y.regulatedDirectory', {
+            defaultValue: 'Directorio de cotos y parques micológicos',
+          })}
         >
           <div className="map-regulated-dir__head">
             <h2 className="map-regulated-dir__title">
@@ -1357,7 +1366,11 @@ export default function SpainMapPage() {
             <p className="map-regulated-dir__partner" role="note">
               {B2B_PARTNER_BLURB_ES}
             </p>
-            <div className="identify-mode-toggle" role="group" aria-label="Filtro regulado">
+            <div
+              className="identify-mode-toggle"
+              role="group"
+              aria-label={t('a11y.regulatedFilter', { defaultValue: 'Filtro regulado' })}
+            >
               {(
                 [
                   ['all', 'Todos'],

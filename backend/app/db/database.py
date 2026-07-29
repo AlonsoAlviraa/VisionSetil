@@ -5,9 +5,14 @@ from sqlalchemy.orm import Session, declarative_base, sessionmaker
 
 from app.core.config import settings
 
+# Align SQLAlchemy connect timeout (seconds) with SQLite busy_timeout (ms).
+# Mismatch residual: timeout=30s vs PRAGMA busy_timeout=5000ms — unify at 30s.
+_SQLITE_BUSY_SECONDS = 30
+_SQLITE_BUSY_MS = _SQLITE_BUSY_SECONDS * 1000
+
 engine = create_engine(
     f"sqlite:///{settings.database_path}",
-    connect_args={"check_same_thread": False, "timeout": 30},
+    connect_args={"check_same_thread": False, "timeout": _SQLITE_BUSY_SECONDS},
 )
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 Base = declarative_base()
@@ -19,7 +24,7 @@ def _sqlite_on_connect(dbapi_connection, connection_record) -> None:  # noqa: AR
     cursor = dbapi_connection.cursor()
     try:
         cursor.execute("PRAGMA journal_mode=WAL")
-        cursor.execute("PRAGMA busy_timeout=5000")
+        cursor.execute(f"PRAGMA busy_timeout={_SQLITE_BUSY_MS}")
         cursor.execute("PRAGMA synchronous=NORMAL")
     finally:
         cursor.close()

@@ -1,48 +1,41 @@
 # VisionSetil Graph Engineering — STATE
 
-**Mode:** Graph Engineering (visual Home redesign · less text)  
+**Mode:** Graph Engineering (residual mega-audit fix)  
 **Updated:** 2026-07-29  
-**Goal:** Photo-first Home (app+web), short Spanish copy, residual kit hidden · never product_unlock · never forage
+**Goal:** Close residual FE/BE audit findings · never product_unlock · never forage
 
 ## Active graph version
 
-`v1.12.0-home-visual-redesign`
+`v1.13.0-residual-audit-fix`
 
 ## Current status
 
 | Area | Status | Notes |
 |------|--------|--------|
-| Dual build App / Web (split) | **SHIPPED** | 2 Vite builds · `index-app/web.html` · `main-app/web.tsx` · ports 5173/5174 · `dist-app/` + `dist-web/` · factory `createViteConfig(target)` |
-| Layout mode forced per build | **SHIPPED** | `VITE_LAYOUT_MODE` baked at build · `forcedMode` prop on App · toggle disabled in fixed builds |
-| Stitch design tokens SSOT | **SHIPPED** | campo-nocturno.css :root rewritten · OLED `#0F1410` · Source Serif 4 body · glass `rgba(26,36,32,0.6)` · cream `#E8DCC8` · radius 8/16/24 · full M3 set |
-| Material Symbols | **SHIPPED** | `@import` Material Symbols Outlined · `Icon` component · Home + Result migrated from inline SVG |
-| Home pixel-match | **SHIPPED** | pill CTA + circle orb · icon trust row · grid-cols-3 quick · atmospheric card · display-lg title |
-| Identify + Result pixel-match | **SHIPPED** | glass result-card · decision pill · risk chip error-container · lookalike glass rows · next-actions grid-cols-2 · wizard grid-cols-2 aspect-square |
-| Enciclopedia por familias | **SHIPPED** | `groupByFamily` toggle · banded family galleries (First-Nature pattern) |
-| Key dicotómico educativo | **SHIPPED** | `DichotomousKey` component + `dichotomousKey.ts` lib · Education page · study hints only |
-| Photo-first cascade | **CONFIRMED** | catalog HD first · no crossOrigin · lazy/eager priority — already SHIPPED, no residual |
-| Season strip | **CONFIRMED** | `SeasonalTopStrip` already on Home — no residual |
-| Mapa | **KEEP CURRENT** | user lock |
+| Dual build App / Web | **SHIPPED** | 5173/5174 · dist-app/web |
+| Campo nocturno + Home visual | **SHIPPED** | v1.12 |
+| Full-bleed layout (no phone gutters) | **SHIPPED** | a74805c |
+| Real photos / Wiki thumb sizes | **SHIPPED** | local-first + 250/500/1280px |
+| Map cotos + expand | **SHIPPED** | extraCotosZones + Ampliar mapa |
+| CA/EU locale parity keys | **SHIPPED** | 0 missing vs ES (auto-fill + maps) |
+| Segmented ErrorBoundary | **SHIPPED** | per-route `withRouteBoundary` |
+| aria-label i18n (product) | **SHIPPED** | a11y.* keys |
+| Mojibake UTF-8 | **SHIPPED** | ModelInsights + MultiViewWizard |
+| speciesPhotos code-split | **SHIPPED** | `hydrateSpeciesPhotos()` |
+| DocumentTitle all routes | **SHIPPED** | 20+ paths |
+| Rate limiter lock | **SHIPPED** | threading.Lock |
+| SQLite busy_timeout align | **SHIPPED** | 30s / 30000ms |
+| Alembic baseline | **SHIPPED** | alembic/ + 20260729_0001 |
+| Canonical API errors | **SHIPPED** | app/core/errors.py handlers |
 | product_unlock | **BLOCKED** | false |
-| Competitive UX distillation | **SHIPPED** | 4 patterns (photo-first, families, season, dichotomous) — legal patterns only, no X1-X3 |
-
-## Audit findings (this cycle)
-
-1. Dual layout was a runtime CSS toggle → converted to **build-time factory** (clean two-app split)  
-2. Body font was DM Sans → corrected to **Source Serif 4** per Stitch canonical  
-3. Body bg was `#0a0f0b` radial → corrected to **OLED `#0F1410`**  
-4. Glass was `rgba(28,33,28,0.72)` → corrected to **`rgba(26,36,32,0.6)` + blur20 + moss border**  
-5. Cream accent missing → added **`#E8DCC8`** (text-cream)  
-6. Inline SVGs in Home → migrated to **Material Symbols Outlined**  
-7. Encyclopedia grid flat → added **family-banded galleries** toggle  
-8. No educational key → added **dichotomous key** (himenium questions, study hints)  
 
 ## Residual next
 
-1. Weaker local `/media` taxa (under 15kb) optional re-fetch (P3)  
-2. Operator deploy residual (O1-O7)  
-3. Identify wizard `getUserMedia` framing overlays (P2 competitive residual)  
-4. Community human-consensus loop depth (P2)  
+1. Native review CA/EU copy quality (keys filled, language not perfect)  
+2. Operator deploy O1–O7  
+3. Optional: ML/admin aria remaining EN/ES  
+4. P3 weak local media re-harvest  
+5. `alembic stamp head` on prod DBs once  
 
 ## product_unlock
 

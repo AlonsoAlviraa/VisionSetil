@@ -3,6 +3,7 @@
  * Photography-first; risk labels without emoji chrome.
  */
 import { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { ClassificationResult } from '../api/types'
 import { getRiskMeta } from '../lib/riskLabels'
 import { IconCheck, IconClose } from './icons'
@@ -23,6 +24,7 @@ interface BatchCompareProps {
 const MAX_COMPARE = 3
 
 export function BatchCompare({ history, onClose, onSelectEntry }: BatchCompareProps) {
+  const { t } = useTranslation()
   const [selected, setSelected] = useState<string[]>([])
 
   const selectedEntries = useMemo(
@@ -43,7 +45,12 @@ export function BatchCompare({ history, onClose, onSelectEntry }: BatchComparePr
       <div className="batch-compare-modal">
         <div className="batch-compare-header">
           <h2>Comparar identificaciones</h2>
-          <button type="button" className="btn-icon" onClick={onClose} aria-label="Cerrar comparación">
+          <button
+            type="button"
+            className="btn-icon"
+            onClick={onClose}
+            aria-label={t('a11y.closeCompare', { defaultValue: 'Cerrar comparación' })}
+          >
             <IconClose size={18} />
           </button>
         </div>
