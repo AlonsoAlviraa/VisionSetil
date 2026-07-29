@@ -39,9 +39,8 @@ export type S9MonitorNormalized = {
 
 export function s9TrafficNote(
   depth: S9TrafficDepth,
-  locale?: string,
+  _locale?: string,
 ): { es: string; en: string } {
-  const en = (locale || 'es').toLowerCase().startsWith('en')
   const notes: Record<S9TrafficDepth, { es: string; en: string }> = {
     empty: {
       es: 'Sin tráfico Identify aún · S9 SKIP · nunca product_unlock.',

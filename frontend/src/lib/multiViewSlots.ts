@@ -515,7 +515,7 @@ export function formatViewTypesShort(
  */
 export function freeModeCaptureCoachLine(
   photoCount: number,
-  locale?: string,
+  _locale?: string,
 ): { density: CapturePacketDensity; lineEs: string; lineEn: string } {
   const views = freeModeViewTypesHeuristic(photoCount)
   const density = capturePacketDensity(views, photoCount)

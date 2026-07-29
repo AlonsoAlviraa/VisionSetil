@@ -2,7 +2,17 @@
 import { NavLink, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
-const tabs = [
+type BottomTab = {
+  to: string
+  labelKey: string
+  fallback: string
+  testId: string
+  end?: boolean
+  primary?: boolean
+  match?: (pathname: string) => boolean
+}
+
+const tabs: BottomTab[] = [
   { to: '/', end: true, labelKey: 'nav.home', fallback: 'Inicio', testId: 'bottom-nav-home' },
   {
     to: '/identificar',
@@ -16,7 +26,7 @@ const tabs = [
     labelKey: 'nav.games',
     fallback: 'Juegos',
     testId: 'bottom-nav-games',
-    match: (p: string) =>
+    match: (p) =>
       p.startsWith('/juegos') ||
       p.startsWith('/setadle') ||
       p.startsWith('/wordle') ||
@@ -27,14 +37,14 @@ const tabs = [
     labelKey: 'nav.encyclopedia',
     fallback: 'Enciclopedia',
     testId: 'bottom-nav-ency',
-    match: (p: string) => p.startsWith('/enciclopedia'),
+    match: (p) => p.startsWith('/enciclopedia'),
   },
   {
     to: '/mas',
     labelKey: 'nav.more',
     fallback: 'Más',
     testId: 'bottom-nav-more',
-    match: (p: string) =>
+    match: (p) =>
       p.startsWith('/mas') ||
       p.startsWith('/mapa') ||
       p.startsWith('/educacion') ||
@@ -48,7 +58,13 @@ const tabs = [
       p.startsWith('/login') ||
       p.startsWith('/registro'),
   },
-] as const
+]
+
+function isTabActive(tab: BottomTab, pathname: string): boolean {
+  if (tab.match) return tab.match(pathname)
+  if (tab.end) return pathname === tab.to
+  return pathname.startsWith(tab.to)
+}
 
 export function BottomNav() {
   const { t } = useTranslation()
@@ -61,22 +77,17 @@ export function BottomNav() {
       aria-label={t('nav.bottomAria', { defaultValue: 'Navegación principal' })}
     >
       {tabs.map((tab) => {
-        const matchFn = 'match' in tab ? tab.match : undefined
-        const active = matchFn
-          ? matchFn(pathname)
-          : tab.end
-            ? pathname === tab.to
-            : pathname.startsWith(tab.to)
+        const active = isTabActive(tab, pathname)
         return (
           <NavLink
             key={tab.to}
             to={tab.to}
-            end={'end' in tab ? tab.end : false}
+            end={Boolean(tab.end)}
             data-testid={tab.testId}
             className={() =>
               [
                 'bottom-nav__item',
-                'primary' in tab && tab.primary ? 'bottom-nav__item--primary' : '',
+                tab.primary ? 'bottom-nav__item--primary' : '',
                 active ? 'is-active' : '',
               ]
                 .filter(Boolean)
