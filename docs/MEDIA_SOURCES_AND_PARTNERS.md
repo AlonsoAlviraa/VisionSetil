@@ -20,7 +20,7 @@ Estas bases **no se descargan en masa** sin acuerdo:
 |--------|---------|-------------------|
 | **Mushroom Observer** | ToS; muchas fotos con derechos del autor | Contactar maintainers para API partnership |
 | **MycoBank** | Metadatos de nomenclatura, no banco de fotos libre | — |
-| **Index Fungorum** | Nombres, no imágenes | — |
+| **Index Fungorum** | **Nombres sí (API integrada)**; **no** banco de fotos | Ver `docs/INDEX_FUNGORUM.md` · citación obligatoria Kew |
 | **Fungipedia / sociedades locales** | Contenido editorial | Pedir permiso de reuso educativo |
 | **Stock (Shutterstock, Getty)** | Comercial | Fuera de alcance open-source |
 | **iNaturalist “all rights reserved”** | Sin licencia abierta | Se saltan en el script |
@@ -53,6 +53,13 @@ Destinatarios sugeridos (completar con email real cuando se contacte):
 - Proyectos citizen-science regionales
 - Autores con álbumes Flickr CC marcados
 
+## Nomenclatura (no es media, pero es partner de datos)
+
+| Fuente | Uso en VisionSetil | Citación |
+|--------|-------------------|----------|
+| **Index Fungorum (RBG Kew)** | Backbone de nombres / sinónimos / IF RecordID vía API SOAP-HTTP | Obligatoria + enlace a https://www.indexfungorum.org/ |
+| | **No** edibilidad, **no** imágenes, **no** overwrite automático del SSOT | `docs/INDEX_FUNGORUM.md`, `docs/MODEL_CARD.md` §4 |
+
 ## Política de producto
 
 1. Preferir **CC0 / CC-BY / CC-BY-SA**.
@@ -60,6 +67,7 @@ Destinatarios sugeridos (completar con email real cuando se contacte):
 3. **ND** no se usa (no permite derivados WebP).
 4. Nunca “segura para comer” en la UI de fotos.
 5. Si no hay foto: cascade FE (404 local → catálogo remoto → ilustración honesta), no fondo roto.
+6. Nomenclatura: atribuir Index Fungorum cuando se use como backbone; nunca consumo.
 
 ## KPI
 

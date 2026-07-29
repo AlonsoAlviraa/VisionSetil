@@ -122,5 +122,33 @@
       "soria_bbox_fungi_with_image": 4337
     },
     "note": "Conteos live varían; re-ejecutar probe_script."
+  },
+  "nomenclature": {
+    "id": "index_fungorum_kew",
+    "name": "Index Fungorum (Royal Botanic Gardens, Kew)",
+    "type": "nomenclatural_api",
+    "images": false,
+    "labels": "scientific names / synonyms / IF RecordID only",
+    "urls": [
+      "https://www.indexfungorum.org/",
+      "https://www.indexfungorum.org/ixfwebservice/fungus.asmx",
+      "https://www.speciesfungorum.org/"
+    ],
+    "repo_hooks": [
+      "backend/app/services/index_fungorum.py",
+      "backend/app/api/routes_nomenclature.py",
+      "scripts/probe_index_fungorum.py",
+      "docs/INDEX_FUNGORUM.md",
+      "docs/MODEL_CARD.md"
+    ],
+    "citation_required": true,
+    "not_used_for": [
+      "edibility",
+      "training_image_labels",
+      "product_ssot_auto_overwrite",
+      "consumption_permission"
+    ],
+    "action": "Attribute + link in UI/docs/model card; optional Kew CSV bulk (operator).",
+    "policy": "nomenclature_only_never_consumption"
   }
 }

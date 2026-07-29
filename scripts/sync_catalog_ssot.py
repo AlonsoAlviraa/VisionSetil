@@ -24,6 +24,8 @@ V2_PATH = ROOT / "data" / "species_catalog" / "species_catalog_v2.json"
 FE_SNAPSHOT = ROOT / "frontend" / "src" / "data" / "generated" / "species_catalog_snapshot.json"
 FE_CATALOG = ROOT / "frontend" / "src" / "data" / "speciesCatalog.json"
 BE_EXPANDED = ROOT / "backend" / "app" / "data" / "species_catalog_expanded.json"
+SYNONYMS_SSOT = ROOT / "data" / "species_catalog" / "taxon_synonyms.json"
+FE_SYNONYMS = ROOT / "frontend" / "src" / "data" / "taxon_synonyms.json"
 
 POLICY = "orientation_only; unsafe_to_consume; never_forage_permission"
 
@@ -71,14 +73,19 @@ def slugify(taxon: str, slug: str | None = None) -> str:
     return "".join(out).strip("-")
 
 
-def vernaculars(rec: dict) -> list[str]:
+def vernaculars_for(rec: dict, loc: str) -> list[str]:
     vern = rec.get("vernacular_names") or {}
     names: list[str] = []
-    for loc in ("es", "en", "ca", "eu"):
-        for n in vern.get(loc) or []:
-            if n and n not in names:
-                names.append(str(n))
+    for n in vern.get(loc) or []:
+        s = str(n).strip()
+        if s and s not in names:
+            names.append(s)
     return names
+
+
+def vernaculars(rec: dict) -> list[str]:
+    """Spanish-primary list (legacy callers). Prefer vernaculars_for(loc)."""
+    return vernaculars_for(rec, "es")
 
 
 def description_es(rec: dict) -> str:
@@ -110,23 +117,44 @@ def food_class_from_edibility(edibility_code: str) -> str | None:
     return None
 
 
+def normalize_lookalike_names(lookalikes) -> list[str]:
+    """SSOT objects → scientific-name strings for FE/BE expanded catalogs."""
+    out: list[str] = []
+    for lk in lookalikes or []:
+        name = ""
+        if isinstance(lk, str):
+            name = lk.strip()
+        elif isinstance(lk, dict):
+            name = str(lk.get("scientific_name") or lk.get("taxon") or "").strip()
+        if name and name not in out:
+            out.append(name)
+    return out
+
+
 def to_catalog_species(rec: dict) -> dict:
     taxon = polish_taxon(str(rec.get("scientific_name") or rec.get("taxon") or ""))
     slug = slugify(taxon, rec.get("slug") or rec.get("id"))
-    names = vernaculars(rec)
-    if not names:
-        names = [taxon]
+    names_es = vernaculars_for(rec, "es")
+    names_en = vernaculars_for(rec, "en")
+    names_ca = vernaculars_for(rec, "ca")
+    names_eu = vernaculars_for(rec, "eu")
+    if not names_es:
+        names_es = [taxon]
     risk = risk_label_from_v2(
         str(rec.get("risk_level") or "unknown"),
         str(rec.get("edibility_code") or "desconocido"),
     )
     edib = str(rec.get("edibility_code") or "desconocido")
     food = food_class_from_edibility(edib)
-    return {
+    lookalikes = normalize_lookalike_names(rec.get("lookalikes"))
+    out = {
         "taxon": taxon,
         "slug": slug,
         "rank": "species",
-        "common_names": names,
+        "common_names": names_es,
+        "common_names_en": names_en or None,
+        "common_names_ca": names_ca or None,
+        "common_names_eu": names_eu or None,
         "risk_label": risk,
         "family": rec.get("family"),
         "description": description_es(rec),
@@ -136,7 +164,11 @@ def to_catalog_species(rec: dict) -> dict:
         "food_label": food,
         "food_sources": None,
         "documented_edibility": food,
+        # Educational confusions from SSOT — never invented; list[str] for API/FE
+        "lookalikes": lookalikes,
     }
+    # Drop null locale bags for smaller JSON
+    return {k: v for k, v in out.items() if v is not None}
 
 
 def load_v2() -> dict:
@@ -228,6 +260,11 @@ def sync(*, dry_run: bool = False) -> dict:
     write_json(FE_SNAPSHOT, v2)
     write_json(FE_CATALOG, fe_payload)
     write_json(BE_EXPANDED, be_payload)
+    # Keep FE synonym map in lockstep with repo SSOT
+    if SYNONYMS_SSOT.is_file():
+        FE_SYNONYMS.parent.mkdir(parents=True, exist_ok=True)
+        FE_SYNONYMS.write_text(SYNONYMS_SSOT.read_text(encoding="utf-8"), encoding="utf-8")
+        report["paths"]["fe_synonyms"] = str(FE_SYNONYMS.relative_to(ROOT))
 
     print(json.dumps(report, indent=2, ensure_ascii=False))
     print("OK: SSOT synced to FE snapshot, FE catalog, BE expanded")

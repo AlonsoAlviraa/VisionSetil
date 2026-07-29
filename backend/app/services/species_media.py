@@ -15,6 +15,7 @@ from app.core.config import settings
 from app.services.unified_catalog import (
     get_by_slug,
     is_valid_slug,
+    resolve_ssot_slug,
     risk_to_placeholder_kind,
 )
 
@@ -103,11 +104,17 @@ def placeholder_path(kind: str) -> Path:
 
 
 def species_variant_path(slug: str, variant: str) -> Path | None:
+    """Resolve local media file; synonym slugs map to SSOT media folders."""
     root = media_root()
-    for ext in (".webp", ".png"):
-        p = _safe_under(root, "species", slug, f"{variant}{ext}")
-        if p.exists() and p.is_file():
-            return p
+    candidates = [slug]
+    ssot = resolve_ssot_slug(slug)
+    if ssot and ssot != slug:
+        candidates.append(ssot)
+    for media_slug in candidates:
+        for ext in (".webp", ".png"):
+            p = _safe_under(root, "species", media_slug, f"{variant}{ext}")
+            if p.exists() and p.is_file():
+                return p
     return None
 
 
@@ -243,19 +250,26 @@ def serve_placeholder(
 def load_species_meta(slug: str) -> dict[str, Any]:
     if not is_valid_slug(slug):
         return {}
-    path = _safe_under(media_root(), "species", slug, "meta.json")
-    if not path.exists():
-        return {}
-    try:
-        return json.loads(path.read_text(encoding="utf-8"))
-    except json.JSONDecodeError:
-        return {}
+    media_slug = resolve_ssot_slug(slug)
+    for media_slug_try in (media_slug, slug) if media_slug != slug else (slug,):
+        path = _safe_under(media_root(), "species", media_slug_try, "meta.json")
+        if path.exists():
+            try:
+                return json.loads(path.read_text(encoding="utf-8"))
+            except json.JSONDecodeError:
+                return {}
+    return {}
 
 
 def list_gallery(slug: str) -> dict[str, Any]:
-    """Return gallery image URLs for a species (public prefix paths)."""
+    """Return gallery image URLs for a species (public prefix paths).
+
+    Synonym slugs resolve to SSOT media; response ``slug`` is the SSOT slug
+    so clients can cache under the preferred identity.
+    """
     if not is_valid_slug(slug):
         raise HTTPException(status_code=400, detail="Invalid slug")
+    media_slug = resolve_ssot_slug(slug)
     prefix = (settings.media_public_prefix or "/api/media").rstrip("/")
     meta = load_species_meta(slug)
     items: list[dict[str, Any]] = []
@@ -267,15 +281,15 @@ def list_gallery(slug: str) -> dict[str, Any]:
         items.append(
             {
                 "role": "hero",
-                "url": f"{prefix}/species/{slug}/detail.webp",
-                "thumb_url": f"{prefix}/species/{slug}/thumb.webp",
+                "url": f"{prefix}/species/{media_slug}/detail.webp",
+                "thumb_url": f"{prefix}/species/{media_slug}/thumb.webp",
                 "license": meta.get("license"),
                 "attribution_text": meta.get("attribution_text"),
                 "source": meta.get("source"),
             }
         )
 
-    gallery_dir = _safe_under(media_root(), "species", slug, "gallery")
+    gallery_dir = _safe_under(media_root(), "species", media_slug, "gallery")
     if gallery_dir.exists() and gallery_dir.is_dir():
         files = sorted(
             [
@@ -294,8 +308,8 @@ def list_gallery(slug: str) -> dict[str, Any]:
             items.append(
                 {
                     "role": "gallery",
-                    "url": f"{prefix}/species/{slug}/gallery/{p.name}",
-                    "thumb_url": f"{prefix}/species/{slug}/gallery/{p.name}",
+                    "url": f"{prefix}/species/{media_slug}/gallery/{p.name}",
+                    "thumb_url": f"{prefix}/species/{media_slug}/gallery/{p.name}",
                     "file": f"gallery/{p.name}",
                     "license": extra.get("license") or meta.get("license"),
                     "attribution_text": extra.get("attribution_text")
@@ -305,7 +319,8 @@ def list_gallery(slug: str) -> dict[str, Any]:
             )
 
     return {
-        "slug": slug,
+        "slug": media_slug,
+        "request_slug": slug,
         "count": len(items),
         "items": items,
         "meta": {
@@ -327,7 +342,12 @@ def serve_gallery_file(slug: str, filename: str) -> Response:
         raise HTTPException(status_code=400, detail="Invalid filename")
     if not re_match_gallery_name(name):
         raise HTTPException(status_code=400, detail="Invalid gallery filename")
-    path = _safe_under(media_root(), "species", slug, "gallery", name)
+    media_slug = resolve_ssot_slug(slug)
+    path = _safe_under(media_root(), "species", media_slug, "gallery", name)
+    if not path.exists() or not path.is_file():
+        # Fallback to request slug if SSOT folder missing
+        if media_slug != slug:
+            path = _safe_under(media_root(), "species", slug, "gallery", name)
     if not path.exists() or not path.is_file():
         raise HTTPException(status_code=404, detail="Gallery image not found")
     return _file_response(path, cache_seconds=604800)

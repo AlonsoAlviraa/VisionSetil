@@ -1,0 +1,1053 @@
+{
+  "version": "1.1.0",
+  "generated_at": "2026-07-27T21:59:29.750451+00:00",
+  "policy": "orientation_only_never_consume",
+  "canonical_views": [
+    "gills",
+    "front",
+    "habitat",
+    "detail"
+  ],
+  "view_weights": {
+    "gills": 0.38,
+    "front": 0.32,
+    "habitat": 0.15,
+    "detail": 0.15
+  },
+  "classic_pairs": [
+    {
+      "id": "caesarea-phalloides",
+      "taxa": [
+        "Amanita caesarea",
+        "Amanita phalloides"
+      ],
+      "why": "Sombrero similar; láminas y volva deciden",
+      "critical_views": [
+        "gills",
+        "front",
+        "detail"
+      ],
+      "full_packet": [
+        "gills",
+        "front",
+        "habitat",
+        "detail"
+      ],
+      "ml40_overlap": [
+        "Amanita phalloides"
+      ]
+    },
+    {
+      "id": "edulis-rubellus",
+      "taxa": [
+        "Boletus edulis",
+        "Cortinarius rubellus"
+      ],
+      "why": "Pie y cortina: no confiar en el hongo",
+      "critical_views": [
+        "gills",
+        "front",
+        "detail"
+      ],
+      "full_packet": [
+        "gills",
+        "front",
+        "habitat",
+        "detail"
+      ],
+      "ml40_overlap": [
+        "Boletus edulis",
+        "Cortinarius rubellus"
+      ]
+    },
+    {
+      "id": "muscaria-pantherina",
+      "taxa": [
+        "Amanita muscaria",
+        "Amanita pantherina"
+      ],
+      "why": "Anillo, volva y base del pie",
+      "critical_views": [
+        "gills",
+        "front",
+        "detail"
+      ],
+      "full_packet": [
+        "gills",
+        "front",
+        "habitat",
+        "detail"
+      ],
+      "ml40_overlap": [
+        "Amanita muscaria",
+        "Amanita pantherina"
+      ]
+    },
+    {
+      "id": "deliciosus-torminosus",
+      "taxa": [
+        "Lactarius deliciosus",
+        "Lactarius torminosus"
+      ],
+      "why": "Látex y hábitat de pinar",
+      "critical_views": [
+        "gills",
+        "front",
+        "habitat"
+      ],
+      "full_packet": [
+        "gills",
+        "front",
+        "habitat",
+        "detail"
+      ],
+      "ml40_overlap": []
+    },
+    {
+      "id": "procera-lepiota",
+      "taxa": [
+        "Macrolepiota procera",
+        "Lepiota brunneoincarnata"
+      ],
+      "why": "Tamaño y anillo móvil; lepiotas pequeñas = peligro",
+      "critical_views": [
+        "gills",
+        "front",
+        "detail"
+      ],
+      "full_packet": [
+        "gills",
+        "front",
+        "habitat",
+        "detail"
+      ],
+      "ml40_overlap": []
+    },
+    {
+      "id": "galerina-honey",
+      "taxa": [
+        "Armillaria mellea",
+        "Galerina marginata"
+      ],
+      "why": "Sobre madera: galerina es mortal",
+      "critical_views": [
+        "gills",
+        "front",
+        "habitat"
+      ],
+      "full_packet": [
+        "gills",
+        "front",
+        "habitat",
+        "detail"
+      ],
+      "ml40_overlap": [
+        "Galerina marginata"
+      ]
+    },
+    {
+      "id": "cibarius-omphalotus",
+      "taxa": [
+        "Cantharellus cibarius",
+        "Omphalotus olearius"
+      ],
+      "why": "Láminas verdaderas vs pliegues",
+      "critical_views": [
+        "gills",
+        "front"
+      ],
+      "full_packet": [
+        "gills",
+        "front",
+        "habitat",
+        "detail"
+      ],
+      "ml40_overlap": []
+    },
+    {
+      "id": "comatus-atramentaria",
+      "taxa": [
+        "Coprinus comatus",
+        "Coprinus atramentarius"
+      ],
+      "why": "Alcohol + coprino = reacción peligrosa",
+      "critical_views": [
+        "gills",
+        "front"
+      ],
+      "full_packet": [
+        "gills",
+        "front",
+        "habitat",
+        "detail"
+      ],
+      "ml40_overlap": [
+        "Coprinus comatus"
+      ]
+    },
+    {
+      "id": "phalloides-citrina",
+      "taxa": [
+        "Amanita phalloides",
+        "Amanita citrina"
+      ],
+      "why": "Volva y láminas; no confiar en el color solo",
+      "critical_views": [
+        "gills",
+        "front",
+        "detail"
+      ],
+      "full_packet": [
+        "gills",
+        "front",
+        "habitat",
+        "detail"
+      ],
+      "ml40_overlap": [
+        "Amanita phalloides",
+        "Amanita citrina"
+      ]
+    },
+    {
+      "id": "pantherina-rubescens",
+      "taxa": [
+        "Amanita pantherina",
+        "Amanita rubescens"
+      ],
+      "why": "Enrojecimiento al corte y base del pie",
+      "critical_views": [
+        "gills",
+        "front",
+        "detail"
+      ],
+      "full_packet": [
+        "gills",
+        "front",
+        "habitat",
+        "detail"
+      ],
+      "ml40_overlap": [
+        "Amanita pantherina",
+        "Amanita rubescens"
+      ]
+    },
+    {
+      "id": "esculenta-gyromitra",
+      "taxa": [
+        "Morchella esculenta",
+        "Gyromitra esculenta"
+      ],
+      "why": "Costillas vs cámaras; gyromitra es peligrosa",
+      "critical_views": [
+        "gills",
+        "front"
+      ],
+      "full_packet": [
+        "gills",
+        "front",
+        "habitat",
+        "detail"
+      ],
+      "ml40_overlap": [
+        "Gyromitra esculenta"
+      ]
+    },
+    {
+      "id": "gambosa-inocybe",
+      "taxa": [
+        "Calocybe gambosa",
+        "Inocybe erubescens"
+      ],
+      "why": "Prados de primavera; inocybe puede ser mortal",
+      "critical_views": [
+        "gills",
+        "front",
+        "habitat"
+      ],
+      "full_packet": [
+        "gills",
+        "front",
+        "habitat",
+        "detail"
+      ],
+      "ml40_overlap": []
+    },
+    {
+      "id": "mutabilis-hypholoma",
+      "taxa": [
+        "Kuehneromyces mutabilis",
+        "Hypholoma fasciculare"
+      ],
+      "why": "Sobre madera: amargor y color de láminas",
+      "critical_views": [
+        "gills",
+        "front",
+        "habitat"
+      ],
+      "full_packet": [
+        "gills",
+        "front",
+        "habitat",
+        "detail"
+      ],
+      "ml40_overlap": [
+        "Kuehneromyces mutabilis",
+        "Hypholoma fasciculare"
+      ]
+    },
+    {
+      "id": "prunulus-entoloma",
+      "taxa": [
+        "Clitopilus prunulus",
+        "Entoloma sinuatum"
+      ],
+      "why": "Láminas y olor; entoloma sinuatum es tóxico",
+      "critical_views": [
+        "gills",
+        "front"
+      ],
+      "full_packet": [
+        "gills",
+        "front",
+        "habitat",
+        "detail"
+      ],
+      "ml40_overlap": []
+    },
+    {
+      "id": "virosa-phalloides",
+      "taxa": [
+        "Amanita virosa",
+        "Amanita phalloides"
+      ],
+      "why": "Volva, anillo y láminas blancas; ambas mortales",
+      "critical_views": [
+        "gills",
+        "front",
+        "detail"
+      ],
+      "full_packet": [
+        "gills",
+        "front",
+        "habitat",
+        "detail"
+      ],
+      "ml40_overlap": [
+        "Amanita virosa",
+        "Amanita phalloides"
+      ]
+    },
+    {
+      "id": "castanea-brunneoincarnata",
+      "taxa": [
+        "Lepiota castanea",
+        "Lepiota brunneoincarnata"
+      ],
+      "why": "Lepiota pequeña: escamas y anillo; riesgo mortal",
+      "critical_views": [
+        "gills",
+        "front",
+        "detail"
+      ],
+      "full_packet": [
+        "gills",
+        "front",
+        "habitat",
+        "detail"
+      ],
+      "ml40_overlap": [
+        "Lepiota castanea"
+      ]
+    },
+    {
+      "id": "procera-castanea",
+      "taxa": [
+        "Macrolepiota procera",
+        "Lepiota castanea"
+      ],
+      "why": "Tamaño y anillo; lepiotas pequeñas peligrosas",
+      "critical_views": [
+        "gills",
+        "front",
+        "detail"
+      ],
+      "full_packet": [
+        "gills",
+        "front",
+        "habitat",
+        "detail"
+      ],
+      "ml40_overlap": [
+        "Lepiota castanea"
+      ]
+    },
+    {
+      "id": "paxillus-bay",
+      "taxa": [
+        "Paxillus involutus",
+        "Imleria badia"
+      ],
+      "why": "Borde enrollado y poros; toxicidad acumulativa",
+      "critical_views": [
+        "gills",
+        "front",
+        "detail"
+      ],
+      "full_packet": [
+        "gills",
+        "front",
+        "habitat",
+        "detail"
+      ],
+      "ml40_overlap": [
+        "Paxillus involutus",
+        "Imleria badia"
+      ]
+    },
+    {
+      "id": "muscaria-virosa",
+      "taxa": [
+        "Amanita muscaria",
+        "Amanita virosa"
+      ],
+      "why": "Base del pie y volva; no confiar en el color",
+      "critical_views": [
+        "gills",
+        "front",
+        "detail"
+      ],
+      "full_packet": [
+        "gills",
+        "front",
+        "habitat",
+        "detail"
+      ],
+      "ml40_overlap": [
+        "Amanita muscaria",
+        "Amanita virosa"
+      ]
+    },
+    {
+      "id": "galerina-armillaria",
+      "taxa": [
+        "Galerina marginata",
+        "Armillaria lutea"
+      ],
+      "why": "Sobre madera: galerina es mortal",
+      "critical_views": [
+        "gills",
+        "front",
+        "habitat",
+        "detail"
+      ],
+      "full_packet": [
+        "gills",
+        "front",
+        "habitat",
+        "detail"
+      ],
+      "ml40_overlap": [
+        "Galerina marginata",
+        "Armillaria lutea"
+      ]
+    }
+  ],
+  "ml40_class_views": {
+    "Agaricus campestris": {
+      "recommended_views": [
+        "gills",
+        "front"
+      ],
+      "in_catalog": true,
+      "n_lookalikes": 1,
+      "risk_level": "low"
+    },
+    "Amanita citrina": {
+      "recommended_views": [
+        "gills",
+        "front",
+        "detail",
+        "habitat"
+      ],
+      "in_catalog": true,
+      "n_lookalikes": 1,
+      "risk_level": "high"
+    },
+    "Amanita muscaria": {
+      "recommended_views": [
+        "gills",
+        "front",
+        "detail",
+        "habitat"
+      ],
+      "in_catalog": true,
+      "n_lookalikes": 3,
+      "risk_level": "high"
+    },
+    "Amanita pantherina": {
+      "recommended_views": [
+        "gills",
+        "front",
+        "detail",
+        "habitat"
+      ],
+      "in_catalog": true,
+      "n_lookalikes": 2,
+      "risk_level": "high"
+    },
+    "Amanita phalloides": {
+      "recommended_views": [
+        "gills",
+        "front",
+        "detail",
+        "habitat"
+      ],
+      "in_catalog": true,
+      "n_lookalikes": 6,
+      "risk_level": "deadly"
+    },
+    "Amanita rubescens": {
+      "recommended_views": [
+        "gills",
+        "front",
+        "detail",
+        "habitat"
+      ],
+      "in_catalog": true,
+      "n_lookalikes": 1,
+      "risk_level": "risky_lookalikes"
+    },
+    "Amanita virosa": {
+      "recommended_views": [
+        "gills",
+        "front",
+        "detail",
+        "habitat"
+      ],
+      "in_catalog": true,
+      "n_lookalikes": 2,
+      "risk_level": "deadly"
+    },
+    "Armillaria lutea": {
+      "recommended_views": [
+        "gills",
+        "front"
+      ],
+      "in_catalog": true,
+      "n_lookalikes": 2,
+      "risk_level": "risky_lookalikes"
+    },
+    "Boletus edulis": {
+      "recommended_views": [
+        "gills",
+        "front",
+        "detail"
+      ],
+      "in_catalog": true,
+      "n_lookalikes": 5,
+      "risk_level": "low"
+    },
+    "Chlorophyllum olivieri": {
+      "recommended_views": [
+        "gills",
+        "front"
+      ],
+      "in_catalog": true,
+      "n_lookalikes": 2,
+      "risk_level": "risky_lookalikes"
+    },
+    "Clitocybe nebularis": {
+      "recommended_views": [
+        "gills",
+        "front"
+      ],
+      "in_catalog": true,
+      "n_lookalikes": 1,
+      "risk_level": "risky_lookalikes"
+    },
+    "Coprinus comatus": {
+      "recommended_views": [
+        "gills",
+        "front"
+      ],
+      "in_catalog": true,
+      "n_lookalikes": 1,
+      "risk_level": "low"
+    },
+    "Cortinarius rubellus": {
+      "recommended_views": [
+        "gills",
+        "front",
+        "detail",
+        "habitat"
+      ],
+      "in_catalog": true,
+      "n_lookalikes": 2,
+      "risk_level": "deadly"
+    },
+    "Craterellus tubaeformis": {
+      "recommended_views": [
+        "gills",
+        "front"
+      ],
+      "in_catalog": true,
+      "n_lookalikes": 1,
+      "risk_level": "low"
+    },
+    "Fomitopsis pinicola": {
+      "recommended_views": [
+        "gills",
+        "front"
+      ],
+      "in_catalog": true,
+      "n_lookalikes": 2,
+      "risk_level": "low"
+    },
+    "Galerina marginata": {
+      "recommended_views": [
+        "gills",
+        "front",
+        "detail",
+        "habitat"
+      ],
+      "in_catalog": true,
+      "n_lookalikes": 4,
+      "risk_level": "deadly"
+    },
+    "Gyromitra esculenta": {
+      "recommended_views": [
+        "gills",
+        "front",
+        "detail",
+        "habitat"
+      ],
+      "in_catalog": true,
+      "n_lookalikes": 2,
+      "risk_level": "high"
+    },
+    "Hygrophoropsis aurantiaca": {
+      "recommended_views": [
+        "gills",
+        "front"
+      ],
+      "in_catalog": true,
+      "n_lookalikes": 1,
+      "risk_level": "medium"
+    },
+    "Hypholoma fasciculare": {
+      "recommended_views": [
+        "gills",
+        "front",
+        "detail",
+        "habitat"
+      ],
+      "in_catalog": true,
+      "n_lookalikes": 3,
+      "risk_level": "high"
+    },
+    "Imleria badia": {
+      "recommended_views": [
+        "gills",
+        "front",
+        "detail"
+      ],
+      "in_catalog": true,
+      "n_lookalikes": 3,
+      "risk_level": "low"
+    },
+    "Kuehneromyces mutabilis": {
+      "recommended_views": [
+        "gills",
+        "front"
+      ],
+      "in_catalog": true,
+      "n_lookalikes": 2,
+      "risk_level": "low"
+    },
+    "Laccaria amethystina": {
+      "recommended_views": [
+        "gills",
+        "front"
+      ],
+      "in_catalog": true,
+      "n_lookalikes": 1,
+      "risk_level": "low"
+    },
+    "Laccaria laccata": {
+      "recommended_views": [
+        "gills",
+        "front"
+      ],
+      "in_catalog": true,
+      "n_lookalikes": 1,
+      "risk_level": "low"
+    },
+    "Lactarius deterrimus": {
+      "recommended_views": [
+        "gills",
+        "front"
+      ],
+      "in_catalog": true,
+      "n_lookalikes": 2,
+      "risk_level": "low"
+    },
+    "Laetiporus sulphureus": {
+      "recommended_views": [
+        "gills",
+        "front"
+      ],
+      "in_catalog": true,
+      "n_lookalikes": 1,
+      "risk_level": "low"
+    },
+    "Leccinum scabrum": {
+      "recommended_views": [
+        "gills",
+        "front",
+        "detail"
+      ],
+      "in_catalog": true,
+      "n_lookalikes": 1,
+      "risk_level": "low"
+    },
+    "Lepiota castanea": {
+      "recommended_views": [
+        "gills",
+        "front",
+        "detail",
+        "habitat"
+      ],
+      "in_catalog": true,
+      "n_lookalikes": 1,
+      "risk_level": "unknown"
+    },
+    "Lepiota cristata": {
+      "recommended_views": [
+        "gills",
+        "front",
+        "detail",
+        "habitat"
+      ],
+      "in_catalog": true,
+      "n_lookalikes": 1,
+      "risk_level": "high"
+    },
+    "Lepiota subincarnata": {
+      "recommended_views": [
+        "gills",
+        "front",
+        "detail",
+        "habitat"
+      ],
+      "in_catalog": true,
+      "n_lookalikes": 1,
+      "risk_level": "unknown"
+    },
+    "Lepista nuda": {
+      "recommended_views": [
+        "gills",
+        "front"
+      ],
+      "in_catalog": true,
+      "n_lookalikes": 1,
+      "risk_level": "low"
+    },
+    "Marasmius oreades": {
+      "recommended_views": [
+        "gills",
+        "front"
+      ],
+      "in_catalog": true,
+      "n_lookalikes": 2,
+      "risk_level": "low"
+    },
+    "Paxillus involutus": {
+      "recommended_views": [
+        "gills",
+        "front",
+        "detail",
+        "habitat"
+      ],
+      "in_catalog": true,
+      "n_lookalikes": 1,
+      "risk_level": "high"
+    },
+    "Phallus impudicus": {
+      "recommended_views": [
+        "gills",
+        "front"
+      ],
+      "in_catalog": true,
+      "n_lookalikes": 1,
+      "risk_level": "medium"
+    },
+    "Pleurotus ostreatus": {
+      "recommended_views": [
+        "gills",
+        "front"
+      ],
+      "in_catalog": true,
+      "n_lookalikes": 1,
+      "risk_level": "low"
+    },
+    "Pluteus cervinus": {
+      "recommended_views": [
+        "gills",
+        "front"
+      ],
+      "in_catalog": true,
+      "n_lookalikes": 1,
+      "risk_level": "low"
+    },
+    "Russula ochroleuca": {
+      "recommended_views": [
+        "gills",
+        "front"
+      ],
+      "in_catalog": true,
+      "n_lookalikes": 1,
+      "risk_level": "medium"
+    },
+    "Scleroderma citrinum": {
+      "recommended_views": [
+        "gills",
+        "front",
+        "detail",
+        "habitat"
+      ],
+      "in_catalog": true,
+      "n_lookalikes": 1,
+      "risk_level": "high"
+    },
+    "Suillus grevillei": {
+      "recommended_views": [
+        "gills",
+        "front"
+      ],
+      "in_catalog": true,
+      "n_lookalikes": 1,
+      "risk_level": "low"
+    },
+    "Suillus luteus": {
+      "recommended_views": [
+        "gills",
+        "front"
+      ],
+      "in_catalog": true,
+      "n_lookalikes": 2,
+      "risk_level": "low"
+    },
+    "Trametes versicolor": {
+      "recommended_views": [
+        "gills",
+        "front"
+      ],
+      "in_catalog": true,
+      "n_lookalikes": 1,
+      "risk_level": "medium"
+    }
+  },
+  "note": "critical_views guide the 4-photo wizard; never harvest permission.",
+  "deadly_diagnostic": {
+    "priority_views": [
+      "gills",
+      "front",
+      "detail",
+      "habitat"
+    ],
+    "view_votes": {
+      "gills": 14,
+      "front": 14,
+      "detail": 11,
+      "habitat": 3
+    },
+    "n_pairs_involving_deadly": 14,
+    "pairs": [
+      {
+        "id": "caesarea-phalloides",
+        "taxa": [
+          "Amanita caesarea",
+          "Amanita phalloides"
+        ],
+        "why": "Sombrero similar; láminas y volva deciden",
+        "critical_views": [
+          "gills",
+          "front",
+          "detail"
+        ]
+      },
+      {
+        "id": "edulis-rubellus",
+        "taxa": [
+          "Boletus edulis",
+          "Cortinarius rubellus"
+        ],
+        "why": "Pie y cortina: no confiar en el hongo",
+        "critical_views": [
+          "gills",
+          "front",
+          "detail"
+        ]
+      },
+      {
+        "id": "muscaria-pantherina",
+        "taxa": [
+          "Amanita muscaria",
+          "Amanita pantherina"
+        ],
+        "why": "Anillo, volva y base del pie",
+        "critical_views": [
+          "gills",
+          "front",
+          "detail"
+        ]
+      },
+      {
+        "id": "galerina-honey",
+        "taxa": [
+          "Armillaria mellea",
+          "Galerina marginata"
+        ],
+        "why": "Sobre madera: galerina es mortal",
+        "critical_views": [
+          "gills",
+          "front",
+          "habitat"
+        ]
+      },
+      {
+        "id": "phalloides-citrina",
+        "taxa": [
+          "Amanita phalloides",
+          "Amanita citrina"
+        ],
+        "why": "Volva y láminas; no confiar en el color solo",
+        "critical_views": [
+          "gills",
+          "front",
+          "detail"
+        ]
+      },
+      {
+        "id": "pantherina-rubescens",
+        "taxa": [
+          "Amanita pantherina",
+          "Amanita rubescens"
+        ],
+        "why": "Enrojecimiento al corte y base del pie",
+        "critical_views": [
+          "gills",
+          "front",
+          "detail"
+        ]
+      },
+      {
+        "id": "esculenta-gyromitra",
+        "taxa": [
+          "Morchella esculenta",
+          "Gyromitra esculenta"
+        ],
+        "why": "Costillas vs cámaras; gyromitra es peligrosa",
+        "critical_views": [
+          "gills",
+          "front"
+        ]
+      },
+      {
+        "id": "mutabilis-hypholoma",
+        "taxa": [
+          "Kuehneromyces mutabilis",
+          "Hypholoma fasciculare"
+        ],
+        "why": "Sobre madera: amargor y color de láminas",
+        "critical_views": [
+          "gills",
+          "front",
+          "habitat"
+        ]
+      },
+      {
+        "id": "virosa-phalloides",
+        "taxa": [
+          "Amanita virosa",
+          "Amanita phalloides"
+        ],
+        "why": "Volva, anillo y láminas blancas; ambas mortales",
+        "critical_views": [
+          "gills",
+          "front",
+          "detail"
+        ]
+      },
+      {
+        "id": "castanea-brunneoincarnata",
+        "taxa": [
+          "Lepiota castanea",
+          "Lepiota brunneoincarnata"
+        ],
+        "why": "Lepiota pequeña: escamas y anillo; riesgo mortal",
+        "critical_views": [
+          "gills",
+          "front",
+          "detail"
+        ]
+      },
+      {
+        "id": "procera-castanea",
+        "taxa": [
+          "Macrolepiota procera",
+          "Lepiota castanea"
+        ],
+        "why": "Tamaño y anillo; lepiotas pequeñas peligrosas",
+        "critical_views": [
+          "gills",
+          "front",
+          "detail"
+        ]
+      },
+      {
+        "id": "paxillus-bay",
+        "taxa": [
+          "Paxillus involutus",
+          "Imleria badia"
+        ],
+        "why": "Borde enrollado y poros; toxicidad acumulativa",
+        "critical_views": [
+          "gills",
+          "front",
+          "detail"
+        ]
+      },
+      {
+        "id": "muscaria-virosa",
+        "taxa": [
+          "Amanita muscaria",
+          "Amanita virosa"
+        ],
+        "why": "Base del pie y volva; no confiar en el color",
+        "critical_views": [
+          "gills",
+          "front",
+          "detail"
+        ]
+      },
+      {
+        "id": "galerina-armillaria",
+        "taxa": [
+          "Galerina marginata",
+          "Armillaria lutea"
+        ],
+        "why": "Sobre madera: galerina es mortal",
+        "critical_views": [
+          "gills",
+          "front",
+          "habitat",
+          "detail"
+        ]
+      }
+    ],
+    "coach_es": "Para confusiones con mortales: prioriza láminas (gills), perfil/pie (front) y base/volva/anillo (detail). Multi-foto sin esas vistas no basta.",
+    "coach_en": "For deadly confusions: prioritize gills, full profile/stem (front), and base/volva/ring (detail). Extra photos without those views are not enough.",
+    "policy": "orientation_only_never_consume"
+  }
+}

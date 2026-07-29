@@ -36,11 +36,20 @@ Product copy and chrome **depend on surface**. Educational culinary context is a
 3. **No green edibility/success chrome** on `.result-card` (accepted banner, top-match highlight, confidence “high”, decorative accents).
 4. Encyclopedia and food-quality registry remain available for non-Identify surfaces; do **not** strip them when fixing Identify.
 
-### Cross-links
+### Nomenclatura (Index Fungorum)
+
+- Scientific **names** may be resolved/displayed via Index Fungorum (Kew).
+- IF data is **never** mapped to edible/safe labels or forage permission.
+- Product SSOT taxon strings are **not** auto-replaced by IF current names.
+- Citation + link required: `docs/INDEX_FUNGORUM.md`, `docs/MODEL_CARD.md`.
+
+## Cross-links
 
 | Doc / code | Role |
 | --- | --- |
 | `docs/MEGA_PLAN_PROFESSIONAL_UPGRADE.md` § D16 | Canonical surface matrix (encyclopedia vs Identify) |
+| `docs/MODEL_CARD.md` | Model card + Index Fungorum citation |
+| `docs/INDEX_FUNGORUM.md` | IF API usage + Kew attribution rules |
 | `docs/PHASE_B_HONEST_IDENTIFY.md` § D-B16, UX results matrix | Phase B honesty modes + ban FoodQualityChip |
 | `frontend/src/components/ResultCard.tsx` | Identify result chrome (B-08 ban + B-35 audit) |
 | `frontend/src/lib/riskLabels.ts` | Risk-only labels + forbidden phrase list |

@@ -271,6 +271,32 @@ def test_species_detail_and_invalid_locale(client: TestClient):
     assert bad.json()["error"] == "invalid_locale"
 
 
+def test_species_detail_resolves_synonym_slug(client: TestClient):
+    """Deep-link synonym slug → SSOT ficha (product parity with FE encyclopedia)."""
+    r = client.get("/species/coprinopsis-atramentaria?locale=es")
+    assert r.status_code == 200
+    body = r.json()
+    assert body.get("scientific_name") == "Coprinus atramentarius"
+    assert body.get("slug") == "coprinus-atramentarius"
+
+
+def test_species_search_resolves_synonym_query(client: TestClient):
+    r = client.get("/species", params={"q": "Coprinopsis atramentaria", "locale": "es", "limit": 10})
+    assert r.status_code == 200
+    data = r.json()
+    names = [it.get("scientific_name") for it in data.get("items") or []]
+    assert "Coprinus atramentarius" in names
+
+
+def test_media_gallery_resolves_synonym_slug(client: TestClient):
+    """Synonym media slug maps to SSOT folder; response slug is preferred identity."""
+    r = client.get("/media/species/coprinopsis-atramentaria/gallery")
+    assert r.status_code == 200
+    data = r.json()
+    assert data.get("slug") == "coprinus-atramentarius"
+    assert data.get("request_slug") == "coprinopsis-atramentaria"
+
+
 def test_species_poisonous_compat(client: TestClient):
     r = client.get("/species/poisonous")
     assert r.status_code == 200

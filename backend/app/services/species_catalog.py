@@ -75,6 +75,8 @@ def _food_class_from_edibility(edibility_code: str | None) -> str | None:
 
 
 def _rows_from_v2(v2: dict) -> list[dict]:
+    from app.services.poisonous_lookalikes import normalize_lookalike_names
+
     rows: list[dict] = []
     for rec in v2.get("species") or []:
         taxon = str(rec.get("scientific_name") or "").strip()
@@ -96,6 +98,7 @@ def _rows_from_v2(v2: dict) -> list[dict]:
             description = str(desc or "")
         edib = str(rec.get("edibility_code") or "desconocido")
         food = _food_class_from_edibility(edib)
+        lookalikes = normalize_lookalike_names(rec.get("lookalikes"))
         rows.append(
             {
                 "taxon": taxon,
@@ -111,6 +114,7 @@ def _rows_from_v2(v2: dict) -> list[dict]:
                 "food_label": food,
                 "food_sources": None,
                 "documented_edibility": food,
+                "lookalikes": lookalikes,
             }
         )
     return rows
@@ -306,18 +310,20 @@ def load_open_set_thresholds(thresholds_path: Path = None) -> dict:
     """
     if thresholds_path is None:
         configured_thresholds = os.getenv("OPEN_SET_THRESHOLDS_PATH")
+        repo_root = getattr(settings, "repo_root", None) or Path(settings.base_dir).resolve().parent
         candidates = (
             [Path(configured_thresholds)]
             if configured_thresholds
             else [
                 Path("/kaggle/working/visionsetil_outputs/open_set_thresholds.json"),
-                settings.base_dir / "open_set_thresholds.json",
+                Path(repo_root) / "eval" / "reports" / "open_set_thresholds.json",
                 settings.base_dir / "eval" / "reports" / "open_set_thresholds.json",
+                settings.base_dir / "open_set_thresholds.json",
             ]
         )
         for candidate in candidates:
-            if candidate.exists():
-                thresholds_path = candidate
+            if candidate and Path(candidate).exists():
+                thresholds_path = Path(candidate)
                 break
 
     if thresholds_path is None or not thresholds_path.exists():
@@ -333,6 +339,49 @@ def load_open_set_thresholds(thresholds_path: Path = None) -> dict:
     thresholds["source"] = str(thresholds_path)
     thresholds["status"] = thresholds.get("status", "calibrated")
     return thresholds
+
+
+def describe_active_open_set_thresholds() -> dict:
+    """Ops-facing open-set thr summary (Identify MultiView + rejection service).
+
+    Never implies product_unlock. Prefer calibrated E20 file when present.
+    """
+    thr = load_open_set_thresholds()
+    status = str(thr.get("status") or "settings_fallback")
+    calibrated = status.startswith("calibrated")
+    conf = thr.get("calibrated_threshold")
+    mar = thr.get("calibrated_margin")
+    eth = thr.get("calibrated_entropy")
+    if conf is None:
+        conf = settings.open_set_min_confidence
+    if mar is None:
+        mar = settings.open_set_min_margin
+    if eth is None:
+        eth = getattr(settings, "open_set_max_entropy", 0.0) or 0.0
+    # Multiview knobs remain the runtime floor when not calibrated
+    if not calibrated:
+        conf = getattr(settings, "multiview_open_set_conf_thr", None) or conf
+        mar = getattr(settings, "multiview_open_set_margin_thr", None)
+        if mar is None:
+            mar = settings.open_set_min_margin
+    holdout = thr.get("holdout_stats") if isinstance(thr.get("holdout_stats"), dict) else {}
+    mate = thr.get("lookalike_mate_rates") if isinstance(thr.get("lookalike_mate_rates"), dict) else {}
+    return {
+        "status": status,
+        "calibrated": calibrated,
+        "active_conf_thr": float(conf),
+        "active_margin_thr": float(mar),
+        "active_entropy_thr": float(eth) if eth is not None else 0.0,
+        "source": thr.get("source"),
+        "source_experiment": thr.get("source_experiment"),
+        "protocol": thr.get("protocol"),
+        "holdout_reject_rate": holdout.get("reject_rate"),
+        "holdout_acc_keep": holdout.get("acc_keep"),
+        "lookalike_mate_in_topk_rate": mate.get("lookalike_mate_in_topk_rate"),
+        "true_in_topk_rate": mate.get("true_in_topk_rate"),
+        "product_unlock": False,
+        "policy": "orientation_only_never_consume",
+    }
 
 
 def ensure_seed_data() -> None:

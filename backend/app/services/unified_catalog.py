@@ -93,19 +93,64 @@ def all_species() -> list[dict[str, Any]]:
 
 
 def get_by_slug(slug: str) -> dict[str, Any] | None:
+    """O(1) slug lookup; curated synonym slugs resolve to SSOT rows.
+
+    Example: ``coprinopsis-atramentaria`` → ``Coprinus atramentarius`` record.
+    """
     if not slug:
         return None
-    return load_catalog().get("_by_slug", {}).get(slug)
+    by_slug = load_catalog().get("_by_slug", {})
+    hit = by_slug.get(slug)
+    if hit:
+        return hit
+    # Synonym slug (e.g. coprinopsis-atramentaria) → SSOT slug
+    as_name = slug.replace("-", " ")
+    try:
+        from app.services.poisonous_lookalikes import canonical_taxon_name
+    except ImportError:  # pragma: no cover
+        return None
+    canon = canonical_taxon_name(as_name)
+    if not canon:
+        return None
+    canon_slug = scientific_to_slug(canon)
+    if canon_slug and canon_slug != slug:
+        hit = by_slug.get(canon_slug)
+        if hit:
+            return hit
+    by_name = load_catalog().get("_by_name", {})
+    return by_name.get(canon.lower())
 
 
 def get_by_scientific_name(name: str) -> dict[str, Any] | None:
+    """Lookup by scientific name; curated synonyms map to SSOT preferred names."""
     if not name:
         return None
     target = name.strip().lower()
-    hit = load_catalog().get("_by_name", {}).get(target)
+    by_name = load_catalog().get("_by_name", {})
+    hit = by_name.get(target)
     if hit:
         return hit
+    try:
+        from app.services.poisonous_lookalikes import canonical_taxon_name
+    except ImportError:  # pragma: no cover
+        return get_by_slug(scientific_to_slug(name))
+    canon = canonical_taxon_name(name.strip())
+    if canon and canon.lower() != target:
+        hit = by_name.get(canon.lower())
+        if hit:
+            return hit
+        return get_by_slug(scientific_to_slug(canon))
     return get_by_slug(scientific_to_slug(name))
+
+
+def resolve_ssot_slug(slug: str) -> str:
+    """Map request slug (possibly synonym) to SSOT catalog slug for media paths."""
+    if not slug:
+        return slug
+    rec = get_by_slug(slug)
+    if rec and rec.get("slug"):
+        return str(rec["slug"])
+    return slug
 
 
 def normalize_locale(locale: str | None) -> str:
@@ -255,7 +300,14 @@ def search_species(
     if featured is not None:
         items = [s for s in items if bool(s.get("featured")) is featured]
     if q:
-        qf = _fold(q.strip())
+        q_raw = q.strip()
+        qf = _fold(q_raw)
+        try:
+            from app.services.poisonous_lookalikes import canonical_taxon_name
+
+            q_canon = _fold(canonical_taxon_name(q_raw))
+        except ImportError:  # pragma: no cover
+            q_canon = qf
         filtered = []
         for s in items:
             hay = [_fold(str(s.get("scientific_name", ""))), _fold(str(s.get("family", "")))]
@@ -263,7 +315,9 @@ def search_species(
             for loc in SUPPORTED_LOCALES:
                 for name in vern.get(loc) or []:
                     hay.append(_fold(str(name)))
-            if any(qf in h for h in hay):
+            if any(qf in h for h in hay) or (
+                q_canon and q_canon != qf and any(q_canon in h for h in hay)
+            ):
                 filtered.append(s)
         items = filtered
     total = len(items)
