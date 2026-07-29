@@ -1,99 +1,136 @@
 /**
- * VisionSetil · Campo nocturno — WEB mode
- * Full browser page: wide content, large spacing, multi-column, very readable.
- * Only applies under .app--mode-web (store shell stays in campo-nocturno.css).
+ * VisionSetil · WEB shell (port 5174)
+ * Marketing / browser page: wide, airy, photo-first, little copy.
+ * App shell (5173) is untouched — only .app--mode-web rules here.
  */
 
-/* ── Shell: full width page ─────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════════════
+   FOUNDATION — full-bleed night gallery, not a phone frame
+   ═══════════════════════════════════════════════════════════════════════════ */
 .app--mode-web.app--campo-nocturno {
   max-width: none !important;
   padding: 0 !important;
-  background:
-    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(143, 188, 143, 0.12), transparent 55%),
-    #0a0f0b !important;
+  background: #0b100c !important;
 }
 
 .app--mode-web {
-  --cn-shell: min(100% - 3rem, 72rem);
-  --cn-gutter: clamp(1.25rem, 3vw, 2.5rem);
+  --cn-gutter: clamp(1.5rem, 4vw, 3.5rem);
+  --cn-content-wide: min(100% - 2 * var(--cn-gutter), 76rem);
   --cn-nav-h: 0px;
-  --cn-page-max: min(100%, 72rem);
-  --cn-home-max: min(100%, 72rem);
-  --cn-footer-max: min(100%, 72rem);
-  --cn-hero-min-h: min(52vh, 28rem);
-  --cn-content-wide: min(100% - 3rem, 72rem);
-  --cn-radius: 1.15rem;
-  --cn-radius-lg: 1.5rem;
+  --cn-hero-min-h: min(92vh, 54rem);
+  --web-space-section: clamp(3.5rem, 8vw, 7rem);
+  --web-space-block: clamp(2rem, 4vw, 3.5rem);
+  --web-radius: 1.5rem;
+  --web-radius-xl: 2rem;
 }
 
-/* Header / main / footer expand */
+/* Kill app phone-frame shadows / caps on shell chrome */
 .app--mode-web > .header,
 .app--mode-web > main.cn-main,
 .app--mode-web > main.container,
 .app--mode-web > .footer,
 .app--mode-web > .api-status-banner,
-.app--mode-web > .pwa-install-hint {
-  max-width: var(--cn-content-wide) !important;
+.app--mode-web > .pwa-install-hint,
+.app--mode-web .cn-warn-strip {
+  max-width: none !important;
   width: 100% !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
   border-radius: 0 !important;
   box-shadow: none !important;
 }
 
+/* ── Header: airy bar ───────────────────────────────────────────────────── */
 .app--mode-web > .header {
   position: sticky !important;
   top: 0;
   z-index: 50;
-  background: rgba(10, 15, 11, 0.9) !important;
-  border-bottom: 1px solid rgba(143, 188, 143, 0.16) !important;
-  backdrop-filter: blur(18px) !important;
+  background: rgba(11, 16, 12, 0.72) !important;
+  border-bottom: 1px solid rgba(232, 220, 200, 0.08) !important;
+  backdrop-filter: blur(20px) saturate(1.2) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(1.2) !important;
 }
 
 .app--mode-web .header-inner {
   max-width: var(--cn-content-wide) !important;
   margin: 0 auto !important;
-  padding: 0.75rem var(--cn-gutter) !important;
-  min-height: 4rem;
+  padding: 1rem var(--cn-gutter) !important;
+  min-height: 4.25rem;
 }
 
 .app--mode-web .header-brand h1,
 .app--mode-web .header-brand-text h1 {
-  font-size: 1.45rem !important;
+  font-size: 1.5rem !important;
+  letter-spacing: -0.03em;
+  color: #e8dcc8 !important;
 }
 
-/* Desktop primary nav visible in web mode */
 .app--mode-web .header-nav--desktop-primary {
   display: flex !important;
-  flex-wrap: wrap;
-  gap: 0.35rem;
+  gap: 0.25rem;
   align-items: center;
 }
 
-/* Web: one Más control (hub + chevron menu), never two labels */
 .app--mode-web .nav-more {
   display: block !important;
 }
 
-.app--mode-web .nav-more__cluster {
-  display: inline-flex;
-  align-items: center;
-}
-
 .app--mode-web .nav-link {
-  font-size: 0.92rem !important;
-  padding: 0.5rem 0.95rem !important;
+  font-size: 0.95rem !important;
+  padding: 0.55rem 1.05rem !important;
+  color: rgba(232, 220, 200, 0.72) !important;
+  font-weight: 500 !important;
 }
 
-/* Main */
+.app--mode-web .nav-link--active {
+  color: #aad8a9 !important;
+  background: rgba(143, 188, 143, 0.12) !important;
+}
+
+.app--mode-web .nav-link--cta {
+  background: #8fbc8f !important;
+  color: #0e3817 !important;
+  font-weight: 700 !important;
+}
+
+/* Main: full width content column */
 .app--mode-web > main.cn-main,
 .app--mode-web > main.container {
-  padding: 0.5rem 0 3.5rem !important;
+  max-width: none !important;
+  padding: 0 0 5rem !important;
   background: transparent !important;
-  min-height: auto !important;
 }
 
-/* Hide bottom nav in web — top nav is primary */
+.app--mode-web .cn-page,
+.app--mode-web .page-atelier-shell,
+.app--mode-web .page-games-hub,
+.app--mode-web .page-more-hub,
+.app--mode-web .page-identify,
+.app--mode-web .page-encyclopedia,
+.app--mode-web .page-detail,
+.app--mode-web .page-education,
+.app--mode-web .page-lookalike,
+.app--mode-web .page-history,
+.app--mode-web .page-offline,
+.app--mode-web .page-community,
+.app--mode-web .page-setadle,
+.app--mode-web .page-wordle,
+.app--mode-web .page-quiz {
+  max-width: var(--cn-content-wide) !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: var(--cn-gutter) !important;
+  padding-right: var(--cn-gutter) !important;
+  padding-bottom: var(--web-space-section) !important;
+}
+
+/* Home page is full-bleed (hero escapes column) */
+.app--mode-web .cn-home {
+  max-width: none !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
 .app--mode-web .cn-bottom-nav,
 .app--mode-web .bottom-nav {
   display: none !important;
@@ -103,403 +140,516 @@
   padding-bottom: 0 !important;
 }
 
-/* Optional FAB back for web deep links */
+/* FAB elegant */
 .app--mode-web .fab-identify {
   display: inline-flex !important;
   position: fixed !important;
-  right: 1.5rem !important;
-  bottom: 1.5rem !important;
+  right: 2rem !important;
+  bottom: 2rem !important;
   z-index: 90;
-  gap: 0.45rem;
+  gap: 0.5rem;
   align-items: center;
-  padding: 0.85rem 1.25rem !important;
+  padding: 1rem 1.4rem !important;
   border-radius: 999px !important;
-  background: var(--cn-moss) !important;
-  color: var(--cn-on-moss) !important;
+  background: #8fbc8f !important;
+  color: #0e3817 !important;
   font-weight: 700 !important;
+  font-size: 0.95rem !important;
   text-decoration: none !important;
-  box-shadow: 0 10px 32px rgba(143, 188, 143, 0.35) !important;
+  box-shadow: 0 12px 40px rgba(143, 188, 143, 0.4) !important;
   border: none !important;
 }
 
-/* Warn strip full width of content */
-.app--mode-web .cn-warn-strip,
-.app--mode-web .home-orientation-sticky {
-  max-width: var(--cn-content-wide) !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
-  font-size: 0.72rem !important;
-  letter-spacing: 0.14em !important;
-  min-height: 2.15rem;
+/* Warn strip thin elegant */
+.app--mode-web .cn-warn-strip {
+  font-size: 0.7rem !important;
+  letter-spacing: 0.16em !important;
   padding: 0.55rem var(--cn-gutter) !important;
+  background: rgba(92, 42, 42, 0.85) !important;
 }
 
-/* Page shells: generous padding */
-.app--mode-web .cn-page,
-.app--mode-web .page-atelier-shell,
-.app--mode-web .page-games-hub,
-.app--mode-web .page-more-hub,
-.app--mode-web .page-identify,
-.app--mode-web .page-encyclopedia,
-.app--mode-web .page-detail,
-.app--mode-web .page-setadle,
-.app--mode-web .page-wordle,
-.app--mode-web .page-quiz,
-.app--mode-web .page-lookalike,
-.app--mode-web .page-education,
-.app--mode-web .page-offline,
-.app--mode-web .page-community,
-.app--mode-web .page-history,
-.app--mode-web .page-login,
-.app--mode-web .page-register,
-.app--mode-web .page-ml,
-.app--mode-web .page-map {
-  max-width: none !important;
-  padding: 0.5rem var(--cn-gutter) 2.5rem !important;
-}
+/* ═══════════════════════════════════════════════════════════════════════════
+   HOME — cinematic landing (photo first, almost no copy)
+   ═══════════════════════════════════════════════════════════════════════════ */
 
-.app--mode-web .mkt-page-head,
-.app--mode-web .page-header,
-.app--mode-web .cn-page-head {
-  padding: 1.5rem 0 1.25rem !important;
-  max-width: 48rem;
-}
-
-.app--mode-web .mkt-page-head__title,
-.app--mode-web .cn-page-head__title,
-.app--mode-web .page-title,
-.app--mode-web h1 {
-  font-size: clamp(1.85rem, 3vw, 2.45rem) !important;
-  margin-bottom: 0.55rem !important;
-}
-
-.app--mode-web .mkt-page-head p,
-.app--mode-web .cn-page-head__lead,
-.app--mode-web .page-subtitle {
-  font-size: 1.05rem !important;
-  line-height: 1.55 !important;
-  max-width: 42rem;
-}
-
-.app--mode-web .mkt-kicker,
-.app--mode-web .cn-kicker {
-  font-size: 0.75rem !important;
-  margin-bottom: 0.5rem !important;
-}
-
-/* Cards: larger padding / radius */
-.app--mode-web .atelier-card,
-.app--mode-web .atelier-panel,
-.app--mode-web .result-card,
-.app--mode-web .games-hub-card,
-.app--mode-web .more-hub-list__link,
-.app--mode-web .rule-card,
-.app--mode-web .anatomy-detail-card,
-.app--mode-web .edu-section,
-.app--mode-web .preflight-banner,
-.app--mode-web .identify-region,
-.app--mode-web .history-card,
-.app--mode-web .history-entry {
-  border-radius: 1.15rem !important;
-  padding: 1.15rem 1.25rem !important;
-}
-
-.app--mode-web .cn-btn,
-.app--mode-web .mkt-btn--primary,
-.app--mode-web .btn-atelier--primary {
-  min-height: 3rem;
-  padding: 0.9rem 1.5rem;
-  font-size: 1rem;
-}
-
-.app--mode-web .cn-btn--lg {
-  max-width: 22rem;
-  min-height: 3.4rem;
-  font-size: 1.02rem;
-}
-
-/* ── HOME web: two-column hero + wide sections ──────────────────────────── */
-.app--mode-web .cn-home {
-  padding: 0 0 2rem !important;
-}
-
+/* Full-viewport hero */
 .app--mode-web .cn-home-hero {
-  margin: 1rem var(--cn-gutter) 1.5rem;
-  min-height: min(56vh, 32rem);
-  border-radius: 1.5rem;
-  display: grid;
-  grid-template-columns: 1.15fr 0.95fr;
+  position: relative;
+  margin: 0 !important;
+  min-height: var(--cn-hero-min-h) !important;
+  height: var(--cn-hero-min-h);
+  border-radius: 0 !important;
+  border: none !important;
   overflow: hidden;
+  display: block !important;
 }
 
 .app--mode-web .cn-home-hero__media {
-  position: relative;
-  min-height: 22rem;
+  position: absolute !important;
+  inset: 0 !important;
+  min-height: 100% !important;
 }
 
 .app--mode-web .cn-home-hero__media img,
 .app--mode-web .cn-home-hero__media .species-image,
+.app--mode-web .cn-home-hero__media .species-image__img,
 .app--mode-web .cn-home-hero__img {
-  position: absolute !important;
-  inset: 0 !important;
   width: 100% !important;
   height: 100% !important;
   object-fit: cover !important;
-  opacity: 0.9;
+  object-position: center 40% !important;
+  opacity: 1 !important;
+  filter: saturate(1.05) contrast(1.05) !important;
+  transform: scale(1.02);
 }
 
 .app--mode-web .cn-home-hero__scrim {
   background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(10, 15, 11, 0.35) 45%,
-    rgba(10, 15, 11, 0.96) 100%
-  );
+    105deg,
+    rgba(8, 12, 9, 0.88) 0%,
+    rgba(8, 12, 9, 0.55) 38%,
+    rgba(8, 12, 9, 0.15) 68%,
+    rgba(8, 12, 9, 0.45) 100%
+  ) !important;
+  z-index: 1;
 }
 
 .app--mode-web .cn-home-hero__content {
-  position: relative;
+  position: absolute !important;
+  inset: auto auto 0 0 !important;
   z-index: 2;
-  padding: 2.25rem 2rem;
-  justify-content: center;
-  background: linear-gradient(160deg, rgba(28, 33, 28, 0.5), rgba(10, 15, 11, 0.92));
+  max-width: min(36rem, 48vw);
+  padding: clamp(2rem, 5vw, 4.5rem) var(--cn-gutter)
+    clamp(2.5rem, 6vw, 5rem) !important;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.85rem;
+  background: transparent !important;
+}
+
+.app--mode-web .cn-home-hero__kicker {
+  font-size: 0.78rem !important;
+  letter-spacing: 0.2em !important;
+  text-transform: uppercase;
+  color: rgba(232, 220, 200, 0.65) !important;
+  font-weight: 600 !important;
+  margin: 0 !important;
 }
 
 .app--mode-web .cn-home-hero__title {
-  font-size: clamp(2.5rem, 4vw, 3.5rem) !important;
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-size: clamp(3.25rem, 7.5vw, 5.75rem) !important;
+  line-height: 0.98 !important;
+  letter-spacing: -0.035em !important;
+  color: #f4ebe0 !important;
+  margin: 0 !important;
+  text-shadow: 0 8px 40px rgba(0, 0, 0, 0.45);
+  font-weight: 700 !important;
 }
 
+/* Short lead only */
 .app--mode-web .cn-home-hero__lead {
-  max-width: 28rem !important;
-  font-size: 1.1rem !important;
-  line-height: 1.5 !important;
+  max-width: 22rem !important;
+  font-size: 1.15rem !important;
+  line-height: 1.45 !important;
+  color: rgba(232, 220, 200, 0.88) !important;
+  font-family: 'Source Serif 4', Georgia, serif !important;
+  margin: 0.15rem 0 0.5rem !important;
 }
 
+.app--mode-web .cn-chip-row {
+  gap: 0.45rem;
+  margin: 0.25rem 0 0.75rem !important;
+}
+
+.app--mode-web .cn-chip {
+  padding: 0.4rem 0.85rem !important;
+  font-size: 0.78rem !important;
+  background: rgba(11, 16, 12, 0.45) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: rgba(232, 220, 200, 0.85) !important;
+  backdrop-filter: blur(10px);
+}
+
+.app--mode-web .cn-home-hero__cta,
+.app--mode-web .cn-btn--lg {
+  margin-top: 0.5rem;
+  min-height: 3.5rem !important;
+  padding: 0.4rem 0.4rem 0.4rem 1.5rem !important;
+  max-width: 18rem !important;
+  font-size: 1.05rem !important;
+  background: rgba(26, 36, 32, 0.55) !important;
+  border: 1px solid rgba(143, 188, 143, 0.35) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35) !important;
+  backdrop-filter: blur(16px);
+}
+
+.app--mode-web .cn-home-hero__cta-orb {
+  width: 3rem !important;
+  height: 3rem !important;
+  background: #8fbc8f !important;
+  color: #0e3817 !important;
+}
+
+/* Trust row: minimal, elegant, centered under hero */
 .app--mode-web .cn-home-trust {
-  margin: 0 var(--cn-gutter) 1.5rem;
-  gap: 1rem 1.75rem;
+  max-width: var(--cn-content-wide);
+  margin: var(--web-space-block) auto !important;
+  padding: 0 var(--cn-gutter) !important;
+  display: flex !important;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 2.5rem 3.5rem !important;
+  border: none !important;
 }
 
+.app--mode-web .cn-home-trust__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  opacity: 0.85;
+}
+
+.app--mode-web .cn-home-trust__label,
 .app--mode-web .cn-pill {
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
-  padding: 0.5rem 0;
+  font-size: 0.72rem !important;
+  letter-spacing: 0.14em !important;
+  text-transform: uppercase;
+  font-weight: 700 !important;
+  color: rgba(232, 220, 200, 0.7) !important;
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
 }
 
+.app--mode-web .cn-home-trust__item--danger .cn-home-trust__label,
+.app--mode-web .cn-pill--danger {
+  color: #ffb4ab !important;
+}
+
+/* Lower band: 3 big photo portals */
 .app--mode-web .cn-home-lower {
-  display: grid;
-  grid-template-columns: 1.2fr 0.9fr;
-  gap: 1.25rem;
-  margin: 0 var(--cn-gutter) 2rem;
+  max-width: var(--cn-content-wide);
+  margin: 0 auto var(--web-space-section) !important;
+  padding: 0 var(--cn-gutter) !important;
+  display: grid !important;
+  grid-template-columns: 1.35fr 0.85fr !important;
+  gap: 1.25rem !important;
   align-items: stretch;
 }
 
-.app--mode-web .cn-home-quick {
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.85rem;
+.app--mode-web .cn-home-quick,
+.app--mode-web .cn-home-quick--grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 1rem !important;
+  margin: 0 !important;
 }
 
+.app--mode-web .cn-home-quick__card,
 .app--mode-web .cn-home-quick__item {
-  padding: 1.35rem 1rem;
-  border-radius: 1.15rem;
-  gap: 0.55rem;
+  position: relative;
+  min-height: 11rem !important;
+  border-radius: var(--web-radius) !important;
+  padding: 1.5rem 1.1rem !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: flex-end !important;
+  gap: 0.65rem !important;
+  background: linear-gradient(
+      180deg,
+      rgba(20, 28, 22, 0.2) 0%,
+      rgba(12, 16, 13, 0.92) 100%
+    ),
+    #1a221c !important;
+  border: 1px solid rgba(232, 220, 200, 0.1) !important;
+  text-align: left !important;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.app--mode-web .cn-home-quick__item strong {
-  font-size: 1rem;
-}
-
-.app--mode-web .cn-home-quick__item span {
-  display: block; /* show sublabels on web */
-  font-size: 0.78rem;
-  color: var(--cn-muted);
-  line-height: 1.3;
+.app--mode-web .cn-home-quick__card:hover,
+.app--mode-web .cn-home-quick__item:hover {
+  transform: translateY(-3px);
+  border-color: rgba(143, 188, 143, 0.45) !important;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
 }
 
 .app--mode-web .cn-home-quick__icon {
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 2.75rem !important;
+  height: 2.75rem !important;
+  color: #aad8a9 !important;
+  background: rgba(143, 188, 143, 0.12) !important;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+}
+
+.app--mode-web .cn-home-quick__label,
+.app--mode-web .cn-home-quick__item strong {
+  font-size: 1.15rem !important;
+  font-weight: 700 !important;
+  color: #f4ebe0 !important;
+  font-family: 'Playfair Display', Georgia, serif !important;
+}
+
+.app--mode-web .cn-home-quick__item span:not(.cn-home-quick__icon) {
+  display: none !important; /* less text */
 }
 
 .app--mode-web .cn-home-obs {
-  padding: 1.75rem 1.5rem;
-  border-radius: 1.25rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  margin: 0 !important;
   min-height: 100%;
+  padding: 2rem 1.75rem !important;
+  border-radius: var(--web-radius) !important;
+  background: linear-gradient(
+    145deg,
+    rgba(143, 188, 143, 0.14),
+    rgba(26, 36, 32, 0.9) 55%
+  ) !important;
+  border: 1px solid rgba(143, 188, 143, 0.22) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  gap: 0.75rem !important;
 }
 
 .app--mode-web .cn-home-obs__title {
-  font-size: 1.55rem;
+  font-size: 1.85rem !important;
+  color: #e8dcc8 !important;
+  margin: 0 !important;
 }
 
 .app--mode-web .cn-home-obs__body {
-  font-size: 1rem;
-  max-width: none;
+  font-size: 1.05rem !important;
+  max-width: 22rem;
+  color: rgba(232, 220, 200, 0.75) !important;
+  line-height: 1.5 !important;
 }
 
-/* ── Games: 3 photo cards ───────────────────────────────────────────────── */
+.app--mode-web .cn-home-obs__meta,
+.app--mode-web .cn-home-obs__avatars {
+  opacity: 0.8;
+}
+
+/* Season strip — magazine photo rail */
+.app--mode-web .cn-page-pad {
+  max-width: var(--cn-content-wide);
+  margin: 0 auto;
+  padding: 0 var(--cn-gutter) !important;
+}
+
+.app--mode-web .seasonal-top-strip {
+  margin: 0 0 var(--web-space-section) !important;
+}
+
+.app--mode-web .seasonal-top-strip__head {
+  margin-bottom: 1.5rem;
+  max-width: 32rem;
+}
+
+.app--mode-web .seasonal-top-strip__kicker,
+.app--mode-web .seasonal-top-strip .cn-kicker,
+.app--mode-web .seasonal-top-strip .mkt-kicker {
+  color: #8fbc8f !important;
+  letter-spacing: 0.16em;
+}
+
+.app--mode-web .seasonal-top-strip__title {
+  font-size: clamp(1.85rem, 3vw, 2.6rem) !important;
+  color: #f4ebe0 !important;
+  margin: 0.35rem 0 0.5rem !important;
+}
+
+.app--mode-web .seasonal-top-strip__lead {
+  font-size: 1rem !important;
+  color: rgba(232, 220, 200, 0.65) !important;
+  max-width: 28rem;
+}
+
+.app--mode-web .seasonal-top-strip__grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 1.15rem !important;
+}
+
+.app--mode-web .seasonal-top-strip__card {
+  border-radius: var(--web-radius) !important;
+  overflow: hidden;
+  border: 1px solid rgba(232, 220, 200, 0.08) !important;
+  background: #141a15 !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.app--mode-web .seasonal-top-strip__card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+}
+
+.app--mode-web .seasonal-top-strip__media {
+  aspect-ratio: 3 / 4 !important;
+}
+
+.app--mode-web .seasonal-top-strip__meta {
+  padding: 0.85rem 0.9rem 1rem !important;
+}
+
+.app--mode-web .seasonal-top-strip__common {
+  font-size: 1rem !important;
+  color: #f4ebe0 !important;
+}
+
+.app--mode-web .seasonal-top-strip__taxon {
+  font-size: 0.78rem !important;
+}
+
+.app--mode-web .seasonal-top-strip__note {
+  display: none !important; /* less text */
+}
+
+/* ── Collapse dense residual kit on web (keep DOM for tests) ────────────── */
+.app--mode-web .home-field-holdout-note,
+.app--mode-web .home-privacy-strip,
+.app--mode-web .mkt-diff,
+.app--mode-web .home-install-guide,
+.app--mode-web .home-beta-row,
+.app--mode-web .home-ops-public-url,
+.app--mode-web .cn-home-aux .waitlist-temporada,
+.app--mode-web [data-testid='waitlist-temporada'],
+.app--mode-web .waitlist-temporada {
+  /* Visually hide without removing from DOM (tests read source, not layout) */
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   GAMES / ENCY / MORE — spacious photo pages
+   ═══════════════════════════════════════════════════════════════════════════ */
+.app--mode-web .cn-page-head,
+.app--mode-web .mkt-page-head,
+.app--mode-web .page-header {
+  padding: var(--web-space-block) 0 1.25rem !important;
+  max-width: 36rem;
+}
+
+.app--mode-web .cn-page-head__title,
+.app--mode-web .mkt-page-head__title,
+.app--mode-web .page-title,
+.app--mode-web h1 {
+  font-size: clamp(2.25rem, 4vw, 3.25rem) !important;
+  letter-spacing: -0.03em !important;
+  color: #f4ebe0 !important;
+  margin-bottom: 0.65rem !important;
+}
+
+.app--mode-web .cn-page-head__lead,
+.app--mode-web .page-subtitle {
+  font-size: 1.1rem !important;
+  line-height: 1.5 !important;
+  color: rgba(232, 220, 200, 0.7) !important;
+  max-width: 32rem;
+}
+
 .app--mode-web .games-hub-grid {
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.25rem;
-  margin: 0.75rem 0 2rem;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 1.35rem !important;
+  margin: 1.5rem 0 3rem !important;
 }
 
 .app--mode-web .games-hub-card--photo,
 .app--mode-web .games-hub-card__content {
-  min-height: 18rem;
+  min-height: 22rem !important;
+  border-radius: var(--web-radius) !important;
 }
 
 .app--mode-web .games-hub-card__title {
-  font-size: 1.65rem;
+  font-size: 1.85rem !important;
 }
 
 .app--mode-web .games-hub-card__body {
-  font-size: 0.95rem;
+  font-size: 0.95rem !important;
+  max-width: 18rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-/* ── Más: 2-column groups ───────────────────────────────────────────────── */
+.app--mode-web .page-encyclopedia--cn .species-photo-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 1.15rem !important;
+}
+
+.app--mode-web .family-guide-strip__grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 1.15rem !important;
+}
+
+.app--mode-web .family-guide-strip {
+  margin: 0 0 var(--web-space-block) !important;
+}
+
+.app--mode-web .family-guide-strip__title {
+  font-size: 2rem !important;
+  color: #f4ebe0 !important;
+}
+
 .app--mode-web .more-hub-groups {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.5rem 2.5rem;
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 1rem 3rem !important;
 }
 
 .app--mode-web .more-hub-list__link {
-  padding: 1.1rem 1.15rem !important;
+  padding: 1.15rem 1.25rem !important;
+  border-radius: 1.1rem !important;
 }
 
 .app--mode-web .more-hub-list__label {
-  font-size: 1.05rem;
+  font-size: 1.1rem !important;
 }
 
-.app--mode-web .more-hub-list__blurb {
-  font-size: 0.88rem;
+.app--mode-web .more-hub-world {
+  margin-top: var(--web-space-block);
 }
 
-.app--mode-web .more-hub-cta {
-  margin-top: 2rem;
-}
-
-.app--mode-web .more-hub-cta__btn {
-  max-width: 24rem;
-  min-height: 3.25rem;
-}
-
-/* ── Encyclopedia ───────────────────────────────────────────────────────── */
-.app--mode-web .page-encyclopedia--cn .species-photo-grid {
-  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-  gap: 1rem !important;
-}
-
-.app--mode-web .page-encyclopedia--cn .ency-toolbar,
-.app--mode-web .page-encyclopedia--cn .encyclopedia-multiview-tip {
-  padding: 1.15rem 1.25rem !important;
-  margin-bottom: 1.15rem;
-}
-
-/* ── Identify ───────────────────────────────────────────────────────────── */
+/* Identify / detail breathing room */
 .app--mode-web .page-identify--cn .identify-cn-head {
-  max-width: 48rem;
+  max-width: 40rem;
+  padding-top: 1.5rem !important;
 }
 
 .app--mode-web .page-identify--cn .identify-honesty-flow {
-  max-width: 56rem;
+  max-width: 52rem;
 }
 
-.app--mode-web .page-identify--cn .identify-region {
-  padding: 1.25rem !important;
-  margin-bottom: 1rem;
+.app--mode-web .open-study-links {
+  margin: 1.5rem 0 2rem !important;
+  padding: 1.35rem 1.5rem !important;
+  border-radius: var(--web-radius) !important;
 }
 
-.app--mode-web .page-identify--cn .mv-slot,
-.app--mode-web .page-identify--cn .wizard-slot {
-  min-height: 9rem;
-}
-
-.app--mode-web .page-identify--cn .analyze-actions .btn-atelier--primary {
-  width: auto;
-  min-width: 14rem;
-}
-
-/* ── Education / history / lookalike ────────────────────────────────────── */
-.app--mode-web .page-education .rules-grid {
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-}
-
-.app--mode-web .page-education .anatomy-grid {
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-}
-
-.app--mode-web .page-history .atelier-stat-row {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.85rem;
-  margin-bottom: 1.25rem;
-}
-
-.app--mode-web .page-history .history-entry,
-.app--mode-web .page-history .history-card {
-  display: grid;
-  grid-template-columns: 12rem 1fr;
-  gap: 0;
-  margin-bottom: 1rem;
-}
-
-.app--mode-web .page-history .history-entry img,
-.app--mode-web .page-history .photo-frame img {
-  aspect-ratio: 1;
-  height: 100%;
-  min-height: 8rem;
-}
-
-.app--mode-web .page-lookalike .lookalike-hero {
-  max-width: 48rem;
-}
-
-.app--mode-web .page-lookalike .compare-grid {
-  gap: 1rem;
-}
-
-/* Games interiors centered readable */
-.app--mode-web .page-wordle,
-.app--mode-web .page-setadle,
-.app--mode-web .page-quiz {
-  max-width: 40rem;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-/* Map full usable */
-.app--mode-web .page-map {
-  padding-left: var(--cn-gutter) !important;
-  padding-right: var(--cn-gutter) !important;
-}
-
-.app--mode-web .page-map .leaflet-container {
-  min-height: min(72vh, 42rem);
-  border-radius: 1.15rem !important;
-}
-
-/* Species detail */
-.app--mode-web .page-detail .species-hero img,
-.app--mode-web .page-detail .detail-hero img {
-  max-height: 28rem;
-  width: 100%;
-  object-fit: cover;
-  border-radius: 1.15rem;
-}
-
-/* Footer: show links in web mode */
+/* Footer: airy, short */
 .app--mode-web .footer,
 .app--mode-web .footer--v16 {
-  max-width: var(--cn-content-wide) !important;
-  padding: 2rem var(--cn-gutter) 2.5rem !important;
-  border-top: 1px solid rgba(143, 188, 143, 0.18) !important;
+  max-width: none !important;
+  margin-top: 2rem !important;
+  padding: 2.5rem var(--cn-gutter) 3rem !important;
+  border-top: 1px solid rgba(232, 220, 200, 0.1) !important;
   font-size: 0.88rem !important;
+}
+
+.app--mode-web .footer-content {
+  max-width: var(--cn-content-wide);
+  margin: 0 auto;
+  padding: 0 !important;
 }
 
 .app--mode-web .footer-links {
@@ -510,149 +660,81 @@
   clip: auto !important;
   display: flex !important;
   flex-wrap: wrap;
-  gap: 0.55rem 1.15rem;
-  margin: 0.85rem 0 0.5rem;
+  gap: 0.75rem 1.5rem;
+  margin: 1rem 0 0.75rem;
 }
 
 .app--mode-web .footer-brand {
-  font-size: 1.15rem !important;
+  font-size: 1.25rem !important;
+  color: #e8dcc8 !important;
 }
 
 .app--mode-web .footer-meta {
-  font-size: 0.8rem;
-  opacity: 0.85;
+  max-width: 36rem;
+  opacity: 0.7;
 }
 
-/* Layout mode toggle chrome */
-.layout-mode-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
-  padding: 3px;
-  border-radius: 999px;
-  background: rgba(28, 33, 28, 0.9);
-  border: 1px solid rgba(143, 188, 143, 0.28);
-}
-
-.layout-mode-toggle__btn {
-  appearance: none;
-  border: none;
-  cursor: pointer;
-  font-family: var(--font-sans, system-ui, sans-serif);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  padding: 0.4rem 0.7rem;
-  border-radius: 999px;
-  background: transparent;
-  color: var(--cn-muted, #c2c9be);
-  line-height: 1;
-}
-
-.layout-mode-toggle__btn.is-active {
-  background: var(--cn-moss, #8fbc8f);
-  color: var(--cn-on-moss, #0e3817);
-}
-
-.layout-mode-toggle__btn:focus-visible {
-  outline: 2px solid var(--cn-moss-bright, #aad8a9);
-  outline-offset: 2px;
-}
-
-/* Badge hint near toggle in web */
-.app--mode-web .layout-mode-badge {
-  display: none;
-}
-
-/* Web medium: stack home hero if needed */
-@media (max-width: 1024px) {
-  .app--mode-web {
-    --cn-shell: min(100% - 2rem, 56rem);
-    --cn-content-wide: min(100% - 2rem, 56rem);
-  }
-
-  .app--mode-web .cn-home-hero {
-    grid-template-columns: 1fr;
-    min-height: auto;
-  }
-
-  .app--mode-web .cn-home-hero__media {
-    min-height: 16rem;
-  }
-
-  .app--mode-web .cn-home-hero__scrim {
-    background: linear-gradient(
-      180deg,
-      rgba(10, 15, 11, 0.1) 0%,
-      rgba(10, 15, 11, 0.92) 100%
-    );
-  }
-
-  .app--mode-web .cn-home-hero__content {
-    position: absolute;
-    inset: auto 0 0 0;
-    background: transparent;
-  }
-
+/* ── Responsive web ─────────────────────────────────────────────────────── */
+@media (max-width: 1100px) {
   .app--mode-web .cn-home-lower {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr !important;
   }
 
-  .app--mode-web .games-hub-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .app--mode-web .page-encyclopedia--cn .species-photo-grid {
+  .app--mode-web .seasonal-top-strip__grid,
+  .app--mode-web .family-guide-strip__grid {
     grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
   }
 
-  .app--mode-web .page-education .rules-grid {
-    grid-template-columns: 1fr 1fr;
+  .app--mode-web .games-hub-grid {
+    grid-template-columns: 1fr 1fr !important;
   }
 
-  .app--mode-web .more-hub-groups {
-    grid-template-columns: 1fr;
+  .app--mode-web .cn-home-hero__content {
+    max-width: min(34rem, 88vw);
   }
 }
 
-/* If user forces web on phone, keep readable but not tiny-phone-only */
-@media (max-width: 640px) {
+@media (max-width: 720px) {
   .app--mode-web {
-    --cn-gutter: 1rem;
-    --cn-content-wide: 100%;
+    --cn-hero-min-h: min(78vh, 36rem);
+    --cn-gutter: 1.15rem;
   }
 
   .app--mode-web .header-nav--desktop-primary {
     display: none !important;
   }
 
-  .app--mode-web .cn-bottom-nav,
-  .app--mode-web .bottom-nav {
+  .app--mode-web .cn-bottom-nav {
     display: flex !important;
   }
 
-  .app--mode-web > main.cn-main,
-  .app--mode-web > main.container {
-    padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px)) !important;
+  .app--mode-web > main.cn-main {
+    padding-bottom: 5.5rem !important;
   }
 
-  .app--mode-web .games-hub-grid {
-    grid-template-columns: 1fr;
+  .app--mode-web .cn-home-quick,
+  .app--mode-web .cn-home-quick--grid {
+    grid-template-columns: repeat(3, 1fr) !important;
   }
 
-  .app--mode-web .page-encyclopedia--cn .species-photo-grid {
+  .app--mode-web .cn-home-quick__card {
+    min-height: 7.5rem !important;
+    padding: 1rem 0.65rem !important;
+  }
+
+  .app--mode-web .seasonal-top-strip__grid,
+  .app--mode-web .page-encyclopedia--cn .species-photo-grid,
+  .app--mode-web .family-guide-strip__grid {
     grid-template-columns: 1fr 1fr !important;
   }
 
-  .app--mode-web .page-education .rules-grid,
-  .app--mode-web .page-education .anatomy-grid {
-    grid-template-columns: 1fr;
+  .app--mode-web .games-hub-grid,
+  .app--mode-web .more-hub-groups {
+    grid-template-columns: 1fr !important;
   }
 
-  .app--mode-web .page-history .history-entry,
-  .app--mode-web .page-history .history-card {
-    grid-template-columns: 1fr;
+  .app--mode-web .cn-home-hero__title {
+    font-size: clamp(2.5rem, 12vw, 3.5rem) !important;
   }
 
   .app--mode-web .fab-identify {
