@@ -122,7 +122,7 @@ const INAT_SIZE: Record<PhotoDisplayQuality, string> = {
  * - iNaturalist: large/original → small|medium|large
  * - Wikimedia full files → /thumb/…/{N}px-… (critical: 136 catalog entries are full originals)
  * - Existing wiki thumbs → swap pixel width
- * Default `display` is medium/640px (fast paint, still sharp on retina cards).
+ * Default `display` is Commons-allowlisted 500px + iNat medium (never 320/640).
  */
 export function upgradePhotoUrl(
   url: string,
@@ -131,7 +131,8 @@ export function upgradePhotoUrl(
   if (!url || url.startsWith('data:')) return url
   let u = url
   const inatSize = INAT_SIZE[quality] || 'medium'
-  const wikiPx = WIKI_PX[quality] || 640
+  // Never fall back to 320/640 — Commons returns HTTP 400 for those sizes.
+  const wikiPx = WIKI_PX[quality] ?? WIKI_PX.display
 
   // iNaturalist static + open-data S3: …/photos/ID/(square|small|medium|large|original).ext
   u = u.replace(

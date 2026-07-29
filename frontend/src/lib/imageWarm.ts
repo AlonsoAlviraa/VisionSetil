@@ -50,20 +50,29 @@ export function preloadImageLink(url: string | null | undefined): void {
 export function warmCriticalSpeciesImages(): void {
   if (typeof window === 'undefined') return
   try {
-    const heroes = mycologyHeroUrls(2, 'display')
-    if (heroes[0]) {
-      preloadImageLink(heroes[0])
-      warmImageUrl(heroes[0])
+    // Prefer same-origin real webp (sharp, no third-party) for LCP + first grid
+    const localEarly = [
+      '/media/species/amanita-muscaria/detail.webp',
+      '/media/species/amanita-muscaria/card.webp',
+      '/media/species/cantharellus-cibarius/card.webp',
+      '/media/species/boletus-edulis/card.webp',
+      '/media/species/lactarius-deliciosus/card.webp',
+      '/media/species/amanita-phalloides/card.webp',
+    ]
+    if (localEarly[0]) {
+      preloadImageLink(localEarly[0])
+      warmImageUrl(localEarly[0])
     }
-    if (heroes[1]) warmImageUrl(heroes[1])
+    for (const u of localEarly.slice(1)) warmImageUrl(u)
 
-    // Small set of grid thumbs the home season strip + encyclopedia often paint first
+    // Remote catalog backup (allow-listed sizes only) if local misses
+    const heroes = mycologyHeroUrls(2, 'display')
+    for (const u of heroes) warmImageUrl(u)
+
     const early: Array<[string, PhotoDisplayQuality]> = [
       ['Amanita muscaria', 'display'],
-      ['Boletus edulis', 'thumb'],
-      ['Cantharellus cibarius', 'thumb'],
-      ['Lactarius deliciosus', 'thumb'],
-      ['Amanita phalloides', 'thumb'],
+      ['Boletus edulis', 'display'],
+      ['Cantharellus cibarius', 'display'],
     ]
     for (const [taxon, q] of early) {
       warmImageUrl(getCatalogPhotoUrlHd(taxon, q))

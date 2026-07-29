@@ -65,7 +65,7 @@ export interface SpeciesImageProps {
   preferCatalog?: boolean
   /**
    * Remote resize quality. Default from variant:
-   * thumb/card → thumb (320), detail → display (640), override with 'hd' for hero.
+   * thumb/card → thumb (250px wiki / small iNat), detail → display (500), hero → hd.
    */
   quality?: PhotoDisplayQuality
 }
@@ -92,16 +92,16 @@ function stageOrder(
 
   if (!hasCatalog) return localFirst
 
-  // Real field photos from speciesPhotos.json (Wiki/iNat) first when preferCatalog.
-  // Local /media is fallback — some packs are weak crops or legacy stubs.
-  // Never put catalog after local when the product promises "real photos".
-  if (preferCatalog) {
+  // detail (hero/ficha): remote catalog first for max resolution when requested.
+  // card/thumb grids: same-origin /media first — 520 real webps, no Commons 400/429,
+  // then catalog as upgrade. Avoids "Sin foto real" when remote fails first paint.
+  if (preferCatalog && variant === 'detail') {
     return ['catalog', ...localFirst]
   }
-  // Offline-leaning: same-origin first, catalog before terminal placeholders
   const out = [...localFirst]
   const pi = out.indexOf('placeholder')
   if (pi >= 0) out.splice(pi, 0, 'catalog')
+  else out.push('catalog')
   return out
 }
 

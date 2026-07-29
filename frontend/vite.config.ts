@@ -1,4 +1,4 @@
-import { defineConfig, type Plugin } from 'vite'
+import { defineConfig, type Plugin, type UserConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 import fs from 'node:fs'
@@ -9,6 +9,17 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const MEDIA_ROOT = path.resolve(__dirname, '../media')
 
 /**
+ * Dual-build target (v1.11 — split app/web shells into separate Vite builds
+ * on different ports + dist dirs). Exported factory so each shell gets its own
+ * config file (`vite.config.ts` = app default, `vite.web.config.ts` = web)
+ * without fragile env-var wiring or extra dependencies.
+ */
+export type BuildTarget = 'app' | 'web'
+
+/** Port per target: app keeps legacy 5173; web takes 5174. */
+const PORT_BY_TARGET: Record<BuildTarget, number> = { app: 5173, web: 5174 }
+
+/**
  * Stub size floors (Phase C / D-C1) — keep in sync with:
  * scripts/audit_media.py MIN_*_BYTES and backend species_media.MIN_BYTES_BY_VARIANT
  */
@@ -16,7 +27,8 @@ const MIN_BYTES_BY_VARIANT: Record<string, number> = {
   card: 8192,
   thumb: 1500,
   detail: 15000,
-  lqip: 200,
+  // Tiny true LQIPs are common (~160–200B); don't treat as stub / 404 cascade.
+  lqip: 120,
 }
 
 let stubFallbackLogged = false
@@ -174,134 +186,161 @@ function serveRepoMediaPlugin(): Plugin {
 }
 
 // https://vitejs.dev/config/
-export default defineConfig({
-  build: {
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          if (id.includes('node_modules')) {
-            if (id.includes('react-dom') || id.includes('/react/')) return 'react-vendor'
-            if (id.includes('i18next') || id.includes('react-i18next')) return 'i18n'
-            if (id.includes('leaflet') || id.includes('react-leaflet')) return 'map'
-            if (id.includes('axios')) return 'http'
-          }
+// Shared factory consumed by `vite.config.ts` (app) and `vite.web.config.ts`
+// (web). Each shell ships its own entry HTML + CSS layer and bakes its layout
+// mode via VITE_LAYOUT_MODE. Code under src/ is shared between both builds.
+export function createViteConfig(target: BuildTarget): UserConfig {
+  const port = PORT_BY_TARGET[target]
+  const isWeb = target === 'web'
+
+  return {
+    // Inject build-time layout mode into client code (see shells/forcedMode.ts)
+    define: {
+      'import.meta.env.VITE_LAYOUT_MODE': JSON.stringify(target),
+    },
+    build: {
+      outDir: `dist-${target}`,
+      rollupOptions: {
+        input: {
+          // Entry per target: app shell or web shell. Key name matches the
+          // HTML file basename so Rollup emits a predictable output.
+          [target]: path.resolve(__dirname, `index-${target}.html`),
+        },
+        output: {
+          manualChunks(id) {
+            if (id.includes('node_modules')) {
+              if (id.includes('react-dom') || id.includes('/react/')) return 'react-vendor'
+              if (id.includes('i18next') || id.includes('react-i18next')) return 'i18n'
+              if (id.includes('leaflet') || id.includes('react-leaflet')) return 'map'
+              if (id.includes('axios')) return 'http'
+            }
+          },
         },
       },
     },
-  },
-  plugins: [
-    serveRepoMediaPlugin(),
-    react(),
-    VitePWA({
-      registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg'],
-      manifest: {
-        name: 'VisionSetil — Identificación de setas',
-        short_name: 'VisionSetil',
-        description: 'Identificación de setas con IA y validación experta',
-        theme_color: '#2d5016',
-        background_color: '#1a1a1a',
-        display: 'standalone',
-        orientation: 'portrait',
-        scope: '/',
-        start_url: '/',
-        lang: 'es',
-        categories: ['education', 'lifestyle'],
-        icons: [
-          {
-            src: 'pwa-192x192.svg',
-            sizes: '192x192',
-            type: 'image/svg+xml',
-            purpose: 'any',
-          },
-          {
-            src: 'pwa-512x512.svg',
-            sizes: '512x512',
-            type: 'image/svg+xml',
-            purpose: 'any',
-          },
-          {
-            src: 'pwa-512x512.svg',
-            sizes: '512x512',
-            type: 'image/svg+xml',
-            purpose: 'maskable',
-          },
-        ],
-      },
-      workbox: {
-        // App shell only — catalog JSON / species webp stay runtime (audit P3/P5)
-        globPatterns: ['**/*.{js,css,html,ico,svg,woff2}'],
-        globIgnores: ['**/species_catalog*.json', '**/*catalog*', '**/*.map'],
-        // SPA deep links under SW control (Path A PWA); API/media stay network
-        navigateFallback: 'index.html',
-        navigateFallbackDenylist: [/^\/api(?:\/|$)/, /^\/media(?:\/|$)/],
-        runtimeCaching: [
-          {
-            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'google-fonts-cache',
-              expiration: {
-                maxEntries: 10,
-                maxAgeSeconds: 60 * 60 * 24 * 365,
+    plugins: [
+      serveRepoMediaPlugin(),
+      react(),
+      // PWA only makes sense for the app shell (installable store-like PWA).
+      // The web build is a plain browser site, no service worker needed.
+      ...(isWeb
+        ? []
+        : [
+            VitePWA({
+              registerType: 'autoUpdate',
+              includeAssets: ['favicon.svg'],
+              manifest: {
+                name: 'VisionSetil — Identificación de setas',
+                short_name: 'VisionSetil',
+                description: 'Identificación de setas con IA y validación experta',
+                theme_color: '#2d5016',
+                background_color: '#1a1a1a',
+                display: 'standalone',
+                orientation: 'portrait',
+                scope: '/',
+                start_url: '/',
+                lang: 'es',
+                categories: ['education', 'lifestyle'],
+                icons: [
+                  {
+                    src: 'pwa-192x192.svg',
+                    sizes: '192x192',
+                    type: 'image/svg+xml',
+                    purpose: 'any',
+                  },
+                  {
+                    src: 'pwa-512x512.svg',
+                    sizes: '512x512',
+                    type: 'image/svg+xml',
+                    purpose: 'any',
+                  },
+                  {
+                    src: 'pwa-512x512.svg',
+                    sizes: '512x512',
+                    type: 'image/svg+xml',
+                    purpose: 'maskable',
+                  },
+                ],
               },
-            },
-          },
-          // Species media: NetworkFirst so stub_fallback rewrites after rebuild are not stuck 30d (Issue 6)
-          {
-            urlPattern: /\/(?:api\/)?media\/species\/.+\.(webp|png|jpe?g)$/i,
-            handler: 'NetworkFirst',
-            options: {
-              cacheName: 'species-media',
-              networkTimeoutSeconds: 4,
-              expiration: {
-                maxEntries: 800,
-                maxAgeSeconds: 7 * 86400,
+              workbox: {
+                // App shell only — catalog JSON / species webp stay runtime (audit P3/P5)
+                globPatterns: ['**/*.{js,css,html,ico,svg,woff2}'],
+                globIgnores: ['**/species_catalog*.json', '**/*catalog*', '**/*.map'],
+                // SPA deep links under SW control (Path A PWA); API/media stay network
+                navigateFallback: 'index.html',
+                navigateFallbackDenylist: [/^\/api(?:\/|$)/, /^\/media(?:\/|$)/],
+                runtimeCaching: [
+                  {
+                    urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+                    handler: 'CacheFirst',
+                    options: {
+                      cacheName: 'google-fonts-cache',
+                      expiration: {
+                        maxEntries: 10,
+                        maxAgeSeconds: 60 * 60 * 24 * 365,
+                      },
+                    },
+                  },
+                  // Species media: NetworkFirst so stub_fallback rewrites after rebuild are not stuck 30d (Issue 6)
+                  {
+                    urlPattern: /\/(?:api\/)?media\/species\/.+\.(webp|png|jpe?g)$/i,
+                    handler: 'NetworkFirst',
+                    options: {
+                      cacheName: 'species-media',
+                      networkTimeoutSeconds: 4,
+                      expiration: {
+                        maxEntries: 800,
+                        maxAgeSeconds: 7 * 86400,
+                      },
+                    },
+                  },
+                  {
+                    urlPattern: /\/(?:api\/)?media\/placeholders?\/[a-z]+/i,
+                    handler: 'CacheFirst',
+                    options: {
+                      cacheName: 'species-media-placeholders',
+                      expiration: {
+                        maxEntries: 20,
+                        maxAgeSeconds: 30 * 86400,
+                      },
+                    },
+                  },
+                ],
               },
-            },
-          },
-          {
-            urlPattern: /\/(?:api\/)?media\/placeholders?\/[a-z]+/i,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'species-media-placeholders',
-              expiration: {
-                maxEntries: 20,
-                maxAgeSeconds: 30 * 86400,
-              },
-            },
-          },
-        ],
-      },
-    }),
-  ],
-  server: {
-    port: 5173,
-    strictPort: true,
-    proxy: {
-      // API + gallery JSON need FastAPI (photos are served statically from media/)
-      '/api': {
-        target: 'http://127.0.0.1:8000',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ''),
-      },
-    },
-    fs: {
-      allow: [path.resolve(__dirname, '..')],
-    },
-  },
-  test: {
-    globals: true,
-    environment: 'node',
-    // E-01: hydrate catalog before unit tests that read speciesCatalog live export
-    setupFiles: ['./src/test/setupCatalog.ts'],
-    // Playwright specs live under e2e/ — never run them via vitest
-    exclude: [
-      '**/node_modules/**',
-      '**/dist/**',
-      '**/e2e/**',
-      '**/*.spec.ts',
+            }),
+          ]),
     ],
-    include: ['src/**/*.{test,spec}.{ts,tsx}'],
-  },
-})
+    server: {
+      port,
+      strictPort: true,
+      proxy: {
+        // API + gallery JSON need FastAPI (photos are served statically from media/)
+        '/api': {
+          target: 'http://127.0.0.1:8000',
+          changeOrigin: true,
+          rewrite: (p) => p.replace(/^\/api/, ''),
+        },
+      },
+      fs: {
+        allow: [path.resolve(__dirname, '..')],
+      },
+    },
+    test: {
+      globals: true,
+      environment: 'node',
+      // E-01: hydrate catalog before unit tests that read speciesCatalog live export
+      setupFiles: ['./src/test/setupCatalog.ts'],
+      // Playwright specs live under e2e/ — never run them via vitest
+      exclude: [
+        '**/node_modules/**',
+        '**/dist/**',
+        '**/e2e/**',
+        '**/*.spec.ts',
+      ],
+      include: ['src/**/*.{test,spec}.{ts,tsx}'],
+    },
+  }
+}
+
+/** Default config = app shell (legacy port 5173, PWA enabled). */
+export default defineConfig(createViteConfig('app'))
