@@ -19,64 +19,63 @@ import {
 /** D-16: Home stays eager for FCP; all other product routes are lazy. */
 import { HomePage } from './pages/HomePage'
 
-const IdentifyPage = lazy(() =>
-  import('./pages/IdentifyPage').then((m) => ({ default: m.IdentifyPage })),
-)
-const EncyclopediaPage = lazy(() =>
-  import('./pages/EncyclopediaPage').then((m) => ({ default: m.EncyclopediaPage })),
-)
-const SpeciesDetailPage = lazy(() =>
-  import('./pages/SpeciesDetailPage').then((m) => ({ default: m.SpeciesDetailPage })),
-)
-const EducationPage = lazy(() =>
-  import('./pages/EducationPage').then((m) => ({ default: m.EducationPage })),
-)
-const SpainMapPage = lazy(() => import('./pages/SpainMapPage'))
-const HistoryPage = lazy(() =>
-  import('./pages/HistoryPage').then((m) => ({ default: m.HistoryPage })),
-)
-const ExpertReviewPage = lazy(() =>
-  import('./pages/ExpertReviewPage').then((m) => ({ default: m.ExpertReviewPage })),
-)
-const LoginPage = lazy(() =>
-  import('./pages/LoginPage').then((m) => ({ default: m.LoginPage })),
-)
-const RegisterPage = lazy(() =>
-  import('./pages/RegisterPage').then((m) => ({ default: m.RegisterPage })),
-)
-const CommunityPage = lazy(() =>
-  import('./pages/CommunityPage').then((m) => ({ default: m.CommunityPage })),
-)
-const OfflinePackPage = lazy(() =>
-  import('./pages/OfflinePackPage').then((m) => ({ default: m.OfflinePackPage })),
-)
-const LookalikeStudioPage = lazy(() =>
-  import('./pages/LookalikeStudioPage').then((m) => ({ default: m.LookalikeStudioPage })),
-)
-const QuizGamePage = lazy(() =>
-  import('./pages/QuizGamePage').then((m) => ({ default: m.QuizGamePage })),
-)
-const SetadlePage = lazy(() =>
-  import('./pages/SetadlePage').then((m) => ({ default: m.SetadlePage })),
-)
-const MushroomWordlePage = lazy(() =>
-  import('./pages/MushroomWordlePage').then((m) => ({ default: m.MushroomWordlePage })),
-)
-const NotFoundPage = lazy(() =>
-  import('./pages/NotFoundPage').then((m) => ({ default: m.NotFoundPage })),
-)
-const MlDashboardPage = lazy(() =>
-  import('./pages/MlDashboardPage').then((m) => ({ default: m.MlDashboardPage })),
-)
-const BetaFeedbackPage = lazy(() =>
-  import('./pages/BetaFeedbackPage').then((m) => ({ default: m.BetaFeedbackPage })),
-)
-const GamesHubPage = lazy(() =>
-  import('./pages/GamesHubPage').then((m) => ({ default: m.GamesHubPage })),
-)
-const MoreHubPage = lazy(() =>
-  import('./pages/MoreHubPage').then((m) => ({ default: m.MoreHubPage })),
-)
+/**
+ * Lazy import with retries — Vite "Failed to fetch dynamically imported module"
+ * happens when the dev server restarts or a tab stays open after HMR death.
+ * One soft retry, then one full reload of the chunk URL (bust cache).
+ */
+function lazyPage<T extends React.ComponentType<unknown>>(
+  loader: () => Promise<{ default: T } | Record<string, T>>,
+  exportName?: string,
+) {
+  return lazy(async () => {
+    const load = async () => {
+      const mod = await loader()
+      if (exportName && mod && typeof mod === 'object' && exportName in mod) {
+        return { default: (mod as Record<string, T>)[exportName] }
+      }
+      return mod as { default: T }
+    }
+    try {
+      return await load()
+    } catch (first) {
+      // brief pause for Vite to come back
+      await new Promise((r) => setTimeout(r, 400))
+      try {
+        return await load()
+      } catch {
+        // Last resort: hard navigation so the browser refetches index + modules
+        if (typeof window !== 'undefined' && !sessionStorage.getItem('vs-lazy-reload')) {
+          sessionStorage.setItem('vs-lazy-reload', '1')
+          window.location.reload()
+        }
+        sessionStorage.removeItem('vs-lazy-reload')
+        throw first
+      }
+    }
+  })
+}
+
+const IdentifyPage = lazyPage(() => import('./pages/IdentifyPage'), 'IdentifyPage')
+const EncyclopediaPage = lazyPage(() => import('./pages/EncyclopediaPage'), 'EncyclopediaPage')
+const SpeciesDetailPage = lazyPage(() => import('./pages/SpeciesDetailPage'), 'SpeciesDetailPage')
+const EducationPage = lazyPage(() => import('./pages/EducationPage'), 'EducationPage')
+const SpainMapPage = lazyPage(() => import('./pages/SpainMapPage'))
+const HistoryPage = lazyPage(() => import('./pages/HistoryPage'), 'HistoryPage')
+const ExpertReviewPage = lazyPage(() => import('./pages/ExpertReviewPage'), 'ExpertReviewPage')
+const LoginPage = lazyPage(() => import('./pages/LoginPage'), 'LoginPage')
+const RegisterPage = lazyPage(() => import('./pages/RegisterPage'), 'RegisterPage')
+const CommunityPage = lazyPage(() => import('./pages/CommunityPage'), 'CommunityPage')
+const OfflinePackPage = lazyPage(() => import('./pages/OfflinePackPage'), 'OfflinePackPage')
+const LookalikeStudioPage = lazyPage(() => import('./pages/LookalikeStudioPage'), 'LookalikeStudioPage')
+const QuizGamePage = lazyPage(() => import('./pages/QuizGamePage'), 'QuizGamePage')
+const SetadlePage = lazyPage(() => import('./pages/SetadlePage'), 'SetadlePage')
+const MushroomWordlePage = lazyPage(() => import('./pages/MushroomWordlePage'), 'MushroomWordlePage')
+const NotFoundPage = lazyPage(() => import('./pages/NotFoundPage'), 'NotFoundPage')
+const MlDashboardPage = lazyPage(() => import('./pages/MlDashboardPage'), 'MlDashboardPage')
+const BetaFeedbackPage = lazyPage(() => import('./pages/BetaFeedbackPage'), 'BetaFeedbackPage')
+const GamesHubPage = lazyPage(() => import('./pages/GamesHubPage'), 'GamesHubPage')
+const MoreHubPage = lazyPage(() => import('./pages/MoreHubPage'), 'MoreHubPage')
 
 function PageFallback() {
   return (

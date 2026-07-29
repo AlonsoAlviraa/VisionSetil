@@ -35,6 +35,16 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   private handleRetry = () => {
+    const msg = this.state.message || ''
+    // Dynamic import failures (Vite down / HMR) need a hard reload, not just state reset
+    if (
+      /Failed to fetch dynamically imported module|Loading chunk|Importing a module script failed/i.test(
+        msg,
+      )
+    ) {
+      window.location.reload()
+      return
+    }
     this.setState({ hasError: false, message: undefined })
   }
 
@@ -42,6 +52,11 @@ export class ErrorBoundary extends Component<Props, State> {
     if (!this.state.hasError) return this.props.children
 
     const inline = this.props.variant === 'inline'
+    const msg = this.state.message || ''
+    const isLazy =
+      /Failed to fetch dynamically imported module|Loading chunk|Importing a module script failed/i.test(
+        msg,
+      )
     return (
       <div
         className={`error-boundary-shell${inline ? ' error-boundary-shell--inline' : ''}`}
@@ -50,10 +65,17 @@ export class ErrorBoundary extends Component<Props, State> {
       >
         <div className="error-boundary-shell__card atelier-card">
           <p className="atelier-kicker">Algo falló</p>
-          <h1>{inline ? 'Esta sección no se pudo mostrar' : 'No pudimos mostrar esta pantalla'}</h1>
+          <h1>
+            {isLazy
+              ? 'No se pudo cargar esta pantalla'
+              : inline
+                ? 'Esta sección no se pudo mostrar'
+                : 'No pudimos mostrar esta pantalla'}
+          </h1>
           <p>
-            Es un fallo de la aplicación, no un diagnóstico de setas. Puedes reintentar o volver al
-            inicio. Ante la duda, consulta a un micólogo de carne y hueso.
+            {isLazy
+              ? 'El servidor de desarrollo se reinició o se cortó la conexión. Pulsa «Recargar página» (o F5). Si sigue fallando, ejecuta start-visionsetil.bat y vuelve a abrir http://127.0.0.1:5173'
+              : 'Es un fallo de la aplicación, no un diagnóstico de setas. Puedes reintentar o volver al inicio. Ante la duda, consulta a un micólogo de carne y hueso.'}
           </p>
           {this.props.surface ? (
             <p className="error-boundary-shell__detail muted">
@@ -67,7 +89,7 @@ export class ErrorBoundary extends Component<Props, State> {
           ) : null}
           <div className="atelier-cta-row">
             <button type="button" className="btn-atelier btn-atelier--primary" onClick={this.handleRetry}>
-              Reintentar
+              {isLazy ? 'Recargar página' : 'Reintentar'}
             </button>
             <Link to="/" className="btn-atelier btn-atelier--ghost">
               Inicio
