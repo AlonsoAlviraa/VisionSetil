@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>VisionSetil - Identificaci├│n</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&amp;family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed-dim": "#a4d2a4",
+                        "outline": "#8c9389",
+                        "on-secondary": "#363022",
+                        "tertiary-container": "#a8b3ad",
+                        "on-background": "#dfe4dd",
+                        "on-primary-fixed": "#002107",
+                        "background": "#0F1410",
+                        "on-secondary-fixed": "#201b0f",
+                        "surface-dim": "#101511",
+                        "secondary": "#d1c5b2",
+                        "tertiary": "#c3cfc8",
+                        "outline-variant": "#424940",
+                        "on-primary-fixed-variant": "#274f2c",
+                        "surface-variant": "#313631",
+                        "on-tertiary": "#28332e",
+                        "on-surface": "#dfe4dd",
+                        "surface-container-lowest": "#0a0f0b",
+                        "surface-container-low": "#181d19",
+                        "surface": "#101511",
+                        "secondary-fixed": "#ede1cd",
+                        "primary-fixed": "#bfefbe",
+                        "inverse-on-surface": "#2c322d",
+                        "tertiary-fixed-dim": "#bec9c3",
+                        "tertiary-fixed": "#dae5df",
+                        "on-secondary-container": "#bfb4a1",
+                        "on-tertiary-fixed-variant": "#3f4944",
+                        "on-error": "#690005",
+                        "surface-container": "#1A2420",
+                        "secondary-container": "#4d4637",
+                        "error": "#ffb4ab",
+                        "on-primary-container": "#234c29",
+                        "on-tertiary-fixed": "#141e1a",
+                        "on-error-container": "#ffdad6",
+                        "secondary-fixed-dim": "#d1c5b2",
+                        "surface-tint": "#a4d2a4",
+                        "surface-container-high": "#262b27",
+                        "on-secondary-fixed-variant": "#4d4637",
+                        "primary-container": "#8fbc8f",
+                        "on-tertiary-container": "#3b4641",
+                        "on-primary": "#0e3817",
+                        "inverse-primary": "#3e6842",
+                        "surface-bright": "#353a36",
+                        "on-surface-variant": "#c2c9be",
+                        "error-container": "#93000a",
+                        "surface-container-highest": "#313631",
+                        "inverse-surface": "#dfe4dd",
+                        "primary": "#aad8a9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "md": "24px",
+                        "base": "8px",
+                        "margin-desktop": "120px",
+                        "lg": "40px",
+                        "sm": "12px",
+                        "xl": "64px",
+                        "gutter": "16px",
+                        "margin-mobile": "20px"
+                    },
+                    "fontFamily": {
+                        "label-lg": ["Source Serif 4"],
+                        "body-md": ["Source Serif 4"],
+                        "body-lg": ["Source Serif 4"],
+                        "headline-lg": ["Playfair Display"],
+                        "headline-md": ["Playfair Display"],
+                        "label-sm": ["Source Serif 4"],
+                        "headline-lg-mobile": ["Playfair Display"],
+                        "display-lg": ["Playfair Display"]
+                    },
+                    "fontSize": {
+                        "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #0F1410;
+            color: #E8DCC8; /* Cream text */
+            -webkit-font-smoothing: antialiased;
+        }
+        .glass-card {
+            background-color: rgba(26, 36, 32, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(143, 188, 143, 0.1);
+        }
+        .safe-pb {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        .text-cream {
+            color: #E8DCC8;
+        }
+    </style>
+</head>
+<body class="min-h-screen pb-32">
+<!-- Top AppBar (from JSON guidance) -->
+<header class="fixed top-0 z-50 w-full h-16 flex justify-between items-center px-margin-mobile bg-surface-container/60 dark:bg-surface-container/60 backdrop-blur-xl border-b border-error/20">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary dark:text-primary">microbiology</span>
+<span class="font-headline-md text-headline-md text-primary tracking-tight">VisionSetil</span>
+</div>
+<div class="font-label-lg text-label-lg text-primary dark:text-primary opacity-80">
+            Solo orientaci├│n ┬À nunca consumo
+        </div>
+</header>
+<main class="pt-20 px-margin-mobile max-w-2xl mx-auto space-y-md">
+<!-- Results Summary -->
+<section class="flex justify-between items-end animate-in fade-in duration-700">
+<div class="space-y-1">
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Resultado del An├ílisis</p>
+<div class="flex items-center gap-2">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-cream">Predicci├│n Principal</h1>
+<span class="material-symbols-outlined text-primary-container text-base">verified</span>
+</div>
+</div>
+<div class="glass-card px-3 py-1 rounded-full flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="font-label-sm text-label-sm text-primary">Open-set aceptado</span>
+</div>
+</section>
+<!-- Primary Result Card -->
+<section class="animate-in slide-in-from-bottom-4 duration-700">
+<div class="glass-card rounded-3xl overflow-hidden relative group transition-transform active:scale-[0.98]">
+<div class="aspect-[4/5] relative">
+<img alt="Amanita muscaria in forest" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AP1WRLtRnCHC_Q9UNDRgHkcrs-sLsx5BAHNNzjXY2gBM89lv7dhcYVyjGu-E3w7EweTrShVePTmQPm87d30v5NV8KhLJEZuIEPQjIn4xoflLOsWsqrnmJQ9UMkETfE7i9dygtx06VCwJXN_XFs9W2CN_xnqZQGwUUnqBcuKoMVYQbzVucd6MK-82T_fA-y9Ic-rxXuU5WIqVgcIdHLLyMVMdtCVdPk265EvaiBm1opyK6K6fEae_A6rW_DgjEnA"/>
+<div class="absolute inset-0 bg-gradient-to-t from-[#0F1410] via-transparent to-transparent opacity-60"></div>
+<!-- Risk Chip -->
+<div class="absolute top-4 right-4 glass-card bg-error-container/90 border-error/30 px-4 py-2 rounded-xl flex items-center gap-2">
+<span class="material-symbols-outlined text-error" style="font-variation-settings: 'FILL' 1;">warning</span>
+<span class="font-label-lg text-label-lg text-on-error-container">Riesgo: Muy Alto / Mortal</span>
+</div>
+<!-- ECE Indicator -->
+<div class="absolute bottom-4 left-4 glass-card px-3 py-1.5 rounded-lg border-primary/20">
+<span class="font-label-sm text-label-sm text-on-surface-variant">ECE: <span class="text-primary font-bold">Alta</span></span>
+</div>
+</div>
+<div class="p-md space-y-2">
+<div class="flex justify-between items-start">
+<div>
+<h2 class="font-headline-md text-headline-md text-cream italic">Amanita muscaria</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Matamoscas</p>
+</div>
+<button class="w-12 h-12 rounded-full glass-card flex items-center justify-center text-primary hover:bg-primary-container/20 transition-colors">
+<span class="material-symbols-outlined">bookmark</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Actions -->
+<section class="grid grid-cols-2 gap-gutter">
+<button class="bg-primary-container text-on-primary-container h-14 rounded-2xl font-label-lg text-label-lg flex items-center justify-center gap-2 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-sm">compare_arrows</span>
+                Comparar en Lookalike Studio
+            </button>
+<button class="glass-card text-cream h-14 rounded-2xl font-label-lg text-label-lg flex items-center justify-center gap-2 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-sm">menu_book</span>
+                Ver en Enciclopedia
+            </button>
+</section>
+<!-- Lookalikes Section -->
+<section class="space-y-md">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-md text-headline-md text-cream">Especies Similares (Lookalikes)</h3>
+<span class="material-symbols-outlined text-on-surface-variant">info</span>
+</div>
+<div class="space-y-gutter">
+<!-- Item 1 -->
+<div class="glass-card rounded-2xl flex p-base gap-md hover:bg-surface-bright/20 transition-colors">
+<div class="w-24 h-24 rounded-xl overflow-hidden shrink-0">
+<img alt="Amanita caesarea" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AP1WRLu4DSAlNRfhxOQ5YYjs6lCpsuM_kBItJq1iFKNnCjeVCwqTzksGt6BU5ZCmVX4VAadGLm5HuhGnDwk49LQHZM22DoMdlN3qzOWiDCqxiCo1Bp7tn0TPev0OGqYhMvd7gJXDIoq7iLNDKqhItpE5FGZZuRVn4By08h_JEduzDA_DfCWw-AKCFpROABAvx3nCn7nvq0gHuAuDjZQ9syCXsSdYLKp1ITjnvASQeUh9lBepXdLc-Eiygh6IgY0"/>
+</div>
+<div class="flex flex-col justify-between py-1 flex-1">
+<div>
+<h4 class="font-label-lg text-label-lg text-cream italic">Amanita caesarea</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Oronja</p>
+</div>
+<div class="flex flex-wrap gap-2">
+<span class="text-[10px] px-2 py-0.5 rounded-full bg-secondary-container/40 text-on-secondary-container border border-outline-variant/30">Laminillas</span>
+<span class="text-[10px] px-2 py-0.5 rounded-full bg-secondary-container/40 text-on-secondary-container border border-outline-variant/30">Perfil</span>
+<span class="text-[10px] px-2 py-0.5 rounded-full bg-secondary-container/40 text-on-secondary-container border border-outline-variant/30">Detalle</span>
+</div>
+</div>
+<div class="flex flex-col items-end justify-center px-2">
+<span class="font-label-sm text-label-sm text-error bg-error-container/20 px-2 py-1 rounded">Riesgo: Mod.</span>
+</div>
+</div>
+<!-- Item 2 - Gills Detail Focus -->
+<div class="glass-card rounded-2xl flex p-base gap-md hover:bg-surface-bright/20 transition-colors">
+<div class="w-24 h-24 rounded-xl overflow-hidden shrink-0">
+<img alt="Detail of gills" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AP1WRLtvM2vL8cNySfrV2w8XfFy_m0vNQ6NkIM_PTiPqd2DBFnwL9IuVkEDaeVFcnKF3S2Ps773EjbX87ktbnGd6QaDx-QIP1rJ2Lb4wmgM6mNi17YT7I0CHDfTX7qar_9N98Wt-JNI3Wt4bTa8qKKU1NqZYkiN9qQ7qkhrw4Ja_pVxIfdAtQYcBHGB0zzO0ioh_t6hAVznahR_WPozcN_f0pETJIY0TcKzaQrCrwWMdYO9FIvg_XnmAOlPrYsra"/>
+</div>
+<div class="flex flex-col justify-between py-1 flex-1">
+<div>
+<h4 class="font-label-lg text-label-lg text-cream italic">Amanita pantherina</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Amanita pantera</p>
+</div>
+<div class="flex flex-wrap gap-2">
+<span class="text-[10px] px-2 py-0.5 rounded-full bg-secondary-container/40 text-on-secondary-container border border-outline-variant/30">Laminillas</span>
+</div>
+</div>
+<div class="flex flex-col items-end justify-center px-2">
+<span class="font-label-sm text-label-sm text-error bg-error-container/40 px-2 py-1 rounded">Riesgo: Mortal</span>
+</div>
+</div>
+<!-- Item 3 - Cap Detail Focus -->
+<div class="glass-card rounded-2xl flex p-base gap-md hover:bg-surface-bright/20 transition-colors">
+<div class="w-24 h-24 rounded-xl overflow-hidden shrink-0">
+<img alt="Detail of mushroom cap" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AP1WRLvFsZU-B-2sHcMCEltwm4lp_depThybb8Xxr1kpRzy8wtMHWqf5_5iupOo1DC4U9dQjPns0NIWtDY6pz87JV_HTQoiqDRyXLKjU61EjV09mjLTVpTs6RFv0fT3UVZhuYgbZIB4Eh5MDIi_6rHa_MCjDist8cCGEZWpizabmkZymbkyoRpsCFFeOgfsuDEnwL87F7UD1muO13aiw7ikC8Q-KSmMFIEqScCEIj6-XS56XoI7SOAzcnqjvbNYB"/>
+</div>
+<div class="flex flex-col justify-between py-1 flex-1">
+<div>
+<h4 class="font-label-lg text-label-lg text-cream italic">Russula emetica</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant">R├║sula em├®tica</p>
+</div>
+<div class="flex flex-wrap gap-2">
+<span class="text-[10px] px-2 py-0.5 rounded-full bg-secondary-container/40 text-on-secondary-container border border-outline-variant/30">Detalle</span>
+</div>
+</div>
+<div class="flex flex-col items-end justify-center px-2">
+<span class="font-label-sm text-label-sm text-error bg-error-container/20 px-2 py-1 rounded">Riesgo: Mod.</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar (from JSON guidance) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 pb-safe bg-surface-container/60 dark:bg-surface-container/60 backdrop-blur-xl border-t border-outline-variant/10 shadow-lg rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm">Inicio</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container/80 text-on-primary-container rounded-full px-4 py-1 active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">center_focus_strong</span>
+<span class="font-label-sm text-label-sm">Identificar</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90" href="#">
+<span class="material-symbols-outlined">extension</span>
+<span class="font-label-sm text-label-sm">Juegos</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90" href="#">
+<span class="material-symbols-outlined">menu_book</span>
+<span class="font-label-sm text-label-sm">Enciclopedia</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90" href="#">
+<span class="material-symbols-outlined">more_horiz</span>
+<span class="font-label-sm text-label-sm">M├ís</span>
+</a>
+</nav>
+<script>
+        // Micro-interactions for the list items
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('touchstart', () => {
+                card.style.transform = 'scale(0.98)';
+            });
+            card.addEventListener('touchend', () => {
+                card.style.transform = 'scale(1)';
+            });
+        });
+    </script>
+</body></html>

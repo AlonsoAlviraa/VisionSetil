@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Cuaderno de Campo - VisionSetil</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&amp;family=Hanken+Grotesk:wght@300;400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-bright": "#353a36",
+                        "surface-dim": "#101511",
+                        "on-secondary-container": "#b0bbb5",
+                        "secondary": "#bec9c3",
+                        "inverse-primary": "#3e6842",
+                        "on-tertiary-fixed": "#201b0f",
+                        "surface": "#101511",
+                        "error": "#ffb4ab",
+                        "tertiary-fixed-dim": "#d1c5b2",
+                        "surface-container-low": "#181d19",
+                        "tertiary-fixed": "#ede1cd",
+                        "on-tertiary-fixed-variant": "#4d4637",
+                        "background": "#0F1410",
+                        "on-primary-container": "#234c29",
+                        "outline-variant": "#424940",
+                        "error-container": "#93000a",
+                        "surface-variant": "#313631",
+                        "surface-tint": "#a4d2a4",
+                        "on-surface-variant": "#c2c9be",
+                        "on-tertiary-container": "#4a4334",
+                        "surface-container-highest": "#313631",
+                        "tertiary-container": "#bbb09d",
+                        "tertiary": "#d7cbb8",
+                        "on-error-container": "#ffdad6",
+                        "on-surface": "#dfe4dd",
+                        "inverse-surface": "#dfe4dd",
+                        "on-background": "#dfe4dd",
+                        "surface-container": "#1c211c",
+                        "inverse-on-surface": "#2c322d",
+                        "on-primary": "#0e3817",
+                        "surface-container-lowest": "#0a0f0b",
+                        "surface-container-high": "#262b27",
+                        "primary-container": "#8fbc8f",
+                        "primary": "#aad8a9",
+                        "on-secondary": "#28332e",
+                        "on-primary-fixed": "#002107",
+                        "on-tertiary": "#363022",
+                        "secondary-fixed": "#dae5df",
+                        "on-primary-fixed-variant": "#274f2c",
+                        "secondary-container": "#414b47",
+                        "primary-fixed": "#bfefbe",
+                        "primary-fixed-dim": "#a4d2a4",
+                        "on-secondary-fixed-variant": "#3f4944",
+                        "outline": "#8c9389",
+                        "on-secondary-fixed": "#141e1a",
+                        "secondary-fixed-dim": "#bec9c3",
+                        "on-error": "#690005"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "8px",
+                        "container-padding": "20px",
+                        "safe-area": "16px",
+                        "section-margin": "32px",
+                        "element-gap": "12px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Playfair Display"],
+                        "body-lg": ["Hanken Grotesk"],
+                        "label-sm": ["JetBrains Mono"],
+                        "headline-lg-mobile": ["Playfair Display"],
+                        "body-md": ["Hanken Grotesk"],
+                        "title-md": ["Playfair Display"],
+                        "display-lg": ["Playfair Display"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "title-md": ["20px", {"lineHeight": "28px", "fontWeight": "500"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #0F1410;
+            color: #dfe4dd;
+            font-family: 'Hanken Grotesk', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .glass-card {
+            background: rgba(26, 36, 32, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 0.5px solid rgba(143, 188, 143, 0.2);
+        }
+        .safe-bottom {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        .warning-glow {
+            box-shadow: 0 0 20px rgba(147, 0, 10, 0.4);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col pb-24">
+<!-- Top Warning Bar -->
+<header class="fixed top-0 w-full z-50 bg-error-container text-on-error-container shadow-[0_0_20px_rgba(147,0,10,0.4)] h-10 flex items-center justify-center px-4 transition-opacity duration-200">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">warning</span>
+<span class="font-label-sm text-label-sm font-bold tracking-widest">SOLO ORIENTACI├ôN, NUNCA CONSUMO</span>
+</div>
+</header>
+<!-- Main Content Container -->
+<main class="mt-14 px-container-padding flex flex-col gap-6">
+<!-- Header Section -->
+<section class="pt-4">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Cuaderno de Campo</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Tus registros personales</p>
+</section>
+<!-- Privacy Card -->
+<section class="glass-card rounded-xl p-4 flex gap-4 items-start">
+<span class="material-symbols-outlined text-primary text-[24px]">shield</span>
+<div class="flex flex-col gap-1">
+<h3 class="font-label-sm text-label-sm text-primary uppercase font-bold">Privacidad Garantizada</h3>
+<p class="font-body-md text-[14px] leading-tight text-on-surface-variant">
+                    Los pines GPS son privados. No se comparten metadatos EXIF en las exportaciones autom├íticas.
+                </p>
+</div>
+</section>
+<!-- Observations List -->
+<section class="flex flex-col gap-4 mb-8">
+<!-- Observation Card 1 -->
+<div class="glass-card rounded-xl overflow-hidden flex flex-col active:scale-[0.98] transition-transform duration-300">
+<div class="relative h-48 w-full">
+<img alt="Amanita muscaria" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AP1WRLv9F1NngRZMGjTxRQYKiPvpD7A9hSxejzmW887CYfr7Y6IAC6tnmHS3l84f8AUutQQSCx6UODZ1xoPa_jSCsIzRVlLtubWlezlz-q9rZyVRFHLD5-TSETsFZ9lGDkJiIInVZKFvho-EvyyhKECC0SYj9iFGIFbH6Rr8mcC5QUHns1ylOeCOT01qbDLfmwrbrPJ_P-kTqN8NMMGoOlPv1WfI5CB7unldQNB-As5mKnuhGilDHqalB1yoKgs"/>
+<div class="absolute top-3 right-3 bg-error-container/80 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1">
+<span class="font-label-sm text-[10px] text-on-error-container font-bold">RIESGO MUY ALTO</span>
+</div>
+</div>
+<div class="p-4 flex flex-col gap-2">
+<div class="flex justify-between items-start">
+<h2 class="font-title-md text-title-md text-on-surface italic">Amanita muscaria</h2>
+<span class="font-label-sm text-label-sm text-on-surface-variant">23 Oct 2023</span>
+</div>
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+<span class="font-body-md text-[14px]">Navacerrada</span>
+</div>
+</div>
+</div>
+<!-- Observation Card 2 -->
+<div class="glass-card rounded-xl overflow-hidden flex flex-col active:scale-[0.98] transition-transform duration-300">
+<div class="relative h-48 w-full">
+<img alt="Hongo desconocido" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AP1WRLu4DSAlNRfhxOQ5YYjs6lCpsuM_kBItJq1iFKNnCjeVCwqTzksGt6BU5ZCmVX4VAadGLm5HuhGnDwk49LQHZM22DoMdlN3qzOWiDCqxiCo1Bp7tn0TPev0OGqYhMvd7gJXDIoq7iLNDKqhItpE5FGZZuRVn4By08h_JEduzDA_DfCWw-AKCFpROABAvx3nCn7nvq0gHuAuDjZQ9syCXsSdYLKp1ITjnvASQeUh9lBepXdLc-Eiygh6IgY0"/>
+<div class="absolute top-3 right-3 bg-surface-container-highest/80 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1 border border-primary/30">
+<span class="font-label-sm text-[10px] text-primary font-bold uppercase">Pendiente Expertos</span>
+</div>
+</div>
+<div class="p-4 flex flex-col gap-2">
+<div class="flex justify-between items-start">
+<h2 class="font-title-md text-title-md text-on-surface">Hongo desconocido</h2>
+<span class="font-label-sm text-label-sm text-on-surface-variant">15 Oct 2023</span>
+</div>
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+<span class="font-body-md text-[14px]">Pinar de Grande</span>
+</div>
+</div>
+</div>
+<!-- Observation Card 3 -->
+<div class="glass-card rounded-xl overflow-hidden flex flex-col active:scale-[0.98] transition-transform duration-300">
+<div class="relative h-48 w-full">
+<img alt="Morfolog├¡a de laminillas" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AP1WRLtRnCHC_Q9UNDRgHkcrs-sLsx5BAHNNzjXY2gBM89lv7dhcYVyjGu-E3w7EweTrShVePTmQPm87d30v5NV8KhLJEZuIEPQjIn4xoflLOsWsqrnmJQ9UMkETfE7i9dygtx06VCwJXN_XFs9W2CN_xnqZQGwUUnqBcuKoMVYQbzVucd6MK-82T_fA-y9Ic-rxXuU5WIqVgcIdHLLyMVMdtCVdPk265EvaiBm1opyK6K6fEae_A6rW_DgjEnA"/>
+<div class="absolute top-3 right-3 bg-secondary-container/80 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1">
+<span class="font-label-sm text-[10px] text-on-secondary-container font-bold uppercase">Estudio Local</span>
+</div>
+</div>
+<div class="p-4 flex flex-col gap-2">
+<div class="flex justify-between items-start">
+<h2 class="font-title-md text-title-md text-on-surface">Morfolog├¡a de laminillas</h2>
+<span class="font-label-sm text-label-sm text-on-surface-variant">10 Oct 2023</span>
+</div>
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+<span class="font-body-md text-[14px]">Sierra de Guadarrama</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- FAB -->
+<button class="fixed bottom-24 right-6 w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center active:scale-90 transition-transform duration-200 z-40">
+<span class="material-symbols-outlined text-[28px]">add_a_photo</span>
+</button>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-xl backdrop-blur-xl bg-surface-container/60 border-t border-primary/20 safe-bottom">
+<div class="flex justify-around items-center px-4 py-2 w-full h-16">
+<!-- Inicio -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-white/5 active:scale-95 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-body-md text-[10px] mt-1">Inicio</span>
+</a>
+<!-- Identificar -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-white/5 active:scale-95 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">center_focus_strong</span>
+<span class="font-body-md text-[10px] mt-1">Identificar</span>
+</a>
+<!-- Juegos -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-white/5 active:scale-95 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">sports_esports</span>
+<span class="font-body-md text-[10px] mt-1">Juegos</span>
+</a>
+<!-- Enciclopedia -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-white/5 active:scale-95 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">menu_book</span>
+<span class="font-body-md text-[10px] mt-1">Enciclopedia</span>
+</a>
+<!-- M├ís (Active) -->
+<a class="flex flex-col items-center justify-center text-primary bg-primary-container/20 rounded-xl px-3 py-1 active:scale-95 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">more_horiz</span>
+<span class="font-body-md text-[10px] mt-1">M├ís</span>
+</a>
+</div>
+</nav>
+<script>
+        // Optional subtle micro-interaction for cards
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('click', () => {
+                // Future expansion: open details
+            });
+        });
+
+        // Atmospheric effect: Subtle light follow
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX;
+            const y = e.clientY;
+            // This could be used for a spotlight effect on the glass cards
+        });
+    </script>
+</body></html>

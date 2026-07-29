@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>VisionSetil - Paquetes Offline</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&amp;family=Hanken+Grotesk:wght@400;500;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container": "#1c211c",
+                    "primary-fixed-dim": "#a4d2a4",
+                    "primary-container": "#8fbc8f",
+                    "surface-bright": "#353a36",
+                    "background": "#101511",
+                    "error": "#ffb4ab",
+                    "on-primary-fixed-variant": "#274f2c",
+                    "tertiary": "#d7cbb8",
+                    "on-secondary": "#28332e",
+                    "surface-container-high": "#262b27",
+                    "surface-container-lowest": "#0a0f0b",
+                    "on-surface-variant": "#c2c9be",
+                    "on-error-container": "#ffdad6",
+                    "on-tertiary-container": "#4a4334",
+                    "on-primary-fixed": "#002107",
+                    "surface-dim": "#101511",
+                    "primary": "#aad8a9",
+                    "on-primary-container": "#234c29",
+                    "on-tertiary-fixed-variant": "#4d4637",
+                    "on-tertiary-fixed": "#201b0f",
+                    "inverse-primary": "#3e6842",
+                    "on-primary": "#0e3817",
+                    "tertiary-fixed-dim": "#d1c5b2",
+                    "primary-fixed": "#bfefbe",
+                    "secondary-fixed-dim": "#bec9c3",
+                    "on-secondary-fixed-variant": "#3f4944",
+                    "secondary-container": "#414b47",
+                    "on-surface": "#dfe4dd",
+                    "inverse-surface": "#dfe4dd",
+                    "on-secondary-container": "#b0bbb5",
+                    "on-secondary-fixed": "#141e1a",
+                    "error-container": "#93000a",
+                    "outline": "#8c9389",
+                    "surface": "#101511",
+                    "secondary-fixed": "#dae5df",
+                    "surface-tint": "#a4d2a4",
+                    "outline-variant": "#424940",
+                    "inverse-on-surface": "#2c322d",
+                    "surface-container-low": "#181d19",
+                    "surface-variant": "#313631",
+                    "secondary": "#bec9c3",
+                    "on-error": "#690005",
+                    "tertiary-container": "#bbb09d",
+                    "on-background": "#dfe4dd",
+                    "on-tertiary": "#363022",
+                    "tertiary-fixed": "#ede1cd",
+                    "surface-container-highest": "#313631"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "element-gap": "12px",
+                    "base": "8px",
+                    "container-padding": "20px",
+                    "safe-area": "16px",
+                    "section-margin": "32px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Playfair Display"],
+                    "body-lg": ["Hanken Grotesk"],
+                    "headline-lg-mobile": ["Playfair Display"],
+                    "display-lg": ["Playfair Display"],
+                    "title-md": ["Playfair Display"],
+                    "label-sm": ["JetBrains Mono"],
+                    "body-md": ["Hanken Grotesk"]
+            },
+            "fontSize": {
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "title-md": ["20px", {"lineHeight": "28px", "fontWeight": "500"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+      body {
+        background-color: #0F1410;
+        color: #dfe4dd;
+        -webkit-font-smoothing: antialiased;
+      }
+      .glass-card {
+        background: rgba(26, 36, 32, 0.6);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 0.5px solid rgba(143, 188, 143, 0.2);
+      }
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .progress-shimmer {
+        background: linear-gradient(90deg, #8fbc8f 0%, #aad8a9 50%, #8fbc8f 100%);
+        background-size: 200% 100%;
+        animation: shimmer 2s infinite linear;
+      }
+      @keyframes shimmer {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+      }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen font-body-md text-body-md pb-24">
+<!-- Top Warning Bar -->
+<header class="fixed top-0 w-full z-50 bg-error-container text-on-error-container shadow-[0_0_20px_rgba(147,0,10,0.4)] flex items-center justify-center h-10 px-4 transition-opacity duration-200">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">warning</span>
+<span class="font-label-sm text-label-sm font-bold tracking-widest uppercase">SOLO ORIENTACI├ôN, NUNCA CONSUMO</span>
+</div>
+</header>
+<main class="mt-14 px-container-padding flex flex-col gap-section-margin">
+<!-- Header Section -->
+<section class="mt-4">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-2">Paquetes Offline</h1>
+<p class="font-body-md text-on-surface-variant leading-relaxed">
+                Asegura tu expedici├│n. Descarga la cartograf├¡a y gu├¡as micol├│gicas para mantener la seguridad en zonas de sombra de red o bosques profundos.
+            </p>
+</section>
+<!-- Active Download Card -->
+<section>
+<div class="glass-card rounded-xl p-5 relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-1 bg-surface-container-low">
+<div class="h-full progress-shimmer" style="width: 65%;"></div>
+</div>
+<div class="flex justify-between items-start mb-4 pt-2">
+<div class="flex flex-col">
+<span class="font-label-sm text-primary uppercase mb-1">Descargando...</span>
+<h2 class="font-title-md text-title-md text-on-surface">Gu├¡a de Oto├▒o - Soria</h2>
+<p class="font-body-md text-on-surface-variant text-sm">Sistema Central y alrededores</p>
+</div>
+<div class="text-right">
+<span class="font-headline-lg-mobile text-primary">65%</span>
+</div>
+</div>
+<div class="flex items-center justify-between mt-6">
+<span class="font-label-sm text-on-surface-variant">1.2GB / 1.8GB</span>
+<button class="flex items-center gap-2 text-on-error-container bg-error-container/20 px-3 py-1.5 rounded-full transition-all active:scale-95">
+<span class="material-symbols-outlined text-[18px]">pause</span>
+<span class="font-label-sm">Pausar</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Available List -->
+<section class="flex flex-col gap-element-gap">
+<h3 class="font-label-sm text-on-surface-variant uppercase tracking-widest px-1">Biblioteca Local</h3>
+<!-- Item 1: Downloaded -->
+<div class="glass-card rounded-xl p-4 flex items-center justify-between border-l-4 border-l-primary-container">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg overflow-hidden bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">check_circle</span>
+</div>
+<div>
+<h4 class="font-title-md text-on-surface text-base">Gu├¡a de Primavera</h4>
+<p class="font-body-md text-xs text-on-surface-variant">Descargado ÔÇó 840 MB</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">more_vert</span>
+</div>
+<!-- Item 2 -->
+<div class="glass-card rounded-xl p-4 flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg overflow-hidden bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">map</span>
+</div>
+<div>
+<h4 class="font-title-md text-on-surface text-base">Mapas Topogr├íficos</h4>
+<p class="font-body-md text-xs text-on-surface-variant">Disponible ÔÇó 2.4 GB</p>
+</div>
+</div>
+<button class="p-2 rounded-full hover:bg-white/5 active:scale-90 transition-all">
+<span class="material-symbols-outlined text-primary">download</span>
+</button>
+</div>
+<!-- Item 3 -->
+<div class="glass-card rounded-xl p-4 flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg overflow-hidden bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">psychology</span>
+</div>
+<div>
+<h4 class="font-title-md text-on-surface text-base">Modelos IA de baja latencia</h4>
+<p class="font-body-md text-xs text-on-surface-variant">Disponible ÔÇó 450 MB</p>
+</div>
+</div>
+<button class="p-2 rounded-full hover:bg-white/5 active:scale-90 transition-all">
+<span class="material-symbols-outlined text-primary">download</span>
+</button>
+</div>
+</section>
+<!-- Visual Anchor: Field Image -->
+<section class="rounded-xl overflow-hidden glass-card">
+<div class="h-48 w-full relative">
+<img class="w-full h-full object-cover opacity-60" data-alt="A professional close-up macro photograph of a wild mushroom emerging from a lush forest floor in Spain. The scene is captured at twilight, featuring deep mossy greens, damp fallen leaves, and a soft atmospheric bokeh. The lighting is moody and organic, emphasizing the tactile textures of the fungal gills and the surrounding ecosystem in a modern naturalist style." src="https://lh3.googleusercontent.com/aida/AP1WRLv9F1NngRZMGjTxRQYKiPvpD7A9hSxejzmW887CYfr7Y6IAC6tnmHS3l84f8AUutQQSCx6UODZ1xoPa_jSCsIzRVlLtubWlezlz-q9rZyVRFHLD5-TSETsFZ9lGDkJiIInVZKFvho-EvyyhKECC0SYj9iFGIFbH6Rr8mcC5QUHns1ylOeCOT01qbDLfmwrbrPJ_P-kTqN8NMMGoOlPv1WfI5CB7unldQNB-As5mKnuhGilDHqalB1yoKgs"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background to-transparent"></div>
+<div class="absolute bottom-4 left-4 right-4">
+<span class="font-label-sm text-primary uppercase bg-background/80 px-2 py-1 rounded backdrop-blur-sm">Campo Real: Amanita Muscaria</span>
+</div>
+</div>
+</section>
+<!-- Honesty Message -->
+<section class="glass-card bg-surface-container-low/30 p-4 rounded-xl border-dashed border-outline-variant">
+<div class="flex gap-3">
+<span class="material-symbols-outlined text-tertiary">info</span>
+<p class="font-body-md text-sm text-on-surface-variant italic">
+                    El modo offline permite la consulta de la enciclopedia y mapas, pero la identificaci├│n por IA requiere conexi├│n para m├íxima precisi├│n.
+                </p>
+</div>
+</section>
+<!-- Main Action Button -->
+<section class="px-2">
+<button class="w-full bg-primary-container text-on-primary-container py-4 rounded-xl font-title-md flex items-center justify-center gap-3 shadow-lg active:scale-[0.98] transition-transform">
+<span class="material-symbols-outlined">download_for_offline</span>
+                Descargar Todo
+            </button>
+</section>
+</main>
+<!-- Bottom Navigation Shell -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-xl backdrop-blur-xl bg-surface-container/60 border-t border-primary/20 flex justify-around items-center px-4 py-2 pb-safe">
+<!-- Inicio -->
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-white/5 active:scale-95 transition-all duration-300">
+<span class="material-symbols-outlined">home</span>
+<span class="font-body-md text-[10px]">Inicio</span>
+</div>
+<!-- Identificar -->
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-white/5 active:scale-95 transition-all duration-300">
+<span class="material-symbols-outlined">center_focus_strong</span>
+<span class="font-body-md text-[10px]">Identificar</span>
+</div>
+<!-- Juegos -->
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-white/5 active:scale-95 transition-all duration-300">
+<span class="material-symbols-outlined">sports_esports</span>
+<span class="font-body-md text-[10px]">Juegos</span>
+</div>
+<!-- Enciclopedia -->
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-white/5 active:scale-95 transition-all duration-300">
+<span class="material-symbols-outlined">menu_book</span>
+<span class="font-body-md text-[10px]">Enciclopedia</span>
+</div>
+<!-- M├ís (Active) -->
+<div class="flex flex-col items-center justify-center text-primary dark:text-primary bg-primary-container/20 rounded-xl px-3 py-1 active:scale-95 transition-all duration-300">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">more_horiz</span>
+<span class="font-body-md text-[10px]">M├ís</span>
+</div>
+</nav>
+<script>
+      // Lightweight micro-interaction for the progress bar
+      let progress = 65;
+      const progressBar = document.querySelector('.progress-shimmer');
+      const progressText = document.querySelector('.text-primary.font-headline-lg-mobile');
+
+      function updateProgress() {
+        if (progress < 100) {
+          progress += Math.random() * 0.1;
+          if (progressBar) progressBar.style.width = `${progress}%`;
+          if (progressText) progressText.innerText = `${Math.floor(progress)}%`;
+          requestAnimationFrame(updateProgress);
+        }
+      }
+      
+      // Start the subtle progress simulation
+      setTimeout(() => {
+        requestAnimationFrame(updateProgress);
+      }, 1000);
+    </script>
+</body></html>

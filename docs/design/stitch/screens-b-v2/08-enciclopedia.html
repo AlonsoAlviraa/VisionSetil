@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VisionSetil - Enciclopedia</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&amp;family=Geist:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-error-container": "#ffdad6",
+                    "on-primary-fixed": "#002107",
+                    "surface-container": "#1e201d",
+                    "on-tertiary-fixed": "#201b0f",
+                    "on-tertiary-fixed-variant": "#4d4637",
+                    "on-surface": "#e2e3dd",
+                    "on-background": "#e2e3dd",
+                    "on-tertiary-container": "#4a4334",
+                    "on-primary": "#0e3817",
+                    "tertiary-container": "#bbb09d",
+                    "inverse-primary": "#3e6842",
+                    "on-secondary-container": "#b0bbb5",
+                    "background": "#0F1410",
+                    "on-secondary": "#28332e",
+                    "secondary-fixed": "#dae5df",
+                    "error-container": "#93000a",
+                    "on-primary-fixed-variant": "#274f2c",
+                    "error": "#ffb4ab",
+                    "secondary-fixed-dim": "#bec9c3",
+                    "secondary": "#bec9c3",
+                    "tertiary-fixed": "#ede1cd",
+                    "secondary-container": "#414b47",
+                    "tertiary-fixed-dim": "#d1c5b2",
+                    "surface-container-highest": "#333532",
+                    "on-surface-variant": "#c2c9be",
+                    "outline": "#8c9389",
+                    "on-error": "#690005",
+                    "outline-variant": "#424940",
+                    "surface-dim": "#121411",
+                    "inverse-on-surface": "#2f312d",
+                    "surface-bright": "#373a36",
+                    "on-secondary-fixed": "#141e1a",
+                    "primary-container": "#8fbc8f",
+                    "primary-fixed": "#bfefbe",
+                    "on-primary-container": "#234c29",
+                    "primary": "#aad8a9",
+                    "surface": "#121411",
+                    "surface-container-high": "#282b27",
+                    "inverse-surface": "#e2e3dd",
+                    "on-secondary-fixed-variant": "#3f4944",
+                    "surface-container-lowest": "#0c0f0c",
+                    "surface-tint": "#a4d2a4",
+                    "surface-variant": "#333532",
+                    "surface-container-low": "#1a1c19",
+                    "tertiary": "#d7cbb8",
+                    "primary-fixed-dim": "#a4d2a4",
+                    "on-tertiary": "#363022",
+                    "warning-red": "#EF4444",
+                    "warning-amber": "#F59E0B"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "gutter": "16px",
+                    "stack-md": "12px",
+                    "unit": "8px",
+                    "container-margin": "24px",
+                    "stack-lg": "24px",
+                    "stack-sm": "4px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Geist"],
+                    "headline-md": ["Playfair Display"],
+                    "label-sm": ["Geist"],
+                    "label-md": ["Geist"],
+                    "headline-lg": ["Playfair Display"],
+                    "body-md": ["Geist"],
+                    "headline-lg-mobile": ["Playfair Display"],
+                    "display-lg": ["Playfair Display"]
+            },
+            "fontSize": {
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "500"}],
+                    "label-sm": ["12px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                    "label-md": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #0F1410;
+            color: #e2e3dd;
+            font-family: 'Geist', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .glass-card {
+            background-color: rgba(26, 36, 32, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(143, 188, 143, 0.1);
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover {
+            border-color: rgba(143, 188, 143, 0.3);
+            background-color: rgba(26, 36, 32, 0.8);
+        }
+        .inner-glow {
+            border-top: 1px solid rgba(143, 188, 143, 0.2);
+        }
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        .active-tab-glow {
+            box-shadow: 0 0 15px rgba(164, 210, 164, 0.3);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="min-h-screen pb-32">
+<!-- Top Sticky Warning -->
+<div class="sticky top-0 z-[60] bg-error-container/90 backdrop-blur-md w-full py-2 px-4 flex justify-center items-center gap-2 border-b border-on-error/20">
+<span class="material-symbols-outlined text-sm text-on-error-container">warning</span>
+<p class="font-label-sm text-label-sm text-on-error-container tracking-wider">
+            SOLO ORIENTACI├ôN ┬À NUNCA CONSUMO
+        </p>
+</div>
+<!-- Top AppBar -->
+<header class="fixed top-10 w-full z-50 bg-background/60 backdrop-blur-xl border-b border-on-surface-variant/10 flex items-center justify-between px-container-margin h-16 w-full">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary hover:opacity-80 transition-opacity active:scale-95 duration-200">search</span>
+<h1 class="font-headline-md text-headline-md text-primary tracking-tight">VisionSetil</h1>
+</div>
+<div class="w-10 h-10 rounded-full border border-primary/20 overflow-hidden active:scale-95 duration-200">
+<img class="w-full h-full object-cover" data-alt="A professional studio portrait of a botanist in a dark, moody environment. The lighting is soft and directional, highlighting the textures of academic attire. The background is a deep, atmospheric dark green, consistent with a high-end, scientific OLED aesthetic. The overall mood is focused, intellectual, and prestigious." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrmp9QVMio2_dcgljNnEh1JhmpxlyiAX9rhN0peN0wTT0bnj8I6V6ISZIAMc8Ksl_qV6HkVCcvW2KcIn4gKVqBIC1CSH_UuUGLocZHZUtCosxvOfy_6mCMBpgdfxBJYO6QciRSjGQzeCICMKMuEmtL7q-16GlsGWYbCDcP-cy0ukAhQZ7sEn9vtAh4kBnOtIWHrVnukMub3-FURgc6d428hvVn5tbzdjR2JVMzCnHzHPD17u2KBiv-T5WN3ErFgg4maCLg5iVDBnNo"/>
+</div>
+</header>
+<main class="mt-28 px-container-margin max-w-[1200px] mx-auto">
+<!-- Header Content -->
+<section class="mb-stack-lg">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-tertiary mb-stack-md md:font-headline-lg md:text-headline-lg">Enciclopedia Iberia</h2>
+<!-- Glass Search Bar -->
+<div class="glass-card inner-glow flex items-center px-4 py-3 rounded-xl mb-stack-lg">
+<span class="material-symbols-outlined text-primary/60 mr-3">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-on-surface w-full font-body-md placeholder:text-on-surface-variant/40" placeholder="Buscar especie o h├íbitat..." type="text"/>
+<span class="material-symbols-outlined text-primary/60">filter_list</span>
+</div>
+</section>
+<!-- Filter Chips -->
+<section class="mb-stack-lg -mx-container-margin px-container-margin overflow-x-auto">
+<div class="flex gap-stack-md whitespace-nowrap pb-2">
+<button class="px-4 py-2 rounded-full bg-primary-container text-on-primary-container font-label-md text-label-md shadow-lg active-tab-glow">Todos</button>
+<button class="px-4 py-2 rounded-full glass-card text-warning-red font-label-md text-label-md hover:bg-warning-red/10 transition-colors">Riesgo: Mortal</button>
+<button class="px-4 py-2 rounded-full glass-card text-warning-amber font-label-md text-label-md hover:bg-warning-amber/10 transition-colors">Riesgo: T├│xico</button>
+<button class="px-4 py-2 rounded-full glass-card text-primary font-label-md text-label-md">Comestible (Precauci├│n)</button>
+<button class="px-4 py-2 rounded-full glass-card text-on-surface-variant font-label-md text-label-md">Por H├íbitat</button>
+</div>
+</section>
+<!-- Species Grid -->
+<section class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+<!-- Species Card 1 -->
+<div class="glass-card inner-glow rounded-2xl overflow-hidden flex flex-col group cursor-pointer">
+<div class="aspect-[4/5] relative overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A high-resolution field photograph of an Amanita muscaria mushroom in a dark, atmospheric forest setting at dusk. The iconic red cap with white spots is vibrant against a background of deep shadows and mossy forest floor. Soft light catches the gills and the stem. Premium, scientific photography style with an atmospheric science aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJPBg2OCXE8m_VMDTylTzj9qETXvCKpKL71uERTFsxStCqOdExgmZ9bx_vqv92CSD7EQZPCbgnRZ3x8myuAOAcQiI3DpL_9PVrS8ssY-6EawfWuY10360wPj4XTFiIYQLjKUaIp-DCpSUrr2oyFnn2xWeVsO5Ylcz8zlgoZbVsnPppnBwVmek4M1e2xAbVbA3QK6bVu0dCgeRUxSa-N6EM54j5tKvAuXh0_y7fThUAWVn14VXOWJsIiOUlupIe_76SXM3_K1s7PvpM"/>
+<div class="absolute top-2 right-2 px-2 py-1 bg-warning-amber/20 backdrop-blur-md rounded-md">
+<span class="text-[10px] font-bold text-warning-amber tracking-tighter uppercase">T├│xico</span>
+</div>
+</div>
+<div class="p-3">
+<h3 class="font-headline-md text-[16px] text-tertiary-fixed leading-tight italic">Amanita muscaria</h3>
+<p class="font-label-sm text-[10px] text-on-surface-variant mt-1 uppercase tracking-widest">Matamoscas</p>
+</div>
+</div>
+<!-- Species Card 2 -->
+<div class="glass-card inner-glow rounded-2xl overflow-hidden flex flex-col group cursor-pointer">
+<div class="aspect-[4/5] relative overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A stunning field photograph of the deadly Amanita phalloides in a damp, shadowy woodland. The pale olive-green cap is captured with incredible detail against a background of dark soil and scattered leaves. The lighting is ethereal and moody, emphasizing the dangerous beauty of the fungus. Professional scientific cinematography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuARHlY8YPG0-aUCI233jY76tqR2O4mF5E87KmcAjVpfiZuKLrpu51E0LsWoyMpdClvTOiGNcsL41NY-IJoqdSHeffQZVT96WuVN6aK5yshCebHttJJ4LY4-jptgWHal8A20O-uSZkpFsrRACLAHenoyrOtDHQtGXZV0facJ32DDKnK2z0vzM3LeYVrHPIo-GAVNXnFdxJYfRYg5r_9psza8Th3niuomsm9c1sGlraCGmG8FJzrTi4XMCxESJ7vqKThqmgAqTOxFgE13"/>
+<div class="absolute top-2 right-2 px-2 py-1 bg-warning-red/20 backdrop-blur-md rounded-md">
+<span class="text-[10px] font-bold text-warning-red tracking-tighter uppercase">Mortal</span>
+</div>
+</div>
+<div class="p-3">
+<h3 class="font-headline-md text-[16px] text-tertiary-fixed leading-tight italic">Amanita phalloides</h3>
+<p class="font-label-sm text-[10px] text-on-surface-variant mt-1 uppercase tracking-widest">Oronja Verde</p>
+</div>
+</div>
+<!-- Species Card 3 -->
+<div class="glass-card inner-glow rounded-2xl overflow-hidden flex flex-col group cursor-pointer">
+<div class="aspect-[4/5] relative overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A macro photograph of a Boletus edulis nestled in a bed of deep green moss. The thick brown cap is moist, catching soft moonlight. The background is a velvety midnight green, creating a sense of quiet discovery in a prestigious botanical collection. High-end, sharp detail on the texture of the stem and cap." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCaOeJTqTJFzPCh0f3i_up8_HIiYucbCuFFeDSZ1vMaRQDUHNPH0stiCIRS4A65AdFlMcL1iN6N_Kp3Mp38byPTfnsQLN84gEXswRlpUOVZO2Nb1DcK5YtyCj32l-ppQAPAvrfWNdewskP2-kHQ9gnOjWY2oWJYW0NV3hspcZW3W5xj6ePGadaeHscwIM8mO3GYCwbh7kERJuAo5yOpCAbjHwGUr9DPRUUodLL8pDeANyvREtbK9-YtH0V7XhIuRK4CcosNrgv8CkZR"/>
+<div class="absolute top-2 right-2 px-2 py-1 bg-primary/20 backdrop-blur-md rounded-md">
+<span class="text-[10px] font-bold text-primary tracking-tighter uppercase">Comestible</span>
+</div>
+</div>
+<div class="p-3">
+<h3 class="font-headline-md text-[16px] text-tertiary-fixed leading-tight italic">Boletus edulis</h3>
+<p class="font-label-sm text-[10px] text-on-surface-variant mt-1 uppercase tracking-widest">Calabaza</p>
+</div>
+</div>
+<!-- Species Card 4 -->
+<div class="glass-card inner-glow rounded-2xl overflow-hidden flex flex-col group cursor-pointer">
+<div class="aspect-[4/5] relative overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Close-up field photo of Macrolepiota procera in an open clearing during twilight. The large, scaly cap is showcased against a dim, out-of-focus background of grass and night sky. The aesthetic is academic and immersive, utilizing deep black and moss green tones to highlight the specimen's unique physical structure." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNWdDaz1Ph1_5q8VU1tdcT3G-5CEDNQWlT9dlZn2taxFhKTjn17-08yvvGXperbdVa3MQn_Z69iWmAB1zoEXvaZbMqGozf92dY3Xvm0em7JKk34J_kzYRJ-zulBsdZjBXl-CCRYH2ep5aHfn8SWKrRWVIldo7tAEMfnSOowwy0pY6zc6mtrzIES1JN56YFdub488ChJ-rN3eiPxwAJJqpptZZOoyNkjox0xJongn2oSzKx9O5cxaRTpDTYzM18gcm4rWoiGxderaFg"/>
+<div class="absolute top-2 right-2 px-2 py-1 bg-primary/20 backdrop-blur-md rounded-md">
+<span class="text-[10px] font-bold text-primary tracking-tighter uppercase">Comestible</span>
+</div>
+</div>
+<div class="p-3">
+<h3 class="font-headline-md text-[16px] text-tertiary-fixed leading-tight italic">Macrolepiota procera</h3>
+<p class="font-label-sm text-[10px] text-on-surface-variant mt-1 uppercase tracking-widest">Parasol</p>
+</div>
+</div>
+<!-- Species Card 5 -->
+<div class="glass-card inner-glow rounded-2xl overflow-hidden flex flex-col group cursor-pointer">
+<div class="aspect-[4/5] relative overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Atmospheric laboratory style photo of Omphalotus olearius specimens. The orange mushrooms are shown in a dark setting, subtly suggesting their bioluminescence. The lighting is low-key, preserving the OLED black background while highlighting the sharp edges of the gills. Sophisticated scientific presentation." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBRwl0PNay24xMtg2mdKRZ7FTeidTOWJ4J34UQAqjS_5YOALouDjHh6s4DCU9Ncy7eWtY6OC6ykcCPv_oZgmkSjYTBPeOdy-ximqSQ4LxtNCaqcjDouu-HjOGArMpoqd2g5YYvveTaJFMqC8JOkMmxgnyRZCZixy16PDoNjbu1gL_y7lSLR6uqp5sbh6rwCgIO-zLlAhKQdjEOLOfbyJNTZ8L2fAOJ8uhcVaRPHiVJAMfDqbnqF6w7LbTNcFAtUX7M3Rd4q474pZCuN"/>
+<div class="absolute top-2 right-2 px-2 py-1 bg-warning-amber/20 backdrop-blur-md rounded-md">
+<span class="text-[10px] font-bold text-warning-amber tracking-tighter uppercase">T├│xico</span>
+</div>
+</div>
+<div class="p-3">
+<h3 class="font-headline-md text-[16px] text-tertiary-fixed leading-tight italic">Omphalotus olearius</h3>
+<p class="font-label-sm text-[10px] text-on-surface-variant mt-1 uppercase tracking-widest">Seta del Olivo</p>
+</div>
+</div>
+<!-- Species Card 6 -->
+<div class="glass-card inner-glow rounded-2xl overflow-hidden flex flex-col group cursor-pointer">
+<div class="aspect-[4/5] relative overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A detailed field photograph of Cantharellus cibarius emerging from a dark, wet forest floor. The vibrant yellow color of the chanterelle contrasts sharply with the deep green and black surroundings. The lighting is soft and diffuse, emphasizing the elegant, wavy shape of the cap. Minimalist and premium botanical art style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCU0dsglio09PvFxIROuGRWqfmK90-tyZfUDm52--nptuxJYEoiLkExgIjui60ZqKFU-1tb5UznyxcRoOksBfrcoD3JdCUo3GixdFjI4YoPaTqJ0GWlB2eEMsutgqC83qqg6p65HfeJOWIbFzzzOwulUPieIrNEeL99qRiLKX2ZF9cFoYR4Hi9InKAjmef_khimG7KVYk1MfYG0VE3p70BZ20yYCXW3UXhwFHlw1HfWvBiBEL-Bm1mDTUMYYUjKPZDGU514YsTio2Y"/>
+<div class="absolute top-2 right-2 px-2 py-1 bg-primary/20 backdrop-blur-md rounded-md">
+<span class="text-[10px] font-bold text-primary tracking-tighter uppercase">Comestible</span>
+</div>
+</div>
+<div class="p-3">
+<h3 class="font-headline-md text-[16px] text-tertiary-fixed leading-tight italic">Cantharellus cibarius</h3>
+<p class="font-label-sm text-[10px] text-on-surface-variant mt-1 uppercase tracking-widest">Rebozuelo</p>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 pb-safe bg-background/60 backdrop-blur-xl border-t border-primary/20 rounded-t-full">
+<!-- Inicio -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 hover:text-primary transition-colors active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm">Inicio</span>
+</a>
+<!-- Identificar -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 hover:text-primary transition-colors active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined">center_focus_strong</span>
+<span class="font-label-sm text-label-sm">Identificar</span>
+</a>
+<!-- Juegos -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 hover:text-primary transition-colors active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined">extension</span>
+<span class="font-label-sm text-label-sm">Juegos</span>
+</a>
+<!-- Enciclopedia (ACTIVE) -->
+<a class="flex flex-col items-center justify-center text-primary font-bold active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">menu_book</span>
+<span class="font-label-sm text-label-sm">Enciclopedia</span>
+</a>
+<!-- M├ís -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 hover:text-primary transition-colors active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined">more_horiz</span>
+<span class="font-label-sm text-label-sm">M├ís</span>
+</a>
+</nav>
+<script>
+        // Micro-interaction for filter chips
+        const chips = document.querySelectorAll('button.glass-card, button.bg-primary-container');
+        chips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                chips.forEach(c => {
+                    c.classList.remove('bg-primary-container', 'text-on-primary-container', 'shadow-lg', 'active-tab-glow');
+                    c.classList.add('glass-card');
+                });
+                chip.classList.remove('glass-card');
+                chip.classList.add('bg-primary-container', 'text-on-primary-container', 'shadow-lg', 'active-tab-glow');
+            });
+        });
+
+        // Search bar focus effect
+        const searchInput = document.querySelector('input');
+        const searchBar = searchInput.parentElement;
+        searchInput.addEventListener('focus', () => {
+            searchBar.style.borderColor = 'rgba(143, 188, 143, 0.5)';
+            searchBar.style.boxShadow = '0 0 20px rgba(143, 188, 143, 0.1)';
+        });
+        searchInput.addEventListener('blur', () => {
+            searchBar.style.borderColor = 'rgba(143, 188, 143, 0.1)';
+            searchBar.style.boxShadow = 'none';
+        });
+    </script>
+</body></html>

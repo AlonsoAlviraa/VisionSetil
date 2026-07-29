@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Lookalike Studio | VisionSetil</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&amp;family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&amp;family=Playfair+Display:ital,wght@0,400..900;1,400..900&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-container": "#414b47",
+                        "on-secondary": "#28332e",
+                        "inverse-on-surface": "#2c322d",
+                        "outline": "#8c9389",
+                        "background": "#101511",
+                        "secondary-fixed-dim": "#bec9c3",
+                        "surface-dim": "#101511",
+                        "primary-fixed": "#bfefbe",
+                        "on-tertiary": "#363022",
+                        "primary-container": "#8fbc8f",
+                        "inverse-primary": "#3e6842",
+                        "surface": "#101511",
+                        "on-primary-fixed": "#002107",
+                        "secondary": "#bec9c3",
+                        "on-tertiary-fixed": "#201b0f",
+                        "surface-bright": "#353a36",
+                        "secondary-fixed": "#dae5df",
+                        "on-primary": "#0e3817",
+                        "error": "#ffb4ab",
+                        "surface-tint": "#a4d2a4",
+                        "on-tertiary-container": "#4a4334",
+                        "on-secondary-fixed-variant": "#3f4944",
+                        "primary-fixed-dim": "#a4d2a4",
+                        "on-surface": "#dfe4dd",
+                        "on-secondary-container": "#b0bbb5",
+                        "on-tertiary-fixed-variant": "#4d4637",
+                        "tertiary-fixed": "#ede1cd",
+                        "surface-container": "#1c211c",
+                        "surface-container-low": "#181d19",
+                        "surface-container-highest": "#313631",
+                        "tertiary-container": "#bbb09d",
+                        "tertiary-fixed-dim": "#d1c5b2",
+                        "on-primary-fixed-variant": "#274f2c",
+                        "primary": "#aad8a9",
+                        "on-primary-container": "#234c29",
+                        "surface-container-high": "#262b27",
+                        "on-error-container": "#ffdad6",
+                        "tertiary": "#d7cbb8",
+                        "surface-container-lowest": "#0a0f0b",
+                        "on-error": "#690005",
+                        "surface-variant": "#313631",
+                        "on-secondary-fixed": "#141e1a",
+                        "on-background": "#dfe4dd",
+                        "outline-variant": "#424940",
+                        "inverse-surface": "#dfe4dd",
+                        "on-surface-variant": "#c2c9be",
+                        "error-container": "#93000a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "8px",
+                        "safe-area": "16px",
+                        "container-padding": "20px",
+                        "section-margin": "32px",
+                        "element-gap": "12px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Playfair Display"],
+                        "display-lg": ["Playfair Display"],
+                        "headline-lg": ["Playfair Display"],
+                        "label-sm": ["JetBrains Mono"],
+                        "body-md": ["Hanken Grotesk"],
+                        "body-lg": ["Hanken Grotesk"],
+                        "title-md": ["Playfair Display"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "title-md": ["20px", {"lineHeight": "28px", "fontWeight": "500"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(26, 36, 32, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 0.5px solid rgba(143, 188, 143, 0.2);
+        }
+        .safety-glow {
+            box-shadow: 0 0 40px rgba(147, 0, 10, 0.15);
+        }
+        body {
+            background-color: #0F1410;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="text-on-background min-h-screen pb-24 font-body-md text-body-md">
+<!-- Top Sticky Warning (From JSON Component) -->
+<header class="fixed top-0 w-full z-50 bg-error-container flex items-center justify-center h-10 px-4 shadow-[0_0_20px_rgba(147,0,10,0.4)]">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-error-container" style="font-size: 14px;">warning</span>
+<span class="font-label-sm text-label-sm font-bold tracking-widest text-on-error-container uppercase">SOLO ORIENTACI├ôN, NUNCA CONSUMO</span>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-16 px-container-padding max-w-5xl mx-auto space-y-section-margin">
+<!-- Header Section -->
+<div class="space-y-2">
+<h1 class="font-display-lg text-display-lg text-primary">Lookalike Studio</h1>
+<p class="font-title-md text-title-md text-on-surface-variant opacity-80">Compara confusiones cr├¡ticas en el campo</p>
+</div>
+<!-- Educational Note / Safety Alert -->
+<div class="glass-card p-4 rounded-xl border-l-4 border-error safety-glow">
+<div class="flex gap-4 items-start">
+<span class="material-symbols-outlined text-error" style="font-variation-settings: 'FILL' 1;">gavel</span>
+<div>
+<h4 class="font-label-sm text-label-sm text-error uppercase font-bold mb-1">Dato de Supervivencia</h4>
+<p class="text-on-surface opacity-90">El 90% de las intoxicaciones mortales se deben a confusiones con la <span class="italic underline decoration-error/50">Amanita phalloides</span> (Oronja Verde).</p>
+</div>
+</div>
+</div>
+<!-- Comparison Interface -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-element-gap">
+<!-- Specimen 1: Amanita phalloides (Mortal) -->
+<div class="glass-card rounded-xl overflow-hidden flex flex-col group">
+<div class="relative h-64 w-full">
+<img class="w-full h-full object-cover" data-alt="A macro scientific field photograph of the Amanita phalloides mushroom in a dark, damp forest. The mushroom has a pale greenish-yellow cap and a prominent white ring on the stem, partially buried in moss. Low-light atmospheric lighting highlights the organic textures and dewdrops. The style is professional nature photography with high contrast and deep blacks." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBewLoqysnqvrgHWc3APg81sFj7ye1I87MQEtElaR3xYHpaRSdWnqlg3GjoUyGRyghXFVCqoP0XH-2Khc3Bt3HDsL-P-N88PEhJDCieVHlHrgOBhLFeQt0nobboULHta0oD1SAMO0JRQ3pQTHQPmIhi92DIxuTP4BYzzSC-ZPDcasyUdxy1KmXXtX8d_W3F6ROtxtU-gBP2itUpclmOmZI__lT_hALbVBowt-1guWZ4GcUDkAREbLAHvLBkRELMK1PX4rqasc8D3yHO"/>
+<div class="absolute top-4 left-4 bg-error-container text-on-error-container px-3 py-1 rounded-full font-label-sm text-label-sm font-bold tracking-widest uppercase">Mortal</div>
+<div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-[#101511] to-transparent">
+<span class="font-label-sm text-label-sm text-primary uppercase">Especie Confusa</span>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile italic">Amanita phalloides</h3>
+</div>
+</div>
+<div class="p-4 grid grid-cols-3 gap-2">
+<div class="flex flex-col items-center p-2 rounded-lg bg-surface-container-high transition-colors hover:bg-surface-container-highest">
+<span class="material-symbols-outlined text-on-surface-variant mb-1">view_carousel</span>
+<span class="text-[10px] font-label-sm uppercase opacity-60">Laminillas</span>
+</div>
+<div class="flex flex-col items-center p-2 rounded-lg bg-surface-container-high transition-colors hover:bg-surface-container-highest">
+<span class="material-symbols-outlined text-on-surface-variant mb-1">side_navigation</span>
+<span class="text-[10px] font-label-sm uppercase opacity-60">Perfil</span>
+</div>
+<div class="flex flex-col items-center p-2 rounded-lg bg-surface-container-high transition-colors hover:bg-surface-container-highest">
+<span class="material-symbols-outlined text-on-surface-variant mb-1">zoom_in</span>
+<span class="text-[10px] font-label-sm uppercase opacity-60">Detalle</span>
+</div>
+</div>
+</div>
+<!-- Specimen 2: Agaricus campestris (Comestible) -->
+<div class="glass-card rounded-xl overflow-hidden flex flex-col group">
+<div class="relative h-64 w-full">
+<img class="w-full h-full object-cover" data-alt="A detailed field photograph of Agaricus campestris mushrooms growing in a wild grassy meadow during twilight. The caps are white and slightly scaly, with pinkish-brown gills visible underneath. The lighting is soft and naturalistic, emphasizing the delicate textures of the mushroom caps against the dark, earthy soil. High-resolution naturalist style with organic greens and muted tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMGIm1y-n5VKI0wyNSDg8PR-z8ZfTmyXTbRkwCm2nMhlHiWuj-fLvzs_G_EguaQURKsqdxoS1vFqt17blbv8PTcTQiYSGjgd-nfhmCyj8UPCmphZVhA2GISR_Qo-CSF04dHkVGkq2REPq4uGZe1a6jsRUWL4Rkmz4t4AHBpk0MWF2rjWW0NUIqVO37taoAGbCb2NlOMNxAmcw9-gYYb-X5IwtsIJUb2isRIMICjxlHFMurRpKxWHyoprtd1F1oYipH4hgZdMJcGD9R"/>
+<div class="absolute top-4 left-4 bg-primary-container text-on-primary-container px-3 py-1 rounded-full font-label-sm text-label-sm font-bold tracking-widest uppercase">Comestible</div>
+<div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-[#101511] to-transparent">
+<span class="font-label-sm text-label-sm text-primary uppercase">Especie Buscada</span>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile italic">Agaricus campestris</h3>
+</div>
+</div>
+<div class="p-4 grid grid-cols-3 gap-2">
+<div class="flex flex-col items-center p-2 rounded-lg bg-surface-container-high transition-colors hover:bg-surface-container-highest">
+<span class="material-symbols-outlined text-on-surface-variant mb-1">view_carousel</span>
+<span class="text-[10px] font-label-sm uppercase opacity-60">Laminillas</span>
+</div>
+<div class="flex flex-col items-center p-2 rounded-lg bg-surface-container-high transition-colors hover:bg-surface-container-highest">
+<span class="material-symbols-outlined text-on-surface-variant mb-1">side_navigation</span>
+<span class="text-[10px] font-label-sm uppercase opacity-60">Perfil</span>
+</div>
+<div class="flex flex-col items-center p-2 rounded-lg bg-surface-container-high transition-colors hover:bg-surface-container-highest">
+<span class="material-symbols-outlined text-on-surface-variant mb-1">zoom_in</span>
+<span class="text-[10px] font-label-sm uppercase opacity-60">Detalle</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Technical Breakdown Table -->
+<section class="space-y-4">
+<div class="flex items-center gap-3 border-b border-primary/20 pb-2">
+<span class="material-symbols-outlined text-primary">analytics</span>
+<h2 class="font-title-md text-title-md uppercase tracking-wide">Diferencias Cr├¡ticas</h2>
+</div>
+<div class="glass-card rounded-xl overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-highest/40 text-on-surface-variant font-label-sm text-label-sm">
+<th class="p-4 uppercase tracking-tighter">Atributo</th>
+<th class="p-4 text-error">A. Phalloides</th>
+<th class="p-4 text-primary">A. Campestris</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-white/5">
+<tr class="hover:bg-white/5 transition-colors">
+<td class="p-4 font-bold text-on-surface">Base (Volva)</td>
+<td class="p-4 text-on-surface-variant">
+<div class="flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+                                    Presente (Saco blanco)
+                                </div>
+</td>
+<td class="p-4 text-on-surface-variant">
+<div class="flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                                    Ausente (Base recta)
+                                </div>
+</td>
+</tr>
+<tr class="hover:bg-white/5 transition-colors">
+<td class="p-4 font-bold text-on-surface">Laminillas</td>
+<td class="p-4 text-on-surface-variant">Siempre Blancas</td>
+<td class="p-4 text-on-surface-variant">Rosadas a Marr├│n</td>
+</tr>
+<tr class="hover:bg-white/5 transition-colors">
+<td class="p-4 font-bold text-on-surface">Anillo</td>
+<td class="p-4 text-on-surface-variant">Persistente, amplio</td>
+<td class="p-4 text-on-surface-variant">Simple, fugaz</td>
+</tr>
+<tr class="hover:bg-white/5 transition-colors">
+<td class="p-4 font-bold text-on-surface">Olor</td>
+<td class="p-4 text-on-surface-variant">Miel (envejecida)</td>
+<td class="p-4 text-on-surface-variant">Agradable, f├║ngico</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- Detailed Detail View -->
+<div class="glass-card rounded-2xl overflow-hidden p-6 relative">
+<div class="flex flex-col md:flex-row gap-8 items-center">
+<div class="w-full md:w-1/3 aspect-square rounded-xl overflow-hidden shadow-2xl">
+<img class="w-full h-full object-cover" data-alt="A extreme macro extreme close-up of mushroom gills, showing intricate branching patterns and fungal spores. The lighting is moody and dark, using a cool blue and green palette to highlight the biological complexity. High-end scientific photography style with sharp focus and deep depth of field against an OLED black background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfgWHZ-E_aqV0AtC4noItgufNs_pOXC44IgagQZ7AyEKoCldjfpaolCtzCLXFzuJVjMciOmqZpQfQRZRqB9K14RNQxjC2CSarl7Lx1atZBJCPptDUWVPoSwGX9g5nmtlYAEAnDyryvfxK6Y2gTkLNi9uy0Mp2GjzSDsycy__Q9N50H0aZf00OLBBpaoGYOUbYl3R36wju2GJTLoB8YSizSXxqHVIO1IlL2u--u4h2ssvbmkVNx1HttW8JdQYe3YX_GKSSzNh61TiSK"/>
+</div>
+<div class="flex-1 space-y-4">
+<div class="flex items-center gap-2">
+<span class="bg-surface-container-high px-2 py-1 rounded text-label-sm font-label-sm text-primary uppercase">Vistas Cr├¡ticas</span>
+<span class="text-on-surface-variant opacity-60 text-sm italic">ÔÇö Magnificaci├│n 10x</span>
+</div>
+<h3 class="font-title-md text-title-md text-on-surface">Estructura de las Laminillas</h3>
+<p class="text-on-surface-variant leading-relaxed">
+                        Observe cuidadosamente la inserci├│n de las l├íminas en el pie. En las Amanitas, estas son libres y nunca tocan el tallo, manteniendo un color blanco inmaculado incluso al madurar. En los Agaricus, cambian dr├ísticamente de color.
+                    </p>
+<div class="flex gap-2">
+<span class="font-label-sm text-[10px] px-2 py-1 rounded-full border border-outline/30 text-outline">L├íminas Libres</span>
+<span class="font-label-sm text-[10px] px-2 py-1 rounded-full border border-outline/30 text-outline">Himenio</span>
+<span class="font-label-sm text-[10px] px-2 py-1 rounded-full border border-outline/30 text-outline">Esporas</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Navigation (BottomNavBar from JSON) -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-xl backdrop-blur-xl bg-surface-container/60 border-t border-primary/20 flex justify-around items-center px-4 py-2 pb-safe shadow-none">
+<!-- Inicio -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant active:scale-95 transition-all duration-300 hover:bg-white/5" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-body-md text-[10px]">Inicio</span>
+</a>
+<!-- Identificar -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant active:scale-95 transition-all duration-300 hover:bg-white/5" href="#">
+<span class="material-symbols-outlined">center_focus_strong</span>
+<span class="font-body-md text-[10px]">Identificar</span>
+</a>
+<!-- Juegos -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant active:scale-95 transition-all duration-300 hover:bg-white/5" href="#">
+<span class="material-symbols-outlined">sports_esports</span>
+<span class="font-body-md text-[10px]">Juegos</span>
+</a>
+<!-- Enciclopedia -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant active:scale-95 transition-all duration-300 hover:bg-white/5" href="#">
+<span class="material-symbols-outlined">menu_book</span>
+<span class="font-body-md text-[10px]">Enciclopedia</span>
+</a>
+<!-- M├ís (Active) -->
+<a class="flex flex-col items-center justify-center text-primary bg-primary-container/20 rounded-xl px-3 py-1 active:scale-95 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">more_horiz</span>
+<span class="font-body-md text-[10px] font-bold">M├ís</span>
+</a>
+</nav>
+<!-- Micro-interaction Script -->
+<script>
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('touchstart', () => {
+                card.style.transform = 'scale(0.98)';
+                card.style.transition = 'transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)';
+            });
+            card.addEventListener('touchend', () => {
+                card.style.transform = 'scale(1)';
+            });
+        });
+    </script>
+</body></html>

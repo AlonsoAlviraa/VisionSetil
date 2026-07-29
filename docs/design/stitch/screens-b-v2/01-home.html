@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>VisionSetil - Gu├¡a Micol├│gica</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Typography -->
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-bright": "#353a36",
+                        "outline": "#8c9389",
+                        "surface-variant": "#313631",
+                        "secondary": "#d1c5b2",
+                        "background": "#101511",
+                        "on-surface": "#dfe4dd",
+                        "secondary-container": "#4d4637",
+                        "on-secondary-container": "#bfb4a1",
+                        "tertiary-fixed": "#dae5df",
+                        "tertiary-container": "#a8b3ad",
+                        "surface-container-high": "#262b27",
+                        "on-primary": "#0e3817",
+                        "on-tertiary-container": "#3b4641",
+                        "on-background": "#dfe4dd",
+                        "tertiary": "#c3cfc8",
+                        "on-secondary-fixed-variant": "#4d4637",
+                        "surface": "#101511",
+                        "on-primary-fixed": "#002107",
+                        "on-tertiary": "#28332e",
+                        "inverse-primary": "#3e6842",
+                        "surface-container-highest": "#313631",
+                        "surface-container-low": "#181d19",
+                        "on-primary-container": "#234c29",
+                        "on-secondary-fixed": "#201b0f",
+                        "on-tertiary-fixed-variant": "#3f4944",
+                        "on-tertiary-fixed": "#141e1a",
+                        "secondary-fixed-dim": "#d1c5b2",
+                        "primary-fixed": "#bfefbe",
+                        "tertiary-fixed-dim": "#bec9c3",
+                        "error": "#ffb4ab",
+                        "inverse-on-surface": "#2c322d",
+                        "on-error-container": "#ffdad6",
+                        "primary": "#aad8a9",
+                        "on-surface-variant": "#c2c9be",
+                        "on-secondary": "#363022",
+                        "secondary-fixed": "#ede1cd",
+                        "surface-container-lowest": "#0a0f0b",
+                        "on-error": "#690005",
+                        "surface-dim": "#101511",
+                        "outline-variant": "#424940",
+                        "error-container": "#93000a",
+                        "on-primary-fixed-variant": "#274f2c",
+                        "surface-container": "#1c211c",
+                        "inverse-surface": "#dfe4dd",
+                        "primary-container": "#8fbc8f",
+                        "primary-fixed-dim": "#a4d2a4",
+                        "surface-tint": "#a4d2a4"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "xs": "4px",
+                        "md": "24px",
+                        "sm": "12px",
+                        "lg": "40px",
+                        "margin-mobile": "20px",
+                        "base": "8px",
+                        "xl": "64px",
+                        "margin-desktop": "120px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["\"Source Serif 4\""],
+                        "headline-lg": ["Playfair Display"],
+                        "label-sm": ["\"Source Serif 4\""],
+                        "headline-md": ["Playfair Display"],
+                        "body-lg": ["\"Source Serif 4\""],
+                        "display-lg": ["Playfair Display"],
+                        "headline-lg-mobile": ["Playfair Display"],
+                        "label-lg": ["\"Source Serif 4\""]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                        "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .backdrop-blur-xl {
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+        }
+        .glass-card {
+            background: rgba(26, 36, 32, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(143, 188, 143, 0.1);
+        }
+        body {
+            background-color: #0F1410;
+        }
+    </style>
+</head>
+<body class="text-on-surface selection:bg-primary/30 min-h-screen flex flex-col font-body-md overflow-x-hidden">
+<!-- Sticky Safety Strip -->
+<div class="fixed top-0 left-0 w-full z-[60] bg-error-container/90 backdrop-blur-md h-8 flex items-center justify-center">
+<p class="text-[11px] font-label-lg text-on-error-container tracking-wider uppercase">
+            Solo orientaci├│n ┬À nunca consumo
+        </p>
+</div>
+<!-- TopAppBar from JSON -->
+<header class="fixed top-8 left-0 w-full z-50 h-16 flex justify-between items-center px-margin-mobile bg-surface-container/60 backdrop-blur-xl border-b border-error/20">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-2xl" data-icon="microbiology">microbiology</span>
+<h1 class="font-headline-md text-headline-md text-primary tracking-tight">VisionSetil</h1>
+</div>
+<div class="hidden md:flex items-center gap-6">
+<span class="text-on-surface-variant font-label-lg text-label-lg hover:bg-surface-bright/20 transition-colors px-3 py-1 rounded-lg">Solo orientaci├│n ┬À nunca consumo</span>
+</div>
+</header>
+<main class="flex-grow pt-24 pb-32">
+<!-- Hero Section -->
+<section class="relative h-[85vh] w-full px-margin-mobile flex flex-col justify-end pb-12 overflow-hidden">
+<!-- Background Image -->
+<div class="absolute inset-0 -z-10 bg-black">
+<div class="w-full h-full opacity-60 bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida/AP1WRLv9F1NngRZMGjTxRQYKiPvpD7A9hSxejzmW887CYfr7Y6IAC6tnmHS3l84f8AUutQQSCx6UODZ1xoPa_jSCsIzRVlLtubWlezlz-q9rZyVRFHLD5-TSETsFZ9lGDkJiIInVZKFvho-EvyyhKECC0SYj9iFGIFbH6Rr8mcC5QUHns1ylOeCOT01qbDLfmwrbrPJ_P-kTqN8NMMGoOlPv1WfI5CB7unldQNB-As5mKnuhGilDHqalB1yoKgs')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent"></div>
+</div>
+<div class="relative z-10 max-w-2xl">
+<h2 class="font-display-lg text-display-lg text-on-surface mb-2 leading-tight">VisionSetil</h2>
+<p class="font-body-lg text-body-lg text-secondary mb-8 max-w-sm">
+                    Identificaci├│n multi-vista de campo. Captura cada detalle para una gu├¡a acad├®mica precisa.
+                </p>
+<!-- Primary Action -->
+<button class="glass-card w-full max-w-xs group flex items-center justify-between p-1 pl-6 rounded-full border border-primary/20 active:scale-95 transition-transform">
+<span class="font-label-lg text-label-lg text-on-surface tracking-wide">Probar Identificar</span>
+<div class="w-12 h-12 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container shadow-lg group-hover:bg-primary transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">center_focus_strong</span>
+</div>
+</button>
+<!-- Multi-view Chips -->
+<div class="flex flex-wrap gap-2 mt-6">
+<div class="glass-card px-4 py-1.5 rounded-full border border-white/5">
+<span class="text-[12px] font-label-sm text-on-surface-variant">Laminillas</span>
+</div>
+<div class="glass-card px-4 py-1.5 rounded-full border border-white/5">
+<span class="text-[12px] font-label-sm text-on-surface-variant">Perfil</span>
+</div>
+<div class="glass-card px-4 py-1.5 rounded-full border border-white/5">
+<span class="text-[12px] font-label-sm text-on-surface-variant">H├íbitat</span>
+</div>
+<div class="glass-card px-4 py-1.5 rounded-full border border-white/5">
+<span class="text-[12px] font-label-sm text-on-surface-variant">Detalle</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Trust Row -->
+<section class="px-margin-mobile py-lg">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-6 border-t border-outline-variant/10 pt-base opacity-80">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-container" data-icon="hub">hub</span>
+<span class="font-label-lg text-label-lg uppercase tracking-widest text-outline">Open-set Engine</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-container" data-icon="auto_stories">auto_stories</span>
+<span class="font-label-lg text-label-lg uppercase tracking-widest text-outline">Enciclopedia Iberia</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-error" data-icon="do_not_disturb_on">do_not_disturb_on</span>
+<span class="font-label-lg text-label-lg uppercase tracking-widest text-outline">Nunca consumo</span>
+</div>
+</div>
+</section>
+<!-- Secondary Quick Access -->
+<section class="px-margin-mobile">
+<div class="grid grid-cols-3 gap-4">
+<a class="glass-card p-4 rounded-xl flex flex-col items-center gap-2 hover:bg-surface-bright/30 transition-colors" href="#">
+<span class="material-symbols-outlined text-primary" data-icon="extension">extension</span>
+<span class="font-label-sm text-label-sm text-secondary">Juegos</span>
+</a>
+<a class="glass-card p-4 rounded-xl flex flex-col items-center gap-2 hover:bg-surface-bright/30 transition-colors" href="#">
+<span class="material-symbols-outlined text-primary" data-icon="menu_book">menu_book</span>
+<span class="font-label-sm text-label-sm text-secondary">Enciclopedia</span>
+</a>
+<a class="glass-card p-4 rounded-xl flex flex-col items-center gap-2 hover:bg-surface-bright/30 transition-colors" href="#">
+<span class="material-symbols-outlined text-primary" data-icon="map">map</span>
+<span class="font-label-sm text-label-sm text-secondary">Mapa</span>
+</a>
+</div>
+</section>
+<!-- Atmospheric Highlight Card -->
+<section class="px-margin-mobile mt-xl">
+<div class="glass-card rounded-2xl p-6 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-20">
+<span class="material-symbols-outlined text-6xl" data-icon="forest">forest</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-primary mb-2">Observaci├│n Nocturna</h3>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-xs mb-6">
+                    Optimizado para luz tenue. El brillo de la interfaz no interferir├í con tu visi├│n nocturna de campo.
+                </p>
+<div class="flex gap-4">
+<div class="flex -space-x-3 overflow-hidden">
+<img class="inline-block h-8 w-8 rounded-full ring-2 ring-background object-cover" data-alt="Close up of a wild mushroom gills in a dark forest background with soft mossy green lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKQDPq-IRlTWFw0wt9L_WYqxnXrOjnI4XnO3aUJudDOHS8T5NjfFIJXYfJ4QcYg74wj6FGglZWBa_vJXv34Zi-WlgCypMEotB7F9kNFDqqDPX4qsyxPs4sd64VO1QvnSySZMvdZuZVBww8BYxmu98km8AoCqDXemI2HX1g3B7ioCHXmwGMEqNaxZirUEiskjBS9bHBRRW_2d3NIkfI9ojLKG-3tWvAavdqJkkHGvezZScb0YUr7268VdpxQdTfPaNuJ571cyGhq6ex"/>
+<img class="inline-block h-8 w-8 rounded-full ring-2 ring-background object-cover" data-alt="Macro photo of a yellow fungus on a dark decayed log with atmospheric bokeh lights." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfAumZXkz14JTZczSgP8u5HDleW3mxGJnhUAatPItAtx3D5UFcnsf-c-CvOUiB-vDXggAl2YdoqeCSWi7jlt9ejYrdjhMP6KkpQ4wzJQzBlfgdZBsB0J-5lWI6z6gJvC1nQkp4yz7XLWP4QCZ4Gzf-y5_TZ4Lo-V7KMJ4kWyJENUcaQSnvQ-22QiGv4-SWfurgpKlUT9rm5xPYS3orICw74QMWIWFP9T0xsCD00M2u5WB5i_3N6bKjW3y9ta5cCxcLAYM8fV_KyIuM"/>
+<img class="inline-block h-8 w-8 rounded-full ring-2 ring-background object-cover" data-alt="Detail of a mushroom cap with droplets of dew in a moonlit forest environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfw9ju0g5yNWqdPMxUF0lfW4o7tK4kVcTAK0NLyOUoUelNgYWBm3qFlmi0eAeLulLYm0p28jqaAIjACgbY84L5UccX_m7KJEO1NHe5ZTwiagUvHCHzYgLTvvRsZ2tLVoO2w2021gI2T9DI4lTocLBzCq_P756_s1yv0Gt8zqYhZFrU7xYF7feFvhB4ZvyLEe7lNa7CxJwn6u1h0Ovp54DxJknGUxX0JN988erOqAYeHlXN0KRZ-BYhJuB6Jg_rwBsIXbKCGjaiT7Hw"/>
+</div>
+<span class="text-label-sm font-label-sm text-outline flex items-center">+12 Observaciones hoy</span>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar from JSON -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 pb-safe bg-surface-container/60 backdrop-blur-xl border-t border-outline-variant/10 shadow-lg rounded-t-xl">
+<a class="flex flex-col items-center justify-center bg-primary-container/80 text-on-primary-container rounded-full px-4 py-1 active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="home" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-label-sm text-label-sm">Inicio</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="center_focus_strong">center_focus_strong</span>
+<span class="font-label-sm text-label-sm">Identificar</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="extension">extension</span>
+<span class="font-label-sm text-label-sm">Juegos</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="menu_book">menu_book</span>
+<span class="font-label-sm text-label-sm">Enciclopedia</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="more_horiz">more_horiz</span>
+<span class="font-label-sm text-label-sm">M├ís</span>
+</a>
+</nav>
+<!-- Micro-interaction script -->
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const buttons = document.querySelectorAll('button, a');
+            buttons.forEach(btn => {
+                btn.addEventListener('touchstart', () => {
+                    btn.classList.add('scale-95');
+                });
+                btn.addEventListener('touchend', () => {
+                    btn.classList.remove('scale-95');
+                });
+            });
+        });
+    </script>
+</body></html>

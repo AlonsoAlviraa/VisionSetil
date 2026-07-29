@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>VisionSetil - Mapa de Cotos de Soria</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&amp;family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Theme Config -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "on-primary-fixed-variant": "#274f2c",
+                "background": "#101511",
+                "on-error": "#690005",
+                "tertiary": "#d7cbb8",
+                "secondary-fixed": "#dae5df",
+                "secondary-container": "#414b47",
+                "on-secondary-fixed-variant": "#3f4944",
+                "primary": "#aad8a9",
+                "on-secondary-fixed": "#141e1a",
+                "primary-fixed-dim": "#a4d2a4",
+                "inverse-surface": "#dfe4dd",
+                "inverse-on-surface": "#2c322d",
+                "surface-container-lowest": "#0a0f0b",
+                "error-container": "#93000a",
+                "surface": "#101511",
+                "on-secondary-container": "#b0bbb5",
+                "outline": "#8c9389",
+                "on-primary": "#0e3817",
+                "on-surface": "#dfe4dd",
+                "on-primary-container": "#234c29",
+                "surface-container": "#1c211c",
+                "inverse-primary": "#3e6842",
+                "outline-variant": "#424940",
+                "on-background": "#dfe4dd",
+                "error": "#ffb4ab",
+                "tertiary-fixed": "#ede1cd",
+                "primary-fixed": "#bfefbe",
+                "on-tertiary": "#363022",
+                "on-secondary": "#28332e",
+                "on-tertiary-container": "#4a4334",
+                "surface-variant": "#313631",
+                "surface-container-highest": "#313631",
+                "tertiary-fixed-dim": "#d1c5b2",
+                "surface-bright": "#353a36",
+                "on-tertiary-fixed-variant": "#4d4637",
+                "on-surface-variant": "#c2c9be",
+                "surface-tint": "#a4d2a4",
+                "primary-container": "#8fbc8f",
+                "on-tertiary-fixed": "#201b0f",
+                "secondary-fixed-dim": "#bec9c3",
+                "surface-container-high": "#262b27",
+                "secondary": "#bec9c3",
+                "tertiary-container": "#bbb09d",
+                "on-error-container": "#ffdad6",
+                "surface-dim": "#101511",
+                "surface-container-low": "#181d19",
+                "on-primary-fixed": "#002107"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+            },
+            "spacing": {
+                "section-padding": "32px",
+                "gutter-mobile": "12px",
+                "stack-gap": "16px",
+                "margin-mobile": "20px"
+            },
+            "fontFamily": {
+                "body-lg": ["\"Source Serif 4\""],
+                "label-sm": ["\"Source Serif 4\""],
+                "headline-lg": ["Playfair Display"],
+                "headline-md": ["Playfair Display"],
+                "body-md": ["\"Source Serif 4\""]
+            },
+            "fontSize": {
+                "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(26, 36, 32, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-top: 1px solid rgba(232, 220, 200, 0.1);
+            border-left: 1px solid rgba(232, 220, 200, 0.1);
+        }
+        
+        .active-dot::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            width: 4px;
+            height: 4px;
+            background-color: #aad8a9;
+            border-radius: 50%;
+        }
+
+        /* Material Symbols Fill State */
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        .filled-icon {
+            font-variation-settings: 'FILL' 1;
+        }
+
+        body {
+            background-color: #101511;
+            color: #dfe4dd;
+            overflow-x: hidden;
+        }
+
+        .map-overlay {
+            background-image: radial-gradient(circle at center, transparent 0%, #101511 85%);
+        }
+
+        .cta-active:active {
+            transform: scale(0.98);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-md text-body-md min-h-screen flex flex-col">
+<!-- Safety Banner (TopAppBar small) -->
+<header class="fixed top-0 w-full z-[60] h-8 bg-error-container flex items-center justify-center w-full text-center">
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-on-error-container">SOLO ORIENTACI├ôN ┬À NUNCA CONSUMO</span>
+</header>
+<!-- Main App Bar (TopAppBar medium) -->
+<nav class="fixed top-8 w-full z-50 bg-background/80 backdrop-blur-xl border-b border-tertiary/10 flex items-center justify-between px-gutter-mobile h-16 w-full">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary hover:opacity-80 transition-opacity active:scale-95 transition-transform cursor-pointer">search</span>
+<span class="font-headline-md text-headline-md text-tertiary-fixed tracking-tight">VisionSetil</span>
+</div>
+<span class="material-symbols-outlined text-primary hover:opacity-80 transition-opacity active:scale-95 transition-transform cursor-pointer">account_circle</span>
+</nav>
+<!-- Map Canvas -->
+<main class="relative flex-grow mt-24 pb-32">
+<!-- Interactive Map Background -->
+<div class="fixed inset-0 z-0">
+<div class="w-full h-full grayscale opacity-40 brightness-50" data-location="Soria, Spain" style="">
+<!-- Map integration placeholder logic -->
+<div class="w-full h-full bg-[#101511]" data-alt="A detailed topographic map of the Soria region in Spain, specifically showing the forested areas of Pinar de Grande. The map uses an OLED-optimized dark theme with deep blacks, muted moss greens for forests, and subtle ochre lines for terrain elevation. Small glowing dots indicate mycological hotspots, all rendered in a sophisticated, minimalist academic cartography style with high contrast and clarity." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAH22NH-_WXs6lgLx3tfkaStZw5Rr4csHuzCz6A8xjzlCr3Z_Jhj-kQdn2-EuuSnOZmVbTkQy-UYJhvX0WKTFa826zYio4o_OcrGD0tvtB2LntQ1JNzqsHNO40b7A6k1SZo2KMmPlrav6-Ax_JvUpxymg7bfwZkaEU5wBx7svK_1leyZ6q6wrT0ci98VRDwPMwN-lMrU7D8FYzLmBT3AW4HjfjrOSo5gu6hxYq4A2ZFm_-HEH4D3tAfOHoSF5oZor6wsdsu6TdoTYKj')"></div>
+</div>
+<div class="absolute inset-0 map-overlay pointer-events-none"></div>
+</div>
+<!-- Content Overlay -->
+<div class="relative z-10 px-gutter-mobile flex flex-col gap-6">
+<!-- Map Legend / Filter Chips -->
+<div class="flex flex-wrap gap-2 py-2 overflow-x-auto no-scrollbar">
+<button class="glass-card flex items-center gap-2 px-4 py-1.5 rounded-full border border-tertiary/10 active:scale-95 transition-transform">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="font-label-sm text-label-sm">Zona Abierta</span>
+</button>
+<button class="glass-card flex items-center gap-2 px-4 py-1.5 rounded-full border border-tertiary/10 active:scale-95 transition-transform">
+<span class="w-2 h-2 rounded-full bg-tertiary-container"></span>
+<span class="font-label-sm text-label-sm">Permiso Requerido</span>
+</button>
+<button class="glass-card flex items-center gap-2 px-4 py-1.5 rounded-full border border-tertiary/10 active:scale-95 transition-transform">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+<span class="font-label-sm text-label-sm">Reserva Protegida</span>
+</button>
+</div>
+<!-- Focus Specimen Details (Glass Card) -->
+<section class="glass-card rounded-xl p-5 mt-auto shadow-2xl">
+<div class="flex gap-4 mb-4">
+<div class="w-24 h-24 rounded-lg overflow-hidden shrink-0 border border-tertiary/20">
+<img class="w-full h-full object-cover" data-alt="A macro photograph of an Amanita Caesarea mushroom, also known as the Caesar's mushroom, emerging from a bed of forest moss and damp leaves. The mushroom has a vibrant orange-red cap and a thick pale yellow stem with a delicate ring. The lighting is soft and atmospheric, highlighting the textures of the forest floor in a mysterious academic style. Deep shadows and vibrant earth tones dominate the composition." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCmaV0FWKnoCmMt-8NFYuanbs0EgFc_V8FBhmxsga6-qPPtCfXp90I1JxH0jXKPymFPZJxA1ZnykvYsHenbkKBIMN0dVFNnAXtwxZlawLPXooNrmYDAfDNg0XgfUWHXjFgCFfKqqWWWmNJSLmFM5QNzNzxos5ratX9LuQSVA0HZRehCTSR52eFd0t-slxip3C83NXIb8S4Vbc7fQF6p2rtKrLa5cGqsEDZLf-4NovwzZPXUoEhtWy2A-ZB2cKefcmFUFzMehthIYFqF"/>
+</div>
+<div class="flex flex-col justify-center">
+<h2 class="font-headline-md text-headline-md text-primary mb-0.5">Pinar de Grande</h2>
+<p class="font-label-sm text-label-sm text-on-surface-variant/70">(SO-50001) ┬À Soria, Castilla y Le├│n</p>
+<div class="flex items-center gap-2 mt-2">
+<span class="bg-primary/10 text-primary px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider border border-primary/20">Coto Activo</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4 mb-6">
+<div class="border-l border-tertiary/20 pl-3">
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase mb-1">Especie Dominante</p>
+<p class="font-body-lg text-body-lg italic">Boletus edulis</p>
+</div>
+<div class="border-l border-tertiary/20 pl-3">
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase mb-1">Suelo / Humedad</p>
+<p class="font-body-lg text-body-lg">H├║medo (65%)</p>
+</div>
+</div>
+<div class="flex flex-col gap-3">
+<button class="w-full bg-primary-container text-on-primary-fixed py-3.5 rounded-lg font-bold font-label-sm text-label-sm uppercase tracking-widest cta-active transition-all">
+                        Comprar Permiso Online
+                    </button>
+<button class="w-full border border-primary/30 text-primary py-3 rounded-lg font-label-sm text-label-sm uppercase tracking-widest cta-active transition-all backdrop-blur-sm">
+                        Ver Normativa Local
+                    </button>
+</div>
+</section>
+<!-- Legal Disclaimer Area -->
+<div class="glass-card rounded-lg p-4 mb-4 border-none bg-surface-container/40">
+<div class="flex gap-3">
+<span class="material-symbols-outlined text-error shrink-0">info</span>
+<p class="text-[11px] leading-relaxed text-on-surface-variant/80 font-body-md italic">
+                        Aviso: El mapa tiene car├ícter informativo. No identifica especies ni autoriza la recolecci├│n sin permiso legal. Respete la propiedad privada y las cuotas de recolecci├│n diarias.
+                    </p>
+</div>
+</div>
+</div>
+</main>
+<!-- FAB: Identificar multi-vista -->
+<button class="fixed bottom-24 right-4 z-50 w-14 h-14 bg-primary text-on-primary rounded-2xl flex items-center justify-center shadow-lg active:scale-90 transition-transform">
+<span class="material-symbols-outlined filled-icon" style="font-variation-settings: 'FILL' 1;">camera</span>
+<div class="absolute -top-12 right-0 glass-card px-3 py-1.5 rounded-lg border border-primary/30 whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100">
+<span class="font-label-sm text-label-sm text-primary">Identificar multi-vista</span>
+</div>
+</button>
+<!-- Navigation (BottomNavBar) -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-xl bg-surface-container/70 backdrop-blur-lg border-t border-tertiary/10 flex justify-around items-center pt-3 pb-safe px-4 w-full h-16">
+<div class="flex flex-col items-center gap-1 text-on-surface-variant/60 hover:text-primary/80 active:scale-90 transition-transform duration-200 cursor-pointer">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm">Inicio</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-on-surface-variant/60 hover:text-primary/80 active:scale-90 transition-transform duration-200 cursor-pointer">
+<span class="material-symbols-outlined">visibility</span>
+<span class="font-label-sm text-label-sm">Identificar</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-primary relative after:content-[''] after:absolute after:-bottom-1 after:w-1 after:h-1 after:bg-primary after:rounded-full active:scale-90 transition-transform duration-200 cursor-pointer">
+<span class="material-symbols-outlined filled-icon" style="font-variation-settings: 'FILL' 1;">map</span>
+<span class="font-label-sm text-label-sm">Mapa</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-on-surface-variant/60 hover:text-primary/80 active:scale-90 transition-transform duration-200 cursor-pointer">
+<span class="material-symbols-outlined">menu_book</span>
+<span class="font-label-sm text-label-sm">Enciclopedia</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-on-surface-variant/60 hover:text-primary/80 active:scale-90 transition-transform duration-200 cursor-pointer">
+<span class="material-symbols-outlined">more_horiz</span>
+<span class="font-label-sm text-label-sm">M├ís</span>
+</div>
+</nav>
+<script>
+        // Simple haptic feedback simulation and interaction
+        document.querySelectorAll('button, nav div').forEach(el => {
+            el.addEventListener('touchstart', () => {
+                if (window.navigator.vibrate) {
+                    window.navigator.vibrate(5);
+                }
+            });
+        });
+
+        // Dynamic Map Zoom Interaction simulation
+        let lastScrollTop = 0;
+        window.addEventListener('scroll', () => {
+            const st = window.pageYOffset || document.documentElement.scrollTop;
+            const mapImg = document.querySelector('[data-location] div');
+            if (st > lastScrollTop) {
+                // Scrolling down - zoom in slightly
+                mapImg.style.transform = `scale(${1 + st/5000})`;
+            } else {
+                // Scrolling up
+                mapImg.style.transform = `scale(${1 + st/5000})`;
+            }
+            lastScrollTop = st <= 0 ? 0 : st;
+        }, false);
+    </script>
+</body></html>

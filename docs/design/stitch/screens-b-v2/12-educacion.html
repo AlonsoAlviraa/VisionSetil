@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>VisionSetil - Educaci├│n Micol├│gica</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500&family=Playfair+Display:wght@500;600;700&family=JetBrains+Mono:wght@500&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@100..900&family=JetBrains+Mono:wght@100..900&family=Playfair+Display:wght@100..900&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "error-container": "#93000a",
+                    "outline-variant": "#424940",
+                    "on-tertiary-fixed": "#201b0f",
+                    "secondary-container": "#414b47",
+                    "error": "#ffb4ab",
+                    "secondary-fixed": "#dae5df",
+                    "inverse-surface": "#dfe4dd",
+                    "primary": "#aad8a9",
+                    "surface-container-highest": "#313631",
+                    "surface-container": "#1c211c",
+                    "primary-container": "#8fbc8f",
+                    "primary-fixed-dim": "#a4d2a4",
+                    "tertiary-container": "#bbb09d",
+                    "on-background": "#dfe4dd",
+                    "on-tertiary": "#363022",
+                    "tertiary": "#d7cbb8",
+                    "on-secondary-fixed-variant": "#3f4944",
+                    "on-primary": "#0e3817",
+                    "surface-tint": "#a4d2a4",
+                    "on-primary-container": "#234c29",
+                    "surface-container-lowest": "#0a0f0b",
+                    "tertiary-fixed": "#ede1cd",
+                    "outline": "#8c9389",
+                    "on-surface-variant": "#c2c9be",
+                    "secondary-fixed-dim": "#bec9c3",
+                    "on-secondary": "#28332e",
+                    "primary-fixed": "#bfefbe",
+                    "surface-bright": "#353a36",
+                    "inverse-primary": "#3e6842",
+                    "on-primary-fixed-variant": "#274f2c",
+                    "tertiary-fixed-dim": "#d1c5b2",
+                    "on-tertiary-container": "#4a4334",
+                    "inverse-on-surface": "#2c322d",
+                    "on-error-container": "#ffdad6",
+                    "on-tertiary-fixed-variant": "#4d4637",
+                    "on-surface": "#dfe4dd",
+                    "background": "#101511",
+                    "surface-variant": "#313631",
+                    "surface-dim": "#101511",
+                    "on-primary-fixed": "#002107",
+                    "on-secondary-container": "#b0bbb5",
+                    "on-secondary-fixed": "#141e1a",
+                    "on-error": "#690005",
+                    "surface-container-low": "#181d19",
+                    "surface": "#101511",
+                    "secondary": "#bec9c3",
+                    "surface-container-high": "#262b27"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "container-padding": "20px",
+                    "element-gap": "12px",
+                    "base": "8px",
+                    "safe-area": "16px",
+                    "section-margin": "32px"
+            },
+            "fontFamily": {
+                    "body-md": ["Hanken Grotesk"],
+                    "body-lg": ["Hanken Grotesk"],
+                    "headline-lg": ["Playfair Display"],
+                    "headline-lg-mobile": ["Playfair Display"],
+                    "title-md": ["Playfair Display"],
+                    "display-lg": ["Playfair Display"],
+                    "label-sm": ["JetBrains Mono"]
+            },
+            "fontSize": {
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                    "title-md": ["20px", {"lineHeight": "28px", "fontWeight": "500"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(26, 36, 32, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 0.5px solid rgba(143, 188, 143, 0.2);
+        }
+        .safety-glow {
+            box-shadow: 0 0 20px 2px rgba(175, 68, 72, 0.1);
+        }
+        .mask-gradient {
+            mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #0F1410;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="text-on-surface font-body-md selection:bg-primary/30 pb-24">
+<!-- Top Warning AppBar (From Shared Components JSON) -->
+<header class="fixed top-0 w-full z-50 bg-error-container shadow-[0_0_20px_rgba(147,0,10,0.4)] flex items-center justify-center h-10 px-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-error-container text-sm">warning</span>
+<span class="font-label-sm text-label-sm font-bold tracking-widest text-on-error-container">SOLO ORIENTACI├ôN, NUNCA CONSUMO</span>
+</div>
+</header>
+<main class="mt-10 px-container-padding">
+<!-- Hero Section -->
+<section class="relative pt-12 pb-8 overflow-hidden">
+<div class="absolute -top-24 -right-24 w-64 h-64 bg-primary/10 rounded-full blur-[100px]"></div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-on-surface mb-2 leading-tight">Seguridad en el Campo</h1>
+<p class="font-body-lg text-body-lg text-primary-container mb-6 opacity-90 max-w-md">Identificaci├│n t├®cnica para la supervivencia en ecosistemas micol├│gicos.</p>
+<div class="glass-card p-4 rounded-xl border-l-4 border-error flex gap-4 items-start safety-glow">
+<span class="material-symbols-outlined text-error mt-1" style="font-variation-settings: 'FILL' 1;">gavel</span>
+<div>
+<span class="font-label-sm text-label-sm text-error uppercase tracking-tighter font-bold">Advertencia de Seguridad</span>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1 leading-snug">No consumir bajo ninguna circunstancia. La identificaci├│n digital no sustituye a un experto humano calificado.</p>
+</div>
+</div>
+</section>
+<!-- Vistas Cr├¡ticas Section -->
+<section class="mt-section-margin">
+<div class="flex items-center justify-between mb-element-gap">
+<h2 class="font-title-md text-title-md">Vistas Cr├¡ticas</h2>
+<span class="font-label-sm text-label-sm text-primary opacity-60">FOTOS OBLIGATORIAS</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">Para una identificaci├│n segura, el sistema requiere tres ├íngulos espec├¡ficos del ejemplar.</p>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- Laminillas -->
+<div class="glass-card rounded-xl overflow-hidden group">
+<div class="h-48 relative">
+<img class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-500" data-alt="A hyper-realistic macro photograph of the underside of an Amanita muscaria, showing pristine white gills or lamellae in sharp detail. The lighting is moody and organic, resembling the soft, diffused light of a damp forest floor at dusk. The overall aesthetic is dark and academic, with deep shadows emphasizing the structural complexity of the fungi. High-end naturalist photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBpENGfCG78M-yv76dryrcmEHj9Gv7w3ca5u98DNtD43DBqiPwiR-5cnokusfs73Ik0jNeq2xdrHEvLoDFr0z9PxYx7rtGcm7KAhcXF3pK2rbVHl9Vk4sPkoveYaSd-sf0z7NQ3uxbwGvtao8UGAzL0fDRFZV4ghIA4U378XofURRuHtIJDQLMf7Y2d8Mu8KmtpbEhYJEgsVGA7W1-eiQ0X4VQ8uELd4yr1GAzNW_hM7l6KlQersKKig1sy9sAsDG8Mi0aZB1nesjw"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background to-transparent opacity-60"></div>
+<div class="absolute bottom-3 left-3">
+<span class="font-label-sm text-label-sm bg-primary/20 text-primary px-2 py-1 rounded backdrop-blur-md">LAMINILLAS</span>
+</div>
+</div>
+<div class="p-4">
+<p class="font-body-md text-body-md text-on-surface-variant">Muestra el himenio para diferenciar entre l├íminas, poros o aguijones.</p>
+</div>
+</div>
+<!-- Perfil -->
+<div class="glass-card rounded-xl overflow-hidden group">
+<div class="h-48 relative">
+<img class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-500" data-alt="A professional field photograph showing the full profile of a poisonous Galerina marginata mushroom growing on a mossy log. The shot captures the entire stem, the ring, and the cap shape against a dark, blurred woodland background. Soft rim lighting highlights the delicate texture of the stem. The mood is scientific and cautionary, using a muted palette of deep greens and earthy browns." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDWUwqDdpBqBJPa67xZwYGYMFPe0g5sSSBEI2A4f-wBsC540fBdSsAdEMEHAOSXXfXaAIb8szcTbyEOPP9iLG38KU35AxoBcu0ofF-_vo6koh2gY0WGhuI-VnYBDkKnbzKRNQ0x_2Wp1CC0MWrjzJQE4HAcGVeUIBAeXLYo0m3K0iz8FJ3RZS7cLuiLKWVADEPY9A2neRc0xf8UaXaaeL1N8ib-NuFE4qVCTt3lSWzxVOA-BdelqRgQFByaoR9e-cnlRPVT7CLPGtnj"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background to-transparent opacity-60"></div>
+<div class="absolute bottom-3 left-3">
+<span class="font-label-sm text-label-sm bg-primary/20 text-primary px-2 py-1 rounded backdrop-blur-md">PERFIL</span>
+</div>
+</div>
+<div class="p-4">
+<p class="font-body-md text-body-md text-on-surface-variant">Captura el porte completo, incluyendo el anillo y la base (volva).</p>
+</div>
+</div>
+<!-- Detalle -->
+<div class="glass-card rounded-xl overflow-hidden group">
+<div class="h-48 relative">
+<img class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-500" data-alt="Close-up macro detail of the cap texture and margin of a dangerous mushroom. The image shows the subtle scales and the way the edge of the cap curves, with tiny droplets of forest dew. Cinematic lighting creates high contrast between the textured surface and deep dark crevices. Visual style is high-end documentary, emphasizing technical precision and natural beauty." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPV9HF5U-csMBGVeuGgnK1LEVK1eSc8D6-jw3h3t-AhXHRpJhsw2PJVOicY212Z12qr1PTIXeKxu929hDKjfspH9q4ggriw6LG94I2coDbZk9ok0V98cHKGDjuAgXR067ZydoEYlP7qb-oR95Fvr-hA-_bIuK1tz7V45r7do5-yfru8eW4vTOTTHOPk-OIAtzw8zmbuxf0KkiEXtufAr26Fmsvl7fxegrKG_awBvcOMsgFWW0Ib9vQ99_rh9xksb2Dt0nD0Y0jD6jZ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background to-transparent opacity-60"></div>
+<div class="absolute bottom-3 left-3">
+<span class="font-label-sm text-label-sm bg-primary/20 text-primary px-2 py-1 rounded backdrop-blur-md">DETALLE</span>
+</div>
+</div>
+<div class="p-4">
+<p class="font-body-md text-body-md text-on-surface-variant">Enfoque en la textura del sombrero y posibles cambios de color al corte.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Parejas Mortales Section -->
+<section class="mt-section-margin">
+<h2 class="font-title-md text-title-md mb-2">Parejas Mortales</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">Confusiones comunes que pueden resultar en fallo multiorg├ínico o muerte.</p>
+<div class="space-y-4">
+<!-- Comparison Card 1 -->
+<div class="glass-card rounded-xl p-4">
+<div class="grid grid-cols-2 gap-4 mb-4">
+<div class="relative">
+<img class="rounded-lg aspect-square object-cover border border-error/30" data-alt="High-resolution image of Amanita phalloides (Death Cap) in its natural forest setting. The mushroom has a distinct olive-green cap and a white stem with a prominent ring and volva. The lighting is eerie and cold, highlighting its toxicity. Scientific style with clear morphological features visible." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGIYRp-skbjsyBQt8T_xE5FIwGmvyTXFaGdE6UB7t36t_TzYm7994gms9Qec_kgY_Xb-doDeKP61zIULEQVpf0vSSELuHvXkAh-sJJlwvfOKycegX8w3Gx8fBYP9d9TfH_SQasS2Wy-Pv2cc-d274tBhngRl28HECwXuq1vXtzrFbtA3GTV95ZgGl-xO5UQ5-7GAV08Ecnc7rjAoOvP9Ou_zi6wtTmRlAt35OGlPWZQPm1NNuf6UzwjLqEoazFIwyKU0CP2p4egqmS"/>
+<span class="absolute top-2 left-2 bg-error text-on-error text-[10px] px-1.5 py-0.5 rounded font-bold">T├ôXICA</span>
+<p class="font-label-sm text-center mt-2 text-on-surface text-[11px]">Amanita phalloides</p>
+</div>
+<div class="relative">
+<img class="rounded-lg aspect-square object-cover border border-primary/30" data-alt="A clean, scientific photo of a field mushroom (Agaricus campestris), showing its white cap and pinkish-brown gills. The lighting is warm and natural, set against a grassy meadow background. The image clearly demonstrates why it might be confused with a white Amanita, though showing key edible differences." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAs1vrrj8cpbzzBYBe2hFIETUpnQk6VWGGYD_bqvYKFFIYSDKz8G9vFF0apRJX8CrQdHb4b8yqyDgvaS0aOW6mC2HYcGqU3z08COTxp3MXNjTCGXfxNrXnQs1qkZCQ9cQI8p4vKHN8lGh6ySakODUmvMoxqRnCtsXUPtXENtj5A3K8PxXsagxrrT9HfFM5NRmkVmNzMadUXcSrKzoweZDNb-2jfN2q7PWDFpusEcVhVYkziOOeCfrcyZn9Iz9vmekYv9HcqVRVKR8HL"/>
+<span class="absolute top-2 left-2 bg-primary text-on-primary text-[10px] px-1.5 py-0.5 rounded font-bold">COMESTIBLE</span>
+<p class="font-label-sm text-center mt-2 text-on-surface text-[11px]">Agaricus campestris</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-3 rounded-lg border border-outline-variant/30 text-center">
+<span class="font-label-sm text-label-sm text-error font-bold block mb-1 uppercase">Diferencia Clave</span>
+<p class="font-body-md text-body-md text-on-surface italic">"La oronja verde posee l├íminas siempre blancas y una volva en la base."</p>
+</div>
+</div>
+<!-- Warning Callout -->
+<div class="bg-error-container/20 rounded-xl p-6 text-center border border-error/20">
+<h3 class="font-display-lg text-[40px] leading-none text-error mb-2 tracking-tighter">NUNCA CONSUMIR</h3>
+<p class="font-body-md text-body-md text-on-error-container max-w-xs mx-auto">Ante la m├ís m├¡nima duda, descarte el ejemplar. Un solo error es irreversible.</p>
+</div>
+</div>
+</section>
+<!-- CTA Section -->
+<section class="mt-section-margin pb-12 flex flex-col items-center">
+<button class="w-full max-w-sm glass-card py-5 px-8 rounded-full border border-primary/40 flex items-center justify-center gap-3 active:scale-[0.98] transition-transform duration-200 group">
+<span class="material-symbols-outlined text-primary group-hover:rotate-12 transition-transform">school</span>
+<span class="font-title-md text-title-md text-on-surface">Acceder a Cursos Avanzados</span>
+</button>
+<p class="font-label-sm text-label-sm mt-4 text-on-surface-variant opacity-60">Contenido certificado por mic├│logos expertos.</p>
+</section>
+</main>
+<!-- Bottom Navigation Bar (From Shared Components JSON) -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-xl backdrop-blur-xl bg-surface-container/60 border-t border-primary/20 shadow-none">
+<div class="flex justify-around items-center px-4 py-2 pb-safe w-full">
+<a class="flex flex-col items-center justify-center text-on-surface-variant active:scale-95 transition-all duration-300 hover:bg-white/5" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-body-md text-[10px]">Inicio</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant active:scale-95 transition-all duration-300 hover:bg-white/5" href="#">
+<span class="material-symbols-outlined">center_focus_strong</span>
+<span class="font-body-md text-[10px]">Identificar</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant active:scale-95 transition-all duration-300 hover:bg-white/5" href="#">
+<span class="material-symbols-outlined">sports_esports</span>
+<span class="font-body-md text-[10px]">Juegos</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant active:scale-95 transition-all duration-300 hover:bg-white/5" href="#">
+<span class="material-symbols-outlined">menu_book</span>
+<span class="font-body-md text-[10px]">Enciclopedia</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary bg-primary-container/20 rounded-xl px-3 py-1 active:scale-95 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">more_horiz</span>
+<span class="font-body-md text-[10px]">M├ís</span>
+</a>
+</div>
+</nav>
+<!-- Atmospheric Overlay (Forest Texture) -->
+<div class="fixed inset-0 pointer-events-none opacity-[0.03] z-[100]" style="background-image: url('https://www.transparenttextures.com/patterns/dark-matter.png');"></div>
+<script>
+        // Micro-interactions for glass cards
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('touchstart', () => {
+                card.style.borderColor = 'rgba(143, 188, 143, 0.5)';
+            });
+            card.addEventListener('touchend', () => {
+                card.style.borderColor = 'rgba(143, 188, 143, 0.2)';
+            });
+        });
+    </script>
+</body></html>

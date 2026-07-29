@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Setadle - Mycological Habitat Sorting</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&amp;family=Source+Serif+4:ital,wght@0,400;0,600;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-highest": "#313631",
+                        "on-primary-fixed": "#002107",
+                        "tertiary-fixed": "#dae5df",
+                        "surface-bright": "#353a36",
+                        "on-background": "#dfe4dd",
+                        "on-secondary": "#363022",
+                        "on-primary-container": "#234c29",
+                        "error": "#ffb4ab",
+                        "secondary-fixed-dim": "#d1c5b2",
+                        "tertiary-container": "#a8b3ad",
+                        "surface-container-lowest": "#0a0f0b",
+                        "on-tertiary": "#28332e",
+                        "inverse-primary": "#3e6842",
+                        "tertiary": "#c3cfc8",
+                        "surface-tint": "#a4d2a4",
+                        "surface": "#101511",
+                        "on-tertiary-fixed-variant": "#3f4944",
+                        "on-error-container": "#ffdad6",
+                        "primary-container": "#8fbc8f",
+                        "error-container": "#93000a",
+                        "on-tertiary-container": "#3b4641",
+                        "surface-container-low": "#181d19",
+                        "primary": "#aad8a9",
+                        "surface-variant": "#313631",
+                        "surface-container": "#1c211c",
+                        "primary-fixed-dim": "#a4d2a4",
+                        "secondary-fixed": "#ede1cd",
+                        "on-error": "#690005",
+                        "on-tertiary-fixed": "#141e1a",
+                        "primary-fixed": "#bfefbe",
+                        "tertiary-fixed-dim": "#bec9c3",
+                        "on-secondary-fixed-variant": "#4d4637",
+                        "on-secondary-fixed": "#201b0f",
+                        "surface-container-high": "#262b27",
+                        "on-surface-variant": "#c2c9be",
+                        "on-surface": "#dfe4dd",
+                        "inverse-surface": "#dfe4dd",
+                        "background": "#101511",
+                        "inverse-on-surface": "#2c322d",
+                        "secondary": "#d1c5b2",
+                        "secondary-container": "#4d4637",
+                        "outline": "#8c9389",
+                        "on-primary-fixed-variant": "#274f2c",
+                        "on-primary": "#0e3817",
+                        "outline-variant": "#424940",
+                        "on-secondary-container": "#bfb4a1",
+                        "surface-dim": "#101511"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "40px",
+                        "base": "8px",
+                        "xs": "4px",
+                        "xl": "64px",
+                        "margin-mobile": "20px",
+                        "md": "24px",
+                        "sm": "12px",
+                        "margin-desktop": "120px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["\"Source Serif 4\""],
+                        "label-sm": ["\"Source Serif 4\""],
+                        "headline-lg": ["Playfair Display"],
+                        "body-lg": ["\"Source Serif 4\""],
+                        "display-lg": ["Playfair Display"],
+                        "label-lg": ["\"Source Serif 4\""],
+                        "headline-lg-mobile": ["Playfair Display"],
+                        "headline-md": ["Playfair Display"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #101511;
+            color: #dfe4dd;
+            font-family: "Source Serif 4", serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .glass-card {
+            background-color: rgba(26, 36, 32, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(143, 188, 143, 0.1);
+        }
+        .active-chip {
+            background-color: #8fbc8f;
+            color: #0e3817;
+            box-shadow: 0 0 15px rgba(143, 188, 143, 0.3);
+        }
+        .drop-zone-active {
+            border: 2px dashed #8fbc8f;
+            background-color: rgba(143, 188, 143, 0.05);
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #313631;
+            border-radius: 10px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="min-h-screen flex flex-col overflow-x-hidden">
+<!-- TopAppBar -->
+<header class="fixed top-0 z-50 w-full h-16 flex justify-between items-center px-margin-mobile bg-surface-container/60 backdrop-blur-xl border-b border-error/20">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary font-bold">microbiology</span>
+<h1 class="font-headline-md text-headline-md text-primary tracking-tight">Setadle</h1>
+</div>
+<div class="hidden md:block">
+<p class="font-label-lg text-label-lg text-on-surface-variant italic">Solo orientaci├│n ┬À nunca consumo</p>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-bright/20 p-2 rounded-full transition-colors active:scale-95">help_outline</button>
+</div>
+</header>
+<!-- Mobile Warning Strip (Always visible for safety) -->
+<div class="mt-16 md:hidden w-full bg-error-container/20 py-2 px-margin-mobile border-b border-error/10 text-center">
+<span class="font-label-sm text-label-sm text-error">Solo orientaci├│n ┬À nunca consumo</span>
+</div>
+<!-- Main Game Canvas -->
+<main class="flex-grow pt-4 pb-24 px-margin-mobile max-w-screen-xl mx-auto w-full">
+<!-- Game Header / Progress -->
+<section class="mb-gutter flex justify-between items-end">
+<div>
+<span class="font-label-lg text-label-lg text-primary uppercase tracking-widest">Reto Diario</span>
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg mt-1">Sorteo de H├íbitat</h2>
+</div>
+<div class="text-right">
+<p class="font-label-sm text-label-sm text-on-surface-variant">Intentos: 0/3</p>
+<div class="flex gap-1 mt-1">
+<div class="w-8 h-1 bg-primary-container rounded-full"></div>
+<div class="w-8 h-1 bg-surface-container-highest rounded-full"></div>
+<div class="w-8 h-1 bg-surface-container-highest rounded-full"></div>
+</div>
+</div>
+</section>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-lg">
+<!-- Daily Habitat Photo -->
+<section class="lg:col-span-7">
+<div class="relative rounded-xl overflow-hidden shadow-2xl glass-card aspect-[4/3] md:aspect-video group">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A high-resolution, atmospheric close-up of a damp forest floor during twilight. Deep green moss covers decaying logs, while scattered orange and brown oak leaves rest on a bed of dark, rich soil. The lighting is soft and directional, highlighting the intricate textures of the forest bed and creating a moody, nocturnal field-journal aesthetic with deep shadows and vibrant organic greens." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCvPebgOsZyNlpOQ9zOxfKv3dLdeSnN15ZWzBZpydiC33vLdJE5qkCDrbmfMCQ7-Ts3k5Z4fUJls1sml5zW8QzzUKp9We7CEcKBtT1UPBY4QdKj8w5RyKVtxF8C6Kp9dLAi3nRRv8UeoDsEs79rKk4GyKmennkx69xz7BUBm1u974pKpByJ5t4pdkrHotuW8qX0lrQV6U-DQA9hEMNrG0OqiFcbkiAkNv83BCLAN6bpcrA81ynNMno36nDVuAJiqA9cLSSCt3pXuLDK"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<div class="absolute bottom-4 left-4 right-4 flex justify-between items-center">
+<div class="flex items-center gap-2 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
+<span class="material-symbols-outlined text-[18px] text-primary">location_on</span>
+<span class="font-label-sm text-label-sm">Sierra de Guadarrama, ES</span>
+</div>
+<button class="bg-primary/20 hover:bg-primary/40 backdrop-blur-md p-2 rounded-full border border-primary/30 transition-all active:scale-90">
+<span class="material-symbols-outlined text-primary">zoom_in</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Habitat Sort Board -->
+<section class="lg:col-span-5 flex flex-col gap-gutter">
+<div class="glass-card rounded-xl p-md flex flex-col gap-base">
+<h3 class="font-headline-md text-headline-md text-primary">Identificar Ecosistema</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-2">Arrastra los rasgos observados en la imagen a las celdas de clasificaci├│n.</p>
+<!-- Sorting Grid -->
+<div class="grid grid-cols-2 gap-base mt-4">
+<div class="h-28 rounded-lg bg-surface-container-highest/40 border border-outline-variant/30 flex flex-col items-center justify-center gap-2 p-2 text-center group hover:border-primary/40 transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">forest</span>
+<span class="font-label-lg text-label-lg">Tipo de Bosque</span>
+<div class="w-full h-px bg-outline-variant/20"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant italic">Vac├¡o</span>
+</div>
+<div class="h-28 rounded-lg bg-surface-container-highest/40 border border-outline-variant/30 flex flex-col items-center justify-center gap-2 p-2 text-center group hover:border-primary/40 transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">water_drop</span>
+<span class="font-label-lg text-label-lg">Sustrato</span>
+<div class="w-full h-px bg-outline-variant/20"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant italic">Vac├¡o</span>
+</div>
+<div class="h-28 rounded-lg bg-surface-container-highest/40 border border-outline-variant/30 flex flex-col items-center justify-center gap-2 p-2 text-center group hover:border-primary/40 transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">thermostat</span>
+<span class="font-label-lg text-label-lg">Microclima</span>
+<div class="w-full h-px bg-outline-variant/20"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant italic">Vac├¡o</span>
+</div>
+<div class="h-28 rounded-lg bg-surface-container-highest/40 border border-outline-variant/30 flex flex-col items-center justify-center gap-2 p-2 text-center group hover:border-primary/40 transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">terrain</span>
+<span class="font-label-lg text-label-lg">Acidez</span>
+<div class="w-full h-px bg-outline-variant/20"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant italic">Vac├¡o</span>
+</div>
+</div>
+<!-- Interactive Tiles/Chips -->
+<div class="mt-6">
+<h4 class="font-label-lg text-label-lg text-on-surface mb-3 uppercase tracking-wider">Opciones Disponibles</h4>
+<div class="flex flex-wrap gap-2">
+<button class="px-4 py-2 rounded-full border border-outline-variant hover:border-primary transition-all duration-200 font-label-lg text-label-lg flex items-center gap-2 active:scale-95" onclick="toggleChip(this)">
+<span class="w-2 h-2 rounded-full bg-primary/40"></span> Pinar
+                            </button>
+<button class="px-4 py-2 rounded-full border border-outline-variant hover:border-primary transition-all duration-200 font-label-lg text-label-lg flex items-center gap-2 active:scale-95" onclick="toggleChip(this)">
+<span class="w-2 h-2 rounded-full bg-primary/40"></span> Encinar
+                            </button>
+<button class="px-4 py-2 rounded-full border border-outline-variant hover:border-primary transition-all duration-200 font-label-lg text-label-lg flex items-center gap-2 active:scale-95" onclick="toggleChip(this)">
+<span class="w-2 h-2 rounded-full bg-primary/40"></span> Suelo ├ücido
+                            </button>
+<button class="px-4 py-2 rounded-full border border-outline-variant hover:border-primary transition-all duration-200 font-label-lg text-label-lg flex items-center gap-2 active:scale-95" onclick="toggleChip(this)">
+<span class="w-2 h-2 rounded-full bg-primary/40"></span> Humedad Alta
+                            </button>
+<button class="px-4 py-2 rounded-full border border-outline-variant hover:border-primary transition-all duration-200 font-label-lg text-label-lg flex items-center gap-2 active:scale-95" onclick="toggleChip(this)">
+<span class="w-2 h-2 rounded-full bg-primary/40"></span> Robledal
+                            </button>
+<button class="px-4 py-2 rounded-full border border-outline-variant hover:border-primary transition-all duration-200 font-label-lg text-label-lg flex items-center gap-2 active:scale-95" onclick="toggleChip(this)">
+<span class="w-2 h-2 rounded-full bg-primary/40"></span> Calizo
+                            </button>
+</div>
+</div>
+<button class="w-full mt-lg py-4 rounded-xl bg-primary text-on-primary font-headline-md text-headline-md active:scale-95 transition-transform shadow-lg shadow-primary/20">
+                        Verificar Selecci├│n
+                    </button>
+</div>
+</section>
+</div>
+<!-- Educational Note -->
+<section class="mt-lg mb-gutter">
+<div class="glass-card rounded-xl p-md border-l-4 border-primary">
+<div class="flex items-start gap-4">
+<div class="bg-primary/20 p-2 rounded-lg">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">menu_book</span>
+</div>
+<div>
+<h4 class="font-headline-md text-headline-md text-primary mb-1">Nota Educativa</h4>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                            El an├ílisis del h├íbitat es crucial para la identificaci├│n correcta de las setas. Este juego est├í dise├▒ado ├║nicamente como una herramienta de entrenamiento visual para bot├ínicos y aficionados serios. Recuerda que la identificaci├│n en el campo requiere m├║ltiples confirmaciones f├¡sicas y nunca debe basarse solo en una fotograf├¡a. <span class="text-error font-semibold">Nunca consumas setas que no hayan sido verificadas profesionalmente por un experto.</span>
+</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 pb-safe bg-surface-container/60 backdrop-blur-xl rounded-t-xl shadow-lg border-t border-outline-variant/10">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm">Inicio</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">center_focus_strong</span>
+<span class="font-label-sm text-label-sm">Identificar</span>
+</a>
+<!-- ACTIVE TAB: Juegos -->
+<a class="flex flex-col items-center justify-center bg-primary-container/80 text-on-primary-container rounded-full px-4 py-1 active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">extension</span>
+<span class="font-label-sm text-label-sm">Juegos</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">menu_book</span>
+<span class="font-label-sm text-label-sm">Enciclopedia</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">more_horiz</span>
+<span class="font-label-sm text-label-sm">M├ís</span>
+</a>
+</nav>
+<script>
+        function toggleChip(element) {
+            element.classList.toggle('active-chip');
+            element.classList.toggle('border-outline-variant');
+            element.classList.toggle('border-primary');
+            
+            // Subtle click vibration feel
+            if (window.navigator && window.navigator.vibrate) {
+                window.navigator.vibrate(5);
+            }
+        }
+
+        // Add a soft pulsing effect to the "available" header when interaction starts
+        document.addEventListener('DOMContentLoaded', () => {
+            const chips = document.querySelectorAll('button[onclick="toggleChip(this)"]');
+            chips.forEach(chip => {
+                chip.addEventListener('mouseenter', () => {
+                    // Logic for hover states if needed beyond tailwind
+                });
+            });
+        });
+    </script>
+</body></html>
