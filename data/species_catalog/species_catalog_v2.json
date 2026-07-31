@@ -4434,6 +4434,12 @@
         {
           "scientific_name": "Leccinum scabrum",
           "note_key": "No es leccinum de abedul"
+        },
+        {
+          "scientific_name": "Suillus luteus",
+          "slug": "suillus-luteus",
+          "risk_level": "low",
+          "why": "Confusión de campo posible"
         }
       ]
     },
@@ -6897,7 +6903,14 @@
         "es": []
       },
       "toxicity_notes": {},
-      "lookalikes": [],
+      "lookalikes": [
+        {
+          "scientific_name": "Phallus impudicus",
+          "slug": "phallus-impudicus",
+          "risk_level": "medium",
+          "why": "Confusión de campo posible"
+        }
+      ],
       "source": "iberia_common_curated"
     },
     {
@@ -9516,6 +9529,12 @@
         {
           "scientific_name": "Lepista nuda",
           "note_key": "Cortina y color; no es pie azul"
+        },
+        {
+          "scientific_name": "Imleria badia",
+          "slug": "imleria-badia",
+          "risk_level": "low",
+          "why": "Confusión de campo posible"
         }
       ]
     },
@@ -15279,6 +15298,12 @@
         {
           "scientific_name": "Pleurotus ostreatus",
           "note_key": "Hypholoma amargo tóxico"
+        },
+        {
+          "scientific_name": "Laetiporus sulphureus",
+          "slug": "laetiporus-sulphureus",
+          "risk_level": "low",
+          "why": "Confusión de campo posible"
         }
       ]
     },
@@ -18141,6 +18166,12 @@
         {
           "scientific_name": "Lactarius deliciosus",
           "note_key": "Latex blanco y pelos en margen"
+        },
+        {
+          "scientific_name": "Lactarius deterrimus",
+          "slug": "lactarius-deterrimus",
+          "risk_level": "low",
+          "why": "Confusión de campo posible"
         }
       ]
     },

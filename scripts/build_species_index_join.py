@@ -52,7 +52,7 @@ DEFAULT_SYNONYMS = ROOT / "data" / "species_catalog" / "synonyms.yaml"
 DEFAULT_OUT = ROOT / "data" / "species_catalog" / "species_index_join_report.json"
 # Matches backend Settings.multi_view_weights_path default (config.py).
 DEFAULT_MULTI_VIEW = (
-    ROOT / "kaggle" / "kernel_output_v9" / "models" / "best.pt"
+    ROOT / "kaggle" / "kernel_output_v20" / "models" / "best.pt"
 )
 
 SelectionReason = str  # explicit | multi_view_configured_sibling | multi_view_resolved_sibling | max_class_count | none

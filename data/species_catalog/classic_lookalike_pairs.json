@@ -71,6 +71,46 @@
       "id": "prunulus-entoloma",
       "taxa": ["Clitopilus prunulus", "Entoloma sinuatum"],
       "why": "Láminas y olor; entoloma sinuatum es tóxico"
+    },
+    {
+      "id": "edulis-satanas",
+      "taxa": ["Boletus edulis", "Rubroboletus satanas"],
+      "why": "Redes del pie y color del himenio; satanas enrojece y es tóxico"
+    },
+    {
+      "id": "xanthodermus-campestris",
+      "taxa": ["Agaricus campestris", "Agaricus xanthodermus"],
+      "why": "Base del pie amarilla al corte + olor a fenol = xanthodermus"
+    },
+    {
+      "id": "olearius-cibarius",
+      "taxa": ["Omphalotus olearius", "Cantharellus cibarius"],
+      "why": "Láminas verdaderas vs pliegues; omphalotus es tóxico (repetición educativa)"
+    },
+    {
+      "id": "phalloides-vaginata",
+      "taxa": ["Amanita phalloides", "Amanita vaginata"],
+      "why": "Anillo ausente en vaginata; volva y láminas siempre críticas"
+    },
+    {
+      "id": "torminosus-deliciosus",
+      "taxa": ["Lactarius torminosus", "Lactarius deliciosus"],
+      "why": "Látex blanco vs naranja; borde del sombrero peludo en torminosus"
+    },
+    {
+      "id": "involutus-edulis",
+      "taxa": ["Paxillus involutus", "Boletus edulis"],
+      "why": "Paxillus tiene láminas/pliegues decurrentes; no es boleto de poros"
+    },
+    {
+      "id": "galerina-mutabilis",
+      "taxa": ["Galerina marginata", "Kuehneromyces mutabilis"],
+      "why": "Sobre madera: esporada y anillo; galerina es mortal"
+    },
+    {
+      "id": "virosa-vaginata",
+      "taxa": ["Amanita virosa", "Amanita vaginata"],
+      "why": "Blancura engañosa; anillo y volva deciden"
     }
   ]
 }
