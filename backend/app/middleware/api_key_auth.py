@@ -34,6 +34,7 @@ from starlette.status import HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN
 from app.core.security_scopes import (
     DEFAULT_SCOPES,
     ParsedApiKey,
+    normalize_request_path,
     parse_api_key_entry,
     required_scope_for_path,
     scopes_imply,
@@ -150,7 +151,8 @@ class APIKeyMiddleware(BaseHTTPMiddleware):
         self.header_name = header_name
 
     def _is_public(self, path: str) -> bool:
-        """Check if path is public (no auth required)."""
+        """Check if path is public (no auth required). Dual-mount /api normalized."""
+        path = normalize_request_path(path)
         return any(path == public or path.startswith(public + "/") for public in PUBLIC_PATHS)
 
     async def dispatch(
@@ -164,8 +166,11 @@ class APIKeyMiddleware(BaseHTTPMiddleware):
         if not is_auth_enabled():
             return await call_next(request)
 
+        # Canonical path: /api/metrics ≡ /metrics (dual-mount)
+        path = normalize_request_path(request.url.path)
+
         # Skip public paths
-        if self._is_public(request.url.path):
+        if self._is_public(path):
             return await call_next(request)
 
         api_key = request.headers.get(self.header_name, "")
@@ -191,7 +196,7 @@ class APIKeyMiddleware(BaseHTTPMiddleware):
         request.state.organization_id = matched.organization_id
         request.state.scopes = matched.scopes
 
-        need = required_scope_for_path(request.url.path)
+        need = required_scope_for_path(path)
         if need is not None and not scopes_imply(matched.scopes, need):
             return JSONResponse(
                 status_code=HTTP_403_FORBIDDEN,

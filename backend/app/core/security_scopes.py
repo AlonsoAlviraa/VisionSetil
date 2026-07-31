@@ -87,12 +87,43 @@ def scopes_imply(have: frozenset[str], need: str) -> bool:
     return need in have
 
 
+def normalize_request_path(path: str) -> str:
+    """Canonical path for scope / public / rate-limit rules.
+
+    App dual-mounts routers at ``/`` and ``/api`` (see main.py). Middleware must
+    treat ``/api/metrics`` like ``/metrics`` and strip trailing slashes so admin
+    regex patterns cannot fall through to weaker prefix rules.
+    """
+    if not path:
+        return "/"
+    p = path.split("?", 1)[0]
+    if not p.startswith("/"):
+        p = "/" + p
+    # Collapse // and strip trailing slash (except root)
+    while "//" in p:
+        p = p.replace("//", "/")
+    if len(p) > 1 and p.endswith("/"):
+        p = p.rstrip("/")
+    # Dual-mount: /api/... → /...
+    if p == "/api":
+        return "/"
+    if p.startswith("/api/"):
+        p = p[4:]  # drop "/api"
+        if not p.startswith("/"):
+            p = "/" + p
+        if len(p) > 1 and p.endswith("/"):
+            p = p.rstrip("/")
+    return p or "/"
+
+
 def required_scope_for_path(path: str) -> str | None:
     """Return required scope for path, or None if no special scope (only valid key).
 
     Regex admin patterns are checked first (they express dynamic-segment paths
     that prefix rules cannot), then the prefix list.
+    Dual-mount ``/api/*`` and trailing slashes are normalized first (mega-audit S-01).
     """
+    path = normalize_request_path(path)
     for pattern, scope in _ADMIN_PATH_PATTERNS:
         if pattern.match(path):
             return scope

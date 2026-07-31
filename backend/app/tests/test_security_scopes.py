@@ -50,6 +50,27 @@ def test_observation_classify_advanced_requires_admin_scope():
     assert required_scope_for_path("/classify") == "classify"
 
 
+def test_dual_mount_api_prefix_and_trailing_slash_normalize_scopes():
+    """Mega-audit S-01/S-07: /api/* dual-mount + trailing slash must not drop admin."""
+    from app.core.security_scopes import normalize_request_path
+
+    assert normalize_request_path("/api/metrics") == "/metrics"
+    assert normalize_request_path("/api/observations/42/classify-advanced") == (
+        "/observations/42/classify-advanced"
+    )
+    assert normalize_request_path("/observations/42/classify-advanced/") == (
+        "/observations/42/classify-advanced"
+    )
+
+    assert required_scope_for_path("/api/metrics") == "admin"
+    assert required_scope_for_path("/api/models/status") == "admin"
+    assert required_scope_for_path("/api/human-reviews") == "review"
+    assert required_scope_for_path("/api/classify") == "classify"
+    assert required_scope_for_path("/api/observations/7/classify-advanced") == "admin"
+    assert required_scope_for_path("/observations/7/classify-advanced/") == "admin"
+    assert required_scope_for_path("/api/observations/7/classify-advanced/") == "admin"
+
+
 def test_middleware_rejects_classify_key_on_observation_classify_advanced(monkeypatch):
     """Classify-tier API key must not reach ungated observation classify-advanced."""
     monkeypatch.setenv("API_KEYS", "vs_only_classify:default:classify")
@@ -61,6 +82,10 @@ def test_middleware_rejects_classify_key_on_observation_classify_advanced(monkey
     async def advanced(obs_id: int):
         return {"ok": True, "obs_id": obs_id}
 
+    @app.post("/api/observations/{obs_id}/classify-advanced")
+    async def advanced_api(obs_id: int):
+        return {"ok": True, "obs_id": obs_id}
+
     client = TestClient(app)
     r = client.post(
         "/observations/7/classify-advanced",
@@ -68,6 +93,14 @@ def test_middleware_rejects_classify_key_on_observation_classify_advanced(monkey
     )
     assert r.status_code == 403
     assert r.json()["error"] == "insufficient_scope"
+
+    # Dual-mount must enforce the same gate (mega-audit S-01)
+    r2 = client.post(
+        "/api/observations/7/classify-advanced",
+        headers={"X-API-Key": "vs_only_classify"},
+    )
+    assert r2.status_code == 403
+    assert r2.json()["error"] == "insufficient_scope"
 
 
 def test_middleware_admin_key_passes_observation_classify_advanced(monkeypatch):

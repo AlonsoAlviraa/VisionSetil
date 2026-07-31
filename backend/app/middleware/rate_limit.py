@@ -32,9 +32,11 @@ from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.status import HTTP_429_TOO_MANY_REQUESTS
 
+from app.core.security_scopes import normalize_request_path
+
 logger = logging.getLogger(__name__)
 
-# Paths that use the stricter classify budget
+# Paths that use the stricter classify budget (after /api strip)
 CLASSIFY_PATH_PREFIXES = ("/classify",)
 
 # Auth abuse surface — tighter than general (login stuffing / mass register)
@@ -57,14 +59,17 @@ DEFAULT_EXEMPT_PATHS: frozenset[str] = frozenset(
 
 
 def _is_classify_path(path: str) -> bool:
+    path = normalize_request_path(path)
     return any(path == p or path.startswith(p + "/") for p in CLASSIFY_PATH_PREFIXES)
 
 
 def _is_auth_path(path: str) -> bool:
+    path = normalize_request_path(path)
     return any(path == p or path.startswith(p + "/") for p in AUTH_PATH_PREFIXES)
 
 
 def _bucket_for_path(path: str) -> str:
+    path = normalize_request_path(path)
     if _is_classify_path(path):
         return "classify"
     if _is_auth_path(path):
@@ -151,6 +156,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         return self.max_requests
 
     def _is_exempt(self, path: str) -> bool:
+        path = normalize_request_path(path)
         return any(path == exempt or path.startswith(exempt + "/") for exempt in self.exempt_paths)
 
     def _cleanup_window(self, key: str, now: float) -> int:

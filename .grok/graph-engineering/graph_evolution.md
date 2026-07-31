@@ -2126,3 +2126,20 @@ orientation only · never product_unlock · never forage · no commercial scrape
 ### Policy
 orientation only · never product_unlock · never forage.
 
+
+## v1.66.0-mega-audit (2026-07-31)
+
+**Trigger:** user request mega industrial audit (4 parallel lanes).
+
+### Shipped
+- Report: `docs/audits/MEGA_AUDIT_v1.66.0_2026-07-31.md`
+- **P0 S-01/S-04/S-07:** `normalize_request_path` — dual-mount `/api/*` + trailing slash for scopes, public paths, rate-limit buckets
+- **P0 S-05:** root `.gitignore` for `.env` / `.env.*`
+- Tests: dual-mount admin gate + trailing slash in `test_security_scopes.py`
+
+### Audit verdict
+- product_unlock fail-closed PASS; FE 608/608; lookalike asym 0; join v20 40/40
+- Residual OPEN: xanthoderma/satanas classic pairs, SPA index-app mismatch, expanded LA lag, 5 stale BE tests
+
+### Policy
+orientation only · never product_unlock · never forage

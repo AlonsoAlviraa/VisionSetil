@@ -6,43 +6,33 @@
 
 ## Active graph version
 
-`v1.65.1-verify-7commits`
+`v1.66.0-mega-audit`
 
 ## HEAD
 
-`main` @ **91d0e1d** (= origin/main) — range `a2c6a93..91d0e1d` includes the 7 thematic commits + later photo/layout fixes.
+Mega-audit @ **e5ba81e** base + **P0 AuthZ dual-mount fix** (working tree / next commit).  
+Report: `docs/audits/MEGA_AUDIT_v1.66.0_2026-07-31.md`
 
 ## Tasks
 
 | Item | Status |
 |------|--------|
-| 7 thematic commits on main (push) | **VERIFIED present** |
-| Backend AuthZ / request_id / StaticPool | **VERIFIED** + tests expanded |
-| Lookalike bidirectionality + join v20 | **VERIFIED** (0 asymmetric; 40/40 model) |
-| FE dual-build + Stitch + density | **VERIFIED in tree** |
-| FE gates vitest 608 + tsc | **PASS** |
-| Kill app/web/API background servers | **DONE** (prior) |
-| Live mycology-perf-uplift workflow | **DONE** (report in docs/audits) |
-| T1–T4, T6, T7 media/games/lookalike | **SHIPPED** (in b8ee548+) |
+| Mega-audit 4 lanes (Sec/FE/Data/ML) | **DONE** |
+| FE vitest 608/608 | **PASS** |
+| product_unlock fail-closed | **PASS** |
+| **P0 S-01** `/api` dual-mount scope bypass | **FIXED** (`normalize_request_path`) |
+| **P0 S-05** root `.env` gitignore | **FIXED** |
+| **P0 D-LA-01/02** xanthoderma + satanas classic | **OPEN** |
+| P1 SPA index-app vs index.html | **OPEN** |
+| P1 expanded catalog LA lag (5 taxa) | **OPEN** |
+| P1 BE stale tests (523≠520, envelope keys) | **OPEN** |
 | T5 encyclopedia virtualization | **DEFERRED** |
 
-### Verification matrix (7 commits)
+### Mega-audit verdict
 
-| Commit | Claim | Result |
-|--------|-------|--------|
-| `45c1015` AuthZ + request_id + SQLite | admin patterns on `/observations/{id}/classify(-advanced)`; StaticPool; bind_request_id | **PASS** (new scope tests 8/8) |
-| `af44e83` lookalike bi + join v20 | 0 asymmetric edges; rubellus↔edulis/imleria; kernel_output_v20 40/40 | **PASS** |
-| `f012543` Identify + Stitch + footer | Identify orientation sticky; footer compact; campo tokens | **PASS** (present) |
-| `fe4d0fa` a11y/i18n/bundle | FeaturedSpeciesGrid; CA/EU locales; main-app/web | **PASS** |
-| `b8ee548` dual-build + density | `build:app`/`build:web`, MEDIA_SURFACE_POLICY, GamesHub | **PASS**; vitest **608/608** |
-| `e487021` gitignore dist | `frontend/dist-app/`, `dist-web/` ignored | **PASS** |
-| `91d0e1d` graph canon v1.13 | STATE/BACKLOG/graph_evolution + audits | **PASS** |
-
-### Gates run this session
-
-- FE: `vitest run` → **608 passed**; `tsc --noEmit` → **0 errors**  
-- BE: security_scopes + authz + lookalike_normalize + species_index_join + security + quality_gate → **all green**  
-- New tests: AuthZ classify-advanced middleware; catalog bidirectional edges; join report v20 coverage  
+- **GO** orientation-only product  
+- **GO** after AuthZ dual-mount fix  
+- **Conditional** hard prod: Postgres wiring, SPA shell, catalog snapshot regen  
 
 ### product_unlock
 

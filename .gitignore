@@ -10,6 +10,14 @@ backend/*.db
 frontend/node_modules/
 frontend/dist/
 
+# Secrets / local env (mega-audit S-05) — never commit live keys
+.env
+.env.*
+!.env.example
+!**/.env.example
+tmp-vitest.json
+
+
 # ── Phase C / C-20: media git budget ──────────────────────────────────────
 # Full local corpus (~520 trees) is artifact/local only — NOT the CDN.
 # Rebuild: python scripts/precompute_species_images.py --all
