@@ -72,4 +72,21 @@ describe('safety copy (FE product sources)', () => {
     }
     expect(hits).toEqual([])
   })
+
+  it('core surfaces ship orientation-only never-consume language', () => {
+    const pages = join(process.cwd(), 'src', 'pages')
+    const home = readFileSync(join(pages, 'HomePage.tsx'), 'utf8').toLowerCase()
+    const identify = readFileSync(join(pages, 'IdentifyPage.tsx'), 'utf8').toLowerCase()
+    const resultCard = readFileSync(
+      join(process.cwd(), 'src', 'components', 'ResultCard.tsx'),
+      'utf8',
+    ).toLowerCase()
+
+    expect(home).toMatch(/nunca consumo|never consum/)
+    expect(identify).toMatch(/orientaci|never consum|nunca/)
+    expect(resultCard).toMatch(/orientaci|never consum|nunca|disclaimer|safety/)
+    for (const src of [home, identify, resultCard]) {
+      expect(src).not.toMatch(/safe to eat|puedes comer|apto para consumir/)
+    }
+  })
 })

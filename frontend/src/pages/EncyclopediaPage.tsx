@@ -1,5 +1,5 @@
 /** Encyclopedia — family browse, ranked search, flat 2D photo grid only. */
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { countByRisk, displayCommonName } from '../data/speciesCatalog'
@@ -15,6 +15,7 @@ import { buildEmptyEncyclopediaBrowseList } from '../lib/encyclopediaPopularity'
 import { EmptyState } from '../components/EmptyState'
 import { IconMushroom } from '../components/icons'
 import { Skeleton } from '../components/ui/Skeleton'
+import { Button, Icon, LinkButton, PageShell } from '../components/ui'
 import { scientificNameToSlug } from '../lib/slug'
 import { deadlyPriorityViews } from '../lib/diagnosticViews'
 import {
@@ -38,8 +39,12 @@ export function EncyclopediaPage() {
   const { t, i18n } = useTranslation()
   const locale = i18n.resolvedLanguage || i18n.language || 'es'
   const priorityViews = useMemo(() => deadlyPriorityViews().slice(0, 3), [])
-  const { catalog: speciesCatalog, meta: speciesCatalogMeta, loading: catalogLoading } =
-    useSpeciesCatalog()
+  const {
+    catalog: speciesCatalog,
+    meta: speciesCatalogMeta,
+    loading: catalogLoading,
+    error: catalogError,
+  } = useSpeciesCatalog()
   const [query, setQuery] = useState('')
   /** E-09: debounced query for ranked search (150ms) — fewer main-thread spikes. */
   const [debouncedQuery, setDebouncedQuery] = useState('')
@@ -50,8 +55,12 @@ export function EncyclopediaPage() {
   const [trait, setTrait] = useState<StudyTraitId | 'all'>('all')
   const [page, setPage] = useState(0)
   const [moreFamilies, setMoreFamilies] = useState(false)
+  /** v1.11: group the photo grid by family (First-Nature gallery pattern). */
+  const [groupByFamily, setGroupByFamily] = useState(false)
   /** P17: live Index Fungorum hints for scientific queries (names only). */
   const [ifHint, setIfHint] = useState<IfSearchHint | null>(null)
+  /** Quick genus filter (Boletus / Lactarius…) — complements family chips */
+  const [genus, setGenus] = useState<string>('all')
 
   useEffect(() => {
     const timer = window.setTimeout(() => setDebouncedQuery(query), 150)
@@ -85,6 +94,7 @@ export function EncyclopediaPage() {
   const foodStats = useMemo(() => foodQualityStats(), [])
   const traitCounts = useMemo(() => countByStudyTrait(speciesCatalog), [speciesCatalog])
 
+  // SSOT risk labels only (no dead `poisonous` option — catalog maps to toxic)
   const riskFilters = useMemo(
     () =>
       [
@@ -92,10 +102,6 @@ export function EncyclopediaPage() {
         {
           id: 'deadly' as const,
           label: t('encyclopedia.riskDeadly', { defaultValue: 'Mortal' }),
-        },
-        {
-          id: 'poisonous' as const,
-          label: t('encyclopedia.riskToxic', { defaultValue: 'Tóxica' }),
         },
         {
           id: 'toxic' as const,
@@ -162,6 +168,14 @@ export function EncyclopediaPage() {
             return fq?.food_class === food
           }
 
+    const applyGenus = <T extends { taxon: string }>(rows: T[]): T[] => {
+      if (genus === 'all') return rows
+      const g = genus.toLowerCase()
+      return rows.filter(
+        (s) => s.taxon.toLowerCase().startsWith(`${g} `) || s.taxon.toLowerCase() === g,
+      )
+    }
+
     // Empty browse: FULL filtered catalog + popularity sort (no limit-200 / risk-boost cutoff).
     if (!q) {
       let list = buildEmptyEncyclopediaBrowseList(speciesCatalog, {
@@ -170,7 +184,7 @@ export function EncyclopediaPage() {
         foodKeep,
       })
       list = filterByStudyTrait(list, trait)
-      return list
+      return applyGenus(list)
     }
 
     // Non-empty query: relevance ranking + optional IF nomenclature hints (P17).
@@ -184,17 +198,54 @@ export function EncyclopediaPage() {
     })
     if (foodKeep) list = list.filter((s) => foodKeep(s.taxon))
     list = filterByStudyTrait(list, trait)
-    return list
-  }, [speciesCatalog, debouncedQuery, risk, family, food, trait, ifHint])
+    return applyGenus(list)
+  }, [speciesCatalog, debouncedQuery, risk, family, food, trait, ifHint, genus])
 
   const results = useMemo(
     () => allResults.slice(0, (page + 1) * PAGE_SIZE),
     [allResults, page],
   )
 
+  /** v1.11: bucket the visible results by family (ES label) so the grid can be
+   * banded into First-Nature-style family galleries. Preserves catalog order
+   * within each family. */
+  const resultsByFamily = useMemo(() => {
+    if (!groupByFamily) return []
+    const buckets = new Map<string, typeof results>()
+    for (const s of results) {
+      const latin = (s.family || '').trim()
+      const fam =
+        s.family_es ||
+        (latin
+          ? latin
+          : t('encyclopedia.noFamily', { defaultValue: 'Sin familia' }))
+      const arr = buckets.get(fam) ?? []
+      arr.push(s)
+      buckets.set(fam, arr)
+    }
+    return Array.from(buckets.entries())
+  }, [results, groupByFamily, t])
+
   const featured = allResults[0]
   const featuredRisk = featured ? getRiskMeta(featured.risk_label) : null
   const hasMore = results.length < allResults.length
+  /** R2: intersection sentinel auto-loads next page (button remains for a11y). */
+  const loadMoreSentinelRef = useRef<HTMLDivElement | null>(null)
+  useEffect(() => {
+    if (!hasMore) return
+    const el = loadMoreSentinelRef.current
+    if (!el || typeof IntersectionObserver === 'undefined') return
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setPage((p) => p + 1)
+        }
+      },
+      { root: null, rootMargin: '320px 0px', threshold: 0 },
+    )
+    io.observe(el)
+    return () => io.disconnect()
+  }, [hasMore, results.length, groupByFamily])
   const featuredCommon = featured
     ? displayCommonName(featured, locale)
     : ''
@@ -211,10 +262,38 @@ export function EncyclopediaPage() {
     setRisk(v)
     setPage(0)
   }
+  const scrollToResults = () => {
+    window.requestAnimationFrame(() => {
+      document.getElementById('ency-results')?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      })
+    })
+  }
+
   const onFamily = (v: string) => {
     setFamily(v)
+    setGenus('all')
     setPage(0)
+    scrollToResults()
   }
+
+  const onGenus = (v: string) => {
+    setGenus(v)
+    // Genus pick clears family so Boletus is not limited to incomplete Boletaceae rows only
+    if (v !== 'all') setFamily('all')
+    setPage(0)
+    scrollToResults()
+  }
+
+  const GENUS_QUICK = [
+    { id: 'all', labelKey: 'encyclopedia.genusAll', fb: 'Todos los géneros' },
+    { id: 'Boletus', labelKey: 'encyclopedia.genusBoletus', fb: 'Boletus' },
+    { id: 'Lactarius', labelKey: 'encyclopedia.genusLactarius', fb: 'Lactarius' },
+    { id: 'Amanita', labelKey: 'encyclopedia.genusAmanita', fb: 'Amanita' },
+    { id: 'Russula', labelKey: 'encyclopedia.genusRussula', fb: 'Russula' },
+    { id: 'Cantharellus', labelKey: 'encyclopedia.genusCantharellus', fb: 'Cantharellus' },
+  ] as const
   const onFood = (v: 'all' | FoodClass | 'documented') => {
     setFood(v)
     setPage(0)
@@ -227,12 +306,14 @@ export function EncyclopediaPage() {
   const foodNote = encyclopediaFoodFilterNote(locale)
 
   return (
-    <div className="cn-page page-encyclopedia encyclopedia-shell page-encyclopedia--cn" data-skin="campo-nocturno">
-      <p className="cn-warn-strip" role="note">
-        {t('encyclopedia.orientation', {
-          defaultValue: 'Solo orientación · nunca consumo',
-        })}
-      </p>
+    <PageShell
+      className="page-encyclopedia encyclopedia-shell page-encyclopedia--cn"
+      testId="encyclopedia-page"
+      orientationSticky
+      orientationText={t('encyclopedia.orientation', {
+        defaultValue: 'Solo orientación · nunca consumo',
+      })}
+    >
       <header className="mkt-page-head mkt-mesh">
         <p className="mkt-kicker">
           {t('encyclopedia.kicker', { defaultValue: 'Catálogo · riesgo claro' })}
@@ -291,20 +372,24 @@ export function EncyclopediaPage() {
           ))}
         </div>
         <div className="mkt-multiview-strip__actions">
-          <Link
+          <LinkButton
             to="/identificar"
-            className="mkt-btn mkt-btn--primary mkt-btn--sm"
+            skin="mkt"
+            variant="primary"
+            size="sm"
             data-testid="encyclopedia-cta-identify"
           >
-            {t('encyclopedia.ctaIdentify', { defaultValue: 'Identificar multi-vista' })}
-          </Link>
-          <Link
+            {t('encyclopedia.ctaIdentify', { defaultValue: 'Identificar' })}
+          </LinkButton>
+          <LinkButton
             to="/educacion"
-            className="mkt-btn mkt-btn--ghost mkt-btn--sm"
+            skin="mkt"
+            variant="ghost"
+            size="sm"
             data-testid="encyclopedia-cta-edu"
           >
-            {t('encyclopedia.ctaEdu', { defaultValue: 'Educación multi-vista' })}
-          </Link>
+            {t('encyclopedia.ctaEdu', { defaultValue: 'Cómo fotografiar' })}
+          </LinkButton>
         </div>
       </section>
 
@@ -312,8 +397,7 @@ export function EncyclopediaPage() {
         <FamilyGuideStrip
           catalog={speciesCatalog}
           onSelectFamily={(f) => {
-            setFamily(f)
-            setPage(0)
+            onFamily(f)
           }}
           maxFamilies={8}
         />
@@ -336,7 +420,7 @@ export function EncyclopediaPage() {
         </div>
       )}
 
-      {/* Featured: flat field-photo card only (no procedural spin viewer) */}
+      {/* Featured: single SpeciesPhotoCard (priority + catalog-first cascade) */}
       {featured && !catalogLoading && (
         <section
           className="ency-featured-flat"
@@ -351,7 +435,7 @@ export function EncyclopediaPage() {
               name: featuredCommon || featured.taxon,
             })}
           </p>
-          <div className="ency-featured-flat__grid">
+          <div className="ency-featured-flat__hero-media" data-testid="ency-featured-hero">
             <SpeciesPhotoCard species={featured} priority />
           </div>
           <p className="ency-featured-flat__meta">
@@ -368,6 +452,7 @@ export function EncyclopediaPage() {
             <Link
               to={`/enciclopedia/${featured.slug || scientificNameToSlug(featured.taxon)}`}
               className="ency-featured-flat__link"
+              data-testid="ency-featured-open"
             >
               {t('encyclopedia.openFiche', { defaultValue: 'Abrir ficha' })}
             </Link>
@@ -526,7 +611,27 @@ export function EncyclopediaPage() {
         </div>
       </section>
 
-      <div className="family-chip-row" role="list">
+      <div
+        className="genus-chip-row"
+        role="list"
+        aria-label={t('encyclopedia.genusAria', { defaultValue: 'Géneros frecuentes' })}
+        data-testid="ency-genus-chips"
+      >
+        {GENUS_QUICK.map((g) => (
+          <button
+            key={g.id}
+            type="button"
+            role="listitem"
+            className={`family-chip genus-chip ${genus === g.id ? 'family-chip--active' : ''}`}
+            data-testid={`ency-genus-${g.id.toLowerCase()}`}
+            onClick={() => onGenus(g.id)}
+          >
+            {t(g.labelKey, { defaultValue: g.fb })}
+          </button>
+        ))}
+      </div>
+
+      <div className="family-chip-row" role="list" data-testid="ency-family-chips">
         <button
           type="button"
           className={`family-chip ${family === 'all' ? 'family-chip--active' : ''}`}
@@ -541,6 +646,7 @@ export function EncyclopediaPage() {
             role="listitem"
             title={f.family}
             className={`family-chip ${family === f.family ? 'family-chip--active' : ''}`}
+            data-testid={`ency-family-chip-${f.family}`}
             onClick={() => onFamily(f.family)}
           >
             {f.family_es}
@@ -560,54 +666,104 @@ export function EncyclopediaPage() {
         )}
       </div>
 
-      <p className="results-count">
-        {allResults.length}{' '}
-        {allResults.length === 1
-          ? t('encyclopedia.speciesOne', { defaultValue: 'especie' })
-          : t('encyclopedia.speciesMany', { defaultValue: 'especies' })}
-        {family !== 'all'
-          ? ` · ${families.find((x) => x.family === family)?.family_es || family}`
-          : ''}
-        {trait !== 'all'
-          ? ` · ${t(
-              STUDY_TRAIT_OPTIONS.find((o) => o.id === trait)?.labelKey || 'encyclopedia.traitAll',
-              {
-                defaultValue:
-                  STUDY_TRAIT_OPTIONS.find((o) => o.id === trait)?.labelFallback || trait,
-              },
-            )}`
-          : ''}
-        {results.length < allResults.length
-          ? ` · ${t('encyclopedia.showingN', {
-              defaultValue: 'mostrando {{n}}',
-              n: results.length,
-            })}`
-          : ''}
-      </p>
+      {/* v1.11: group-by-family toggle (First-Nature gallery pattern) */}
+      {family === 'all' && allResults.length > 0 && (
+        <div className="ency-group-toggle-row">
+          <button
+            type="button"
+            className={`ency-group-toggle ${groupByFamily ? 'ency-group-toggle--active' : ''}`}
+            aria-pressed={groupByFamily}
+            data-testid="ency-group-by-family"
+            onClick={() => setGroupByFamily((v) => !v)}
+          >
+            <Icon name="auto_awesome_mosaic" size="sm" aria-hidden="true" />
+            {t('encyclopedia.groupByFamily', { defaultValue: 'Agrupar por familia' })}
+          </button>
+        </div>
+      )}
 
-      {results.length > 0 ? (
+      <div id="ency-results" className="ency-results-anchor" tabIndex={-1}>
+        <p className="results-count" data-testid="ency-results-count">
+          {allResults.length}{' '}
+          {allResults.length === 1
+            ? t('encyclopedia.speciesOne', { defaultValue: 'especie' })
+            : t('encyclopedia.speciesMany', { defaultValue: 'especies' })}
+          {family !== 'all'
+            ? ` · ${families.find((x) => x.family === family)?.family_es || family}`
+            : ''}
+          {genus !== 'all' ? ` · ${genus}` : ''}
+          {trait !== 'all'
+            ? ` · ${t(
+                STUDY_TRAIT_OPTIONS.find((o) => o.id === trait)?.labelKey || 'encyclopedia.traitAll',
+                {
+                  defaultValue:
+                    STUDY_TRAIT_OPTIONS.find((o) => o.id === trait)?.labelFallback || trait,
+                },
+              )}`
+            : ''}
+          {results.length < allResults.length
+            ? ` · ${t('encyclopedia.showingN', {
+                defaultValue: 'mostrando {{n}}',
+                n: results.length,
+              })}`
+            : ''}
+        </p>
+      </div>
+
+      {catalogError ? (
+        <EmptyState
+          title={t('encyclopedia.errorTitle', { defaultValue: 'No se pudo cargar el catálogo' })}
+          description={catalogError}
+          icon={<IconMushroom size={28} />}
+          actionLabel={t('actions.retry', { defaultValue: 'Reintentar' })}
+          onAction={() => window.location.reload()}
+        />
+      ) : catalogLoading ? null : results.length > 0 ? (
         <>
-          <div className="species-photo-grid">
-            {results.map((s) => (
-              <SpeciesPhotoCard
-                key={s.slug}
-                species={s}
-                priority={results.indexOf(s) < 4}
-              />
-            ))}
-          </div>
+          {groupByFamily && resultsByFamily.length > 0 ? (
+            /* v1.11: family-banded galleries (First-Nature pattern) */
+            resultsByFamily.map(([fam, items]) => (
+              <section className="ency-family-section" key={fam}>
+                <h3 className="ency-family-section__title">
+                  <Icon name="auto_awesome_mosaic" size="sm" aria-hidden="true" />
+                  {fam}
+                  <span className="ency-family-section__count">
+                    {t('encyclopedia.familyCount', {
+                      defaultValue: '{{n}} especies',
+                      n: items.length,
+                    })}
+                  </span>
+                </h3>
+                <div className="species-photo-grid">
+                  {items.map((s, i) => (
+                    <SpeciesPhotoCard key={s.slug} species={s} priority={i < 4} />
+                  ))}
+                </div>
+              </section>
+            ))
+          ) : (
+            <div className="species-photo-grid">
+              {results.map((s, i) => (
+                <SpeciesPhotoCard key={s.slug} species={s} priority={i < 4} />
+              ))}
+            </div>
+          )}
           {hasMore && (
-            <div className="ency-more">
-              <button
+            <div className="ency-more" ref={loadMoreSentinelRef}>
+              <Button
                 type="button"
-                className="btn-atelier btn-atelier--primary"
+                variant="primary"
                 onClick={() => setPage((p) => p + 1)}
+                data-testid="encyclopedia-load-more"
               >
                 {t('encyclopedia.loadMoreRest', {
-                  defaultValue: 'Cargar más ({{n}} restantes)',
-                  n: allResults.length - results.length,
+                  defaultValue: 'Cargar más',
                 })}
-              </button>
+                <span className="muted">
+                  {' '}
+                  ({allResults.length - results.length})
+                </span>
+              </Button>
             </div>
           )}
         </>
@@ -628,6 +784,6 @@ export function EncyclopediaPage() {
           }}
         />
       )}
-    </div>
+    </PageShell>
   )
 }

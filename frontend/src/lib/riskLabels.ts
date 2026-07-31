@@ -17,7 +17,7 @@ export const RISK_META: Record<
   { label: string; className: string; icon: string; short: string }
 > = {
   deadly: { label: 'Mortal', short: 'Mortal', className: 'risk-deadly', icon: '' },
-  poisonous: { label: 'Tóxica', short: 'Tóxica', className: 'risk-poisonous', icon: '' },
+  poisonous: { label: 'Venenosa', short: 'Venenosa', className: 'risk-poisonous', icon: '' },
   toxic: { label: 'Tóxica', short: 'Tóxica', className: 'risk-toxic', icon: '' },
   unknown_or_risky: {
     // Educational low-risk / documented-edible bucket — never "safe to eat"

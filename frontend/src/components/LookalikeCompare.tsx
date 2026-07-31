@@ -1,7 +1,7 @@
 /** Side-by-side lookalike comparison — risk chips only, mobile 1-gesture (D-07). */
 import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react'
-import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { LinkButton } from './ui'
 import { SpeciesImage } from './SpeciesImage'
 import { RiskChip } from './RiskChip'
 import { scientificNameToSlug } from '../lib/slug'
@@ -171,9 +171,11 @@ export function LookalikeCompare({ current, lookalikes, resolve }: LookalikeComp
               scientificName={sciName(current)}
               slug={current.slug}
               variant="card"
+              quality="thumb"
               riskLevel={riskToPlaceholder(curRisk)}
               alt={sciName(current)}
               showMediaBadge="auto"
+              sizes="(max-width: 600px) 45vw, 220px"
             />
           </div>
           <div className="lookalike-compare__card-body">
@@ -198,12 +200,14 @@ export function LookalikeCompare({ current, lookalikes, resolve }: LookalikeComp
               scientificName={selected.la.scientific_name}
               slug={selected.slug}
               variant="card"
+              quality="thumb"
               riskLevel={riskToPlaceholder(
                 other?.risk_level || other?.risk_label,
                 other?.edibility_code,
               )}
               alt={selected.la.scientific_name}
               showMediaBadge="auto"
+              sizes="(max-width: 600px) 45vw, 220px"
             />
           </div>
           <div className="lookalike-compare__card-body">
@@ -215,12 +219,9 @@ export function LookalikeCompare({ current, lookalikes, resolve }: LookalikeComp
             {other ? (
               <>
                 <p className="lookalike-compare__family muted">{other.family || '—'}</p>
-                <Link
-                  to={`/enciclopedia/${other.slug}`}
-                  className="btn-atelier btn-atelier--ghost btn-atelier--sm"
-                >
+                <LinkButton to={`/enciclopedia/${other.slug}`} variant="ghost">
                   {t('lookalike.viewDetail', { defaultValue: 'Ver ficha' })}
-                </Link>
+                </LinkButton>
               </>
             ) : (
               <p className="lookalike-compare__missing">

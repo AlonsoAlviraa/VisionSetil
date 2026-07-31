@@ -3367,6 +3367,23 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.35rem;
+  align-items: center;
+}
+.notebook-pin-list__map-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid var(--line, rgba(143, 188, 143, 0.28));
+  color: var(--text, inherit);
+  font-weight: 600;
+  font-size: 0.88rem;
+  text-decoration: none;
+}
+.notebook-pin-list__map-link:hover {
+  border-color: color-mix(in srgb, var(--moss, #8fbc8f) 45%, var(--line));
+  background: color-mix(in srgb, var(--moss, #8fbc8f) 12%, transparent);
 }
 @media (prefers-reduced-motion: reduce) {
   .notebook-pin-list__row {

@@ -220,7 +220,9 @@ export function pickDailyWordle(
 ): WordleSpecies {
   if (pool.length === 0) throw new Error('Wordle pool empty')
   const lang = localeLang(locale)
-  const idx = hashSeed(dayKey(date) + ':mushroom-wordle:' + lang) % pool.length
+  // Align salt with dailyGames LoLdle board (`wordle`) so hub foto/mode hints match.
+  const idx =
+    hashSeed(`visionsetil|daily|${dayKey(date)}|wordle|${lang}|v1`) % pool.length
   return pool[idx]
 }
 

@@ -50,6 +50,11 @@ export function SeasonalTopStrip({ limit = 8 }: { limit?: number }) {
             <Link
               to={`/enciclopedia/${item.slug}`}
               className="seasonal-top-strip__card"
+              data-testid={`seasonal-card-${item.slug}`}
+              aria-label={t('home.seasonCardAria', {
+                defaultValue: '{{name}} · ficha educativa · solo orientación',
+                name: item.common_name || item.taxon,
+              })}
             >
               <div className="seasonal-top-strip__media" aria-hidden="true">
                 <SpeciesImage
@@ -59,9 +64,9 @@ export function SeasonalTopStrip({ limit = 8 }: { limit?: number }) {
                   variant="card"
                   layout="fill"
                   preferCatalog
-                  quality="thumb"
-                  priority={idx < 2}
-                  sizes="(max-width: 640px) 45vw, 200px"
+                  quality="display"
+                  priority={idx === 0}
+                  sizes="(max-width: 640px) 45vw, 280px"
                 />
               </div>
               <div className="seasonal-top-strip__meta">

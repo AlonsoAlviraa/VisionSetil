@@ -28,6 +28,54 @@ export type MediaCandidate = {
   role?: string
 }
 
+/** Shared media surface policy (audit T6) — product_unlock never in this module. */
+export type MediaSurface =
+  | 'encyclopedia_grid'
+  | 'species_detail'
+  | 'games_hub'
+  | 'lookalike_compare'
+  | 'featured_home'
+
+export type MediaSurfacePolicy = {
+  quality: PhotoDisplayQuality
+  preferLocal: boolean
+  maxCandidates: number
+  maxGallery: number
+}
+
+export const MEDIA_SURFACE_POLICY: Record<MediaSurface, MediaSurfacePolicy> = {
+  encyclopedia_grid: {
+    quality: 'thumb',
+    preferLocal: true,
+    maxCandidates: 3,
+    maxGallery: 0,
+  },
+  species_detail: {
+    quality: 'hd',
+    preferLocal: false,
+    maxCandidates: 6,
+    maxGallery: 4,
+  },
+  games_hub: {
+    quality: 'display',
+    preferLocal: false,
+    maxCandidates: 3,
+    maxGallery: 0,
+  },
+  lookalike_compare: {
+    quality: 'display',
+    preferLocal: false,
+    maxCandidates: 3,
+    maxGallery: 0,
+  },
+  featured_home: {
+    quality: 'display',
+    preferLocal: false,
+    maxCandidates: 3,
+    maxGallery: 0,
+  },
+}
+
 /**
  * Iconic taxa with strong photo packs — lead product surfaces.
  * Popular culinary/search icons first so encyclopedia + flashcards paint recognizable heroes.

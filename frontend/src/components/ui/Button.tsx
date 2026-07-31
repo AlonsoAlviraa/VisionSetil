@@ -2,7 +2,7 @@
  * Unified Button (Phase D-02).
  * Emits both `vs-btn` (size/API) and `btn-atelier` (product visual SSOT).
  */
-import type { ButtonHTMLAttributes, ReactNode } from 'react'
+import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from 'react'
 
 type Variant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'ink'
 type Size = 'sm' | 'md' | 'lg'
@@ -18,6 +18,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 function atelierVariant(variant: Variant): string {
   switch (variant) {
     case 'secondary':
+      return 'btn-atelier--secondary'
     case 'ghost':
       return 'btn-atelier--ghost'
     case 'danger':
@@ -30,15 +31,18 @@ function atelierVariant(variant: Variant): string {
   }
 }
 
-export function Button({
-  variant = 'primary',
-  size = 'md',
-  className = '',
-  children,
-  type = 'button',
-  block = false,
-  ...rest
-}: ButtonProps) {
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
+  {
+    variant = 'primary',
+    size = 'md',
+    className = '',
+    children,
+    type = 'button',
+    block = false,
+    ...rest
+  },
+  ref,
+) {
   const classes = [
     'vs-btn',
     `vs-btn--${variant === 'secondary' ? 'secondary' : variant}`,
@@ -52,8 +56,8 @@ export function Button({
     .join(' ')
 
   return (
-    <button type={type} className={classes} {...rest}>
+    <button ref={ref} type={type} className={classes} {...rest}>
       {children}
     </button>
   )
-}
+})

@@ -3,7 +3,6 @@
  * - ResultModeBanner: mode banner (real | mock | blocked) via honesty.* i18n
  * - EducationalBlockedShell: CTAs when gate blocks species ID
  */
-import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { ClassificationResult, QualityGateReasonCode } from '../api/types'
 import {
@@ -12,6 +11,7 @@ import {
   type ClassifyMode,
 } from '../lib/classifyMode'
 import { IconAlert, IconExpert, IconInfo, IconSearch } from './icons'
+import { LinkButton } from './ui'
 
 const KNOWN_GATE_CODES: readonly QualityGateReasonCode[] = [
   'no_metrics',
@@ -48,9 +48,10 @@ export function ResultModeBanner({ result, className = '' }: BannerProps) {
   return (
     <div
       className={`result-mode-banner result-mode-banner--${mode} ${className}`.trim()}
-      role="status"
+      role={mode === 'blocked' ? 'alert' : 'status'}
       data-testid="result-mode-banner"
       data-mode={mode}
+      aria-live={mode === 'blocked' ? 'assertive' : 'polite'}
     >
       <div className="result-mode-banner__row">
         {mode === 'blocked' ? (
@@ -143,29 +144,17 @@ export function EducationalBlockedShell({
         className="educational-blocked-shell__ctas"
         data-testid="educational-blocked-ctas"
       >
-        <Link
-          to="/enciclopedia"
-          className="btn-atelier btn-atelier--primary"
-          data-testid="cta-encyclopedia"
-        >
+        <LinkButton to="/enciclopedia" variant="primary" data-testid="cta-encyclopedia">
           <IconSearch size={16} />
           {t('honesty.cta.encyclopedia')}
-        </Link>
-        <Link
-          to="/educacion"
-          className="btn-atelier btn-atelier--ghost"
-          data-testid="cta-education"
-        >
+        </LinkButton>
+        <LinkButton to="/educacion" variant="ghost" data-testid="cta-education">
           {t('honesty.cta.education')}
-        </Link>
-        <Link
-          to="/revision-experta"
-          className="btn-atelier btn-atelier--ghost"
-          data-testid="cta-expert"
-        >
+        </LinkButton>
+        <LinkButton to="/revision-experta" variant="ghost" data-testid="cta-expert">
           <IconExpert size={16} />
           {t('honesty.cta.expert')}
-        </Link>
+        </LinkButton>
       </div>
     </section>
   )

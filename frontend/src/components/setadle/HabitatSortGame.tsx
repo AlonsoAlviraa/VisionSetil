@@ -10,6 +10,7 @@ import {
   scoreHabitatSort,
   type HabitatRound,
 } from '../../lib/setadle'
+import { Button } from '../ui'
 
 type Zone = 'tray' | 'yes' | 'no'
 
@@ -20,7 +21,7 @@ type Props = {
 }
 
 export function HabitatSortGame({ round, disabled, onWin }: Props) {
-  const { i18n } = useTranslation()
+  const { t, i18n } = useTranslation()
   const locale = i18n.resolvedLanguage || i18n.language || 'es'
   const [placement, setPlacement] = useState<Record<string, Zone>>(() => {
     const init: Record<string, Zone> = {}
@@ -122,6 +123,7 @@ export function HabitatSortGame({ round, disabled, onWin }: Props) {
           <SpeciesImage
             scientificName={taxon}
             variant="thumb"
+            quality="thumb"
             riskLevel={risk === 'deadly' ? 'deadly' : 'default'}
             alt=""
             preferCatalog={false}
@@ -160,53 +162,78 @@ export function HabitatSortGame({ round, disabled, onWin }: Props) {
         </h2>
         <p className="hab-game__blurb">{round.habitat.blurb}</p>
         <p className="hab-game__hint">
-          Arrastra cada seta a <strong>Sí, vive aquí</strong> o <strong>No</strong>. También
-          puedes tocar la seta y luego la zona.
+          {t('setadle.habitat.hint', {
+            defaultValue:
+              'Arrastra cada seta a «Sí, vive aquí» o «No». También puedes tocar la seta y luego la zona.',
+          })}
         </p>
       </div>
 
       {selected && (
-        <div className="hab-quick-place" role="toolbar" aria-label="Colocar seta seleccionada">
-          <span>Colocar:</span>
-          <button type="button" className="btn-atelier btn-atelier--primary" onClick={() => moveTo(selected, 'yes')}>
-            → Sí
-          </button>
-          <button type="button" className="btn-atelier btn-atelier--ghost" onClick={() => moveTo(selected, 'no')}>
-            → No
-          </button>
-          <button type="button" className="btn-atelier btn-atelier--ghost" onClick={() => moveTo(selected, 'tray')}>
-            Bandeja
-          </button>
+        <div
+          className="hab-quick-place"
+          role="toolbar"
+          aria-label={t('setadle.habitat.placeAria', {
+            defaultValue: 'Colocar seta seleccionada',
+          })}
+        >
+          <span>{t('setadle.habitat.place', { defaultValue: 'Colocar:' })}</span>
+          <Button type="button" variant="primary" onClick={() => moveTo(selected, 'yes')}>
+            {t('setadle.habitat.yes', { defaultValue: 'Sí' })}
+          </Button>
+          <Button type="button" variant="ghost" onClick={() => moveTo(selected, 'no')}>
+            {t('setadle.habitat.no', { defaultValue: 'No' })}
+          </Button>
+          <Button type="button" variant="ghost" onClick={() => moveTo(selected, 'tray')}>
+            {t('setadle.habitat.tray', { defaultValue: 'Bandeja' })}
+          </Button>
         </div>
       )}
 
       <div className="hab-zones">
         <div className="hab-zone hab-zone--yes" {...zoneProps('yes')}>
           <header>
-            <strong>Sí, vive aquí</strong>
+            <strong>
+              {t('setadle.habitat.zoneYes', { defaultValue: 'Sí, vive aquí' })}
+            </strong>
             <span>{byZone.yes.length}</span>
           </header>
           <div className="hab-zone__cards">
             {byZone.yes.map((c) => renderCard(c.taxon, c.common, c.risk_raw, 'yes'))}
-            {byZone.yes.length === 0 && <p className="hab-zone__empty">Suelta aquí las que sí</p>}
+            {byZone.yes.length === 0 && (
+              <p className="hab-zone__empty">
+                {t('setadle.habitat.dropYes', { defaultValue: 'Suelta aquí las que sí' })}
+              </p>
+            )}
           </div>
         </div>
         <div className="hab-zone hab-zone--no" {...zoneProps('no')}>
           <header>
-            <strong>No pertenece</strong>
+            <strong>
+              {t('setadle.habitat.zoneNo', { defaultValue: 'No pertenece' })}
+            </strong>
             <span>{byZone.no.length}</span>
           </header>
           <div className="hab-zone__cards">
             {byZone.no.map((c) => renderCard(c.taxon, c.common, c.risk_raw, 'no'))}
-            {byZone.no.length === 0 && <p className="hab-zone__empty">Suelta aquí las que no</p>}
+            {byZone.no.length === 0 && (
+              <p className="hab-zone__empty">
+                {t('setadle.habitat.dropNo', { defaultValue: 'Suelta aquí las que no' })}
+              </p>
+            )}
           </div>
         </div>
       </div>
 
       <div className="hab-tray" {...zoneProps('tray')}>
         <header>
-          <strong>Bandeja</strong>
-          <span>{byZone.tray.length} por colocar</span>
+          <strong>{t('setadle.habitat.tray', { defaultValue: 'Bandeja' })}</strong>
+          <span>
+            {t('setadle.habitat.trayCount', {
+              defaultValue: '{{n}} por colocar',
+              n: byZone.tray.length,
+            })}
+          </span>
         </header>
         <div className="hab-zone__cards">
           {byZone.tray.map((c) => renderCard(c.taxon, c.common, c.risk_raw, 'tray'))}
@@ -214,17 +241,17 @@ export function HabitatSortGame({ round, disabled, onWin }: Props) {
       </div>
 
       <div className="hab-actions">
-        <button
+        <Button
           type="button"
-          className="btn-atelier btn-atelier--primary"
+          variant="primary"
           disabled={!allPlaced || disabled || Boolean(result?.won)}
           onClick={onCheck}
         >
-          Comprobar
-        </button>
-        <button type="button" className="btn-atelier btn-atelier--ghost" onClick={onReset} disabled={disabled}>
-          Reiniciar
-        </button>
+          {t('setadle.habitat.check', { defaultValue: 'Comprobar' })}
+        </Button>
+        <Button type="button" variant="ghost" onClick={onReset} disabled={disabled}>
+          {t('setadle.habitat.reset', { defaultValue: 'Reiniciar' })}
+        </Button>
       </div>
 
       {result && (

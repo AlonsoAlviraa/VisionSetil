@@ -155,9 +155,11 @@ export function migrateHistoryEntry(raw: HistoryEntry): HistoryEntry {
     locale = resultLocaleToPromote(result)
   }
 
+  const previews = sanitizeHistoryPreviews(raw.previews)
   return {
     ...raw,
     result,
+    previews,
     mode,
     gate_summary: gate_summary ?? null,
     locale,
@@ -180,6 +182,10 @@ function needsMigrate(raw: HistoryEntry): boolean {
   if (raw.gate_summary === undefined) return true
   // Only when migrate would actually stamp a non-empty locale (empty string is a no-op)
   if (raw.locale === undefined && resultLocaleToPromote(raw.result) !== undefined) {
+    return true
+  }
+  // Strip dead blob: previews so notebook does not show broken thumbs after reload
+  if (Array.isArray(raw.previews) && raw.previews.some((p) => typeof p === 'string' && p.startsWith('blob:'))) {
     return true
   }
   return false
@@ -228,6 +234,99 @@ export function saveHistory(entries: HistoryEntry[], storage: StorageLike = loca
 /**
  * Build a history entry from a classify result, stamping mode / gate_summary / locale (B-38).
  */
+/** Max previews stored per entry (quota + UX). */
+export const MAX_HISTORY_PREVIEWS = 2
+/** Target long edge for notebook thumbs (keeps localStorage small). */
+const PREVIEW_MAX_EDGE = 320
+/** Soft cap per data-URL length (~chars). */
+const PREVIEW_MAX_CHARS = 100_000
+
+/**
+ * Drop non-durable preview URLs (blob: dies after reload).
+ * Keep data: and http(s) only.
+ */
+export function sanitizeHistoryPreviews(previews: string[] | undefined | null): string[] {
+  if (!previews?.length) return []
+  return previews.filter((p) => {
+    if (!p || typeof p !== 'string') return false
+    if (p.startsWith('blob:')) return false
+    return (
+      p.startsWith('data:image/') ||
+      p.startsWith('https://') ||
+      p.startsWith('http://')
+    )
+  })
+}
+
+/**
+ * Re-encode a blob:/data: image into a small JPEG data URL for localStorage.
+ * Returns null if the image cannot be loaded/decoded.
+ */
+export function compressPreviewToDataUrl(
+  src: string,
+  opts?: { maxEdge?: number; maxChars?: number },
+): Promise<string | null> {
+  const maxEdge = opts?.maxEdge ?? PREVIEW_MAX_EDGE
+  const maxChars = opts?.maxChars ?? PREVIEW_MAX_CHARS
+  if (!src) return Promise.resolve(null)
+  if (src.startsWith('https://') || src.startsWith('http://')) {
+    return Promise.resolve(src)
+  }
+  if (src.startsWith('data:image/') && src.length <= maxChars) {
+    return Promise.resolve(src)
+  }
+
+  return new Promise((resolve) => {
+    const img = new Image()
+    img.onload = () => {
+      try {
+        const canvas = document.createElement('canvas')
+        const nw = img.naturalWidth || maxEdge
+        const nh = img.naturalHeight || maxEdge
+        const scale = Math.min(1, maxEdge / Math.max(nw, nh))
+        canvas.width = Math.max(1, Math.round(nw * scale))
+        canvas.height = Math.max(1, Math.round(nh * scale))
+        const ctx = canvas.getContext('2d')
+        if (!ctx) {
+          resolve(null)
+          return
+        }
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+        for (const q of [0.72, 0.55, 0.4, 0.28]) {
+          const data = canvas.toDataURL('image/jpeg', q)
+          if (data.length <= maxChars) {
+            resolve(data)
+            return
+          }
+        }
+        resolve(canvas.toDataURL('image/jpeg', 0.22))
+      } catch {
+        resolve(null)
+      }
+    }
+    img.onerror = () => resolve(null)
+    // blob: and data: are same-origin; no crossOrigin needed
+    img.src = src
+  })
+}
+
+/**
+ * Convert session blob: previews into durable data URLs (capped count).
+ * Safe to call in browser; returns [] if nothing usable.
+ */
+export async function persistHistoryPreviews(
+  previews: string[],
+  opts?: { maxPreviews?: number },
+): Promise<string[]> {
+  const max = opts?.maxPreviews ?? MAX_HISTORY_PREVIEWS
+  const out: string[] = []
+  for (const p of previews.slice(0, max)) {
+    const durable = await compressPreviewToDataUrl(p)
+    if (durable) out.push(durable)
+  }
+  return out
+}
+
 export function buildHistoryEntry(input: {
   result: ClassificationResult | HistoryClassification
   previews: string[]
@@ -253,7 +352,8 @@ export function buildHistoryEntry(input: {
   return {
     id: input.id ?? result.request_id,
     timestamp: input.timestamp ?? Date.now(),
-    previews: input.previews,
+    // Never persist raw blob: URLs — caller should use persistHistoryPreviews first
+    previews: sanitizeHistoryPreviews(input.previews),
     result: result as HistoryClassification,
     view_types: input.view_types,
     notes: input.notes,

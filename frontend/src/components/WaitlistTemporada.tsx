@@ -12,6 +12,7 @@ import {
   temporadaHeadlineEs,
   type WaitlistRegion,
 } from '../lib/waitlistTemporada'
+import { Button } from './ui'
 
 type Props = {
   className?: string
@@ -107,13 +108,9 @@ export function WaitlistTemporada({
               ))}
             </select>
           </label>
-          <button
-            type="submit"
-            className="mkt-btn mkt-btn--primary"
-            data-testid="waitlist-submit"
-          >
+          <Button type="submit" variant="primary" data-testid="waitlist-submit">
             Unirme a la waitlist
-          </button>
+          </Button>
         </form>
       )}
 

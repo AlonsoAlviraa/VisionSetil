@@ -11,19 +11,29 @@ const LABELS: Record<AppLocale, string> = {
 }
 
 export function LanguageSwitcher() {
-  const { i18n } = useTranslation()
+  const { t, i18n } = useTranslation()
   if (!featureFlags.I18N) return null
 
   const current = (i18n.language || 'es').slice(0, 2) as AppLocale
 
   return (
-    <div className="lang-switcher" role="group" aria-label="Language" data-testid="language-switcher">
+    <div
+      className="lang-switcher"
+      role="group"
+      aria-label={t('a11y.language', { defaultValue: 'Idioma' })}
+      data-testid="language-switcher"
+    >
       {SUPPORTED_LOCALES.map((loc) => (
         <button
           key={loc}
           type="button"
           className={`lang-switcher__btn ${current === loc ? 'lang-switcher__btn--active' : ''}`}
           aria-pressed={current === loc}
+          aria-label={t('a11y.switchLanguage', {
+            defaultValue: 'Idioma {{code}}',
+            code: LABELS[loc],
+          })}
+          data-testid={`lang-switch-${loc}`}
           onClick={() => setAppLocale(loc)}
         >
           {LABELS[loc]}

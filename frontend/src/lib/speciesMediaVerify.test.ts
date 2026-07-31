@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { speciesCatalog } from '../data/speciesCatalog'
 import {
+  inventoryMediaHealth,
   isPlausiblePhotoUrl,
   requiredPlaceholderPaths,
   verifySpeciesMediaCatalog,
@@ -64,5 +65,14 @@ describe('species media verification', () => {
     const paths = requiredPlaceholderPaths()
     expect(paths).toHaveLength(4)
     expect(paths.every((p) => p.includes('/placeholders/') && p.endsWith('.webp'))).toBe(true)
+  })
+
+  it('offline media health inventory has full resolve coverage (no network)', () => {
+    const inv = inventoryMediaHealth(speciesCatalog)
+    expect(inv.catalogCount).toBeGreaterThanOrEqual(500)
+    expect(inv.resolveCoverage).toBe(1)
+    expect(inv.catalogRemoteCoverage).toBeGreaterThan(0.4)
+    expect(inv.withLocalPath).toBe(inv.catalogCount)
+    expect(inv.issueCount).toBeLessThanOrEqual(200)
   })
 })

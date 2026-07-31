@@ -1,0 +1,7 @@
+# SPA fallback for Netlify / Cloudflare Pages (static FE only).
+# Deep links (/identificar, /enciclopedia/…) must serve index.html.
+# Same-origin /api is NOT provided by this file — use Path A Caddy
+# (deploy/Caddyfile) for colocated API, or split-host VITE_API_URL + CORS.
+# See docs/HOSTING_DEPLOY_BETA.md
+/*
+  /index.html  200

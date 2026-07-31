@@ -2,32 +2,20 @@
  * Species photo attribution — meta.json (local media) + catalog photos JSON.
  * Pure helpers for ficha / gallery chrome. Hide UI when no usable meta.
  * Offline: Cache API first (pack + SW species-media), then network fetch.
+ *
+ * T4: does NOT static-import speciesPhotos.json — uses speciesImageService getters
+ * after hydrateSpeciesPhotos() so the JSON is loaded once.
  */
-import photosDb from '../data/speciesPhotos.json'
 import type { ImageAttributionMeta } from '../components/ui/ImageAttribution'
 import { mediaPublicPrefix } from './speciesImageUrl'
 import { scientificNameToSlug } from './slug'
+import { getCatalogPhotoEntry } from './speciesImageService'
 
 /**
  * Must match offlinePack.OFFLINE_PACK_CACHE + SW_SPECIES_MEDIA_CACHE.
  * Duplicated as strings to avoid circular import (attribution ↔ offlinePack).
  */
 const META_CACHE_NAMES = ['visionsetil-offline-pack-v1', 'species-media'] as const
-
-type CatalogPhotoEntry = {
-  taxon?: string
-  url?: string
-  provider?: string
-  license?: string
-  slug?: string
-  creator?: string
-  attribution_text?: string
-  source_url?: string
-}
-
-type PhotosFile = {
-  photos?: Record<string, CatalogPhotoEntry>
-}
 
 export type SpeciesMediaMetaJson = {
   slug?: string
@@ -39,8 +27,6 @@ export type SpeciesMediaMetaJson = {
   creator?: string | null
   attribution_text?: string | null
 }
-
-const db = photosDb as PhotosFile
 
 /** Human-friendly short license labels for common open licences. */
 export function shortLicenseLabel(license: string | null | undefined): string | null {
@@ -129,21 +115,28 @@ export function attributionFromMediaMetaJson(
   })
 }
 
-/** Sync attribution from bundled speciesPhotos catalog (license / provider). */
+/** Sync attribution from speciesPhotos via speciesImageService (after hydrate). */
 export function attributionFromCatalog(
   taxonOrSlug: string,
 ): ImageAttributionMeta | null {
   if (!taxonOrSlug?.trim()) return null
-  const key = taxonOrSlug.trim().toLowerCase().replace(/-/g, ' ')
-  const slugKey = scientificNameToSlug(taxonOrSlug)
-  const photos = db.photos || {}
-  let entry: CatalogPhotoEntry | undefined = photos[key]
-  if (!entry && slugKey) {
-    entry = Object.values(photos).find(
-      (p) => p.slug === slugKey || p.taxon?.toLowerCase() === key,
-    )
+  const entry = getCatalogPhotoEntry(taxonOrSlug)
+  if (!entry) {
+    // Try slug form as well (e.g. boletus-edulis)
+    const slug = scientificNameToSlug(taxonOrSlug)
+    if (slug && slug !== taxonOrSlug.trim().toLowerCase()) {
+      const bySlug = getCatalogPhotoEntry(slug)
+      if (!bySlug) return null
+      const providerLabel = formatProvider(bySlug.provider)
+      return normalizeAttributionMeta({
+        creator: bySlug.creator || providerLabel,
+        license: bySlug.license,
+        source_url: bySlug.url?.startsWith('http') ? bySlug.url : null,
+        attribution_text: bySlug.attribution_text || undefined,
+      })
+    }
+    return null
   }
-  if (!entry) return null
 
   const providerLabel = formatProvider(entry.provider)
   return normalizeAttributionMeta({

@@ -41,6 +41,7 @@ import {
   type LookalikePairDiagnostic,
 } from '../lib/diagnosticViews'
 import { SpeciesThumb } from './SpeciesThumb'
+import { Button, LinkButton } from './ui'
 import { SpeciesNameBlock } from './SpeciesNameBlock'
 import { RiskChip } from './RiskChip'
 import {
@@ -373,22 +374,21 @@ export function ResultCard({
                 total: packetDensity.criticalTotal,
               })}
             </span>
-            <span className="result-view-density__policy">
+            <span className="result-view-density__policy visually-hidden">
               {t('result.viewDensityPolicy', {
-                defaultValue: 'Paquete multi-vista · orientación only · nunca consumo',
+                defaultValue: 'Paquete multi-vista · solo orientación · nunca consumo',
               })}
             </span>
           </div>
         ) : null}
 
-        <div className="safety-disclaimer" role="alert">
+        <div className="safety-disclaimer safety-disclaimer--compact" role="alert">
           <strong>
             {t('result.safetyOrientation', { defaultValue: 'Solo orientación' })}
           </strong>
-          <p>
-            {t('result.safetyDisclaimerBody', {
-              defaultValue:
-                'Puede fallar. No comas por lo que diga la app — un micólogo manda.',
+          <p className="safety-disclaimer__body-short">
+            {t('result.safetyDisclaimerShort', {
+              defaultValue: 'Puede fallar. Un micólogo manda — nunca consumas por la app.',
             })}
           </p>
           <p className={`safety-disclaimer__level ${sl.class}`}>
@@ -565,9 +565,10 @@ export function ResultCard({
                   })}
                 </ul>
                 {result.predictions.length > 1 && (
-                  <button
+                  <Button
                     type="button"
-                    className="result-more-toggle btn-atelier btn-atelier--ghost"
+                    variant="ghost"
+                    className="result-more-toggle"
                     data-testid="predictions-more-toggle"
                     aria-expanded={showMorePredictions}
                     onClick={() => setShowMorePredictions((v) => !v)}
@@ -578,7 +579,7 @@ export function ResultCard({
                           defaultValue: 'Más pistas ({{count}})',
                           count: Math.min(result.predictions.length, 3) - 1,
                         })}
-                  </button>
+                  </Button>
                 )}
               </div>
             )}
@@ -587,9 +588,9 @@ export function ResultCard({
 
         <div className="review-callout review-callout--compact">
           <div className="review-callout__actions">
-            <button
+            <Button
               type="button"
-              className="btn-atelier btn-atelier--primary"
+              variant="ghost"
               onClick={handleExpertHandoff}
               data-testid="cta-expert-handoff"
             >
@@ -597,18 +598,18 @@ export function ResultCard({
               {needsExpert
                 ? t('result.expertReviewCta', { defaultValue: 'Revisión experta' })
                 : t('result.secondOpinionCta', { defaultValue: 'Segunda opinión' })}
-            </button>
-            <Link className="btn-atelier btn-atelier--ghost" to="/lookalikes">
-              {t('nav.lookalikes', { defaultValue: 'Lookalikes' })}
-            </Link>
+            </Button>
+            <LinkButton variant="ghost" to="/lookalikes">
+              {t('nav.lookalikes', { defaultValue: 'Confusiones' })}
+            </LinkButton>
             {showBlockedShell && (
-              <Link
-                className="btn-atelier btn-atelier--ghost"
+              <LinkButton
+                variant="ghost"
                 to="/enciclopedia"
                 data-testid="cta-encyclopedia-inline"
               >
                 {t('nav.encyclopedia', { defaultValue: 'Enciclopedia' })}
-              </Link>
+              </LinkButton>
             )}
           </div>
           {handoffSaved && (
@@ -639,24 +640,24 @@ export function ResultCard({
           </p>
           {/* Always-visible second-opinion CTAs (Studio + community) — not only when lookalikes exist */}
           <div className="lookalike-next-actions" data-testid="lookalike-next-actions">
-            <Link
-              className="btn-atelier btn-atelier--primary"
+            <LinkButton
+              variant="ghost"
               to="/lookalikes"
               data-testid="cta-lookalike-studio-from-result"
             >
               {t('result.compareInStudio', {
-                defaultValue: 'Comparar en Lookalike Studio',
+                defaultValue: 'Comparar confusiones',
               })}
-            </Link>
-            <Link
-              className="btn-atelier btn-atelier--ghost"
+            </LinkButton>
+            <LinkButton
+              variant="ghost"
               to="/comunidad"
               data-testid="cta-community-from-result"
             >
               {t('result.askCommunity', {
                 defaultValue: 'Preguntar a la comunidad',
               })}
-            </Link>
+            </LinkButton>
           </div>
         </section>
       </section>
@@ -872,9 +873,10 @@ export function ResultCard({
                     <li key={`ev-${i}`} className="evidence-item">
                       <span className="evidence-item__text">{item.text}</span>
                       {item.slot && onFocusWizardSlot && (
-                        <button
+                        <Button
                           type="button"
-                          className="btn-atelier btn-atelier--ghost evidence-item__cta"
+                          variant="ghost"
+                          className="evidence-item__cta"
                           data-testid={`evidence-slot-cta-${item.slot}`}
                           data-slot={item.slot}
                           title={t('result.addViewCtaHint')}
@@ -882,7 +884,7 @@ export function ResultCard({
                         >
                           {t('result.addViewCta')}
                           <span className="evidence-item__slot-tag">{item.slot}</span>
-                        </button>
+                        </Button>
                       )}
                     </li>
                   ))}
@@ -901,9 +903,10 @@ export function ResultCard({
                     <li key={`q-${i}`} className="evidence-item">
                       <span className="evidence-item__text">{item.text}</span>
                       {item.slot && onFocusWizardSlot && (
-                        <button
+                        <Button
                           type="button"
-                          className="btn-atelier btn-atelier--ghost evidence-item__cta"
+                          variant="ghost"
+                          className="evidence-item__cta"
                           data-testid={`question-slot-cta-${item.slot}`}
                           data-slot={item.slot}
                           title={t('result.addViewCtaHint')}
@@ -911,7 +914,7 @@ export function ResultCard({
                         >
                           {t('result.addViewCta')}
                           <span className="evidence-item__slot-tag">{item.slot}</span>
-                        </button>
+                        </Button>
                       )}
                     </li>
                   ))}
@@ -958,22 +961,14 @@ export function ResultCard({
                     })}
                   </p>
                   <div className="feedback-buttons">
-                    <button
-                      type="button"
-                      className="btn-atelier btn-atelier--ghost"
-                      onClick={() => handleFeedback(true)}
-                    >
+                    <Button type="button" variant="ghost" onClick={() => handleFeedback(true)}>
                       <IconThumbsUp size={16} />{' '}
                       {t('result.feedbackYes', { defaultValue: 'Sí' })}
-                    </button>
-                    <button
-                      type="button"
-                      className="btn-atelier btn-atelier--ghost"
-                      onClick={() => handleFeedback(false)}
-                    >
+                    </Button>
+                    <Button type="button" variant="ghost" onClick={() => handleFeedback(false)}>
                       <IconThumbsDown size={16} />{' '}
                       {t('result.feedbackNo', { defaultValue: 'No' })}
-                    </button>
+                    </Button>
                   </div>
                 </div>
               )}

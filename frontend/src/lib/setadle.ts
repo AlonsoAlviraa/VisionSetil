@@ -598,7 +598,8 @@ export function buildSetadlePool(): SetadleSpecies[] {
 
 export function pickDailySecret(pool: SetadleSpecies[], mode: SetadleMode, day = dayKey()): SetadleSpecies {
   if (pool.length === 0) throw new Error('empty setadle pool')
-  const h = hashSeed(`setadle|${day}|${mode}|v1`)
+  // Align with dailyGames LoLdle board salts (setadle|classic, setadle|photo, …)
+  const h = hashSeed(`visionsetil|daily|${day}|setadle|${mode}|v1`)
   return pool[h % pool.length]
 }
 

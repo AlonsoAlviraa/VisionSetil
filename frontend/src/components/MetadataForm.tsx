@@ -6,6 +6,7 @@
  * All fields are optional — the form collapses by default to keep the UX clean.
  */
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { ObservationMetadata } from '../api/types'
 
 interface MetadataFormProps {
@@ -38,6 +39,7 @@ const SUBSTRATE_OPTIONS = [
 ]
 
 export function MetadataForm({ metadata, onChange }: MetadataFormProps) {
+  const { t } = useTranslation()
   const [expanded, setExpanded] = useState(false)
 
   const update = (field: keyof ObservationMetadata, value: string) => {
@@ -47,18 +49,28 @@ export function MetadataForm({ metadata, onChange }: MetadataFormProps) {
   return (
     <div className="metadata-form">
       <button
+        type="button"
         className="metadata-toggle"
         onClick={() => setExpanded(!expanded)}
         aria-expanded={expanded}
       >
-        <span>Información del entorno (opcional)</span>
-        <span className={`chevron ${expanded ? 'open' : ''}`}>▸</span>
+        <span>
+          {t('identify.metadata.toggle', {
+            defaultValue: 'Contexto de campo (opcional)',
+          })}
+        </span>
+        <span className={`chevron ${expanded ? 'open' : ''}`} aria-hidden="true">
+          ▸
+        </span>
       </button>
 
       {expanded && (
         <div className="metadata-fields">
           <p className="metadata-hint">
-            Ayuda al modelo aportando contexto sobre dónde encontraste la seta
+            {t('identify.metadata.hint', {
+              defaultValue:
+                'Ayuda al modelo aportando contexto sobre dónde encontraste la seta',
+            })}
           </p>
 
           <div className="field-row">

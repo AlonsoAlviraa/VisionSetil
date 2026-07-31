@@ -1,8 +1,8 @@
-/** 404 — friendly atelier empty + multiview field honesty. */
-import { Link } from 'react-router-dom'
+/** 404 — friendly empty + multiview field honesty. Architecture M5g LinkButton. */
 import { useTranslation } from 'react-i18next'
 import { EmptyState } from '../components/EmptyState'
 import { IconMushroom } from '../components/icons'
+import { LinkButton, PageShell } from '../components/ui'
 import { deadlyPriorityViews } from '../lib/diagnosticViews'
 
 export function NotFoundPage() {
@@ -10,7 +10,14 @@ export function NotFoundPage() {
   const priorityViews = deadlyPriorityViews().slice(0, 3)
 
   return (
-    <div className="page-404 page-atelier-shell" data-testid="not-found-page">
+    <PageShell
+      className="page-404 page-atelier-shell"
+      testId="not-found-page"
+      orientationSticky
+      orientationText={t('notFound.orientation', {
+        defaultValue: 'Solo orientación · nunca consumo',
+      })}
+    >
       <EmptyState
         title={t('notFound.title', { defaultValue: 'Página no encontrada' })}
         description={t('notFound.body', {
@@ -47,32 +54,20 @@ export function NotFoundPage() {
       </section>
 
       <div className="page-404__links">
-        <Link
-          to="/identificar"
-          className="btn-atelier btn-atelier--primary"
-          data-testid="not-found-cta-identify"
-        >
-          {t('nav.identify', { defaultValue: 'Identificar multi-vista' })}
-        </Link>
-        <Link
-          to="/enciclopedia"
-          className="btn-atelier btn-atelier--ghost"
-          data-testid="not-found-cta-ency"
-        >
+        <LinkButton to="/identificar" variant="ghost" data-testid="not-found-cta-identify">
+          {t('nav.identify', { defaultValue: 'Identificar' })}
+        </LinkButton>
+        <LinkButton to="/enciclopedia" variant="ghost" data-testid="not-found-cta-ency">
           {t('nav.encyclopedia', { defaultValue: 'Enciclopedia' })}
-        </Link>
-        <Link
-          to="/educacion"
-          className="btn-atelier btn-atelier--ghost"
-          data-testid="not-found-cta-edu"
-        >
+        </LinkButton>
+        <LinkButton to="/educacion" variant="ghost" data-testid="not-found-cta-edu">
           {t('nav.education', { defaultValue: 'Educación' })}
-        </Link>
-        <Link to="/reto" className="btn-atelier btn-atelier--ghost">
+        </LinkButton>
+        <LinkButton to="/reto" variant="ghost">
           {t('nav.quiz', { defaultValue: 'Reto' })}
-        </Link>
+        </LinkButton>
       </div>
-    </div>
+    </PageShell>
   )
 }
 

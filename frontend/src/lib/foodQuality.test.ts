@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import {
-  buildFoodQualityRegistry,
   edibilityToFoodClass,
   foodQualityStats,
   getFoodQuality,
   listDocumentedFoodQuality,
 } from './foodQuality'
+import { buildFoodQualityRegistry } from './foodQualityBuild'
 import { mushroomDatabase } from '../data/mushroomDatabase'
 import poisonous from '../data/poisonousSpecies.json'
 
@@ -37,19 +37,22 @@ describe('foodQuality — real sources only', () => {
     expect(getFoodQuality('Fakeus inventus xyz')).toBeNull()
   })
 
-  it('registry size matches real curated data (not inflated)', () => {
-    const reg = buildFoodQualityRegistry(mushroomDatabase, poisonous as never)
-    const stats = foodQualityStats(reg)
-    // ~197 DB with edibility + poison-only extras, but desconocido excluded
+  it('slim index powers product getFoodQuality without inventing taxa', () => {
+    const stats = foodQualityStats()
     expect(stats.total_documented).toBeGreaterThan(100)
-    expect(stats.total_documented).toBeLessThanOrEqual(mushroomDatabase.length + poisonous.length)
     expect(stats.by_class.comestible).toBeGreaterThan(50)
     expect(stats.by_class.mortal).toBeGreaterThan(5)
-    // every record has a source
     for (const r of listDocumentedFoodQuality()) {
       expect(r.sources.length).toBeGreaterThan(0)
       expect(r.food_class).not.toBeFalsy()
     }
+  })
+
+  it('heavy rebuild size matches curated data (not inflated)', () => {
+    const reg = buildFoodQualityRegistry(mushroomDatabase, poisonous as never)
+    const stats = foodQualityStats(reg)
+    expect(stats.total_documented).toBeGreaterThan(100)
+    expect(stats.total_documented).toBeLessThanOrEqual(mushroomDatabase.length + poisonous.length)
   })
 
   it('poison list can only raise severity, never invent edible', () => {

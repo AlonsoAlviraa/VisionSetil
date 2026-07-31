@@ -5,7 +5,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
-  galleryImageUrl,
+  INLINE_PLACEHOLDER_SVG,
   mediaPublicPrefix,
   speciesImageUrl,
   type PlaceholderKind,
@@ -23,6 +23,7 @@ import {
 } from '../lib/speciesGalleryExtras'
 import { SpeciesImage } from './SpeciesImage'
 import { ImageAttribution, type ImageAttributionMeta } from './ui/ImageAttribution'
+import { getCatalogPhotoUrlHd, upgradePhotoUrl } from '../lib/speciesImageService'
 
 export interface GalleryItem {
   role?: string
@@ -42,37 +43,25 @@ interface SpeciesGalleryProps {
   riskLevel?: PlaceholderKind
 }
 
-function probeImage(url: string): Promise<boolean> {
-  return new Promise((resolve) => {
-    const img = new Image()
-    img.onload = () => resolve(true)
-    img.onerror = () => resolve(false)
-    img.src = url
-  })
-}
-
-async function buildStaticGallery(slug: string): Promise<GalleryItem[]> {
-  const items: GalleryItem[] = []
+/**
+ * Static gallery fallback without blind multi-URL Image probes (audit T2).
+ * - Hero: prefer local detail URL; SpeciesImage cascade peels card/thumb/catalog.
+ * - No gallery_1..8 probe storm (up to 10 GETs per ficha open previously).
+ * - Open-license extras still merge via mergeGalleryWithExtras after this returns.
+ * Exported for unit tests (no Image() in pure path).
+ */
+export function buildStaticGallery(slug: string): GalleryItem[] {
   const detail = speciesImageUrl(slug, 'detail')
   const card = speciesImageUrl(slug, 'card')
   const thumb = speciesImageUrl(slug, 'thumb')
-  const detailOk = await probeImage(detail)
-  const cardOk = detailOk ? true : await probeImage(card)
-  const heroUrl = detailOk ? detail : cardOk ? card : thumb
-  // Always provide a hero URL — SpeciesImage cascade handles missing media.
-  items.push({
-    role: 'hero',
-    url: heroUrl,
-    thumb_url: thumb,
-  })
-  // Probe more local gallery slots when present (thin packs often only have 01)
-  for (let i = 1; i <= 8; i++) {
-    const url = galleryImageUrl(slug, i)
-    if (await probeImage(url)) {
-      items.push({ role: 'gallery', url, thumb_url: url })
-    }
-  }
-  return items
+  return [
+    {
+      role: 'hero',
+      // Prefer detail; cascade in SpeciesImage handles 404 → card → thumb → catalog
+      url: detail || card || thumb,
+      thumb_url: thumb || card || detail,
+    },
+  ]
 }
 
 function itemAttribution(item: GalleryItem | undefined): ImageAttributionMeta | null {
@@ -124,10 +113,9 @@ async function fetchGallery(
   }
 
   // Local meta.json is available via Vite /media without FastAPI — critical for U5 offline/dev.
-  const [fileMeta, staticItems] = await Promise.all([
-    fetchSpeciesMediaMeta(slug),
-    apiItems ? Promise.resolve(null) : buildStaticGallery(slug),
-  ])
+  // When API returned items: skip static gallery entirely (zero client probes).
+  const fileMeta = await fetchSpeciesMediaMeta(slug)
+  const staticItems = apiItems ? null : buildStaticGallery(slug)
 
   const catalogMeta = attributionFromCatalog(scientificName || slug)
   const meta = coalesceAttribution(apiMeta, fileMeta, catalogMeta)
@@ -255,9 +243,15 @@ export function SpeciesGallery({
     return () => window.removeEventListener('keydown', onKey)
   }, [lightbox, go, closeLightbox])
 
-  // Main surface uses SpeciesImage cascade (no broken-img). Extra gallery
-  // frames (thumbs idx>0) use URL + onError chain back to card/thumb.
-  const useCascadeHero = !current || active === 0 || current.role === 'hero'
+  // Always prefer SpeciesImage cascade for the main hero (catalog HD first).
+  // Gallery extras still use sized remote URLs so thumb→main does not jump to a
+  // different crop/resolution than the cascade (the old "mega zoom until click").
+  const heroFrameUrl = current
+    ? upgradePhotoUrl(current.url, 'hd')
+    : getCatalogPhotoUrlHd(scientificName, 'hd')
+  const useCascadeHero =
+    loading || !current || active === 0 || current.role === 'hero' || !heroFrameUrl
+
   const hero = (
     <button
       ref={heroBtnRef}
@@ -266,7 +260,7 @@ export function SpeciesGallery({
       onClick={() => setLightbox(true)}
       aria-label={t('gallery.open', { defaultValue: 'Ampliar imagen' })}
     >
-      {useCascadeHero || loading ? (
+      {useCascadeHero ? (
         <SpeciesImage
           scientificName={scientificName}
           slug={slug}
@@ -277,21 +271,38 @@ export function SpeciesGallery({
           aspectRatio="4/3"
           showMediaBadge="auto"
           priority
+          quality="hd"
+          preferCatalog
+          sizes="(max-width: 720px) 100vw, min(1100px, 92vw)"
         />
       ) : (
         <img
-          src={current.url}
+          src={heroFrameUrl!}
           alt={alt}
           loading="eager"
           decoding="async"
+          referrerPolicy="no-referrer"
+          className="species-gallery__frame-img"
+          sizes="(max-width: 720px) 100vw, min(1100px, 92vw)"
           onError={(e) => {
             const el = e.currentTarget
-            if (!el.dataset.fallback) {
+            const stage = el.dataset.fallback || '0'
+            if (stage === '0') {
               el.dataset.fallback = '1'
-              el.src = speciesImageUrl(slug, 'card')
-            } else if (el.dataset.fallback === '1') {
+              // Fall back through cascade sizes, not tiny thumbs only
+              el.src =
+                upgradePhotoUrl(current!.url, 'display') ||
+                getCatalogPhotoUrlHd(scientificName, 'display') ||
+                speciesImageUrl(slug, 'card')
+            } else if (stage === '1') {
               el.dataset.fallback = '2'
-              el.src = speciesImageUrl(slug, 'thumb')
+              el.src = speciesImageUrl(slug, 'detail')
+            } else if (stage === '2') {
+              el.dataset.fallback = '3'
+              el.src = speciesImageUrl(slug, 'card')
+            } else if (stage === '3') {
+              el.dataset.fallback = '4'
+              el.src = INLINE_PLACEHOLDER_SVG
             }
           }}
         />
@@ -353,14 +364,25 @@ export function SpeciesGallery({
               aria-current={idx === active}
             >
               <img
-                src={item.thumb_url || item.url}
+                src={upgradePhotoUrl(item.thumb_url || item.url, 'thumb')}
                 alt=""
                 loading="lazy"
+                decoding="async"
+                width={72}
+                height={72}
+                referrerPolicy="no-referrer"
                 onError={(e) => {
                   const el = e.currentTarget
-                  if (!el.dataset.fallback) {
+                  const stage = el.dataset.fallback || '0'
+                  if (stage === '0') {
                     el.dataset.fallback = '1'
+                    el.src = upgradePhotoUrl(item.url, 'display')
+                  } else if (stage === '1') {
+                    el.dataset.fallback = '2'
                     el.src = speciesImageUrl(slug, 'thumb')
+                  } else if (stage === '2') {
+                    el.dataset.fallback = '3'
+                    el.src = INLINE_PLACEHOLDER_SVG
                   }
                 }}
               />
@@ -420,18 +442,29 @@ export function SpeciesGallery({
             </>
           ) : null}
           <img
-            src={current.url}
+            src={upgradePhotoUrl(current.url, 'hd')}
             alt={alt}
             className="species-gallery__lightbox-img"
+            decoding="async"
+            referrerPolicy="no-referrer"
             onClick={(e) => e.stopPropagation()}
             onError={(e) => {
               const el = e.currentTarget
-              if (!el.dataset.fallback) {
+              const stage = el.dataset.fallback || '0'
+              if (stage === '0') {
                 el.dataset.fallback = '1'
-                el.src = speciesImageUrl(slug, 'card')
-              } else if (el.dataset.fallback === '1') {
+                el.src = upgradePhotoUrl(current.url, 'display')
+              } else if (stage === '1') {
                 el.dataset.fallback = '2'
-                el.src = speciesImageUrl(slug, 'thumb')
+                el.src =
+                  getCatalogPhotoUrlHd(scientificName, 'display') ||
+                  speciesImageUrl(slug, 'detail')
+              } else if (stage === '2') {
+                el.dataset.fallback = '3'
+                el.src = speciesImageUrl(slug, 'card')
+              } else if (stage === '3') {
+                el.dataset.fallback = '4'
+                el.src = INLINE_PLACEHOLDER_SVG
               }
             }}
           />

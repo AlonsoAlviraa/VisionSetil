@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../auth/AuthContext'
 import { deadlyPriorityViews } from '../lib/diagnosticViews'
+import { Button, PageShell } from '../components/ui'
 
 export function RegisterPage() {
   const { t } = useTranslation()
@@ -40,7 +41,15 @@ export function RegisterPage() {
   }
 
   return (
-    <div className="page-auth page-atelier-shell" data-testid="register-page">
+    <PageShell
+      bare
+      className="page-auth page-atelier-shell"
+      testId="register-page"
+      orientationSticky
+      orientationText={t('auth.orientation', {
+        defaultValue: 'Solo orientación · cuenta de estudio · nunca consumo',
+      })}
+    >
       <div className="auth-atelier">
         <div className="page-header">
           <p className="atelier-kicker" style={{ color: 'var(--ink-mute)' }}>
@@ -128,17 +137,17 @@ export function RegisterPage() {
               {error}
             </p>
           )}
-          <button className="btn-atelier btn-atelier--primary btn-atelier--block" type="submit" disabled={busy}>
+          <Button type="submit" variant="primary" block disabled={busy}>
             {busy
               ? t('auth.registerBusy', { defaultValue: 'Creando…' })
               : t('auth.registerSubmit', { defaultValue: 'Registrarme' })}
-          </button>
+          </Button>
           <p className="auth-form-atelier__foot">
             {t('auth.hasAccount', { defaultValue: '¿Ya tienes cuenta?' })}{' '}
             <Link to="/login">{t('auth.loginLink', { defaultValue: 'Inicia sesión' })}</Link>
           </p>
         </form>
       </div>
-    </div>
+    </PageShell>
   )
 }

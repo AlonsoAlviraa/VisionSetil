@@ -5,6 +5,7 @@
 import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { Button, LinkButton, PageShell } from '../components/ui'
 import { useAuth } from '../auth/AuthContext'
 import {
   createComment,
@@ -128,7 +129,14 @@ export function CommunityPage() {
   }
 
   return (
-    <div className="cn-page page-community page-atelier-shell" data-skin="campo-nocturno">
+    <PageShell
+      className="page-community page-atelier-shell"
+      testId="community-page"
+      orientationSticky
+      orientationText={t('community.orientation', {
+        defaultValue: 'Solo orientación · opiniones humanas · nunca consumo',
+      })}
+    >
       <header className="mkt-page-head mkt-mesh">
         <p className="mkt-kicker">
           {t('community.kicker', { defaultValue: 'Comunidad' })}
@@ -184,20 +192,16 @@ export function CommunityPage() {
           })}
         </p>
         <div className="community-consensus-strip__actions">
-          <Link
+          <LinkButton
             to="/revision-experta"
-            className="btn-atelier btn-atelier--primary"
+            variant="primary"
             data-testid="community-cta-expert"
           >
             {t('community.ctaExpert', { defaultValue: 'Revisión experta' })}
-          </Link>
-          <Link
-            to="/educacion"
-            className="btn-atelier btn-atelier--ghost"
-            data-testid="community-cta-edu"
-          >
+          </LinkButton>
+          <LinkButton to="/educacion" variant="ghost" data-testid="community-cta-edu">
             {t('nav.education', { defaultValue: 'Educación' })}
-          </Link>
+          </LinkButton>
         </div>
       </section>
 
@@ -212,14 +216,16 @@ export function CommunityPage() {
               'Si compartes fotos: prioriza láminas, perfil/pie y base (volva/anillo). Una sola foto de sombrero no basta para confusiones mortales — solo orientación, nunca consumo.',
           })}
         </p>
-        <p style={{ margin: '0.45rem 0 0' }}>
-          <Link to="/identificar" className="btn-atelier btn-atelier--ghost">
-            {t('nav.identify', { defaultValue: 'Identificar multi-vista' })}
-          </Link>{' '}
-          <Link to="/lookalikes" className="btn-atelier btn-atelier--ghost">
-            {t('nav.lookalikes', { defaultValue: 'Lookalikes' })}
-          </Link>{' '}
-          <Link to="/educacion" className="btn-atelier btn-atelier--ghost">
+        <p className="community-multiview-tip__links" style={{ margin: '0.45rem 0 0' }}>
+          <Link to="/identificar" className="community-text-link">
+            {t('nav.identify', { defaultValue: 'Identificar' })}
+          </Link>
+          <span aria-hidden="true"> · </span>
+          <Link to="/lookalikes" className="community-text-link">
+            {t('nav.lookalikes', { defaultValue: 'Confusiones' })}
+          </Link>
+          <span aria-hidden="true"> · </span>
+          <Link to="/educacion" className="community-text-link">
             {t('nav.education', { defaultValue: 'Educación' })}
           </Link>
         </p>
@@ -281,23 +287,19 @@ export function CommunityPage() {
               />
             </label>
             {image && (
-              <button
-                type="button"
-                className="btn-atelier btn-atelier--ghost"
-                onClick={() => setImage(null)}
-              >
+              <Button type="button" variant="ghost" onClick={() => setImage(null)}>
                 {t('community.removePhoto', { defaultValue: 'Quitar foto' })}
-              </button>
+              </Button>
             )}
-            <button
-              className="btn-atelier btn-atelier--primary"
+            <Button
               type="submit"
+              variant="primary"
               disabled={posting || !body.trim() || Boolean(bodyBlocked)}
             >
               {posting
                 ? t('community.publishing', { defaultValue: 'Publicando…' })
                 : t('community.publish', { defaultValue: 'Publicar' })}
-            </button>
+            </Button>
           </div>
           {imagePreview && (
             <div className="community-compose__preview">
@@ -310,9 +312,9 @@ export function CommunityPage() {
       {error && (
         <div className="community-error-panel" role="alert">
           <p>{error}</p>
-          <button type="button" className="btn-atelier btn-atelier--ghost" onClick={() => void refresh()}>
+          <Button type="button" variant="ghost" onClick={() => void refresh()}>
             {t('actions.retry', { defaultValue: 'Reintentar' })}
-          </button>
+          </Button>
         </div>
       )}
 
@@ -384,6 +386,13 @@ export function CommunityPage() {
                     })}
                     className="community-image"
                     loading="lazy"
+                    decoding="async"
+                    width={640}
+                    height={480}
+                    style={{ maxWidth: '100%', height: 'auto' }}
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none'
+                    }}
                   />
                 </div>
               )}
@@ -460,14 +469,14 @@ export function CommunityPage() {
                             })}
                             maxLength={BODY_MAX}
                           />
-                          <button
+                          <Button
                             type="button"
-                            className="btn-atelier btn-atelier--ghost"
+                            variant="ghost"
                             onClick={() => void onComment(p.id)}
                             disabled={!(commentDrafts[p.id] || '').trim()}
                           >
                             {t('community.comment', { defaultValue: 'Comentar' })}
-                          </button>
+                          </Button>
                         </div>
                       )}
                     </>
@@ -478,6 +487,6 @@ export function CommunityPage() {
           )
         })}
       </div>
-    </div>
+    </PageShell>
   )
 }

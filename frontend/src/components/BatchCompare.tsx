@@ -2,11 +2,12 @@
  * BatchCompare — side-by-side comparison of past identification results.
  * Photography-first; risk labels without emoji chrome.
  */
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { ClassificationResult } from '../api/types'
 import { getRiskMeta } from '../lib/riskLabels'
 import { IconCheck, IconClose } from './icons'
+import { Button } from './ui'
 
 export interface HistoryEntry {
   id: string
@@ -40,19 +41,47 @@ export function BatchCompare({ history, onClose, onSelectEntry }: BatchComparePr
     })
   }
 
+  const closeRef = useRef<HTMLButtonElement | null>(null)
+
+  useEffect(() => {
+    const prev = document.activeElement as HTMLElement | null
+    closeRef.current?.focus()
+    const onKey = (ev: KeyboardEvent) => {
+      if (ev.key === 'Escape') {
+        ev.preventDefault()
+        onClose()
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      prev?.focus?.()
+    }
+  }, [onClose])
+
   return (
-    <div className="batch-compare-overlay">
+    <div
+      className="batch-compare-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="batch-compare-title"
+      data-testid="batch-compare-dialog"
+    >
       <div className="batch-compare-modal">
         <div className="batch-compare-header">
-          <h2>Comparar identificaciones</h2>
-          <button
+          <h2 id="batch-compare-title">Comparar identificaciones</h2>
+          <Button
+            ref={closeRef}
             type="button"
+            variant="ghost"
+            size="sm"
             className="btn-icon"
             onClick={onClose}
             aria-label={t('a11y.closeCompare', { defaultValue: 'Cerrar comparación' })}
+            data-testid="batch-compare-close"
           >
             <IconClose size={18} />
-          </button>
+          </Button>
         </div>
         <p className="batch-compare-hint">
           Selecciona hasta {MAX_COMPARE} resultados para comparar lado a lado.
@@ -74,7 +103,18 @@ export function BatchCompare({ history, onClose, onSelectEntry }: BatchComparePr
                     onClick={() => toggle(entry.id)}
                     disabled={isDisabled}
                   >
-                    <img src={entry.previews[0]} alt="" className="compare-pick-thumb" />
+                    <img
+                      src={entry.previews[0]}
+                      alt=""
+                      className="compare-pick-thumb"
+                      loading="lazy"
+                      decoding="async"
+                      width={56}
+                      height={56}
+                      onError={(e) => {
+                        e.currentTarget.style.visibility = 'hidden'
+                      }}
+                    />
                     <div className="compare-pick-info">
                       <span className="compare-pick-time">
                         {new Date(entry.timestamp).toLocaleString()}
@@ -106,6 +146,13 @@ export function BatchCompare({ history, onClose, onSelectEntry }: BatchComparePr
                         src={entry.previews[0]}
                         alt={top?.species ?? 'Seta'}
                         className="compare-card-img"
+                        loading="lazy"
+                        decoding="async"
+                        width={280}
+                        height={200}
+                        onError={(e) => {
+                          e.currentTarget.style.visibility = 'hidden'
+                        }}
                       />
                       <div className="compare-card-body">
                         <span className={`compare-decision ${entry.result.decision}`}>
@@ -130,13 +177,14 @@ export function BatchCompare({ history, onClose, onSelectEntry }: BatchComparePr
                           <span className={`risk-chip ${risk.className}`}>{risk.label}</span>
                         )}
                         {onSelectEntry && (
-                          <button
+                          <Button
                             type="button"
+                            variant="ghost"
                             className="btn-open-entry"
                             onClick={() => onSelectEntry(entry)}
                           >
-                            Ver detalle
-                          </button>
+                            {t('actions.viewDetail', { defaultValue: 'Ver detalle' })}
+                          </Button>
                         )}
                       </div>
                     </div>

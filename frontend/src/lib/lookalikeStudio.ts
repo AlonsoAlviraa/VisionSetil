@@ -129,6 +129,55 @@ export const CLASSIC_LOOKALIKE_PAIRS: ClassicLookalikePair[] = [
     why: 'Láminas y olor; entoloma sinuatum es tóxico',
     taxa: ['Clitopilus prunulus', 'Entoloma sinuatum'],
   },
+  // Expanded open-knowledge educational pairs (T7 / classic_lookalike_pairs.json)
+  {
+    id: 'edulis-satanas',
+    label: 'Boleto vs satanás',
+    why: 'Redes del pie y color del himenio; satanas enrojece y es tóxico',
+    taxa: ['Boletus edulis', 'Rubroboletus satanas'],
+  },
+  {
+    id: 'xanthodermus-campestris',
+    label: 'Champiñón de prado vs xanthodermus',
+    why: 'Base del pie amarilla al corte + olor a fenol = xanthodermus',
+    taxa: ['Agaricus campestris', 'Agaricus xanthodermus'],
+  },
+  {
+    id: 'olearius-cibarius',
+    label: 'Falso rebozuelo vs rebozuelo',
+    why: 'Láminas verdaderas vs pliegues; omphalotus es tóxico',
+    taxa: ['Omphalotus olearius', 'Cantharellus cibarius'],
+  },
+  {
+    id: 'phalloides-vaginata',
+    label: 'Oronja verde vs amanita sin anillo',
+    why: 'Anillo ausente en vaginata; volva y láminas siempre críticas',
+    taxa: ['Amanita phalloides', 'Amanita vaginata'],
+  },
+  {
+    id: 'torminosus-deliciosus',
+    label: 'Lactario de abedul vs níscalo',
+    why: 'Látex blanco vs naranja; borde del sombrero peludo en torminosus',
+    taxa: ['Lactarius torminosus', 'Lactarius deliciosus'],
+  },
+  {
+    id: 'involutus-edulis',
+    label: 'Paxillus vs boleto',
+    why: 'Paxillus tiene láminas/pliegues decurrentes; no es boleto de poros',
+    taxa: ['Paxillus involutus', 'Boletus edulis'],
+  },
+  {
+    id: 'galerina-mutabilis',
+    label: 'Galerina mortal vs mutabilis',
+    why: 'Sobre madera: esporada y anillo; galerina es mortal',
+    taxa: ['Galerina marginata', 'Kuehneromyces mutabilis'],
+  },
+  {
+    id: 'virosa-vaginata',
+    label: 'Ángel destructor vs vaginata',
+    why: 'Blancura engañosa; anillo y volva deciden',
+    taxa: ['Amanita virosa', 'Amanita vaginata'],
+  },
 ]
 
 function fold(s: string): string {

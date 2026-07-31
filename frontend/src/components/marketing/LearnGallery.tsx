@@ -3,8 +3,8 @@
  * Featured also auto-plays angles.
  */
 import { useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
 import { RiskChip } from '../RiskChip'
+import { Button, LinkButton } from '../ui'
 import { scientificNameToSlug } from '../../lib/slug'
 import {
   isTerminalMediaUrl,
@@ -19,7 +19,8 @@ import { MiniPhotoReel } from './MiniPhotoReel'
 export type { LearnTaxon }
 export { LEARN_TAXA }
 
-const REEL_MS = 1500
+/** Slower reel to cut mobile CPU/network; only hero auto-plays (grid reels paused). */
+const REEL_MS = 3200
 
 type Props = {
   className?: string
@@ -109,7 +110,7 @@ export function LearnGallery({ className = '' }: Props) {
       <p className="mkt-learn__auto-hint" aria-live="polite">
         {paused || reduced
           ? 'Pausado · clic en Reanudar o en el vídeo'
-          : 'Mini-vídeo · cada 1,5 s · clic para pausar'}
+          : 'Mini-vídeo · cada ~3 s · clic para pausar'}
       </p>
 
       <div className="mkt-learn__featured">
@@ -178,7 +179,7 @@ export function LearnGallery({ className = '' }: Props) {
               ‹
             </button>
             <span>
-              {aliveStack.length ? `${angleIdx + 1}/${aliveStack.length}` : '—'} · 1,5 s
+              {aliveStack.length ? `${angleIdx + 1}/${aliveStack.length}` : '—'} · ~3 s
             </span>
             <button
               type="button"
@@ -229,20 +230,20 @@ export function LearnGallery({ className = '' }: Props) {
           </div>
 
           <div className="mkt-cta-row" style={{ marginTop: '1rem' }}>
-            <Link to={`/enciclopedia/${slug}`} className="mkt-btn mkt-btn--primary">
+            <LinkButton to={`/enciclopedia/${slug}`} variant="primary">
               Ver ficha
-            </Link>
-            <Link to="/setadle" className="mkt-btn mkt-btn--amber">
+            </LinkButton>
+            <LinkButton to="/setadle" variant="primary">
               Jugar Setadle
-            </Link>
-            <button
+            </LinkButton>
+            <Button
               type="button"
-              className="mkt-btn mkt-btn--ghost"
+              variant="ghost"
               data-pause-toggle
               onClick={() => setPaused((p) => !p)}
             >
               {paused ? 'Reanudar' : 'Pausar'}
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -268,9 +269,10 @@ export function LearnGallery({ className = '' }: Props) {
                   taxon={t.taxon}
                   alt={t.name}
                   intervalMs={REEL_MS}
-                  maxFrames={5}
-                  priority={i < 6}
-                  paused={paused}
+                  maxFrames={3}
+                  /* Grid reels stay paused — only hero auto-plays (CPU/bandwidth) */
+                  priority={false}
+                  paused
                   onClickPause={() => setPaused(true)}
                 />
               </span>

@@ -23,6 +23,7 @@ import {
   IconStem,
   IconSun,
 } from '../components/icons'
+import { PageShell } from '../components/ui'
 import {
   deadlyCoach,
   deadlyDiagnosticPairs,
@@ -191,12 +192,14 @@ export function EducationPage() {
   const coach = useMemo(() => deadlyCoach(locale), [locale])
 
   return (
-    <div className="cn-page page-education page-atelier-shell" data-skin="campo-nocturno">
-      <p className="cn-warn-strip" role="note">
-        {t('education.orientation', {
-          defaultValue: 'Solo orientación · nunca consumo',
-        })}
-      </p>
+    <PageShell
+      className="page-education page-atelier-shell"
+      testId="education-page"
+      orientationSticky
+      orientationText={t('education.orientation', {
+        defaultValue: 'Solo orientación · nunca consumo',
+      })}
+    >
       <div className="page-header">
         <p className="mkt-kicker">
           {t('education.kicker', { defaultValue: 'Aprender · campo' })}
@@ -394,10 +397,10 @@ export function EducationPage() {
             </span>
           </Link>
           <Link to="/lookalikes" className="edu-cta-card atelier-panel">
-            <strong>Lookalike Studio</strong>
+            <strong>{t('nav.lookalikes', { defaultValue: 'Confusiones' })}</strong>
             <span>
               {t('education.openStudio', {
-                defaultValue: 'Compara confusiones clásicas con vistas críticas.',
+                defaultValue: 'Compara confusiones clásicas con vistas clave.',
               })}
             </span>
           </Link>
@@ -407,22 +410,54 @@ export function EducationPage() {
       <section className="edu-section">
         <h2 className="edu-section-title">
           <IconInfo size={22} />
-          Preguntas frecuentes
+          {t('education.faqTitle', { defaultValue: 'Preguntas frecuentes' })}
         </h2>
-        <div className="faq-list">
-          {faqItems.map((item, i) => (
-            <div key={item.q} className={`faq-item ${openFaq === i ? 'faq-item--open' : ''}`}>
-              <button
-                type="button"
-                className="faq-question"
-                onClick={() => setOpenFaq(openFaq === i ? null : i)}
+        <div className="faq-list" data-testid="edu-faq-list">
+          {faqItems.map((item, i) => {
+            const panelId = `edu-faq-panel-${i}`
+            const btnId = `edu-faq-btn-${i}`
+            const isOpen = openFaq === i
+            return (
+              <div
+                key={item.q}
+                className={`faq-item ${isOpen ? 'faq-item--open' : ''}`}
               >
-                {item.q}
-                <span className="faq-chevron">{openFaq === i ? '−' : '+'}</span>
-              </button>
-              {openFaq === i && <p className="faq-answer">{item.a}</p>}
-            </div>
-          ))}
+                <button
+                  type="button"
+                  id={btnId}
+                  className="faq-question"
+                  aria-expanded={isOpen}
+                  aria-controls={panelId}
+                  onClick={() => setOpenFaq(isOpen ? null : i)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Home') {
+                      e.preventDefault()
+                      setOpenFaq(0)
+                      document.getElementById('edu-faq-btn-0')?.focus()
+                    } else if (e.key === 'End') {
+                      e.preventDefault()
+                      const last = faqItems.length - 1
+                      setOpenFaq(last)
+                      document.getElementById(`edu-faq-btn-${last}`)?.focus()
+                    }
+                  }}
+                >
+                  {item.q}
+                  <span className="faq-chevron" aria-hidden="true">
+                    {isOpen ? '−' : '+'}
+                  </span>
+                </button>
+                <div
+                  id={panelId}
+                  role="region"
+                  aria-labelledby={btnId}
+                  hidden={!isOpen}
+                >
+                  {isOpen ? <p className="faq-answer">{item.a}</p> : null}
+                </div>
+              </div>
+            )
+          })}
         </div>
       </section>
 
@@ -432,24 +467,40 @@ export function EducationPage() {
       >
         <h2 className="edu-section-title">
           <IconBook size={22} />
-          Seguir aprendiendo
+          {t('education.keepLearning', { defaultValue: 'Seguir aprendiendo' })}
         </h2>
         <div className="edu-cta-cards">
           <Link to="/lookalikes" className="edu-cta-card atelier-panel">
-            <strong>Lookalikes</strong>
-            <span>Confusiones clásicas lado a lado, con riesgo visible.</span>
+            <strong>{t('nav.lookalikes', { defaultValue: 'Confusiones' })}</strong>
+            <span>
+              {t('education.ctaLookalikesBody', {
+                defaultValue: 'Confusiones clásicas lado a lado, con riesgo visible.',
+              })}
+            </span>
           </Link>
           <Link to="/reto" className="edu-cta-card atelier-panel">
-            <strong>Reto</strong>
-            <span>Quiz de caracteres y clase educativa — sin permiso de consumo.</span>
+            <strong>{t('nav.quiz', { defaultValue: 'Reto' })}</strong>
+            <span>
+              {t('education.ctaQuizBody', {
+                defaultValue: 'Quiz de caracteres y clase educativa — sin permiso de consumo.',
+              })}
+            </span>
           </Link>
           <Link to="/enciclopedia" className="edu-cta-card atelier-panel">
-            <strong>Enciclopedia</strong>
-            <span>Fichas con fotos, familia, temporada e Iberia.</span>
+            <strong>{t('nav.encyclopedia', { defaultValue: 'Enciclopedia' })}</strong>
+            <span>
+              {t('education.ctaEncyBody', {
+                defaultValue: 'Fichas con fotos, familia, temporada e Iberia.',
+              })}
+            </span>
           </Link>
           <Link to="/revision-experta" className="edu-cta-card atelier-panel">
-            <strong>Revisión experta</strong>
-            <span>Empaqueta evidencia para un micólogo humano.</span>
+            <strong>{t('nav.experts', { defaultValue: 'Revisión experta' })}</strong>
+            <span>
+              {t('education.ctaExpertBody', {
+                defaultValue: 'Empaqueta evidencia para un micólogo humano.',
+              })}
+            </span>
           </Link>
         </div>
       </section>
@@ -468,6 +519,6 @@ export function EducationPage() {
           </div>
         </div>
       </section>
-    </div>
+    </PageShell>
   )
 }

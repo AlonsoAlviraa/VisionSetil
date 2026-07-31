@@ -3,8 +3,8 @@
  * Photography-first, risk-honest (RiskChip only), one-tap classic pairs.
  */
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { Button, LinkButton, PageShell } from '../components/ui'
 import { recordStudyActivity } from '../lib/studyBadges'
 import {
   addToStudioSelection,
@@ -121,18 +121,20 @@ export function LookalikeStudioPage() {
   const slots = Array.from({ length: LOOKALIKE_STUDIO_MAX }, (_, i) => selection[i] ?? null)
 
   return (
-    <div className="cn-page page-lookalike page-atelier-shell lookalike-atelier" data-skin="campo-nocturno">
-      <p className="cn-warn-strip" role="note">
-        {t('lookalike.orientation', {
-          defaultValue: 'Solo orientación · nunca consumo',
-        })}
-      </p>
+    <PageShell
+      className="page-lookalike page-atelier-shell lookalike-atelier"
+      testId="lookalike-studio-page"
+      orientationSticky
+      orientationText={t('lookalike.orientation', {
+        defaultValue: 'Solo orientación · nunca consumo',
+      })}
+    >
       <header className="mkt-page-head mkt-mesh lookalike-hero">
         <p className="mkt-kicker">
           {t('lookalike.kicker', { defaultValue: 'Educación · Confusiones peligrosas' })}
         </p>
         <h1>
-          {t('lookalike.studioTitle', { defaultValue: 'Lookalike Studio' })}
+          {t('lookalike.studioTitle', { defaultValue: 'Estudio de confusiones' })}
         </h1>
         <p className="lookalike-hero__lead">
           {t('lookalike.studioSubtitleShort', {
@@ -242,14 +244,14 @@ export function LookalikeStudioPage() {
               }
             }}
           />
-          <button
+          <Button
             type="button"
-            className="btn-atelier btn-atelier--primary"
+            variant="primary"
             disabled={!query.trim() || selection.length >= LOOKALIKE_STUDIO_MAX}
             onClick={() => add(typeahead[0]?.taxon || query)}
           >
             {t('lookalike.add', { defaultValue: 'Añadir' })}
-          </button>
+          </Button>
         </div>
         {focused && typeahead.length > 0 && (
           <ul className="lookalike-typeahead" role="listbox">
@@ -320,19 +322,19 @@ export function LookalikeStudioPage() {
                   size="md"
                 />
                 <div className="lookalike-studio-card__actions">
-                  <Link to={`/enciclopedia/${s.slug}`} className="btn-atelier btn-atelier--ghost">
+                  <LinkButton to={`/enciclopedia/${s.slug}`} variant="ghost">
                     {t('lookalike.viewDetail', { defaultValue: 'Ficha' })}
-                  </Link>
-                  <button
+                  </LinkButton>
+                  <Button
                     type="button"
-                    className="btn-atelier btn-atelier--ghost"
+                    variant="ghost"
                     onClick={() => {
                       setSelection(removeFromStudioSelection(selection, s.taxon))
                       setActivePairId(null)
                     }}
                   >
                     {t('lookalike.remove', { defaultValue: 'Quitar' })}
-                  </button>
+                  </Button>
                 </div>
               </div>
             </article>
@@ -431,7 +433,7 @@ export function LookalikeStudioPage() {
 
       <section className="lookalike-suggest-section">
         <h2 className="lookalike-table-title">
-          {t('lookalike.suggestTitle', { defaultValue: 'Añadir lookalike' })}
+          {t('lookalike.suggestTitle', { defaultValue: 'Añadir confusión' })}
         </h2>
         <div className="lookalike-suggest-row">
           {suggestions.map((s) => {
@@ -455,6 +457,6 @@ export function LookalikeStudioPage() {
           })}
         </div>
       </section>
-    </div>
+    </PageShell>
   )
 }

@@ -9,6 +9,7 @@ import {
 } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { Button, LinkButton, PageShell } from '../components/ui'
 import {
   commonsForLocale,
   getSpeciesBySlug,
@@ -19,6 +20,12 @@ import { getRiskMeta, isSevereRisk, toRiskLabel } from '../lib/riskLabels'
 import { getMushroomByScientificName } from '../data/mushroomDatabase'
 import { scientificNameToSlug } from '../lib/slug'
 import { SpeciesGallery } from '../components/SpeciesGallery'
+import { ImageAttribution } from '../components/ui'
+import {
+  attributionFromCatalog,
+  hasAttributionMeta,
+  shortLicenseLabel,
+} from '../lib/speciesAttribution'
 import { OpenStudyLinks } from '../components/OpenStudyLinks'
 import { SpeciesNameBlock } from '../components/SpeciesNameBlock'
 import { RiskChip } from '../components/RiskChip'
@@ -92,13 +99,35 @@ export function SpeciesDetailPage() {
   const tablistRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    void loadSpeciesCatalog().then(() => setReady(true))
+    void loadSpeciesCatalog()
+      .then(() => setReady(true))
+      .catch(() => setReady(true)) // never hang on permanent skeleton
   }, [])
 
   // Reset tab when navigating between species
   useEffect(() => {
     setTab('morphology')
   }, [slug])
+
+  // Hard scroll-to-top after route + after catalog ready (images/layout can reflow late)
+  useEffect(() => {
+    const goTop = () => {
+      window.scrollTo(0, 0)
+      document.documentElement.scrollTop = 0
+      document.body.scrollTop = 0
+      const main = document.getElementById('main-content')
+      if (main) main.scrollTop = 0
+    }
+    goTop()
+    const t0 = window.setTimeout(goTop, 0)
+    const t1 = window.setTimeout(goTop, 80)
+    const t2 = window.setTimeout(goTop, 250)
+    return () => {
+      window.clearTimeout(t0)
+      window.clearTimeout(t1)
+      window.clearTimeout(t2)
+    }
+  }, [slug, ready])
 
   // Seek-style study progress: encyclopedia views (local only; real fichas)
   useEffect(() => {
@@ -193,7 +222,7 @@ export function SpeciesDetailPage() {
     { id: 'habitat', label: t('detail.tabs.habitat', { defaultValue: 'Hábitat' }) },
     {
       id: 'lookalikes',
-      label: t('detail.tabs.lookalikes', { defaultValue: 'Lookalikes' }),
+      label: t('detail.tabs.lookalikes', { defaultValue: 'Confusiones' }),
       count: lookalikes.length || undefined,
     },
   ]
@@ -250,19 +279,19 @@ export function SpeciesDetailPage() {
 
   if (!ready) {
     return (
-      <div className="cn-page page-detail page-atelier-shell species-detail">
+      <PageShell className="page-detail page-atelier-shell species-detail">
         <div className="species-detail-hero species-detail-hero--skeleton">
           <div className="skeleton-atelier" style={{ minHeight: 280 }}>
             <div className="skeleton-atelier__shimmer" />
           </div>
         </div>
-      </div>
+      </PageShell>
     )
   }
 
   if (!catalog && !rich) {
     return (
-      <div className="cn-page page-detail page-atelier-shell species-detail">
+      <PageShell className="page-detail page-atelier-shell species-detail">
         <EmptyState
           title={t('encyclopedia.notFound', { defaultValue: 'Especie no encontrada' })}
           description={t('detail.notFoundBody', {
@@ -274,12 +303,12 @@ export function SpeciesDetailPage() {
           })}
           actionTo="/enciclopedia"
         />
-      </div>
+      </PageShell>
     )
   }
 
   return (
-    <div className="cn-page page-detail species-product species-detail" data-skin="campo-nocturno">
+    <PageShell className="page-detail species-product species-detail" orientationSticky>
       <div className="detail-back">
         <Link to="/enciclopedia">
           {t('nav.encyclopedia', { defaultValue: 'Enciclopedia' })}
@@ -306,6 +335,28 @@ export function SpeciesDetailPage() {
                   : 'default'
             }
           />
+          {/* N3: catalog credit sticky under hero when gallery meta is thin */}
+          {(() => {
+            const catAttr = attributionFromCatalog(scientificName)
+            if (!hasAttributionMeta(catAttr)) return null
+            const lic = shortLicenseLabel(catAttr?.license)
+            return (
+              <div
+                className="species-detail-hero__credit"
+                data-testid="species-detail-catalog-credit"
+              >
+                <ImageAttribution
+                  meta={catAttr}
+                  label={t('detail.photoCredit', { defaultValue: 'Foto' })}
+                />
+                {lic ? (
+                  <span className="species-detail-hero__license muted">
+                    {t('detail.license', { defaultValue: 'Licencia' })}: {lic}
+                  </span>
+                ) : null}
+              </div>
+            )
+          })()}
         </div>
         <div className="species-detail-hero__meta">
           <div
@@ -329,7 +380,14 @@ export function SpeciesDetailPage() {
         </div>
       </section>
 
-      <OpenStudyLinks taxon={scientificName} />
+      <details className="detail-collapsible" data-testid="detail-open-study-collapse">
+        <summary className="detail-collapsible__summary">
+          {t('detail.openStudyTitle', { defaultValue: 'Estudiar en la web' })}
+        </summary>
+        <div className="detail-collapsible__body">
+          <OpenStudyLinks taxon={scientificName} />
+        </div>
+      </details>
 
       {meta ? (
         <dl className="species-meta-grid" aria-label={t('detail.metaGrid', { defaultValue: 'Ficha rápida' })}>
@@ -485,125 +543,162 @@ export function SpeciesDetailPage() {
           ))}
         </div>
         <div className="mkt-multiview-strip__actions">
-          <Link
+          <LinkButton
             to="/identificar"
-            className="mkt-btn mkt-btn--primary mkt-btn--sm"
+            skin="mkt"
+            variant="primary"
+            size="sm"
             data-testid="species-detail-cta-identify"
           >
-            {t('detail.ctaIdentify', { defaultValue: 'Identificar multi-vista' })}
-          </Link>
-          <Link
+            {t('detail.ctaIdentify', { defaultValue: 'Identificar' })}
+          </LinkButton>
+          <LinkButton
             to="/educacion"
-            className="mkt-btn mkt-btn--ghost mkt-btn--sm"
+            skin="mkt"
+            variant="ghost"
+            size="sm"
             data-testid="species-detail-cta-edu"
           >
-            {t('detail.ctaEdu', { defaultValue: 'Por qué multi-vista' })}
-          </Link>
+            {t('detail.ctaEdu', { defaultValue: 'Cómo fotografiar' })}
+          </LinkButton>
           {lookalikes.length > 0 ? (
-            <button
+            <Button
               type="button"
-              className="mkt-btn mkt-btn--ghost mkt-btn--sm"
+              variant="ghost"
+              size="sm"
               data-testid="species-detail-cta-lookalikes"
               onClick={() => selectTab('lookalikes')}
             >
               {t('detail.ctaLookalikes', {
-                defaultValue: 'Ver confusiones (vistas críticas)',
+                defaultValue: 'Ver confusiones',
               })}
-            </button>
+            </Button>
           ) : null}
         </div>
       </section>
 
       {foodQ ? (
-        <div className={`species-product__food food-badge food-badge--${foodQ.food_class}`}>
-          <p className="food-badge__label">
-            {t('detail.foodQualityLabel', { defaultValue: 'Calidad documentada' })}:{' '}
-            <strong>
-              {t(`detail.foodClass.${foodQ.food_class}`, {
-                defaultValue: foodQ.label,
+        <details
+          className={`detail-collapsible detail-collapsible--food food-badge food-badge--${foodQ.food_class}`}
+          data-testid="species-food-quality"
+        >
+          <summary className="detail-collapsible__summary">
+            <span>
+              {t('detail.foodQualityLabel', { defaultValue: 'Calidad documentada' })}:{' '}
+              <strong>
+                {t(`detail.foodClass.${foodQ.food_class}`, {
+                  defaultValue: foodQ.label,
+                })}
+              </strong>
+            </span>
+          </summary>
+          <div className="detail-collapsible__body species-product__food">
+            <p className="food-badge__source">
+              {t('detail.foodQualitySource', {
+                defaultValue: 'Fuente: {{sources}} — no es permiso de consumo.',
+                sources: foodQ.sources.join(' · '),
               })}
-            </strong>
-          </p>
-          <p className="food-badge__source">
-            {t('detail.foodQualitySource', {
-              defaultValue: 'Fuente: {{sources}} — no es permiso de consumo.',
-              sources: foodQ.sources.join(' · '),
-            })}
-          </p>
-          {foodQ.edibility && (
-            <p className="food-badge__raw">
-              {t('detail.curatedLevel', { defaultValue: 'Nivel curado' })}:{' '}
-              <code>{foodQ.edibility}</code>
             </p>
-          )}
-        </div>
+            {foodQ.edibility && (
+              <p className="food-badge__raw">
+                {t('detail.curatedLevel', { defaultValue: 'Nivel curado' })}:{' '}
+                <code>{foodQ.edibility}</code>
+              </p>
+            )}
+            <p className="food-badge__source muted">
+              {t('detail.foodQualityNeverConsume', {
+                defaultValue: 'Solo orientación educativa. Nunca es permiso de consumo.',
+              })}
+            </p>
+          </div>
+        </details>
       ) : (
-        <div className="species-product__food food-badge food-badge--unknown">
-          <p className="food-badge__label">
-            {t('detail.foodQualityUnknown', {
-              defaultValue: 'Clase educ.: sin documentar en fuentes curadas (no inventamos comestibilidad).',
+        <details
+          className="detail-collapsible detail-collapsible--food food-badge food-badge--unknown"
+          data-testid="species-food-quality"
+        >
+          <summary className="detail-collapsible__summary">
+            {t('detail.foodQualityUnknownShort', {
+              defaultValue: 'Clase educ.: sin documentar',
             })}
-          </p>
-          <p className="food-badge__source">
-            {t('detail.foodQualityUnknownHint', {
-              defaultValue:
-                'Solo base curada Iberia + lista tóxicas. Ante la duda: precaución y micólogo humano.',
-            })}
-          </p>
-        </div>
+          </summary>
+          <div className="detail-collapsible__body species-product__food">
+            <p className="food-badge__label">
+              {t('detail.foodQualityUnknown', {
+                defaultValue:
+                  'Clase educ.: sin documentar en fuentes curadas (no inventamos comestibilidad).',
+              })}
+            </p>
+            <p className="food-badge__source">
+              {t('detail.foodQualityUnknownHint', {
+                defaultValue:
+                  'Solo base curada Iberia + lista tóxicas. Ante la duda: precaución y micólogo humano.',
+              })}
+            </p>
+          </div>
+        </details>
       )}
 
-      {/* Educational external recipes — encyclopedia only; never Identify ResultCard */}
+      {/* Educational external recipes — collapsed by default; never Identify ResultCard */}
       {recipeBundle && recipeBundle.recipes.length > 0 ? (
-        <section
-          className="species-product__recipes recipes-edu"
+        <details
+          className="detail-collapsible detail-collapsible--recipes"
           data-testid="species-recipes"
-          aria-labelledby="species-recipes-heading"
         >
-          <h2 id="species-recipes-heading" className="recipes-edu__title">
+          <summary className="detail-collapsible__summary" id="species-recipes-heading">
             {t('detail.recipes.title', {
               defaultValue: 'Recetas (enlaces externos)',
             })}
-          </h2>
-          <div className="recipes-edu__banner" role="note">
-            <p>
-              {t('detail.recipes.disclaimer', {
-                defaultValue:
-                  'Orientación cultural únicamente. Nunca consumas setas silvestres identificadas solo por una app. Se requiere verificación experta. Esta app no autoriza el consumo.',
-              })}
-            </p>
-            <p className="recipes-edu__banner-src">
-              {recipeBundle.disclaimer || RECIPES_DEFAULT_DISCLAIMER}
-            </p>
+            <span className="detail-collapsible__count" aria-hidden="true">
+              {recipeBundle.recipes.length}
+            </span>
+          </summary>
+          <div className="detail-collapsible__body">
+            <section
+              className="species-product__recipes recipes-edu"
+              aria-labelledby="species-recipes-heading"
+            >
+              <div className="recipes-edu__banner" role="note">
+                <p>
+                  {t('detail.recipes.disclaimer', {
+                    defaultValue:
+                      'Orientación cultural únicamente. Nunca consumas setas silvestres identificadas solo por una app. Se requiere verificación experta. Esta app no autoriza el consumo.',
+                  })}
+                </p>
+                <p className="recipes-edu__banner-src">
+                  {recipeBundle.disclaimer || RECIPES_DEFAULT_DISCLAIMER}
+                </p>
+              </div>
+              <ul className="recipes-edu__list">
+                {recipeBundle.recipes.map((r) => (
+                  <li key={r.url} className="recipes-edu__item">
+                    <a
+                      href={r.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="recipes-edu__link"
+                    >
+                      {r.title}
+                      <span className="recipes-edu__lang" aria-hidden="true">
+                        {' '}
+                        ({r.lang.toUpperCase()})
+                      </span>
+                    </a>
+                    <span className="recipes-edu__external">
+                      {t('detail.recipes.external', { defaultValue: 'Enlace externo' })}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              <p className="recipes-edu__footer muted">
+                {t('detail.recipes.footer', {
+                  defaultValue:
+                    'Enlaces culinarios de terceros con fines educativos. No son permiso de recolección ni de consumo.',
+                })}
+              </p>
+            </section>
           </div>
-          <ul className="recipes-edu__list">
-            {recipeBundle.recipes.map((r) => (
-              <li key={r.url} className="recipes-edu__item">
-                <a
-                  href={r.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="recipes-edu__link"
-                >
-                  {r.title}
-                  <span className="recipes-edu__lang" aria-hidden="true">
-                    {' '}
-                    ({r.lang.toUpperCase()})
-                  </span>
-                </a>
-                <span className="recipes-edu__external">
-                  {t('detail.recipes.external', { defaultValue: 'Enlace externo' })}
-                </span>
-              </li>
-            ))}
-          </ul>
-          <p className="recipes-edu__footer muted">
-            {t('detail.recipes.footer', {
-              defaultValue:
-                'Enlaces culinarios de terceros con fines educativos. No son permiso de recolección ni de consumo.',
-            })}
-          </p>
-        </section>
+        </details>
       ) : null}
 
       <div
@@ -740,11 +835,11 @@ export function SpeciesDetailPage() {
                 resolve={resolveLookalike}
               />
               <div className="species-detail-panel__actions">
-                <Link to="/lookalikes" className="btn-atelier btn-atelier--ghost">
+                <LinkButton to="/lookalikes" variant="ghost">
                   {t('detail.openStudio', {
-                    defaultValue: 'Abrir Lookalike Studio',
+                    defaultValue: 'Estudio de confusiones',
                   })}
-                </Link>
+                </LinkButton>
               </div>
             </>
           ) : (
@@ -757,13 +852,13 @@ export function SpeciesDetailPage() {
                   'No hay lookalikes curados en la ficha. Prueba el estudio de comparación.',
               })}
               actionLabel={t('detail.openStudio', {
-                defaultValue: 'Abrir Lookalike Studio',
+                defaultValue: 'Estudio de confusiones',
               })}
               actionTo="/lookalikes"
             />
           )}
         </div>
       </div>
-    </div>
+    </PageShell>
   )
 }

@@ -330,7 +330,8 @@ export function SpeciesImage({
         height={height}
         loading={priority ? 'eager' : 'lazy'}
         decoding={priority ? 'sync' : 'async'}
-        {...(priority ? { fetchPriority: 'high' as const } : {})}
+        // React 18 DOM: lowercase attribute (camelCase fetchPriority warns on <img>)
+        {...(priority ? ({ fetchpriority: 'high' } as React.ImgHTMLAttributes<HTMLImageElement>) : {})}
         // no-referrer helps privacy; do NOT set crossOrigin=anonymous —
         // Wikimedia often lacks CORS headers and then <img> fails to paint.
         referrerPolicy="no-referrer"

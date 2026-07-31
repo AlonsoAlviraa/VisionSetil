@@ -546,10 +546,12 @@
     },
     "boletus edulis": {
       "taxon": "Boletus edulis",
-      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/AD2009Sep13_Boletus_edulis_01.jpg/1280px-AD2009Sep13_Boletus_edulis_01.jpg",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/3/3b/Boletus_edulis_Poland.jpg",
       "provider": "wikimedia_commons",
-      "license": "Public domain",
-      "slug": "boletus-edulis"
+      "license": "CC BY-SA 3.0",
+      "slug": "boletus-edulis",
+      "title": "File:Boletus edulis Poland.jpg",
+      "note": "Cover swap 2026-07-31: classic brown porcini profile (cap+stem+pores visible; was tight group AD2009)"
     },
     "boletus erythropus": {
       "taxon": "Boletus erythropus",

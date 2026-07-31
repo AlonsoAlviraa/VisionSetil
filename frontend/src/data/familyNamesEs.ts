@@ -77,6 +77,81 @@ export function familyNameEs(latinFamily: string | null | undefined): string {
   return FAMILY_NAMES_ES[key] || key
 }
 
+/**
+ * Genus → family when catalog rows left `family` empty (common for Lactarius / Boletus).
+ * Educational mapping only — not a taxonomic authority.
+ */
+export const GENUS_TO_FAMILY: Record<string, string> = {
+  Amanita: 'Amanitaceae',
+  Agaricus: 'Agaricaceae',
+  Boletus: 'Boletaceae',
+  Butyriboletus: 'Boletaceae',
+  Caloboletus: 'Boletaceae',
+  Hemileccinum: 'Boletaceae',
+  Imleria: 'Boletaceae',
+  Leccinum: 'Boletaceae',
+  Neoboletus: 'Boletaceae',
+  Rubroboletus: 'Boletaceae',
+  Suillellus: 'Boletaceae',
+  Xerocomellus: 'Boletaceae',
+  Xerocomus: 'Boletaceae',
+  Suillus: 'Suillaceae',
+  Lactarius: 'Russulaceae',
+  Lactifluus: 'Russulaceae',
+  Russula: 'Russulaceae',
+  Cantharellus: 'Cantharellaceae',
+  Craterellus: 'Cantharellaceae',
+  Hydnum: 'Hydnaceae',
+  Macrolepiota: 'Agaricaceae',
+  Chlorophyllum: 'Agaricaceae',
+  Morchella: 'Morchellaceae',
+  Gyromitra: 'Discinaceae',
+  Cortinarius: 'Cortinariaceae',
+  Galerina: 'Hymenogastraceae',
+  Hypholoma: 'Strophariaceae',
+  Pleurotus: 'Pleurotaceae',
+  Tricholoma: 'Tricholomataceae',
+  Armillaria: 'Physalacriaceae',
+  Coprinus: 'Agaricaceae',
+  Coprinopsis: 'Psathyrellaceae',
+  Marasmius: 'Marasmiaceae',
+  Mycena: 'Mycenaceae',
+}
+
+/** Effective Latin family for a taxon (catalog field or genus inference). */
+export function effectiveFamilyLatin(
+  family: string | null | undefined,
+  scientificName: string | null | undefined,
+): string {
+  const fromCatalog = (family || '').trim()
+  if (fromCatalog) return fromCatalog
+  const genus = (scientificName || '').trim().split(/\s+/)[0] || ''
+  return GENUS_TO_FAMILY[genus] || ''
+}
+
+/**
+ * Expand user queries like "boletos", "lactarios", "amanitas" into family/genus tokens
+ * for encyclopedia search ranking.
+ */
+export function encyclopediaQueryAliases(rawQuery: string): string[] {
+  const q = (rawQuery || '').trim().toLowerCase()
+  if (!q) return []
+  const out: string[] = [q]
+  const map: Array<[RegExp, string[]]> = [
+    [/^bolet[oa]s?$/, ['boletaceae', 'boletus', 'boleto']],
+    [/^boleto$/, ['boletaceae', 'boletus']],
+    [/^níscal|niscal|rovellón|rovellon|lactar/, ['lactarius', 'russulaceae', 'níscalo']],
+    [/^rúsul|rusul/, ['russula', 'russulaceae']],
+    [/^amanit/, ['amanita', 'amanitaceae']],
+    [/^rebozuelo|chanterelle|cantharell/, ['cantharellus', 'cantharellaceae']],
+    [/^colmenilla|morchell/, ['morchella', 'morchellaceae']],
+  ]
+  for (const [re, aliases] of map) {
+    if (re.test(q)) out.push(...aliases)
+  }
+  return [...new Set(out)]
+}
+
 /** All known Latin families that have Spanish labels. */
 export function knownFamilyLatins(): string[] {
   return Object.keys(FAMILY_NAMES_ES).sort()

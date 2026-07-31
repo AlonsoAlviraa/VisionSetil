@@ -6,8 +6,8 @@
  * Not an App Store / APK download path — orientation only.
  */
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { Button, LinkButton } from './ui'
 
 const DISMISS_KEY = 'visionsetil_pwa_install_dismissed'
 const DISMISS_IOS_KEY = 'visionsetil_pwa_ios_tip_dismissed'
@@ -131,23 +131,28 @@ export function PwaInstallHint() {
           })}
         </p>
         <div className="pwa-install-hint__actions">
-          <button
+          <Button
             type="button"
-            className="btn-atelier btn-atelier--primary"
+            variant="primary"
             onClick={() => void install()}
             data-testid="pwa-install-btn"
           >
             {t('pwa.install', { defaultValue: 'Instalar' })}
-          </button>
-          <Link to="/offline" className="btn-atelier btn-atelier--ghost">
+          </Button>
+          <LinkButton to="/offline" variant="ghost">
             {t('pwa.offlinePack', { defaultValue: 'Pack offline' })}
-          </Link>
-          <Link to="/identificar" className="btn-atelier btn-atelier--ghost" data-testid="pwa-install-identify">
+          </LinkButton>
+          <LinkButton to="/identificar" variant="ghost" data-testid="pwa-install-identify">
             {t('nav.identify', { defaultValue: 'Identificar multi-vista' })}
-          </Link>
-          <button type="button" className="btn-atelier btn-atelier--ghost" onClick={() => dismiss(false)}>
+          </LinkButton>
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={() => dismiss(false)}
+            data-testid="pwa-install-dismiss"
+          >
             {t('pwa.later', { defaultValue: 'Ahora no' })}
-          </button>
+          </Button>
         </div>
       </div>
     )
@@ -168,15 +173,20 @@ export function PwaInstallHint() {
           })}
         </p>
         <div className="pwa-install-hint__actions">
-          <Link to="/offline" className="btn-atelier btn-atelier--primary">
+          <LinkButton to="/offline" variant="primary">
             {t('pwa.offlinePack', { defaultValue: 'Pack offline' })}
-          </Link>
-          <Link to="/identificar" className="btn-atelier btn-atelier--ghost" data-testid="pwa-ios-identify">
+          </LinkButton>
+          <LinkButton to="/identificar" variant="ghost" data-testid="pwa-ios-identify">
             {t('nav.identify', { defaultValue: 'Identificar multi-vista' })}
-          </Link>
-          <button type="button" className="btn-atelier btn-atelier--ghost" onClick={() => dismiss(true)}>
+          </LinkButton>
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={() => dismiss(true)}
+            data-testid="pwa-ios-dismiss"
+          >
             {t('pwa.later', { defaultValue: 'Ahora no' })}
-          </button>
+          </Button>
         </div>
       </div>
     )

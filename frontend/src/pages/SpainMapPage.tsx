@@ -15,6 +15,7 @@ import { MapContainer, TileLayer, Marker, Circle, useMap } from 'react-leaflet'
 import L from 'leaflet'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { Button, ExternalLinkButton, LinkButton, PageShell } from '../components/ui'
 import 'leaflet/dist/leaflet.css'
 
 import {
@@ -565,18 +566,17 @@ function ZoneDetailBody({
           const permit = resources.links.find((l) => l.kind === 'permit')
           if (!permit) return null
           return (
-            <a
+            <ExternalLinkButton
               href={permit.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-atelier btn-atelier--primary zone-resources__cta"
+              variant="primary"
+              className="zone-resources__cta"
               data-testid="zone-permit-cta"
             >
               {t('map.permitCta', {
                 defaultValue: 'Tramitar permiso en web oficial',
               })}{' '}
               <span aria-hidden>↗</span>
-            </a>
+            </ExternalLinkButton>
           )
         })()}
         <ul className="zone-resources__list">
@@ -608,27 +608,23 @@ function ZoneDetailBody({
       </section>
 
       <div className="zone-detail-actions zone-detail-actions--hero">
-        <Link
+        {/* Permit CTA above (if any) is the primary; encyclopedia is secondary here */}
+        <LinkButton
           to="/enciclopedia"
-          className="btn-atelier btn-atelier--primary zone-detail-actions__main"
+          variant="secondary"
+          className="zone-detail-actions__main"
         >
           {t('map.openEncyclopedia', { defaultValue: 'Enciclopedia' })}
-        </Link>
-        <a
+        </LinkButton>
+        <ExternalLinkButton
           href={`https://www.openstreetmap.org/?mlat=${zone.lat}&mlon=${zone.lng}#map=12/${zone.lat}/${zone.lng}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="btn-atelier btn-atelier--ghost"
+          variant="ghost"
         >
           {t('map.openOsm', { defaultValue: 'Ver en mapa' })}
-        </a>
-        <button
-          type="button"
-          className="btn-atelier btn-atelier--ghost"
-          onClick={onClose}
-        >
+        </ExternalLinkButton>
+        <Button type="button" variant="ghost" onClick={onClose}>
           {t('map.keepExploring', { defaultValue: 'Seguir' })}
-        </button>
+        </Button>
       </div>
 
       <p className="zone-disclaimer zone-disclaimer--peek">
@@ -764,7 +760,8 @@ export default function SpainMapPage() {
     })
   }, [selectedZone, filterRegion, searchQuery])
 
-  // Progressive weather load — chunked, low concurrency (D-12 perf + M1 % progress)
+  // Progressive weather load — prioritize first batch (top-K), then rest idle.
+  // Avoids N concurrent Open-Meteo storms on cold map open.
   useEffect(() => {
     cancelledRef.current = false
     loadedZonesRef.current = 0
@@ -772,6 +769,10 @@ export default function SpainMapPage() {
     setLoadProgress(0)
     setWeatherFailedAll(false)
     const totalZones = mushroomZones.length
+    // First paint budget: top 10 zones only, then backfill remainder
+    const PRIORITY_N = 10
+    const priority = mushroomZones.slice(0, PRIORITY_N)
+    const rest = mushroomZones.slice(PRIORITY_N)
 
     type WeatherRow = {
       score: number | null
@@ -779,61 +780,91 @@ export default function SpainMapPage() {
       ok: boolean
     }
 
-    void mapPoolChunked<MushroomZone, WeatherRow>(
-      mushroomZones,
-      {
-        concurrency: 3,
-        chunkSize: 10,
-        onChunk: (partial) => {
-          if (cancelledRef.current) return
-          loadedZonesRef.current += partial.length
-          const pct = Math.min(
-            99,
-            Math.round((loadedZonesRef.current / Math.max(1, totalZones)) * 100),
-          )
-          startTransition(() => {
-            setLoadProgress(pct)
-            setScores((prev) => {
-              const next = { ...prev }
-              for (const p of partial) {
-                const zone = mushroomZones[p.index]
-                if (!zone) continue
-                next[zone.id] = p.value.score
-              }
-              return next
-            })
-            setWeatherByZone((prev) => {
-              const next = { ...prev }
-              for (const p of partial) {
-                const zone = mushroomZones[p.index]
-                if (!zone) continue
-                next[zone.id] = p.value.snap
-              }
-              return next
-            })
-          })
-        },
-      },
-      async (zone) => {
-        const w = await fetchWeatherData(zone.lat, zone.lng)
-        if (!w) {
-          return { score: null, snap: null, ok: false }
-        }
-        const cond = evaluateMushroomConditions(w)
-        return {
-          score: cond.score,
-          snap: { weather: w, conditions: cond },
-          ok: true,
-        }
-      },
-    ).then((results) => {
+    const applyPartial = (
+      partial: Array<{ index: number; value: WeatherRow }>,
+      zoneList: MushroomZone[],
+    ) => {
       if (cancelledRef.current) return
+      loadedZonesRef.current += partial.length
+      const pct = Math.min(
+        99,
+        Math.round((loadedZonesRef.current / Math.max(1, totalZones)) * 100),
+      )
+      startTransition(() => {
+        setLoadProgress(pct)
+        setScores((prev) => {
+          const next = { ...prev }
+          for (const p of partial) {
+            const zone = zoneList[p.index]
+            if (!zone) continue
+            next[zone.id] = p.value.score
+          }
+          return next
+        })
+        setWeatherByZone((prev) => {
+          const next = { ...prev }
+          for (const p of partial) {
+            const zone = zoneList[p.index]
+            if (!zone) continue
+            next[zone.id] = p.value.snap
+          }
+          return next
+        })
+      })
+    }
+
+    const fetchRow = async (zone: MushroomZone): Promise<WeatherRow> => {
+      const w = await fetchWeatherData(zone.lat, zone.lng)
+      if (!w) return { score: null, snap: null, ok: false }
+      const cond = evaluateMushroomConditions(w)
+      return {
+        score: cond.score,
+        snap: { weather: w, conditions: cond },
+        ok: true,
+      }
+    }
+
+    void (async () => {
+      const first = await mapPoolChunked<MushroomZone, WeatherRow>(
+        priority,
+        {
+          concurrency: 3,
+          chunkSize: 5,
+          onChunk: (partial) => applyPartial(partial, priority),
+        },
+        fetchRow,
+      )
+      if (cancelledRef.current) return
+      // UI usable after first batch
       setLoadingAlerts(false)
+      setLoadProgress(
+        Math.min(99, Math.round((PRIORITY_N / Math.max(1, totalZones)) * 100)),
+      )
+
+      if (rest.length === 0) {
+        setLoadProgress(100)
+        const anyOk = first.some((r) => r.ok)
+        const anyFail = first.some((r) => !r.ok)
+        setWeatherFailedAll(!anyOk && anyFail)
+        return
+      }
+
+      const second = await mapPoolChunked<MushroomZone, WeatherRow>(
+        rest,
+        {
+          concurrency: 2,
+          chunkSize: 8,
+          onChunk: (partial) => applyPartial(partial, rest),
+        },
+        fetchRow,
+      )
+      if (cancelledRef.current) return
       setLoadProgress(100)
-      const anyOk = results.some((r) => r.ok)
-      const anyFail = results.some((r) => !r.ok)
+      const all = [...first, ...second]
+      const anyOk = all.some((r) => r.ok)
+      const anyFail = all.some((r) => !r.ok)
       setWeatherFailedAll(!anyOk && anyFail)
-    })
+    })()
 
     return () => {
       cancelledRef.current = true
@@ -1072,7 +1103,9 @@ export default function SpainMapPage() {
   }, [regulatedRows, regulatedFilter])
 
   return (
-    <div
+    <PageShell
+      bare
+      testId="spain-map-page"
       className={`page-map page-map--immersive page-map--map-first page-atelier-shell${
         sheetOpen ? ' page-map--sheet-open' : ''
       }${mapExpanded ? ' page-map--expanded' : ''}`}
@@ -1099,15 +1132,16 @@ export default function SpainMapPage() {
               defaultValue: 'Campo · multi-vista',
             })}
           </span>
-          <button
+          <Button
             type="button"
-            className="btn-atelier btn-atelier--ghost map-chrome__b2b"
+            variant="ghost"
+            className="map-chrome__b2b"
             data-testid="map-regulated-toggle"
             aria-expanded={showRegulatedDir}
             onClick={() => setShowRegulatedDir((v) => !v)}
           >
             Cotos / parques ({regulatedStats.total})
-          </button>
+          </Button>
         </div>
 
         <div className="map-chrome__filters" role="search">
@@ -1215,9 +1249,10 @@ export default function SpainMapPage() {
               {t('map.noData', { defaultValue: 'Sin datos' })}
             </option>
           </select>
-          <button
+          <Button
             type="button"
-            className="btn-atelier btn-atelier--ghost map-near-me map-chrome__near"
+            variant="ghost"
+            className="map-near-me map-chrome__near"
             onClick={handleNearMe}
             disabled={geoStatus === 'loading'}
             data-testid="map-near-me"
@@ -1229,7 +1264,7 @@ export default function SpainMapPage() {
             {geoStatus === 'loading'
               ? t('map.nearMeLoading', { defaultValue: 'Localizando…' })
               : t('map.nearMe', { defaultValue: 'Cerca de mí' })}
-          </button>
+          </Button>
           <span className="map-chrome__meta" aria-live="polite">
             {filteredZones.length} {t('map.zones', { defaultValue: 'zonas' })}
             {loadingAlerts ? ` · ${loadProgress}%` : ''}
@@ -1379,16 +1414,14 @@ export default function SpainMapPage() {
                   ['coto', 'Otros cotos'],
                 ] as const
               ).map(([id, label]) => (
-                <button
+                <Button
                   key={id}
                   type="button"
-                  className={`btn-atelier ${
-                    regulatedFilter === id ? 'btn-atelier--primary' : 'btn-atelier--ghost'
-                  }`}
+                  variant={regulatedFilter === id ? 'primary' : 'ghost'}
                   onClick={() => setRegulatedFilter(id)}
                 >
                   {label}
-                </button>
+                </Button>
               ))}
             </div>
           </div>
@@ -1483,9 +1516,9 @@ export default function SpainMapPage() {
                 })}
               </p>
               <div className="map-empty-filter__actions">
-                <button
+                <Button
                   type="button"
-                  className="btn-atelier btn-atelier--primary"
+                  variant="primary"
                   onClick={() => {
                     setFilterRegion('todas')
                     setFilterAlert('todas')
@@ -1495,7 +1528,7 @@ export default function SpainMapPage() {
                   }}
                 >
                   {t('map.clearFilters', { defaultValue: 'Limpiar filtros' })}
-                </button>
+                </Button>
               </div>
             </div>
           )}
@@ -1704,6 +1737,6 @@ export default function SpainMapPage() {
           </div>
         </div>
       )}
-    </div>
+    </PageShell>
   )
 }

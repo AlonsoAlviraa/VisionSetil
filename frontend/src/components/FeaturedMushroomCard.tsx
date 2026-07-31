@@ -1,33 +1,25 @@
-import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { type MushroomSpecies, EDIBILITY_COLORS, EDIBILITY_LABELS } from '../data/mushroomDatabase'
-import { useSpeciesImage } from '../hooks/useSpeciesImage'
-import { speciesPhotoErrorFallback } from '../lib/speciesPhotoFallback'
-import { INLINE_PLACEHOLDER_SVG } from '../lib/speciesImageUrl'
+import { SpeciesImage } from './SpeciesImage'
+import { scientificNameToSlug } from '../lib/slug'
+
 interface Props {
   species: MushroomSpecies
 }
 
+/**
+ * Featured card — SpeciesImage cascade (single image SSOT).
+ * Flat 2D only; risk chip is orientation, never consumption clearance.
+ */
 export function FeaturedMushroomCard({ species }: Props) {
-  const { url, loading } = useSpeciesImage(species.scientificName, {
-    riskLabel: species.edibility,
-    context: 'grid',
-    quality: 'thumb',
-  })
-  const slug = encodeURIComponent(species.scientificName)
-  const placeholder = speciesPhotoErrorFallback(species.scientificName, species.edibility)
-  /** 0 = primary url, 1 = placeholder SVG, 2 = inline brand SVG (stop) */
-  const [stage, setStage] = useState(0)
+  const slug = scientificNameToSlug(species.scientificName)
+  const risk =
+    species.edibility === 'mortifero'
+      ? 'deadly'
+      : species.edibility === 'toxico'
+        ? 'toxic'
+        : 'default'
 
-  // Reset cascade when resolver upgrades URL or species changes
-  useEffect(() => {
-    setStage(0)
-  }, [url, species.scientificName])
-
-  const src =
-    stage === 0 ? url : stage === 1 ? placeholder : INLINE_PLACEHOLDER_SVG
-
-  // Flat 2D card only — no TiltCard3D / card-3d chrome
   return (
     <div className="featured-mushroom-card featured-mushroom-card--flat">
       <Link
@@ -35,16 +27,17 @@ export function FeaturedMushroomCard({ species }: Props) {
         style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}
       >
         <div className="featured-mushroom-image">
-          <img
-            key={`${species.scientificName}-${stage}-${stage === 0 ? url : 'fb'}`}
-            src={src}
+          <SpeciesImage
+            scientificName={species.scientificName}
+            slug={slug}
             alt={species.commonNames[0] || species.scientificName}
-            loading="lazy"
-            decoding="async"
-            className={loading && stage === 0 ? 'is-loading' : ''}
-            onError={() => {
-              setStage((s) => Math.min(2, s + 1))
-            }}
+            variant="card"
+            quality="thumb"
+            riskLevel={risk}
+            layout="fill"
+            preferCatalog
+            sizes="(max-width: 640px) 45vw, 280px"
+            showMediaBadge="auto"
           />
           <span
             className="edibility-pill"

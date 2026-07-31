@@ -1,4 +1,4 @@
-/** Image attribution for species media (PR-04 / U5). Hide when no usable meta. */
+/** Image attribution for species media (PR-04 / U5 / N3). Hide when no usable meta. */
 
 export interface ImageAttributionMeta {
   creator?: string | null
@@ -12,9 +12,25 @@ interface ImageAttributionProps {
   className?: string
   /** Optional prefix (e.g. "Foto") — omitted when empty so no bare "Crédito:" lines. */
   label?: string
+  /**
+   * When true (default), surface a short non-commercial note for CC BY-NC* licences
+   * so users never confuse open photos with free commercial reuse / forage OK.
+   */
+  showNcNote?: boolean
 }
 
-export function ImageAttribution({ meta, className = '', label }: ImageAttributionProps) {
+function isNonCommercialLicense(license: string | null | undefined): boolean {
+  if (!license) return false
+  const l = license.toLowerCase()
+  return l.includes('nc') || l.includes('by-nc') || l.includes('noncommercial')
+}
+
+export function ImageAttribution({
+  meta,
+  className = '',
+  label,
+  showNcNote = true,
+}: ImageAttributionProps) {
   if (!meta) return null
   const text =
     meta.attribution_text?.trim() ||
@@ -23,11 +39,13 @@ export function ImageAttribution({ meta, className = '', label }: ImageAttributi
   if (!text) return null
 
   const prefix = label?.trim() ? `${label.trim()}: ` : ''
+  const nc = showNcNote && isNonCommercialLicense(meta.license)
 
   return (
     <p
       className={`species-image__attribution ${className}`.trim()}
       data-testid="image-attribution"
+      data-nc={nc ? '1' : '0'}
     >
       {prefix}
       {meta.source_url ? (
@@ -37,6 +55,12 @@ export function ImageAttribution({ meta, className = '', label }: ImageAttributi
       ) : (
         text
       )}
+      {nc ? (
+        <span className="species-image__attribution-nc" data-testid="image-attribution-nc">
+          {' '}
+          · no comercial (NC)
+        </span>
+      ) : null}
     </p>
   )
 }

@@ -3,9 +3,10 @@
  * Al acertar o fallar → avanza solo al siguiente puzzle.
  * Educativo; nunca permiso de consumo.
  */
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { Button, LinkButton, PageShell } from '../components/ui'
 import { SpeciesThumb } from '../components/SpeciesThumb'
 import { RiskChip } from '../components/RiskChip'
 import { recordStudyActivity } from '../lib/studyBadges'
@@ -25,6 +26,7 @@ import {
   type WordleSpecies,
 } from '../lib/mushroomWordle'
 import { scientificNameToSlug } from '../lib/slug'
+import { markDailyGameDone } from '../lib/dailyGames'
 
 type PlayKind = 'daily' | 'streak'
 
@@ -39,7 +41,7 @@ export function MushroomWordlePage() {
     }
   })
   const [ready, setReady] = useState(pool.length > 0)
-  const [playKind, setPlayKind] = useState<PlayKind>('streak')
+  const [playKind, setPlayKind] = useState<PlayKind>('daily')
   const [secret, setSecret] = useState<WordleSpecies | null>(null)
   const [rows, setRows] = useState<WordleRow[]>([])
   const [current, setCurrent] = useState('')
@@ -119,20 +121,38 @@ export function MushroomWordlePage() {
     if (result.phase === 'won') {
       setStreak((s) => s + 1)
       setStats((s) => ({ ...s, won: s.won + 1 }))
-      recordStudyActivity('setadle', { won: true })
+      // Wordle is not Setadle — avoid polluting Setadle study stats
+      recordStudyActivity('quiz', { won: true })
       setRecent((prev) => [...prev.slice(-12), secret.answer])
+      if (playKind === 'daily') markDailyGameDone('wordle')
     } else if (result.phase === 'lost') {
       setStreak(0)
       setStats((s) => ({ ...s, lost: s.lost + 1 }))
-      recordStudyActivity('setadle', { won: false })
+      recordStudyActivity('quiz', { won: false })
       setRecent((prev) => [...prev.slice(-12), secret.answer])
+      if (playKind === 'daily') markDailyGameDone('wordle')
     }
-  }, [secret, phase, rows, current, t])
+  }, [secret, phase, rows, current, t, playKind])
 
-  // Physical keyboard
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  /** Keep a real focus target so clicks on keys/board never kill typing. */
+  const focusTypeTarget = useCallback(() => {
+    if (phase !== 'playing') return
+    // rAF: after button mousedown blur, restore focus for next keystroke
+    window.requestAnimationFrame(() => inputRef.current?.focus({ preventScroll: true }))
+  }, [phase])
+
+  useEffect(() => {
+    focusTypeTarget()
+  }, [phase, secret?.answer, focusTypeTarget])
+
+  // Physical keyboard (also works when hidden input is focused)
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (phase !== 'playing' || !secret) return
+      // Ignore pure modifier chords
+      if (e.ctrlKey || e.metaKey || e.altKey) return
       if (e.key === 'Enter') {
         e.preventDefault()
         submit()
@@ -144,26 +164,34 @@ export function MushroomWordlePage() {
         setError(null)
         return
       }
-      const ch = e.key.toUpperCase()
-      if (/^[A-ZÑ]$/.test(ch) && current.length < answerLen) {
-        setCurrent((c) => c + ch)
+      // Normalize accented letters to Wordle grid alphabet
+      const ch = e.key
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/ñ/gi, 'N')
+        .toUpperCase()
+      if (/^[A-Z]$/.test(ch)) {
+        e.preventDefault()
+        setCurrent((c) => (c.length < answerLen ? c + ch : c))
         setError(null)
       }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [phase, secret, submit, current.length, answerLen])
+  }, [phase, secret, submit, answerLen])
 
-  // Auto-advance after win/loss
+  // Auto-advance only in streak mode — daily holds on reveal (ficha / risk chip)
   useEffect(() => {
     if (phase !== 'won' && phase !== 'lost') return
-    // Daily only auto-continues into streak mode after first resolve
+    if (playKind === 'daily') {
+      setCountdown(null)
+      return
+    }
     setCountdown(Math.ceil(WORDLE_NEXT_DELAY_MS / 1000))
     const tick = window.setInterval(() => {
       setCountdown((c) => (c == null || c <= 1 ? 0 : c - 1))
     }, 1000)
     const timer = window.setTimeout(() => {
-      setPlayKind('streak')
       startRound(
         'streak',
         recent.includes(secret?.answer || '')
@@ -175,52 +203,74 @@ export function MushroomWordlePage() {
       window.clearTimeout(timer)
       window.clearInterval(tick)
     }
-  }, [phase, startRound, recent, secret?.answer])
+  }, [phase, playKind, startRound, recent, secret?.answer])
 
-  const onVirtualKey = (key: string) => {
-    if (phase !== 'playing' || !secret) return
-    if (key === 'ENTER') {
-      submit()
-      return
-    }
-    if (key === '⌫') {
-      setCurrent((c) => c.slice(0, -1))
+  const onVirtualKey = useCallback(
+    (key: string) => {
+      if (phase !== 'playing' || !secret) return
+      if (key === 'ENTER') {
+        submit()
+        focusTypeTarget()
+        return
+      }
+      if (key === '⌫') {
+        setCurrent((c) => c.slice(0, -1))
+        setError(null)
+        focusTypeTarget()
+        return
+      }
+      // Ñ key and accents collapse to A–Z (same as normalizeWordleAnswer)
+      const ch = (key === 'Ñ' || key === 'ñ' ? 'N' : key)
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toUpperCase()
+      if (!/^[A-Z]$/.test(ch)) return
+      setCurrent((c) => (c.length < answerLen ? c + ch : c))
       setError(null)
-      return
-    }
-    if (current.length < answerLen) {
-      setCurrent((c) => c + key)
-      setError(null)
-    }
-  }
+      focusTypeTarget()
+    },
+    [phase, secret, submit, answerLen, focusTypeTarget],
+  )
 
   const emptyRows = Math.max(0, WORDLE_MAX_GUESSES - rows.length - (phase === 'playing' ? 1 : 0))
 
   if (!ready) {
     return (
-      <div className="cn-page page-wordle page-atelier-shell">
+      <PageShell className="page-wordle page-atelier-shell" orientationSticky>
         <p className="wordle-loading">{t('wordle.loading', { defaultValue: 'Cargando pool…' })}</p>
-      </div>
+      </PageShell>
     )
   }
 
   if (pool.length === 0) {
     return (
-      <div className="cn-page page-wordle page-atelier-shell">
+      <PageShell className="page-wordle page-atelier-shell" orientationSticky>
         <p>{t('wordle.emptyPool', { defaultValue: 'No hay especies en el pool.' })}</p>
         <Link to="/setadle">{t('wordle.backSetadle', { defaultValue: 'Volver a Setadle' })}</Link>
-      </div>
+      </PageShell>
     )
   }
 
   return (
-    <div className="cn-page page-wordle page-atelier-shell" data-testid="mushroom-wordle">
+    <PageShell
+      className="page-wordle page-atelier-shell"
+      testId="mushroom-wordle"
+      orientationSticky
+      orientationText={t('wordle.orientation', {
+        defaultValue: 'Solo educación · nunca consumo',
+      })}
+    >
       <header className="wordle-hero">
         <p className="atelier-kicker">
           {t('wordle.kicker', {
             defaultValue: 'Wordle de setas · educativo · ronda {{n}}',
             n: round,
           })}
+        </p>
+        <p className="wordle-back-row">
+          <Link to="/juegos" data-testid="wordle-back-games">
+            {t('wordle.backGames', { defaultValue: '← Juegos' })}
+          </Link>
         </p>
         <h1>{t('wordle.title', { defaultValue: 'Setadle Wordle' })}</h1>
         <p className="wordle-lead">
@@ -241,30 +291,32 @@ export function MushroomWordlePage() {
             {t('wordle.day', { defaultValue: 'Hoy' })} {dayKey()}
           </span>
         </div>
-        <div className="wordle-mode-row">
-          <button
+        <div className="wordle-mode-row identify-mode-toggle" role="group" aria-label="Modo Wordle">
+          <Button
             type="button"
-            className={`mkt-btn mkt-btn--ghost ${playKind === 'daily' ? 'is-active' : ''}`}
+            variant={playKind === 'daily' ? 'primary' : 'ghost'}
+            aria-pressed={playKind === 'daily'}
             onClick={() => {
               setPlayKind('daily')
               startRound('daily', [])
             }}
           >
             {t('wordle.daily', { defaultValue: 'Diario' })}
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
-            className={`mkt-btn mkt-btn--ghost ${playKind === 'streak' ? 'is-active' : ''}`}
+            variant={playKind === 'streak' ? 'primary' : 'ghost'}
+            aria-pressed={playKind === 'streak'}
             onClick={() => {
               setPlayKind('streak')
               startRound('streak', recent)
             }}
           >
             {t('wordle.streakMode', { defaultValue: 'Racha infinita' })}
-          </button>
-          <Link to="/setadle" className="mkt-btn mkt-btn--ghost">
+          </Button>
+          <LinkButton to="/setadle" variant="ghost">
             {t('wordle.toSetadle', { defaultValue: 'Otros modos Setadle' })}
-          </Link>
+          </LinkButton>
         </div>
       </header>
 
@@ -284,13 +336,59 @@ export function MushroomWordlePage() {
         </div>
       )}
 
-      <div className="wordle-board" role="grid" aria-label={t('wordle.boardAria', { defaultValue: 'Tablero' })}>
+      {phase === 'playing' && secret ? (
+        <input
+          ref={inputRef}
+          className="wordle-hidden-input"
+          data-testid="wordle-type-input"
+          value={current}
+          maxLength={answerLen}
+          autoCapitalize="characters"
+          autoComplete="off"
+          autoCorrect="off"
+          spellCheck={false}
+          aria-label={t('wordle.typeAria', {
+            defaultValue: 'Escribe el nombre ({{n}} letras)',
+            n: answerLen,
+          })}
+          onChange={(e) => {
+            const raw = e.target.value
+              .normalize('NFD')
+              .replace(/[\u0300-\u036f]/g, '')
+              .replace(/ñ/gi, 'N')
+              .replace(/[^a-zA-Z]/g, '')
+              .toUpperCase()
+              .slice(0, answerLen)
+            setCurrent(raw)
+            setError(null)
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault()
+              submit()
+            }
+          }}
+        />
+      ) : null}
+
+      <div
+        className="wordle-board"
+        role="grid"
+        aria-label={t('wordle.boardAria', { defaultValue: 'Tablero' })}
+        onMouseDown={(e) => {
+          // Keep focus on type target when clicking cells (not buttons)
+          if ((e.target as HTMLElement).closest('button')) return
+          e.preventDefault()
+          focusTypeTarget()
+        }}
+      >
         {rows.map((row, ri) => (
           <div key={`r-${ri}`} className="wordle-row" role="row">
             {row.guess.split('').map((ch, ci) => (
               <span
                 key={ci}
                 className={`wordle-cell wordle-cell--${row.tones[ci]}`}
+                data-tone={row.tones[ci]}
                 role="gridcell"
               >
                 {ch}
@@ -362,22 +460,22 @@ export function MushroomWordlePage() {
                 : t('wordle.nextNow', { defaultValue: 'Cargando siguiente…' })}
             </p>
             <div className="wordle-reveal__actions">
-              <button
+              <Button
                 type="button"
-                className="mkt-btn mkt-btn--primary"
+                variant="primary"
                 data-testid="wordle-next-now"
                 onClick={() =>
                   startRound('streak', [...recent, secret.answer])
                 }
               >
                 {t('wordle.nextNowBtn', { defaultValue: 'Siguiente ya' })}
-              </button>
-              <Link
+              </Button>
+              <LinkButton
                 to={`/enciclopedia/${secret.slug || scientificNameToSlug(secret.taxon)}`}
-                className="mkt-btn mkt-btn--ghost"
+                variant="ghost"
               >
                 {t('wordle.openFiche', { defaultValue: 'Ver ficha' })}
-              </Link>
+              </LinkButton>
             </div>
             <p className="wordle-safety">
               {t('wordle.safety', {
@@ -405,7 +503,16 @@ export function MushroomWordlePage() {
       )}
 
       {phase === 'playing' && (
-        <div className="wordle-keyboard" aria-label={t('wordle.kbAria', { defaultValue: 'Teclado' })}>
+        <div
+          className="wordle-keyboard"
+          aria-label={t('wordle.kbAria', { defaultValue: 'Teclado' })}
+          onMouseDown={(e) => {
+            // Prevent buttons from stealing focus so physical typing keeps working
+            if ((e.target as HTMLElement).closest('button')) {
+              e.preventDefault()
+            }
+          }}
+        >
           {keyboard.map((row, ri) => (
             <div key={ri} className="wordle-keyboard__row">
               {row.map((key) => {
@@ -414,9 +521,11 @@ export function MushroomWordlePage() {
                   <button
                     key={key}
                     type="button"
+                    tabIndex={-1}
                     className={`wordle-key ${tone ? `wordle-key--${tone}` : ''} ${
                       key === 'ENTER' || key === '⌫' ? 'wordle-key--wide' : ''
                     }`}
+                    data-tone={tone || undefined}
                     onClick={() => onVirtualKey(key)}
                   >
                     {key === 'ENTER'
@@ -429,7 +538,7 @@ export function MushroomWordlePage() {
           ))}
         </div>
       )}
-    </div>
+    </PageShell>
   )
 }
 

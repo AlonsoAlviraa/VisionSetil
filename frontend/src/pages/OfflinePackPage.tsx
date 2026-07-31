@@ -4,8 +4,8 @@
  * Educational / PWA shell only — study & reference; does not classify offline.
  */
 import { useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { Button, LinkButton, PageShell } from '../components/ui'
 import {
   buildOfflinePackEntries,
   buildSeasonOfflinePackEntries,
@@ -158,7 +158,14 @@ export function OfflinePackPage() {
   }
 
   return (
-    <div className="cn-page page-offline page-atelier-shell" data-skin="campo-nocturno">
+    <PageShell
+      className="page-offline page-atelier-shell"
+      testId="offline-pack-page"
+      orientationSticky
+      orientationText={t('offline.orientation', {
+        defaultValue: 'Solo orientación · estudio offline · nunca consumo',
+      })}
+    >
       <div className="page-header mkt-page-head">
         <p className="atelier-kicker home-kicker">{t('offline.kicker', { defaultValue: 'Campo · PWA · Pro' })}</p>
         <h1 className="page-title">{t('offline.title', { defaultValue: 'Pack offline Pro' })}</h1>
@@ -178,15 +185,17 @@ export function OfflinePackPage() {
             : ' — descarga temporada y prioritario T0/T1 habilitada.'}
         </p>
         {plan === 'free' && (
-          <button
+          <Button
             type="button"
-            className="btn-atelier btn-atelier--primary"
+            variant="primary"
             style={{ marginTop: '0.75rem' }}
             onClick={() => unlock()}
             data-testid="offline-unlock-pro"
           >
-            Activar Pro (demo local)
-          </button>
+            {t('offline.unlockPro', {
+              defaultValue: 'Pro (prueba en este dispositivo)',
+            })}
+          </Button>
         )}
         {showPreview && plan === 'free' && (
           <p className="muted" style={{ marginTop: '0.5rem' }}>
@@ -267,12 +276,12 @@ export function OfflinePackPage() {
           })}
         </p>
         <p style={{ margin: '0.55rem 0 0' }}>
-          <Link to="/educacion" className="btn-atelier btn-atelier--ghost">
+          <LinkButton to="/educacion" variant="ghost">
             {t('offline.learnMultiview', { defaultValue: 'Aprender multi-vista' })}
-          </Link>{' '}
-          <Link to="/identificar" className="btn-atelier btn-atelier--ghost">
+          </LinkButton>{' '}
+          <LinkButton to="/identificar" variant="ghost">
             {t('nav.identify', { defaultValue: 'Identificar' })}
-          </Link>
+          </LinkButton>
         </p>
       </div>
 
@@ -295,21 +304,21 @@ export function OfflinePackPage() {
               'Con red: filtra por láminas/poros/riesgo en Enciclopedia. Sin red: el pack cachea fotos y fichas prioritarias para estudiar. Nunca identifica setas offline ni autoriza consumo.',
           })}
         </p>
-        <div className="offline-ency-depth__actions">
-          <Link
+        <div className="offline-ency-depth__actions offline-ency-depth__actions--text">
+          <LinkButton
             to="/enciclopedia"
-            className="btn-atelier btn-atelier--primary"
+            variant="ghost"
             data-testid="offline-cta-encyclopedia"
           >
             {t('nav.encyclopedia', { defaultValue: 'Enciclopedia' })}
-          </Link>
-          <Link
+          </LinkButton>
+          <LinkButton
             to="/lookalikes"
-            className="btn-atelier btn-atelier--ghost"
+            variant="ghost"
             data-testid="offline-cta-lookalikes"
           >
-            {t('nav.lookalikes', { defaultValue: 'Lookalikes' })}
-          </Link>
+            {t('nav.lookalikes', { defaultValue: 'Confusiones' })}
+          </LinkButton>
         </div>
       </section>
 
@@ -337,9 +346,9 @@ export function OfflinePackPage() {
       ) : null}
 
       <div className="offline-pack-modes identify-mode-toggle" role="group" aria-label={t('offline.modeLabel', { defaultValue: 'Tipo de pack' })}>
-        <button
+        <Button
           type="button"
-          className={`btn-atelier ${kind === 'season' ? 'btn-atelier--primary' : 'btn-atelier--ghost'}`}
+          variant={kind === 'season' ? 'primary' : 'ghost'}
           aria-pressed={kind === 'season'}
           onClick={() => {
             setKind('season')
@@ -350,10 +359,10 @@ export function OfflinePackPage() {
             defaultValue: 'Temporada ({{season}})',
             season: season.labelEs,
           })}
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
-          className={`btn-atelier ${kind === 'priority' ? 'btn-atelier--primary' : 'btn-atelier--ghost'}`}
+          variant={kind === 'priority' ? 'primary' : 'ghost'}
           aria-pressed={kind === 'priority'}
           onClick={() => {
             setKind('priority')
@@ -361,7 +370,7 @@ export function OfflinePackPage() {
           }}
         >
           {t('offline.modePriority', { defaultValue: 'Prioritario T0/T1 · Pro' })}
-        </button>
+        </Button>
       </div>
 
       <div className="atelier-panel offline-pack-panel" style={{ marginBottom: '1.25rem' }}>
@@ -394,9 +403,9 @@ export function OfflinePackPage() {
         )}
 
         <div className="identify-mode-toggle" style={{ marginTop: '1rem' }}>
-          <button
+          <Button
             type="button"
-            className="btn-atelier btn-atelier--primary"
+            variant="primary"
             disabled={
               busy ||
               !canDownload ||
@@ -417,19 +426,19 @@ export function OfflinePackPage() {
                 : installed
                   ? t('offline.redownload', { defaultValue: 'Volver a descargar' })
                   : t('offline.download', { defaultValue: 'Descargar pack' })}
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
-            className="btn-atelier btn-atelier--ghost"
+            variant="ghost"
             disabled={busy || !meta}
             onClick={() => void clear()}
             data-testid="offline-pack-clear"
           >
             {t('offline.clear', { defaultValue: 'Eliminar pack' })}
-          </button>
-          <Link to="/enciclopedia" className="btn-atelier btn-atelier--ghost">
+          </Button>
+          <LinkButton to="/enciclopedia" variant="ghost">
             {t('nav.encyclopedia', { defaultValue: 'Enciclopedia' })}
-          </Link>
+          </LinkButton>
         </div>
         {status && (
           <p className="muted" style={{ marginTop: '0.85rem' }} role="status">
@@ -457,15 +466,11 @@ export function OfflinePackPage() {
             : t('offline.top', { defaultValue: 'Vista ({{count}})', count: Math.min(TOP_N, entries.length) })}
         </h2>
         {entries.length > TOP_N && (
-          <button
-            type="button"
-            className="btn-atelier btn-atelier--ghost"
-            onClick={() => setShowAll((v) => !v)}
-          >
+          <Button type="button" variant="ghost" onClick={() => setShowAll((v) => !v)}>
             {showAll
               ? t('offline.showTop', { defaultValue: 'Ver menos' })
               : t('offline.showAll', { defaultValue: 'Ver todas ({{count}})', count: entries.length })}
-          </button>
+          </Button>
         )}
       </div>
 
@@ -497,9 +502,9 @@ export function OfflinePackPage() {
                 />
               </div>
               <span className="offline-pack-tier">{e.photo_tier}</span>
-              <Link to={`/enciclopedia/${e.slug}`} className="btn-atelier btn-atelier--ghost">
+              <LinkButton to={`/enciclopedia/${e.slug}`} variant="ghost" size="sm">
                 {t('offline.openCard', { defaultValue: 'Ficha' })}
-              </Link>
+              </LinkButton>
             </li>
           ))}
         </ul>
@@ -508,6 +513,6 @@ export function OfflinePackPage() {
       <div style={{ marginTop: '1.5rem' }}>
         <ProPlanBanner compact />
       </div>
-    </div>
+    </PageShell>
   )
 }

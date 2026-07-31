@@ -1,19 +1,14 @@
 /**
  * Documented food-quality registry — NO invented data.
  *
- * Sources (only):
- * 1) frontend/src/data/mushroomDatabase.ts (+ additional/extended) — curated Iberian edibility
- * 2) frontend/src/data/poisonousSpecies.json — critical/high toxic list
+ * Runtime path loads a **slim precomputed index** (`data/foodQualityIndex.json`)
+ * so encyclopedia/home cards do not pull the full mushroomDatabase prose graph.
  *
- * If a taxon is not in these sources → quality is unknown (null). Never invent "comestible".
- * "Comestible" here is culinary documentation class for education / quiz — never permission to eat.
+ * Rebuild index: `npx tsx scripts/build-food-quality-index.mjs` (or tsx -e see package).
+ * Sources: mushroomDatabase (+ additional/extended) + poisonousSpecies.json
  */
-import {
-  mushroomDatabase,
-  type EdibilityLevel,
-  type MushroomSpecies,
-} from '../data/mushroomDatabase'
-import poisonousJson from '../data/poisonousSpecies.json'
+import foodIndexJson from '../data/foodQualityIndex.json'
+import type { EdibilityLevel } from '../data/mushroomDatabase'
 
 export type FoodClass = 'comestible' | 'no_comestible' | 'toxica' | 'mortal'
 
@@ -60,17 +55,66 @@ export const FOOD_CLASS_META: Record<
   },
 }
 
-type PoisonRow = {
-  latin_name: string
-  common_name?: string
-  risk_level?: string
-  notes?: string
+function norm(taxon: string): string {
+  return taxon.trim().toLowerCase().replace(/\s+/g, ' ')
 }
 
-const poisonList = poisonousJson as PoisonRow[]
+type IndexFile = {
+  version: string
+  generated: string
+  count: number
+  by_taxon: Record<string, FoodQualityRecord>
+}
 
-const SOURCE_DB = 'mushroomDatabase (curada Iberia/Europa)'
-const SOURCE_POISON = 'poisonousSpecies.json (lista tóxicas)'
+const foodIndex = foodIndexJson as IndexFile
+
+function loadRegistryFromIndex(): Map<string, FoodQualityRecord> {
+  const map = new Map<string, FoodQualityRecord>()
+  for (const [k, v] of Object.entries(foodIndex.by_taxon || {})) {
+    map.set(k, v)
+  }
+  return map
+}
+
+let _cache: Map<string, FoodQualityRecord> | null = null
+
+export function getFoodQualityRegistry(): Map<string, FoodQualityRecord> {
+  if (!_cache) _cache = loadRegistryFromIndex()
+  return _cache
+}
+
+/** null = no documented quality in our sources (do not invent). */
+export function getFoodQuality(taxon: string): FoodQualityRecord | null {
+  if (!taxon?.trim()) return null
+  return getFoodQualityRegistry().get(norm(taxon)) ?? null
+}
+
+export type FoodQualityStats = {
+  total_documented: number
+  by_class: Record<FoodClass, number>
+}
+
+export function foodQualityStats(
+  registry: Map<string, FoodQualityRecord> = getFoodQualityRegistry(),
+): FoodQualityStats {
+  const by_class: Record<FoodClass, number> = {
+    comestible: 0,
+    no_comestible: 0,
+    toxica: 0,
+    mortal: 0,
+  }
+  for (const r of registry.values()) {
+    by_class[r.food_class] += 1
+  }
+  return {
+    total_documented: registry.size,
+    by_class,
+  }
+}
+
+export function listDocumentedFoodQuality(): FoodQualityRecord[] {
+  return Array.from(getFoodQualityRegistry().values())
+}
 
 /** Map curated edibility → food class. `desconocido` → null (excluded). */
 export function edibilityToFoodClass(edibility: EdibilityLevel): FoodClass | null {
@@ -91,117 +135,4 @@ export function edibilityToFoodClass(edibility: EdibilityLevel): FoodClass | nul
   }
 }
 
-function norm(taxon: string): string {
-  return taxon.trim().toLowerCase().replace(/\s+/g, ' ')
-}
-
-function poisonToClass(level: string | undefined): FoodClass {
-  const k = (level || '').toLowerCase()
-  if (k === 'critical' || k === 'deadly' || k === 'mortal') return 'mortal'
-  return 'toxica'
-}
-
-const classRank: Record<FoodClass, number> = {
-  comestible: 1,
-  no_comestible: 2,
-  toxica: 3,
-  mortal: 4,
-}
-
-function worse(a: FoodClass, b: FoodClass): FoodClass {
-  return classRank[a] >= classRank[b] ? a : b
-}
-
-/** Build full registry once from real sources. */
-export function buildFoodQualityRegistry(
-  db: MushroomSpecies[] = mushroomDatabase,
-  poison: PoisonRow[] = poisonList,
-): Map<string, FoodQualityRecord> {
-  const map = new Map<string, FoodQualityRecord>()
-
-  for (const m of db) {
-    const food_class = edibilityToFoodClass(m.edibility)
-    if (!food_class) continue
-    const key = norm(m.scientificName)
-    map.set(key, {
-      taxon: m.scientificName,
-      common: m.commonNames[0] || m.scientificName,
-      edibility: m.edibility,
-      food_class,
-      label: FOOD_CLASS_META[food_class].label,
-      sources: [SOURCE_DB],
-      notes: m.toxicity,
-    })
-  }
-
-  for (const p of poison) {
-    const key = norm(p.latin_name)
-    const food_class = poisonToClass(p.risk_level)
-    const existing = map.get(key)
-    if (existing) {
-      const merged = worse(existing.food_class, food_class)
-      map.set(key, {
-        ...existing,
-        food_class: merged,
-        label: FOOD_CLASS_META[merged].label,
-        sources: Array.from(new Set([...existing.sources, SOURCE_POISON])),
-        notes: existing.notes || p.notes,
-      })
-    } else {
-      map.set(key, {
-        taxon: p.latin_name,
-        common: p.common_name || p.latin_name,
-        edibility: null,
-        food_class,
-        label: FOOD_CLASS_META[food_class].label,
-        sources: [SOURCE_POISON],
-        notes: p.notes,
-      })
-    }
-  }
-
-  return map
-}
-
-let _cache: Map<string, FoodQualityRecord> | null = null
-
-export function getFoodQualityRegistry(): Map<string, FoodQualityRecord> {
-  if (!_cache) _cache = buildFoodQualityRegistry()
-  return _cache
-}
-
-/** null = no documented quality in our sources (do not invent). */
-export function getFoodQuality(taxon: string): FoodQualityRecord | null {
-  if (!taxon?.trim()) return null
-  return getFoodQualityRegistry().get(norm(taxon)) ?? null
-}
-
-export type FoodQualityStats = {
-  total_documented: number
-  by_class: Record<FoodClass, number>
-  sources: string[]
-}
-
-export function foodQualityStats(
-  registry: Map<string, FoodQualityRecord> = getFoodQualityRegistry(),
-): FoodQualityStats {
-  const by_class: Record<FoodClass, number> = {
-    comestible: 0,
-    no_comestible: 0,
-    toxica: 0,
-    mortal: 0,
-  }
-  for (const r of registry.values()) {
-    by_class[r.food_class] += 1
-  }
-  return {
-    total_documented: registry.size,
-    by_class,
-    sources: [SOURCE_DB, SOURCE_POISON],
-  }
-}
-
-/** All documented records as array (for quiz pool). */
-export function listDocumentedFoodQuality(): FoodQualityRecord[] {
-  return Array.from(getFoodQualityRegistry().values())
-}
+/* Heavy rebuild: import buildFoodQualityRegistry from './foodQualityBuild' (scripts/tests only). */

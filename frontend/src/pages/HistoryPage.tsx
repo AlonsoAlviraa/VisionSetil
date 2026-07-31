@@ -6,6 +6,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { Button, LinkButton, PageShell } from '../components/ui'
 import {
   clearHistoryStore,
   entriesNeedingReview,
@@ -338,26 +339,28 @@ export function HistoryPage() {
   }, [openId, closeObservation])
 
   return (
-    <div className="cn-page page-history page-atelier-shell" data-skin="campo-nocturno">
-      <p className="cn-warn-strip" role="note">
-        {t('notebook.orientation', {
-          defaultValue: 'Solo orientación · nunca consumo',
-        })}
-      </p>
+    <PageShell
+      className="page-history page-atelier-shell"
+      testId="history-page"
+      orientationSticky
+      orientationText={t('notebook.orientation', {
+        defaultValue: 'Solo orientación · nunca consumo',
+      })}
+    >
       <div className="page-header">
         <p className="atelier-kicker" data-testid="history-plan-chip">
           Plan {planLabelEs(plan)} · hasta {historyLimit(plan)} entradas
           {!planPro && (
             <>
               {' · '}
-              <button
+              <Button
                 type="button"
-                className="btn-atelier btn-atelier--ghost"
+                variant="ghost"
                 onClick={() => unlock()}
                 data-testid="history-unlock-pro"
               >
                 Ampliar con Pro
-              </button>
+              </Button>
             </>
           )}
         </p>
@@ -440,16 +443,16 @@ export function HistoryPage() {
                 })}
               </p>
             </div>
-            <button
+            <Button
               type="button"
-              className="btn-atelier btn-atelier--ghost"
+              variant="ghost"
               data-testid="notebook-pin-list-copy"
               onClick={() => void copyPinList()}
             >
               {t('notebook.pinListCopy', {
                 defaultValue: 'Copiar lista',
               })}
-            </button>
+            </Button>
           </header>
           <ul className="notebook-pin-list__rows">
             {pinList.map((row) => (
@@ -478,16 +481,16 @@ export function HistoryPage() {
                   </span>
                 </div>
                 <div className="notebook-pin-list__actions">
-                  <button
+                  <Button
                     type="button"
-                    className="btn-atelier btn-atelier--ghost"
+                    variant="ghost"
                     data-testid="notebook-pin-list-open"
                     onClick={() => openObservation(row.entryId)}
                   >
                     {t('notebook.pinListOpen', { defaultValue: 'Abrir' })}
-                  </button>
+                  </Button>
                   <a
-                    className="btn-atelier btn-atelier--ghost"
+                    className="notebook-pin-list__map-link"
                     href={notebookPinMapHref(row.pin)}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -502,26 +505,44 @@ export function HistoryPage() {
         </section>
       )}
 
-      <div className="history-header atelier-section-bar">
+      <div className="history-header atelier-section-bar history-header--toolbar">
         <h2>{t('notebook.recentTitle', { defaultValue: 'Entradas recientes' })}</h2>
-        <div className="history-actions">
-          <Link to="/identificar" className="btn-atelier btn-atelier--primary">
+        <div className="history-actions history-actions--stacked">
+          <LinkButton to="/identificar" variant="primary">
             {t('notebook.newId', { defaultValue: 'Nueva identificación' })}
-          </Link>
+          </LinkButton>
           {entries.length > 0 && (
-            <button type="button" className="btn-atelier btn-atelier--ghost" onClick={shareLocal}>
-              {t('actions.share', { defaultValue: 'Compartir' })}
-            </button>
-          )}
-          {entries.length > 0 && (
-            <button type="button" className="btn-atelier btn-atelier--ghost" onClick={exportJson}>
-              {t('notebook.exportJson', { defaultValue: 'Exportar JSON' })}
-            </button>
-          )}
-          {entries.length > 0 && (
-            <button type="button" className="btn-atelier btn-atelier--ghost" onClick={clear}>
-              {t('notebook.clear', { defaultValue: 'Limpiar historial' })}
-            </button>
+            <details className="history-more-menu">
+              <summary className="history-more-menu__summary">
+                {t('actions.more', { defaultValue: 'Más' })}
+              </summary>
+              <div className="history-more-menu__panel" role="menu">
+                <button
+                  type="button"
+                  className="history-more-menu__item"
+                  role="menuitem"
+                  onClick={shareLocal}
+                >
+                  {t('actions.share', { defaultValue: 'Compartir' })}
+                </button>
+                <button
+                  type="button"
+                  className="history-more-menu__item"
+                  role="menuitem"
+                  onClick={exportJson}
+                >
+                  {t('notebook.exportJson', { defaultValue: 'Exportar JSON' })}
+                </button>
+                <button
+                  type="button"
+                  className="history-more-menu__item history-more-menu__item--danger"
+                  role="menuitem"
+                  onClick={clear}
+                >
+                  {t('notebook.clear', { defaultValue: 'Limpiar historial' })}
+                </button>
+              </div>
+            </details>
           )}
         </div>
       </div>
@@ -574,15 +595,22 @@ export function HistoryPage() {
       )}
 
       {entries.length === 0 ? (
-        <EmptyState
-          title={t('notebook.emptyTitle', { defaultValue: 'Sin observaciones aún' })}
-          description={t('notebook.emptyBody', {
-            defaultValue:
-              'Identifica una seta y quedará guardada aquí con espacio para notas de campo.',
-          })}
-          actionLabel={t('notebook.emptyAction', { defaultValue: 'Identificar seta' })}
-          actionTo="/identificar"
-        />
+        <div className="notebook-empty" data-testid="notebook-empty">
+          <EmptyState
+            title={t('notebook.emptyTitle', { defaultValue: 'Sin observaciones aún' })}
+            description={t('notebook.emptyBody', {
+              defaultValue:
+                'Identifica una seta y quedará guardada aquí con espacio para notas de campo. Solo orientación — nunca consumo.',
+            })}
+            actionLabel={t('notebook.emptyAction', { defaultValue: 'Identificar seta' })}
+            actionTo="/identificar"
+          />
+          <p className="notebook-empty__hint muted">
+            {t('notebook.emptyHint', {
+              defaultValue: 'Tip: multi-vista (láminas + perfil) baja confusiones en el campo.',
+            })}
+          </p>
+        </div>
       ) : visible.length === 0 ? (
         <EmptyState
           title={t('notebook.emptyFilterTitle', { defaultValue: 'Sin entradas con estos filtros' })}
@@ -599,7 +627,7 @@ export function HistoryPage() {
           }}
         />
       ) : (
-        <div className="history-card-grid">
+        <div className="history-card-grid history-card-grid--dense" data-testid="history-card-grid">
           {visible.map((e) => {
             const top = e.result.predictions?.[0]
             const mode = entryMode(e)
@@ -697,14 +725,14 @@ export function HistoryPage() {
               <h2 id="notebook-detail-title">
                 {t('notebook.detailTitle', { defaultValue: 'Observación' })}
               </h2>
-              <button
+              <Button
                 ref={detailCloseRef}
                 type="button"
-                className="btn-atelier btn-atelier--ghost"
+                variant="ghost"
                 onClick={closeObservation}
               >
                 {t('actions.back', { defaultValue: 'Cerrar' })}
-              </button>
+              </Button>
             </div>
 
             {(() => {
@@ -810,14 +838,14 @@ export function HistoryPage() {
                           {t('notebook.pinOpenMap', { defaultValue: 'Abrir mapa' })}
                         </a>
                         {' · '}
-                        <button
+                        <Button
                           type="button"
-                          className="btn-atelier btn-atelier--ghost"
+                          variant="ghost"
                           data-testid="notebook-pin-clear"
                           onClick={() => clearPin(e.id)}
                         >
                           {t('notebook.pinClear', { defaultValue: 'Quitar pin' })}
-                        </button>
+                        </Button>
                       </p>
                     ) : null}
                     {isEditing ? (
@@ -840,9 +868,9 @@ export function HistoryPage() {
                       </div>
                     ) : (
                       <div className="notebook-pin-block__actions">
-                        <button
+                        <Button
                           type="button"
-                          className="btn-atelier btn-atelier--ghost"
+                          variant="ghost"
                           data-testid="notebook-pin-gps"
                           disabled={pinBusy}
                           onClick={() => void attachGpsPin(e.id)}
@@ -852,7 +880,7 @@ export function HistoryPage() {
                             : t('notebook.pinGps', {
                                 defaultValue: 'Añadir pin GPS (local)',
                               })}
-                        </button>
+                        </Button>
                       </div>
                     )}
                     {pinFeedback ? (
@@ -903,49 +931,30 @@ export function HistoryPage() {
                         />
                       </label>
                       <div className="identify-mode-toggle">
-                        <button
-                          type="button"
-                          className="btn-atelier btn-atelier--primary"
-                          onClick={() => saveEdit(e.id)}
-                        >
+                        <Button type="button" variant="primary" onClick={() => saveEdit(e.id)}>
                           {t('notebook.save', { defaultValue: 'Guardar' })}
-                        </button>
-                        <button
-                          type="button"
-                          className="btn-atelier btn-atelier--ghost"
-                          onClick={() => setEditingId(null)}
-                        >
+                        </Button>
+                        <Button type="button" variant="ghost" onClick={() => setEditingId(null)}>
                           {t('notebook.cancel', { defaultValue: 'Cancelar' })}
-                        </button>
+                        </Button>
                       </div>
                     </div>
                   ) : (
                     <div className="notebook-detail-actions">
-                      <button
-                        type="button"
-                        className="btn-atelier btn-atelier--primary"
-                        onClick={() => startEdit(e)}
-                      >
+                      <Button type="button" variant="primary" onClick={() => startEdit(e)}>
                         {t('notebook.editNotes', { defaultValue: 'Notas y etiquetas' })}
-                      </button>
+                      </Button>
                       {slug && (
-                        <Link
-                          to={`/enciclopedia/${slug}`}
-                          className="btn-atelier btn-atelier--ghost"
-                        >
+                        <LinkButton to={`/enciclopedia/${slug}`} variant="ghost">
                           {t('notebook.viewSpecies', { defaultValue: 'Ver ficha' })}
-                        </Link>
+                        </LinkButton>
                       )}
-                      <button
-                        type="button"
-                        className="btn-atelier btn-atelier--ghost"
-                        onClick={() => handoff(e)}
-                      >
+                      <Button type="button" variant="ghost" onClick={() => handoff(e)}>
                         {t('notebook.handoff', { defaultValue: 'Handoff experto' })}
-                      </button>
-                      <Link to="/identificar" className="btn-atelier btn-atelier--ghost">
+                      </Button>
+                      <LinkButton to="/identificar" variant="ghost">
                         {t('notebook.newId', { defaultValue: 'Nueva identificación' })}
-                      </Link>
+                      </LinkButton>
                     </div>
                   )}
 
@@ -956,7 +965,7 @@ export function HistoryPage() {
                     >
                       <p className="notebook-detail-lookalikes__title">
                         {t('notebook.lookalikesTitle', {
-                          defaultValue: 'Lookalikes de riesgo',
+                          defaultValue: 'Confusiones de riesgo',
                         })}
                       </p>
                       <ul className="lookalike-list lookalike-list--notebook">
@@ -978,7 +987,7 @@ export function HistoryPage() {
                                   risk={sp.risk_label}
                                   label={
                                     sp === look[0]
-                                      ? `Lookalike: ${meta.label}`
+                                      ? `Confusión: ${meta.label}`
                                       : meta.label
                                   }
                                 />
@@ -1051,15 +1060,11 @@ export function HistoryPage() {
                   )}
                   {e.result.recommend_human_review && (
                     <p>
-                      <button
-                        type="button"
-                        className="btn-atelier btn-atelier--primary"
-                        onClick={() => handoff(e)}
-                      >
+                      <Button type="button" variant="primary" onClick={() => handoff(e)}>
                         {t('notebook.requestReview', {
                           defaultValue: 'Empaquetar para revisión experta',
                         })}
-                      </button>
+                      </Button>
                     </p>
                   )}
                   <p className="notebook-detail-disclaimer">
@@ -1074,6 +1079,6 @@ export function HistoryPage() {
           </div>
         </div>
       )}
-    </div>
+    </PageShell>
   )
 }

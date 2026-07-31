@@ -5,6 +5,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { Button, LinkButton, PageShell } from '../components/ui'
 import axios from 'axios'
 import { entriesNeedingReview, loadHistory } from '../lib/observationHistory'
 import { decisionLabel } from '../lib/decisionLabels'
@@ -159,7 +160,14 @@ export function ExpertReviewPage() {
   }
 
   return (
-    <div className="page-expert-review page-atelier-shell">
+    <PageShell
+      className="page-expert-review page-atelier-shell"
+      testId="expert-review-page"
+      orientationSticky
+      orientationText={t('expert.orientation', {
+        defaultValue: 'Solo orientación · handoff humano · nunca consumo',
+      })}
+    >
       <header className="mkt-page-head mkt-mesh">
         <p className="mkt-kicker">
           {t('expert.kicker', { defaultValue: 'Revisión experta' })}
@@ -333,26 +341,22 @@ export function ExpertReviewPage() {
           )}
 
           <div className="expert-handoff-actions">
-            <button
-              type="button"
-              className="btn-atelier btn-atelier--primary"
-              onClick={() => void onCopy(activeDraft)}
-            >
+            <Button type="button" variant="primary" onClick={() => void onCopy(activeDraft)}>
               {t('expert.copySummary', { defaultValue: 'Copiar resumen' })}
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
-              className="btn-atelier btn-atelier--ghost"
+              variant="ghost"
               onClick={() => downloadHandoffJson(activeDraft)}
             >
               {t('expert.downloadJson', { defaultValue: 'Descargar JSON' })}
-            </button>
-            <Link to="/historial" className="btn-atelier btn-atelier--ghost">
+            </Button>
+            <LinkButton to="/historial" variant="ghost">
               {t('expert.openNotebook', { defaultValue: 'Abrir cuaderno' })}
-            </Link>
-            <Link to="/identificar" className="btn-atelier btn-atelier--ghost">
+            </LinkButton>
+            <LinkButton to="/identificar" variant="ghost">
               {t('expert.newIdentify', { defaultValue: 'Nueva identificación' })}
-            </Link>
+            </LinkButton>
           </div>
           {copyStatus && (
             <p className="expert-copy-status" role="status">
@@ -415,16 +419,12 @@ export function ExpertReviewPage() {
                     </p>
                   </div>
                   <div className="expert-case__actions">
-                    <button
-                      type="button"
-                      className="btn-atelier btn-atelier--primary"
-                      onClick={() => packageLocal(e.id)}
-                    >
+                    <Button type="button" variant="primary" onClick={() => packageLocal(e.id)}>
                       {t('expert.package', { defaultValue: 'Empaquetar' })}
-                    </button>
-                    <Link to="/historial" className="btn-atelier btn-atelier--ghost">
+                    </Button>
+                    <LinkButton to="/historial" variant="ghost">
                       {t('expert.view', { defaultValue: 'Ver' })}
-                    </Link>
+                    </LinkButton>
                   </div>
                 </li>
               ))}
@@ -438,15 +438,11 @@ export function ExpertReviewPage() {
         <section className="atelier-panel expert-card">
           <div className="expert-card__head">
             <h2>{t('expert.serverQueue', { defaultValue: 'Cola del servidor' })}</h2>
-            <button
-              type="button"
-              className="btn-atelier btn-atelier--ghost"
-              onClick={() => void loadRemote()}
-            >
+            <Button type="button" variant="ghost" onClick={() => void loadRemote()}>
               {loading
                 ? t('expert.loading', { defaultValue: 'Cargando…' })
                 : t('expert.refresh', { defaultValue: 'Actualizar' })}
-            </button>
+            </Button>
           </div>
           {error && (
             <p className="error-banner" role="status">
@@ -513,12 +509,12 @@ export function ExpertReviewPage() {
                     )}
                   </span>
                 </div>
-                <Link
+                <LinkButton
                   to={`/revision-experta?handoff=${encodeURIComponent(d.id)}`}
-                  className="btn-atelier btn-atelier--ghost"
+                  variant="ghost"
                 >
                   {t('expert.open', { defaultValue: 'Abrir' })}
-                </Link>
+                </LinkButton>
               </li>
             ))}
           </ul>
@@ -540,16 +536,12 @@ export function ExpertReviewPage() {
             </button>
           </h2>
           <div className="expert-card__head-actions">
-            <button
-              type="button"
-              className="btn-atelier btn-atelier--ghost"
-              onClick={() => void loadMlHealth()}
-            >
+            <Button type="button" variant="ghost" onClick={() => void loadMlHealth()}>
               {t('expert.refresh', { defaultValue: 'Actualizar' })}
-            </button>
-            <Link to="/ml" className="btn-atelier btn-atelier--ghost">
+            </Button>
+            <LinkButton to="/ml" variant="ghost">
               {t('expert.mlTechDetail', { defaultValue: 'Detalle técnico' })}
-            </Link>
+            </LinkButton>
           </div>
         </div>
         {mlOpen && (
@@ -584,6 +576,6 @@ export function ExpertReviewPage() {
           </>
         )}
       </section>
-    </div>
+    </PageShell>
   )
 }

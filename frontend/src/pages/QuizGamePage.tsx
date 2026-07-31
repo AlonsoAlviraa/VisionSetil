@@ -5,6 +5,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { PageShell } from '../components/ui'
 import { SpeciesImage } from '../components/SpeciesImage'
 import { SpeciesThumb } from '../components/SpeciesThumb'
 import { foodQualityStats } from '../lib/foodQuality'
@@ -43,6 +44,7 @@ import {
 } from '../lib/quizMatch'
 import { recordStudyActivity } from '../lib/studyBadges'
 import { StudyBadgesPanel } from '../components/StudyBadgesPanel'
+import { markDailyGameDone } from '../lib/dailyGames'
 
 const LETTERS = ['A', 'B', 'C', 'D'] as const
 const LETTER_COLORS = ['tri-a', 'tri-b', 'tri-c', 'tri-d'] as const
@@ -69,14 +71,16 @@ function QuizPhoto({
           variant="card"
           layout="fill"
           priority
+          quality="display"
           className="quiz-photo__img"
         />
       </div>
     )
   }
+  // Answer options: lazy thumbs — never compete with subject for LCP
   return (
     <div className="quiz-photo">
-      <SpeciesThumb taxon={taxon} riskLabel={risk} alt={alt} size={120} fill priority />
+      <SpeciesThumb taxon={taxon} riskLabel={risk} alt={alt} size={120} fill />
     </div>
   )
 }
@@ -249,7 +253,8 @@ export function QuizGamePage() {
   useEffect(() => {
     if (uiPhase !== 'finished') return
     recordStudyActivity('quiz')
-  }, [uiPhase])
+    if (playKind === 'daily') markDailyGameDone('quiz')
+  }, [uiPhase, playKind])
 
   useEffect(() => {
     if (uiPhase !== 'playing' || !round || locked) return
@@ -276,7 +281,14 @@ export function QuizGamePage() {
   const totalRounds = progress.total
 
   return (
-    <div className="cn-page page-quiz" data-skin="campo-nocturno">
+    <PageShell
+      className="page-quiz"
+      testId="quiz-page"
+      orientationSticky
+      orientationText={t('quiz.orientation', {
+        defaultValue: 'Solo educación · nunca consumo',
+      })}
+    >
       <div className="quiz-stage">
         <div className="quiz-stage__glow" aria-hidden="true" />
 
@@ -375,6 +387,11 @@ export function QuizGamePage() {
                 defaultValue: 'Hoy {{day}} · mejor del día: {{best}} · teclas A–D',
               })}
             </p>
+            <p className="quiz-lobby-back">
+              <Link to="/juegos" data-testid="quiz-back-games">
+                {t('quiz.backGames', { defaultValue: '← Volver a juegos' })}
+              </Link>
+            </p>
 
             <div className="quiz-lobby-divider">
               <span>{t('quiz.orFree', { defaultValue: 'o partida libre' })}</span>
@@ -409,7 +426,7 @@ export function QuizGamePage() {
                   },
                   {
                     id: 'lookalike' as const,
-                    title: t('quiz.modeLookalike', { defaultValue: 'Lookalikes' }),
+                    title: t('quiz.modeLookalike', { defaultValue: 'Confusiones' }),
                     desc: t('quiz.modeLookalikeDesc', {
                       defaultValue: 'Confusiones clásicas documentadas',
                     }),
@@ -855,7 +872,7 @@ export function QuizGamePage() {
           </section>
         )}
       </div>
-    </div>
+    </PageShell>
   )
 }
 

@@ -4,7 +4,8 @@
  * Copy is orientation-only; no consumption language.
  */
 import { Component, type ErrorInfo, type ReactNode } from 'react'
-import { Link } from 'react-router-dom'
+import i18n from '../i18n'
+import { Button, LinkButton } from './ui'
 
 type Props = {
   children: ReactNode
@@ -62,6 +63,7 @@ export class ErrorBoundary extends Component<Props, State> {
         className={`error-boundary-shell${inline ? ' error-boundary-shell--inline' : ''}`}
         role="alert"
         data-surface={this.props.surface || 'root'}
+        data-testid="error-boundary-shell"
       >
         <div className="error-boundary-shell__card atelier-card">
           <p className="atelier-kicker">Algo falló</p>
@@ -88,15 +90,22 @@ export class ErrorBoundary extends Component<Props, State> {
             </p>
           ) : null}
           <div className="atelier-cta-row">
-            <button type="button" className="btn-atelier btn-atelier--primary" onClick={this.handleRetry}>
-              {isLazy ? 'Recargar página' : 'Reintentar'}
-            </button>
-            <Link to="/" className="btn-atelier btn-atelier--ghost">
-              Inicio
-            </Link>
-            <Link to="/identificar" className="btn-atelier btn-atelier--ghost">
-              Identificar
-            </Link>
+            <Button
+              type="button"
+              variant="primary"
+              onClick={this.handleRetry}
+              data-testid="error-boundary-retry"
+            >
+              {isLazy
+                ? i18n.t('errorBoundary.reload', { defaultValue: 'Recargar página' })
+                : i18n.t('actions.retry', { defaultValue: 'Reintentar' })}
+            </Button>
+            <LinkButton to="/" variant="ghost" data-testid="error-boundary-home">
+              {i18n.t('nav.home', { defaultValue: 'Inicio' })}
+            </LinkButton>
+            <LinkButton to="/identificar" variant="ghost" data-testid="error-boundary-identify">
+              {i18n.t('nav.identify', { defaultValue: 'Identificar' })}
+            </LinkButton>
           </div>
         </div>
       </div>

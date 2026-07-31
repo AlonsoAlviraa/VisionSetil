@@ -3,12 +3,12 @@
  * Packaging only — no payment processor.
  * Plan state synced via entitlements usePlan (localStorage + events).
  */
-import { Link } from 'react-router-dom'
 import {
   freeVsProRows,
   planLabelEs,
   usePlanActions,
 } from '../lib/entitlements'
+import { Button, LinkButton } from './ui'
 
 type Props = {
   className?: string
@@ -29,6 +29,8 @@ export function ProPlanBanner({
       className={`pro-plan-banner ${compact ? 'pro-plan-banner--compact' : ''} ${className}`.trim()}
       data-testid="pro-plan-banner"
       data-plan={plan}
+      role="region"
+      aria-label={`Plan ${planLabelEs(plan)} · empaquetado de estudio`}
     >
       <div className="pro-plan-banner__head">
         <span className={`pro-plan-banner__badge pro-plan-banner__badge--${plan}`}>
@@ -66,30 +68,20 @@ export function ProPlanBanner({
 
       <div className="pro-plan-banner__actions">
         {plan === 'free' ? (
-          <button
-            type="button"
-            className="mkt-btn mkt-btn--amber"
-            onClick={unlock}
-            data-testid="pro-unlock-demo"
-          >
-            Activar Pro (demo local)
-          </button>
+          <Button type="button" variant="primary" onClick={unlock} data-testid="pro-unlock-demo">
+            Pro (prueba en este dispositivo)
+          </Button>
         ) : (
-          <button
-            type="button"
-            className="mkt-btn mkt-btn--ghost"
-            onClick={lock}
-            data-testid="pro-deactivate"
-          >
+          <Button type="button" variant="ghost" onClick={lock} data-testid="pro-deactivate">
             Volver a Free
-          </button>
+          </Button>
         )}
-        <Link to="/offline" className="mkt-btn mkt-btn--ghost">
+        <LinkButton to="/offline" variant="ghost">
           Pack offline
-        </Link>
-        <Link to="/identificar" className="mkt-btn mkt-btn--primary">
+        </LinkButton>
+        <LinkButton to="/identificar" variant="ghost">
           Identificar
-        </Link>
+        </LinkButton>
       </div>
       <p className="pro-plan-banner__note" role="note">
         Demo local sin pago. Orientación de campo — nunca permiso de consumo.

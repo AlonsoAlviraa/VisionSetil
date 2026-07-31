@@ -7,6 +7,7 @@ import { Header } from './components/Header'
 import { BottomNav } from './components/BottomNav'
 import { ApiStatusBanner } from './components/ApiStatusBanner'
 import { DocumentTitle } from './components/DocumentTitle'
+import { ScrollToTop } from './components/ScrollToTop'
 import { PwaInstallHint } from './components/PwaInstallHint'
 import { ErrorBoundary, withRouteBoundary } from './components/ErrorBoundary'
 import { useLayoutMode } from './hooks/useLayoutMode'
@@ -17,15 +18,15 @@ import {
   isBetaMailto,
 } from './lib/betaFeedback'
 /**
- * Primary nav routes are EAGER — avoids "Failed to fetch dynamically imported module"
- * when Vite restarts mid-session (bottom-nav destinations must never blank the app).
+ * Primary bottom-nav destinations stay EAGER (except map) — avoids
+ * "Failed to fetch dynamically imported module" on HMR, without shipping
+ * Leaflet + all zone modules on every cold start.
  */
 import { HomePage } from './pages/HomePage'
 import { IdentifyPage } from './pages/IdentifyPage'
 import { EncyclopediaPage } from './pages/EncyclopediaPage'
 import { GamesHubPage } from './pages/GamesHubPage'
 import { MoreHubPage } from './pages/MoreHubPage'
-import SpainMapPage from './pages/SpainMapPage'
 
 /**
  * Secondary routes stay lazy with retries (dev-server blips / HMR death).
@@ -75,6 +76,8 @@ const MushroomWordlePage = lazyPage(() => import('./pages/MushroomWordlePage'), 
 const NotFoundPage = lazyPage(() => import('./pages/NotFoundPage'), 'NotFoundPage')
 const MlDashboardPage = lazyPage(() => import('./pages/MlDashboardPage'), 'MlDashboardPage')
 const BetaFeedbackPage = lazyPage(() => import('./pages/BetaFeedbackPage'), 'BetaFeedbackPage')
+/** Leaflet + zone modules — only when user opens /mapa */
+const SpainMapPage = lazyPage(() => import('./pages/SpainMapPage'))
 
 function PageFallback() {
   return (
@@ -141,6 +144,7 @@ function AppShell({ forcedMode }: { forcedMode?: LayoutMode }) {
   return (
     <>
       <DocumentTitle />
+      <ScrollToTop />
       <a href="#main-content" className="skip-link">
         {t('a11y.skipToContent', { defaultValue: 'Saltar al contenido' })}
       </a>
@@ -254,7 +258,7 @@ function AppShell({ forcedMode }: { forcedMode?: LayoutMode }) {
                 {t('nav.education', { defaultValue: 'Educación' })}
               </Link>
               <Link to="/lookalikes" data-testid="footer-lookalikes">
-                {t('nav.lookalikes', { defaultValue: 'Lookalikes' })}
+                {t('nav.lookalikes', { defaultValue: 'Confusiones' })}
               </Link>
               <Link to="/offline">{t('nav.offline', { defaultValue: 'Offline' })}</Link>
               <Link to="/reto">{t('nav.quiz', { defaultValue: 'Reto' })}</Link>

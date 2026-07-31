@@ -146,3 +146,47 @@ export function requiredPlaceholderPaths(): string[] {
     placeholderImageUrl(k),
   )
 }
+
+/**
+ * Offline media health inventory (v1.27) — no network, no harvest.
+ * Summarizes catalog coverage for ops dashboards / graph residual P3/P6.
+ */
+export type MediaHealthInventory = {
+  catalogCount: number
+  withCatalogRemoteUrl: number
+  withLocalPath: number
+  resolveOk: number
+  stacksTerminal: number
+  issueCount: number
+  issueCodes: Record<string, number>
+  /** Share of taxa with a remote catalog URL (Wiki/iNat style). */
+  catalogRemoteCoverage: number
+  /** Share that resolve a display URL offline. */
+  resolveCoverage: number
+  generatedAt: string
+}
+
+export function inventoryMediaHealth(
+  list: CatalogSpecies[] = speciesCatalog,
+): MediaHealthInventory {
+  const report = verifySpeciesMediaCatalog(list)
+  const issueCodes: Record<string, number> = {}
+  for (const i of report.issues) {
+    issueCodes[i.code] = (issueCodes[i.code] || 0) + 1
+  }
+  const n = Math.max(report.catalogCount, 1)
+  return {
+    catalogCount: report.catalogCount,
+    withCatalogRemoteUrl: report.withCatalogUrl,
+    withLocalPath: report.withLocalPath,
+    resolveOk: report.catalogCount - report.resolveEmpty,
+    stacksTerminal: report.allStacksTerminal
+      ? report.catalogCount
+      : report.catalogCount - (issueCodes.stack_no_terminal || 0) - (issueCodes.empty_stack || 0),
+    issueCount: report.issues.length,
+    issueCodes,
+    catalogRemoteCoverage: report.withCatalogUrl / n,
+    resolveCoverage: (report.catalogCount - report.resolveEmpty) / n,
+    generatedAt: new Date().toISOString(),
+  }
+}

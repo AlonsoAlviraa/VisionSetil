@@ -851,12 +851,16 @@ button { font-family: inherit; }
   border: none;
   width: 28px;
   height: 28px;
+  min-width: 28px;
+  min-height: 28px;
   border-radius: 50%;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 0.8rem;
+  /* Visible by default; hover still strengthens on desktop */
+  opacity: 0.92;
   transition: all var(--transition);
   opacity: 0;
 }
@@ -874,7 +878,9 @@ button { font-family: inherit; }
 .metadata-form { margin-bottom: 1.5rem; }
 
 .metadata-toggle {
+  min-height: 44px;
   width: 100%;
+  text-align: left;
   background: var(--surface-alt);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
@@ -1133,12 +1139,24 @@ button { font-family: inherit; }
 
 .btn-retry {
   margin-left: auto;
+  min-height: 44px;
+  cursor: pointer;
+}
+
+.upload-tips__policy {
+  margin: 0.65rem 0 0;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  max-width: 36rem;
+}
+
+/* When not using btn-atelier, keep legacy look */
+button.btn-retry:not(.btn-atelier) {
   background: var(--danger);
   color: white;
   border: none;
   padding: 0.5rem 1.25rem;
   border-radius: 100px;
-  cursor: pointer;
   font-size: 0.875rem;
   font-weight: 600;
   transition: all var(--transition);
@@ -3581,6 +3599,7 @@ button { font-family: inherit; }
   background: none;
   border: none;
   padding: 1.1rem 1.25rem;
+  min-height: 48px;
   font-size: 0.95rem;
   font-weight: 600;
   color: var(--text);
@@ -4867,6 +4886,7 @@ button { font-family: inherit; }
   flex-wrap: wrap;
   gap: 0.5rem 1rem;
   align-items: center;
+  justify-content: space-between;
   padding: 0.65rem 1.25rem;
   background: #7c2d12;
   color: #fff7ed;
@@ -4875,6 +4895,19 @@ button { font-family: inherit; }
 }
 .api-status-banner strong {
   font-weight: 700;
+}
+.api-status-banner__copy {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.75rem;
+  align-items: baseline;
+  flex: 1 1 12rem;
+}
+.api-status-banner .btn-atelier,
+.api-status-banner .cn-btn {
+  min-height: 44px;
+  color: inherit;
+  border-color: rgba(255, 247, 237, 0.35);
 }
 
 .footer-links {

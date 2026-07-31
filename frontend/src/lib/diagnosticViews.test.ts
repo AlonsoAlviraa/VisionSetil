@@ -10,6 +10,7 @@ import {
   missingDeadlyCriticalViews,
   missingPairCriticalViews,
 } from './diagnosticViews'
+import { CLASSIC_LOOKALIKE_PAIRS } from './lookalikeStudio'
 
 describe('diagnosticViews (deadly multi-view coaching)', () => {
   it('priority views start with gills/front (diagnostic)', () => {
@@ -78,5 +79,29 @@ describe('diagnosticViews (deadly multi-view coaching)', () => {
     const miss = missingPairCriticalViews(d, ['gills'])
     expect(miss).not.toContain('gills')
     expect(miss.length).toBeGreaterThan(0)
+  })
+
+  it('T7: every CLASSIC_LOOKALIKE_PAIRS resolves non-empty critical_views', () => {
+    expect(CLASSIC_LOOKALIKE_PAIRS.length).toBeGreaterThanOrEqual(20)
+    for (const pair of CLASSIC_LOOKALIKE_PAIRS) {
+      const [a, b] = pair.taxa
+      const d = diagnosticForLookalikeMate([a], b)
+      expect(d, `missing diagnostic for ${pair.id} (${a}↔${b})`).not.toBeNull()
+      expect(d!.critical_views.length, pair.id).toBeGreaterThan(0)
+      expect(d!.why.length, pair.id).toBeGreaterThan(0)
+      expect(d!.why.toLowerCase()).not.toMatch(
+        /safe to eat|puedes comer|permission to (eat|forage|consume)/,
+      )
+    }
+    expect(diagnosticPolicy()).toMatch(/orientation_only/)
+  })
+
+  it('T7 expanded pairs: satanas and xanthodermus resolve', () => {
+    const sat = findDiagnosticPair('Boletus edulis', 'Rubroboletus satanas')
+    expect(sat).not.toBeNull()
+    expect(sat!.critical_views).toContain('gills')
+    const xan = findDiagnosticPair('Agaricus campestris', 'Agaricus xanthodermus')
+    expect(xan).not.toBeNull()
+    expect(xan!.why.toLowerCase()).toMatch(/fenol|amarill|xanthoderm/)
   })
 })

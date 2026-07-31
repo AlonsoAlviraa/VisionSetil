@@ -47,7 +47,17 @@ export type ResolveImageOptions = {
   quality?: PhotoDisplayQuality
 }
 
-type PhotoEntry = { taxon: string; url: string; provider?: string }
+/** Catalog photo row — optional attribution fields for SSOT (T4). */
+type PhotoEntry = {
+  taxon: string
+  url: string
+  provider?: string
+  license?: string
+  slug?: string
+  creator?: string
+  attribution_text?: string
+  source_url?: string
+}
 type PhotosFile = {
   version?: string
   photos: Record<string, PhotoEntry>
@@ -97,6 +107,37 @@ export function getCatalogPhotoUrl(taxon: string): string | null {
   const key = taxon.trim().toLowerCase()
   const entry = db.photos?.[key]
   return entry?.url || null
+}
+
+/** True after hydrateSpeciesPhotos / test inject (version not pending). */
+export function areSpeciesPhotosReady(): boolean {
+  return db.version !== 'pending' && Object.keys(db.photos || {}).length > 0
+}
+
+/** Sync catalog photo row for attribution (T4 — single SSOT, no second JSON import). */
+export function getCatalogPhotoEntry(taxonOrSlug: string): {
+  taxon?: string
+  url?: string
+  provider?: string
+  license?: string
+  slug?: string
+  creator?: string
+  attribution_text?: string
+  source_url?: string
+} | null {
+  if (!taxonOrSlug?.trim()) return null
+  const key = taxonOrSlug.trim().toLowerCase().replace(/-/g, ' ')
+  const photos = db.photos || {}
+  let entry = photos[key]
+  if (entry) return entry
+  const slugish = taxonOrSlug.trim().toLowerCase()
+  entry = photos[slugish]
+  if (entry) return entry
+  for (const p of Object.values(photos)) {
+    if (!p) continue
+    if (p.slug === slugish || p.taxon?.toLowerCase() === key) return p
+  }
+  return null
 }
 
 /**

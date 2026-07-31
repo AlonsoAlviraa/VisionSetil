@@ -4,7 +4,11 @@
  * (names only · never overwrites SSOT · never consumption).
  */
 import type { CatalogSpecies } from '../data/speciesCatalog'
-import { familyNameEs } from '../data/familyNamesEs'
+import {
+  effectiveFamilyLatin,
+  encyclopediaQueryAliases,
+  familyNameEs,
+} from '../data/familyNamesEs'
 import { foldEs } from '../data/commonNamesEs'
 import {
   nomenclatureQueryVariants,
@@ -42,10 +46,12 @@ function scoreSpecies(
   q: string,
   boostHighRisk: boolean,
   nomenclatureVariants: readonly string[],
+  queryAliases: readonly string[] = [],
 ): number {
   let score = 0
   const taxon = s.taxon.toLowerCase()
-  const family = (s.family || '').toLowerCase()
+  const genus = taxon.split(/\s+/)[0] || ''
+  const family = effectiveFamilyLatin(s.family, s.taxon).toLowerCase()
   const commons = [
     ...s.common_names.map((c) => c.toLowerCase()),
     ...(s.common_names_en || []).map((c) => c.toLowerCase()),
@@ -54,6 +60,13 @@ function scoreSpecies(
     score = 1
   } else {
     const qNorm = foldEs(q)
+    // Common vernacular group terms (boletos, lactarios…)
+    for (const alias of queryAliases) {
+      if (!alias || alias === q) continue
+      if (family === alias || family.includes(alias)) score += 90
+      if (genus === alias || genus.startsWith(alias)) score += 95
+      if (taxon.includes(alias)) score += 40
+    }
     // Curated synonym → SSOT (e.g. Coprinopsis atramentaria → Coprinus atramentarius)
     const qCanon = canonicalTaxonName(q).toLowerCase()
     if (qCanon !== q && taxon === qCanon) score += 100
@@ -86,14 +99,20 @@ function scoreSpecies(
       else if (c.includes(q) || cNorm.includes(qNorm)) score += 40
     }
     // Family match is first-class (Latin + Spanish educational names)
-    const familyEs = (s.family_es || familyNameEs(s.family) || '').toLowerCase()
+    const familyEs = (
+      s.family_es ||
+      familyNameEs(effectiveFamilyLatin(s.family, s.taxon)) ||
+      ''
+    ).toLowerCase()
     const famEsNorm = foldEs(familyEs)
     if (family === q) score += 95
     else if (family.startsWith(q)) score += 70
     else if (family.includes(q)) score += 45
-    if (familyEs === q) score += 95
-    else if (familyEs.startsWith(q)) score += 70
-    else if (q.length >= 3 && familyEs.includes(q)) score += 50
+    if (genus === q) score += 92
+    else if (genus.startsWith(q) && q.length >= 3) score += 70
+    if (familyEs === q || famEsNorm === qNorm) score += 95
+    else if (familyEs.startsWith(q) || famEsNorm.startsWith(qNorm)) score += 70
+    else if (q.length >= 3 && (familyEs.includes(q) || famEsNorm.includes(qNorm))) score += 50
     if (qNorm.length >= 4 && famEsNorm.includes(qNorm)) score += 48
     // "fam:amanitaceae" or "familia amanitas"
     const famQuery = q.replace(/^(fam(ilia)?|family)\s*[:=]?\s*/, '')
@@ -102,9 +121,6 @@ function scoreSpecies(
       else if (family.includes(famQuery)) score += 60
     }
     if (s.slug.includes(q.replace(/\s+/g, '-'))) score += 20
-    // genus-only query
-    const genus = taxon.split(/\s+/)[0] || ''
-    if (genus === q) score += 55
   }
   if (boostHighRisk) {
     const risk = toRiskLabel(s.risk_label)
@@ -133,18 +149,28 @@ export function searchCatalogRanked(
   if (family && family !== 'all') {
     const fl = family.toLowerCase()
     if (fl === 'sin familia') {
-      rows = rows.filter((s) => !(s.family || '').trim())
+      rows = rows.filter((s) => !effectiveFamilyLatin(s.family, s.taxon))
     } else {
-      rows = rows.filter((s) => (s.family || '').toLowerCase() === fl)
+      rows = rows.filter(
+        (s) => effectiveFamilyLatin(s.family, s.taxon).toLowerCase() === fl,
+      )
     }
   }
 
+  const aliases = encyclopediaQueryAliases(q)
   const ranked: RankedSpecies[] = []
   for (const s of rows) {
-    const matchScore = scoreSpecies(s, q, boost, nomenclatureVariants)
+    const matchScore = scoreSpecies(s, q, boost, nomenclatureVariants, aliases)
     if (q && matchScore <= 0) continue
     if (!q && matchScore <= 0) continue
-    ranked.push({ ...s, matchScore })
+    // Prefer inferred family on ranked rows for UI banding
+    const fam = effectiveFamilyLatin(s.family, s.taxon)
+    ranked.push({
+      ...s,
+      family: fam || s.family,
+      family_es: s.family_es || (fam ? familyNameEs(fam) : s.family_es),
+      matchScore,
+    })
   }
   ranked.sort(
     (a, b) => b.matchScore - a.matchScore || a.taxon.localeCompare(b.taxon),
@@ -160,7 +186,7 @@ export function listFamilies(
   const counts = new Map<string, number>()
   for (const s of species) {
     if (risk !== 'all' && toRiskLabel(s.risk_label) !== risk) continue
-    const f = (s.family || '').trim() || 'Sin familia'
+    const f = effectiveFamilyLatin(s.family, s.taxon) || 'Sin familia'
     counts.set(f, (counts.get(f) || 0) + 1)
   }
   return [...counts.entries()]

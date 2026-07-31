@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../auth/AuthContext'
 import { deadlyPriorityViews } from '../lib/diagnosticViews'
+import { Button, PageShell } from '../components/ui'
 
 export function LoginPage() {
   const { t } = useTranslation()
@@ -35,7 +36,15 @@ export function LoginPage() {
   }
 
   return (
-    <div className="page-auth page-atelier-shell" data-testid="login-page">
+    <PageShell
+      bare
+      className="page-auth page-atelier-shell"
+      testId="login-page"
+      orientationSticky
+      orientationText={t('auth.orientation', {
+        defaultValue: 'Solo orientación · cuenta de estudio · nunca consumo',
+      })}
+    >
       <div className="auth-atelier">
         <div className="page-header">
           <p className="atelier-kicker" style={{ color: 'var(--ink-mute)' }}>
@@ -76,7 +85,7 @@ export function LoginPage() {
           </div>
           <p className="muted" style={{ marginTop: '0.5rem' }}>
             <Link to="/identificar" data-testid="login-cta-identify">
-              {t('nav.identify', { defaultValue: 'Identificar multi-vista' })}
+              {t('nav.identify', { defaultValue: 'Identificar' })}
             </Link>
             {' · '}
             <Link to="/educacion" data-testid="login-cta-edu">
@@ -111,17 +120,17 @@ export function LoginPage() {
               {error}
             </p>
           )}
-          <button className="btn-atelier btn-atelier--primary btn-atelier--block" type="submit" disabled={busy}>
+          <Button type="submit" variant="primary" block disabled={busy}>
             {busy
               ? t('auth.loginBusy', { defaultValue: 'Entrando…' })
               : t('auth.loginSubmit', { defaultValue: 'Entrar' })}
-          </button>
+          </Button>
           <p className="auth-form-atelier__foot">
             {t('auth.noAccount', { defaultValue: '¿No tienes cuenta?' })}{' '}
             <Link to="/registro">{t('auth.registerLink', { defaultValue: 'Regístrate' })}</Link>
           </p>
         </form>
       </div>
-    </div>
+    </PageShell>
   )
 }

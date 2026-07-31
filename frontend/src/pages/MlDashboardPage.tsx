@@ -3,8 +3,8 @@
  * Never hardcodes green; shows mock vs real honestly.
  */
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
 import axios from 'axios'
+import { Button, LinkButton, PageShell } from '../components/ui'
 import { ML_LAB_METRICS_DISCLAIMER_ES } from '../lib/safetyCopy'
 import { normalizeEceResidual } from '../lib/eceHonesty'
 import { normalizeS9LiveReject } from '../lib/s9LiveRejectHonesty'
@@ -1011,7 +1011,12 @@ export function MlDashboardPage() {
   )
 
   return (
-    <div className="page-ml-dashboard page-atelier-shell">
+    <PageShell
+      className="page-ml-dashboard page-atelier-shell"
+      testId="ml-dashboard-page"
+      orientationSticky
+      orientationText="Solo lab · métricas no desbloquean consumo"
+    >
       <div className="page-header">
         <p className="atelier-kicker home-kicker">Observabilidad · ML</p>
         <h1 className="page-title">Dashboard ML</h1>
@@ -1028,20 +1033,20 @@ export function MlDashboardPage() {
       </div>
 
       <div className="ml-dash-toolbar">
-        <button
+        <Button
           type="button"
-          className="btn-atelier btn-atelier--primary"
+          variant="primary"
           onClick={() => void refresh()}
           disabled={loading}
         >
           {loading ? 'Actualizando…' : 'Actualizar'}
-        </button>
-        <Link to="/identificar" className="btn-atelier btn-atelier--ghost">
+        </Button>
+        <LinkButton to="/identificar" variant="ghost">
           Ir a Identificar
-        </Link>
-        <Link to="/revision-experta" className="btn-atelier btn-atelier--ghost">
+        </LinkButton>
+        <LinkButton to="/revision-experta" variant="ghost">
           Expertos
-        </Link>
+        </LinkButton>
         {ts && <span className="muted">Última lectura: {ts}</span>}
       </div>
 
@@ -1865,7 +1870,7 @@ export function MlDashboardPage() {
           Política: orientación solo. Un modelo real no autoriza consumo.
         </p>
       </section>
-    </div>
+    </PageShell>
   )
 }
 

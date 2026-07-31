@@ -1,4 +1,5 @@
-/** Product header — premium bar + working Más menu (outside overflow clip). */
+/** Product header — premium bar + working Más menu (outside overflow clip).
+ * Nav lists: lib/navConfig.ts (architecture M1). */
 import { useEffect, useRef, useState } from 'react'
 import { NavLink, Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
@@ -6,139 +7,16 @@ import { useTranslation } from 'react-i18next'
 import { LanguageSwitcher } from './LanguageSwitcher'
 import { LayoutModeToggle } from './LayoutModeToggle'
 import type { LayoutMode } from '../lib/layoutMode'
+import {
+  headerPrimaryNav,
+  MORE_NAV_FLAT,
+  MORE_NAV_GROUPS,
+} from '../lib/navConfig'
 
 const THEME_KEY = 'visionsetil_theme'
-
-/** Primary chrome only — Más is a single control (dropdown → hub), never duplicated. */
-const primaryNav = [
-  { to: '/', labelKey: 'nav.home', fallback: 'Inicio' },
-  { to: '/identificar', labelKey: 'nav.identify', fallback: 'Identificar', cta: true },
-  { to: '/juegos', labelKey: 'nav.games', fallback: 'Juegos' },
-  { to: '/enciclopedia', labelKey: 'nav.encyclopedia', fallback: 'Enciclopedia' },
-] as const
-
-type MoreNavItem = {
-  to: string
-  labelKey: string
-  fallback: string
-  blurb: string
-  badge?: 'dev'
-}
-
-type MoreNavGroup = {
-  id: string
-  titleKey: string
-  titleFallback: string
-  items: MoreNavItem[]
-}
-
-/** Grouped product hub under Más (flat moreNav kept for active-path checks). */
-const moreNavGroups: MoreNavGroup[] = [
-  {
-    id: 'learn',
-    titleKey: 'nav.moreGroup.learn',
-    titleFallback: 'Aprender',
-    items: [
-      {
-        to: '/educacion',
-        labelKey: 'nav.education',
-        fallback: 'Educación',
-        blurb: 'nav.blurb.education',
-      },
-      {
-        to: '/lookalikes',
-        labelKey: 'nav.lookalikes',
-        fallback: 'Lookalikes',
-        blurb: 'nav.blurb.lookalikes',
-      },
-      {
-        to: '/juegos',
-        labelKey: 'nav.games',
-        fallback: 'Juegos',
-        blurb: 'nav.blurb.games',
-      },
-      {
-        to: '/setadle',
-        labelKey: 'nav.setadle',
-        fallback: 'Setadle',
-        blurb: 'nav.blurb.setadle',
-      },
-      {
-        to: '/reto',
-        labelKey: 'nav.quiz',
-        fallback: 'Reto',
-        blurb: 'nav.blurb.quiz',
-      },
-      {
-        to: '/wordle',
-        labelKey: 'nav.wordle',
-        fallback: 'Wordle setas',
-        blurb: 'nav.blurb.wordle',
-      },
-    ],
-  },
-  {
-    id: 'field',
-    titleKey: 'nav.moreGroup.field',
-    titleFallback: 'Campo',
-    items: [
-      {
-        to: '/mapa',
-        labelKey: 'nav.map',
-        fallback: 'Mapa / cotos',
-        blurb: 'nav.blurb.map',
-      },
-      {
-        to: '/historial',
-        labelKey: 'nav.notebook',
-        fallback: 'Cuaderno',
-        blurb: 'nav.blurb.notebook',
-      },
-      {
-        to: '/offline',
-        labelKey: 'nav.offline',
-        fallback: 'Offline',
-        blurb: 'nav.blurb.offline',
-      },
-    ],
-  },
-  {
-    id: 'people',
-    titleKey: 'nav.moreGroup.people',
-    titleFallback: 'Gente',
-    items: [
-      {
-        to: '/comunidad',
-        labelKey: 'nav.community',
-        fallback: 'Comunidad',
-        blurb: 'nav.blurb.community',
-      },
-      {
-        to: '/revision-experta',
-        labelKey: 'nav.experts',
-        fallback: 'Revisión experta',
-        blurb: 'nav.blurb.experts',
-      },
-    ],
-  },
-  {
-    id: 'dev',
-    titleKey: 'nav.moreGroup.dev',
-    titleFallback: 'Desarrollo',
-    items: [
-      {
-        to: '/ml',
-        labelKey: 'nav.ml',
-        fallback: 'ML',
-        blurb: 'nav.blurb.ml',
-        badge: 'dev',
-      },
-    ],
-  },
-]
-
-/** Flat list for active-path + tests (order: learn → field → people → ml). */
-const moreNav: MoreNavItem[] = moreNavGroups.flatMap((g) => g.items)
+const primaryNav = headerPrimaryNav()
+const moreNavGroups = MORE_NAV_GROUPS
+const moreNav = MORE_NAV_FLAT
 
 function IconSun() {
   return (
@@ -326,7 +204,7 @@ export function Header({ layoutMode = 'app', onLayoutModeChange }: HeaderProps =
                   ) : null}
                 </span>
                 <span className="nav-more__item-blurb">
-                  {t(item.blurb, { defaultValue: item.blurb })}
+                  {t(item.blurbKey, { defaultValue: item.blurbFallback })}
                 </span>
               </span>
             </NavLink>

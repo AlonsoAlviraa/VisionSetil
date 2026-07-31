@@ -3,8 +3,9 @@
  * No emoji chrome by default. Prefer this over legacy ui-empty-state.
  */
 import type { ReactNode } from 'react'
-import { Link } from 'react-router-dom'
 import { IconMushroom } from './icons'
+import { Button } from './ui/Button'
+import { LinkButton } from './ui/LinkButton'
 
 export type EmptyStateProps = {
   title: string
@@ -45,14 +46,19 @@ export function EmptyState({
       ) : (
         <>
           {actionLabel && actionTo ? (
-            <Link to={actionTo} className="btn-atelier btn-atelier--primary">
+            <LinkButton to={actionTo} variant="primary" data-testid="empty-state-action">
               {actionLabel}
-            </Link>
+            </LinkButton>
           ) : null}
           {actionLabel && onAction && !actionTo ? (
-            <button type="button" className="btn-atelier btn-atelier--primary" onClick={onAction}>
+            <Button
+              type="button"
+              variant="primary"
+              onClick={onAction}
+              data-testid="empty-state-action"
+            >
               {actionLabel}
-            </button>
+            </Button>
           ) : null}
         </>
       )}

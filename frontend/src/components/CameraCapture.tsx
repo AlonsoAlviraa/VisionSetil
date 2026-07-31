@@ -13,6 +13,7 @@ import {
   IconSkip,
   ViewIcon,
 } from './icons'
+import { Button } from './ui'
 
 const VIEW_STEPS = [
   {
@@ -85,7 +86,12 @@ export function CameraCapture({
       setIsReady(false)
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: { ideal: mode }, width: { ideal: 1920 }, height: { ideal: 1080 } },
+          video: {
+            facingMode: { ideal: mode },
+            // Cap capture resolution for field phones (upload + decode budget)
+            width: { ideal: 1280 },
+            height: { ideal: 720 },
+          },
           audio: false,
         })
         streamRef.current = stream
@@ -110,8 +116,13 @@ export function CameraCapture({
     if (!videoRef.current || !isReady) return
     const video = videoRef.current
     const canvas = document.createElement('canvas')
-    canvas.width = video.videoWidth
-    canvas.height = video.videoHeight
+    // Downscale long edge to ≤1280 to limit memory + classify upload size
+    const maxEdge = 1280
+    const vw = video.videoWidth || 1280
+    const vh = video.videoHeight || 720
+    const scale = Math.min(1, maxEdge / Math.max(vw, vh))
+    canvas.width = Math.round(vw * scale)
+    canvas.height = Math.round(vh * scale)
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
@@ -119,7 +130,7 @@ export function CameraCapture({
       ctx.translate(canvas.width, 0)
       ctx.scale(-1, 1)
     }
-    ctx.drawImage(video, 0, 0)
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
     canvas.toBlob(
       (blob) => {
         if (!blob) return
@@ -134,7 +145,12 @@ export function CameraCapture({
           if (currentStep < VIEW_STEPS.length - 1) {
             setCurrentStep((s) => s + 1)
           } else {
-            onMultiViewCapture?.(updated)
+            // If parent didn't wire multi-view, still deliver last frame via onCapture
+            if (onMultiViewCapture) {
+              onMultiViewCapture(updated)
+            } else {
+              onCapture(file)
+            }
             onClose()
           }
         } else {
@@ -142,7 +158,7 @@ export function CameraCapture({
         }
       },
       'image/jpeg',
-      0.92,
+      0.82,
     )
   }, [
     isReady,
@@ -175,24 +191,44 @@ export function CameraCapture({
 
   const step = VIEW_STEPS[currentStep]
 
+  useEffect(() => {
+    const onKey = (ev: KeyboardEvent) => {
+      if (ev.key === 'Escape') {
+        ev.preventDefault()
+        onClose()
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [onClose])
+
   return (
-    <div className="camera-overlay">
+    <div
+      className="camera-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="camera-capture-title"
+      data-testid="camera-capture-dialog"
+    >
       <div className="camera-container">
         <div className="camera-header">
-          <h3>
+          <h3 id="camera-capture-title">
             {guidedMode
               ? `Vista ${currentStep + 1}/${VIEW_STEPS.length}: ${step.label}`
               : slotLabel
                 ? `Capturar: ${slotLabel}`
                 : 'Capturar con cámara'}
           </h3>
-          <button
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
             className="btn-camera-close"
             onClick={onClose}
             aria-label={t('a11y.closeCamera', { defaultValue: 'Cerrar cámara' })}
           >
             <IconClose size={18} />
-          </button>
+          </Button>
         </div>
 
         {guidedMode && (
@@ -371,37 +407,56 @@ export function CameraCapture({
         )}
 
         <div className="camera-controls">
-          <button
+          <Button
             type="button"
+            variant="ghost"
             className="btn-switch-camera"
             onClick={() => setFacingMode((m) => (m === 'environment' ? 'user' : 'environment'))}
             disabled={!!error}
+            aria-label={t('identify.switchCamera', { defaultValue: 'Cambiar cámara' })}
           >
             <IconFlip size={16} />
-            Cambiar
-          </button>
-          <button
+            {t('identify.switchCameraShort', { defaultValue: 'Cambiar' })}
+          </Button>
+          <Button
             type="button"
+            variant="primary"
             className="btn-capture"
             onClick={capture}
             disabled={!isReady || !!error}
-            aria-label={guidedMode ? `Capturar ${step.label}` : 'Capturar foto'}
+            aria-label={
+              guidedMode
+                ? t('identify.captureView', {
+                    defaultValue: 'Capturar {{view}}',
+                    view: step.label,
+                  })
+                : t('identify.capturePhoto', { defaultValue: 'Capturar foto' })
+            }
           >
             <span className="capture-ring" />
-          </button>
+          </Button>
           {guidedMode ? (
-            <button type="button" className="btn-skip" onClick={skipStep} disabled={!!error}>
+            <Button
+              type="button"
+              variant="ghost"
+              className="btn-skip"
+              onClick={skipStep}
+              disabled={!!error}
+              aria-label={t('identify.skipView', { defaultValue: 'Saltar vista' })}
+            >
               <IconSkip size={16} />
-              Saltar
-            </button>
+              {t('identify.skip', { defaultValue: 'Saltar' })}
+            </Button>
           ) : (
             <div className="spacer" />
           )}
         </div>
 
         <div className="camera-footer">
-          <button
+          {/* In-camera multi-step is secondary; parent wizard owns real multi-view slots */}
+          <Button
             type="button"
+            variant="ghost"
             className="btn-mode-toggle"
             onClick={() => {
               setGuidedMode(!guidedMode)
@@ -409,13 +464,18 @@ export function CameraCapture({
               setCurrentStep(0)
             }}
           >
-            {guidedMode ? 'Modo simple' : 'Modo guiado multi-vista'}
-          </button>
+            {guidedMode
+              ? t('identify.cameraModeSimple', { defaultValue: 'Foto única' })
+              : t('identify.cameraModeGuided', { defaultValue: 'Guía en cámara' })}
+          </Button>
           {guidedMode && capturedViews.length > 0 && (
-            <button type="button" className="btn-finish-early" onClick={finishEarly}>
+            <Button type="button" variant="primary" className="btn-finish-early" onClick={finishEarly}>
               <IconCheck size={14} />
-              Finalizar ({capturedViews.length})
-            </button>
+              {t('identify.finishEarly', {
+                defaultValue: 'Listo ({{n}})',
+                n: capturedViews.length,
+              })}
+            </Button>
           )}
         </div>
 

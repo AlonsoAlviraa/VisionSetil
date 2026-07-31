@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  MEDIA_SURFACE_POLICY,
   PREMIUM_PHOTO_SLUGS,
   buildSpeciesMediaStack,
   isTerminalMediaUrl,
@@ -114,6 +115,40 @@ describe('speciesMediaStack', () => {
       maxGallery: 4,
     })
     expect(stack.length).toBe(3)
+    expect(isTerminalMediaUrl(stack[stack.length - 1].url)).toBe(true)
+  })
+
+  it('MEDIA_SURFACE_POLICY locks grid thumb + preferLocal (T1/T6)', () => {
+    const grid = MEDIA_SURFACE_POLICY.encyclopedia_grid
+    expect(grid.quality).toBe('thumb')
+    expect(grid.preferLocal).toBe(true)
+    expect(grid.maxCandidates).toBeLessThanOrEqual(3)
+    expect(grid.maxGallery).toBe(0)
+
+    const detail = MEDIA_SURFACE_POLICY.species_detail
+    expect(detail.quality).toBe('hd')
+    expect(detail.maxCandidates).toBeGreaterThanOrEqual(4)
+
+    const games = MEDIA_SURFACE_POLICY.games_hub
+    expect(games.quality).toBe('display')
+    expect(games.maxCandidates).toBeLessThanOrEqual(3)
+
+    // No product_unlock surface / culinary key in media module policy
+    const policyJson = JSON.stringify(MEDIA_SURFACE_POLICY)
+    expect(policyJson).not.toMatch(/product_unlock|consume|forage/)
+  })
+
+  it('encyclopedia_grid policy caps mediaStackWithTerminal length', () => {
+    const p = MEDIA_SURFACE_POLICY.encyclopedia_grid
+    const stack = mediaStackWithTerminal('Amanita phalloides', {
+      maxCandidates: p.maxCandidates,
+      maxGallery: p.maxGallery,
+      preferLocal: p.preferLocal,
+      quality: p.quality,
+      includeCatalog: true,
+    })
+    const nonTerminal = stack.filter((c) => !isTerminalMediaUrl(c.url))
+    expect(nonTerminal.length).toBeLessThanOrEqual(p.maxCandidates)
     expect(isTerminalMediaUrl(stack[stack.length - 1].url)).toBe(true)
   })
 })

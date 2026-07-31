@@ -1,85 +1,9 @@
-/** Bottom nav — Stitch B Campo nocturno (5 tabs). */
+/** Bottom nav — Stitch B Campo nocturno (5 tabs). Nav SSOT: lib/navConfig.ts */
 import { NavLink, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-
-type BottomTab = {
-  to: string
-  labelKey: string
-  fallback: string
-  testId: string
-  end?: boolean
-  primary?: boolean
-  match?: (pathname: string) => boolean
-  icon: string
-}
-
-const tabs: BottomTab[] = [
-  {
-    to: '/',
-    end: true,
-    labelKey: 'nav.home',
-    fallback: 'Inicio',
-    testId: 'bottom-nav-home',
-    icon: 'home',
-  },
-  {
-    to: '/identificar',
-    labelKey: 'nav.identify',
-    fallback: 'Identificar',
-    testId: 'bottom-nav-identify',
-    primary: true,
-    icon: 'center_focus',
-  },
-  {
-    to: '/juegos',
-    labelKey: 'nav.games',
-    fallback: 'Juegos',
-    testId: 'bottom-nav-games',
-    match: (p) =>
-      p.startsWith('/juegos') ||
-      p.startsWith('/setadle') ||
-      p.startsWith('/wordle') ||
-      p.startsWith('/reto'),
-    icon: 'sports_esports',
-  },
-  {
-    to: '/enciclopedia',
-    labelKey: 'nav.encyclopedia',
-    fallback: 'Enciclopedia',
-    testId: 'bottom-nav-ency',
-    match: (p) => p.startsWith('/enciclopedia'),
-    icon: 'menu_book',
-  },
-  {
-    to: '/mas',
-    labelKey: 'nav.more',
-    fallback: 'Más',
-    testId: 'bottom-nav-more',
-    match: (p) =>
-      p.startsWith('/mas') ||
-      p.startsWith('/mapa') ||
-      p.startsWith('/educacion') ||
-      p.startsWith('/lookalikes') ||
-      p.startsWith('/historial') ||
-      p.startsWith('/offline') ||
-      p.startsWith('/comunidad') ||
-      p.startsWith('/revision') ||
-      p.startsWith('/ml') ||
-      p.startsWith('/beta') ||
-      p.startsWith('/login') ||
-      p.startsWith('/registro'),
-    icon: 'apps',
-  },
-]
-
-function isTabActive(tab: BottomTab, pathname: string): boolean {
-  if (tab.match) return tab.match(pathname)
-  if (tab.end) return pathname === tab.to
-  return pathname.startsWith(tab.to)
-}
+import { BOTTOM_TABS, isBottomTabActive } from '../lib/navConfig'
 
 function TabIcon({ name }: { name: string }) {
-  // Minimal inline icons (no emoji) — Stitch-like glyphs
   const common = {
     width: 22,
     height: 22,
@@ -145,8 +69,8 @@ export function BottomNav() {
       data-testid="bottom-nav"
       aria-label={t('nav.bottomAria', { defaultValue: 'Navegación principal' })}
     >
-      {tabs.map((tab) => {
-        const active = isTabActive(tab, pathname)
+      {BOTTOM_TABS.map((tab) => {
+        const active = isBottomTabActive(tab, pathname)
         return (
           <NavLink
             key={tab.to}

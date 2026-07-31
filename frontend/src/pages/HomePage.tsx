@@ -10,7 +10,7 @@ import { SpeciesImage } from '../components/SpeciesImage'
 import { SeasonalTopStrip } from '../components/SeasonalTopStrip'
 import { FeaturedSpeciesGrid } from '../components/FeaturedSpeciesGrid'
 import { WaitlistTemporada } from '../components/WaitlistTemporada'
-import { Icon } from '../components/ui'
+import { ExternalLinkButton, Icon, LinkButton, PageShell } from '../components/ui'
 import { FREE_IDENTIFY_PER_DAY } from '../lib/entitlements'
 import { deadlyPriorityViews } from '../lib/diagnosticViews'
 import {
@@ -27,6 +27,22 @@ import { fieldHoldoutCoachLines } from '../lib/fieldHoldoutHonesty'
 
 const HOME_CATALOG_COUNT = 523
 
+/** Contract hub links (aria-hidden) — competitiveFeatures + architecture tests */
+const HOME_DISCOVER_LINKS = [
+  { to: '/identificar', testId: 'home-discover-identify', label: 'Identificar' },
+  { to: '/lookalikes', testId: 'home-discover-lookalikes', label: 'Confusiones' },
+  { to: '/historial', testId: 'home-discover-notebook', label: 'Cuaderno' },
+  { to: '/educacion', testId: 'home-discover-edu', label: 'Educación' },
+  { to: '/offline', testId: 'home-discover-offline', label: 'Offline' },
+  { to: '/comunidad', testId: 'home-discover-community', label: 'Comunidad' },
+  { to: '/revision-experta', testId: 'home-discover-expert', label: 'Revisión' },
+  { to: '/mas', testId: 'home-discover-more', label: 'Más' },
+  { to: '/juegos', testId: 'home-discover-games', label: 'Juegos' },
+  { to: '/mapa', testId: 'home-discover-map', label: 'Mapa' },
+  { to: '/enciclopedia', testId: 'home-discover-ency', label: 'Enciclopedia' },
+  { to: '/offline', testId: 'home-cta-offline', label: 'Offline pack' },
+] as const
+
 export function HomePage() {
   const { t } = useTranslation()
   const priorityViews = deadlyPriorityViews().slice(0, 4)
@@ -38,11 +54,7 @@ export function HomePage() {
   const holdout = fieldHoldoutCoachLines()
 
   return (
-    <div
-      className="cn-page cn-home cn-home--v12"
-      data-testid="home-page-v193"
-      data-skin="campo-nocturno"
-    >
+    <PageShell className="cn-home cn-home--v12" testId="home-page-v193">
       <p
         className="cn-warn-strip"
         data-testid="home-orientation-sticky"
@@ -90,8 +102,10 @@ export function HomePage() {
               </span>
             ))}
           </div>
-          <Link
+          <LinkButton
             to="/identificar"
+            skin="cn"
+            variant="hero"
             className="cn-home-hero__cta cn-glass cn-pill cn-btn cn-btn--lg"
             data-testid="home-cta-identify"
           >
@@ -101,7 +115,7 @@ export function HomePage() {
             <span className="cn-home-hero__cta-orb" aria-hidden="true">
               <Icon name="center_focus_strong" filled size="md" />
             </span>
-          </Link>
+          </LinkButton>
         </div>
       </section>
 
@@ -333,26 +347,25 @@ export function HomePage() {
         </section>
         <div className="home-beta-row">
           {isBetaExternalForm() || isBetaMailto() ? (
-            <a
+            <ExternalLinkButton
               href={betaHref}
-              className="cn-btn cn-btn--ghost"
+              variant="ghost"
+              newTab={!isBetaMailto()}
               data-testid="home-beta-feedback"
               data-source={beta.source}
-              {...(isBetaMailto()
-                ? {}
-                : { target: '_blank', rel: 'noopener noreferrer' })}
             >
               {t('nav.betaFeedback', { defaultValue: 'Feedback beta' })}
-            </a>
+            </ExternalLinkButton>
           ) : (
-            <Link
+            <LinkButton
               to={betaHref}
-              className="cn-btn cn-btn--ghost"
+              variant="ghost"
+              skin="cn"
               data-testid="home-beta-feedback"
               data-source={beta.source}
             >
               {t('nav.betaFeedback', { defaultValue: 'Feedback beta' })}
-            </Link>
+            </LinkButton>
           )}
           <span
             className="visually-hidden"
@@ -369,49 +382,18 @@ export function HomePage() {
         aria-hidden="true"
         data-testid="home-discover-hub"
       >
-        <Link to="/identificar" data-testid="home-discover-identify">
-          Identificar
-        </Link>
-        <Link to="/lookalikes" data-testid="home-discover-lookalikes">
-          Lookalikes
-        </Link>
-        <Link to="/historial" data-testid="home-discover-notebook">
-          Cuaderno
-        </Link>
-        <Link to="/educacion" data-testid="home-discover-edu">
-          Educación
-        </Link>
-        <Link to="/offline" data-testid="home-discover-offline">
-          Offline
-        </Link>
-        <Link to="/comunidad" data-testid="home-discover-community">
-          Comunidad
-        </Link>
-        <Link to="/revision-experta" data-testid="home-discover-expert">
-          Revisión
-        </Link>
-        <Link to="/mas" data-testid="home-discover-more">
-          Más
-        </Link>
-        <Link to="/juegos" data-testid="home-discover-games">
-          Juegos
-        </Link>
-        <Link to="/mapa" data-testid="home-discover-map">
-          Mapa
-        </Link>
-        <Link to="/enciclopedia" data-testid="home-discover-ency">
-          Enciclopedia
-        </Link>
-        <Link to="/offline" data-testid="home-cta-offline">
-          Offline pack
-        </Link>
+        {HOME_DISCOVER_LINKS.map((item) => (
+          <Link key={item.testId} to={item.to} data-testid={item.testId}>
+            {item.label}
+          </Link>
+        ))}
       </nav>
 
       <span className="visually-hidden" data-testid="home-species-count">
         {HOME_CATALOG_COUNT}
       </span>
       <span className="visually-hidden">{FREE_IDENTIFY_PER_DAY}</span>
-    </div>
+    </PageShell>
   )
 }
 

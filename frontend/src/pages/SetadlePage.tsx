@@ -4,6 +4,7 @@
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Button, LinkButton, PageShell } from '../components/ui'
 import { useTranslation } from 'react-i18next'
 import { SpeciesThumb } from '../components/SpeciesThumb'
 import { RiskChip } from '../components/RiskChip'
@@ -38,6 +39,7 @@ import {
   usePlanActions,
 } from '../lib/entitlements'
 import { ProPlanBanner } from '../components/ProPlanBanner'
+import { markDailyGameDone, type DailyGameModeId } from '../lib/dailyGames'
 import { recordStudyActivity } from '../lib/studyBadges'
 import { StudyBadgesPanel } from '../components/StudyBadgesPanel'
 
@@ -237,6 +239,13 @@ export function SetadlePage() {
         if (playKind === 'daily') {
           writeDailyWin(mode!, secret.taxon, next.length)
           setDailyDone(true)
+          const map: Partial<Record<string, DailyGameModeId>> = {
+            classic: 'setadle-classic',
+            photo: 'setadle-photo',
+            habitat: 'setadle-habitat',
+          }
+          const mid = map[mode || '']
+          if (mid) markDailyGameDone(mid)
         }
       } else if (next.length >= MAX_NAME_GUESSES) {
         setLost(true)
@@ -298,6 +307,7 @@ export function SetadlePage() {
       if (playKind === 'daily') {
         writeDailyWin('habitat', habitatRound.habitat.id, attempts)
         setDailyDone(true)
+        markDailyGameDone('setadle-habitat')
       }
     },
     [habitatRound, playKind],
@@ -327,13 +337,25 @@ export function SetadlePage() {
   // ── Hub ──
   if (!mode) {
     return (
-      <div className="cn-page page-setadle page-setadle--mkt page-atelier-shell">
+      <PageShell
+        className="page-setadle page-setadle--mkt page-atelier-shell"
+        testId="setadle-hub"
+        orientationSticky
+        orientationText={t('setadle.orientation', {
+          defaultValue: 'Solo educación · nunca consumo',
+        })}
+      >
         <header className="setadle-hero setadle-hero--mkt">
           <p className="atelier-kicker" style={{ color: '#e8c872', justifyContent: 'center' }}>
             {t('setadle.kicker', {
               defaultValue: 'Daily · al estilo LoLdle · {{plan}}',
               plan: pro ? 'Pro' : 'Free',
             })}
+          </p>
+          <p className="setadle-back-row">
+            <Link to="/juegos" data-testid="setadle-back-games">
+              {t('setadle.backGames', { defaultValue: '← Juegos' })}
+            </Link>
           </p>
           <h1 className="page-title">
             {t('setadle.title', { defaultValue: 'Setadle' })}
@@ -372,15 +394,11 @@ export function SetadlePage() {
             />
           </div>
           <div className="setadle-hero__wordle-cta" style={{ marginTop: '0.75rem' }}>
-            <Link
-              to="/wordle"
-              className="mkt-btn mkt-btn--primary"
-              data-testid="setadle-cta-wordle"
-            >
+            <LinkButton to="/wordle" variant="primary" data-testid="setadle-cta-wordle">
               {t('setadle.ctaWordle', {
                 defaultValue: 'Wordle de setas →',
               })}
-            </Link>
+            </LinkButton>
             <p className="setadle-hero__wordle-blurb">
               {t('setadle.wordleBlurb', {
                 defaultValue:
@@ -413,9 +431,9 @@ export function SetadlePage() {
               })}
             </p>
             <div className="identify-mode-toggle" style={{ marginTop: '0.75rem' }}>
-              <button
+              <Button
                 type="button"
-                className="mkt-btn mkt-btn--amber"
+                variant="primary"
                 data-testid="setadle-unlock-pro"
                 onClick={() => {
                   unlock()
@@ -424,15 +442,13 @@ export function SetadlePage() {
                   navigate(`/setadle/${target}`)
                 }}
               >
-                {t('setadle.activatePro', { defaultValue: 'Activar Pro demo' })}
-              </button>
-              <button
-                type="button"
-                className="mkt-btn mkt-btn--ghost"
-                onClick={() => setPendingProMode(null)}
-              >
+                {t('setadle.activatePro', {
+                  defaultValue: 'Pro (prueba en este dispositivo)',
+                })}
+              </Button>
+              <Button type="button" variant="ghost" onClick={() => setPendingProMode(null)}>
                 {t('setadle.stayFree', { defaultValue: 'Seguir en Free' })}
-              </button>
+              </Button>
             </div>
             <ProPlanBanner compact showTable={false} />
           </div>
@@ -532,7 +548,7 @@ export function SetadlePage() {
             <Link to="/reto">{t('nav.quiz', { defaultValue: 'Reto' })}</Link>
           </p>
         </div>
-      </div>
+      </PageShell>
     )
   }
 
@@ -545,7 +561,7 @@ export function SetadlePage() {
 
   if (!modeOk && !pro) {
     return (
-      <div className="cn-page page-setadle page-setadle--mkt page-atelier-shell">
+      <PageShell className="page-setadle page-setadle--mkt page-atelier-shell">
         <header className="setadle-play-head mkt-page-head">
           <Link to="/setadle" className="setadle-back">
             {t('setadle.backModes', { defaultValue: '← Modos' })}
@@ -559,38 +575,43 @@ export function SetadlePage() {
                 'Free incluye el clásico diario. Confirma para activar Pro demo (modos extra e ilimitado).',
             })}
           </p>
-          <button
+          <Button
             type="button"
-            className="mkt-btn mkt-btn--amber"
+            variant="primary"
             onClick={() => {
               unlock()
               navigate(`/setadle/${mode}`)
             }}
             data-testid="setadle-unlock-pro"
           >
-            {t('setadle.activatePro', { defaultValue: 'Activar Pro demo' })}
-          </button>
+            {t('setadle.activatePro', {
+              defaultValue: 'Pro (prueba en este dispositivo)',
+            })}
+          </Button>
           <div style={{ marginTop: '1rem' }}>
             <ProPlanBanner compact />
           </div>
         </header>
-      </div>
+      </PageShell>
     )
   }
 
   if (waiting) {
     return (
-      <div className="cn-page page-setadle page-setadle--mkt page-atelier-shell">
+      <PageShell className="page-setadle page-setadle--mkt page-atelier-shell">
         <p className="muted">
           {t('setadle.loading', { defaultValue: 'Cargando pool de especies…' })}
         </p>
-      </div>
+      </PageShell>
     )
   }
 
   if (poolError || pool.length === 0) {
     return (
-      <div className="cn-page page-setadle page-setadle--mkt page-atelier-shell" data-testid="setadle-pool-error">
+      <PageShell
+        className="page-setadle page-setadle--mkt page-atelier-shell"
+        testId="setadle-pool-error"
+      >
         <header className="mkt-page-head mkt-mesh">
           <h1 className="page-title">
             {t('setadle.title', { defaultValue: 'Setadle' })}
@@ -601,19 +622,26 @@ export function SetadlePage() {
                 defaultValue: 'No hay especies disponibles para jugar.',
               })}
           </p>
-          <Link to="/enciclopedia" className="mkt-btn mkt-btn--primary">
+          <LinkButton to="/enciclopedia" skin="mkt" variant="primary">
             {t('setadle.goEncyclopedia', { defaultValue: 'Ir a Enciclopedia' })}
-          </Link>
+          </LinkButton>
         </header>
-      </div>
+      </PageShell>
     )
   }
 
   return (
-    <div className="cn-page page-setadle page-setadle--mkt page-atelier-shell">
+    <PageShell
+      className="page-setadle page-setadle--mkt page-atelier-shell"
+      testId="setadle-play"
+      orientationSticky
+      orientationText={t('setadle.orientation', {
+        defaultValue: 'Solo educación · nunca consumo',
+      })}
+    >
       <header className="setadle-play-head mkt-page-head mkt-mesh">
         <Link to="/setadle" className="setadle-back">
-          ← Modos
+          {t('setadle.backModes', { defaultValue: '← Modos' })}
         </Link>
         <h1 className="page-title">
           {meta.emoji} {meta.title}
@@ -621,11 +649,15 @@ export function SetadlePage() {
         <p className="page-subtitle">{meta.blurb}</p>
         {pendingProMode === 'unlimited' && !unlimitedOk && (
           <div className="atelier-panel" data-testid="setadle-unlimited-sheet" role="dialog">
-            <p>Ilimitado es Pro. Confirma para activar demo local.</p>
+            <p>
+              {t('setadle.unlimitedProBody', {
+                defaultValue: 'Ilimitado es Pro. Confirma para activar la prueba en este dispositivo.',
+              })}
+            </p>
             <div className="identify-mode-toggle">
-              <button
+              <Button
                 type="button"
-                className="mkt-btn mkt-btn--amber"
+                variant="primary"
                 data-testid="setadle-unlock-unlimited"
                 onClick={() => {
                   unlock()
@@ -633,37 +665,29 @@ export function SetadlePage() {
                   setPlayKind('unlimited')
                 }}
               >
-                Activar Pro demo
-              </button>
-              <button
-                type="button"
-                className="mkt-btn mkt-btn--ghost"
-                onClick={() => setPendingProMode(null)}
-              >
+                {t('setadle.activatePro', {
+                  defaultValue: 'Pro (prueba en este dispositivo)',
+                })}
+              </Button>
+              <Button type="button" variant="ghost" onClick={() => setPendingProMode(null)}>
                 Cancelar
-              </button>
+              </Button>
             </div>
           </div>
         )}
-        <div className="identify-mode-toggle">
-          <button
+        <div className="identify-mode-toggle" role="group" aria-label="Modo de juego">
+          <Button
             type="button"
-            className={
-              playKind === 'daily'
-                ? 'btn-atelier btn-atelier--primary'
-                : 'btn-atelier btn-atelier--ghost'
-            }
+            variant={playKind === 'daily' ? 'primary' : 'ghost'}
+            aria-pressed={playKind === 'daily'}
             onClick={() => setPlayKind('daily')}
           >
             Diario
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
-            className={
-              playKind === 'unlimited'
-                ? 'btn-atelier btn-atelier--primary'
-                : 'btn-atelier btn-atelier--ghost'
-            }
+            variant={playKind === 'unlimited' ? 'primary' : 'ghost'}
+            aria-pressed={playKind === 'unlimited'}
             onClick={() => {
               if (!unlimitedOk) {
                 setPendingProMode('unlimited')
@@ -675,7 +699,7 @@ export function SetadlePage() {
             title={unlimitedOk ? undefined : 'Ilimitado es Pro — requiere confirmación'}
           >
             Ilimitado{unlimitedOk ? '' : ' · Pro'}
-          </button>
+          </Button>
         </div>
       </header>
 
@@ -711,9 +735,9 @@ export function SetadlePage() {
               )}
               <div className="setadle-win__actions">
                 {playKind === 'unlimited' && (
-                  <button
+                  <Button
                     type="button"
-                    className="btn-atelier btn-atelier--primary"
+                    variant="primary"
                     onClick={() => {
                       setHabitatRound(buildHabitatRound(pool, todayKey(), 'unlimited'))
                       setHabitatKey((k) => k + 1)
@@ -721,15 +745,15 @@ export function SetadlePage() {
                       setAutoNextIn(null)
                     }}
                   >
-                    Otra partida
-                  </button>
+                    {t('setadle.anotherRound', { defaultValue: 'Otra partida' })}
+                  </Button>
                 )}
-                <Link to="/setadle" className="btn-atelier btn-atelier--ghost">
-                  Otros modos
-                </Link>
-                <Link to="/enciclopedia" className="btn-atelier btn-atelier--ghost">
-                  Enciclopedia
-                </Link>
+                <LinkButton to="/setadle" variant="ghost">
+                  {t('setadle.otherModes', { defaultValue: 'Otros modos' })}
+                </LinkButton>
+                <LinkButton to="/enciclopedia" variant="ghost">
+                  {t('nav.encyclopedia', { defaultValue: 'Enciclopedia' })}
+                </LinkButton>
               </div>
             </div>
           )}
@@ -802,14 +826,14 @@ export function SetadlePage() {
                     }
                   }}
                 />
-                <button
+                <Button
                   type="button"
-                  className="btn-atelier btn-atelier--primary"
+                  variant="primary"
                   disabled={!query.trim()}
                   onClick={() => submitGuess(typeahead[0]?.taxon || query)}
                 >
-                  Probar
-                </button>
+                  {t('setadle.tryGuess', { defaultValue: 'Probar' })}
+                </Button>
               </div>
               {focused && typeahead.length > 0 && (
                 <ul className="lookalike-typeahead" role="listbox">
@@ -875,12 +899,12 @@ export function SetadlePage() {
                 </p>
               )}
               <div className="setadle-win__actions">
-                <Link to={`/enciclopedia/${secret.slug}`} className="btn-atelier btn-atelier--ghost">
-                  Ver ficha
-                </Link>
-                <button
+                <LinkButton to={`/enciclopedia/${secret.slug}`} variant="ghost">
+                  {t('setadle.openFiche', { defaultValue: 'Ver ficha' })}
+                </LinkButton>
+                <Button
                   type="button"
-                  className="btn-atelier btn-atelier--primary"
+                  variant="primary"
                   data-testid="setadle-next-now"
                   onClick={() => {
                     setPlayKind('unlimited')
@@ -893,13 +917,13 @@ export function SetadlePage() {
                   }}
                 >
                   {t('setadle.nextNow', { defaultValue: 'Siguiente ya' })}
-                </button>
-                <Link to="/wordle" className="btn-atelier btn-atelier--ghost">
+                </Button>
+                <LinkButton to="/wordle" variant="ghost">
                   Wordle
-                </Link>
-                <Link to="/setadle" className="btn-atelier btn-atelier--ghost">
-                  Otros modos
-                </Link>
+                </LinkButton>
+                <LinkButton to="/setadle" variant="ghost">
+                  {t('setadle.otherModes', { defaultValue: 'Otros modos' })}
+                </LinkButton>
               </div>
             </div>
           )}
@@ -942,7 +966,7 @@ export function SetadlePage() {
       <p className="setadle-disclaimer">
         Orientación de campo educativa. No autoriza recolección ni consumo.
       </p>
-    </div>
+    </PageShell>
   )
 }
 

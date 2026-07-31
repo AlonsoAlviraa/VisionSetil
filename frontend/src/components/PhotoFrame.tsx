@@ -35,6 +35,8 @@ export function PhotoFrame({
     <div
       className={`photo-frame ${loading ? 'photo-frame--loading' : ''} ${className}`.trim()}
       style={{ aspectRatio: aspect }}
+      data-testid="photo-frame"
+      data-ratio={ratio}
     >
       <img
         src={src}
@@ -45,6 +47,9 @@ export function PhotoFrame({
         onError={(e) => {
           if (onErrorSrc && e.currentTarget.src !== onErrorSrc) {
             e.currentTarget.src = onErrorSrc
+          } else {
+            // Blob/data URLs often die after reload — hide broken chrome
+            e.currentTarget.style.visibility = 'hidden'
           }
           imgProps?.onError?.(e)
         }}

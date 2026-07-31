@@ -5,6 +5,7 @@
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { CatalogSpecies } from '../data/speciesCatalog'
+import { effectiveFamilyLatin, familyNameEs } from '../data/familyNamesEs'
 import { SpeciesImage } from './SpeciesImage'
 import { photoPriorityScore } from '../lib/speciesMediaStack'
 
@@ -31,7 +32,7 @@ export function FamilyGuideStrip({
   const rows = useMemo(() => {
     const by = new Map<string, CatalogSpecies[]>()
     for (const s of catalog) {
-      const f = s.family || 'Sin familia'
+      const f = effectiveFamilyLatin(s.family, s.taxon) || 'Sin familia'
       if (f === 'Sin familia') continue
       const list = by.get(f) || []
       list.push(s)
@@ -46,7 +47,7 @@ export function FamilyGuideStrip({
       const hero = sorted[0]
       out.push({
         family,
-        family_es: hero.family_es || family,
+        family_es: hero.family_es || familyNameEs(family) || family,
         count: list.length,
         hero,
       })
@@ -91,6 +92,11 @@ export function FamilyGuideStrip({
               className="family-guide-strip__card"
               onClick={() => onSelectFamily(row.family)}
               data-testid={`family-guide-${row.family}`}
+              aria-label={t('encyclopedia.familyGuideCardAria', {
+                defaultValue: 'Familia {{name}} · {{n}} especies',
+                name: row.family_es,
+                n: row.count,
+              })}
             >
               <div className="family-guide-strip__media" aria-hidden="true">
                 <SpeciesImage

@@ -6,6 +6,7 @@
 import { FormEvent, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { Button, ExternalLinkButton, LinkButton, PageShell } from '../components/ui'
 import {
   BETA_FEEDBACK_MAILTO,
   betaFeedbackFormUrl,
@@ -87,7 +88,14 @@ export function BetaFeedbackPage() {
   }
 
   return (
-    <div className="page-atelier beta-feedback-page" data-testid="beta-feedback-page">
+    <PageShell
+      className="page-atelier beta-feedback-page"
+      testId="beta-feedback-page"
+      orientationSticky
+      orientationText={t('betaFeedback.orientation', {
+        defaultValue: 'Solo orientación · feedback de campo · nunca consumo',
+      })}
+    >
       <h1>{t('betaFeedback.title', { defaultValue: 'Feedback beta' })}</h1>
       <p className="muted" data-testid="beta-feedback-policy">
         {t('betaFeedback.policy', {
@@ -109,7 +117,7 @@ export function BetaFeedbackPage() {
         </p>
         <p className="muted">
           <Link to="/identificar" data-testid="beta-feedback-link-identify">
-            {t('nav.identify', { defaultValue: 'Identificar multi-vista' })}
+            {t('nav.identify', { defaultValue: 'Identificar' })}
           </Link>
           {' · '}
           <Link to="/educacion" data-testid="beta-feedback-link-edu">
@@ -150,20 +158,21 @@ export function BetaFeedbackPage() {
             })}
           </p>
           <p>
-            <a
+            <ExternalLinkButton
               href={mailtoHref}
-              className="btn-atelier btn-atelier--primary"
+              variant="primary"
+              newTab={false}
               data-testid="beta-feedback-mailto-send"
             >
               {t('betaFeedback.alsoEmail', {
                 defaultValue: 'Enviar también por email al equipo',
               })}
-            </a>
+            </ExternalLinkButton>
           </p>
           <p>
-            <Link to="/identificar" className="btn-atelier btn-atelier--ghost">
+            <LinkButton to="/identificar" variant="ghost">
               {t('betaFeedback.tryId', { defaultValue: 'Probar Identificar' })}
-            </Link>
+            </LinkButton>
           </p>
         </div>
       ) : (
@@ -238,22 +247,19 @@ export function BetaFeedbackPage() {
             />
           </label>
           <div className="identify-mode-toggle">
-            <button
-              type="submit"
-              className="btn-atelier btn-atelier--primary"
-              data-testid="beta-feedback-submit"
-            >
+            <Button type="submit" variant="primary" data-testid="beta-feedback-submit">
               {t('betaFeedback.submit', { defaultValue: 'Enviar feedback' })}
-            </button>
-            <a
+            </Button>
+            <ExternalLinkButton
               href={isBetaMailto(mailtoHref) ? mailtoHref : BETA_FEEDBACK_MAILTO}
-              className="btn-atelier btn-atelier--ghost"
+              variant="ghost"
+              newTab={false}
             >
               {t('betaFeedback.mailtoOnly', { defaultValue: 'Solo email' })}
-            </a>
+            </ExternalLinkButton>
           </div>
         </form>
       )}
-    </div>
+    </PageShell>
   )
 }
