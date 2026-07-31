@@ -1176,7 +1176,13 @@ class MultiViewMushroomClassifier:
             gate = quality_gate_status(
                 loaded_weights_path=self.resolved_weights_path if self.is_real else None
             )
-        except Exception:
+        except Exception as exc:
+            # Audit fix: log silent gate-load failure so degraded metrics are visible.
+            import logging as _logging
+
+            _logging.getLogger(__name__).warning(
+                "quality_gate_status() raised; gate unknown (fail-closed downstream): %s", exc
+            )
             gate = {}
         map_at_3 = gate.get("test_map_at_3")
         try:

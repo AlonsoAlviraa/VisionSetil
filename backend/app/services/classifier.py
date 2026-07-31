@@ -109,8 +109,13 @@ def _candidate_pool() -> list[dict[str, Any]]:
                     }
                 )
             return [p for p in pool if p.get("taxon")]
-    except Exception:
-        pass
+    except Exception as exc:
+        # Audit fix: log silent fallback to mock catalog so degradation is visible.
+        import logging as _logging
+
+        _logging.getLogger(__name__).warning(
+            "Candidate pool load failed; falling back to mock catalog: %s", exc
+        )
     return list_mock_species_catalog()
 
 

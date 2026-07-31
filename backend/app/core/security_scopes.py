@@ -31,6 +31,16 @@ PATH_SCOPE_RULES: list[tuple[str, str]] = [
     ("/feedback", "classify"),
 ]
 
+# Regex-based admin overrides for routes whose path contains a dynamic segment
+# (e.g. /observations/{id}/classify-advanced) that PATH_SCOPE_RULES prefix
+# matching cannot express. These return ungated raw predictions and MUST
+# require the admin scope — closing the gate-bypass found in the audit.
+import re as _re
+
+_ADMIN_PATH_PATTERNS: list[tuple[_re.Pattern[str], str]] = [
+    (_re.compile(r"^/observations/\d+/classify(-advanced)?$"), "admin"),
+]
+
 
 @dataclass(frozen=True)
 class ParsedApiKey:
@@ -78,7 +88,14 @@ def scopes_imply(have: frozenset[str], need: str) -> bool:
 
 
 def required_scope_for_path(path: str) -> str | None:
-    """Return required scope for path, or None if no special scope (only valid key)."""
+    """Return required scope for path, or None if no special scope (only valid key).
+
+    Regex admin patterns are checked first (they express dynamic-segment paths
+    that prefix rules cannot), then the prefix list.
+    """
+    for pattern, scope in _ADMIN_PATH_PATTERNS:
+        if pattern.match(path):
+            return scope
     for prefix, scope in PATH_SCOPE_RULES:
         if path == prefix or path.startswith(prefix + "/"):
             return scope

@@ -2,17 +2,21 @@ from collections.abc import Generator
 
 from sqlalchemy import create_engine, event, inspect, text
 from sqlalchemy.orm import Session, declarative_base, sessionmaker
+from sqlalchemy.pool import StaticPool
 
 from app.core.config import settings
 
 # Align SQLAlchemy connect timeout (seconds) with SQLite busy_timeout (ms).
-# Mismatch residual: timeout=30s vs PRAGMA busy_timeout=5000ms — unify at 30s.
 _SQLITE_BUSY_SECONDS = 30
 _SQLITE_BUSY_MS = _SQLITE_BUSY_SECONDS * 1000
 
+# StaticPool for file-SQLite: shares a single connection to avoid cross-connection
+# locking surprises (audit fix). check_same_thread=False allows the async worker
+# to use it. WAL mode handles concurrent readers.
 engine = create_engine(
     f"sqlite:///{settings.database_path}",
     connect_args={"check_same_thread": False, "timeout": _SQLITE_BUSY_SECONDS},
+    poolclass=StaticPool,
 )
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 Base = declarative_base()
@@ -64,9 +68,11 @@ def _run_lightweight_migrations() -> None:
                 existing_columns = {col["name"] for col in insp.get_columns(table)}
                 if column not in existing_columns:
                     conn.execute(text(f"ALTER TABLE {table} ADD COLUMN {column} {ddl}"))
-    except Exception:
-        # Migrations are best-effort during development; don't crash startup
-        pass
+    except Exception as exc:
+        # Audit fix: log migration failures so they're not invisible.
+        import logging
+
+        logging.getLogger(__name__).warning("Lightweight migration failed: %s", exc)
 
 
 def init_db() -> None:

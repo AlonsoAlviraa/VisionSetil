@@ -242,7 +242,15 @@ def get_job_result(
         )
     if job.result is None:
         raise HTTPException(status_code=500, detail="Job completed but result is missing.")
-    return job.result
+    # Security fix (mega-audit): strip ungated `raw` predictions unless caller
+    # has admin scope. `raw` is the full ClassificationResponse without the
+    # quality gate applied — exposing it to classify-tier keys bypasses the
+    # product honesty/gate contract.
+    result = dict(job.result)
+    scopes = getattr(request.state, "scopes", frozenset())
+    if "admin" not in scopes and "raw" in result:
+        result = {k: v for k, v in result.items() if k != "raw"}
+    return result
 
 
 @router.get("/jobs/stats/summary")

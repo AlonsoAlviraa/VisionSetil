@@ -91,8 +91,13 @@ class OpenSetRejectionService:
                 max_entropy = float(thresholds["calibrated_entropy"])
             thresholds_path = thresholds.get("source", thresholds_path)
             thresholds_status = thresholds.get("status", thresholds_status)
-        except Exception:
-            pass
+        except Exception as exc:
+            # Audit fix: log silent calibration degradation so ops can detect it.
+            import logging as _logging
+
+            _logging.getLogger(__name__).warning(
+                "open_set thresholds load failed; falling back to settings defaults: %s", exc
+            )
 
         # Check for missing critical evidence (high evidence penalty)
         evidence_penalty = getattr(observation_representation, "evidence_penalty", 0.0)
