@@ -1,5 +1,314 @@
 # Graph evolution log
 
+## v1.48–v1.51 — 3h loop polish (2026-07-30)
+
+**Policy:** continuous 3h loop · report every 5 cycles · never product_unlock · never forage.
+
+### v1.48 SHIPPED
+- SpeciesDetail OpenStudy + recipes collapsible; Games primary Reto; Offline sticky; Identify libre tip; Más world a11y
+
+### v1.49 SHIPPED
+- Food quality collapsible; History empty/dense + 44px filters; Community sticky + comments 44px
+
+### v1.50 SHIPPED
+- Quiz PageShell + lobby back→juegos; Lookalike testId + classic card focus; Education FAQ aria-controls/region
+
+### v1.51 SHIPPED
+- Setadle hub/play sticky + back→juegos; Wordle sticky + back; Expert testId; **MlDashboard → PageShell**; 404 sticky
+- architectureCtaContracts PageShell list includes MlDashboard
+
+### v1.52–v1.58 (same 3h loop)
+- ResultCard compact safety; map chrome 44px; beta sticky
+- Identify result secondary CTAs; loading orient chip
+- PWA dismiss testIds; family/seasonal aria + focus-visible
+- Page testIds: history, education, spain-map, encyclopedia
+- EmptyState action testId; bottom-nav focus-visible
+- **1.57:** Api offline retry button; PhotoFrame testId; ResultMode blocked alert; lang/error testIds
+- **1.58:** UploadZone testIds; SpeciesPhotoCard testId + angles i18n/44px
+- Servers restarted 2026-07-31 after max_runtime
+
+### Gates
+- tsc · vitest · Playwright **9/9**
+
+**Next prepared:** residual product polish · operator deploy
+
+---
+
+## v1.40–v1.44 — Autonomous batch E (report gate) (2026-07-30)
+
+**Policy:** continuous · report every 5 cycles · never product_unlock · never forage.
+
+### v1.40 — PageShell remaining product surfaces
+- Home → PageShell (keeps `home-orientation-sticky` test strip)
+- SpeciesDetail all returns → PageShell
+- SpainMap → PageShell **`bare`** (no cn-page; immersive map chrome)
+
+### v1.41 — Auth shells
+- Login + Register → PageShell `bare` + orientation sticky
+- PageShell API: `bare?: boolean` skips default `cn-page`
+
+### v1.42 — DocumentTitle
+- Export `APP_ROUTE_PREFIXES` · unknown path → `nav.notFound`
+- `DocumentTitle.test.ts` vs App routes
+- i18n: `nav.register` + `nav.notFound` ES/EN/CA/EU
+
+### v1.43 — BatchCompare a11y
+- `role=dialog` · Escape · focus close · Button close
+
+### v1.44 — Batch close
+- architecture PageShell list extended (Home/Detail/Map/Login/Register)
+- Gates green · next X1–X5 prepared
+
+**Next prepared:** X1–X5 (`v1.45+`)
+
+---
+
+## v1.35–v1.39 — Autonomous batch D (report gate) (2026-07-30)
+
+**Policy:** continuous · report every 5 cycles · never product_unlock · never forage.
+
+### v1.35 — PageShell wave 2
+- Community, LookalikeStudio, Encyclopedia → `PageShell` + orientation sticky
+
+### v1.36 — Games roots
+- QuizGamePage, SetadlePage (all early returns), MushroomWordlePage → `PageShell`
+
+### v1.37 — Dialog a11y
+- Identify lightbox: `role=dialog` · `aria-modal` · Escape · focus close · stopPropagation on img · Button close
+- CameraCapture: dialog semantics + Escape to close + labelled title
+
+### v1.38 — Contracts
+- `architectureCtaContracts`: core pages must import/use `PageShell` (15 pages)
+
+### v1.39 — Batch close
+- tsc + architecture/i18n/nav green · next W1–W5 prepared
+
+**Next prepared:** W1–W5 (`v1.40+`)
+
+---
+
+## v1.30–v1.34 — Autonomous batch C (report gate) (2026-07-30)
+
+**Policy:** continuous · report every 5 cycles · never product_unlock · never forage.
+
+### v1.30 — CameraCapture
+- Close / switch / capture / skip / mode / finish-early → `Button` (+ layout classNames)
+
+### v1.31 — UploadZone
+- Tips grid `data-testid` + orientation policy line `identify.uploadTipsPolicy`
+- Soft-confirm panel already on Button (confirmed)
+
+### v1.32 — i18n
+- `uploadTipsPolicy` ES/EN/CA/EU
+- Parity: critical namespaces include games/offline/notebook for all 4 locales
+- Orientation-only assert on uploadTipsPolicy
+
+### v1.33 — PageShell wave
+- `PageShell` accepts HTML attributes (data-phase, etc.)
+- Migrated: Identify, History, Education, Offline, Expert, Beta, GamesHub
+- Orientation sticky via shell (removed duplicate warn strips where applicable)
+
+### v1.34 — Batch close
+- Gates green · next V1–V5 prepared
+
+**Next prepared:** V1–V5 (`v1.35+`)
+
+---
+
+## v1.25–v1.29 — Autonomous batch B (report gate) (2026-07-30)
+
+**Policy:** continuous · report every 5 cycles · never product_unlock · never forage.
+
+### v1.25 — GamesHub
+- Decorative card CTA dropped `cn-btn` dialect → `.games-hub-card__cta` pill skin
+
+### v1.26 — Identify
+- Free-capture remove control → `Button` ghost sm (`btn-remove-image` layout class only)
+
+### v1.27 — Media health (offline)
+- `inventoryMediaHealth()` on `speciesMediaVerify.ts`
+- Vitest gate: full resolve coverage, remote coverage > 0.4
+- Audit: `docs/audits/media-health-inventory-2026-07-30.md`
+- Harvest residual still operator/network
+
+### v1.28 — Safety surfaces
+- `safetyCopy.test.ts`: Home / Identify / ResultCard must ship orientation-only language
+
+### v1.29 — Batch close
+- STATE/BACKLOG prepare U1–U5 for v1.30–v1.34
+- Gates: tsc · architecture · media verify · safety · nav
+
+**Next prepared:** U1–U5 (`v1.30+`)
+
+---
+
+## v1.20–v1.24 — Autonomous batch (report gate) (2026-07-30)
+
+**Policy:** continuous execution · human report every 5 cycles · never product_unlock.
+
+### v1.20 — Home discover + EmptyState
+- `HOME_DISCOVER_LINKS` SSOT for contract hub (testids preserved)
+- EmptyState action → `LinkButton`
+- SpeciesDetail lookalikes CTA drop redundant `mkt-btn` className
+
+### v1.21 — Encyclopedia progressive load
+- IntersectionObserver sentinel on `.ency-more` (rootMargin 320px) + a11y button
+- Family sections: `content-visibility: auto` + contain-intrinsic-size
+
+### v1.22 — Shared components CTA migration
+- ErrorBoundary, DichotomousKey, BatchCompare, HabitatSortGame, ProPlanBanner
+- PwaInstallHint, FlashcardDeck, LookalikeCompare, ResultCard evidence CTAs
+- MultiViewWizard camera, LearnGallery, WaitlistTemporada
+
+### v1.23 — Contracts harden
+- `architectureCtaContracts.test.ts` scans `pages/` **and** `components/`
+- Allowlist empty; excludes `components/ui/*` emitters
+
+### v1.24 — MlDashboard + product clear
+- MlDashboard toolbar → Button/LinkButton
+- **Zero** raw `className=…btn-atelier` in product pages/components
+
+**Gates:** tsc · architecture CTA · nav (batch end)
+
+**Next prepared:** T1–T5 (`v1.25+` batch)
+
+---
+
+## v1.19.0 — Q1–Q5 CTA product clear + ExternalLinkButton (2026-07-30)
+
+**Scope:** Prepared v1.19 Q1–Q5 (Q6 operator skipped).
+
+**Q1 — Setadle + Wordle**
+- Mode toggles (Diario/Ilimitado, Diario/Racha) → `Button` primary/ghost + `aria-pressed`
+- Pro unlock sheets + Wordle CTA + “Probar” guess → `Button`/`LinkButton`
+- Dropped raw `mkt-btn` dialect on game chrome where Button/LinkButton apply
+
+**Q2 — Community + Education**
+- Community compose/publish/retry/comment → `Button`
+- Education already free of raw `btn-atelier` (removed from allowlist)
+
+**Q3 — LookalikeStudio + BetaFeedback**
+- Add / Ficha / Quitar → `Button`/`LinkButton`
+- Feedback submit + mailto → `Button`/`ExternalLinkButton`/`LinkButton`
+
+**Q4 — Home + auth**
+- Home beta row: external form/mailto → `ExternalLinkButton`; in-app → `LinkButton` skin cn
+- Login/Register already on `Button` primitive (no raw class)
+
+**Q5 — ExternalLinkButton primitive**
+- New `components/ui/ExternalLinkButton.tsx` (+ export)
+- SpainMap permit CTA + OSM → ExternalLinkButton → **Map off allowlist**
+
+**Allowlist:** product pages **clear** · only `MlDashboardPage` residual (ops console)
+
+**Gates:** `tsc --noEmit` green · architectureCtaContracts + navConfig green
+
+**Next cycle prepared:** R1–R5 in STATE/BACKLOG (`v1.20.0`)
+
+---
+
+## v1.18.0 — P1–P3 allowlist + Identify/History Button finish (2026-07-30)
+
+**Scope:** Prepared v1.18 items P1–P3 (P4 media operator deferred, P5 human skipped).
+
+**P1 — CTA allowlist shrink (N1 tail)**
+- ExpertReviewPage: all package/copy/download/refresh CTAs → `Button`/`LinkButton` (removed from allowlist)
+- QuizGamePage: already pure game skin (`quiz-play-btn`) — removed from allowlist
+- SpainMapPage: external permit/OSM keep raw `btn-atelier` class links (target=_blank; no LinkButton)
+
+**P2 — Identify segmented mode toggle**
+- Guiado/Libre capture mode → `Button` variant primary/ghost + `aria-pressed` (removed Identify from allowlist)
+
+**P3 — History detail residual**
+- Unlock Pro, pin list, detail close/edit/save/handoff/review → `Button`/`LinkButton`
+- External OSM pin map → semantic `.notebook-pin-list__map-link` (not btn-atelier)
+- `summary` Más menu → self-styled `.history-more-menu__summary` (ghost look without raw class)
+- `Button` gained `forwardRef` for detail close focus management
+
+**Gates:** `tsc --noEmit` green · architectureCtaContracts 3/3 · allowlist −4 pages (Expert, History, Identify, Quiz)
+
+**Next cycle prepared:** Q1–Q6 in STATE/BACKLOG (`v1.19.0`)
+
+---
+
+## v1.17.0 — N1–N4 cycle (2026-07-30)
+
+**Scope:** Prepared v1.17 next-cycle items N1–N4 (N5 operator skipped).
+
+**N1 — CTA allowlist shrink**
+- OfflinePack: all pack mode/download/clear/list CTAs → `Button`/`LinkButton` (removed from allowlist)
+- Encyclopedia load-more → `Button` (removed from allowlist)
+- SpainMap: regulated/near-me/clear/close → `Button` (external OSM/permit still class `<a>`)
+
+**N2 — Encyclopedia scroll perf**
+- `.page-encyclopedia--cn .species-photo-card { content-visibility: auto; contain-intrinsic-size }`
+
+**N3 — Ficha attribution**
+- `ImageAttribution`: NC note for non-commercial licences (`data-nc`)
+- SpeciesDetail hero: catalog credit strip + short license label under gallery
+
+**N4 — DocumentTitle**
+- Full route table + `meta[name=description]` per surface (orientation default)
+
+**Next cycle prepared:** P1–P5 in STATE/BACKLOG (`v1.18.0`)
+
+**Verify:** tsc clean · architecture/food/i18n/nav tests green
+
+## v1.16.0 — M6 i18n · M7 foodQuality slim · M8 CTA guards (2026-07-30)
+
+**Scope:** Close architecture migration residual M6–M8; arm next cycle N1–N5.
+
+**M6 — i18n**
+- CA/EU leaf-key parity vs ES enforced in `i18nParity.test.ts`
+- Filled `lookalike.addLookalike` + studio titles (ca/eu/en)
+
+**M7 — perf**
+- `data/foodQualityIndex.json` (142 documented taxa, ~33KB)
+- `foodQuality.ts` runtime = index only (no `mushroomDatabase` import on card path)
+- Heavy rebuild isolated in `foodQualityBuild.ts` + `scripts/build-food-quality-index.mjs`
+
+**M8 — guards**
+- `architectureCtaContracts.test.ts`: no mixed primary dialects; core pages must import Button/LinkButton; residual raw `btn-atelier` allowlist documented to shrink
+
+**Next cycle prepared:** N1 allowlist shrink · N2 ency virtualize · N3 attribution · N4 DocumentTitle · N5 operator deploy
+
+**Verify:** tsc clean · 22 targeted tests pass (food + i18n + cta + nav)
+
+## v1.15.1 — M5 autonomous page waves (2026-07-30)
+
+**Scope:** Graph-autonomous migration of product routes to `Button` / `LinkButton` / `PageShell`.
+
+**Shipped:**
+- **M5b Identify:** wizard + free analyze/cancel/camera; sticky new analysis; history compare/clear; unlock Pro; result notebook link.
+- **ResultCard / ResultModeBanner / UploadZone:** expert, confusiones, community, feedback, camera open.
+- **M5d:** History new-ID; Offline unlock + depth links; Community consensus CTAs.
+- **M5e:** Species detail multiview strip; NotFound LinkButtons + PageShell.
+- **M5c/f/g:** Setadle win actions; Wordle next/ficha; Map encyclopedia; Expert navigation links.
+- Tests: navConfig + historyPreview still green.
+
+**Residual:** Quiz chrome (quiz-play-btn intentional game skin); Offline kind toggle/download still raw classes; M6–M8.
+
+## v1.15.0 — frontend architecture migration graph (2026-07-30)
+
+**Scope:** Graph-engineer migration of all product FE to the **latest architecture** (Campo nocturno SSOT · dual shell · design primitives · nav SSOT · slim CSS).
+
+**Canon doc:** `docs/design/FRONTEND_ARCH_MIGRATION_GRAPH.md` (DAG M0–M8).
+
+**Shipped this cycle:**
+
+1. **M0** — Migration graph + Key Decisions + DoD.  
+2. **M1** — `frontend/src/lib/navConfig.ts` single SSOT; Header / BottomNav / MoreHub consume it (no triple lists).  
+3. **M2** — `LinkButton` + `PageShell` primitives; Más hub on PageShell + LinkButton CTA.  
+4. **M3** — CSS entry slim: **removed** `redesign.css` + `premium.css` from `main-app`, `main-web`, `main` (CN wins; less override war).  
+5. **M5a** — Home hero CTA + Encyclopedia multiview strip on LinkButton.  
+6. **Tests** — `navConfig.test.ts` (5-tab + more-path contracts).
+
+**Prior UX/perf iterations (same session, pre-graph):** history durable previews, SpeciesGallery parallel probes, Identify sticky/soft-confirm/camera, image quality caps, Confusiones locale SSOT.
+
+**Residual:** M5b–g page waves, M6 CA/EU fill, M7 perf, M8 lint guards.
+
+**Policy:** product_unlock=false · orientation only · map UX not restyled (B4).
+
 ## v1.13 — mega industrial audit + security hardening (2026-07-29)
 
 **Scope:** 3 parallel auditors (backend, frontend, data/ML) + CI/CD review. Found 11 high-severity issues. Fixed 7 immediately; 4 residual documented.

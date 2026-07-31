@@ -1,7 +1,131 @@
-# Graph Engineering — Product backlog (post v1.13.0)
+# Graph Engineering — Product backlog (post v1.15.0)
 
 **Policy:** orientation only · never auto product_unlock · never forage.  
-**Design direction:** **B Campo nocturno** · **Map stays as current product** (user lock).
+**Design direction:** **B Campo nocturno** · **Map stays as current product** (user lock).  
+**Architecture:** `docs/design/FRONTEND_ARCH_MIGRATION_GRAPH.md`
+
+## Architecture migration (v1.15)
+
+| # | Item | Status |
+|---|------|--------|
+| M0 | Migration graph doc | **SHIPPED** |
+| M1 | navConfig SSOT | **SHIPPED** |
+| M2 | LinkButton + PageShell | **SHIPPED** |
+| M3 | CSS drop redesign/premium | **SHIPPED** |
+| M4 | Media SpeciesImage-only | **PARTIAL** |
+| M5a | Home/Más/Ency LinkButton | **SHIPPED** |
+| M5b | Identify Button finish | **SHIPPED** v1.15.1 |
+| M5c | Games Setadle/Wordle | **PARTIAL** (Quiz skin residual) |
+| M5d | History Offline Community | **SHIPPED** v1.15.1 |
+| M5e | Detail Education 404 | **SHIPPED** (Detail/404) |
+| M5f–g | Map chrome Expert | **SHIPPED** v1.15.1 |
+| M6 | CA/EU i18n parity | **SHIPPED** v1.16.0 |
+| M7 | foodQuality slim index | **SHIPPED** v1.16.0 (virtualize → N2) |
+| M8 | CTA architecture contracts | **SHIPPED** v1.16.0 |
+
+## v1.17.0 — SHIPPED
+
+| # | Item | Status |
+|---|------|--------|
+| N1 | CTA allowlist shrink (Offline, Ency, Map buttons) | **SHIPPED** |
+| N2 | Encyclopedia content-visibility | **SHIPPED** |
+| N3 | Ficha attribution + NC note | **SHIPPED** |
+| N4 | DocumentTitle + meta description | **SHIPPED** |
+| N5 | Operator deploy O1–O7 | human residual |
+
+## v1.18.0 — SHIPPED (P1–P3)
+
+| # | Item | Status |
+|---|------|--------|
+| P1 | Map external stay class; Expert/History/Quiz allowlist shrink | **SHIPPED** |
+| P2 | Identify segmented mode toggle → Button | **SHIPPED** |
+| P3 | History detail residual CTAs → Button/LinkButton | **SHIPPED** |
+| P4 | Weak media re-harvest P3/P6 | **DEFERRED** operator/network |
+| P5 | Operator deploy O1–O7 | human residual |
+| P6 | Community consensus depth (C6) | Later (optional) |
+
+## v1.19.0 — SHIPPED (Q1–Q5)
+
+| # | Item | Status |
+|---|------|--------|
+| Q1 | Setadle + Wordle mode toggles → Button/LinkButton | **SHIPPED** |
+| Q2 | Community residual → Button; Education already clean | **SHIPPED** |
+| Q3 | LookalikeStudio + BetaFeedback residual | **SHIPPED** |
+| Q4 | Home beta row; Login/Register already clean | **SHIPPED** |
+| Q5 | ExternalLinkButton (Map permit/OSM, beta mailto) | **SHIPPED** |
+| Q6 | Operator deploy O1–O7 | human residual |
+
+## v1.20–v1.24 — SHIPPED (autonomous batch)
+
+| # | Item | Status |
+|---|------|--------|
+| R1 / v1.20 | Home discover SSOT + EmptyState LinkButton | **SHIPPED** |
+| R2 / v1.21 | Ency IntersectionObserver load-more + family CV | **SHIPPED** |
+| v1.22 | Components CTA migration (EB, PWA, Pro, Habitat, Result, …) | **SHIPPED** |
+| v1.23 | architectureCtaContracts covers components; allowlist empty | **SHIPPED** |
+| R4 / v1.24 | MlDashboard → Button/LinkButton; product raw clear | **SHIPPED** |
+| R3 | Weak media re-harvest | **DEFERRED** operator/network |
+| R5 | Operator deploy O1–O7 | human residual |
+
+## v1.25–v1.29 — SHIPPED (autonomous batch B)
+
+| # | Item | Status |
+|---|------|--------|
+| T1 / v1.25 | GamesHub decorative CTA (no cn-btn) | **SHIPPED** |
+| T2 / v1.26 | Identify remove-image → Button | **SHIPPED** |
+| T3 / v1.27 | `inventoryMediaHealth` + audit doc | **SHIPPED** |
+| T4 / v1.28 | Safety surface contracts home/identify/result | **SHIPPED** |
+| T5 | Operator deploy | human residual |
+
+## v1.30–v1.34 — SHIPPED (autonomous batch C)
+
+| # | Item | Status |
+|---|------|--------|
+| U1 / v1.30 | CameraCapture controls → Button | **SHIPPED** |
+| U2 / v1.31 | UploadZone multi-view policy note + testids | **SHIPPED** |
+| U3 / v1.32 | i18n namespaces + uploadTipsPolicy ES/EN/CA/EU | **SHIPPED** |
+| U4 / v1.33 | PageShell wave (Identify/History/Education/Offline/Expert/Beta/Games) | **SHIPPED** |
+| U5 | Operator deploy | human residual |
+
+## v1.35–v1.39 — SHIPPED (autonomous batch D)
+
+| # | Item | Status |
+|---|------|--------|
+| V1 / v1.35 | Community + Lookalike + Encyclopedia PageShell | **SHIPPED** |
+| V2 / v1.36 | Quiz + Setadle + Wordle PageShell | **SHIPPED** |
+| V3 / v1.37 | Identify lightbox dialog + Camera Escape/aria | **SHIPPED** |
+| V4 / v1.38 | architectureCtaContracts PageShell core list | **SHIPPED** |
+| V5 | Operator deploy | human residual |
+
+## v1.40–v1.44 — SHIPPED (autonomous batch E)
+
+| # | Item | Status |
+|---|------|--------|
+| W1 / v1.40 | Home + Detail + Map PageShell (`bare` for map) | **SHIPPED** |
+| W2 / v1.41 | Login + Register PageShell bare | **SHIPPED** |
+| W3 / v1.42 | DocumentTitle coverage test + nav.notFound/register | **SHIPPED** |
+| W4 / v1.43 | BatchCompare dialog Escape/focus a11y | **SHIPPED** |
+| W5 | Operator deploy | human residual |
+
+## v1.48–v1.52 — SHIPPED (3h loop report gate)
+
+| # | Item | Status |
+|---|------|--------|
+| 1.48 | Detail collapsibles + games primary + offline sticky + libre tip | **SHIPPED** |
+| 1.49 | Food collapse + history + community 44px | **SHIPPED** |
+| 1.50 | Quiz/lookalike/edu FAQ | **SHIPPED** |
+| 1.51 | Setadle/Wordle/Expert + MlDashboard PageShell + 404 | **SHIPPED** |
+| 1.52 | ResultCard compact + map 44px + beta sticky | **SHIPPED** |
+
+## Next cycle `v1.53+` (3h loop continues)
+
+| # | Item | Owner | Notes |
+|---|------|-------|-------|
+| **Y1** | Identify post-result residual | Autonomous | |
+| **Y2** | Ency virtualize residual | Autonomous | |
+| **Y3** | PWA install hint a11y | Autonomous | |
+| **Y4** | Family guide density | Autonomous | |
+| **Y5** | Operator deploy O1–O7 | **Human** | skip |
 
 ## Operator residual (P0 — human)
 

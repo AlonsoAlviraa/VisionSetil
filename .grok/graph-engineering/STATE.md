@@ -1,38 +1,47 @@
 # VisionSetil Graph Engineering — STATE
 
-**Mode:** Graph Engineering (runtime stability · never crash UX)  
-**Updated:** 2026-07-29  
-**Goal:** Dev servers that stay up · primary routes never blank · never product_unlock · never forage
+**Mode:** Graph Engineering  
+**Updated:** 2026-07-31  
+**Goal:** Product UX reliability · never product_unlock
 
 ## Active graph version
 
-`v1.14.0-stable-dev-runtime`
+`v1.65.0-mycology-perf-impl`
 
-## Current status
+## Tasks
 
-| Area | Status | Notes |
-|------|--------|--------|
-| Residual audit FE/BE | **SHIPPED** | v1.13.0 |
-| Dev watchdog (API+App+Web) | **SHIPPED** | `scripts/dev-watchdog.ps1` + `start-visionsetil.bat` |
-| Primary routes eager | **SHIPPED** | Home, Identify, Enciclopedia, Juegos, Mapa, Más |
-| Lazy secondary + retry | **SHIPPED** | detail/auth/games modes with reload on fail |
-| Photos local-first + wiki sizes | **SHIPPED** | 250/500/1280; no 320/640 |
-| Dual build | **SHIPPED** | 5173/5174 |
-| product_unlock | **BLOCKED** | false |
+| Item | Status |
+|------|--------|
+| Kill app/web/API background servers | **DONE** |
+| Live `visionsetil-mycology-perf-uplift` with real subagents | **DONE** (~22 min) |
+| Report | `docs/audits/mycology-perf-uplift-2026-07-31T1603Z.md` (~120 KB) |
+| **T1** Encyclopedia grid thumb + cascade | **DONE** (`MEDIA_SURFACE_POLICY` + PhotoCard) |
+| **T2** SpeciesGallery no probe storm | **DONE** (`buildStaticGallery` hero-only) |
+| **T3** Games hub hydrate gate | **DONE** (`useSpeciesPhotosReady`) |
+| **T4** speciesPhotos single SSOT path | **DONE** (attribution via `getCatalogPhotoEntry`) |
+| **T5** Encyclopedia virtualization | **DEFERRED** (P1 later) |
+| **T6** Media surface policy matrix | **DONE** (`MEDIA_SURFACE_POLICY`) |
+| **T7** Lookalike diagnostic expand | **DONE** (22 classic pairs + map) |
+| Gates: vitest media/games/diag + tsc | **PASS** |
 
-## Residual next
+### Implementation notes (this pass)
 
-1. Operator deploy O1–O7  
-2. Native CA/EU copy polish  
-3. Optional: `npm run stable` (build+preview) for demos without HMR  
-4. P3 weak media re-harvest  
+- `SpeciesPhotoCard` default surface `encyclopedia_grid` → quality thumb, preferLocal, maxCandidates≤3  
+- `SpeciesGallery.buildStaticGallery` no `Image()` probes for gallery_1..8  
+- `GamesHubPage` awaits `hydrateSpeciesPhotos` before `buildVerifiedGamesPool`  
+- `speciesAttribution` no longer static-imports `speciesPhotos.json`  
+- Classic pairs 14→22; multiview map gains 8 educational pairs with `critical_views`  
+- product_unlock remains **false**  
 
-## How to run (operator / user)
+### Workflow live run summary
 
-1. Double-click **`start-visionsetil.bat`** at repo root  
-2. Open **http://127.0.0.1:5173/** (never https)  
-3. Watchdog log: `logs/dev-watchdog.log`  
+- Phase A: 7 surfaces, 8 hotspots, 6 gaps  
+- Phase B: **33** open sources accepted (19 rejected license gate)  
+- Phase C: **47** knowledge→product mappings  
+- Phase D: **12** perf items  
+- Phase E: 12 claims adversarial-verified; checklist 7/8 (S1 residual on “comestible” catalog copy)  
+- Phase F: **10** tickets with acceptance criteria  
 
-## product_unlock
+### product_unlock
 
-Always **false**.
+**false**
