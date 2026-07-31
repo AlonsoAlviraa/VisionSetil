@@ -75,3 +75,69 @@ def test_expanded_catalog_preserves_lookalikes():
     assert len(with_lk) >= 20, f"expected SSOT lookalikes in expanded catalog, got {len(with_lk)}"
     sample = next(s for s in with_lk if s.get("taxon") == "Agaricus arvensis")
     assert "Amanita virosa" in sample["lookalikes"]
+
+
+def test_catalog_v2_lookalike_edges_are_bidirectional():
+    """af44e83: zero asymmetric lookalike edges; deadly cortinarius ↔ boletes/bay."""
+    import json
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[3]
+    data = json.loads(
+        (root / "data" / "species_catalog" / "species_catalog_v2.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    rows = data.get("species") or []
+    by = {
+        str(r.get("scientific_name") or "").lower(): r
+        for r in rows
+        if r.get("scientific_name")
+    }
+
+    def mates(row: dict) -> set[str]:
+        out: set[str] = set()
+        for la in row.get("lookalikes") or []:
+            name = la.get("scientific_name") if isinstance(la, dict) else la
+            if name:
+                out.add(str(name).lower())
+        return out
+
+    asymmetric: list[tuple[str, str]] = []
+    for r in rows:
+        a = str(r.get("scientific_name") or "")
+        if not a:
+            continue
+        for b in mates(r):
+            other = by.get(b)
+            assert other is not None, f"lookalike {b!r} missing from catalog (from {a})"
+            if a.lower() not in mates(other):
+                asymmetric.append((a, other.get("scientific_name") or b))
+
+    assert asymmetric == [], f"asymmetric lookalike edges: {asymmetric[:10]}"
+
+    # Critical deadly safety edge
+    rubellus = by["cortinarius rubellus"]
+    edulis = by["boletus edulis"]
+    assert "boletus edulis" in mates(rubellus)
+    assert "cortinarius rubellus" in mates(edulis)
+    assert "imleria badia" in mates(rubellus)
+    assert rubellus.get("risk_level") == "deadly"
+
+
+def test_species_index_join_report_v20_full_model_coverage():
+    """af44e83: join report points at kernel_output_v20 with 40/40 model∩catalog."""
+    import json
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[3]
+    report = json.loads(
+        (root / "data" / "species_catalog" / "species_index_join_report.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    path = str(report.get("label2idx_path") or "")
+    assert "kernel_output_v20" in path.replace("\\", "/")
+    assert report.get("model_count") == 40
+    assert report.get("intersection_count") == 40
+    assert float(report.get("coverage_model_in_catalog_pct") or 0) == 100.0

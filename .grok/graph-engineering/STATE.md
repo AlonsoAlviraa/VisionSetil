@@ -6,41 +6,43 @@
 
 ## Active graph version
 
-`v1.65.0-mycology-perf-impl`
+`v1.65.1-verify-7commits`
+
+## HEAD
+
+`main` @ **91d0e1d** (= origin/main) — range `a2c6a93..91d0e1d` includes the 7 thematic commits + later photo/layout fixes.
 
 ## Tasks
 
 | Item | Status |
 |------|--------|
-| Kill app/web/API background servers | **DONE** |
-| Live `visionsetil-mycology-perf-uplift` with real subagents | **DONE** (~22 min) |
-| Report | `docs/audits/mycology-perf-uplift-2026-07-31T1603Z.md` (~120 KB) |
-| **T1** Encyclopedia grid thumb + cascade | **DONE** (`MEDIA_SURFACE_POLICY` + PhotoCard) |
-| **T2** SpeciesGallery no probe storm | **DONE** (`buildStaticGallery` hero-only) |
-| **T3** Games hub hydrate gate | **DONE** (`useSpeciesPhotosReady`) |
-| **T4** speciesPhotos single SSOT path | **DONE** (attribution via `getCatalogPhotoEntry`) |
-| **T5** Encyclopedia virtualization | **DEFERRED** (P1 later) |
-| **T6** Media surface policy matrix | **DONE** (`MEDIA_SURFACE_POLICY`) |
-| **T7** Lookalike diagnostic expand | **DONE** (22 classic pairs + map) |
-| Gates: vitest media/games/diag + tsc | **PASS** |
+| 7 thematic commits on main (push) | **VERIFIED present** |
+| Backend AuthZ / request_id / StaticPool | **VERIFIED** + tests expanded |
+| Lookalike bidirectionality + join v20 | **VERIFIED** (0 asymmetric; 40/40 model) |
+| FE dual-build + Stitch + density | **VERIFIED in tree** |
+| FE gates vitest 608 + tsc | **PASS** |
+| Kill app/web/API background servers | **DONE** (prior) |
+| Live mycology-perf-uplift workflow | **DONE** (report in docs/audits) |
+| T1–T4, T6, T7 media/games/lookalike | **SHIPPED** (in b8ee548+) |
+| T5 encyclopedia virtualization | **DEFERRED** |
 
-### Implementation notes (this pass)
+### Verification matrix (7 commits)
 
-- `SpeciesPhotoCard` default surface `encyclopedia_grid` → quality thumb, preferLocal, maxCandidates≤3  
-- `SpeciesGallery.buildStaticGallery` no `Image()` probes for gallery_1..8  
-- `GamesHubPage` awaits `hydrateSpeciesPhotos` before `buildVerifiedGamesPool`  
-- `speciesAttribution` no longer static-imports `speciesPhotos.json`  
-- Classic pairs 14→22; multiview map gains 8 educational pairs with `critical_views`  
-- product_unlock remains **false**  
+| Commit | Claim | Result |
+|--------|-------|--------|
+| `45c1015` AuthZ + request_id + SQLite | admin patterns on `/observations/{id}/classify(-advanced)`; StaticPool; bind_request_id | **PASS** (new scope tests 8/8) |
+| `af44e83` lookalike bi + join v20 | 0 asymmetric edges; rubellus↔edulis/imleria; kernel_output_v20 40/40 | **PASS** |
+| `f012543` Identify + Stitch + footer | Identify orientation sticky; footer compact; campo tokens | **PASS** (present) |
+| `fe4d0fa` a11y/i18n/bundle | FeaturedSpeciesGrid; CA/EU locales; main-app/web | **PASS** |
+| `b8ee548` dual-build + density | `build:app`/`build:web`, MEDIA_SURFACE_POLICY, GamesHub | **PASS**; vitest **608/608** |
+| `e487021` gitignore dist | `frontend/dist-app/`, `dist-web/` ignored | **PASS** |
+| `91d0e1d` graph canon v1.13 | STATE/BACKLOG/graph_evolution + audits | **PASS** |
 
-### Workflow live run summary
+### Gates run this session
 
-- Phase A: 7 surfaces, 8 hotspots, 6 gaps  
-- Phase B: **33** open sources accepted (19 rejected license gate)  
-- Phase C: **47** knowledge→product mappings  
-- Phase D: **12** perf items  
-- Phase E: 12 claims adversarial-verified; checklist 7/8 (S1 residual on “comestible” catalog copy)  
-- Phase F: **10** tickets with acceptance criteria  
+- FE: `vitest run` → **608 passed**; `tsc --noEmit` → **0 errors**  
+- BE: security_scopes + authz + lookalike_normalize + species_index_join + security + quality_gate → **all green**  
+- New tests: AuthZ classify-advanced middleware; catalog bidirectional edges; join report v20 coverage  
 
 ### product_unlock
 
