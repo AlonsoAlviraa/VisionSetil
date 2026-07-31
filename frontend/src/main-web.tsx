@@ -10,28 +10,22 @@ import { ErrorBoundary } from './components/ErrorBoundary'
 import { FORCED_LAYOUT_MODE } from './shells/forcedMode'
 import './i18n'
 /**
- * CSS cascade (Phase D-01) — web build. Later files win on equal specificity.
+ * CSS cascade — architecture M3 (v1.15).
+ * Same product path as app + web layout layer.
+ * Dropped redesign.css + premium.css.
  */
 import './styles/global.css'
 import './styles/animations.css'
-import './styles/premium.css'
 import './styles/tokens.css'
-import './styles/redesign.css'
 import './styles/atelier.css'
 import './styles/marketing.css'
 /** Option B Campo nocturno — after marketing so night shell wins */
 import './styles/campo-nocturno.css'
 /** Web (browser) layout layer — only under .app--mode-web */
 import './styles/campo-nocturno-web.css'
-import { warmCriticalSpeciesImages } from './lib/imageWarm'
-import { hydrateSpeciesPhotos } from './lib/speciesImageService'
 
-async function boot() {
-  await hydrateSpeciesPhotos().catch(() => {
-    /* local_media / placeholders still work */
-  })
-  warmCriticalSpeciesImages()
-
+function boot() {
+  // Paint shell immediately — photo catalog hydrate must not block FCP
   ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
       <ErrorBoundary surface="root">
@@ -39,6 +33,18 @@ async function boot() {
       </ErrorBoundary>
     </React.StrictMode>,
   )
+  // Dynamic import: keeps speciesImageService + speciesPhotos.json out of the
+  // main bundle (~150KB+ savings). Runs after first paint, non-blocking.
+  void import('./lib/speciesImageService')
+    .then(({ hydrateSpeciesPhotos }) => hydrateSpeciesPhotos())
+    .catch(() => {
+      /* local_media / placeholders still work */
+    })
+    .then(() => {
+      return import('./lib/imageWarm').then(({ warmCriticalSpeciesImages }) =>
+        warmCriticalSpeciesImages(),
+      )
+    })
 }
 
-void boot()
+boot()

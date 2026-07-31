@@ -2,9 +2,10 @@
  * Flashcard deck — premium photos first, keyboard + swipe study flow.
  */
 import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { SpeciesFlashcard, type FlashcardSpecies } from './SpeciesFlashcard'
 import { photoPriorityScore } from '../lib/speciesMediaStack'
+import { LinkButton } from './ui'
 
 type Props = {
   cards: FlashcardSpecies[]
@@ -20,6 +21,7 @@ export function FlashcardDeck({
   className = '',
   title = 'Flashcards · multi-ángulo',
 }: Props) {
+  const { t } = useTranslation()
   const ordered = useMemo(() => {
     if (!premiumFirst) return cards
     return [...cards].sort(
@@ -62,7 +64,7 @@ export function FlashcardDeck({
           type="button"
           className="flash-deck__arrow"
           onClick={() => go(-1)}
-          aria-label="Carta anterior"
+          aria-label={t('flashcards.prevCard', { defaultValue: 'Carta anterior' })}
         >
           ←
         </button>
@@ -71,13 +73,13 @@ export function FlashcardDeck({
           type="button"
           className="flash-deck__arrow"
           onClick={() => go(1)}
-          aria-label="Carta siguiente"
+          aria-label={t('flashcards.nextCard', { defaultValue: 'Carta siguiente' })}
         >
           →
         </button>
       </div>
 
-      <div className="flash-deck__rail" role="tablist" aria-label="Elegir seta">
+      <div className="flash-deck__rail" role="tablist" aria-label={t('flashcards.chooseMushroom', { defaultValue: 'Elegir seta' })}>
         {ordered.map((c, i) => (
           <button
             key={c.taxon}
@@ -93,15 +95,15 @@ export function FlashcardDeck({
       </div>
 
       <div className="flash-deck__cta">
-        <Link to="/setadle" className="mkt-btn mkt-btn--amber">
+        <LinkButton to="/setadle" variant="primary">
           Jugar Setadle
-        </Link>
-        <Link to="/lookalikes" className="mkt-btn mkt-btn--ghost">
-          Lookalikes
-        </Link>
-        <Link to="/reto" className="mkt-btn mkt-btn--ghost">
+        </LinkButton>
+        <LinkButton to="/lookalikes" variant="ghost">
+          Confusiones
+        </LinkButton>
+        <LinkButton to="/reto" variant="ghost">
           Reto
-        </Link>
+        </LinkButton>
       </div>
     </section>
   )

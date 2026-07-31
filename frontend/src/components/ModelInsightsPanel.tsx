@@ -1,9 +1,9 @@
-﻿/**
- * ML transparency panel ÔÇö fully mode/gate-aware (B-22).
+/**
+ * ML transparency panel — fully mode/gate-aware (B-22).
  *
  * - Display chrome from resolveDisplayMode / dual-signal gate (not stack-string heuristics)
  * - Surfaces quality_gate metrics (MAP@3, deadly recall, dual signals, reason_code)
- * - Confidence margin only when D-B9 passes (real + metrics_acceptable) ÔÇö never inflated
+ * - Confidence margin only when D-B9 passes (real + metrics_acceptable) — never inflated
  */
 import { useTranslation } from 'react-i18next'
 import type { ClassificationResult, QualityGateReasonCode } from '../api/types'
@@ -34,7 +34,7 @@ function gateReasonI18nKey(code: string | undefined): string | null {
 }
 
 function fmtMetric(value: number | null | undefined, digits = 3): string {
-  if (value == null || Number.isNaN(value)) return 'ÔÇö'
+  if (value == null || Number.isNaN(value)) return '—'
   return value.toFixed(digits)
 }
 
@@ -117,7 +117,7 @@ export function ModelInsightsPanel({ result, viewTypes = [], className = '' }: P
   return (
     <section
       className={`model-insights model-insights--mode-${mode} model-insights--${modeTone} ${className}`.trim()}
-      aria-label="Información del modelo"
+      aria-label={t('result.mlInsightsAria', { defaultValue: 'Información del modelo' })}
       data-testid="model-insights-panel"
       data-mode={mode}
       data-show-confidence={showConfidence ? 'true' : 'false'}
@@ -153,12 +153,12 @@ export function ModelInsightsPanel({ result, viewTypes = [], className = '' }: P
           <span className="model-insights__label">Tiempo</span>
           <strong>{result.processing_time_ms} ms</strong>
         </div>
-        {/* Margin only when D-B9 allows confidence ÔÇö hide inflated top-1/2 gap */}
+        {/* Margin only when D-B9 allows confidence — hide inflated top-1/2 gap */}
         {showConfidence && (
           <div className="model-insights__card" data-testid="model-insights-margin">
             <span className="model-insights__label">Margen top-1/2</span>
             <strong>
-              {margin != null ? `${(margin * 100).toFixed(1)} pts` : 'ÔÇö'}
+              {margin != null ? `${(margin * 100).toFixed(1)} pts` : '—'}
             </strong>
           </div>
         )}
@@ -172,7 +172,7 @@ export function ModelInsightsPanel({ result, viewTypes = [], className = '' }: P
         </div>
       </div>
 
-      {/* Dual-signal gate metrics (B-22) ÔÇö independent of stack strings */}
+      {/* Dual-signal gate metrics (B-22) — independent of stack strings */}
       {gate && (
         <div
           className="model-insights__gate"

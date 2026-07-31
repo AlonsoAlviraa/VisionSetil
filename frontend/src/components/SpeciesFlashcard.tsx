@@ -4,6 +4,7 @@
  */
 import { useCallback, useEffect, useMemo, useState, type MouseEvent } from 'react'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { RiskChip } from './RiskChip'
 import {
   isTerminalMediaUrl,
@@ -40,6 +41,7 @@ export function SpeciesFlashcard({
   showLink = true,
   onFlip,
 }: Props) {
+  const { t } = useTranslation()
   const slug = species.slug || scientificNameToSlug(species.taxon)
   const terminal = speciesPhotoErrorFallback(species.taxon, species.risk)
   const stack = useMemo(
@@ -155,8 +157,8 @@ export function SpeciesFlashcard({
           </button>
 
           {alive.length > 1 && (
-            <div className="flashcard__angles" role="group" aria-label="Ángulos de la seta">
-              <button type="button" className="flashcard__nav" onClick={prevPhoto} aria-label="Ángulo anterior">
+            <div className="flashcard__angles" role="group" aria-label={t('flashcards.angles', { defaultValue: 'Ángulos de la seta' })}>
+              <button type="button" className="flashcard__nav" onClick={prevPhoto} aria-label={t('flashcards.prevAngle', { defaultValue: 'Ángulo anterior' })}>
                 ‹
               </button>
               <div className="flashcard__dots">
@@ -174,7 +176,7 @@ export function SpeciesFlashcard({
                   />
                 ))}
               </div>
-              <button type="button" className="flashcard__nav" onClick={nextPhoto} aria-label="Ángulo siguiente">
+              <button type="button" className="flashcard__nav" onClick={nextPhoto} aria-label={t('flashcards.nextAngle', { defaultValue: 'Ángulo siguiente' })}>
                 ›
               </button>
             </div>

@@ -40,7 +40,9 @@ const SURFACES: Array<{ name: string; path: string; pageHint: string }> = [
 
 describe('product surfaces routes', () => {
   const app = read('App.tsx')
-  const header = read('components/Header.tsx')
+  // M1 refactor: nav config lives in navConfig.ts but is rendered by Header.tsx.
+  // Tests read both so contracts hold regardless of where the array is declared.
+  const header = read('components/Header.tsx') + '\n' + read('lib/navConfig.ts')
 
   for (const s of SURFACES) {
     it(`wires ${s.name} (${s.path})`, () => {
@@ -98,16 +100,17 @@ describe('product surfaces routes', () => {
   })
 
   it('header keeps primaries + single Más hub (no double label)', () => {
-    expect(header).toMatch(/primaryNav\s*=\s*\[/)
-    expect(header).toMatch(/moreNavGroups/)
-    expect(header).toMatch(/const moreNav/)
+    // M1: primaryNav may be inline in Header.tsx OR in navConfig.ts (PRIMARY_NAV).
+    expect(header).toMatch(/primaryNav\s*=\s*\[|PRIMARY_NAV\s*=\s*\[|headerPrimaryNav/)
+    expect(header).toMatch(/moreNavGroups|MORE_NAV_GROUPS/)
+    expect(header).toMatch(/const moreNav|MORE_NAV_FLAT/)
     expect(header).toContain('Más')
     expect(header).toContain('nav-more')
     expect(header).toContain('nav-more__group')
     expect(header).toContain('header-mas-hub')
     // Primary strip: home · identify · games · encyclopedia (Más is hub link, not a 2nd primary)
     expect(header).toMatch(
-      /primaryNav\s*=\s*\[[\s\S]*?to: '\/identificar'[\s\S]*?to: '\/juegos'[\s\S]*?to: '\/enciclopedia'[\s\S]*?\]/,
+      /to: '\/identificar'[\s\S]*?to: '\/juegos'[\s\S]*?to: '\/enciclopedia'/,
     )
     expect(header).toContain('to="/mas"')
     // Grouped hub still exposes all product destinations

@@ -16,7 +16,7 @@ const client = axios.create({
 
 /**
  * Honest client-side classify pipeline stages (B-28).
- * Discrete labels only ÔÇö never a fake ML confidence/percent meter.
+ * Discrete labels only — never a fake ML confidence/percent meter.
  * - upload: request body still sending
  * - analyze: body sent; waiting for model inference
  * - apply_policy: response received (server gate/policy already applied)

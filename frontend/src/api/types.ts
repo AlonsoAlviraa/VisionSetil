@@ -15,7 +15,7 @@ export type QualityGateReasonCode =
 
 /**
  * Dual-signal quality gate (D-B15): metrics_acceptable vs species_id_allowed.
- * - metrics_acceptable: raw MAP/deadly thresholds only ÔÇö never forced by disable
+ * - metrics_acceptable: raw MAP/deadly thresholds only — never forced by disable
  * - species_id_allowed: serve policy (respects block_enabled)
  * - verdict: tracks metrics only (ACCEPTABLE/UNACCEPTABLE), not gate-disable bypass
  * - metrics_path: always full path (D-B23), never basename-only
@@ -33,7 +33,7 @@ export interface QualityGatePayload {
   /** Full path always (D-B23); never basename-only. */
   metrics_path?: string | null
   version?: string | null
-  /** Tracks metrics_acceptable only ÔÇö ACCEPTABLE | UNACCEPTABLE. */
+  /** Tracks metrics_acceptable only — ACCEPTABLE | UNACCEPTABLE. */
   verdict: 'ACCEPTABLE' | 'UNACCEPTABLE'
 }
 
@@ -83,7 +83,7 @@ export interface ClassificationResult {
   ml_notes?: string[]
   /**
    * Product honesty mode (D-B1 / D-B22). Required on new BE; optional for legacy
-   * partial-deploy responses ÔÇö use resolveMode() (D-B20), never invent defaults.
+   * partial-deploy responses — use resolveMode() (D-B20), never invent defaults.
    */
   mode?: ClassifyMode
   /**

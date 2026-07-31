@@ -4,6 +4,8 @@
 import { describe, expect, it } from 'vitest'
 import es from '../locales/es/common.json'
 import en from '../locales/en/common.json'
+import ca from '../locales/ca/common.json'
+import eu from '../locales/eu/common.json'
 
 function leafKeys(obj: unknown, prefix = ''): string[] {
   if (obj == null || typeof obj !== 'object' || Array.isArray(obj)) {
@@ -29,7 +31,21 @@ describe('i18n EN/ES key parity', () => {
     expect(missing, `Missing EN keys: ${missing.slice(0, 20).join(', ')}`).toEqual([])
   })
 
-  it('critical surface namespaces exist in both locales', () => {
+  it('CA has every ES leaf key (M6)', () => {
+    const esKeys = leafKeys(es)
+    const caKeys = new Set(leafKeys(ca))
+    const missing = esKeys.filter((k) => !caKeys.has(k))
+    expect(missing, `Missing CA keys: ${missing.slice(0, 30).join(', ')}`).toEqual([])
+  })
+
+  it('EU has every ES leaf key (M6)', () => {
+    const esKeys = leafKeys(es)
+    const euKeys = new Set(leafKeys(eu))
+    const missing = esKeys.filter((k) => !euKeys.has(k))
+    expect(missing, `Missing EU keys: ${missing.slice(0, 30).join(', ')}`).toEqual([])
+  })
+
+  it('critical surface namespaces exist in all product locales', () => {
     for (const ns of [
       'nav',
       'home',
@@ -43,9 +59,29 @@ describe('i18n EN/ES key parity', () => {
       'safety',
       'risk',
       'result',
+      'games',
+      'offline',
+      'notebook',
     ]) {
       expect((es as Record<string, unknown>)[ns], `es.${ns}`).toBeTruthy()
       expect((en as Record<string, unknown>)[ns], `en.${ns}`).toBeTruthy()
+      expect((ca as Record<string, unknown>)[ns], `ca.${ns}`).toBeTruthy()
+      expect((eu as Record<string, unknown>)[ns], `eu.${ns}`).toBeTruthy()
+    }
+  })
+
+  it('identify.uploadTipsPolicy is orientation-only in all locales', () => {
+    const esP = (es as { identify: { uploadTipsPolicy?: string } }).identify.uploadTipsPolicy || ''
+    const enP = (en as { identify: { uploadTipsPolicy?: string } }).identify.uploadTipsPolicy || ''
+    const caP = (ca as { identify: { uploadTipsPolicy?: string } }).identify.uploadTipsPolicy || ''
+    const euP = (eu as { identify: { uploadTipsPolicy?: string } }).identify.uploadTipsPolicy || ''
+    expect(esP.toLowerCase()).toMatch(/orientaci|abstien/)
+    expect(enP.toLowerCase()).toMatch(/orientation|abstain/)
+    // CA/EU currently ship an ES base (translation pending) — accept ES orientation language.
+    expect(caP.toLowerCase()).toMatch(/orientaci|abst|orientazio|ezetzi/)
+    expect(euP.toLowerCase()).toMatch(/orientaci|abst|orientazio|ezetzi|kontsumo/)
+    for (const p of [esP, enP, caP, euP]) {
+      expect(p.toLowerCase()).not.toMatch(/safe to eat|puedes comer/)
     }
   })
 
