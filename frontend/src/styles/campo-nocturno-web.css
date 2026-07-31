@@ -690,6 +690,27 @@
   gap: 1rem 3rem !important;
 }
 
+/* v1.12: new tile-based more hub on web */
+.app--mode-web .more-hub-tile__link {
+  padding: 1.1rem 1.25rem !important;
+}
+.app--mode-web .more-hub-tile__icon {
+  width: 3rem !important;
+  height: 3rem !important;
+}
+.app--mode-web .more-hub-tile__icon .cn-icon {
+  font-size: 28px;
+}
+.app--mode-web .more-hub-tile__label {
+  font-size: 1.05rem !important;
+}
+.app--mode-web .more-hub-tile__blurb {
+  font-size: 0.82rem !important;
+}
+.app--mode-web .more-hub-group__title--v12 {
+  font-size: 1.25rem !important;
+}
+
 .app--mode-web .more-hub-list__link {
   padding: 1.15rem 1.25rem !important;
   border-radius: 1.1rem !important;

@@ -48,7 +48,9 @@
       "beta": "Cuéntanos qué falla"
     },
     "login": "Entrar",
+    "register": "Registro",
     "logout": "Cerrar sesión",
+    "notFound": "No encontrado",
     "openMenu": "Abrir menú",
     "closeMenu": "Cerrar menú",
     "primaryAria": "Navegación principal",
@@ -56,7 +58,7 @@
     "betaFeedback": "Feedback beta",
     "bottomAria": "Navegación principal",
     "moreMenuAria": "Abrir menú Más",
-    "identifyFab": "Identificar con multi-vista"
+    "identifyFab": "Identificar"
   },
   "actions": {
     "search": "Buscar",
@@ -118,7 +120,7 @@
     "tabs": {
       "morphology": "Morfología",
       "habitat": "Hábitat",
-      "lookalikes": "Lookalikes"
+      "lookalikes": "Confusiones"
     },
     "tabsLabel": "Secciones de la ficha",
     "orientationOnly": "Solo orientación · no consumo",
@@ -138,10 +140,10 @@
     "emptyMorphologyBody": "Aún no hay morfo curada para esta ficha. Usa la galería y el hábitat como pistas educativas.",
     "emptyHabitat": "Sin hábitat documentado",
     "emptyHabitatBody": "No hay nota de hábitat curada para esta especie en el catálogo local.",
-    "lookalikesTitle": "Lookalikes de riesgo",
-    "openStudio": "Abrir Lookalike Studio",
+    "lookalikesTitle": "Confusiones de riesgo",
+    "openStudio": "Estudio de confusiones",
     "emptyLookalikes": "Sin confusiones listadas",
-    "emptyLookalikesBody": "No hay lookalikes curados en la ficha. Prueba el estudio de comparación.",
+    "emptyLookalikesBody": "No hay confusiones curadas en la ficha. Prueba el estudio de comparación.",
     "meta": {
       "family": "Familia",
       "genus": "Género",
@@ -319,7 +321,7 @@
   },
   "encyclopedia": {
     "title": "Enciclopedia de setas",
-    "titlePage": "Enciclopedia ibérica",
+    "titlePage": "Enciclopedia de setas",
     "orientation": "Solo orientación · nunca permiso de consumo",
     "familyGuideAria": "Guía visual por familias",
     "familyGuideKicker": "Estilo First Nature",
@@ -344,7 +346,6 @@
     "showing": "Mostrando {{shown}} de {{total}}",
     "loadMore": "Cargar más",
     "kicker": "Catálogo · riesgo claro",
-    "titlePage": "Enciclopedia de setas",
     "loading": "Cargando catálogo…",
     "taxaCount": "{{count}} taxones",
     "documentedSuffix": "· {{n}} con calidad documentada. Solo orientación de campo.",
@@ -381,28 +382,35 @@
     "emptyTitle": "Sin coincidencias",
     "emptyBody": "Prueba otra familia, nombre científico o nombre común.",
     "clearFilters": "Limpiar filtros",
-    "noLocalCommon": "Sin nombre común local"
+    "noLocalCommon": "Sin nombre común local",
+    "genusAria": "Géneros frecuentes",
+    "genusAll": "Todos los géneros",
+    "genusBoletus": "Boletus",
+    "genusLactarius": "Lactarius",
+    "genusAmanita": "Amanita",
+    "genusRussula": "Russula",
+    "genusCantharellus": "Cantharellus"
   },
   "identify": {
     "title": "Identificar seta",
-    "subtitle": "Sube fotos desde varias vistas para una identificación más fiable",
-    "wizardTitle": "Cuatro vistas de campo",
-    "coachTitle": "Cómo hacer buenas fotos",
-    "coachTip1": "Luz natural frontal; evita contraluz fuerte",
-    "coachTip2": "Rellena el encuadre con la seta (no demasiada distancia)",
-    "coachTip3": "Incluye pie y base cuando sea posible",
-    "coachTip4": "Más vistas = mejor orientación (nunca 100% seguro)",
+    "subtitle": "Sube una foto para identificar",
+    "wizardTitle": "Cuatro vistas",
+    "coachTitle": "Buenas fotos",
+    "coachTip1": "Luz frontal, sin contraluz",
+    "coachTip2": "Llena el encuadre con la seta",
+    "coachTip3": "Incluye pie y base",
+    "coachTip4": "Más vistas = mejor orientación",
     "views": {
-      "gills": "Láminas / poros",
-      "front": "Frente / sombrero",
+      "gills": "Láminas",
+      "front": "Sombrero",
       "habitat": "Hábitat",
-      "detail": "Detalle (base / corte)"
+      "detail": "Detalle"
     },
     "viewHint": {
-      "gills": "Foto del himenio (láminas o poros) bien iluminado",
-      "front": "Vista frontal o superior del sombrero",
-      "habitat": "Entorno y sustrato donde crece",
-      "detail": "Base del pie, volva o sección"
+      "gills": "Parte inferior: láminas o poros",
+      "front": "Vista del sombrero",
+      "habitat": "Dónde crece",
+      "detail": "Base, pie o corte"
     },
     "viewIcon": {
       "gills": "🔻",
@@ -410,31 +418,31 @@
       "habitat": "🌲",
       "detail": "🔍"
     },
-    "history": "Historial local",
-    "clearHistory": "Vaciar historial",
-    "missingViews": "Vistas recomendadas que faltan",
-    "wizardSubtitle": "Láminas, perfil, hábitat y detalle. Completa las críticas antes de analizar.",
+    "history": "Historial",
+    "clearHistory": "Vaciar",
+    "missingViews": "Faltan: {{views}}",
+    "wizardSubtitle": "Láminas, perfil, hábitat y detalle.",
     "qualityHint": {
-      "single": "Una sola foto es débil: el modelo se abstiene más. Mejor inferior + perfil completo.",
-      "pair": "Buen comienzo (inferior+perfil). Añade hábitat + detalle para bajar confusiones.",
-      "full": "Paquete completo de 4 fotos — mejor señal orientativa (nunca permiso de consumo)."
+      "single": "1 foto = débil. Mejor láminas + perfil.",
+      "pair": "Bien. Añade hábitat y detalle.",
+      "full": "4 fotos — mejor orientación."
     },
     "multiviewNudge": {
-      "single": "Con 1 foto el modelo se abstiene más a menudo. Añade láminas + perfil (2+) para una pista más estable — siempre solo orientación, nunca consumo.",
-      "pair": "Buen paquete (2+ vistas). Hábitat y detalle bajan confusiones con lookalikes — sin permiso de consumo."
+      "single": "1 foto = débil. Añade láminas + perfil.",
+      "pair": "Buen paquete. Hábitat y detalle ayudan."
     },
     "deadlyDiagnostic": {
-      "coach": "Para confusiones con mortales: prioriza láminas, perfil/pie y base/volva/anillo. Multi-foto sin esas vistas no basta — solo orientación, nunca consumo.",
-      "missing": "Aún faltan vistas diagnósticas: {{views}}.",
+      "coach": "Riesgo mortal: prioriza láminas, perfil y base.",
+      "missing": "Faltan: {{views}}.",
       "badge": "diag",
-      "badgeTitle": "Vista prioritaria para confusiones con especies peligrosas (educativo)"
+      "badgeTitle": "Vista clave para especies peligrosas"
     },
-    "wizardAriaLabel": "Captura multi-vista guiada",
+    "wizardAriaLabel": "Captura multi-vista",
     "progressAria": "Progreso {{filled}} de {{total}}",
     "progressCount": "{{filled}}/{{total}}",
     "progressViewsLabel": "vistas",
-    "missingCritical": "faltan críticas: {{views}}",
-    "badgeCritical": "crítica",
+    "missingCritical": "faltan: {{views}}",
+    "badgeCritical": "clave",
     "badgeOptional": "opcional",
     "gallery": "Galería",
     "camera": "Cámara",
@@ -442,78 +450,79 @@
     "remove": "Quitar",
     "viewAlt": "Vista {{view}}",
     "readiness": {
-      "missing_habitat": "Falta vista de hábitat: mejora la evidencia ecológica (recomendado).",
-      "missing_detail": "Falta detalle de pie/anillo/volva: reduce confusión con lookalikes.",
-      "missing_required": "Vistas críticas pendientes: {{views}}. Puedes enviar con advertencia, pero el open-set puede rechazar.",
-      "hard_blocked": "Modo estricto: añade las vistas críticas (láminas y frontal) antes de analizar."
+      "missing_habitat": "Falta hábitat (recomendado).",
+      "missing_detail": "Falta detalle: reduce confusiones.",
+      "missing_required": "Faltan vistas clave: {{views}}.",
+      "hard_blocked": "Añade láminas y sombrero primero."
     },
-    "bannerLead": "Haz varias fotos (láminas, perfil, base). Si el modelo no está seguro, se calla. Mejor eso que inventar un nombre.",
-    "titleCn": "Identificación multi-vista",
-    "orientationSticky": "Solo orientación de campo · nunca permiso de consumo",
-    "proCheck": "Ninguna app es fiable para comer setas. Usa varias fotos (inferior y perfil), revisa confusiones y confirma con un micólogo si hay duda.",
-    "modeGuided": "Modo guiado",
-    "modeFree": "Modo libre",
+    "bannerLead": "Sube fotos. Si duda, se calla.",
+    "titleCn": "Identificar",
+    "orientationSticky": "Solo orientación · nunca consumo",
+    "uploadTipsPolicy": "Multi-vista mejora la orientación; no desbloquea consumo. Si falta evidencia, la app se abstiene.",
+    "proCheck": "Ninguna app sirve para comer setas. Confirma con un micólogo.",
+    "modeGuided": "Guiado",
+    "modeFree": "Libre",
     "newAnalysis": "Nuevo análisis",
-    "showPhotos": "Ver fotos enviadas",
-    "hidePhotos": "Ocultar fotos enviadas",
+    "showPhotos": "Ver fotos",
+    "hidePhotos": "Ocultar fotos",
     "flow": {
       "preflight": "Estado",
       "capture": "Captura",
       "result": "Resultado"
     },
-    "kicker": "Campo · multi-vista",
-    "principlesAria": "Principios de identificación",
-    "preflightAria": "Estado del modelo antes de identificar",
-    "captureAria": "Captura multi-vista o libre",
-    "resultAria": "Resultado de identificación",
-    "errorApiDown": "API no disponible. Conecta el backend para identificar.",
-    "errorQuota": "Límite Free de {{limit}} identificaciones/día alcanzado. Activa Pro demo o vuelve mañana. Orientación de campo — no es permiso de consumo.",
-    "errorUnknown": "Error desconocido",
-    "apiDisabledTitle": "API no disponible — identificación deshabilitada",
-    "quotaBlockedTitle": "Cupo Free diario agotado",
+    "kicker": "Identificar",
+    "principlesAria": "Principios",
+    "preflightAria": "Estado del modelo",
+    "captureAria": "Captura",
+    "resultAria": "Resultado",
+    "errorApiDown": "API no disponible.",
+    "errorQuota": "Límite diario ({{limit}}). Vuelve mañana o activa Pro.",
+    "errorUnknown": "Error",
+    "apiDisabledTitle": "API no disponible",
+    "quotaBlockedTitle": "Cupo agotado",
     "analyzing": "Analizando…",
-    "apiOffline": "API desconectada",
-    "quotaExhausted": "Cupo Free agotado",
-    "quotaExhaustedSuffix": " · cupo agotado",
-    "analyzeViews": "Analizar ({{n}} vistas)",
+    "apiOffline": "Sin API",
+    "quotaExhausted": "Cupo agotado",
+    "quotaExhaustedSuffix": " · agotado",
+    "analyzeViews": "Identificar ({{n}})",
     "cancel": "Cancelar",
-    "addMorePhotos": "+ Añadir más fotos",
-    "quotaStatus": "Free: {{used}}/{{limit}} identificaciones hoy",
-    "flowAria": "Flujo de identificación honesta",
-    "gpsPinLabel": "Guardar pin GPS local en el cuaderno (solo lat/lng · sin EXIF · no mapa público)",
-    "freeSelectedTitle": "Fotos seleccionadas ({{n}})",
+    "addMorePhotos": "+ Añadir fotos",
+    "quotaStatus": "Free: {{used}}/{{limit}} hoy",
+    "flowAria": "Identificación",
+    "gpsPinLabel": "Guardar ubicación (local, sin EXIF)",
+    "freeSelectedTitle": "Fotos ({{n}})",
     "freePhotoAlt": "Seta {{n}}",
-    "removePhoto": "Eliminar imagen",
+    "removePhoto": "Quitar",
     "captureDensity": {
       "chip": "{{n}} vistas · {{views}}",
-      "viewsPending": "slots",
-      "critical": "críticas {{done}}/{{total}}",
-      "policy": "Densidad de captura · solo orientación · nunca permiso de consumo"
+      "viewsPending": "sin etiquetar",
+      "critical": "vistas clave {{done}}/{{total}}",
+      "policy": "Solo orientación · nunca consumo"
     },
     "softConfirm": {
       "title": {
-        "empty": "Añade al menos una foto",
-        "missing_critical": "Faltan vistas críticas",
-        "single_photo": "Una sola foto es débil",
-        "ready": "Paquete listo para orientación"
+        "empty": "Añade una foto",
+        "missing_critical": "Faltan vistas clave",
+        "single_photo": "1 foto es débil",
+        "ready": "Listo"
       },
       "body": {
-        "empty": "Sin fotos no hay identificación orientativa.",
-        "missing_critical": "Quedan vistas críticas abiertas. Con paquete incompleto el modelo se abstiene más. Solo orientación — nunca permiso de consumo.",
-        "single_photo": "Con 1 foto el open-set rechaza más a menudo. Mejor inferior + perfil. Solo orientación — nunca consumo.",
-        "ready": "Inferior + perfil presentes. Sigue sin autorizar consumo."
+        "empty": "Sin fotos no hay identificación.",
+        "missing_critical": "Faltan vistas clave. El modelo puede abstenerse.",
+        "single_photo": "1 foto = menos precisión. Mejor láminas + perfil.",
+        "ready": "Listo para analizar."
       },
       "add": {
         "empty": "Añadir láminas",
-        "missing_critical": "Añadir vista crítica",
-        "single_photo": "Añadir otra vista",
+        "missing_critical": "Añadir vista",
+        "single_photo": "Añadir otra",
         "ready": "Añadir opcional"
       },
       "proceed": {
         "empty": "—",
-        "missing_critical": "Enviar igual (soft · solo orientación)",
-        "single_photo": "Enviar con 1 foto (soft · orientación)",
-        "ready": "Analizar"
+        "missing_critical": "Continuar sin más fotos",
+        "single_photo": "Identificar con 1 foto (menos fiable)",
+        "ready": "Identificar"
       }
     }
   },
@@ -649,7 +658,7 @@
     "packetFull": "paquete 4",
     "packetHint": "Fotos enviadas (heurística o slots). Más vistas críticas ≠ permiso de consumo.",
     "criticalCoverage": "críticas {{done}}/{{total}}",
-    "viewDensityPolicy": "Paquete multi-vista · orientación only · nunca consumo",
+    "viewDensityPolicy": "Paquete multi-vista · solo orientación · nunca consumo",
     "draftSaved": "Borrador guardado.",
     "layer2Confidence": "Confianza y confusiones",
     "layer2Lookalikes": "Confusiones de riesgo",
@@ -687,59 +696,59 @@
   },
   "honesty": {
     "mode": {
-      "blocked": "Identificación bloqueada: modelo bajo umbral",
-      "mock": "Modo demo — sin pesos de campo",
+      "blocked": "Bloqueado: modelo bajo umbral",
+      "mock": "Demo — sin modelo real",
       "real": "Modelo en vivo — solo orientación"
     },
     "gate": {
-      "no_metrics": "Sin métricas del modelo en disco",
-      "map_below": "MAP@3 por debajo del umbral mínimo",
-      "deadly_below": "Recall de especies mortales por debajo del umbral",
-      "gates_passed": "Umbrales de calidad superados",
-      "gate_disabled": "Gate de calidad deshabilitado (solo desarrollo)"
+      "no_metrics": "Sin métricas del modelo",
+      "map_below": "MAP@3 bajo el mínimo",
+      "deadly_below": "Recall de mortales bajo",
+      "gates_passed": "Umbrales superados",
+      "gate_disabled": "Gate deshabilitado (solo dev)"
     },
     "preflight": {
-      "offline": "API no disponible. No se puede identificar ahora.",
-      "blocked": "Identificación de especie no permitida: el modelo no supera el umbral de calidad.",
-      "mock": "Modo demo: predicciones de demostración, no identificación de campo.",
-      "real": "Modelo en vivo. Identificación solo orientativa.",
-      "metrics_warning": "Métricas del modelo por debajo del umbral (gate deshabilitado). No se muestra confianza.",
-      "submit_offline": "Sin respuesta de red de la API. Conecta el backend para enviar fotos.",
-      "submit_offline_empty": "La API respondió sin un payload de readiness usable (p. ej. 503). Identificación deshabilitada hasta que el backend esté listo.",
+      "offline": "API no disponible.",
+      "blocked": "Modelo bajo umbral. No se puede identificar.",
+      "mock": "Modo demo — no es identificación real.",
+      "real": "Modelo en vivo. Solo orientación.",
+      "metrics_warning": "Métricas bajas. Sin confianza.",
+      "submit_offline": "Sin red. Conecta el backend.",
+      "submit_offline_empty": "API sin respuesta. Reconecta.",
       "retry": "Reintentar",
       "retrying": "Comprobando…",
-      "unknown": "Estado del modelo desconocido. Identificación solo orientativa."
+      "unknown": "Estado desconocido. Solo orientación."
     },
     "decision": {
-      "rejected_open_set": "El modelo se abstiene (incertidumbre / open-set)",
-      "rejected_gate": "Identificación bloqueada por el umbral de calidad del modelo"
+      "rejected_open_set": "El modelo se abstiene",
+      "rejected_gate": "Bloqueado por umbral de calidad"
     },
     "open_set_reason": {
-      "low_top1_confidence": "Confianza top-1 insuficiente — el modelo se abstiene",
-      "low_margin": "Muy poca diferencia entre las mejores pistas",
-      "high_entropy": "Distribución incierta (alta entropía) — abstención",
-      "high_risk_genus": "Género de alto riesgo — revisión humana recomendada",
-      "deadly_lookalike_or_high_risk_genus": "Posible confusión con especie peligrosa",
-      "missing_critical_evidence": "Faltan vistas o evidencia crítica en la foto",
-      "no_candidates": "Sin candidatos del modelo",
-      "open_set_uncertain": "Incertidumbre open-set",
-      "low_confidence_or_margin_multiview_few_shot": "Confianza o margen insuficientes (multi-view)"
+      "low_top1_confidence": "Confianza baja — se abstiene",
+      "low_margin": "Poca diferencia entre pistas",
+      "high_entropy": "Distribución incierta",
+      "high_risk_genus": "Género de riesgo — revisa con experto",
+      "deadly_lookalike_or_high_risk_genus": "Posible confusión peligrosa",
+      "missing_critical_evidence": "Faltan vistas clave",
+      "no_candidates": "Sin candidatos",
+      "open_set_uncertain": "Incertidumbre",
+      "low_confidence_or_margin_multiview_few_shot": "Confianza insuficiente"
     },
-    "confidence_hidden": "Confianza no disponible en este modo",
-    "educational_blocked_title": "Identificación no disponible",
-    "educational_blocked_body": "El modelo actual no supera el umbral de calidad para identificar especies. Usa la enciclopedia y consulta a un micólogo experto. Esta app es solo orientativa y educativa.",
+    "confidence_hidden": "Confianza oculta en este modo",
+    "educational_blocked_title": "No disponible",
+    "educational_blocked_body": "El modelo no supera el umbral. Usa la enciclopedia o consulta un micólogo.",
     "cta": {
       "encyclopedia": "Enciclopedia",
       "education": "Aprende",
       "expert": "Experto"
     },
     "loading": {
-      "upload": "Subiendo fotos",
+      "upload": "Subiendo",
       "analyze": "Analizando",
-      "apply_policy": "Aplicando política de calidad",
-      "hint": "Etapas reales del envío — sin porcentaje de modelo inventado.",
-      "stages_label": "Etapas de identificación",
-      "aria_label": "Identificación en curso"
+      "apply_policy": "Verificando",
+      "hint": "Sin porcentaje inventado.",
+      "stages_label": "Etapas",
+      "aria_label": "Identificando"
     }
   },
   "gallery": {
@@ -756,7 +765,8 @@
     "viewDetail": "Ver ficha",
     "notInCatalog": "No está en el catálogo local.",
     "kicker": "Educación · Confusiones peligrosas",
-    "studioTitle": "Lookalike Studio",
+    "studioTitle": "Estudio de confusiones",
+    "addLookalike": "Añadir confusión",
     "studioSubtitle": "Coloca hasta tres setas frente a frente. Fotografía, riesgo y familia — para estudiar confusiones, no para decidir qué llevarse a la mesa.",
     "studioSubtitleShort": "Compara confusiones peligrosas — educación, no consumo.",
     "classicsTitle": "Confusiones clásicas",

@@ -18,6 +18,7 @@ import {
 } from '../api/client'
 import type { ClassificationResult, ObservationMetadata } from '../api/types'
 import { ResultCard } from '../components/ResultCard'
+import { Button, LinkButton, PageShell } from '../components/ui'
 import { PreflightBanner } from '../components/PreflightBanner'
 import { UploadZone } from '../components/UploadZone'
 import { CameraCapture } from '../components/CameraCapture'
@@ -46,6 +47,7 @@ import {
 import {
   appendHistory,
   buildHistoryEntry,
+  persistHistoryPreviews,
   clearHistoryStore,
   loadHistory,
   summarizeHistory,
@@ -138,26 +140,26 @@ function SoftConfirmPanel({
         })}
       </p>
       <div className="identify-soft-confirm__actions">
-        <button
+        <Button
           type="button"
-          className="btn-atelier btn-atelier--primary"
+          variant="primary"
           data-testid="identify-soft-confirm-add"
           onClick={onAdd}
         >
           {t(`identify.softConfirm.add.${coach.code}`, {
             defaultValue: en ? coach.addViewCtaEn : coach.addViewCtaEs,
           })}
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
-          className="btn-atelier btn-atelier--ghost"
+          variant="ghost"
           data-testid="identify-soft-confirm-proceed"
           onClick={onProceed}
         >
           {t(`identify.softConfirm.proceed.${coach.code}`, {
             defaultValue: en ? coach.proceedCtaEn : coach.proceedCtaEs,
           })}
-        </button>
+        </Button>
       </div>
     </div>
   )
@@ -180,11 +182,17 @@ function IdentifyGpsPinToggle({
         onChange={(e) => onChange(e.target.checked)}
         data-testid="identify-gps-pin-checkbox"
       />
-      <span>
-        {t('identify.gpsPinLabel', {
-          defaultValue:
-            'Guardar pin GPS local en el cuaderno (solo lat/lng · sin EXIF · no mapa público)',
-        })}
+      <span className="identify-gps-pin-toggle__copy">
+        <span className="identify-gps-pin-toggle__title">
+          {t('identify.gpsPinLabel', {
+            defaultValue: 'Guardar ubicación en el cuaderno',
+          })}
+        </span>
+        <span className="identify-gps-pin-toggle__hint muted">
+          {t('identify.gpsPinHint', {
+            defaultValue: 'Solo lat/lng · sin EXIF · privado (no mapa público)',
+          })}
+        </span>
       </span>
     </label>
   )
@@ -195,7 +203,9 @@ export function IdentifyPage() {
   const locale = i18n.resolvedLanguage || i18n.language || 'es'
   const [selectedImages, setSelectedImages] = useState<SelectedImage[]>([])
   const [assignments, setAssignments] = useState<SlotAssignment>({})
-  const [useWizard, setUseWizard] = useState(true)
+  // v1.12: free mode (1 photo) is the default — industry consensus (Seek/Lens/Picture Mushroom).
+  // Guided multi-view is an opt-in toggle for users who want max precision.
+  const [useWizard, setUseWizard] = useState(false)
   const [result, setResult] = useState<ClassificationResult | null>(null)
   const [loading, setLoading] = useState(false)
   /** Honest client pipeline stage while loading (B-28). */
@@ -205,6 +215,7 @@ export function IdentifyPage() {
   const [metadata, setMetadata] = useState<ObservationMetadata>({})
   const [history, setHistory] = useState<HistoryEntry[]>([])
   const [lightbox, setLightbox] = useState<string | null>(null)
+  const lightboxCloseRef = useRef<HTMLButtonElement | null>(null)
   const [showCompare, setShowCompare] = useState(false)
   const [showResultPhotos, setShowResultPhotos] = useState(false)
   /** Soft pre-submit coach (v1.7/v1.8): weak packet confirm — never hard-block default */
@@ -236,6 +247,23 @@ export function IdentifyPage() {
     setHistory(sliceHistoryForPlan(loadHistory(), plan))
     setIdentifyQuota(canIdentify())
   }, [plan])
+
+  useEffect(() => {
+    if (!lightbox) return
+    const prev = document.activeElement as HTMLElement | null
+    lightboxCloseRef.current?.focus()
+    const onKey = (ev: KeyboardEvent) => {
+      if (ev.key === 'Escape') {
+        ev.preventDefault()
+        setLightbox(null)
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      prev?.focus?.()
+    }
+  }, [lightbox])
 
   useEffect(() => {
     if (!preflightEnabled) return
@@ -456,9 +484,11 @@ export function IdentifyPage() {
       if (attachGpsPin) {
         pin = await requestBrowserNotebookPin()
       }
+      // Persist durable data-URL thumbs (blob: dies after reload)
+      const durablePreviews = await persistHistoryPreviews(previews)
       const entry = buildHistoryEntry({
         result: data,
-        previews,
+        previews: durablePreviews,
         view_types: viewTypes,
         pin: pin ?? undefined,
       })
@@ -509,9 +539,21 @@ export function IdentifyPage() {
     void handleClassify()
   }, [handleClassify])
 
+  /** Soft-confirm primary: leave panel and open next critical empty slot (camera). */
   const dismissSoftConfirm = useCallback(() => {
     setSoftConfirmOpen(false)
-  }, [])
+    if (useWizard) {
+      const next = nextCameraSlot(assignments)
+      if (next) {
+        setCameraTargetSlot(next)
+        setShowCamera(true)
+        return
+      }
+    }
+    // Free mode: open camera to add another photo
+    setCameraTargetSlot(null)
+    setShowCamera(true)
+  }, [useWizard, assignments])
 
   const handleFeedback = useCallback(
     async (isCorrect: boolean, species?: string) => {
@@ -558,49 +600,47 @@ export function IdentifyPage() {
   const preflightSettled = !preflight.loading || preflight.fetched_at > 0
 
   return (
-    <div
-      className="cn-page page-identify page-identify--v184 page-identify--cn"
-      data-testid="identify-page"
+    <PageShell
+      className="page-identify page-identify--v184 page-identify--cn"
+      testId="identify-page"
+      orientationSticky
+      orientationText={t('identify.orientationSticky', {
+        defaultValue: 'Solo orientación · nunca consumo',
+      })}
       data-phase={phase}
       data-preflight-mode={preflightEnabled ? preflight.mode : undefined}
       data-result-mode={resultMode ?? undefined}
       data-capture-mode={useWizard ? 'wizard' : 'free'}
     >
-      <p className="cn-warn-strip" role="note">
-        {t('identify.orientationSticky', {
-          defaultValue: 'Solo orientación · nunca consumo',
-        })}
-      </p>
-      <header className="mkt-page-head mkt-mesh identify-cn-head">
+      <header className="mkt-page-head mkt-mesh identify-cn-head identify-cn-head--clean">
         <p className="mkt-kicker">
           {t('identify.kicker', { defaultValue: 'Campo · multi-vista' })}
         </p>
         <h1>
           {t('identify.titleCn', {
-            defaultValue: 'Identificación Multi-vista',
+            defaultValue: 'Identificar',
           })}
         </h1>
-        <p>
-          {t('identify.bannerLead', {
+        <p className="identify-cn-head__lead">
+          {t('identify.bannerLeadShort', {
             defaultValue:
-              'Capturar múltiples ángulos críticos aumenta la precisión. Sigue las guías visuales para mejores resultados. Solo orientación — nunca consumo.',
+              'Varias fotos (láminas + perfil). Si duda, se calla. Solo orientación — nunca consumo.',
           })}
         </p>
         <ul
-          className="mkt-page-head__chips"
+          className="mkt-page-head__chips identify-cn-head__chips"
           aria-label={t('identify.principlesAria', {
             defaultValue: 'Principios de identificación',
           })}
         >
-          {orientationChips(locale).map((chip) => (
+          {orientationChips(locale).slice(0, 3).map((chip) => (
             <li key={chip}>{chip}</li>
           ))}
         </ul>
-        {/* Always-visible pro-check (competitive parity with commercial apps; safer framing) */}
         <p className="identify-pro-check" data-testid="identify-pro-check" role="note">
-          {t('identify.proCheck', {
+          {t('identify.proCheckShort', {
             defaultValue:
-              'Ninguna app es fiable para comer setas. Usa varias fotos (inferior + perfil), revisa lookalikes y confirma con un micólogo si hay duda.',
+              'Ninguna app autoriza comer setas. Confirma con un micólogo si hay duda.',
           })}
         </p>
       </header>
@@ -634,7 +674,9 @@ export function IdentifyPage() {
               <span className="identify-flow-steps__index" aria-hidden="true">
                 1
               </span>
-              <span className="identify-flow-steps__label">{t('identify.flow.preflight', { defaultValue: 'Preflight' })}</span>
+              <span className="identify-flow-steps__label">
+                {t('identify.flow.preflight', { defaultValue: 'Estado' })}
+              </span>
             </li>
             <li
               className={[
@@ -648,7 +690,9 @@ export function IdentifyPage() {
               <span className="identify-flow-steps__index" aria-hidden="true">
                 2
               </span>
-              <span className="identify-flow-steps__label">{t('identify.flow.capture', { defaultValue: 'Captura' })}</span>
+              <span className="identify-flow-steps__label">
+                {t('identify.flow.capture', { defaultValue: 'Fotos' })}
+              </span>
             </li>
             <li
               className={[
@@ -662,7 +706,9 @@ export function IdentifyPage() {
               <span className="identify-flow-steps__index" aria-hidden="true">
                 3
               </span>
-              <span className="identify-flow-steps__label">{t('identify.flow.result', { defaultValue: 'Resultado' })}</span>
+              <span className="identify-flow-steps__label">
+                {t('identify.flow.result', { defaultValue: 'Pista' })}
+              </span>
             </li>
           </ol>
         </nav>
@@ -714,32 +760,41 @@ export function IdentifyPage() {
               defaultValue: 'Captura multi-vista o libre',
             })}
           >
-            <div className="page-header identify-wizard-header">
-              <div className="identify-mode-toggle">
-                <button
+            <div className="page-header identify-wizard-header identify-wizard-header--clean">
+              <div
+                className="identify-mode-toggle capture-mode-toggle"
+                role="group"
+                aria-label={t('identify.modeToggleAria', {
+                  defaultValue: 'Modo de captura',
+                })}
+              >
+                <Button
                   type="button"
-                  className={
-                    useWizard
-                      ? 'btn-atelier btn-atelier--primary'
-                      : 'btn-atelier btn-atelier--ghost'
-                  }
+                  variant={useWizard ? 'primary' : 'ghost'}
+                  aria-pressed={useWizard}
                   onClick={() => setUseWizard(true)}
+                  data-testid="identify-mode-guided"
                 >
-                  {t('identify.modeGuided', { defaultValue: 'Modo guiado' })}
-                </button>
-                <button
+                  {t('identify.modeGuided', { defaultValue: 'Guiado' })}
+                </Button>
+                <Button
                   type="button"
-                  className={
-                    !useWizard
-                      ? 'btn-atelier btn-atelier--primary'
-                      : 'btn-atelier btn-atelier--ghost'
-                  }
+                  variant={!useWizard ? 'primary' : 'ghost'}
+                  aria-pressed={!useWizard}
                   onClick={() => setUseWizard(false)}
+                  data-testid="identify-mode-free"
                 >
-                  {t('identify.modeFree', { defaultValue: 'Modo libre' })}
-                </button>
-                <Link to="/historial" className="btn-atelier btn-atelier--ghost">
-                  Historial ({historySummary.total})
+                  {t('identify.modeFree', { defaultValue: 'Libre' })}
+                </Button>
+                <Link
+                  to="/historial"
+                  className="identify-mode-toggle__utility"
+                  data-testid="identify-open-history"
+                >
+                  {t('nav.history', {
+                    defaultValue: 'Cuaderno',
+                  })}
+                  {historySummary.total > 0 ? ` (${historySummary.total})` : ''}
                 </Link>
               </div>
               {identifyQuota.plan === 'free' && identifyQuota.limit != null && (
@@ -757,9 +812,9 @@ export function IdentifyPage() {
                   {quotaBlocked && (
                     <>
                       {' · '}
-                      <button
+                      <Button
                         type="button"
-                        className="btn-atelier btn-atelier--ghost"
+                        variant="ghost"
                         onClick={() => {
                           unlock()
                           setIdentifyQuota(canIdentify())
@@ -767,8 +822,10 @@ export function IdentifyPage() {
                         }}
                         data-testid="identify-unlock-pro"
                       >
-                        Activar Pro demo
-                      </button>
+                        {t('identify.unlockProDemo', {
+                          defaultValue: 'Pro (prueba en este dispositivo)',
+                        })}
+                      </Button>
                     </>
                   )}
                 </p>
@@ -781,16 +838,15 @@ export function IdentifyPage() {
                   assignments={assignments}
                   onAssign={onAssignSlot}
                   onClear={onClearSlot}
-                  onOpenCamera={() => {
-                    const next = nextCameraSlot(assignments)
-                    setCameraTargetSlot(next)
+                  onOpenCamera={(view) => {
+                    setCameraTargetSlot(view)
                     setShowCamera(true)
                   }}
                 />
                 {hasImages && (
-                  <div className="image-review-section">
+                  <div className="image-review-section image-review-section--wizard-clean">
                     <div
-                      className={`identify-capture-density identify-capture-density--${wizardPacketDensity.density}`}
+                      className={`identify-capture-density identify-capture-density--compact identify-capture-density--${wizardPacketDensity.density}`}
                       data-testid="identify-capture-density"
                       data-mode="wizard"
                       data-density={wizardPacketDensity.density}
@@ -809,19 +865,19 @@ export function IdentifyPage() {
                       </span>
                       <span className="identify-capture-density__critical">
                         {t('identify.captureDensity.critical', {
-                          defaultValue: 'críticas {{done}}/{{total}}',
+                          defaultValue: 'clave {{done}}/{{total}}',
                           done: wizardPacketDensity.criticalDone,
                           total: wizardPacketDensity.criticalTotal,
                         })}
                       </span>
-                      <p className="identify-capture-density__policy">
+                      <p className="identify-capture-density__policy visually-hidden">
                         {t('identify.captureDensity.policy', {
                           defaultValue:
                             'Densidad de captura · solo orientación · nunca permiso de consumo',
                         })}
                       </p>
                       <p
-                        className="identify-field-holdout-note"
+                        className="identify-field-holdout-note visually-hidden"
                         data-testid="identify-field-holdout-note"
                         role="note"
                       >
@@ -829,7 +885,7 @@ export function IdentifyPage() {
                         {fieldHoldoutCopy.policy}
                       </p>
                       <p
-                        className="identify-ece-note"
+                        className="identify-ece-note visually-hidden"
                         data-testid="identify-ece-note"
                         data-band={eceBand}
                         data-ece-source={eceSource}
@@ -838,31 +894,45 @@ export function IdentifyPage() {
                         {eceSticky}
                       </p>
                     </div>
-                    <MetadataForm metadata={metadata} onChange={setMetadata} />
+
                     {readiness.filled === 1 && (
                       <p
-                        className="identify-multiview-nudge"
+                        className="identify-multiview-nudge identify-multiview-nudge--compact"
                         data-testid="identify-multiview-nudge"
                         role="status"
                       >
-                        {t('identify.multiviewNudge.single', {
+                        {t('identify.multiviewNudge.singleShort', {
                           defaultValue:
-                            'Con 1 foto el modelo se abstiene más a menudo. Añade láminas + perfil (2+) para una pista más estable — siempre solo orientación, nunca consumo.',
+                            'Con 1 foto se abstiene más. Añade láminas + perfil si puedes.',
                         })}
                       </p>
                     )}
                     {readiness.filled >= 2 && readiness.filled < 4 && (
                       <p
-                        className="identify-multiview-nudge identify-multiview-nudge--ok"
+                        className="identify-multiview-nudge identify-multiview-nudge--ok identify-multiview-nudge--compact"
                         data-testid="identify-multiview-nudge"
                         role="status"
                       >
-                        {t('identify.multiviewNudge.pair', {
-                          defaultValue:
-                            'Buen paquete (2+ vistas). Hábitat y detalle bajan confusiones con lookalikes — sin permiso de consumo.',
+                        {t('identify.multiviewNudge.pairShort', {
+                          defaultValue: 'Buen paquete. Hábitat y detalle ayudan a bajar confusiones.',
                         })}
                       </p>
                     )}
+
+                    <details className="identify-advanced-details">
+                      <summary>
+                        {t('identify.advancedOptions', {
+                          defaultValue: 'Opciones (GPS, notas)',
+                        })}
+                      </summary>
+                      <MetadataForm metadata={metadata} onChange={setMetadata} />
+                      <IdentifyGpsPinToggle
+                        checked={attachGpsPin}
+                        onChange={setAttachGpsPin}
+                        t={t}
+                      />
+                    </details>
+
                     {softConfirmOpen && preSubmitCoach.needsSoftConfirm && (
                       <SoftConfirmPanel
                         coach={preSubmitCoach}
@@ -872,20 +942,18 @@ export function IdentifyPage() {
                         onProceed={confirmClassifySoft}
                       />
                     )}
-                    <IdentifyGpsPinToggle
-                      checked={attachGpsPin}
-                      onChange={setAttachGpsPin}
-                      t={t}
-                    />
-                    <div className="analyze-actions">
-                      <button
+
+                    <div className="analyze-actions analyze-actions--wizard sticky-analyze">
+                      <Button
                         type="button"
-                        className="btn-atelier btn-atelier--primary"
+                        variant="primary"
+                        block
                         onClick={requestClassify}
                         disabled={loading || !readiness.canSubmit || !canClickSubmit}
                         data-testid="identify-submit"
                         data-soft-coach={preSubmitCoach.needsSoftConfirm ? '1' : '0'}
                         data-mode="wizard"
+                        className="identify-submit-btn"
                         title={
                           !submitAllowed
                             ? t('identify.apiDisabledTitle', {
@@ -909,19 +977,15 @@ export function IdentifyPage() {
                           <>
                             <IconSearch size={18} />
                             {t('identify.analyzeViews', {
-                              defaultValue: 'Analizar ({{n}} vistas)',
+                              defaultValue: 'Identificar ({{n}})',
                               n: readiness.filled,
                             })}
                           </>
                         )}
-                      </button>
-                      <button
-                        type="button"
-                        className="btn-atelier btn-atelier--ghost"
-                        onClick={reset}
-                      >
-                        {t('identify.cancel', { defaultValue: 'Cancelar' })}
-                      </button>
+                      </Button>
+                      <Button type="button" variant="ghost" onClick={reset}>
+                        {t('identify.cancel', { defaultValue: 'Empezar de nuevo' })}
+                      </Button>
                     </div>
                   </div>
                 )}
@@ -929,25 +993,36 @@ export function IdentifyPage() {
             )}
 
             {!useWizard && !hasImages && (
-              <UploadZone
-                getRootProps={getRootProps}
-                getInputProps={getInputProps}
-                isDragActive={isDragActive}
-                fileCount={selectedImages.length}
-                onOpenCamera={() => setShowCamera(true)}
-              />
+              <div className="identify-free-empty" data-testid="identify-free-empty">
+                <p className="identify-free-empty__tip" role="note">
+                  {t('identify.freeEmptyTip', {
+                    defaultValue:
+                      'Libre: sube 1–4 fotos (láminas + perfil ayudan). Solo orientación · nunca consumo.',
+                  })}
+                </p>
+                <UploadZone
+                  getRootProps={getRootProps}
+                  getInputProps={getInputProps}
+                  isDragActive={isDragActive}
+                  fileCount={selectedImages.length}
+                  onOpenCamera={() => setShowCamera(true)}
+                />
+              </div>
             )}
 
             {!useWizard && hasImages && (
-              <div className="image-review-section identify-free-capture" data-testid="identify-free-capture">
-                <h2>
+              <div
+                className="image-review-section identify-free-capture image-review-section--wizard-clean"
+                data-testid="identify-free-capture"
+              >
+                <h2 className="identify-free-capture__title">
                   {t('identify.freeSelectedTitle', {
-                    defaultValue: 'Fotos seleccionadas ({{n}})',
+                    defaultValue: 'Fotos ({{n}})',
                     n: selectedImages.length,
                   })}
                 </h2>
                 <div
-                  className={`identify-capture-density identify-capture-density--${freeCaptureCoach.density.density}`}
+                  className={`identify-capture-density identify-capture-density--compact identify-capture-density--${freeCaptureCoach.density.density}`}
                   data-testid="identify-capture-density"
                   data-mode="free"
                   data-density={freeCaptureCoach.density.density}
@@ -955,7 +1030,7 @@ export function IdentifyPage() {
                 >
                   <span className="identify-capture-density__chip">
                     {t('identify.captureDensity.chip', {
-                      defaultValue: '{{n}} vistas · {{views}}',
+                      defaultValue: '{{n}} fotos',
                       n: selectedImages.length,
                       views:
                         formatViewTypesShort(freeHeuristicViews, locale) ||
@@ -964,26 +1039,29 @@ export function IdentifyPage() {
                         }),
                     })}
                   </span>
-                  <span className="identify-capture-density__critical">
+                  <span className="identify-capture-density__critical visually-hidden">
                     {t('identify.captureDensity.critical', {
-                      defaultValue: 'críticas {{done}}/{{total}}',
+                      defaultValue: 'vistas clave {{done}}/{{total}}',
                       done: freeCaptureCoach.density.criticalDone,
                       total: freeCaptureCoach.density.criticalTotal,
                     })}
                   </span>
-                  <p className="identify-capture-density__line" data-testid="identify-free-capture-coach">
+                  <p
+                    className="identify-capture-density__line identify-free-coach-line"
+                    data-testid="identify-free-capture-coach"
+                  >
                     {locale.toLowerCase().startsWith('en')
                       ? freeCaptureCoach.lineEn
                       : freeCaptureCoach.lineEs}
                   </p>
-                  <p className="identify-capture-density__policy">
+                  <p className="identify-capture-density__policy visually-hidden">
                     {t('identify.captureDensity.policy', {
                       defaultValue:
                         'Densidad de captura · solo orientación · nunca permiso de consumo',
                     })}
                   </p>
                 </div>
-                <div className="image-grid">
+                <div className="image-grid image-grid--free-clean">
                   {selectedImages.map((img, idx) => {
                     const viewLabel = freeHeuristicViews[idx]
                     return (
@@ -991,7 +1069,15 @@ export function IdentifyPage() {
                         key={idx}
                         className="image-grid-item"
                         data-view={viewLabel || undefined}
+                        role="button"
+                        tabIndex={0}
                         onClick={() => setLightbox(img.preview)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault()
+                            setLightbox(img.preview)
+                          }
+                        }}
                       >
                         <img
                           src={img.preview}
@@ -999,6 +1085,11 @@ export function IdentifyPage() {
                             defaultValue: 'Seta {{n}}',
                             n: idx + 1,
                           })}
+                          loading="lazy"
+                          decoding="async"
+                          onError={(e) => {
+                            e.currentTarget.style.opacity = '0.3'
+                          }}
                         />
                         {viewLabel ? (
                           <span
@@ -1010,7 +1101,10 @@ export function IdentifyPage() {
                             })}
                           </span>
                         ) : null}
-                        <button
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
                           className="btn-remove-image"
                           onClick={(e) => {
                             e.stopPropagation()
@@ -1021,36 +1115,47 @@ export function IdentifyPage() {
                           })}
                         >
                           <IconClose size={14} />
-                        </button>
+                        </Button>
                       </div>
                     )
                   })}
                 </div>
-                <MetadataForm metadata={metadata} onChange={setMetadata} />
                 {selectedImages.length === 1 && (
                   <p
-                    className="identify-multiview-nudge"
+                    className="identify-multiview-nudge identify-multiview-nudge--compact"
                     data-testid="identify-multiview-nudge"
                     role="status"
                   >
-                    {t('identify.multiviewNudge.single', {
+                    {t('identify.multiviewNudge.singleShort', {
                       defaultValue:
-                        'Con 1 foto el modelo se abstiene más a menudo. Añade láminas + perfil (2+) para una pista más estable — siempre solo orientación, nunca consumo.',
+                        'Con 1 foto se abstiene más. Añade láminas + perfil si puedes.',
                     })}
                   </p>
                 )}
                 {selectedImages.length >= 2 && selectedImages.length < 4 && (
                   <p
-                    className="identify-multiview-nudge identify-multiview-nudge--ok"
+                    className="identify-multiview-nudge identify-multiview-nudge--ok identify-multiview-nudge--compact"
                     data-testid="identify-multiview-nudge"
                     role="status"
                   >
-                    {t('identify.multiviewNudge.pair', {
-                      defaultValue:
-                        'Buen paquete (2+ vistas). Hábitat y detalle bajan confusiones con lookalikes — sin permiso de consumo.',
+                    {t('identify.multiviewNudge.pairShort', {
+                      defaultValue: 'Buen paquete. Más fotos bajan confusiones.',
                     })}
                   </p>
                 )}
+                <details className="identify-advanced-details">
+                  <summary>
+                    {t('identify.advancedOptions', {
+                      defaultValue: 'Opciones (GPS, notas)',
+                    })}
+                  </summary>
+                  <MetadataForm metadata={metadata} onChange={setMetadata} />
+                  <IdentifyGpsPinToggle
+                    checked={attachGpsPin}
+                    onChange={setAttachGpsPin}
+                    t={t}
+                  />
+                </details>
                 {softConfirmOpen && preSubmitCoach.needsSoftConfirm && (
                   <SoftConfirmPanel
                     coach={preSubmitCoach}
@@ -1060,20 +1165,17 @@ export function IdentifyPage() {
                     onProceed={confirmClassifySoft}
                   />
                 )}
-                <IdentifyGpsPinToggle
-                  checked={attachGpsPin}
-                  onChange={setAttachGpsPin}
-                  t={t}
-                />
-                <div className="analyze-actions">
-                  <button
+                <div className="analyze-actions analyze-actions--wizard sticky-analyze">
+                  <Button
                     type="button"
-                    className="btn-atelier btn-atelier--primary"
+                    variant="primary"
+                    block
                     onClick={requestClassify}
                     disabled={loading || !canClickSubmit}
                     data-testid="identify-submit"
                     data-soft-coach={preSubmitCoach.needsSoftConfirm ? '1' : '0'}
                     data-mode="free"
+                    className="identify-submit-btn"
                     title={
                       !submitAllowed
                         ? t('identify.apiDisabledTitle', {
@@ -1097,27 +1199,30 @@ export function IdentifyPage() {
                       <>
                         <IconSearch size={18} />
                         {t('identify.analyzeViews', {
-                          defaultValue: 'Analizar ({{n}} vistas)',
+                          defaultValue: 'Identificar ({{n}})',
                           n: selectedImages.length,
                         })}
                       </>
                     )}
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     type="button"
-                    className="btn-atelier btn-atelier--ghost"
-                    {...getRootProps()}
+                    variant="ghost"
+                    onClick={() => {
+                      setCameraTargetSlot(null)
+                      setShowCamera(true)
+                    }}
+                    data-testid="identify-free-camera"
                   >
+                    {t('identify.camera', { defaultValue: 'Cámara' })}
+                  </Button>
+                  <Button type="button" variant="ghost" {...getRootProps()}>
                     {t('identify.addMorePhotos', { defaultValue: '+ Añadir más fotos' })}
-                  </button>
+                  </Button>
                   <input {...getInputProps()} />
-                  <button
-                    type="button"
-                    className="btn-atelier btn-atelier--ghost"
-                    onClick={reset}
-                  >
-                    {t('identify.cancel', { defaultValue: 'Cancelar' })}
-                  </button>
+                  <Button type="button" variant="ghost" onClick={reset}>
+                    {t('identify.cancel', { defaultValue: 'Empezar de nuevo' })}
+                  </Button>
                 </div>
               </div>
             )}
@@ -1144,6 +1249,11 @@ export function IdentifyPage() {
               </p>
               <p className="identify-loading__hint muted">
                 {t('honesty.loading.hint')}
+              </p>
+              <p className="identify-loading__orient muted" role="note" data-testid="identify-loading-orient">
+                {t('identify.loadingOrient', {
+                  defaultValue: 'Solo orientación · puede abstenerse · nunca consumo',
+                })}
               </p>
 
               <ol
@@ -1186,9 +1296,9 @@ export function IdentifyPage() {
         {error && (
           <div className="error-banner" data-testid="identify-error" role="alert">
             <strong>{t('error.defaultTitle', { defaultValue: 'Error' })}:</strong> {error}
-            <button className="btn-retry" onClick={reset}>
+            <Button type="button" variant="secondary" className="btn-retry" onClick={reset}>
               {t('actions.retry', { defaultValue: 'Reintentar' })}
-            </button>
+            </Button>
           </div>
         )}
 
@@ -1219,11 +1329,20 @@ export function IdentifyPage() {
                     ? orderedSlotKeys(assignments).map((k) => assignments[k]!.previewUrl)
                     : selectedImages.map((i) => i.preview)
                 }
+                onFocusWizardSlot={(view) => {
+                  setUseWizard(true)
+                  setResult(null)
+                  setError(null)
+                  setSoftConfirmOpen(false)
+                  setCameraTargetSlot(view)
+                  setShowCamera(true)
+                }}
               />
               <div className="result-image-section result-image-section--deferred">
-                <button
+                <Button
                   type="button"
-                  className="result-photos-toggle btn-atelier btn-atelier--ghost"
+                  variant="ghost"
+                  className="result-photos-toggle"
                   data-testid="result-photos-toggle"
                   aria-expanded={showResultPhotos}
                   onClick={() => setShowResultPhotos((v) => !v)}
@@ -1231,7 +1350,7 @@ export function IdentifyPage() {
                   {showResultPhotos
                     ? t('identify.hidePhotos', { defaultValue: 'Ocultar fotos enviadas' })
                     : t('identify.showPhotos', { defaultValue: 'Ver fotos enviadas' })}
-                </button>
+                </Button>
                 {showResultPhotos && (
                   <div className="result-image-grid">
                     {(useWizard
@@ -1241,30 +1360,38 @@ export function IdentifyPage() {
                       <img
                         key={idx}
                         src={src}
-                        alt={`Resultado ${idx + 1}`}
+                        alt={t('identify.resultPhotoAlt', { defaultValue: 'Resultado {{n}}', n: idx + 1 })}
                         className="preview-image"
+                        loading="lazy"
+                        decoding="async"
+                        role="button"
+                        tabIndex={0}
                         onClick={() => setLightbox(src)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault()
+                            setLightbox(src)
+                          }
+                        }}
+                        onError={(e) => {
+                          e.currentTarget.style.visibility = 'hidden'
+                        }}
                       />
                     ))}
                   </div>
                 )}
-                <div className="result-actions-bar">
-                  <button
-                    type="button"
-                    className="btn-atelier btn-atelier--primary"
-                    onClick={reset}
-                    data-testid="identify-new-analysis"
-                  >
-                    {t('identify.newAnalysis', { defaultValue: 'Nuevo análisis' })}
-                  </button>
-                  <Link to="/historial" className="btn-atelier btn-atelier--ghost">
+                {/* Secondary links only — primary lives in sticky bar to avoid dual primaries */}
+                <div className="result-actions-bar result-actions-bar--secondary">
+                  <LinkButton to="/historial" variant="ghost" data-testid="identify-result-notebook">
                     <IconHistory size={16} />
                     {t('nav.notebook', { defaultValue: 'Cuaderno' })}
-                  </Link>
-                  <Link to="/revision-experta" className="btn-atelier btn-atelier--ghost">
-                    <IconExpert size={16} />
-                    {t('nav.experts', { defaultValue: 'Expertos' })}
-                  </Link>
+                  </LinkButton>
+                  <LinkButton to="/lookalikes" variant="ghost" data-testid="identify-result-lookalikes">
+                    {t('nav.lookalikes', { defaultValue: 'Confusiones' })}
+                  </LinkButton>
+                  <LinkButton to="/educacion" variant="ghost" data-testid="identify-result-edu">
+                    {t('nav.education', { defaultValue: 'Educación' })}
+                  </LinkButton>
                 </div>
               </div>
             </div>
@@ -1281,55 +1408,96 @@ export function IdentifyPage() {
         >
           <p className="identify-sticky-cta__copy">{orientationStickyLine(locale)}</p>
           <div className="identify-sticky-cta__actions">
-            <button
+            <Button
               type="button"
-              className="btn-atelier btn-atelier--primary identify-submit-btn"
+              variant="primary"
+              className="identify-submit-btn"
               onClick={reset}
               data-testid="identify-sticky-new"
             >
               {t('identify.newAnalysis', { defaultValue: 'Nuevo análisis' })}
-            </button>
-            <Link
+            </Button>
+            <LinkButton
               to="/revision-experta"
-              className="btn-atelier btn-atelier--ghost"
+              variant="ghost"
               data-testid="identify-sticky-expert"
             >
               <IconExpert size={16} />
-              {t('nav.experts', { defaultValue: 'Expertos' })}
-            </Link>
+              {t('nav.experts', { defaultValue: 'Revisión experta' })}
+            </LinkButton>
           </div>
         </div>
       )}
 
       {lightbox && (
-        <div className="lightbox" onClick={() => setLightbox(null)}>
-          <img src={lightbox} alt="Vista ampliada" />
-          <button
+        <div
+          className="lightbox"
+          role="dialog"
+          aria-modal="true"
+          aria-label={t('identify.lightboxAlt', { defaultValue: 'Vista ampliada' })}
+          data-testid="identify-lightbox"
+          onClick={() => setLightbox(null)}
+          onKeyDown={(ev) => {
+            if (ev.key === 'Escape') setLightbox(null)
+          }}
+        >
+          <img
+            src={lightbox}
+            alt={t('identify.lightboxAlt', { defaultValue: 'Vista ampliada' })}
+            decoding="async"
+            onClick={(ev) => ev.stopPropagation()}
+            onError={(e) => {
+              e.currentTarget.style.opacity = '0.3'
+            }}
+          />
+          <Button
+            ref={lightboxCloseRef}
+            type="button"
+            variant="ghost"
+            size="sm"
             className="lightbox-close"
-            onClick={() => setLightbox(null)}
+            data-testid="identify-lightbox-close"
+            onClick={(ev) => {
+              ev.stopPropagation()
+              setLightbox(null)
+            }}
             aria-label={t('actions.back', { defaultValue: 'Cerrar' })}
           >
             <IconClose size={18} />
-          </button>
+          </Button>
         </div>
       )}
 
       {history.length > 0 && phase === 'capture' && (
         <div className="history-section" data-testid="identify-history">
           <div className="history-header">
-            <h2>Historial reciente ({historySummary.total})</h2>
+            <h2>
+              {t('identify.recentHistory', {
+                defaultValue: 'Historial reciente ({{n}})',
+                n: historySummary.total,
+              })}
+            </h2>
             <div className="history-actions">
-              <Link to="/historial">Ver todo</Link>
-              <button
+              <Link to="/historial">
+                {t('identify.viewAllHistory', { defaultValue: 'Ver todo' })}
+              </Link>
+              <Button
+                type="button"
+                variant="ghost"
                 className="btn-compare"
                 onClick={() => setShowCompare(true)}
                 disabled={history.length < 2}
               >
-                ⇄ Comparar
-              </button>
-              <button className="btn-clear-history" onClick={clearHistory}>
-                Limpiar
-              </button>
+                {t('identify.compare', { defaultValue: 'Comparar' })}
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                className="btn-clear-history"
+                onClick={clearHistory}
+              >
+                {t('actions.clear', { defaultValue: 'Limpiar' })}
+              </Button>
             </div>
           </div>
           <div className="history-grid">
@@ -1342,7 +1510,16 @@ export function IdentifyPage() {
                 }}
               >
                 {entry.previews[0] && (
-                  <img src={entry.previews[0]} alt="Historial" className="history-thumb" />
+                  <img
+                    src={entry.previews[0]}
+                    alt={t('identify.historyThumbAlt', { defaultValue: 'Vista previa del historial' })}
+                    className="history-thumb"
+                    loading="lazy"
+                    decoding="async"
+                    onError={(e) => {
+                      e.currentTarget.style.visibility = 'hidden'
+                    }}
+                  />
                 )}
                 <div className="history-meta">
                   <span className="history-time">
@@ -1368,6 +1545,6 @@ export function IdentifyPage() {
           }}
         />
       )}
-    </div>
+    </PageShell>
   )
 }
