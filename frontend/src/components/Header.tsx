@@ -125,12 +125,14 @@ export function Header({ layoutMode = 'app', onLayoutModeChange }: HeaderProps =
   )
 
   useEffect(() => {
-    // Force Campo nocturno (Stitch B) — product is night UI
-    const initial = 'dark'
+    // Campo nocturno skin is always on (Stitch B product direction), but
+    // respect the user's light/dark theme choice from localStorage instead of
+    // forcing dark on every mount (audit fix UX#21 — broken toggle).
+    const stored = localStorage.getItem(THEME_KEY) as 'light' | 'dark' | null
+    const initial = stored ?? 'dark'
     setTheme(initial)
     document.documentElement.setAttribute('data-theme', initial)
     document.documentElement.dataset.skin = 'campo-nocturno'
-    localStorage.setItem(THEME_KEY, initial)
   }, [])
 
   useEffect(() => {

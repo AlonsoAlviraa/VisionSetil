@@ -144,22 +144,22 @@ export function HomePage() {
         </span>
       </div>
 
-      {/* ── Three doors ─────────────────────────────────────────────────── */}
+      {/* ── Quick doors ─────────────────────────────────────────────────── */}
       <div className="cn-home-lower">
         <nav
           className="cn-home-quick cn-home-quick--grid"
           aria-label={t('home.ariaDiscover', { defaultValue: 'Explorar' })}
         >
           <Link
-            to="/juegos"
-            className="cn-home-quick__card cn-glass"
-            data-testid="home-quick-games"
+            to="/identificar"
+            className="cn-home-quick__card cn-home-quick__card--primary cn-glass"
+            data-testid="home-quick-identify"
           >
             <span className="cn-home-quick__icon" aria-hidden="true">
-              <Icon name="extension" size="lg" />
+              <Icon name="center_focus_strong" size="lg" filled />
             </span>
             <span className="cn-home-quick__label">
-              {t('nav.games', { defaultValue: 'Juegos' })}
+              {t('nav.identify', { defaultValue: 'Identificar' })}
             </span>
           </Link>
           <Link
@@ -186,6 +186,18 @@ export function HomePage() {
               {t('nav.map', { defaultValue: 'Mapa' })}
             </span>
           </Link>
+          <Link
+            to="/juegos"
+            className="cn-home-quick__card cn-glass"
+            data-testid="home-quick-games"
+          >
+            <span className="cn-home-quick__icon" aria-hidden="true">
+              <Icon name="extension" size="lg" />
+            </span>
+            <span className="cn-home-quick__label">
+              {t('nav.games', { defaultValue: 'Juegos' })}
+            </span>
+          </Link>
         </nav>
 
         <section
@@ -207,14 +219,6 @@ export function HomePage() {
                 defaultValue: 'Pantalla suave para el bosque.',
               })}
             </p>
-          </div>
-          <div className="cn-home-obs__avatars" aria-hidden="true">
-            <span className="cn-home-obs__avatar" />
-            <span className="cn-home-obs__avatar" />
-            <span className="cn-home-obs__avatar" />
-            <span className="cn-home-obs__avatar-count">
-              {t('home.obsCount', { defaultValue: '+12 hoy' })}
-            </span>
           </div>
           <p className="cn-home-obs__meta">
             {t('home.obsMeta', {

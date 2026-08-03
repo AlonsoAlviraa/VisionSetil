@@ -187,7 +187,13 @@ export function saveHandoffDraft(
   draft: ExpertHandoffDraft,
   storage: StorageLike = localStorage,
 ): void {
-  storage.setItem(EXPERT_HANDOFF_KEY, JSON.stringify(draft))
+  // Audit fix: wrap both setItem calls in try/catch (QuotaExceededError was
+  // uncaught — mirrors the pattern in observationHistory/studyBadges).
+  try {
+    storage.setItem(EXPERT_HANDOFF_KEY, JSON.stringify(draft))
+  } catch {
+    /* quota full — draft not persisted, but caller continues */
+  }
   // Also append to queue (cap 20)
   let queue: ExpertHandoffDraft[] = []
   try {
@@ -197,7 +203,11 @@ export function saveHandoffDraft(
     queue = []
   }
   queue = [draft, ...queue.filter((d) => d.id !== draft.id)].slice(0, 20)
-  storage.setItem(EXPERT_HANDOFF_QUEUE_KEY, JSON.stringify(queue))
+  try {
+    storage.setItem(EXPERT_HANDOFF_QUEUE_KEY, JSON.stringify(queue))
+  } catch {
+    /* quota full — queue not persisted */
+  }
 }
 
 export function loadHandoffDraft(storage: StorageLike = localStorage): ExpertHandoffDraft | null {

@@ -539,6 +539,13 @@ export function IdentifyPage() {
     void handleClassify()
   }, [handleClassify])
 
+  /** Retry: re-run classify with existing photos (audit fix — was calling reset()
+   * which destroyed the user's uploaded photos on every network blip). */
+  const retryClassify = useCallback(() => {
+    setError(null)
+    void handleClassify()
+  }, [handleClassify])
+
   /** Soft-confirm primary: leave panel and open next critical empty slot (camera). */
   const dismissSoftConfirm = useCallback(() => {
     setSoftConfirmOpen(false)
@@ -1296,7 +1303,7 @@ export function IdentifyPage() {
         {error && (
           <div className="error-banner" data-testid="identify-error" role="alert">
             <strong>{t('error.defaultTitle', { defaultValue: 'Error' })}:</strong> {error}
-            <Button type="button" variant="secondary" className="btn-retry" onClick={reset}>
+            <Button type="button" variant="secondary" className="btn-retry" onClick={retryClassify}>
               {t('actions.retry', { defaultValue: 'Reintentar' })}
             </Button>
           </div>
