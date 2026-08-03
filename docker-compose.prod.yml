@@ -89,6 +89,18 @@ services:
     volumes:
       - model_weights:/app/backend/app/ml/weights
       - upload_data:/app/backend/uploads
+    healthcheck:
+      # Audit fix: prod backend had no healthcheck (dev compose did).
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/readyz', timeout=5).read()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          # Audit fix: prevent silent OOM on torch model load.
+          memory: 4g
     networks:
       - internal
       - edge

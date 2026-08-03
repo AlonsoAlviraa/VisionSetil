@@ -40,6 +40,7 @@ class Observation(Base):
 
 class ObservationImage(Base):
     __tablename__ = "observation_images"
+    __table_args__ = (Index("ix_observation_images_observation_id", "observation_id"),)
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     observation_id: Mapped[int] = mapped_column(ForeignKey("observations.id"))
@@ -58,7 +59,10 @@ class ObservationImage(Base):
 
 class HumanReviewRequest(Base):
     __tablename__ = "human_review_requests"
-    __table_args__ = (Index("ix_human_review_requests_organization_id", "organization_id"),)
+    __table_args__ = (
+        Index("ix_human_review_requests_organization_id", "organization_id"),
+        Index("ix_human_review_requests_observation_id", "observation_id"),
+    )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     observation_id: Mapped[int] = mapped_column(ForeignKey("observations.id"))
@@ -85,6 +89,8 @@ class ClassificationJob(Base):
     __table_args__ = (
         Index("ix_classification_jobs_organization_id", "organization_id"),
         Index("ix_classification_jobs_status", "status"),
+        Index("ix_classification_jobs_observation_id", "observation_id"),
+        Index("ix_classification_jobs_org_status", "organization_id", "status"),
     )
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True)
@@ -133,7 +139,10 @@ class AuthSession(Base):
     """Bearer token session for SPA login."""
 
     __tablename__ = "auth_sessions"
-    __table_args__ = (Index("ix_auth_sessions_token", "token", unique=True),)
+    __table_args__ = (
+        Index("ix_auth_sessions_token", "token", unique=True),
+        Index("ix_auth_sessions_user_id", "user_id"),
+    )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
@@ -150,7 +159,10 @@ class CommunityPost(Base):
     """Community feed post (chat-style) with optional photo."""
 
     __tablename__ = "community_posts"
-    __table_args__ = (Index("ix_community_posts_created_at", "created_at"),)
+    __table_args__ = (
+        Index("ix_community_posts_created_at", "created_at"),
+        Index("ix_community_posts_author_id", "author_id"),
+    )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     author_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
@@ -174,7 +186,10 @@ class CommunityComment(Base):
     """Comment on a community post."""
 
     __tablename__ = "community_comments"
-    __table_args__ = (Index("ix_community_comments_post_id", "post_id"),)
+    __table_args__ = (
+        Index("ix_community_comments_post_id", "post_id"),
+        Index("ix_community_comments_author_id", "author_id"),
+    )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     post_id: Mapped[int] = mapped_column(ForeignKey("community_posts.id"))

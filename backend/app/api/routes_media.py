@@ -18,7 +18,8 @@ def get_species_gallery(slug: str) -> JSONResponse:
     data = species_media.list_gallery(slug)
     return JSONResponse(
         content=data,
-        headers={"Cache-Control": "public, max-age=300"},
+        # Audit fix: species media is content-addressed (immutable per slug).
+        headers={"Cache-Control": "public, max-age=86400"},
     )
 
 

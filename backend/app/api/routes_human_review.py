@@ -18,6 +18,22 @@ from app.db.schemas import (
 router = APIRouter()
 
 
+# ─── Pydantic models for batch/stats/export routes (declared early so the
+# static-segment routes that use them can be registered before {review_id}) ──
+
+
+class BatchAssignRequest(BaseModel):
+    """Pydantic model for batch assignment of review requests."""
+
+    review_ids: list[int]
+    assigned_to: str
+
+
+class BatchAssignResponse(BaseModel):
+    assigned_count: int
+    skipped_ids: list[int]
+
+
 def check_safety_policy(notes: str | None, taxon: str | None):
     forbidden = [
         "safe_to_eat",
@@ -92,65 +108,6 @@ def list_human_reviews(
         stmt = stmt.where(HumanReviewRequest.assigned_to == assigned_to)
     stmt = stmt.order_by(HumanReviewRequest.created_at.desc()).limit(limit).offset(offset)
     return list(db.scalars(stmt))
-
-
-@router.get("/human-reviews/{review_id}", response_model=HumanReviewRequestRead)
-def get_human_review(
-    review_id: int,
-    db: Session = Depends(get_db),
-    _reviewer: User = Depends(get_reviewer_user),
-) -> HumanReviewRequest:
-    request = db.get(HumanReviewRequest, review_id)
-    if request is None:
-        raise HTTPException(status_code=404, detail="Human review request not found")
-    return request
-
-
-@router.patch("/human-reviews/{review_id}", response_model=HumanReviewRequestRead)
-def update_human_review(
-    review_id: int,
-    payload: HumanReviewRequestUpdate,
-    db: Session = Depends(get_db),
-    _reviewer: User = Depends(get_reviewer_user),
-) -> HumanReviewRequest:
-    request = db.get(HumanReviewRequest, review_id)
-    if request is None:
-        raise HTTPException(status_code=404, detail="Human review request not found")
-
-    check_safety_policy(payload.reviewer_notes, payload.reviewer_taxon)
-
-    if payload.status is not None:
-        request.status = payload.status
-        if payload.status in ("resolved", "rejected"):
-            request.resolved_at = datetime.now(UTC)
-    if payload.reviewer_notes is not None:
-        request.reviewer_notes = payload.reviewer_notes
-    if payload.reviewer_taxon is not None:
-        request.reviewer_taxon = payload.reviewer_taxon
-    if payload.reviewer_confidence is not None:
-        request.reviewer_confidence = payload.reviewer_confidence
-    if payload.assigned_to is not None:
-        request.assigned_to = payload.assigned_to
-
-    db.add(request)
-    db.commit()
-    db.refresh(request)
-    return request
-
-
-# ─── MO-6: Batch assignment, statistics, and export ────────────────────────────
-
-
-class BatchAssignRequest(BaseModel):
-    """Pydantic model for batch assignment of review requests."""
-
-    review_ids: list[int]
-    assigned_to: str
-
-
-class BatchAssignResponse(BaseModel):
-    assigned_count: int
-    skipped_ids: list[int]
 
 
 @router.post("/human-reviews/batch-assign", response_model=BatchAssignResponse)
@@ -252,3 +209,51 @@ def export_reviews_json(
         }
         for r in reviews
     ]
+
+
+@router.get("/human-reviews/{review_id}", response_model=HumanReviewRequestRead)
+def get_human_review(
+    review_id: int,
+    db: Session = Depends(get_db),
+    _reviewer: User = Depends(get_reviewer_user),
+) -> HumanReviewRequest:
+    request = db.get(HumanReviewRequest, review_id)
+    if request is None:
+        raise HTTPException(status_code=404, detail="Human review request not found")
+    return request
+
+
+@router.patch("/human-reviews/{review_id}", response_model=HumanReviewRequestRead)
+def update_human_review(
+    review_id: int,
+    payload: HumanReviewRequestUpdate,
+    db: Session = Depends(get_db),
+    _reviewer: User = Depends(get_reviewer_user),
+) -> HumanReviewRequest:
+    request = db.get(HumanReviewRequest, review_id)
+    if request is None:
+        raise HTTPException(status_code=404, detail="Human review request not found")
+
+    check_safety_policy(payload.reviewer_notes, payload.reviewer_taxon)
+
+    if payload.status is not None:
+        request.status = payload.status
+        if payload.status in ("resolved", "rejected"):
+            request.resolved_at = datetime.now(UTC)
+    if payload.reviewer_notes is not None:
+        request.reviewer_notes = payload.reviewer_notes
+    if payload.reviewer_taxon is not None:
+        request.reviewer_taxon = payload.reviewer_taxon
+    if payload.reviewer_confidence is not None:
+        request.reviewer_confidence = payload.reviewer_confidence
+    if payload.assigned_to is not None:
+        request.assigned_to = payload.assigned_to
+
+    db.add(request)
+    db.commit()
+    db.refresh(request)
+    return request
+
+
+# ─── MO-6: Batch assignment, statistics, and export ────────────────────────────
+# (Classes moved to top of file; routes registered above, before {review_id}.)
