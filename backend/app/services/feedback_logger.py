@@ -76,9 +76,12 @@ def build_s9_log_entry(
 ) -> dict[str, Any]:
     """Build a single S9-friendly classification log row (pure; never unlocks)."""
     meta = dict(metadata or {})
-    # Force orientation policy stamps
+    # Force orientation policy stamps (hostile metadata cannot smuggle forage/unlock)
     meta["product_unlock"] = False
-    meta.setdefault("policy", "orientation_only_never_consume")
+    meta["forage_permission"] = False
+    meta["consumption_permission"] = False
+    meta["can_auto_unlock"] = False
+    meta["policy"] = "orientation_only_never_consume"
 
     view_cov = normalize_view_coverage(
         meta.get("view_coverage") or meta.get("view_types")
@@ -114,6 +117,9 @@ def build_s9_log_entry(
         "view_types": view_cov,
         "n_views": len(view_cov),
         "product_unlock": False,
+        "forage_permission": False,
+        "consumption_permission": False,
+        "can_auto_unlock": False,
         "policy": "orientation_only_never_consume",
         "metadata": meta,
         "feedback": None,

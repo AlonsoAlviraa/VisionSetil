@@ -25,7 +25,16 @@ POLICY = "orientation_only_never_consume"
 OPERATOR_CYCLE_REASON = "all_checks_pass_but_product_unlock_forced_false_until_operator_cycle"
 FORCED_FALSE_NOTE = (
     "Fail-closed: product_unlock stays false until a human operator cycle. "
-    "Metrics eligibility is advisory only — never forage/consumption permission."
+    "Metrics eligibility (unlock_eligible_advisory) is advisory only — never forage/"
+    "consumption permission and never a 'safe to eat' go-ahead. "
+    "Soft MAP@3 / deadly@3 gates are advisory orientation signals only."
+)
+# Residual codes always stamped on metrics packages (metrics ≠ forage)
+_METRICS_POLICY_RESIDUALS = (
+    "policy_orientation_only_never_consume",
+    "no_auto_unlock_from_metrics_alone",
+    "metrics_never_authorize_forage_or_consumption",
+    "soft_map_deadly_gates_advisory_only",
 )
 
 
@@ -43,7 +52,14 @@ def evaluate_product_gates(
     gates: dict[str, Any] = {
         "policy": POLICY,
         "product_unlock": False,
-        "note": "Gates are advisory metrics only; do not unlock Identify from a single run.",
+        "forage_permission": False,
+        "consumption_permission": False,
+        "can_auto_unlock": False,
+        "soft_gates_advisory_only": True,
+        "note": (
+            "Gates are advisory metrics only; never unlock Identify, forage, or "
+            "consumption from MAP/deadly alone. Soft gates ≠ safe to eat."
+        ),
     }
     m = None if map_at_3 is None else float(map_at_3)
     gates["expand_map"] = {
@@ -120,10 +136,7 @@ def evaluate_product_unlock_criteria(
       - optional: pro_tester overall PASS, safe_dp_freeze when supplied
     """
     fail_reasons: list[str] = []
-    residual_lock_reasons: list[str] = [
-        "policy_orientation_only_never_consume",
-        "no_auto_unlock_from_metrics_alone",
-    ]
+    residual_lock_reasons: list[str] = list(_METRICS_POLICY_RESIDUALS)
     checks: dict[str, bool] = {
         "metrics_present": False,
         "e20_experiment": False,
@@ -154,6 +167,8 @@ def evaluate_product_unlock_criteria(
         "note": FORCED_FALSE_NOTE,
         "forage_permission": False,
         "consumption_permission": False,
+        "soft_gates_advisory_only": True,
+        "metrics_authorize_forage": False,
     }
     if not metrics or not isinstance(metrics, dict):
         fail_reasons.append("no_metrics")
@@ -168,7 +183,10 @@ def evaluate_product_unlock_criteria(
             _bool_check(
                 ok=True,
                 criterion="orientation_only_policy",
-                detail="product_unlock forced false; never forage/consumption",
+                detail=(
+                    "product_unlock forced false; never forage/consumption; "
+                    "metrics eligibility ≠ forage permission"
+                ),
             )
         )
         out["operator_action"] = "supply_e20_metrics_then_re_run_operator_package"
@@ -178,6 +196,8 @@ def evaluate_product_unlock_criteria(
         out["consumption_permission"] = False
         out["product_unlock"] = False
         out["can_auto_unlock"] = False
+        out["soft_gates_advisory_only"] = True
+        out["metrics_authorize_forage"] = False
         return out
 
     checks["metrics_present"] = True
@@ -292,7 +312,10 @@ def evaluate_product_unlock_criteria(
         _bool_check(
             ok=True,
             criterion="orientation_only_policy",
-            detail="product_unlock forced false; never forage/consumption permission",
+            detail=(
+                "product_unlock forced false; never forage/consumption permission; "
+                "soft MAP/deadly gates advisory only"
+            ),
         )
     )
 
@@ -311,13 +334,18 @@ def evaluate_product_unlock_criteria(
     out["product_unlock"] = False
     out["can_auto_unlock"] = False
     out["operator_cycle_required"] = True
+    # Re-stamp policy residuals (metrics package never authorizes forage)
+    for r in _METRICS_POLICY_RESIDUALS:
+        if r not in residual_lock_reasons:
+            residual_lock_reasons.append(r)
     if all_ok:
         fail_reasons.append(OPERATOR_CYCLE_REASON)
         residual_lock_reasons.append(OPERATOR_CYCLE_REASON)
         residual_lock_reasons.append("human_operator_must_explicitly_approve_unlock")
         out["operator_action"] = (
             "eligible_but_locked: review checklist, S9 live reject, open-set thr; "
-            "only then decide unlock (still orientation-only, never consumption)"
+            "only then decide unlock (still orientation-only, never consumption; "
+            "unlock_eligible_advisory is not forage permission)"
         )
         out["eligible_but_locked"] = True
     else:
@@ -328,6 +356,9 @@ def evaluate_product_unlock_criteria(
     out["can_auto_unlock"] = False
     out["forage_permission"] = False
     out["consumption_permission"] = False
+    out["soft_gates_advisory_only"] = True
+    out["metrics_authorize_forage"] = False
+    out["residual_lock_reasons"] = residual_lock_reasons
     return out
 
 
@@ -434,6 +465,11 @@ def build_operator_unlock_package(repo_root: str | Path) -> dict[str, Any]:
             }
         )
 
+    residual = list(unlock.get("residual_lock_reasons") or [])
+    for r in _METRICS_POLICY_RESIDUALS:
+        if r not in residual:
+            residual.append(r)
+
     package: dict[str, Any] = {
         "generated": datetime.now(timezone.utc).isoformat(),
         "policy": POLICY,
@@ -443,7 +479,7 @@ def build_operator_unlock_package(repo_root: str | Path) -> dict[str, Any]:
         "eligible_but_locked": bool(unlock.get("eligible_but_locked")),
         "operator_cycle_required": True,
         "operator_action": unlock.get("operator_action"),
-        "residual_lock_reasons": list(unlock.get("residual_lock_reasons") or []),
+        "residual_lock_reasons": residual,
         "reasons": list(unlock.get("reasons") or []),
         "checks": dict(unlock.get("checks") or {}),
         "checklist": criteria_rows,
@@ -459,6 +495,8 @@ def build_operator_unlock_package(repo_root: str | Path) -> dict[str, Any]:
             "reject_rate": live.get("reject_rate"),
             "reasons": live.get("reasons"),
             "product_unlock": False,
+            "forage_permission": False,
+            "consumption_permission": False,
             "log_path": live.get("log_path"),
         },
         "operator_runbook_path": "docs/OPERATOR_UNLOCK_RUNBOOK.md",
@@ -466,12 +504,16 @@ def build_operator_unlock_package(repo_root: str | Path) -> dict[str, Any]:
         "note": FORCED_FALSE_NOTE,
         "forage_permission": False,
         "consumption_permission": False,
+        "soft_gates_advisory_only": True,
+        "metrics_authorize_forage": False,
     }
     # Absolute fail-closed
     package["product_unlock"] = False
     package["can_auto_unlock"] = False
     package["forage_permission"] = False
     package["consumption_permission"] = False
+    package["soft_gates_advisory_only"] = True
+    package["metrics_authorize_forage"] = False
     return package
 
 
@@ -483,11 +525,13 @@ def render_operator_unlock_markdown(package: dict[str, Any]) -> str:
         f"- **Generated:** {package.get('generated')}",
         f"- **Policy:** `{package.get('policy')}`",
         f"- **product_unlock:** **{package.get('product_unlock')}** (always false from package)",
-        f"- **unlock_eligible_advisory:** {package.get('unlock_eligible_advisory')}",
+        f"- **unlock_eligible_advisory:** {package.get('unlock_eligible_advisory')} "
+        f"(advisory only — **not** forage permission)",
         f"- **eligible_but_locked:** {package.get('eligible_but_locked')}",
         f"- **operator_cycle_required:** {package.get('operator_cycle_required')}",
         f"- **can_auto_unlock:** {package.get('can_auto_unlock')}",
         f"- **forage_permission / consumption_permission:** false / false",
+        f"- **soft_gates_advisory_only:** true (MAP/deadly never authorize forage)",
         "",
         "## Residual lock reasons",
         "",

@@ -506,6 +506,14 @@ describe('competitive feature adoption', () => {
     expect(dash).toMatch(/forage_permission/)
     expect(dash).toMatch(/consumption_permission/)
     expect(dash.toLowerCase()).toMatch(/orientation only|never consumption|nunca consumo/)
+    // Metrics eligibility ≠ forage; soft gates advisory only
+    expect(dash).toMatch(/ml-metrics-not-forage-note|ml-advisory-vs-serve/)
+    expect(dash.toLowerCase()).toMatch(
+      /not.*forage permission|metrics eligibility is.*not.*forage|advisory only/,
+    )
+    expect(dash.toLowerCase()).toMatch(/safe to eat|soft map\/deadly|deadly confusions/)
+    expect(dash).toMatch(/PRODUCT_UNLOCK never launches E21|does not launch E21/)
+    expect(dash).toMatch(/ml-e21-kaggle-push|kaggle_push/)
     // Hard-coded product_unlock display must default false, never claim true
     expect(dash).toMatch(/product_unlock.*false|String\(summary\?\.product_unlock \?\? false\)/)
     const runbook = readFileSync(

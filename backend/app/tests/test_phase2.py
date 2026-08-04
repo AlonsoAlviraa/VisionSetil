@@ -20,6 +20,11 @@ def test_models_status_endpoint(client: TestClient, monkeypatch):
     assert "image_text_embedder" in data
     summary = data.get("summary") or {}
     assert summary.get("product_unlock") is False
+    assert summary.get("forage_permission") is False
+    assert summary.get("consumption_permission") is False
+    assert summary.get("can_auto_unlock") is False
+    assert summary.get("soft_gates_advisory_only") is True
+    assert summary.get("metrics_authorize_forage") is False
     # Open-set ops surface (S8 / live Identify thr tracking)
     assert "open_set" in data or "open_set_status" in summary
     if data.get("open_set"):
@@ -31,6 +36,8 @@ def test_models_status_endpoint(client: TestClient, monkeypatch):
     assert unlock.get("can_auto_unlock") is False
     assert unlock.get("forage_permission") is False
     assert unlock.get("consumption_permission") is False
+    assert unlock.get("soft_gates_advisory_only") is True
+    assert unlock.get("metrics_authorize_forage") is False
     assert unlock.get("policy") in (
         None,
         "orientation_only_never_consume",
@@ -47,6 +54,8 @@ def test_models_status_endpoint(client: TestClient, monkeypatch):
         "orientation" in r or "no_auto_unlock" in r or "operator_cycle" in r or "unavailable" in r
         for r in residual_unlock
     )
+    assert "metrics_never_authorize_forage_or_consumption" in residual_unlock
+    assert "soft_map_deadly_gates_advisory_only" in residual_unlock
     assert bool(summary.get("eligible_but_locked")) == bool(unlock.get("eligible_but_locked"))
     assert bool(summary.get("unlock_eligible_advisory")) == bool(
         unlock.get("unlock_eligible_advisory")
@@ -66,6 +75,8 @@ def test_models_status_endpoint(client: TestClient, monkeypatch):
     assert ops.get("can_auto_unlock") is False
     assert ops.get("forage_permission") is False
     assert ops.get("consumption_permission") is False
+    assert ops.get("soft_gates_advisory_only") is True
+    assert ops.get("metrics_authorize_forage") is False
     assert "OPERATOR_UNLOCK_RUNBOOK" in str(ops.get("operator_runbook_path") or "")
     assert "kaggle.ml_qa.gate_eval" in str(ops.get("regenerate_command") or "")
     assert "operator_unlock_checklist" in str(ops.get("checklist_md_path") or "")
@@ -90,10 +101,14 @@ def test_models_status_endpoint(client: TestClient, monkeypatch):
     assert isinstance(e21, dict)
     assert e21.get("product_unlock") is False
     assert e21.get("can_auto_unlock") is False
+    assert e21.get("forage_permission") is False
+    assert e21.get("consumption_permission") is False
     assert e21.get("e21_launched") is False
     assert e21.get("kaggle_push") is False
+    assert e21.get("serve_product_unlock_does_not_launch_e21") is True
     assert summary.get("product_unlock") is False
     assert summary.get("e21_launched") is False
+    assert summary.get("e21_kaggle_push") is False
 
 
 def test_models_status_unlock_matches_e20_package_signals(client: TestClient, monkeypatch):
@@ -114,13 +129,19 @@ def test_models_status_unlock_matches_e20_package_signals(client: TestClient, mo
     pkg_eval = evaluate_e20_local_artifacts(repo)
     response = client.get("/models/status")
     assert response.status_code == 200
-    unlock = response.json().get("product_unlock_eval") or {}
+    body = response.json()
+    unlock = body.get("product_unlock_eval") or {}
     assert unlock.get("product_unlock") is False
     assert pkg_eval.get("product_unlock") is False
+    assert unlock.get("forage_permission") is False
+    assert unlock.get("consumption_permission") is False
+    assert pkg_eval.get("forage_permission") is False
     assert bool(unlock.get("unlock_eligible_advisory")) == bool(
         pkg_eval.get("unlock_eligible_advisory")
     )
     assert bool(unlock.get("eligible_but_locked")) == bool(pkg_eval.get("eligible_but_locked"))
+    # Metrics package never auto-unlocks
+    assert pkg_eval.get("can_auto_unlock") is False
     # Pro / safe_dp presence and values must agree when package evaluated them
     pkg_checks = pkg_eval.get("checks") or {}
     st_checks = unlock.get("checks") or {}
@@ -128,6 +149,29 @@ def test_models_status_unlock_matches_e20_package_signals(client: TestClient, mo
         if key in pkg_checks:
             assert key in st_checks
             assert bool(st_checks[key]) == bool(pkg_checks[key])
+
+
+def test_models_status_e21_never_launched_from_product_unlock(
+    client: TestClient, monkeypatch
+):
+    """PRODUCT_UNLOCK serve flag must not flip e21_launched / kaggle_push."""
+    from app.core import config as config_mod
+
+    monkeypatch.setattr(config_mod.settings, "product_unlock", True)
+    monkeypatch.setattr(config_mod.settings, "product_unlock_require_eligible", False)
+
+    r = client.get("/models/status")
+    assert r.status_code == 200
+    data = r.json()
+    # Serve unlock may be true when require_eligible=False
+    assert data["summary"].get("e21_launched") is False
+    assert data["summary"].get("e21_kaggle_push") is False
+    e21 = data.get("e21_readiness") or {}
+    assert e21.get("e21_launched") is False
+    assert e21.get("kaggle_push") is False
+    assert e21.get("product_unlock") is False
+    assert e21.get("forage_permission") is False
+    assert e21.get("serve_product_unlock_does_not_launch_e21") is True
 
 
 def test_model_registry_fallbacks_from_config():

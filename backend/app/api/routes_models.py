@@ -120,9 +120,16 @@ def models_status() -> dict:
         "training_num_classes": primary_m.get("num_classes"),
         "training_honesty": training.get("honesty"),
         "training_primary_run": (training.get("primary") or {}).get("run"),
+        # Serve product_unlock (operator PRODUCT_UNLOCK only) vs advisory eligibility
         "product_unlock": serve_unlocked,
         "unlock_eligible_advisory": bool(unlock_eval.get("unlock_eligible_advisory")),
         "eligible_but_locked": bool(unlock_eval.get("eligible_but_locked")),
+        # Absolute policy stamps — never true from metrics
+        "forage_permission": False,
+        "consumption_permission": False,
+        "can_auto_unlock": False,
+        "soft_gates_advisory_only": True,
+        "metrics_authorize_forage": False,
         "operator_action": unlock_eval.get("operator_action"),
         "residual_lock_reasons": list(unlock_eval.get("residual_lock_reasons") or []),
         "serve_flag_requested": bool(unlock_eval.get("serve_flag_requested")),
@@ -137,8 +144,10 @@ def models_status() -> dict:
     # product_unlock_eval already merged via apply_operator_serve_unlock
     if isinstance(unlock_eval, dict):
         unlock_eval["can_auto_unlock"] = False
-        unlock_eval.setdefault("forage_permission", False)
-        unlock_eval.setdefault("consumption_permission", False)
+        unlock_eval["forage_permission"] = False
+        unlock_eval["consumption_permission"] = False
+        unlock_eval["soft_gates_advisory_only"] = True
+        unlock_eval["metrics_authorize_forage"] = False
         unlock_eval.setdefault("policy", "orientation_only_never_consume")
     status["product_unlock_eval"] = unlock_eval
     # Static operator runbook pointers (docs + regenerate; never auto-unlock from metrics)
@@ -147,6 +156,8 @@ def models_status() -> dict:
         "can_auto_unlock": False,
         "forage_permission": False,
         "consumption_permission": False,
+        "soft_gates_advisory_only": True,
+        "metrics_authorize_forage": False,
         "policy": "orientation_only_never_consume",
         "serve_flag_env": "PRODUCT_UNLOCK",
         "serve_flag_requested": bool(getattr(settings, "product_unlock", False)),
@@ -160,12 +171,16 @@ def models_status() -> dict:
         "metrics_path_evaluated": unlock_eval.get("metrics_path") or OPERATOR_METRICS_SSOT,
         "metrics_note": (
             "Operator eligibility uses E20 local artifacts path + pro_tester/safe_dp "
-            "(evaluate_e20_local_artifacts), not training primary discovery alone."
+            "(evaluate_e20_local_artifacts), not training primary discovery alone. "
+            "unlock_eligible_advisory is NOT forage permission; soft MAP/deadly gates "
+            "are advisory only and never authorize forage or consumption."
         ),
         "note": (
-            "Human operator decision gate only. Metrics → advisory eligibility; "
-            "PRODUCT_UNLOCK env may set serve product_unlock=true when eligible; "
-            "never auto-flip from metrics alone; orientation only — never consumption."
+            "Human operator decision gate only. Metrics → unlock_eligible_advisory "
+            "(advisory); PRODUCT_UNLOCK env may set serve product_unlock=true when "
+            "eligible; never auto-flip from metrics alone; forage_permission and "
+            "consumption_permission always false; soft gates never authorize forage. "
+            "PRODUCT_UNLOCK does not launch E21/Kaggle."
         ),
     }
     # Live Identify reject rates from feedback JSONL (ops; empty log OK)
@@ -236,7 +251,8 @@ def models_status() -> dict:
             "policy": "orientation_only_never_consume",
         }
         status["summary"]["ece_band"] = "unknown"
-    # Optional E21 scale readiness (never launches kernel; never unlocks)
+    # Optional E21 scale readiness (never launches kernel; never unlocks;
+    # PRODUCT_UNLOCK serve flag must NOT flip e21_launched / kaggle_push)
     try:
         import sys
         from pathlib import Path as _Path
@@ -250,26 +266,40 @@ def models_status() -> dict:
         if isinstance(e21, dict):
             e21["product_unlock"] = False
             e21["can_auto_unlock"] = False
+            e21["forage_permission"] = False
+            e21["consumption_permission"] = False
             e21["e21_launched"] = False
             e21["kaggle_push"] = False
             e21.setdefault("policy", "orientation_only_never_consume")
+            # Explicit: serve product_unlock is orthogonal to E21 launch
+            e21["serve_product_unlock_does_not_launch_e21"] = True
         status["e21_readiness"] = e21
         status["summary"]["e21_ready"] = bool(e21.get("ready_for_e21_schedule"))
         status["summary"]["e21_launched"] = False
+        status["summary"]["e21_kaggle_push"] = False
         status["summary"]["e21_status"] = e21.get("status")
+        status["summary"]["e21_operator_approved"] = bool(
+            e21.get("operator_schedule_approved")
+        )
     except Exception:  # noqa: BLE001
         status["e21_readiness"] = {
             "status": "unavailable",
             "product_unlock": False,
             "can_auto_unlock": False,
+            "forage_permission": False,
+            "consumption_permission": False,
             "e21_launched": False,
             "kaggle_push": False,
             "ready_for_e21_schedule": False,
+            "operator_schedule_approved": False,
+            "serve_product_unlock_does_not_launch_e21": True,
             "policy": "orientation_only_never_consume",
             "plan_doc": "docs/E21_SCALE_PLAN.md",
         }
         status["summary"]["e21_ready"] = False
         status["summary"]["e21_launched"] = False
+        status["summary"]["e21_kaggle_push"] = False
+        status["summary"]["e21_operator_approved"] = False
 
     # Re-assert policy on auxiliary blocks (never unlock from S9/ECE/E21 alone).
     # Serve product_unlock lives only on summary + product_unlock_eval + operator_unlock_ops.
@@ -277,10 +307,14 @@ def models_status() -> dict:
         status["product_unlock_eval"]["can_auto_unlock"] = False
         status["product_unlock_eval"]["forage_permission"] = False
         status["product_unlock_eval"]["consumption_permission"] = False
+        status["product_unlock_eval"]["soft_gates_advisory_only"] = True
+        status["product_unlock_eval"]["metrics_authorize_forage"] = False
         status["product_unlock_eval"]["product_unlock"] = serve_unlocked
     if isinstance(status.get("live_reject_monitor"), dict):
         # S9 monitor never grants unlock by itself
         status["live_reject_monitor"]["product_unlock"] = False
+        status["live_reject_monitor"]["forage_permission"] = False
+        status["live_reject_monitor"]["consumption_permission"] = False
     if isinstance(status.get("ece_residual"), dict):
         status["ece_residual"]["product_unlock"] = False
         status["ece_residual"]["can_auto_unlock"] = False
@@ -291,13 +325,24 @@ def models_status() -> dict:
         status["operator_unlock_ops"]["can_auto_unlock"] = False
         status["operator_unlock_ops"]["forage_permission"] = False
         status["operator_unlock_ops"]["consumption_permission"] = False
+        status["operator_unlock_ops"]["soft_gates_advisory_only"] = True
+        status["operator_unlock_ops"]["metrics_authorize_forage"] = False
     if isinstance(status.get("e21_readiness"), dict):
         status["e21_readiness"]["product_unlock"] = False
         status["e21_readiness"]["can_auto_unlock"] = False
+        status["e21_readiness"]["forage_permission"] = False
+        status["e21_readiness"]["consumption_permission"] = False
         status["e21_readiness"]["e21_launched"] = False
         status["e21_readiness"]["kaggle_push"] = False
+        status["e21_readiness"]["serve_product_unlock_does_not_launch_e21"] = True
     status["summary"]["product_unlock"] = serve_unlocked
+    status["summary"]["forage_permission"] = False
+    status["summary"]["consumption_permission"] = False
+    status["summary"]["can_auto_unlock"] = False
+    status["summary"]["soft_gates_advisory_only"] = True
+    status["summary"]["metrics_authorize_forage"] = False
     status["summary"]["e21_launched"] = False
+    status["summary"]["e21_kaggle_push"] = False
     # Multi-view product contracts + four-photo bench + paired inventory
     try:
         from app.ml.multiview_product import describe_multiview_product

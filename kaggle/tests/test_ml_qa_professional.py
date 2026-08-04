@@ -251,19 +251,28 @@ def test_product_unlock_advisory_when_e20_gates_pass():
     r = evaluate_product_unlock_criteria(fake)
     assert r["product_unlock"] is False  # hard policy
     assert r["can_auto_unlock"] is False
+    assert r["forage_permission"] is False
+    assert r["consumption_permission"] is False
     assert r["unlock_eligible_advisory"] is True
     assert r["eligible_but_locked"] is True
     assert r["operator_cycle_required"] is True
+    assert r["soft_gates_advisory_only"] is True
+    assert r["metrics_authorize_forage"] is False
     assert all(r["checks"].values())
     assert any("operator_cycle" in x for x in r["reasons"])
     assert any("operator_cycle" in x for x in r["residual_lock_reasons"])
+    assert "metrics_never_authorize_forage_or_consumption" in r["residual_lock_reasons"]
     assert r["policy"] == "orientation_only_never_consume"
+    # Soft gates block is advisory-only and never unlocks forage
+    gates = r.get("gates") or {}
+    assert gates.get("product_unlock") is False
+    assert gates.get("forage_permission") is False
+    assert gates.get("soft_gates_advisory_only") is True
     # Machine-readable checklist rows
     ids = {c["id"] for c in r["checklist"]}
     assert "soft_map" in ids
     assert "orientation_only_policy" in ids
     assert all(c["pass"] for c in r["checklist"])
-
 
 def test_product_unlock_never_true_from_metrics_alone():
     """No metrics path may return product_unlock True (fail-closed)."""
@@ -284,6 +293,11 @@ def test_product_unlock_never_true_from_metrics_alone():
         assert r["can_auto_unlock"] is False
         assert r.get("forage_permission") is False
         assert r.get("consumption_permission") is False
+        assert r.get("soft_gates_advisory_only") is True
+        assert r.get("metrics_authorize_forage") is False
+        residual = r.get("residual_lock_reasons") or []
+        assert "metrics_never_authorize_forage_or_consumption" in residual
+        assert "soft_map_deadly_gates_advisory_only" in residual
 
 
 def test_product_unlock_no_metrics_payload_shape():
@@ -295,13 +309,16 @@ def test_product_unlock_no_metrics_payload_shape():
     assert r["eligible_but_locked"] is False
     assert r["forage_permission"] is False
     assert r["consumption_permission"] is False
+    assert r["soft_gates_advisory_only"] is True
+    assert r["metrics_authorize_forage"] is False
     assert r["operator_cycle_required"] is True
     assert "no_metrics" in (r.get("reasons") or [])
     residual = r.get("residual_lock_reasons") or []
     assert "policy_orientation_only_never_consume" in residual
     assert "no_auto_unlock_from_metrics_alone" in residual
+    assert "metrics_never_authorize_forage_or_consumption" in residual
+    assert "soft_map_deadly_gates_advisory_only" in residual
     assert r.get("operator_action")
-
 
 def test_product_unlock_pro_tester_fail_blocks_advisory():
     """Status/package SSOT: pro_tester_ok=False must not be eligible-but-locked."""

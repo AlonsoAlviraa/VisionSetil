@@ -6,9 +6,11 @@ reviewing the operator checklist. Even then:
 
 - ``can_auto_unlock`` stays False
 - ``forage_permission`` / ``consumption_permission`` stay False
+- soft MAP/deadly gates remain advisory only (never forage go-ahead)
 - policy remains ``orientation_only_never_consume``
 - when ``PRODUCT_UNLOCK_REQUIRE_ELIGIBLE=true`` (default), advisory eligibility
   must pass or the serve flag is ignored (still locked)
+- PRODUCT_UNLOCK never launches E21 / Kaggle
 """
 
 from __future__ import annotations
@@ -16,6 +18,13 @@ from __future__ import annotations
 from typing import Any
 
 POLICY = "orientation_only_never_consume"
+
+# Residual reasons that always remain (metrics ≠ forage; soft gates advisory)
+_ALWAYS_RESIDUAL = (
+    "policy_orientation_only_never_consume",
+    "metrics_never_authorize_forage_or_consumption",
+    "soft_map_deadly_gates_advisory_only",
+)
 
 # Residual reasons removed when operator serve unlock is active
 _OPERATOR_LOCK_REASONS = frozenset(
@@ -46,6 +55,14 @@ def require_eligible_for_serve_unlock() -> bool:
         return True
 
 
+def _ensure_policy_residuals(residual: list[str]) -> list[str]:
+    out = list(residual)
+    for r in _ALWAYS_RESIDUAL:
+        if r not in out:
+            out.append(r)
+    return out
+
+
 def apply_operator_serve_unlock(
     unlock_eval: dict[str, Any] | None,
     *,
@@ -63,18 +80,23 @@ def apply_operator_serve_unlock(
     require_eligible:
         If True (default Settings), serve_flag only applies when
         ``unlock_eligible_advisory`` is True.
+
+    Absolute invariants (even when product_unlock serve becomes True):
+    - can_auto_unlock is always False
+    - forage_permission / consumption_permission are always False
+    - soft MAP/deadly gates never authorize forage
+    - never sets e21_launched / kaggle_push
     """
     out: dict[str, Any] = dict(unlock_eval or {})
-    # Metrics path is always fail-closed first
+    # Hostile inputs cannot smuggle forage/consume or auto-unlock
     out["product_unlock"] = False
     out["can_auto_unlock"] = False
     out["forage_permission"] = False
     out["consumption_permission"] = False
     out["policy"] = POLICY
-    out.setdefault("residual_lock_reasons", [])
-    residual = list(out.get("residual_lock_reasons") or [])
-    if "policy_orientation_only_never_consume" not in residual:
-        residual.append("policy_orientation_only_never_consume")
+    out["soft_gates_advisory_only"] = True
+    out["metrics_authorize_forage"] = False
+    residual = _ensure_policy_residuals(list(out.get("residual_lock_reasons") or []))
 
     flag = serve_product_unlock_requested() if serve_flag is None else bool(serve_flag)
     need_elig = (
@@ -92,18 +114,18 @@ def apply_operator_serve_unlock(
         out["product_unlock"] = True
         out["eligible_but_locked"] = False
         residual = [r for r in residual if r not in _OPERATOR_LOCK_REASONS]
+        residual = _ensure_policy_residuals(residual)
         if "operator_serve_flag_active" not in residual:
             residual.append("operator_serve_flag_active")
-        # Keep orientation policy residual always
-        if "policy_orientation_only_never_consume" not in residual:
-            residual.append("policy_orientation_only_never_consume")
         out["operator_action"] = (
             "product_unlock=true via PRODUCT_UNLOCK env/Settings after operator cycle; "
-            "still orientation_only — never forage/consumption"
+            "still orientation_only — never forage/consumption; soft gates remain advisory"
         )
         out["note"] = (
             "Human operator serve flag active. Metrics did not auto-unlock. "
-            "forage_permission and consumption_permission remain false."
+            "unlock_eligible_advisory is not forage permission. "
+            "forage_permission and consumption_permission remain false. "
+            "Soft MAP/deadly gates are advisory only and never authorize forage."
         )
     elif flag and need_elig and not eligible:
         out["product_unlock"] = False
@@ -126,10 +148,12 @@ def apply_operator_serve_unlock(
                 if r not in residual:
                     residual.append(r)
 
-    # Absolute: never auto, never forage/consume
+    # Absolute: never auto, never forage/consume (re-assert after all branches)
     out["can_auto_unlock"] = False
     out["forage_permission"] = False
     out["consumption_permission"] = False
+    out["soft_gates_advisory_only"] = True
+    out["metrics_authorize_forage"] = False
     out["residual_lock_reasons"] = residual
     return out
 
@@ -139,7 +163,9 @@ def stamp_product_unlock_false(meta: dict[str, Any] | None) -> dict[str, Any]:
     out = dict(meta or {})
     out["product_unlock"] = False
     out["can_auto_unlock"] = False
-    out.setdefault("forage_permission", False)
-    out.setdefault("consumption_permission", False)
-    out.setdefault("policy", POLICY)
+    out["forage_permission"] = False
+    out["consumption_permission"] = False
+    out["soft_gates_advisory_only"] = True
+    out["metrics_authorize_forage"] = False
+    out["policy"] = POLICY
     return out

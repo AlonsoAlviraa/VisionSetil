@@ -62,6 +62,11 @@ type ModelsStatus = {
     product_unlock?: boolean
     unlock_eligible_advisory?: boolean
     eligible_but_locked?: boolean
+    forage_permission?: boolean
+    consumption_permission?: boolean
+    can_auto_unlock?: boolean
+    soft_gates_advisory_only?: boolean
+    metrics_authorize_forage?: boolean
     operator_action?: string
     residual_lock_reasons?: string[]
     live_reject_rate?: number | null
@@ -72,6 +77,8 @@ type ModelsStatus = {
     ece_status?: string
     e21_ready?: boolean
     e21_launched?: boolean
+    e21_kaggle_push?: boolean
+    e21_operator_approved?: boolean
     e21_status?: string
     open_set_status?: string
     open_set_conf_thr?: number
@@ -229,6 +236,8 @@ type ModelsStatus = {
     metrics_path?: string
     forage_permission?: boolean
     consumption_permission?: boolean
+    soft_gates_advisory_only?: boolean
+    metrics_authorize_forage?: boolean
     checks?: Record<string, boolean>
     checklist?: Array<{
       id?: string
@@ -240,9 +249,16 @@ type ModelsStatus = {
   e21_readiness?: {
     product_unlock?: boolean
     can_auto_unlock?: boolean
+    forage_permission?: boolean
+    consumption_permission?: boolean
     e21_launched?: boolean
     kaggle_push?: boolean
     ready_for_e21_schedule?: boolean
+    operator_schedule_approved?: boolean
+    schedule_authorized?: boolean
+    operator_env?: string
+    operator_prerequisites?: string[]
+    serve_product_unlock_does_not_launch_e21?: boolean
     status?: string
     plan_doc?: string
     operator_action?: string
@@ -258,6 +274,8 @@ type ModelsStatus = {
     can_auto_unlock?: boolean
     forage_permission?: boolean
     consumption_permission?: boolean
+    soft_gates_advisory_only?: boolean
+    metrics_authorize_forage?: boolean
     policy?: string
     operator_runbook_path?: string
     checklist_json_path?: string
@@ -1095,9 +1113,22 @@ export function MlDashboardPage() {
             : status?.product_unlock_eval?.eligible_but_locked != null
               ? ` · eligible_but_locked=${String(status.product_unlock_eval.eligible_but_locked)}`
               : ''}
+          {' · forage='}
+          <code>
+            {String(
+              summary?.forage_permission ??
+                status?.product_unlock_eval?.forage_permission ??
+                false,
+            )}
+          </code>
           {summary?.training_primary_run
             ? ` · primary_run=${summary.training_primary_run}`
             : ''}
+        </p>
+        <p className="muted" data-testid="ml-metrics-not-forage-note" role="note">
+          Metrics eligibility is <strong>not</strong> forage permission · soft MAP/deadly
+          gates are advisory only · deadly confusions can still fail · orientation only —
+          never &quot;safe to eat&quot; / nunca permiso de consumo.
         </p>
         {(status?.open_set || summary?.open_set_status) && (
           <p className="muted" data-testid="ml-open-set-status">
@@ -1265,6 +1296,7 @@ export function MlDashboardPage() {
             {String(
               status?.product_unlock_eval?.can_auto_unlock ??
                 status?.operator_unlock_ops?.can_auto_unlock ??
+                summary?.can_auto_unlock ??
                 false,
             )}
           </code>
@@ -1272,17 +1304,25 @@ export function MlDashboardPage() {
           forage/consumption=
           <code data-testid="ml-forage-consumption">
             {String(
-              status?.operator_unlock_ops?.forage_permission ??
+              summary?.forage_permission ??
+                status?.operator_unlock_ops?.forage_permission ??
                 status?.product_unlock_eval?.forage_permission ??
                 false,
             )}
             /
             {String(
-              status?.operator_unlock_ops?.consumption_permission ??
+              summary?.consumption_permission ??
+                status?.operator_unlock_ops?.consumption_permission ??
                 status?.product_unlock_eval?.consumption_permission ??
                 false,
             )}
           </code>
+        </p>
+        <p className="muted" data-testid="ml-advisory-vs-serve" role="note">
+          <strong>unlock_eligible_advisory</strong> (metrics checklist) ≠ serve{' '}
+          <strong>product_unlock</strong> (PRODUCT_UNLOCK env only). Soft MAP/deadly
+          gates are advisory only and <strong>never</strong> authorize forage. Deadly
+          confusions can still fail — orientation only, never &quot;safe to eat&quot;.
         </p>
         <dl className="ml-dash-meta">
           <div>
@@ -1293,6 +1333,7 @@ export function MlDashboardPage() {
                   status?.product_unlock_eval?.unlock_eligible_advisory ??
                   false,
               )}
+              <span className="muted"> (not forage permission)</span>
             </dd>
           </div>
           <div>
@@ -1325,6 +1366,22 @@ export function MlDashboardPage() {
                     false,
                 )}
               </code>
+              {' · kaggle_push='}
+              <code data-testid="ml-e21-kaggle-push">
+                {String(
+                  status?.e21_readiness?.kaggle_push ??
+                    summary?.e21_kaggle_push ??
+                    false,
+                )}
+              </code>
+              {status?.e21_readiness?.operator_schedule_approved != null ||
+              summary?.e21_operator_approved != null
+                ? ` · operator_approved=${String(
+                    status?.e21_readiness?.operator_schedule_approved ??
+                      summary?.e21_operator_approved ??
+                      false,
+                  )}`
+                : ''}
               {status?.e21_readiness?.baseline?.test_map_at_3 != null
                 ? ` · baseline MAP@3=${Number(
                     status.e21_readiness.baseline.test_map_at_3,
@@ -1335,7 +1392,7 @@ export function MlDashboardPage() {
                     status.e21_readiness.baseline.safety_recall_deadly_at_3,
                   ).toFixed(3)}`
                 : ''}
-              {' · unlock=false (never auto)'}
+              {' · unlock=false · PRODUCT_UNLOCK never launches E21'}
             </dd>
           </div>
           <div>
@@ -1512,9 +1569,12 @@ export function MlDashboardPage() {
                 'python -m kaggle.ml_qa.gate_eval'}
             </code>
           </p>
-          <p className="muted" role="note">
-            Human decision gate only — never auto-flip product_unlock. Orientation only · never
-            consumption · never forage permission. GTM form URL (
+          <p className="muted" role="note" data-testid="ml-operator-unlock-safety-copy">
+            Human decision gate only — never auto-flip product_unlock from metrics.
+            unlock_eligible_advisory is <strong>not</strong> forage permission · soft
+            MAP/deadly gates are advisory only · deadly confusions can fail · orientation
+            only · never consumption · never forage · never &quot;safe to eat&quot;.
+            PRODUCT_UNLOCK does not launch E21/Kaggle. GTM form URL (
             <code>VITE_BETA_FEEDBACK_URL</code>) is separate from unlock.
           </p>
         </div>
