@@ -1,5 +1,5 @@
 {
-  "generated": "2026-07-28T08:55:03.889891+00:00",
+  "generated": "2026-08-04T10:16:46.436012+00:00",
   "policy": "orientation_only_never_consume",
   "product_unlock": false,
   "can_auto_unlock": false,
@@ -166,9 +166,9 @@
     },
     "all_expand_pass": true
   },
-  "metrics_path": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models\\metrics.json",
+  "metrics_path": "kaggle\\kernel_output_v20\\models\\metrics.json",
   "pro_tester": {
-    "path": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\eval\\reports\\ml_experiments\\professional_tester_latest.json",
+    "path": "eval\\reports\\ml_experiments\\professional_tester_latest.json",
     "present": true,
     "overall": "PASS",
     "product_unlock": false,
@@ -179,13 +179,13 @@
   "safe_dp_freeze": true,
   "live_reject_monitor": {
     "status": "ok",
-    "n_entries": 1,
-    "reject_rate": 1.0,
+    "n_entries": 4,
+    "reject_rate": 0.25,
     "reasons": {
       "high_entropy": 1
     },
     "product_unlock": false,
-    "log_path": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\data\\feedback\\classification_log.jsonl"
+    "log_path": "data\\feedback\\classification_log.jsonl"
   },
   "operator_runbook_path": "docs/OPERATOR_UNLOCK_RUNBOOK.md",
   "regenerate_command": "python -m kaggle.ml_qa.gate_eval",

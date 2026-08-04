@@ -1,6 +1,6 @@
 # Operator unlock checklist (fail-closed)
 
-- **Generated:** 2026-07-28T08:55:03.889891+00:00
+- **Generated:** 2026-08-04T10:16:46.436012+00:00
 - **Policy:** `orientation_only_never_consume`
 - **product_unlock:** **False** (always false from package)
 - **unlock_eligible_advisory:** True
@@ -37,8 +37,8 @@ eligible_but_locked: review checklist, S9 live reject, open-set thr; only then d
 ## Live reject monitor (S9 snapshot)
 
 - status: `ok`
-- n_entries: `1`
-- reject_rate: `1.0`
+- n_entries: `4`
+- reject_rate: `0.25`
 - reasons: `{'high_entropy': 1}`
 
 ## Operator runbook
