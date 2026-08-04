@@ -1,12 +1,14 @@
 # VisionSetil Path A default — single HTTPS origin (SPA + /api + /media)
 # Docs: docs/HOSTING_DEPLOY_BETA.md
 #
-# Usage (on VPS, from monorepo root after building frontend):
+# Usage (on VPS, from monorepo root after building frontend app shell):
+#   cd frontend && npm run build:app   # → dist-app/index.html (+ PWA SW)
 #   export BETA_DOMAIN=beta.yourdomain.example
 #   export BACKEND_UPSTREAM=127.0.0.1:8000
-#   export FRONTEND_DIST=./frontend/dist
+#   export FRONTEND_DIST=./frontend/dist-app
 #   export MEDIA_ROOT=./media
 #   caddy run --config deploy/Caddyfile
+# (Marketing/web shell: npm run build:web → dist-web/index.html, no SW.)
 #
 # Caddy provisions TLS for real hostnames automatically.
 # Local smoke without TLS: set BETA_DOMAIN=localhost and use http://localhost
@@ -32,9 +34,9 @@
 		file_server
 	}
 
-	# ── SPA (Vite production build) — deep links need try_files ──
+	# ── SPA (Vite app shell) — deep links need try_files → index.html ──
 	handle {
-		root * {$FRONTEND_DIST:./frontend/dist}
+		root * {$FRONTEND_DIST:./frontend/dist-app}
 		try_files {path} /index.html
 		file_server
 	}

@@ -185,6 +185,36 @@ function serveRepoMediaPlugin(): Plugin {
   }
 }
 
+/**
+ * Dual-build sources live as index-app.html / index-web.html, but each dist
+ * must emit standard SPA **index.html** so:
+ * - public/_redirects → /index.html
+ * - vercel.json rewrites → /index.html
+ * - PWA workbox navigateFallback: 'index.html'
+ * - Caddy try_files … /index.html
+ * all stay aligned (no index-app.html host mismatch).
+ */
+function emitSpaIndexHtmlPlugin(target: BuildTarget): Plugin {
+  const srcBase = `index-${target}.html`
+  return {
+    name: 'emit-spa-index-html',
+    enforce: 'post',
+    generateBundle(_options, bundle) {
+      for (const [key, item] of Object.entries(bundle)) {
+        const base = path.basename(key)
+        if (base !== srcBase) continue
+        // Rename emitted shell HTML to index.html (standard SPA contract).
+        item.fileName = 'index.html'
+        if (key !== 'index.html') {
+          bundle['index.html'] = item
+          delete bundle[key]
+        }
+        return
+      }
+    },
+  }
+}
+
 // https://vitejs.dev/config/
 // Shared factory consumed by `vite.config.ts` (app) and `vite.web.config.ts`
 // (web). Each shell ships its own entry HTML + CSS layer and bakes its layout
@@ -202,8 +232,8 @@ export function createViteConfig(target: BuildTarget): UserConfig {
       outDir: `dist-${target}`,
       rollupOptions: {
         input: {
-          // Entry per target: app shell or web shell. Key name matches the
-          // HTML file basename so Rollup emits a predictable output.
+          // Source entry: index-app.html / index-web.html. Plugin renames
+          // the emitted file to index.html in dist-{target}/.
           [target]: path.resolve(__dirname, `index-${target}.html`),
         },
         output: {
@@ -221,6 +251,7 @@ export function createViteConfig(target: BuildTarget): UserConfig {
     plugins: [
       serveRepoMediaPlugin(),
       react(),
+      emitSpaIndexHtmlPlugin(target),
       // PWA only makes sense for the app shell (installable store-like PWA).
       // The web build is a plain browser site, no service worker needed.
       ...(isWeb
@@ -267,6 +298,7 @@ export function createViteConfig(target: BuildTarget): UserConfig {
                 globPatterns: ['**/*.{js,css,html,ico,svg,woff2}'],
                 globIgnores: ['**/species_catalog*.json', '**/*catalog*', '**/*.map'],
                 // SPA deep links under SW control (Path A PWA); API/media stay network
+                // Must match emitted filename (emitSpaIndexHtmlPlugin → index.html)
                 navigateFallback: 'index.html',
                 navigateFallbackDenylist: [/^\/api(?:\/|$)/, /^\/media(?:\/|$)/],
                 runtimeCaching: [

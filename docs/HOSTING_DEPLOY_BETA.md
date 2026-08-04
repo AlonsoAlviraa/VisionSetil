@@ -32,7 +32,7 @@ This doc **decides** the beta stack. One default recipe with copy-paste steps.
          ▼
   ┌─────────────────────────────────────┐
   │  Caddy (deploy/Caddyfile)           │
-  │  · /          → frontend/dist (SPA) │
+  │  · /          → frontend/dist-app (SPA) │
   │  · /api/*     → FastAPI :8000       │
   │  · /media/*   → ./media             │
   │  · TLS auto   → Let's Encrypt       │
@@ -73,26 +73,30 @@ export CORS_ORIGINS=https://beta.YOURDOMAIN
 
 ```bash
 cd frontend
-# production env for this build
+# production env for this build (app shell + PWA → dist-app/index.html)
 export VITE_API_URL=/api
 export VITE_PUBLIC_APP_URL=https://beta.YOURDOMAIN
 export VITE_BETA_FEEDBACK_URL=https://forms.gle/YOUR_FORM_ID
 npm ci
-npm run build
+npm run build:app
 cd ..
 ```
 
 `VITE_PUBLIC_APP_URL` must be **https** (http only allowed for `localhost` / `127.0.0.1` in code).
+
+Optional marketing shell: `npm run build:web` → `frontend/dist-web/index.html` (no service worker).
 
 4. **Caddy** from monorepo root:
 
 ```bash
 export BETA_DOMAIN=beta.YOURDOMAIN
 export BACKEND_UPSTREAM=127.0.0.1:8000
-export FRONTEND_DIST=./frontend/dist
+export FRONTEND_DIST=./frontend/dist-app
 export MEDIA_ROOT=./media
 caddy run --config deploy/Caddyfile
 ```
+
+`deploy/Caddyfile` already defaults `FRONTEND_DIST` to `./frontend/dist-app` (standard SPA `index.html` + PWA).
 
 5. **Smoke**
 
@@ -139,7 +143,7 @@ export CORS_ORIGINS=https://beta.YOURDOMAIN
 docker compose -f docker-compose.prod.yml up -d --build
 ```
 
-Still put **Caddy** (`deploy/Caddyfile`) on 443 in front of static `frontend/dist` + `BACKEND_UPSTREAM` to the compose-published API port.  
+Still put **Caddy** (`deploy/Caddyfile`) on 443 in front of static **`frontend/dist-app`** + `BACKEND_UPSTREAM` to the compose-published API port.  
 Full notes: `docker-compose.prod.yml` header + `docs/deployment_notes.md`.
 
 **Still not:** native stores, APK “download our app” landing, edible claims.
@@ -236,8 +240,8 @@ Never ship `CORS_ORIGINS=*`.
 ### 1. Deploy
 
 - [ ] Backend on `:8000` · `GET` health via `/api/…`
-- [ ] `cd frontend && npm ci && npm run build` with env baked
-- [ ] `caddy run --config deploy/Caddyfile`
+- [ ] `cd frontend && npm ci && npm run build:app` with env baked → `dist-app/index.html`
+- [ ] `FRONTEND_DIST=./frontend/dist-app` (Caddy default) · `caddy run --config deploy/Caddyfile`
 - [ ] Hard refresh `/identificar` → SPA (not 404)
 - [ ] `/media` or image cascade works for ≥1 species card
 

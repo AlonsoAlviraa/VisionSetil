@@ -346,6 +346,10 @@
         {
           "scientific_name": "Amanita verna",
           "note_key": null
+        },
+        {
+          "scientific_name": "Agaricus xanthoderma",
+          "note_key": null
         }
       ]
     },
@@ -1407,7 +1411,12 @@
       "toxicity_notes": {
         "es": "Gastrointestinal. Olor fenólico."
       },
-      "lookalikes": []
+      "lookalikes": [
+        {
+          "scientific_name": "Agaricus campestris",
+          "note_key": null
+        }
+      ]
     },
     {
       "id": "agrocybe-pediades",

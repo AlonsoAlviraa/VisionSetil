@@ -17,6 +17,33 @@ Companions:
 
 ---
 
+## Quick path (30–45 min)
+
+Executable order for an operator who already has a VPS/domain. Details in the numbered steps below.
+
+| # | Step | Action | Pass |
+|---|------|--------|------|
+| **O1** | Deploy HTTPS | Follow [`HOSTING_DEPLOY_BETA.md`](./HOSTING_DEPLOY_BETA.md) Path A (Caddy). Build FE: `cd frontend && npm ci && npm run build:app`. Point `FRONTEND_DIST` at **`frontend/dist-app`** (emits standard **`index.html`** + PWA SW). TLS live on `https://beta.YOURDOMAIN`. | HTTPS loads; `/identificar` refresh does not 404 |
+| **O2** | Env URLs | Bake `VITE_API_URL=/api`, `VITE_PUBLIC_APP_URL=https://beta.YOURDOMAIN`, `VITE_BETA_FEEDBACK_URL=<real form>`. Backend: `ENVIRONMENT=production`, `ALLOW_MOCK_FALLBACKS=false`, `MODEL_FALLBACK_TO_MOCK=false`, `CORS_ORIGINS=https://beta.YOURDOMAIN`. Rebuild FE after env change. | Home shows real public URL; API same-origin or CORS OK |
+| **O3** | Smoke Identify | `pwsh -File scripts/smoke_beta_preview.ps1` (exit 0). Live: `GET /api/health` 200; Identify 1 photo → orientation result or honest reject; multi-view coach soft-only; no “safe to eat”. | Structural + live Identify green |
+| **O4** | Cohorte notes | Invites from [`GTM_BETA_COHORT.md`](./GTM_BETA_COHORT.md) only. Copy: **solo orientación** — never forage / harvest / “segura para comer”. Start 5–10, then expand. Feedback form required. | Dry-run notes filed; form receives replies |
+
+**Policy locks (do not skip):**
+
+- **`product_unlock` remains `false`** for this beta. Unlock is a separate human decision — see [`OPERATOR_UNLOCK_RUNBOOK.md`](./OPERATOR_UNLOCK_RUNBOOK.md). Do **not** flip unlock for the try cohort.
+- **Orientation only** in all invites, Home, Identify sticky, and feedback header.
+- **No forage / consumption permission** language in invites or support replies.
+
+**Dist contract (operators):**
+
+| Output | Command | Serves | Notes |
+|--------|---------|--------|-------|
+| `frontend/dist-app/` | `npm run build:app` | **App shell (default beta)** | `index.html` + service worker / PWA · **Caddy default** (`FRONTEND_DIST=./frontend/dist-app`) |
+| `frontend/dist-web/` | `npm run build:web` | Marketing/web shell | `index.html`, **no** SW |
+| Legacy `frontend/dist/` | older unified build | Avoid for Path A | Prefer `dist-app`; do not set `FRONTEND_DIST` back to `./frontend/dist` |
+
+---
+
 ## Status board (fill as you go)
 
 | Step | Item | Owner | Status |
@@ -61,9 +88,10 @@ Follow **`docs/HOSTING_DEPLOY_BETA.md`** Path A (VPS + Caddy):
 
 - [ ] DNS `A`/`AAAA` → VPS for `beta.YOURDOMAIN`  
 - [ ] Backend listening `127.0.0.1:8000` (or compose)  
-- [ ] Caddy: `/` → `frontend/dist`, `/api/*` → FastAPI, `/media/*` → media tree  
+- [ ] Caddy: `/` → **`frontend/dist-app`** (standard `index.html`), `/api/*` → FastAPI, `/media/*` → media tree  
 - [ ] TLS works (HTTPS only for testers)  
 - [ ] SPA deep links (`/identificar`) do not 404 on refresh  
+
 
 **Backend prod-ish flags (minimum):**
 
@@ -87,7 +115,8 @@ Frontend **build** env (bake into Vite):
 export VITE_API_URL=/api
 export VITE_PUBLIC_APP_URL=https://beta.YOURDOMAIN
 export VITE_BETA_FEEDBACK_URL=https://forms.gle/YOUR_FORM_ID   # step 3
-cd frontend && npm ci && npm run build
+cd frontend && npm ci && npm run build:app
+# Serve dist-app (index.html + PWA). Optional: npm run build:web → dist-web for marketing host.
 ```
 
 - [ ] Home invite / install copy shows real public URL (not placeholder)  

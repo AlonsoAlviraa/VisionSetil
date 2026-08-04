@@ -1,115 +1,183 @@
 {
   "version": "1.0.0",
   "policy": "orientation_only; educational confusions; never consumption permission",
+  "reverse_pair_policy": "Reverse-id educational duals (e.g. deliciosus-torminosus vs torminosus-deliciosus, cibarius-omphalotus vs olearius-cibarius) are intentional for bidirectional teaching surfaces — do not dedupe without product review.",
   "pairs": [
     {
       "id": "caesarea-phalloides",
-      "taxa": ["Amanita caesarea", "Amanita phalloides"],
+      "taxa": [
+        "Amanita caesarea",
+        "Amanita phalloides"
+      ],
       "why": "Sombrero similar; láminas y volva deciden"
     },
     {
       "id": "edulis-rubellus",
-      "taxa": ["Boletus edulis", "Cortinarius rubellus"],
+      "taxa": [
+        "Boletus edulis",
+        "Cortinarius rubellus"
+      ],
       "why": "Pie y cortina: no confiar en el hongo"
     },
     {
       "id": "muscaria-pantherina",
-      "taxa": ["Amanita muscaria", "Amanita pantherina"],
+      "taxa": [
+        "Amanita muscaria",
+        "Amanita pantherina"
+      ],
       "why": "Anillo, volva y base del pie"
     },
     {
       "id": "deliciosus-torminosus",
-      "taxa": ["Lactarius deliciosus", "Lactarius torminosus"],
+      "taxa": [
+        "Lactarius deliciosus",
+        "Lactarius torminosus"
+      ],
       "why": "Látex y hábitat de pinar"
     },
     {
       "id": "procera-lepiota",
-      "taxa": ["Macrolepiota procera", "Lepiota brunneoincarnata"],
+      "taxa": [
+        "Macrolepiota procera",
+        "Lepiota brunneoincarnata"
+      ],
       "why": "Tamaño y anillo móvil; lepiotas pequeñas = peligro"
     },
     {
       "id": "galerina-honey",
-      "taxa": ["Armillaria mellea", "Galerina marginata"],
+      "taxa": [
+        "Armillaria mellea",
+        "Galerina marginata"
+      ],
       "why": "Sobre madera: galerina es mortal"
     },
     {
       "id": "cibarius-omphalotus",
-      "taxa": ["Cantharellus cibarius", "Omphalotus olearius"],
+      "taxa": [
+        "Cantharellus cibarius",
+        "Omphalotus olearius"
+      ],
       "why": "Láminas verdaderas vs pliegues"
     },
     {
       "id": "comatus-atramentaria",
-      "taxa": ["Coprinus comatus", "Coprinus atramentarius"],
+      "taxa": [
+        "Coprinus comatus",
+        "Coprinus atramentarius"
+      ],
       "why": "Alcohol + coprino = reacción peligrosa"
     },
     {
       "id": "phalloides-citrina",
-      "taxa": ["Amanita phalloides", "Amanita citrina"],
+      "taxa": [
+        "Amanita phalloides",
+        "Amanita citrina"
+      ],
       "why": "Volva y láminas; no confiar en el color solo"
     },
     {
       "id": "pantherina-rubescens",
-      "taxa": ["Amanita pantherina", "Amanita rubescens"],
+      "taxa": [
+        "Amanita pantherina",
+        "Amanita rubescens"
+      ],
       "why": "Enrojecimiento al corte y base del pie"
     },
     {
       "id": "esculenta-gyromitra",
-      "taxa": ["Morchella esculenta", "Gyromitra esculenta"],
+      "taxa": [
+        "Morchella esculenta",
+        "Gyromitra esculenta"
+      ],
       "why": "Costillas vs cámaras; gyromitra es peligrosa"
     },
     {
       "id": "gambosa-inocybe",
-      "taxa": ["Calocybe gambosa", "Inocybe erubescens"],
+      "taxa": [
+        "Calocybe gambosa",
+        "Inocybe erubescens"
+      ],
       "why": "Prados de primavera; inocybe puede ser mortal"
     },
     {
       "id": "mutabilis-hypholoma",
-      "taxa": ["Kuehneromyces mutabilis", "Hypholoma fasciculare"],
+      "taxa": [
+        "Kuehneromyces mutabilis",
+        "Hypholoma fasciculare"
+      ],
       "why": "Sobre madera: amargor y color de láminas"
     },
     {
       "id": "prunulus-entoloma",
-      "taxa": ["Clitopilus prunulus", "Entoloma sinuatum"],
+      "taxa": [
+        "Clitopilus prunulus",
+        "Entoloma sinuatum"
+      ],
       "why": "Láminas y olor; entoloma sinuatum es tóxico"
     },
     {
       "id": "edulis-satanas",
-      "taxa": ["Boletus edulis", "Rubroboletus satanas"],
+      "taxa": [
+        "Boletus edulis",
+        "Boletus satanas"
+      ],
       "why": "Redes del pie y color del himenio; satanas enrojece y es tóxico"
     },
     {
       "id": "xanthodermus-campestris",
-      "taxa": ["Agaricus campestris", "Agaricus xanthodermus"],
-      "why": "Base del pie amarilla al corte + olor a fenol = xanthodermus"
+      "_id_note": "Stable historical pair id — do not rename without migration. SSOT taxon is Agaricus xanthoderma.",
+      "taxa": [
+        "Agaricus campestris",
+        "Agaricus xanthoderma"
+      ],
+      "why": "Base del pie amarilla al corte + olor a fenol = xanthoderma"
     },
     {
       "id": "olearius-cibarius",
-      "taxa": ["Omphalotus olearius", "Cantharellus cibarius"],
+      "taxa": [
+        "Omphalotus olearius",
+        "Cantharellus cibarius"
+      ],
       "why": "Láminas verdaderas vs pliegues; omphalotus es tóxico (repetición educativa)"
     },
     {
       "id": "phalloides-vaginata",
-      "taxa": ["Amanita phalloides", "Amanita vaginata"],
+      "taxa": [
+        "Amanita phalloides",
+        "Amanita vaginata"
+      ],
       "why": "Anillo ausente en vaginata; volva y láminas siempre críticas"
     },
     {
       "id": "torminosus-deliciosus",
-      "taxa": ["Lactarius torminosus", "Lactarius deliciosus"],
+      "taxa": [
+        "Lactarius torminosus",
+        "Lactarius deliciosus"
+      ],
       "why": "Látex blanco vs naranja; borde del sombrero peludo en torminosus"
     },
     {
       "id": "involutus-edulis",
-      "taxa": ["Paxillus involutus", "Boletus edulis"],
+      "taxa": [
+        "Paxillus involutus",
+        "Boletus edulis"
+      ],
       "why": "Paxillus tiene láminas/pliegues decurrentes; no es boleto de poros"
     },
     {
       "id": "galerina-mutabilis",
-      "taxa": ["Galerina marginata", "Kuehneromyces mutabilis"],
+      "taxa": [
+        "Galerina marginata",
+        "Kuehneromyces mutabilis"
+      ],
       "why": "Sobre madera: esporada y anillo; galerina es mortal"
     },
     {
       "id": "virosa-vaginata",
-      "taxa": ["Amanita virosa", "Amanita vaginata"],
+      "taxa": [
+        "Amanita virosa",
+        "Amanita vaginata"
+      ],
       "why": "Blancura engañosa; anillo y volva deciden"
     }
   ]

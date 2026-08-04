@@ -8,6 +8,7 @@ const COMMON_NAMES_EN_BASE: Record<string, string[]> = {
   'agaricus arvensis': ['Horse mushroom'],
   'agaricus bisporus': ['Cultivated mushroom', 'Button mushroom'],
   'agaricus campestris': ['Field mushroom'],
+  'agaricus xanthoderma': ['Yellow-stainer'],
   'agaricus xanthodermus': ['Yellow-stainer'],
   'amanita caesarea': ["Caesar's mushroom"],
   'amanita muscaria': ['Fly agaric'],

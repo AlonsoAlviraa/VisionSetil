@@ -455,7 +455,7 @@
       "id": "edulis-satanas",
       "taxa": [
         "Boletus edulis",
-        "Rubroboletus satanas"
+        "Boletus satanas"
       ],
       "why": "Redes del pie y color del himenio; satanas enrojece y es tóxico",
       "critical_views": [
@@ -477,9 +477,9 @@
       "id": "xanthodermus-campestris",
       "taxa": [
         "Agaricus campestris",
-        "Agaricus xanthodermus"
+        "Agaricus xanthoderma"
       ],
-      "why": "Base del pie amarilla al corte + olor a fenol = xanthodermus",
+      "why": "Base del pie amarilla al corte + olor a fenol = xanthoderma",
       "critical_views": [
         "gills",
         "front",

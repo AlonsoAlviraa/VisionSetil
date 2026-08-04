@@ -16,6 +16,9 @@ _SMOKE_TAXA = [
     ("Cantharellus cibarius", "Omphalotus olearius"),
     ("Armillaria mellea", "Galerina marginata"),
     ("Agaricus campestris", "Amanita verna"),
+    # P0: campestris ↔ xanthoderma (SSOT spelling)
+    ("Agaricus campestris", "Agaricus xanthoderma"),
+    ("Agaricus xanthoderma", "Agaricus campestris"),
     # v1.2.15 expanded deadly / educational pairs
     ("Amanita phalloides", "Amanita citrina"),
     ("Calocybe gambosa", "Inocybe erubescens"),
@@ -67,6 +70,19 @@ def test_lookalike_index_covers_classic_pairs(multiview_mock_weights):
         assert mate.lower() in mates_lower, (
             f"expected mate {mate!r} in lookalikes for {taxon!r}, got {lks}"
         )
+
+
+def test_lookalikes_for_resolves_synonym_spellings(multiview_mock_weights):
+    """Synonym query spellings must hit SSOT LA index (not empty dual-row stubs)."""
+    from app.services.multi_view_classifier import MultiViewMushroomClassifier
+
+    clf = MultiViewMushroomClassifier()
+    # Rubroboletus satanas → Boletus satanas → edulis mate
+    sat_lks = clf._lookalikes_for("Rubroboletus satanas")
+    assert any("edulis" in n.lower() for n in sat_lks), sat_lks
+    # Agaricus xanthodermus → xanthoderma → campestris mate
+    xan_lks = clf._lookalikes_for("Agaricus xanthodermus")
+    assert any("campestris" in n.lower() for n in xan_lks), xan_lks
 
 
 def test_amanita_lookalikes_include_deadly(multiview_mock_weights):

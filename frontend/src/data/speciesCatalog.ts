@@ -352,15 +352,21 @@ export function getSpeciesBySlug(slug: string): CatalogSpecies | undefined {
   if (!slug) return undefined
   const key = normalizeSlugParam(slug)
   if (!key) return undefined
-  // Synonym slug (e.g. coprinopsis-atramentaria) → SSOT slug
+  // Prefer SSOT when slug is a curated synonym of another taxon
+  // (e.g. rubroboletus-satanas → Boletus satanas with lookalikes).
+  // Exact dual-row match first would return empty LA educational stubs.
   const asName = key.replace(/-/g, ' ')
-  const canonSlug = scientificNameToSlug(canonicalTaxonName(asName))
+  const canon = canonicalTaxonName(asName)
+  const canonSlug = scientificNameToSlug(canon)
+  if (canonSlug && canonSlug !== key) {
+    const ssot =
+      speciesCatalog.find((s) => s.slug === canonSlug) ||
+      speciesCatalog.find((s) => scientificNameToSlug(s.taxon) === canonSlug)
+    if (ssot) return ssot
+  }
   return (
     speciesCatalog.find((s) => s.slug === key) ||
     speciesCatalog.find((s) => scientificNameToSlug(s.taxon) === key) ||
-    (canonSlug && canonSlug !== key
-      ? speciesCatalog.find((s) => s.slug === canonSlug)
-      : undefined) ||
     // Fallback: direct case-insensitive slug match (pre-normalized catalogs)
     speciesCatalog.find((s) => s.slug.toLowerCase() === slug.toLowerCase().trim())
   )
@@ -372,11 +378,14 @@ export function getSpeciesByTaxon(taxon: string): CatalogSpecies | undefined {
   if (!key || key === 'undefined' || key === 'null') return undefined
   const canon = canonicalTaxonName(raw)
   const canonKey = canon.toLowerCase()
+  // Prefer SSOT when synonym maps away from the query spelling
+  // (Rubroboletus satanas → Boletus satanas with LA edges).
+  if (canonKey && canonKey !== key) {
+    const ssot = speciesCatalog.find((s) => s.taxon.toLowerCase() === canonKey)
+    if (ssot) return ssot
+  }
   return (
     speciesCatalog.find((s) => s.taxon.toLowerCase() === key) ||
-    (canonKey !== key
-      ? speciesCatalog.find((s) => s.taxon.toLowerCase() === canonKey)
-      : undefined) ||
     speciesCatalog.find((s) => scientificNameToSlug(s.taxon) === scientificNameToSlug(raw)) ||
     speciesCatalog.find((s) => scientificNameToSlug(s.taxon) === scientificNameToSlug(canon))
   )

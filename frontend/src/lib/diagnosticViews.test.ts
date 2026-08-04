@@ -10,6 +10,9 @@ import {
   missingDeadlyCriticalViews,
   missingPairCriticalViews,
 } from './diagnosticViews'
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
+import feDiagMap from '../data/multiview_diagnostic_map.json'
 import { CLASSIC_LOOKALIKE_PAIRS } from './lookalikeStudio'
 
 describe('diagnosticViews (deadly multi-view coaching)', () => {
@@ -103,5 +106,65 @@ describe('diagnosticViews (deadly multi-view coaching)', () => {
     const xan = findDiagnosticPair('Agaricus campestris', 'Agaricus xanthodermus')
     expect(xan).not.toBeNull()
     expect(xan!.why.toLowerCase()).toMatch(/fenol|amarill|xanthoderm/)
+  })
+
+  it('FE and data multiview classic_pairs id sets are equal (parity)', () => {
+    const dataPath = resolve(
+      __dirname,
+      '../../../data/species_catalog/multiview_diagnostic_map.json',
+    )
+    const data = JSON.parse(readFileSync(dataPath, 'utf8')) as {
+      classic_pairs?: Array<{ id?: string }>
+    }
+    const feIds = new Set(
+      ((feDiagMap as { classic_pairs?: Array<{ id?: string }> }).classic_pairs || [])
+        .map((p) => p.id)
+        .filter(Boolean) as string[],
+    )
+    const dataIds = new Set(
+      (data.classic_pairs || []).map((p) => p.id).filter(Boolean) as string[],
+    )
+    expect(feIds.size).toBeGreaterThanOrEqual(28)
+    expect(dataIds.size).toBe(feIds.size)
+    expect([...feIds].sort()).toEqual([...dataIds].sort())
+  })
+
+  it('P0: xanthoderma + edulis↔satanas resolve via canonical and synonym forms', () => {
+    // Canonical SSOT names on classic pairs
+    const xanCanon = findDiagnosticPair('Agaricus campestris', 'Agaricus xanthoderma')
+    expect(xanCanon, 'xanthoderma pair').not.toBeNull()
+    expect(xanCanon!.pair_id).toBe('xanthodermus-campestris')
+    expect(xanCanon!.why.toLowerCase()).toMatch(/fenol|amarill|xanthoderm/)
+    expect(xanCanon!.critical_views.length).toBeGreaterThan(0)
+
+    // Reverse order + synonym spelling still resolve
+    const xanRev = findDiagnosticPair('Agaricus xanthoderma', 'Agaricus campestris')
+    expect(xanRev).not.toBeNull()
+    expect(xanRev!.pair_id).toBe(xanCanon!.pair_id)
+    const xanSyn = findDiagnosticPair('Agaricus campestris', 'Agaricus xanthodermus')
+    expect(xanSyn).not.toBeNull()
+    expect(xanSyn!.pair_id).toBe(xanCanon!.pair_id)
+
+    // Classic pair taxa use Boletus satanas; Rubroboletus synonym also matches
+    const satCanon = findDiagnosticPair('Boletus edulis', 'Boletus satanas')
+    expect(satCanon, 'edulis-satanas pair').not.toBeNull()
+    expect(satCanon!.pair_id).toBe('edulis-satanas')
+    expect(satCanon!.critical_views).toContain('gills')
+    const satRev = findDiagnosticPair('Boletus satanas', 'Boletus edulis')
+    expect(satRev).not.toBeNull()
+    expect(satRev!.pair_id).toBe('edulis-satanas')
+    const satSyn = findDiagnosticPair('Boletus edulis', 'Rubroboletus satanas')
+    expect(satSyn).not.toBeNull()
+    expect(satSyn!.pair_id).toBe('edulis-satanas')
+
+    // CLASSIC_LOOKALIKE_PAIRS ids still resolve via diagnosticForLookalikeMate
+    const classicXan = CLASSIC_LOOKALIKE_PAIRS.find((p) => p.id === 'xanthodermus-campestris')
+    const classicSat = CLASSIC_LOOKALIKE_PAIRS.find((p) => p.id === 'edulis-satanas')
+    expect(classicXan?.taxa).toEqual(['Agaricus campestris', 'Agaricus xanthoderma'])
+    expect(classicSat?.taxa).toEqual(['Boletus edulis', 'Boletus satanas'])
+    expect(diagnosticForLookalikeMate([classicXan!.taxa[0]], classicXan!.taxa[1])).not.toBeNull()
+    expect(diagnosticForLookalikeMate([classicXan!.taxa[1]], classicXan!.taxa[0])).not.toBeNull()
+    expect(diagnosticForLookalikeMate([classicSat!.taxa[0]], classicSat!.taxa[1])).not.toBeNull()
+    expect(diagnosticForLookalikeMate([classicSat!.taxa[1]], classicSat!.taxa[0])).not.toBeNull()
   })
 })

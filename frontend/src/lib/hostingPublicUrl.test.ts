@@ -135,12 +135,25 @@ describe('hosting deploy beta kit contracts', () => {
     expect(caddy).toMatch(/try_files/)
     expect(caddy).toMatch(/\/api/)
     expect(caddy).toMatch(/\/media/)
+    expect(caddy).toMatch(/dist-app/)
     const redirects = readFileSync(resolve(feRoot, 'public/_redirects'), 'utf8')
     expect(redirects).toMatch(/index\.html/)
     const vercel = readFileSync(resolve(feRoot, 'vercel.json'), 'utf8')
     expect(vercel).toMatch(/index\.html/)
     const vite = readFileSync(resolve(feRoot, 'vite.config.ts'), 'utf8')
     expect(vite).toMatch(/navigateFallback:\s*['"]index\.html['"]/)
+  })
+
+  it('SPA dual-build emits index.html via emitSpaIndexHtmlPlugin', () => {
+    const vite = readFileSync(resolve(feRoot, 'vite.config.ts'), 'utf8')
+    expect(vite).toMatch(/function emitSpaIndexHtmlPlugin/)
+    expect(vite).toMatch(/emitSpaIndexHtmlPlugin\(target\)/)
+    expect(vite).toMatch(/fileName\s*=\s*['"]index\.html['"]/)
+    expect(vite).toMatch(/index-\$\{target\}\.html/)
+    expect(vite).toMatch(/navigateFallback:\s*['"]index\.html['"]/)
+    const hosting = readFileSync(resolve(repoRoot, 'docs/HOSTING_DEPLOY_BETA.md'), 'utf8')
+    expect(hosting).toMatch(/build:app/)
+    expect(hosting).toMatch(/FRONTEND_DIST=\\.\/frontend\/dist-app|FRONTEND_DIST=\.\/frontend\/dist-app/)
   })
 
   it('env examples + Home install + public URL ops surface (dev-only)', () => {

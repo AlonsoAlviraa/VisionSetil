@@ -6,6 +6,13 @@
 - Write data/species_catalog/multiview_diagnostic_map.json (critical views per pair)
 - Optionally run sync_catalog_ssot
 
+classic_pairs rebuild policy
+----------------------------
+Pairs are rebuilt from classic_lookalike_pairs.json, then **UNION-merged** with any
+existing classic_pairs already present on data/FE multiview maps (by id). This preserves
+ML-only / deadly / educational extras that are not in classic_lookalike_pairs.json.
+Do not switch to replace-only without an explicit wipe flag.
+
 Policy: orientation_only; never invent edible clearance; never consumption permission.
 """
 from __future__ import annotations
@@ -199,8 +206,29 @@ def expand_lookalikes(v2: dict) -> dict:
     }
 
 
+def _load_existing_classic_pairs() -> dict[str, dict]:
+    """Load classic_pairs by id from data/FE multiview maps (union)."""
+    by_id: dict[str, dict] = {}
+    for path in (DIAG, FE_DIAG):
+        if not path.is_file():
+            continue
+        try:
+            prev = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        for p in prev.get("classic_pairs") or []:
+            pid = str(p.get("id") or "").strip()
+            if pid and pid not in by_id:
+                by_id[pid] = p
+    return by_id
+
+
 def build_diagnostic_map(v2: dict, ml_classes: list[str]) -> dict:
-    """Map confusions → which of the 4 photos are most diagnostic."""
+    """Map confusions → which of the 4 photos are most diagnostic.
+
+    Rebuilds from classic_lookalike_pairs.json then UNION-merges any existing
+    multiview classic_pairs (ML-only / deadly extras) so regenerate does not wipe them.
+    """
     pairs_doc = {"version": "1.0.0", "pairs": []}
     if PAIRS.is_file():
         pairs_doc = json.loads(PAIRS.read_text(encoding="utf-8"))
@@ -230,6 +258,35 @@ def build_diagnostic_map(v2: dict, ml_classes: list[str]) -> dict:
                 "full_packet": list(("gills", "front", "habitat", "detail")),
                 "ml40_overlap": [t for t in taxa if t in ml_classes],
             }
+        )
+
+    # Preserve ML-only / educational extras already on multiview maps
+    existing = _load_existing_classic_pairs()
+    known_ids = {str(e.get("id") or "") for e in entries}
+    preserved = 0
+    for pid, prev in existing.items():
+        if pid in known_ids:
+            continue
+        taxa = list(prev.get("taxa") or [])
+        entries.append(
+            {
+                "id": pid,
+                "taxa": taxa,
+                "why": prev.get("why") or "",
+                "critical_views": list(prev.get("critical_views") or DEFAULT_CRITICAL)[:4],
+                "full_packet": list(
+                    prev.get("full_packet") or ("gills", "front", "habitat", "detail")
+                ),
+                "ml40_overlap": [t for t in taxa if t in ml_classes]
+                or list(prev.get("ml40_overlap") or []),
+            }
+        )
+        preserved += 1
+    if preserved:
+        print(
+            f"[expand_catalog_ml40_multiview] preserved {preserved} multiview classic_pairs "
+            f"not in classic_lookalike_pairs.json (union merge)",
+            file=sys.stderr,
         )
 
     # Also attach per ML class recommended views

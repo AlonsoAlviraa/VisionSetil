@@ -141,4 +141,26 @@ describe('speciesCatalog code-split loader', () => {
     expect(a.length).toBe(b.length)
     expect(a.length).toBe(SSOT_COUNT)
   })
+
+  it('P0 snapshot lookalikes: xanthoderma, satanas, rubellus + synonym slug', async () => {
+    await loadSpeciesCatalog()
+    const camp = getSpeciesByTaxon('Agaricus campestris')
+    const xanth = getSpeciesByTaxon('Agaricus xanthoderma')
+    expect(camp?.lookalikes?.some((n) => /xanthoderma/i.test(n))).toBe(true)
+    expect(xanth?.lookalikes?.some((n) => /campestris/i.test(n))).toBe(true)
+
+    const edulis = getSpeciesByTaxon('Boletus edulis')
+    const sat = getSpeciesByTaxon('Boletus satanas')
+    expect(edulis?.lookalikes?.some((n) => /satanas/i.test(n))).toBe(true)
+    expect(sat?.lookalikes?.some((n) => /edulis/i.test(n))).toBe(true)
+
+    const rub = getSpeciesByTaxon('Cortinarius rubellus')
+    expect(rub?.lookalikes?.some((n) => /imleria badia/i.test(n))).toBe(true)
+
+    // Dual-row synonym slug must surface SSOT Boletus satanas with LA (not empty Rubroboletus)
+    const rubro = getSpeciesBySlug('rubroboletus-satanas')
+    expect(rubro?.taxon).toBe('Boletus satanas')
+    expect(rubro?.lookalikes?.some((n) => /edulis/i.test(n))).toBe(true)
+    expect(getSpeciesByTaxon('Rubroboletus satanas')?.taxon).toBe('Boletus satanas')
+  })
 })

@@ -51,7 +51,7 @@ export const CURATED_GAMES_TAXA: readonly string[] = [
   'Entoloma sinuatum',
   'Hygrophorus marzuolus',
   'Calocybe gambosa',
-  'Agaricus xanthodermus',
+  'Agaricus xanthoderma',
   'Agaricus arvensis',
   'Lepiota cristata',
   'Chlorophyllum rhacodes',

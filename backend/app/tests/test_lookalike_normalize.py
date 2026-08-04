@@ -125,6 +125,95 @@ def test_catalog_v2_lookalike_edges_are_bidirectional():
     assert rubellus.get("risk_level") == "deadly"
 
 
+def test_p0_xanthoderma_and_satanas_edges_and_synonyms():
+    """P0 classic lookalike correctness: xanthoderma + edulis↔satanas on SSOT names."""
+    import json
+    from pathlib import Path
+
+    from app.services.poisonous_lookalikes import load_taxon_synonyms
+    from app.services.species_catalog import list_expanded_species_catalog
+    from app.services.unified_catalog import get_by_scientific_name, get_by_slug
+
+    load_taxon_synonyms.cache_clear()
+    list_expanded_species_catalog.cache_clear()
+
+    root = Path(__file__).resolve().parents[3]
+    data = json.loads(
+        (root / "data" / "species_catalog" / "species_catalog_v2.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    rows = data.get("species") or []
+    by = {
+        str(r.get("scientific_name") or "").lower(): r
+        for r in rows
+        if r.get("scientific_name")
+    }
+
+    def mates(row: dict) -> set[str]:
+        out: set[str] = set()
+        for la in row.get("lookalikes") or []:
+            name = la.get("scientific_name") if isinstance(la, dict) else la
+            if name:
+                out.add(str(name).lower())
+        return out
+
+    camp = by["agaricus campestris"]
+    xanth = by["agaricus xanthoderma"]
+    assert "agaricus xanthoderma" in mates(camp)
+    assert "agaricus campestris" in mates(xanth)
+
+    edulis = by["boletus edulis"]
+    satanas = by["boletus satanas"]
+    assert "boletus satanas" in mates(edulis)
+    assert "boletus edulis" in mates(satanas)
+
+    assert canonical_taxon_name("Agaricus xanthodermus") == "Agaricus xanthoderma"
+    assert canonical_taxon_name("Rubroboletus satanas") == "Boletus satanas"
+
+    # Expanded catalog (Identify index source) mirrors P0 edges both directions
+    expanded = list_expanded_species_catalog()
+    by_exp = {
+        str(s.get("taxon") or "").lower(): s for s in (expanded.get("species") or [])
+    }
+    assert "agaricus xanthoderma" in {
+        n.lower() for n in (by_exp["agaricus campestris"].get("lookalikes") or [])
+    }
+    assert "agaricus campestris" in {
+        n.lower() for n in (by_exp["agaricus xanthoderma"].get("lookalikes") or [])
+    }
+    assert "boletus satanas" in {
+        n.lower() for n in (by_exp["boletus edulis"].get("lookalikes") or [])
+    }
+    assert "imleria badia" in {
+        n.lower() for n in (by_exp["cortinarius rubellus"].get("lookalikes") or [])
+    }
+
+    # Product resolve: synonym slug/name → SSOT Boletus satanas (not empty dual row)
+    rec_slug = get_by_slug("rubroboletus-satanas")
+    assert rec_slug is not None
+    assert rec_slug.get("scientific_name") == "Boletus satanas"
+    rec_name = get_by_scientific_name("Rubroboletus satanas")
+    assert rec_name is not None
+    assert rec_name.get("scientific_name") == "Boletus satanas"
+
+    # classic_lookalike_pairs.json uses SSOT canonical taxa
+    classic = json.loads(
+        (root / "data" / "species_catalog" / "classic_lookalike_pairs.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    by_pair = {p["id"]: p for p in classic.get("pairs") or []}
+    assert by_pair["xanthodermus-campestris"]["taxa"] == [
+        "Agaricus campestris",
+        "Agaricus xanthoderma",
+    ]
+    assert by_pair["edulis-satanas"]["taxa"] == [
+        "Boletus edulis",
+        "Boletus satanas",
+    ]
+
+
 def test_species_index_join_report_v20_full_model_coverage():
     """af44e83: join report points at kernel_output_v20 with 40/40 model∩catalog."""
     import json

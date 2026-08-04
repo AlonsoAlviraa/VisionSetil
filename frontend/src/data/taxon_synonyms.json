@@ -6,7 +6,7 @@
     "index_fungorum_api"
   ],
   "notes": "Aliases map to VisionSetil SSOT preferred names. Index Fungorum bulk is nomenclature-only; never consumption; never auto-flip SSOT.",
-  "generated": "2026-07-28T17:02:57.127504+00:00",
+  "generated": "2026-07-28T17:02:57.030753+00:00",
   "stats": {
     "ssot_taxa_scanned": 523,
     "base_synonyms": 3,
@@ -6971,6 +6971,7 @@
     "xerula radicata var. alba": "Hymenopellis radicata",
     "xerula radicata var. bispora": "Hymenopellis radicata",
     "xerula radicata var. rubescens": "Hymenopellis radicata",
-    "xylaria militaris": "Cordyceps militaris"
+    "xylaria militaris": "Cordyceps militaris",
+    "rubroboletus satanas": "Boletus satanas"
   }
 }

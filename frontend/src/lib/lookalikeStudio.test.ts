@@ -77,4 +77,18 @@ describe('lookalike studio', () => {
     expect(pairs.some((p) => p.id === 'phalloides-citrina')).toBe(true)
     expect(pairs.some((p) => p.id === 'gambosa-inocybe')).toBe(true)
   })
+
+  it('P0: Rubroboletus satanas resolves to Boletus satanas SSOT with edulis peers', async () => {
+    await loadSpeciesCatalog()
+    const card = resolveStudioTaxon('Rubroboletus satanas')
+    expect(card).toBeTruthy()
+    expect(card!.in_catalog).toBe(true)
+    expect(card!.taxon).toBe('Boletus satanas')
+    // Studio peers from SSOT LA / classic pair — not empty dual-row
+    const peers = suggestStudioPeers('Rubroboletus satanas', 8)
+    expect(peers.some((p) => /edulis/i.test(p.taxon))).toBe(true)
+    // xanthodermus synonym → xanthoderma SSOT
+    const xan = resolveStudioTaxon('Agaricus xanthodermus')
+    expect(xan?.taxon).toBe('Agaricus xanthoderma')
+  })
 })

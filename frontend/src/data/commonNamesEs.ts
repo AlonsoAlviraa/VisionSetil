@@ -12,6 +12,7 @@ const COMMON_NAMES_ES_BASE: Record<string, string[]> = {
   'agaricus moelleri': ['Champiñón de Möller'],
   'agaricus sylvaticus': ['Champiñón silvícola'],
   'agaricus sylvicola': ['Champiñón de bosque'],
+  'agaricus xanthoderma': ['Champiñón amarilleante'],
   'agaricus xanthodermus': ['Champiñón amarilleante'],
   'agrocybe pediades': ['Agrocibe de prado'],
   'agrocybe praecox': ['Agrocibe precoz'],
@@ -187,7 +188,8 @@ const ENGLISH_NOISE = new Set([
 
 export function enrichCommonNames(taxon: string, existing: string[] = []): string[] {
   const key = taxon.trim().toLowerCase()
-  const extra = COMMON_NAMES_ES[key] || []
+  // Dual key + synonym residual: xanthodermus map still hits when SSOT is xanthoderma
+  const extra = COMMON_NAMES_ES[key] || COMMON_NAMES_ES[key.replace(/xanthodermus$/, 'xanthoderma')] || []
   const merged: string[] = []
   const seen = new Set<string>()
   // Prefer curated Spanish (extra) before raw catalog English names

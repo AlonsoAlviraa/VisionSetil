@@ -96,40 +96,48 @@ def get_by_slug(slug: str) -> dict[str, Any] | None:
     """O(1) slug lookup; curated synonym slugs resolve to SSOT rows.
 
     Example: ``coprinopsis-atramentaria`` → ``Coprinus atramentarius`` record.
+    Prefer SSOT when request slug is a synonym of another taxon so dual-row
+    educational stubs (e.g. ``rubroboletus-satanas`` with empty lookalikes)
+    do not win over ``boletus-satanas`` with curated LA edges.
     """
     if not slug:
         return None
     by_slug = load_catalog().get("_by_slug", {})
-    hit = by_slug.get(slug)
-    if hit:
-        return hit
-    # Synonym slug (e.g. coprinopsis-atramentaria) → SSOT slug
+    by_name = load_catalog().get("_by_name", {})
     as_name = slug.replace("-", " ")
     try:
         from app.services.poisonous_lookalikes import canonical_taxon_name
     except ImportError:  # pragma: no cover
-        return None
+        return by_slug.get(slug)
     canon = canonical_taxon_name(as_name)
-    if not canon:
-        return None
-    canon_slug = scientific_to_slug(canon)
+    canon_slug = scientific_to_slug(canon) if canon else ""
+    # Synonym slug → SSOT preferred row first
     if canon_slug and canon_slug != slug:
         hit = by_slug.get(canon_slug)
         if hit:
             return hit
-    by_name = load_catalog().get("_by_name", {})
-    return by_name.get(canon.lower())
+        if canon:
+            hit = by_name.get(canon.lower())
+            if hit:
+                return hit
+    hit = by_slug.get(slug)
+    if hit:
+        return hit
+    if canon:
+        return by_name.get(canon.lower())
+    return None
 
 
 def get_by_scientific_name(name: str) -> dict[str, Any] | None:
-    """Lookup by scientific name; curated synonyms map to SSOT preferred names."""
+    """Lookup by scientific name; curated synonyms map to SSOT preferred names.
+
+    Prefer SSOT when the query is a synonym of another preferred name so
+    dual-row stubs (Rubroboletus satanas empty LA) do not shadow Boletus satanas.
+    """
     if not name:
         return None
     target = name.strip().lower()
     by_name = load_catalog().get("_by_name", {})
-    hit = by_name.get(target)
-    if hit:
-        return hit
     try:
         from app.services.poisonous_lookalikes import canonical_taxon_name
     except ImportError:  # pragma: no cover
@@ -140,6 +148,9 @@ def get_by_scientific_name(name: str) -> dict[str, Any] | None:
         if hit:
             return hit
         return get_by_slug(scientific_to_slug(canon))
+    hit = by_name.get(target)
+    if hit:
+        return hit
     return get_by_slug(scientific_to_slug(name))
 
 

@@ -4,6 +4,7 @@
  * All tiers may show real catalog photos on grid (no brand-plate placeholders).
  * Pure data + pure functions — unit-tested without React or network.
  */
+import { canonicalTaxonName } from '../lib/taxonSynonyms'
 
 export type PhotoTier = 'T0' | 'T1' | 'T2'
 
@@ -43,7 +44,7 @@ export const PHOTO_TIER_T0: readonly string[] = [
  */
 export const PHOTO_TIER_T1: readonly string[] = [
   'Agaricus bisporus',
-  'Agaricus xanthodermus',
+  'Agaricus xanthoderma',
   'Amanita citrina',
   'Amanita gemmata',
   'Amanita ovoidea',
@@ -139,6 +140,7 @@ export function normalizeTaxonKey(taxon: string): string {
 /**
  * Assign photo tier for a taxon.
  * Priority: explicit T0 → explicit T1 → high-risk → T2.
+ * Uses SSOT synonym canonicalization so e.g. Agaricus xanthodermus → xanthoderma.
  */
 export function getPhotoTier(
   taxon: string,
@@ -146,8 +148,9 @@ export function getPhotoTier(
 ): PhotoTier {
   const key = normalizeTaxonKey(taxon || '')
   if (!key || key === 'fungi') return 'T2'
-  if (T0_SET.has(key)) return 'T0'
-  if (T1_SET.has(key)) return 'T1'
+  const canonKey = normalizeTaxonKey(canonicalTaxonName(taxon || '') || key)
+  if (T0_SET.has(key) || T0_SET.has(canonKey)) return 'T0'
+  if (T1_SET.has(key) || T1_SET.has(canonKey)) return 'T1'
   const risk = (riskLabel || '').toLowerCase().trim()
   if (HIGH_RISK.has(risk)) return 'T1'
   return 'T2'

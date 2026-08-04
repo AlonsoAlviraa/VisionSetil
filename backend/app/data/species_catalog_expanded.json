@@ -1,6 +1,6 @@
 {
   "version": "ssot-v2-2.2.0",
-  "generated": "2026-07-27",
+  "generated": "2026-08-04",
   "policy": "orientation_only; unsafe_to_consume; never_forage_permission",
   "count": 523,
   "sources": [
@@ -117,7 +117,8 @@
       "food_label": "comestible",
       "documented_edibility": "comestible",
       "lookalikes": [
-        "Amanita verna"
+        "Amanita verna",
+        "Agaricus xanthoderma"
       ]
     },
     {
@@ -403,7 +404,9 @@
       "food_class": "toxica",
       "food_label": "toxica",
       "documented_edibility": "toxica",
-      "lookalikes": []
+      "lookalikes": [
+        "Agaricus campestris"
+      ]
     },
     {
       "taxon": "Agrocybe pediades",
@@ -1341,7 +1344,8 @@
         "Boletus erythropus",
         "Cortinarius rubellus",
         "Imleria badia",
-        "Leccinum scabrum"
+        "Leccinum scabrum",
+        "Suillus luteus"
       ]
     },
     {
@@ -2080,7 +2084,9 @@
       "food_class": "no_comestible",
       "food_label": "no_comestible",
       "documented_edibility": "no_comestible",
-      "lookalikes": []
+      "lookalikes": [
+        "Phallus impudicus"
+      ]
     },
     {
       "taxon": "Clavaria zollingeri",
@@ -2818,7 +2824,8 @@
       "documented_edibility": "mortal",
       "lookalikes": [
         "Boletus edulis",
-        "Lepista nuda"
+        "Lepista nuda",
+        "Imleria badia"
       ]
     },
     {
@@ -4499,7 +4506,8 @@
       "lookalikes": [
         "Armillaria mellea",
         "Kuehneromyces mutabilis",
-        "Pleurotus ostreatus"
+        "Pleurotus ostreatus",
+        "Laetiporus sulphureus"
       ]
     },
     {
@@ -5313,7 +5321,8 @@
       "food_label": "toxica",
       "documented_edibility": "toxica",
       "lookalikes": [
-        "Lactarius deliciosus"
+        "Lactarius deliciosus",
+        "Lactarius deterrimus"
       ]
     },
     {

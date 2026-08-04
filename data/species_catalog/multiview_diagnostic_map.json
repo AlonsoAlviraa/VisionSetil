@@ -450,6 +450,181 @@
         "Galerina marginata",
         "Armillaria lutea"
       ]
+    },
+    {
+      "id": "edulis-satanas",
+      "taxa": [
+        "Boletus edulis",
+        "Boletus satanas"
+      ],
+      "why": "Redes del pie y color del himenio; satanas enrojece y es tóxico",
+      "critical_views": [
+        "gills",
+        "front",
+        "detail"
+      ],
+      "full_packet": [
+        "gills",
+        "front",
+        "habitat",
+        "detail"
+      ],
+      "ml40_overlap": [
+        "Boletus edulis"
+      ]
+    },
+    {
+      "id": "xanthodermus-campestris",
+      "taxa": [
+        "Agaricus campestris",
+        "Agaricus xanthoderma"
+      ],
+      "why": "Base del pie amarilla al corte + olor a fenol = xanthoderma",
+      "critical_views": [
+        "gills",
+        "front",
+        "detail"
+      ],
+      "full_packet": [
+        "gills",
+        "front",
+        "habitat",
+        "detail"
+      ],
+      "ml40_overlap": [
+        "Agaricus campestris"
+      ]
+    },
+    {
+      "id": "olearius-cibarius",
+      "taxa": [
+        "Omphalotus olearius",
+        "Cantharellus cibarius"
+      ],
+      "why": "Láminas verdaderas vs pliegues; omphalotus es tóxico",
+      "critical_views": [
+        "gills",
+        "front",
+        "habitat"
+      ],
+      "full_packet": [
+        "gills",
+        "front",
+        "habitat",
+        "detail"
+      ],
+      "ml40_overlap": []
+    },
+    {
+      "id": "phalloides-vaginata",
+      "taxa": [
+        "Amanita phalloides",
+        "Amanita vaginata"
+      ],
+      "why": "Anillo ausente en vaginata; volva y láminas siempre críticas",
+      "critical_views": [
+        "gills",
+        "front",
+        "detail"
+      ],
+      "full_packet": [
+        "gills",
+        "front",
+        "habitat",
+        "detail"
+      ],
+      "ml40_overlap": [
+        "Amanita phalloides"
+      ]
+    },
+    {
+      "id": "torminosus-deliciosus",
+      "taxa": [
+        "Lactarius torminosus",
+        "Lactarius deliciosus"
+      ],
+      "why": "Látex blanco vs naranja; borde del sombrero peludo en torminosus",
+      "critical_views": [
+        "gills",
+        "front",
+        "habitat"
+      ],
+      "full_packet": [
+        "gills",
+        "front",
+        "habitat",
+        "detail"
+      ],
+      "ml40_overlap": []
+    },
+    {
+      "id": "involutus-edulis",
+      "taxa": [
+        "Paxillus involutus",
+        "Boletus edulis"
+      ],
+      "why": "Paxillus tiene láminas/pliegues decurrentes; no es boleto de poros",
+      "critical_views": [
+        "gills",
+        "front",
+        "detail"
+      ],
+      "full_packet": [
+        "gills",
+        "front",
+        "habitat",
+        "detail"
+      ],
+      "ml40_overlap": [
+        "Paxillus involutus",
+        "Boletus edulis"
+      ]
+    },
+    {
+      "id": "galerina-mutabilis",
+      "taxa": [
+        "Galerina marginata",
+        "Kuehneromyces mutabilis"
+      ],
+      "why": "Sobre madera: esporada y anillo; galerina es mortal",
+      "critical_views": [
+        "gills",
+        "front",
+        "habitat",
+        "detail"
+      ],
+      "full_packet": [
+        "gills",
+        "front",
+        "habitat",
+        "detail"
+      ],
+      "ml40_overlap": [
+        "Galerina marginata",
+        "Kuehneromyces mutabilis"
+      ]
+    },
+    {
+      "id": "virosa-vaginata",
+      "taxa": [
+        "Amanita virosa",
+        "Amanita vaginata"
+      ],
+      "why": "Blancura engañosa; anillo y volva deciden",
+      "critical_views": [
+        "gills",
+        "front",
+        "detail"
+      ],
+      "full_packet": [
+        "gills",
+        "front",
+        "habitat",
+        "detail"
+      ],
+      "ml40_overlap": [
+        "Amanita virosa"
+      ]
     }
   ],
   "ml40_class_views": {

@@ -1,11 +1,22 @@
 /**
  * Lookalike Studio — selection/compare + classic confusion pairs.
  * Risk-ranked educational comparison; never consumption guidance.
+ *
+ * Reverse-id educational duals (e.g. deliciosus-torminosus vs torminosus-deliciosus)
+ * are intentional for bidirectional teaching surfaces — do not dedupe without product review.
  */
-import { loadSpeciesCatalog, speciesCatalog, type CatalogSpecies } from '../data/speciesCatalog'
+import {
+  getSpeciesBySlug,
+  getSpeciesByTaxon,
+  loadSpeciesCatalog,
+  speciesCatalog,
+  type CatalogSpecies,
+} from '../data/speciesCatalog'
 import { getPhotoTier, type PhotoTier } from '../data/photoTiers'
 import { toRiskLabel, type RiskLabel } from './riskLabels'
 import { searchCatalogRanked } from './catalogSearch'
+import { normalizeSlugParam, scientificNameToSlug } from './slug'
+import { canonicalTaxonName } from './taxonSynonyms'
 
 /** Ensure catalog is available for studio helpers (code-split). */
 export async function ensureLookalikeCatalog(): Promise<CatalogSpecies[]> {
@@ -134,13 +145,16 @@ export const CLASSIC_LOOKALIKE_PAIRS: ClassicLookalikePair[] = [
     id: 'edulis-satanas',
     label: 'Boleto vs satanás',
     why: 'Redes del pie y color del himenio; satanas enrojece y es tóxico',
-    taxa: ['Boletus edulis', 'Rubroboletus satanas'],
+    // SSOT canonical: Boletus satanas (Rubroboletus satanas is synonym)
+    taxa: ['Boletus edulis', 'Boletus satanas'],
   },
   {
+    // Stable pair id (historical spelling) — do NOT rename without migration.
+    // SSOT taxon is Agaricus xanthoderma; xanthodermus remains synonym only.
     id: 'xanthodermus-campestris',
-    label: 'Champiñón de prado vs xanthodermus',
-    why: 'Base del pie amarilla al corte + olor a fenol = xanthodermus',
-    taxa: ['Agaricus campestris', 'Agaricus xanthodermus'],
+    label: 'Champiñón de prado vs xanthoderma',
+    why: 'Base del pie amarilla al corte + olor a fenol = xanthoderma',
+    taxa: ['Agaricus campestris', 'Agaricus xanthoderma'],
   },
   {
     id: 'olearius-cibarius',
@@ -216,23 +230,30 @@ function freeTextCard(q: string): StudioTaxonCard {
   }
 }
 
-/** Normalize and resolve a taxon string to a studio card (prefer exact matches). */
+/**
+ * Normalize and resolve a taxon string to a studio card.
+ * Prefer SSOT via getSpeciesByTaxon/Slug (synonym → preferred row with lookalikes)
+ * so dual educational stubs (e.g. Rubroboletus satanas empty LA) never win.
+ */
 export function resolveStudioTaxon(query: string): StudioTaxonCard | null {
   const q = query.trim()
   if (!q) return null
   const qf = fold(q)
 
-  // 1) Exact scientific name
-  const exactSci = speciesCatalog.find((s) => fold(s.taxon) === qf)
-  if (exactSci) return catalogToCard(exactSci)
+  // 0) SSOT preference (canonical synonym map + dual-row bypass)
+  const ssot =
+    getSpeciesByTaxon(q) ||
+    getSpeciesBySlug(normalizeSlugParam(q) || scientificNameToSlug(q) || q) ||
+    getSpeciesByTaxon(canonicalTaxonName(q))
+  if (ssot) return catalogToCard(ssot)
 
-  // 2) Exact common name (any vernacular)
+  // 1) Exact common name (any vernacular)
   const exactCommon = speciesCatalog.find((s) =>
     (s.common_names || []).some((c) => fold(c) === qf),
   )
   if (exactCommon) return catalogToCard(exactCommon)
 
-  // 3) Common name starts-with / includes (prefer shorter names = more specific)
+  // 2) Common name starts-with / includes (prefer shorter names = more specific)
   const commonHits = speciesCatalog
     .filter((s) =>
       (s.common_names || []).some((c) => {
@@ -247,7 +268,7 @@ export function resolveStudioTaxon(query: string): StudioTaxonCard | null {
     })
   if (commonHits[0] && qf.length >= 3) return catalogToCard(commonHits[0])
 
-  // 4) Ranked search (scientific-ish)
+  // 3) Ranked search (scientific-ish)
   const ranked = searchCatalogRanked(speciesCatalog, {
     query: q,
     limit: 8,
@@ -255,6 +276,7 @@ export function resolveStudioTaxon(query: string): StudioTaxonCard | null {
   })
   const hit =
     ranked.find((s) => fold(s.taxon) === qf) ||
+    ranked.find((s) => fold(s.taxon) === fold(canonicalTaxonName(q))) ||
     ranked.find((s) => (s.matchScore ?? 0) >= 55) ||
     ranked.find((s) => fold(s.taxon).startsWith(qf.split(/\s+/)[0] || qf)) ||
     ranked[0]
@@ -346,13 +368,15 @@ export function buildCompareRows(selection: StudioTaxonCard[]): StudioCompareRow
 }
 
 function classicPeersFor(seedTaxon: string): string[] {
-  const f = fold(seedTaxon)
+  // Canonicalize seed so Rubroboletus satanas matches Boletus satanas pairs
+  const f = fold(canonicalTaxonName(seedTaxon) || seedTaxon)
   const out: string[] = []
   for (const pair of CLASSIC_LOOKALIKE_PAIRS) {
-    const list = pair.taxa.map((t) => fold(t))
+    const list = pair.taxa.map((t) => fold(canonicalTaxonName(t) || t))
     if (!list.includes(f)) continue
     for (const t of pair.taxa) {
-      if (fold(t) !== f) out.push(t)
+      const peer = canonicalTaxonName(t) || t
+      if (fold(peer) !== f) out.push(peer)
     }
   }
   return out
@@ -367,6 +391,8 @@ export function suggestStudioPeers(seedTaxon: string, limit = 8): StudioTaxonCar
 
   // 1) Curated SSOT lookalikes on the catalog record (never invented)
   const seedRec =
+    getSpeciesByTaxon(seed.taxon) ||
+    getSpeciesBySlug(seed.slug) ||
     speciesCatalog.find((s) => fold(s.taxon) === fold(seed.taxon)) ||
     speciesCatalog.find((s) => s.slug === seed.slug)
   for (const t of seedRec?.lookalikes || []) {
