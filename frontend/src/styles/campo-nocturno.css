@@ -1655,6 +1655,16 @@ button[aria-pressed='true'] {
   padding: 1rem 0 1.5rem;
 }
 
+/* T5 windowing spacers — height + aria-hidden only (F14). No visibility:hidden / CV. */
+.ency-window-list {
+  width: 100%;
+}
+.ency-window-spacer {
+  pointer-events: none;
+  flex-shrink: 0;
+  width: 100%;
+}
+
 .species-detail-hero__credit {
   margin-top: 0.45rem;
   padding: 0.35rem 0.15rem 0;

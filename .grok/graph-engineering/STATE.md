@@ -1,27 +1,26 @@
 # VisionSetil Graph Engineering — STATE
 
 **Mode:** Graph Engineering  
-**Updated:** 2026-07-31  
-**Goal:** Operator unlock path + orientation-only product
+**Updated:** 2026-08-04  
+**Goal:** Product UX reliability · orientation only
 
 ## Active graph version
 
-`v1.67.0-operator-unlock-serve`
+`v1.68.0-ency-window-t5`
 
 ## HEAD
 
-Tracks A/B/C @ **1d3ed44** + operator unlock serve flag (this cycle).
+T5 encyclopedia DOM window (loop-engineering design→implement).
 
 ## Tasks
 
 | Item | Status |
 |------|--------|
 | Tracks A/B/C lookalike + SPA + checklist | **SHIPPED** `1d3ed44` |
-| Operator unlock cycle (PRODUCT_UNLOCK env) | **SHIPPED** code path |
-| gate_eval checklist regenerate | **DONE** |
-| Approval log | `docs/OPERATOR_UNLOCK_APPROVAL.md` |
+| Operator unlock + metrics anti-forage + E21 operator push | **SHIPPED** |
+| **T5 encyclopedia virtualization** | **SHIPPED** (zero-dep window 48, first paint 12) |
+| Design | `docs/design/ENCYCLOPEDIA_VIRTUALIZATION_T5.md` |
 | forage / consumption permission | **always false** |
-| T5 encyclopedia virtualization | **DEFERRED** |
 
 ### product_unlock
 
