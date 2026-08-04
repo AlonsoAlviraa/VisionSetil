@@ -183,11 +183,24 @@ for _router in _API_ROUTERS:
 @app.get("/")
 def root() -> dict[str, object]:
     """Avoid bare 404 at / when operators open the API port in a browser."""
+    # Serve flag only (PRODUCT_UNLOCK); never metrics-auto. See product_unlock.py
+    try:
+        from app.core.product_unlock import serve_product_unlock_requested
+
+        # Root is lightweight: report env request, not full eligibility merge
+        unlock_req = serve_product_unlock_requested()
+    except Exception:  # noqa: BLE001
+        unlock_req = False
     return {
         "service": "mushroom-photo-id",
         "status": "ok",
+        # Root stays fail-closed bool; effective unlock only on GET /models/status
+        # (env PRODUCT_UNLOCK + eligibility). See docs/OPERATOR_UNLOCK_RUNBOOK.md.
         "product_unlock": False,
+        "product_unlock_env_requested": unlock_req,
         "policy": "orientation_only_never_consume",
+        "forage_permission": False,
+        "consumption_permission": False,
         "health": "/health",
         "readyz": "/readyz",
         "docs": None if _is_prod else "/docs",

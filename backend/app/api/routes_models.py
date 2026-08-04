@@ -69,8 +69,7 @@ def models_status() -> dict:
         from kaggle.ml_qa.gate_eval import evaluate_e20_local_artifacts
 
         unlock_eval = evaluate_e20_local_artifacts(_repo)
-        # Absolute policy: never surface product_unlock=true from status alone
-        unlock_eval["product_unlock"] = False
+        # Metrics package is fail-closed; operator serve flag applied below.
         unlock_eval["can_auto_unlock"] = False
         unlock_eval["forage_permission"] = False
         unlock_eval["consumption_permission"] = False
@@ -95,6 +94,11 @@ def models_status() -> dict:
             "checklist": [],
             "metrics_path": OPERATOR_METRICS_SSOT,
         }
+    # Human operator serve flag (PRODUCT_UNLOCK) — never metrics-auto
+    from app.core.product_unlock import apply_operator_serve_unlock
+
+    unlock_eval = apply_operator_serve_unlock(unlock_eval)
+    serve_unlocked = bool(unlock_eval.get("product_unlock"))
     open_set_summary: dict = {"product_unlock": False}
     try:
         from app.services.species_catalog import describe_active_open_set_thresholds
@@ -116,11 +120,12 @@ def models_status() -> dict:
         "training_num_classes": primary_m.get("num_classes"),
         "training_honesty": training.get("honesty"),
         "training_primary_run": (training.get("primary") or {}).get("run"),
-        "product_unlock": False,
+        "product_unlock": serve_unlocked,
         "unlock_eligible_advisory": bool(unlock_eval.get("unlock_eligible_advisory")),
         "eligible_but_locked": bool(unlock_eval.get("eligible_but_locked")),
         "operator_action": unlock_eval.get("operator_action"),
         "residual_lock_reasons": list(unlock_eval.get("residual_lock_reasons") or []),
+        "serve_flag_requested": bool(unlock_eval.get("serve_flag_requested")),
         "open_set_status": open_set_summary.get("status"),
         "open_set_conf_thr": open_set_summary.get("active_conf_thr"),
         "open_set_margin_thr": open_set_summary.get("active_margin_thr"),
@@ -129,22 +134,24 @@ def models_status() -> dict:
         "lookalike_mate_in_topk_rate": open_set_summary.get("lookalike_mate_in_topk_rate"),
     }
     status["open_set"] = open_set_summary
-    # Absolute policy: never surface product_unlock=true from status alone
+    # product_unlock_eval already merged via apply_operator_serve_unlock
     if isinstance(unlock_eval, dict):
-        unlock_eval["product_unlock"] = False
         unlock_eval["can_auto_unlock"] = False
         unlock_eval.setdefault("forage_permission", False)
         unlock_eval.setdefault("consumption_permission", False)
         unlock_eval.setdefault("policy", "orientation_only_never_consume")
     status["product_unlock_eval"] = unlock_eval
-    # Static operator runbook pointers (docs + regenerate; never auto-unlock)
+    # Static operator runbook pointers (docs + regenerate; never auto-unlock from metrics)
     status["operator_unlock_ops"] = {
-        "product_unlock": False,
+        "product_unlock": serve_unlocked,
         "can_auto_unlock": False,
         "forage_permission": False,
         "consumption_permission": False,
         "policy": "orientation_only_never_consume",
+        "serve_flag_env": "PRODUCT_UNLOCK",
+        "serve_flag_requested": bool(getattr(settings, "product_unlock", False)),
         "operator_runbook_path": "docs/OPERATOR_UNLOCK_RUNBOOK.md",
+        "approval_log_path": "docs/OPERATOR_UNLOCK_APPROVAL.md",
         "checklist_json_path": "eval/reports/ml_experiments/operator_unlock_checklist.json",
         "checklist_md_path": "eval/reports/ml_experiments/operator_unlock_checklist.md",
         "regenerate_command": "python -m kaggle.ml_qa.gate_eval",
@@ -157,7 +164,8 @@ def models_status() -> dict:
         ),
         "note": (
             "Human operator decision gate only. Metrics → advisory eligibility; "
-            "never auto-flip product_unlock; orientation only — never consumption."
+            "PRODUCT_UNLOCK env may set serve product_unlock=true when eligible; "
+            "never auto-flip from metrics alone; orientation only — never consumption."
         ),
     }
     # Live Identify reject rates from feedback JSONL (ops; empty log OK)
@@ -263,11 +271,15 @@ def models_status() -> dict:
         status["summary"]["e21_ready"] = False
         status["summary"]["e21_launched"] = False
 
-    # Re-assert fail-closed on unlock + live blocks before return path continues
+    # Re-assert policy on auxiliary blocks (never unlock from S9/ECE/E21 alone).
+    # Serve product_unlock lives only on summary + product_unlock_eval + operator_unlock_ops.
     if isinstance(status.get("product_unlock_eval"), dict):
-        status["product_unlock_eval"]["product_unlock"] = False
         status["product_unlock_eval"]["can_auto_unlock"] = False
+        status["product_unlock_eval"]["forage_permission"] = False
+        status["product_unlock_eval"]["consumption_permission"] = False
+        status["product_unlock_eval"]["product_unlock"] = serve_unlocked
     if isinstance(status.get("live_reject_monitor"), dict):
+        # S9 monitor never grants unlock by itself
         status["live_reject_monitor"]["product_unlock"] = False
     if isinstance(status.get("ece_residual"), dict):
         status["ece_residual"]["product_unlock"] = False
@@ -275,7 +287,7 @@ def models_status() -> dict:
         status["ece_residual"]["forage_permission"] = False
         status["ece_residual"]["consumption_permission"] = False
     if isinstance(status.get("operator_unlock_ops"), dict):
-        status["operator_unlock_ops"]["product_unlock"] = False
+        status["operator_unlock_ops"]["product_unlock"] = serve_unlocked
         status["operator_unlock_ops"]["can_auto_unlock"] = False
         status["operator_unlock_ops"]["forage_permission"] = False
         status["operator_unlock_ops"]["consumption_permission"] = False
@@ -284,7 +296,7 @@ def models_status() -> dict:
         status["e21_readiness"]["can_auto_unlock"] = False
         status["e21_readiness"]["e21_launched"] = False
         status["e21_readiness"]["kaggle_push"] = False
-    status["summary"]["product_unlock"] = False
+    status["summary"]["product_unlock"] = serve_unlocked
     status["summary"]["e21_launched"] = False
     # Multi-view product contracts + four-photo bench + paired inventory
     try:
@@ -292,6 +304,7 @@ def models_status() -> dict:
 
         mv_prod = describe_multiview_product(repo_root)
         if isinstance(mv_prod, dict):
+            # Multiview honesty block never claims unlock alone
             mv_prod["product_unlock"] = False
         status["multiview_product"] = mv_prod
         fh = (mv_prod or {}).get("field_holdout_m3") if isinstance(mv_prod, dict) else None

@@ -7,7 +7,11 @@ from app.services.embedding_cache import EmbeddingCache
 from app.services.open_set_rejection import OpenSetRejectionService
 
 
-def test_models_status_endpoint(client: TestClient):
+def test_models_status_endpoint(client: TestClient, monkeypatch):
+    # Fail-closed default: ignore developer .env PRODUCT_UNLOCK for this assertion
+    from app.core import config as config_mod
+
+    monkeypatch.setattr(config_mod.settings, "product_unlock", False)
     response = client.get("/models/status")
     assert response.status_code == 200
     data = response.json()
@@ -92,12 +96,15 @@ def test_models_status_endpoint(client: TestClient):
     assert summary.get("e21_launched") is False
 
 
-def test_models_status_unlock_matches_e20_package_signals(client: TestClient):
-    """Status product_unlock_eval must match evaluate_e20_local_artifacts (pro/safe_dp SSOT)."""
+def test_models_status_unlock_matches_e20_package_signals(client: TestClient, monkeypatch):
+    """Advisory eligibility matches package; product_unlock stays false without serve flag."""
     import sys
     from pathlib import Path
 
+    from app.core import config as config_mod
     from app.core.config import settings as _settings
+
+    monkeypatch.setattr(config_mod.settings, "product_unlock", False)
 
     repo = Path(getattr(_settings, "repo_root", None) or _settings.base_dir.parent).resolve()
     if str(repo) not in sys.path:

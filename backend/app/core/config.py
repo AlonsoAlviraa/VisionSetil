@@ -35,7 +35,8 @@ class Settings(BaseSettings):
     """Strongly-typed, env-driven configuration for VisionSetil."""
 
     model_config = SettingsConfigDict(
-        env_file=".env",
+        # Prefer monorepo root `.env` (PRODUCT_UNLOCK, API_KEYS); also backend/.env
+        env_file=(str(_REPO_ROOT / ".env"), str(_BASE_DIR / ".env"), ".env"),
         env_file_encoding="utf-8",
         extra="ignore",
         case_sensitive=False,
@@ -198,6 +199,15 @@ class Settings(BaseSettings):
     # Comma-separated API keys (key | key:org | key:org:scopes). Empty = auth off
     # in development; production requires non-empty (see model_validator).
     api_keys: str = Field(default="", validation_alias="API_KEYS")
+
+    # --- Operator product unlock (serve flag; never metrics-auto) ------------
+    # Human-only: set PRODUCT_UNLOCK=true after OPERATOR_UNLOCK_RUNBOOK cycle.
+    # Metrics / gate_eval never flip this. forage/consumption stay false always.
+    product_unlock: bool = Field(default=False, validation_alias="PRODUCT_UNLOCK")
+    # When true (default), PRODUCT_UNLOCK only applies if unlock_eligible_advisory.
+    product_unlock_require_eligible: bool = Field(
+        default=True, validation_alias="PRODUCT_UNLOCK_REQUIRE_ELIGIBLE"
+    )
 
     # --- E-08 session cookie (opt-in; bearer still works) --------------------
     # When true: Set-Cookie HttpOnly on login/register; accept cookie as session.

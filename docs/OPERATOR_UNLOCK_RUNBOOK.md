@@ -161,18 +161,30 @@ Policy string: **orientation only — never consumption.**
 
 ---
 
-## 8. Optional post-decision steps (if unlock is ever approved)
+## 8. Explicit serve unlock (PRODUCT_UNLOCK env)
 
-If a human operator **explicitly** approves a product unlock cycle in a future deploy (out of band of gate_eval):
+After checklist eligibility (`unlock_eligible_advisory=true`), a human may enable the **serve flag**:
 
-1. Document who approved, when, and which checklist artifact hash/path was reviewed.
-2. Keep `forage_permission=false` and `consumption_permission=false` everywhere.
-3. Keep Identify copy: orientation only; no edible green lights.
-4. Watch S9 under real traffic (grow beyond fixture n=1).
-5. Keep quality-gate dual signals and open-set thr honest on `/models/status`.
-6. Do **not** treat unlock as GTM form readiness (see §9).
+| Env | Default | Effect |
+|-----|---------|--------|
+| `PRODUCT_UNLOCK` | `false` | When `true` **and** eligible (if require flag on), `/models/status` `summary.product_unlock` → **true** |
+| `PRODUCT_UNLOCK_REQUIRE_ELIGIBLE` | `true` | If true, env alone cannot unlock without advisory eligibility |
 
-**Gate helpers still return `product_unlock=false` unless a separate, deliberate product-flag change is made outside this package.** This runbook does not authorize editing code to force True from metrics.
+Implementation: `backend/app/core/product_unlock.py` → `apply_operator_serve_unlock`.  
+Approval log: [`docs/OPERATOR_UNLOCK_APPROVAL.md`](./OPERATOR_UNLOCK_APPROVAL.md).
+
+### Post-decision steps
+
+1. Document who approved, when, and which checklist artifact was reviewed (**approval log**).
+2. Set `PRODUCT_UNLOCK=true` in **deploy environment** (never commit live secrets).
+3. Keep `forage_permission=false` and `consumption_permission=false` everywhere.
+4. Keep Identify copy: orientation only; no edible green lights.
+5. Watch S9 under real traffic (grow beyond fixture n=1).
+6. Keep quality-gate dual signals and open-set thr honest on `/models/status`.
+7. Do **not** treat unlock as GTM form readiness (see §9).
+
+**Gate helpers (`gate_eval`) still return `product_unlock=false` from metrics alone.**  
+**Serve flag is the only deliberate path to `product_unlock=true` on status.**
 
 ---
 
