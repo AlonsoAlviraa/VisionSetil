@@ -39,10 +39,13 @@ Soft MAP/deadly gates are **advisory orientation signals only** — they never a
 |---------|---------|
 | `ready_for_e21_schedule` | Technical baseline green (E20 artifacts + soft gates) — **not** a launch |
 | `E21_OPERATOR_APPROVED=true` | Marks `operator_schedule_approved` / schedule-authorization readiness only |
-| `e21_launched` / `kaggle_push` | **Always false** unless a real operator performed a manual CLI push |
-| `PRODUCT_UNLOCK` | Serve Identify unlock only — **does not** set `e21_launched` |
+| `E21_ALLOW_KAGGLE_PUSH=true` | Third gate: schedule approval ≠ permission to push |
+| `e21_launched` / `kaggle_push` | **Always false** on readiness / `/models/status` (fail-closed) |
+| `auto_kaggle_push` | **Always false** |
+| `PRODUCT_UNLOCK` | Serve Identify unlock only — **does not** set `e21_launched` or push Kaggle |
+| `scripts/e21_operator_push.py` | Operator dual/triple-gate CLI (default dry-run) |
 
-There is **no** automatic Kaggle push path from readiness scripts or `/models/status`.
+There is **no** automatic Kaggle push path from readiness scripts, metrics, `PRODUCT_UNLOCK`, or `/models/status`.
 
 ## Proposed protocol (when operator schedules GPU)
 
@@ -77,6 +80,10 @@ Status block fields (fail-closed defaults):
 - `product_unlock: false`
 - `e21_launched: false`
 - `kaggle_push: false`
+- `auto_kaggle_push: false`
+- `requires_operator_dual_gate: true`
+- `product_unlock_does_not_push: true`
+- `operator_push_cli: scripts/e21_operator_push.py`
 - `forage_permission: false`
 - `serve_product_unlock_does_not_launch_e21: true`
 - `operator_prerequisites: [...]`
@@ -85,11 +92,75 @@ Status block fields (fail-closed defaults):
 
 1. [ ] E20 artifacts local + soft gates PASS (`e21_readiness.py`)  
 2. [ ] Dataset packs sized for new class count  
-3. [ ] Notebook rebuilt from `build_exp_v20` lineage with safe DP freeze  
+3. [ ] Notebook rebuilt from `build_exp_v20` lineage with safe DP freeze (place under `kaggle/push_e21/`)  
 4. [ ] Optional: `E21_OPERATOR_APPROVED=true` for schedule-approval stamp only  
-5. [ ] Push GPU kernel **manually** when ready (no autonomous push from this doc, PRODUCT_UNLOCK, or metrics)  
+5. [ ] Push GPU kernel via **operator dual-gate CLI** (`scripts/e21_operator_push.py`) — never from PRODUCT_UNLOCK / metrics / readiness alone  
 6. [ ] On COMPLETE: download → dual deadly honesty → open-set recalibrate → pro tester  
 7. [ ] product_unlock stays false until operator runbook; forage/consumption stay false  
+
+## Operator push (manual CLI)
+
+**There is no auto Kaggle push without an operator.**  
+`auto_kaggle_push: false` always. Readiness, soft gates, and `PRODUCT_UNLOCK` never call `kaggle kernels push`.
+
+Staging dir: `kaggle/push_e21/` (metadata stub only until a real notebook is built — **do not invent fake training**).
+
+### Dry-run (default — no network)
+
+```bash
+python scripts/e21_operator_push.py
+# equivalent:
+python scripts/e21_operator_push.py --dry-run
+```
+
+Prints the plan, gate matrix, and kernel GAP if `kaggle/push_e21/*.ipynb` is missing. Exit 0. Logs to `eval/reports/ml_experiments/e21_operator_actions.jsonl`.
+
+### Real push (ALL gates required)
+
+| Gate | Source |
+|------|--------|
+| 1. Schedule approval | `E21_OPERATOR_APPROVED=true` |
+| 2. Push allow (third gate) | `E21_ALLOW_KAGGLE_PUSH=true` — schedule ≠ push |
+| 3. CLI responsibility | `--i-accept-operator-responsibility` **or** `--confirm-push` |
+| 4. Explicit execute | `--execute` (without this, always dry-run) |
+| 5. Baseline green | `ready_for_e21_schedule` from `evaluate_e21_readiness` |
+| 6. Real notebook | `kaggle/push_e21/*.ipynb` present |
+
+```bash
+# Windows PowerShell
+$env:E21_OPERATOR_APPROVED="true"
+$env:E21_ALLOW_KAGGLE_PUSH="true"
+python scripts/e21_operator_push.py --i-accept-operator-responsibility --execute
+
+# bash
+E21_OPERATOR_APPROVED=true E21_ALLOW_KAGGLE_PUSH=true \
+  python scripts/e21_operator_push.py --i-accept-operator-responsibility --execute
+```
+
+**Counter-examples (must NOT push):**
+
+```bash
+# PRODUCT_UNLOCK alone — blocked
+$env:PRODUCT_UNLOCK="true"
+python scripts/e21_operator_push.py --execute   # still dry-run / blocked_gates
+
+# Schedule approval alone — blocked (no CLI responsibility, no allow-push, no --execute)
+$env:E21_OPERATOR_APPROVED="true"
+python scripts/e21_operator_push.py
+
+# Readiness green alone — never network
+python scripts/e21_readiness.py   # never calls kaggle
+```
+
+Action audit log: `eval/reports/ml_experiments/e21_operator_actions.jsonl`  
+(fields: timestamp, dry_run, gates, who/env, kernel path). Never sets `product_unlock` / forage / consumption true.
+
+### Related readiness fields
+
+- `operator_push_cli` / `operator_push_command`
+- `auto_kaggle_push: false`
+- `requires_operator_dual_gate: true`
+- `product_unlock_does_not_push: true`
 
 ## Residual product (parallel, no GPU)
 

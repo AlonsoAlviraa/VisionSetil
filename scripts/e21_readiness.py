@@ -12,7 +12,9 @@ Operator control
   (operator_schedule_approved) — it does **not** push Kaggle or set e21_launched.
 - ``PRODUCT_UNLOCK`` / product_unlock serve flag never launches E21.
 - There is no auto Kaggle push path from this script or from /models/status.
-- Real GPU launch remains a documented manual CLI only (see docs/E21_SCALE_PLAN.md).
+- Real GPU launch remains a documented **operator dual-gate CLI** only
+  (``scripts/e21_operator_push.py``; see docs/E21_SCALE_PLAN.md).
+- ``auto_kaggle_push`` is always false; PRODUCT_UNLOCK never pushes.
 """
 from __future__ import annotations
 
@@ -35,6 +37,12 @@ DEFAULT_METRICS = ROOT / "kaggle" / "kernel_output_v20" / "models" / "metrics.js
 DEFAULT_BEST = ROOT / "kaggle" / "kernel_output_v20" / "models" / "best.pt"
 DEFAULT_NPZ = ROOT / "kaggle" / "kernel_output_v20" / "models" / "test_predictions.npz"
 DEFAULT_PLAN = ROOT / "docs" / "E21_SCALE_PLAN.md"
+OPERATOR_PUSH_CLI = "scripts/e21_operator_push.py"
+OPERATOR_PUSH_COMMAND = (
+    "python scripts/e21_operator_push.py  # dry-run default; "
+    "real push needs E21_OPERATOR_APPROVED + E21_ALLOW_KAGGLE_PUSH + "
+    "--i-accept-operator-responsibility --execute"
+)
 
 # Env that may mark operator schedule approval (never launches kernel)
 _E21_OPERATOR_ENV = "E21_OPERATOR_APPROVED"
@@ -124,20 +132,23 @@ def evaluate_e21_readiness(
         "Local E20 artifacts present (metrics.json, best.pt, test_predictions.npz)",
         "docs/E21_SCALE_PLAN.md reviewed",
         f"Optional: set {_E21_OPERATOR_ENV}=true to mark schedule approval (not launch)",
-        "Manual CLI only for any Kaggle GPU push — no auto push from PRODUCT_UNLOCK",
-        "product_unlock serve flag must never flip e21_launched",
+        "Operator dual-gate CLI for any Kaggle GPU push: scripts/e21_operator_push.py",
+        "No auto push from PRODUCT_UNLOCK, metrics, or readiness alone",
+        "product_unlock serve flag must never flip e21_launched / kaggle_push",
+        "Third gate recommended: E21_ALLOW_KAGGLE_PUSH=true (schedule ≠ push)",
     ]
 
     if schedule_authorized:
         operator_action = (
             "operator_approved: baseline + E21_OPERATOR_APPROVED — schedule GPU via "
-            "documented manual CLI only when class expansion + datasets ready; "
+            "scripts/e21_operator_push.py (dry-run default; dual/triple gate for --execute); "
             "never auto-unlock product; never auto kaggle_push; re-verify holdout after COMPLETE"
         )
     elif ready:
         operator_action = (
             "baseline_ok: schedule GPU only when class expansion + datasets ready; "
             "set E21_OPERATOR_APPROVED=true to mark schedule approval (still no auto push); "
+            "use scripts/e21_operator_push.py for optional manual push; "
             "never auto-unlock; re-verify holdout after E21 COMPLETE"
         )
     else:
@@ -179,10 +190,17 @@ def evaluate_e21_readiness(
         "soft_gates_advisory_only": True,
         "operator_action": operator_action,
         "plan_doc": str(ppath),
+        # Operator push surface (documented; never auto-executes)
+        "operator_push_cli": OPERATOR_PUSH_CLI,
+        "operator_push_command": OPERATOR_PUSH_COMMAND,
+        "auto_kaggle_push": False,
+        "requires_operator_dual_gate": True,
+        "product_unlock_does_not_push": True,
         "note": (
             "E21 is optional scale. This script never pushes Kaggle and never sets "
-            "product_unlock true. PRODUCT_UNLOCK does not launch E21. "
+            "product_unlock true. PRODUCT_UNLOCK does not launch E21 or push Kaggle. "
             "E21_OPERATOR_APPROVED only marks schedule approval readiness — not auto push. "
+            "Real push: scripts/e21_operator_push.py with dual/triple operator gates only. "
             "Orientation only — never consumption / forage."
         ),
     }
@@ -193,6 +211,9 @@ def evaluate_e21_readiness(
     out["consumption_permission"] = False
     out["e21_launched"] = False
     out["kaggle_push"] = False
+    out["auto_kaggle_push"] = False
+    out["requires_operator_dual_gate"] = True
+    out["product_unlock_does_not_push"] = True
     return out
 
 

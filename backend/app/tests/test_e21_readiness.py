@@ -23,6 +23,11 @@ def test_e21_readiness_fail_closed_defaults():
     assert out["consumption_permission"] is False
     assert out["e21_launched"] is False
     assert out["kaggle_push"] is False
+    assert out["auto_kaggle_push"] is False
+    assert out["requires_operator_dual_gate"] is True
+    assert out["product_unlock_does_not_push"] is True
+    assert "e21_operator_push" in (out.get("operator_push_cli") or "")
+    assert "e21_operator_push" in (out.get("operator_push_command") or "")
     assert out["soft_gates_advisory_only"] is True
     assert out["serve_product_unlock_does_not_launch_e21"] is True
     assert isinstance(out.get("operator_prerequisites"), list)

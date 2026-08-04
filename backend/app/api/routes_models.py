@@ -270,16 +270,24 @@ def models_status() -> dict:
             e21["consumption_permission"] = False
             e21["e21_launched"] = False
             e21["kaggle_push"] = False
+            e21["auto_kaggle_push"] = False
+            e21["requires_operator_dual_gate"] = True
+            e21["product_unlock_does_not_push"] = True
+            e21.setdefault("operator_push_cli", "scripts/e21_operator_push.py")
             e21.setdefault("policy", "orientation_only_never_consume")
-            # Explicit: serve product_unlock is orthogonal to E21 launch
+            # Explicit: serve product_unlock is orthogonal to E21 launch / push
             e21["serve_product_unlock_does_not_launch_e21"] = True
         status["e21_readiness"] = e21
         status["summary"]["e21_ready"] = bool(e21.get("ready_for_e21_schedule"))
         status["summary"]["e21_launched"] = False
         status["summary"]["e21_kaggle_push"] = False
+        status["summary"]["e21_auto_kaggle_push"] = False
         status["summary"]["e21_status"] = e21.get("status")
         status["summary"]["e21_operator_approved"] = bool(
             e21.get("operator_schedule_approved")
+        )
+        status["summary"]["e21_operator_push_cli"] = e21.get(
+            "operator_push_cli", "scripts/e21_operator_push.py"
         )
     except Exception:  # noqa: BLE001
         status["e21_readiness"] = {
@@ -290,6 +298,10 @@ def models_status() -> dict:
             "consumption_permission": False,
             "e21_launched": False,
             "kaggle_push": False,
+            "auto_kaggle_push": False,
+            "requires_operator_dual_gate": True,
+            "product_unlock_does_not_push": True,
+            "operator_push_cli": "scripts/e21_operator_push.py",
             "ready_for_e21_schedule": False,
             "operator_schedule_approved": False,
             "serve_product_unlock_does_not_launch_e21": True,
@@ -299,7 +311,9 @@ def models_status() -> dict:
         status["summary"]["e21_ready"] = False
         status["summary"]["e21_launched"] = False
         status["summary"]["e21_kaggle_push"] = False
+        status["summary"]["e21_auto_kaggle_push"] = False
         status["summary"]["e21_operator_approved"] = False
+        status["summary"]["e21_operator_push_cli"] = "scripts/e21_operator_push.py"
 
     # Re-assert policy on auxiliary blocks (never unlock from S9/ECE/E21 alone).
     # Serve product_unlock lives only on summary + product_unlock_eval + operator_unlock_ops.
@@ -334,7 +348,13 @@ def models_status() -> dict:
         status["e21_readiness"]["consumption_permission"] = False
         status["e21_readiness"]["e21_launched"] = False
         status["e21_readiness"]["kaggle_push"] = False
+        status["e21_readiness"]["auto_kaggle_push"] = False
+        status["e21_readiness"]["requires_operator_dual_gate"] = True
+        status["e21_readiness"]["product_unlock_does_not_push"] = True
         status["e21_readiness"]["serve_product_unlock_does_not_launch_e21"] = True
+        status["e21_readiness"].setdefault(
+            "operator_push_cli", "scripts/e21_operator_push.py"
+        )
     status["summary"]["product_unlock"] = serve_unlocked
     status["summary"]["forage_permission"] = False
     status["summary"]["consumption_permission"] = False
@@ -343,6 +363,10 @@ def models_status() -> dict:
     status["summary"]["metrics_authorize_forage"] = False
     status["summary"]["e21_launched"] = False
     status["summary"]["e21_kaggle_push"] = False
+    status["summary"]["e21_auto_kaggle_push"] = False
+    status["summary"].setdefault(
+        "e21_operator_push_cli", "scripts/e21_operator_push.py"
+    )
     # Multi-view product contracts + four-photo bench + paired inventory
     try:
         from app.ml.multiview_product import describe_multiview_product
