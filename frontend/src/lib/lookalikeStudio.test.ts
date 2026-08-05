@@ -7,6 +7,7 @@ import {
   loadClassicPair,
   LOOKALIKE_STUDIO_MAX,
   removeFromStudioSelection,
+  resolveFocusSlug,
   resolveStudioTaxon,
   suggestStudioPeers,
 } from './lookalikeStudio'
@@ -90,5 +91,35 @@ describe('lookalike studio', () => {
     // xanthodermus synonym → xanthoderma SSOT
     const xan = resolveStudioTaxon('Agaricus xanthodermus')
     expect(xan?.taxon).toBe('Agaricus xanthoderma')
+  })
+
+  it('resolveFocusSlug: blank → none; unknown → empty; known seeds focus (+ peer)', async () => {
+    await loadSpeciesCatalog()
+    expect(resolveFocusSlug(null).status).toBe('none')
+    expect(resolveFocusSlug('').status).toBe('none')
+    expect(resolveFocusSlug('   ').status).toBe('none')
+
+    const unknown = resolveFocusSlug('definitely-not-a-real-taxon-xyz')
+    expect(unknown.status).toBe('unknown')
+    expect(unknown.selection).toEqual([])
+    expect(unknown.focusSlug).toBe('definitely-not-a-real-taxon-xyz')
+
+    const ok = resolveFocusSlug('amanita-phalloides')
+    expect(ok.status).toBe('ok')
+    expect(ok.focusSlug).toBe('amanita-phalloides')
+    expect(ok.selection.length).toBeGreaterThanOrEqual(1)
+    expect(ok.selection[0].taxon.toLowerCase()).toMatch(/phalloides/)
+    expect(ok.selection[0].in_catalog).toBe(true)
+    // Peer seed enables compare path when SSOT/classic mates exist
+    if (ok.selection.length >= 2) {
+      expect(canCompare(ok.selection)).toBe(true)
+    }
+  })
+
+  it('resolveFocusSlug accepts scientific-name-like params via slug normalize', async () => {
+    await loadSpeciesCatalog()
+    const bySci = resolveFocusSlug('Amanita phalloides')
+    expect(bySci.status).toBe('ok')
+    expect(bySci.focusSlug).toBe('amanita-phalloides')
   })
 })

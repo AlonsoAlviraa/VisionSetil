@@ -133,6 +133,10 @@ describe('speciesMediaStack', () => {
     expect(games.quality).toBe('display')
     expect(games.maxCandidates).toBeLessThanOrEqual(3)
 
+    const lookalike = MEDIA_SURFACE_POLICY.lookalike_compare
+    expect(lookalike.quality).toBe('thumb')
+    expect(lookalike.maxCandidates).toBeLessThanOrEqual(3)
+
     // No product_unlock surface / culinary key in media module policy
     const policyJson = JSON.stringify(MEDIA_SURFACE_POLICY)
     expect(policyJson).not.toMatch(/product_unlock|consume|forage/)

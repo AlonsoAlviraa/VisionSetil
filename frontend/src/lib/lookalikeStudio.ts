@@ -443,3 +443,57 @@ export function availableClassicPairs(): ClassicLookalikePair[] {
     return resolved.length >= 2
   })
 }
+
+/**
+ * Deep-link focus for `/lookalikes?focus=<catalog-slug>`.
+ * - Missing/blank → status `none` (default studio empty).
+ * - Unknown / non-catalog slug → status `unknown`, empty selection (no crash).
+ * - Known catalog slug → seed focus taxon + first curated peer when available
+ *   so ImageCompare / learning path can start immediately.
+ */
+export type FocusSlugStatus = 'none' | 'ok' | 'unknown'
+
+export type FocusSlugResult = {
+  status: FocusSlugStatus
+  /** Normalized catalog slug when parseable; null when param empty. */
+  focusSlug: string | null
+  selection: StudioTaxonCard[]
+}
+
+export function resolveFocusSlug(
+  focusParam: string | null | undefined,
+): FocusSlugResult {
+  if (focusParam == null) {
+    return { status: 'none', focusSlug: null, selection: [] }
+  }
+  const raw = String(focusParam).trim()
+  if (!raw) {
+    return { status: 'none', focusSlug: null, selection: [] }
+  }
+
+  const focusSlug = normalizeSlugParam(raw)
+  if (!focusSlug) {
+    return { status: 'unknown', focusSlug: raw, selection: [] }
+  }
+
+  // Catalog slug only — free-text / unknown never invents taxa.
+  const species = getSpeciesBySlug(focusSlug)
+  if (!species) {
+    return { status: 'unknown', focusSlug, selection: [] }
+  }
+
+  const focus = catalogToCard(species)
+  const selection: StudioTaxonCard[] = [focus]
+  // Best effort: seed one peer so wipe/side compare is available without extra taps.
+  for (const peer of suggestStudioPeers(focus.taxon, 4)) {
+    if (selection.length >= LOOKALIKE_STUDIO_MIN) break
+    if (selection.some((s) => fold(s.taxon) === fold(peer.taxon))) continue
+    selection.push(peer)
+  }
+
+  return {
+    status: 'ok',
+    focusSlug: focus.slug,
+    selection: selection.slice(0, LOOKALIKE_STUDIO_MAX),
+  }
+}

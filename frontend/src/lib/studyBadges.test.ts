@@ -88,4 +88,17 @@ describe('study badges (Seek-style educational)', () => {
     expect(liveStreak(streak, new Date(2026, 0, 5))).toBe(1)
     expect(dayKey(new Date(2026, 0, 5))).toBe('2026-01-05')
   })
+
+  it('records lookalike study activity (UX-06 learning path)', () => {
+    const storage = memStorage()
+    const r = recordStudyActivity('lookalike', {
+      storage,
+      date: new Date(2026, 7, 5),
+    })
+    expect(r.stats.lookalikeCompares).toBe(1)
+    recordStudyActivity('lookalike', { storage, date: new Date(2026, 7, 5) })
+    recordStudyActivity('lookalike', { storage, date: new Date(2026, 7, 5) })
+    const badges = getStudyBadges(storage, 'es')
+    expect(badges.find((b) => b.id === 'lookalike_curious')?.earned).toBe(true)
+  })
 })

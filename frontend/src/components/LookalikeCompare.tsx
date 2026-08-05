@@ -222,6 +222,15 @@ export function LookalikeCompare({ current, lookalikes, resolve }: LookalikeComp
                 <LinkButton to={`/enciclopedia/${other.slug}`} variant="ghost">
                   {t('lookalike.viewDetail', { defaultValue: 'Ver ficha' })}
                 </LinkButton>
+                <LinkButton
+                  to={`/lookalikes?focus=${encodeURIComponent(other.slug || selected.slug)}`}
+                  variant="ghost"
+                  data-testid="lookalike-compare-open-studio"
+                >
+                  {t('lookalike.openStudioFocus', {
+                    defaultValue: 'Estudiar en studio',
+                  })}
+                </LinkButton>
               </>
             ) : (
               <p className="lookalike-compare__missing">

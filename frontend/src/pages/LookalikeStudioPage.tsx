@@ -1,9 +1,7 @@
 /**
  * Lookalike Studio — classic confusions + side-by-side compare.
  * Photography-first, risk-honest (RiskChip only), one-tap classic pairs.
- *
- * Deep link: `/lookalikes?focus=<catalog-slug|taxon>` seeds selection once
- * (UX-05 study CTAs from games). Unknown focus → empty state, no crash.
+ * Deep link: /lookalikes?focus=<catalog-slug> (unknown → empty, no crash).
  */
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
@@ -19,7 +17,7 @@ import {
   LOOKALIKE_STUDIO_MAX,
   LOOKALIKE_STUDIO_MIN,
   removeFromStudioSelection,
-  resolveStudioTaxon,
+  resolveFocusSlug,
   suggestStudioPeers,
   type ClassicLookalikePair,
   type StudioTaxonCard,
@@ -37,20 +35,59 @@ import {
   diagnosticForLookalikeMate,
   findDiagnosticPair,
 } from '../lib/diagnosticViews'
+import { ImageCompare } from '../components/ImageCompare'
+import { getCatalogPhotoUrlHd } from '../lib/speciesImageService'
+import { speciesImageUrl } from '../lib/speciesImageUrl'
+
+/** Prefer catalog thumb URL; fall back to local media path for compare slots. */
+function studioCompareSrc(card: StudioTaxonCard): string | null {
+  return (
+    getCatalogPhotoUrlHd(card.taxon, 'thumb') ||
+    speciesImageUrl(card.slug || card.taxon, 'thumb') ||
+    null
+  )
+}
 
 export function LookalikeStudioPage() {
   const { t, i18n } = useTranslation()
   const locale = i18n.resolvedLanguage || i18n.language || 'es'
-  const [searchParams] = useSearchParams()
-  const focusParam = (searchParams.get('focus') || '').trim()
   const { catalog: speciesCatalog, loading: catalogLoading } = useSpeciesCatalog()
+  const [searchParams] = useSearchParams()
+  const focusParam = searchParams.get('focus')
+
   const [query, setQuery] = useState('')
   const [selection, setSelection] = useState<StudioTaxonCard[]>([])
   const [error, setError] = useState<string | null>(null)
   const [focused, setFocused] = useState(false)
   const [activePairId, setActivePairId] = useState<string | null>(null)
-  /** Unknown/empty focus slug from games deep-link — amable empty, no crash. */
-  const [focusEmpty, setFocusEmpty] = useState(false)
+  /** 0 = not started; 1–2 in progress; 3 = completed (study activity recorded). */
+  const [learnStep, setLearnStep] = useState(0)
+  const [focusStatus, setFocusStatus] = useState<'none' | 'ok' | 'unknown'>('none')
+  const [focusSlugApplied, setFocusSlugApplied] = useState<string | null>(null)
+
+  // Apply ?focus=<catalog-slug> once catalog is ready (unknown → empty, no crash).
+  const focusAppliedKey = useRef<string | null>(null)
+  useEffect(() => {
+    if (catalogLoading) return
+    const key = focusParam ?? ''
+    if (focusAppliedKey.current === key) return
+    focusAppliedKey.current = key
+
+    const resolved = resolveFocusSlug(focusParam)
+    setFocusStatus(resolved.status)
+    setFocusSlugApplied(resolved.focusSlug)
+    setLearnStep(0)
+    setActivePairId(null)
+
+    if (resolved.status === 'ok') {
+      setSelection(resolved.selection)
+      setError(null)
+    } else if (resolved.status === 'unknown') {
+      setSelection([])
+      setError(null)
+    }
+    // status none: leave selection alone on first mount (empty); if user clears focus later, ignore
+  }, [catalogLoading, focusParam, speciesCatalog.length])
 
   const rows = useMemo(() => buildCompareRows(selection), [selection])
   const classics = useMemo(() => {
@@ -65,7 +102,6 @@ export function LookalikeStudioPage() {
     const b = selection[1].taxon
     const direct = findDiagnosticPair(a, b)
     if (direct) return direct
-    // Try reverse + third taxon mates against first
     for (let i = 1; i < selection.length; i++) {
       const hit =
         findDiagnosticPair(a, selection[i].taxon) ||
@@ -75,43 +111,51 @@ export function LookalikeStudioPage() {
     return null
   }, [selection])
 
-  // UX-05 / UX-06: seed studio from ?focus=<catalog-slug|taxon> once (games study CTAs).
-  const focusApplied = useRef(false)
-  useEffect(() => {
-    if (focusApplied.current) return
-    if (!focusParam) return
-    if (catalogLoading || speciesCatalog.length === 0) return
-    focusApplied.current = true
-    const card = resolveStudioTaxon(focusParam)
-    if (!card || !card.in_catalog) {
-      setFocusEmpty(true)
-      setError(
-        t('lookalike.focusUnknown', {
-          defaultValue: 'No se encontró esa especie en el catálogo. Busca o elige un par clásico.',
-        }),
-      )
-      return
-    }
-    const { selection: next, error: err } = addToStudioSelection([], card.taxon)
-    if (err || next.length === 0) {
-      setFocusEmpty(true)
-      setError(err)
-      return
-    }
-    setSelection(next)
-    setFocusEmpty(false)
-    setError(null)
-    setActivePairId(null)
-  }, [focusParam, catalogLoading, speciesCatalog.length, t])
+  const compareReady = canCompare(selection)
 
-  // Study badge: once per page visit when a valid compare is ready (local, privacy-first)
-  const lookalikeCounted = useRef(false)
+  // ImageCompare slots (thumb quality) when ≥2 taxa have photo URLs
+  const comparePair = useMemo(() => {
+    if (!compareReady || selection.length < 2) return null
+    const leftSrc = studioCompareSrc(selection[0])
+    const rightSrc = studioCompareSrc(selection[1])
+    if (!leftSrc || !rightSrc) return null
+    return {
+      left: {
+        src: leftSrc,
+        label: displayCommonName(selection[0], locale) || selection[0].taxon,
+        view: selection[0].taxon,
+      },
+      right: {
+        src: rightSrc,
+        label: displayCommonName(selection[1], locale) || selection[1].taxon,
+        view: selection[1].taxon,
+      },
+    }
+  }, [compareReady, selection, locale])
+
+  // Reset micro-path when selection identity changes
+  const selectionKey = selection.map((s) => s.taxon).join('|')
   useEffect(() => {
-    if (lookalikeCounted.current) return
-    if (!canCompare(selection)) return
-    lookalikeCounted.current = true
+    setLearnStep(0)
+  }, [selectionKey])
+
+  const completeLearnStep = (step: 1 | 2 | 3) => {
+    if (!compareReady) return
+    if (step === 1) {
+      setLearnStep((s) => Math.max(s, 1))
+      return
+    }
+    if (step === 2) {
+      if (learnStep < 1) return
+      setLearnStep((s) => Math.max(s, 2))
+      return
+    }
+    // Step 3: mark done + record study activity once per selection visit
+    if (learnStep < 2) return
+    if (learnStep >= 3) return
+    setLearnStep(3)
     recordStudyActivity('lookalike')
-  }, [selection])
+  }
 
   const suggestions = useMemo(() => {
     if (catalogLoading || speciesCatalog.length === 0) return []
@@ -134,9 +178,9 @@ export function LookalikeStudioPage() {
     setSelection(next)
     setError(err)
     setActivePairId(null)
+    setFocusStatus('none')
     if (!err) {
       setQuery('')
-      // Keep focus state ready for next search (same pattern as Setadle).
       setFocused(true)
     }
   }
@@ -145,6 +189,7 @@ export function LookalikeStudioPage() {
     const { selection: next, missing } = loadClassicPair(pair)
     setSelection(next)
     setActivePairId(pair.id)
+    setFocusStatus('none')
     setError(
       missing.length
         ? t('lookalike.pairPartial', {
@@ -206,23 +251,25 @@ export function LookalikeStudioPage() {
         </div>
       </header>
 
-      {focusEmpty && focusParam ? (
+      {focusStatus === 'unknown' && (
         <div
-          className="atelier-panel lookalike-focus-empty cn-page-pad"
+          className="lookalike-focus-empty"
           data-testid="lookalike-focus-empty"
           role="status"
         >
           <EmptyState
-            title={t('lookalike.focusEmptyTitle', {
-              defaultValue: 'Especie del enlace no encontrada',
+            title={t('lookalike.focusUnknownTitle', {
+              defaultValue: 'Taxón no encontrado',
             })}
-            description={t('lookalike.focusEmptyBody', {
+            description={t('lookalike.focusUnknownBody', {
               defaultValue:
-                'El enlace de estudio no coincide con el catálogo. Elige un par clásico o busca por nombre — solo orientación, nunca consumo.',
+                'No hay una ficha de catálogo para «{{slug}}». Elige un par clásico o busca un taxón del catálogo.',
+              slug: focusSlugApplied || focusParam || '—',
             })}
+            icon={<IconMushroom size={30} />}
           />
         </div>
-      ) : null}
+      )}
 
       {/* Classic one-tap confusions */}
       <section
@@ -337,7 +384,7 @@ export function LookalikeStudioPage() {
         )}
       </div>
 
-      {selection.length === 0 ? (
+      {selection.length === 0 && focusStatus !== 'unknown' ? (
         <EmptyState
           title={t('lookalike.emptyTitle', {
             defaultValue: 'Toca un par clásico o busca',
@@ -347,7 +394,7 @@ export function LookalikeStudioPage() {
           })}
           icon={<IconMushroom size={30} />}
         />
-      ) : (
+      ) : selection.length > 0 ? (
         <div
           className="lookalike-studio-grid lookalike-studio-grid--scroll"
           style={{
@@ -387,6 +434,7 @@ export function LookalikeStudioPage() {
                     onClick={() => {
                       setSelection(removeFromStudioSelection(selection, s.taxon))
                       setActivePairId(null)
+                      setFocusStatus('none')
                     }}
                   >
                     {t('lookalike.remove', { defaultValue: 'Quitar' })}
@@ -396,6 +444,139 @@ export function LookalikeStudioPage() {
             </article>
           ))}
         </div>
+      ) : null}
+
+      {comparePair && (
+        <ImageCompare
+          left={comparePair.left}
+          right={comparePair.right}
+          defaultMode="wipe"
+          testId="lookalike-studio-image-compare"
+          footnote={t('lookalike.imageCompareFootnote', {
+            defaultValue:
+              'Comparación morfológica educativa · solo orientación · nunca consumo',
+          })}
+        />
+      )}
+
+      {compareReady && (
+        <section
+          className="lookalike-learn-path"
+          data-testid="lookalike-learn-path"
+          aria-label={t('lookalike.learnPathAria', {
+            defaultValue: 'Ruta de estudio de confusiones',
+          })}
+        >
+          <h2 className="lookalike-learn-path__title">
+            {t('lookalike.learnPathTitle', {
+              defaultValue: 'Aprende a diferenciar (3 pasos)',
+            })}
+          </h2>
+          <ol className="lookalike-learn-path__steps">
+            <li
+              className={`lookalike-learn-path__step ${learnStep >= 1 ? 'is-done' : ''} ${learnStep === 0 ? 'is-active' : ''}`}
+            >
+              <span className="lookalike-learn-path__n" aria-hidden>
+                1
+              </span>
+              <div className="lookalike-learn-path__body">
+                <strong>
+                  {t('lookalike.learnStep1Title', {
+                    defaultValue: 'Observa el himenio',
+                  })}
+                </strong>
+                <span>
+                  {t('lookalike.learnStep1Body', {
+                    defaultValue:
+                      'Láminas, poros o pliegues: color, inserción y textura. Usa el deslizador si ayuda.',
+                  })}
+                </span>
+                {learnStep < 1 && (
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="secondary"
+                    data-testid="lookalike-learn-step-1"
+                    onClick={() => completeLearnStep(1)}
+                  >
+                    {t('lookalike.learnStepDone', { defaultValue: 'Hecho' })}
+                  </Button>
+                )}
+              </div>
+            </li>
+            <li
+              className={`lookalike-learn-path__step ${learnStep >= 2 ? 'is-done' : ''} ${learnStep === 1 ? 'is-active' : ''}`}
+            >
+              <span className="lookalike-learn-path__n" aria-hidden>
+                2
+              </span>
+              <div className="lookalike-learn-path__body">
+                <strong>
+                  {t('lookalike.learnStep2Title', {
+                    defaultValue: 'Observa pie y volva',
+                  })}
+                </strong>
+                <span>
+                  {t('lookalike.learnStep2Body', {
+                    defaultValue:
+                      'Anillo, base del pie y volva deciden muchas confusiones mortales.',
+                  })}
+                </span>
+                {learnStep === 1 && (
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="secondary"
+                    data-testid="lookalike-learn-step-2"
+                    onClick={() => completeLearnStep(2)}
+                  >
+                    {t('lookalike.learnStepDone', { defaultValue: 'Hecho' })}
+                  </Button>
+                )}
+              </div>
+            </li>
+            <li
+              className={`lookalike-learn-path__step ${learnStep >= 3 ? 'is-done' : ''} ${learnStep === 2 ? 'is-active' : ''}`}
+            >
+              <span className="lookalike-learn-path__n" aria-hidden>
+                3
+              </span>
+              <div className="lookalike-learn-path__body">
+                <strong>
+                  {t('lookalike.learnStep3Title', {
+                    defaultValue: 'Ya sé diferenciar',
+                  })}
+                </strong>
+                <span>
+                  {t('lookalike.learnStep3Body', {
+                    defaultValue:
+                      'Marca este estudio. Solo aprendizaje — nunca permiso de consumo.',
+                  })}
+                </span>
+                {learnStep === 2 && (
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="primary"
+                    data-testid="lookalike-learn-step-3"
+                    onClick={() => completeLearnStep(3)}
+                  >
+                    {t('lookalike.learnStepComplete', {
+                      defaultValue: 'Completar estudio',
+                    })}
+                  </Button>
+                )}
+                {learnStep >= 3 && (
+                  <span data-testid="lookalike-learn-complete" role="status">
+                    {t('lookalike.learnComplete', {
+                      defaultValue: 'Estudio registrado (local)',
+                    })}
+                  </span>
+                )}
+              </div>
+            </li>
+          </ol>
+        </section>
       )}
 
       {rows.length > 0 && (
