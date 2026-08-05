@@ -11,6 +11,12 @@ Exit code:
 Never sets product_unlock true. Never pushes Kaggle. Lab only.
 Orientation only — never forage / consumption permission.
 
+Models dir resolution (portable, fail-closed):
+  1. --models-dir
+  2. in-repo kaggle/kernel_output_v20/models
+  3. env VISIONSETIL_MODELS_DIR
+  (no hardcoded workstation paths)
+
 Usage:
   python scripts/verify_anti_leak_rails_for_train.py
   python scripts/verify_anti_leak_rails_for_train.py --models-dir PATH
@@ -34,13 +40,8 @@ REPORT_DIR = ROOT / "eval" / "reports" / "ml_experiments"
 OUT_JSON = REPORT_DIR / "anti_leak_rails_train_latest.json"
 DEFAULT_MODELS = ROOT / "kaggle" / "kernel_output_v20" / "models"
 
-# Optional extra search roots (local operator workstations; never required)
-_EXTRA_MODELS_CANDIDATES = (
-    Path(os.environ["VISIONSETIL_MODELS_DIR"])
-    if os.environ.get("VISIONSETIL_MODELS_DIR")
-    else None,
-    Path(r"C:\Users\Mariano\Documents\ALONSOO\VISIONSETIL\kaggle\kernel_output_v20\models"),
-)
+# Protocols that satisfy E20-style source holdout (must contain source_holdout semantics)
+_SOURCE_HOLDOUT_MARKERS = ("source_holdout",)
 
 TRAIN_DOMAIN_FORBIDDEN_TEST = frozenset({"gbif", "gbif_es"})
 TEST_DOMAIN_EXPECTED = frozenset({"gbif", "gbif_es"})
@@ -48,6 +49,17 @@ TEST_DOMAIN_EXPECTED = frozenset({"gbif", "gbif_es"})
 
 def _utc_now() -> str:
     return datetime.now(timezone.utc).isoformat()
+
+
+def _repo_rel(path: Path | str | None) -> str | None:
+    """Prefer repo-relative POSIX paths; keep absolute only when outside repo."""
+    if path is None:
+        return None
+    p = Path(path)
+    try:
+        return p.resolve().relative_to(ROOT.resolve()).as_posix()
+    except (ValueError, OSError):
+        return str(p)
 
 
 def _load_json(path: Path) -> Any | None:
@@ -60,15 +72,17 @@ def _load_json(path: Path) -> Any | None:
 
 
 def resolve_models_dir(explicit: Path | None = None) -> Path | None:
-    """Prefer in-repo E20 models; fall back to env / known local paths."""
+    """Prefer in-repo E20 models; then env VISIONSETIL_MODELS_DIR. No hardcoded user paths."""
     if explicit is not None:
         p = Path(explicit)
         return p if p.is_dir() else None
     if DEFAULT_MODELS.is_dir():
         return DEFAULT_MODELS
-    for cand in _EXTRA_MODELS_CANDIDATES:
-        if cand is not None and Path(cand).is_dir():
-            return Path(cand)
+    env = (os.environ.get("VISIONSETIL_MODELS_DIR") or "").strip()
+    if env:
+        p = Path(env)
+        if p.is_dir():
+            return p
     return None
 
 
@@ -81,7 +95,6 @@ def _obs_id_set(blob: Any) -> set[str]:
         ids = blob.get("observation_ids")
         if isinstance(ids, list):
             return {str(x) for x in ids}
-        # list-of-records under a common key
         for key in ("observations", "rows", "data"):
             if isinstance(blob.get(key), list):
                 blob = blob[key]
@@ -120,9 +133,17 @@ def check_code_rails_present(repo: Path = ROOT) -> dict[str, Any]:
     present = {k: p.is_file() for k, p in paths.items()}
     return {
         "pass": all(present.values()),
-        "files": {k: str(p) for k, p in paths.items()},
+        "files": {k: _repo_rel(p) for k, p in paths.items()},
         "present": present,
     }
+
+
+def _protocol_is_source_holdout(protocol: str) -> bool:
+    """Require source_holdout semantics; bare 'e20' substring is not enough."""
+    p = (protocol or "").strip().lower()
+    if not p:
+        return False
+    return any(m in p for m in _SOURCE_HOLDOUT_MARKERS)
 
 
 def check_split_manifest(manifest: dict[str, Any] | None) -> dict[str, Any]:
@@ -145,14 +166,51 @@ def check_split_manifest(manifest: dict[str, Any] | None) -> dict[str, Any]:
         and int(leaks.get("val_test") or 0) == 0
     )
     manifest_pass_flag = bool(manifest.get("pass", leak_ok))
-    near_ok = near is None or int(near) == 0
-    cross_ok = cross is None or int(cross) == 0
-    protocol_ok = "source_holdout" in protocol.lower() or "e20" in protocol.lower()
-    ok = leak_ok and manifest_pass_flag and near_ok and cross_ok and protocol_ok
+    protocol_ok = _protocol_is_source_holdout(protocol)
+
+    # Missing near-dup / cross-domain keys are GAP for source-holdout (not silent pass)
+    near_missing = near is None
+    cross_missing = cross is None
+    if near_missing:
+        near_ok = False
+        near_status = "GAP"
+    else:
+        near_ok = int(near) == 0
+        near_status = "PASS" if near_ok else "FAIL"
+    if cross_missing:
+        cross_ok = False
+        cross_status = "GAP"
+    else:
+        cross_ok = int(cross) == 0
+        cross_status = "PASS" if cross_ok else "FAIL"
+
+    ok = (
+        leak_ok
+        and manifest_pass_flag
+        and near_ok
+        and cross_ok
+        and protocol_ok
+    )
+    if not ok and (near_missing or cross_missing or not protocol):
+        status = "GAP" if leak_ok and not any(
+            int(leaks.get(k) or 0) > 0 for k in ("train_val", "train_test", "val_test")
+        ) else ("FAIL" if not leak_ok or not near_ok or not cross_ok else "GAP")
+        # Prefer FAIL when leak or non-zero near/cross; GAP when fields missing
+        if not leak_ok or (not near_missing and not near_ok) or (not cross_missing and not cross_ok):
+            status = "FAIL"
+        elif near_missing or cross_missing or not protocol_ok:
+            status = "GAP"
+        else:
+            status = "FAIL"
+    else:
+        status = "PASS" if ok else "FAIL"
+
     return {
         "pass": ok,
-        "status": "PASS" if ok else "FAIL",
+        "status": status,
         "protocol": protocol,
+        "protocol_requires_source_holdout": True,
+        "protocol_ok": protocol_ok,
         "leaks": {
             "train_val": int(leaks.get("train_val") or 0),
             "train_test": int(leaks.get("train_test") or 0),
@@ -160,13 +218,23 @@ def check_split_manifest(manifest: dict[str, Any] | None) -> dict[str, Any]:
         },
         "manifest_pass_flag": manifest_pass_flag,
         "n_shared_near_dup_keys_post_split": near,
+        "near_dup_status": near_status,
         "cross_domain_oids": cross,
+        "cross_domain_status": cross_status,
         "n_train_obs": manifest.get("n_train_obs"),
         "n_val_obs": manifest.get("n_val_obs"),
         "n_test_obs": manifest.get("n_test_obs"),
         "test_domain": sm.get("test_domain") or manifest.get("test_domain"),
         "orientation_only": bool(manifest.get("orientation_only", True)),
         "policy": manifest.get("policy"),
+        "detail": (
+            "split_manifest source_holdout rails OK"
+            if ok
+            else (
+                "split_manifest GAP/FAIL: require protocol source_holdout, "
+                "leaks=0, near_dup keys present=0, cross_domain_oids present=0"
+            )
+        ),
     }
 
 
@@ -221,7 +289,6 @@ def check_source_domains_runtime(
     """Train must not include pure GBIF-ES test domain; test should be GBIF-ES."""
     train_src = _source_set(train_blob)
     test_src = _source_set(test_blob)
-    # Prefer runtime source_db when present
     if train_src or test_src:
         train_polluted = bool(train_src & TRAIN_DOMAIN_FORBIDDEN_TEST)
         test_ok = bool(test_src) and test_src.issubset(TEST_DOMAIN_EXPECTED)
@@ -240,7 +307,6 @@ def check_source_domains_runtime(
             ),
             "source": "runtime_obs",
         }
-    # Fall back to split_manifest counts
     sm = (manifest or {}).get("split_meta") if isinstance(manifest, dict) else None
     if not isinstance(sm, dict):
         sm = {}
@@ -299,7 +365,8 @@ def evaluate_anti_leak_rails(
         checks["models_dir"] = {
             "pass": True,
             "status": "PASS",
-            "path": str(mdir),
+            "path": _repo_rel(mdir),
+            "path_resolved": str(mdir.resolve()),
         }
         manifest = _load_json(mdir / "split_manifest.json")
         if not isinstance(manifest, dict):
@@ -321,7 +388,6 @@ def evaluate_anti_leak_rails(
         train_blob, test_blob, manifest=manifest if isinstance(manifest, dict) else None
     )
 
-    # Optional: metrics claim split_artifacts list
     metrics = _load_json(mdir / "metrics.json") if mdir else None
     if isinstance(metrics, dict):
         arts = metrics.get("split_artifacts") or []
@@ -341,19 +407,25 @@ def evaluate_anti_leak_rails(
         if mdir is not None:
             gaps.append("metrics_json_missing")
 
-    # Rails green when critical leak checks pass (not mere code presence alone)
+    # Surface GAP reasons from split_manifest field absence
+    sm_check = checks.get("split_manifest") or {}
+    if sm_check.get("near_dup_status") == "GAP":
+        gaps.append("near_dup_keys_missing_in_manifest")
+    if sm_check.get("cross_domain_status") == "GAP":
+        gaps.append("cross_domain_oids_missing_in_manifest")
+    if sm_check.get("protocol_ok") is False and sm_check.get("status") != "GAP":
+        gaps.append("protocol_not_source_holdout")
+
     critical_ok = bool(
         checks["code_rails_present"]["pass"]
         and checks.get("split_manifest", {}).get("pass")
         and checks.get("obs_disjoint_runtime", {}).get("pass")
         and checks.get("source_domains", {}).get("pass")
     )
-    # Soft: metrics path preferred but not hard if runtime+manifest green
     soft_metrics = checks.get("metrics_split_artifacts", {}).get("pass", False)
 
     can_stage = bool(critical_ok)
     if can_stage and not soft_metrics:
-        # still stage-able but note advisory gap
         gaps.append("metrics_json_advisory_gap")
 
     fail_reasons = [
@@ -397,8 +469,9 @@ def evaluate_anti_leak_rails(
         "auto_kaggle_push": False,
         "status": status,
         "can_stage_train_notebook": can_stage,
-        "can_stage": can_stage,  # alias used by handoff / stage scripts
-        "models_dir": str(mdir) if mdir else None,
+        "can_stage": can_stage,
+        "models_dir": _repo_rel(mdir) if mdir else None,
+        "models_dir_resolved": str(mdir.resolve()) if mdir else None,
         "checks": checks,
         "fail_reasons": fail_reasons,
         "gaps": gaps,
