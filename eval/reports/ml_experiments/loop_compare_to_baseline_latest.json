@@ -1,0 +1,133 @@
+{
+  "generated_at": "2026-08-05T20:31:51.109394+00:00",
+  "status": "compared",
+  "policy": "orientation_only_never_consume",
+  "product_unlock": false,
+  "can_auto_unlock": false,
+  "forage_permission": false,
+  "consumption_permission": false,
+  "lab_only": true,
+  "metrics_label": "[MEASURED]",
+  "baseline_path": "eval/reports/ml_experiments/E20_BASELINE_METRICS_TO_IMPROVE.json",
+  "candidate_path": "eval/reports/ml_experiments/e20c_metrics_snapshot.json",
+  "baseline": {
+    "version": "v20-E20-source-holdout",
+    "eval_protocol": "source_holdout_e20",
+    "test_domain": "gbif_es_only",
+    "train_domain": "fungitastic_plus_soft_non_gbif",
+    "measured": {
+      "test_map_at_3": 0.8575265177160878,
+      "safety_recall_deadly_at_1": 0.7895348837209303,
+      "safety_recall_deadly_at_3": 0.9217054263565891,
+      "n_deadly_in_test": 2580,
+      "test_accuracy": 0.8032498307379824
+    },
+    "ece": {
+      "primary": "train_published",
+      "primary_value": 0.18741017924867615,
+      "primary_source": "test_ece_train_published",
+      "claim_train_published": true,
+      "posthoc_separate": true,
+      "posthoc_value": 0.04544782004819755
+    }
+  },
+  "candidate": {
+    "version": "v20c-E20-mo-inat",
+    "eval_protocol": "source_holdout_e20c_mo_inat",
+    "test_domain": "gbif_es_only",
+    "train_domain": "fungitastic_plus_mo_inat_non_gbif",
+    "measured": {
+      "test_map_at_3": 0.8572782667569362,
+      "safety_recall_deadly_at_1": 0.789922480620155,
+      "safety_recall_deadly_at_3": 0.9186046511627907,
+      "n_deadly_in_test": 2580,
+      "test_accuracy": 0.8
+    },
+    "ece": {
+      "primary": "train_published",
+      "primary_value": 0.18942074356203395,
+      "primary_source": "kernel_metrics_test_ece_as_train_published",
+      "claim_train_published": true,
+      "posthoc_separate": true,
+      "posthoc_value": null
+    }
+  },
+  "deltas": [
+    {
+      "metric": "MAP@3",
+      "key": "test_map_at_3",
+      "baseline": 0.8575265177160878,
+      "candidate": 0.8572782667569362,
+      "delta_candidate_minus_baseline": -0.0002482509591515969
+    },
+    {
+      "metric": "deadly@1",
+      "key": "safety_recall_deadly_at_1",
+      "baseline": 0.7895348837209303,
+      "candidate": 0.789922480620155,
+      "delta_candidate_minus_baseline": 0.0003875968992247403
+    },
+    {
+      "metric": "deadly@3",
+      "key": "safety_recall_deadly_at_3",
+      "baseline": 0.9217054263565891,
+      "candidate": 0.9186046511627907,
+      "delta_candidate_minus_baseline": -0.0031007751937984773
+    },
+    {
+      "metric": "accuracy",
+      "key": "test_accuracy",
+      "baseline": 0.8032498307379824,
+      "candidate": 0.8,
+      "delta_candidate_minus_baseline": -0.003249830737982351
+    },
+    {
+      "metric": "ECE_primary",
+      "key": "ece_primary_value",
+      "baseline": 0.18741017924867615,
+      "candidate": 0.18942074356203395,
+      "delta_candidate_minus_baseline": 0.0020105643133578044
+    },
+    {
+      "metric": "ECE_posthoc_lab",
+      "key": "ece_posthoc_value",
+      "baseline": 0.04544782004819755,
+      "candidate": null,
+      "delta_candidate_minus_baseline": null
+    }
+  ],
+  "summary_deltas": {
+    "map_at_3": -0.0002482509591515969,
+    "deadly_at_1": 0.0003875968992247403,
+    "deadly_at_3": -0.0031007751937984773,
+    "ece_primary": 0.0020105643133578044
+  },
+  "advisory": {
+    "map_crash_threshold": -0.05,
+    "deadly3_crash_threshold": -0.05,
+    "map_crash": false,
+    "deadly3_crash": false,
+    "ece_primary_worse_by_gt_0_02": false,
+    "note": "Advisory lab signals only. Never product_unlock. MAP improvement is not safety. ECE primary remains train-published."
+  },
+  "dual_deadly_both_sides": true,
+  "gaps": [],
+  "operator_action": "Compared candidate vs E20 SSOT file. product_unlock=false. Continue lab loop frictions; do not auto-unlock; do not serve posthoc ECE.",
+  "honesty": {
+    "metrics_from_ssot_files_only": true,
+    "dual_ece_primary": "train_published_when_proven",
+    "posthoc_never_primary": true,
+    "product_unlock_forced_false": true,
+    "no_invented_metrics": true,
+    "map_is_not_safety": true
+  },
+  "never": [
+    "auto product_unlock=true",
+    "sell posthoc ECE as primary",
+    "forage or consumption permission",
+    "invent metrics",
+    "pick max(MAP) across kernels for serve gate"
+  ],
+  "citation_rule": "Copy full-precision [MEASURED] from baseline/candidate JSON files; do not round in PR titles.",
+  "note": "Lab compare only. Orientation only. product_unlock forced false. Primary ECE channel is train-published; posthoc is separate."
+}

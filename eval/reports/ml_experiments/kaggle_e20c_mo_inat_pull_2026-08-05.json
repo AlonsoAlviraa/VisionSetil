@@ -1,0 +1,22 @@
+{
+  "generated_at": "2026-08-05T20:31:00+00:00",
+  "event": "kernel_output_pull",
+  "kernel_slug": "alonsoalviraaaa/visionsetil-exp-v20c-mo-inat",
+  "kernel_status_at_pull": "COMPLETE",
+  "local_path": "kaggle/kernel_output_v20c",
+  "models_path": "kaggle/kernel_output_v20c/models",
+  "command": "kaggle kernels output alonsoalviraaaa/visionsetil-exp-v20c-mo-inat -p kaggle/kernel_output_v20c -o",
+  "product_unlock": false,
+  "can_auto_unlock": false,
+  "forage_permission": false,
+  "consumption_permission": false,
+  "policy": "orientation_only_never_consume",
+  "lab_only": true,
+  "gitignored_weights": true,
+  "durable_artifacts": [
+    "eval/reports/ml_experiments/e20c_metrics_snapshot.json",
+    "eval/reports/ml_experiments/loop_post_train_suite_latest.json",
+    "eval/reports/ml_experiments/loop_compare_to_baseline_latest.json"
+  ],
+  "note": "Full kernel_output_v20c is gitignored (weights). Suite + snapshot JSON are the commit-safe SSOT. Metrics only from pulled metrics.json — never invented."
+}

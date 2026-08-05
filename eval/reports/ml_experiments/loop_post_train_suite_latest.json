@@ -1,0 +1,213 @@
+{
+  "generated_at": "2026-08-05T20:31:50.962146+00:00",
+  "run_id": "e20c",
+  "kernel_slug": "alonsoalviraaaa/visionsetil-exp-v20c-mo-inat",
+  "status": "suite_ok_with_gaps",
+  "suite_ok": true,
+  "policy": "orientation_only_never_consume",
+  "product_unlock": false,
+  "can_auto_unlock": false,
+  "forage_permission": false,
+  "consumption_permission": false,
+  "lab_only": true,
+  "metrics_label": "[MEASURED]",
+  "models_dir": "kaggle/kernel_output_v20c/models",
+  "models_dir_resolved": "C:\\Users\\Mariano\\.grok\\worktrees\\alonsoo-visionsetil\\subagent-019fd398-2410-7852-ac06-d7c982c672d7\\kaggle\\kernel_output_v20c\\models",
+  "source_metrics_path": "kaggle/kernel_output_v20c/models/metrics.json",
+  "version": "v20c-E20-mo-inat",
+  "eval_protocol": "source_holdout_e20c_mo_inat",
+  "test_domain": "gbif_es_only",
+  "train_domain": "fungitastic_plus_mo_inat_non_gbif",
+  "measured": {
+    "test_map_at_3": 0.8572782667569362,
+    "test_map_at_3_ci_low": 0.8499401940871121,
+    "test_map_at_3_ci_high": 0.8640713157300802,
+    "safety_recall_deadly_at_1": 0.789922480620155,
+    "safety_recall_deadly_at_3": 0.9186046511627907,
+    "n_deadly_in_test": 2580,
+    "test_accuracy": 0.8,
+    "test_f1_macro": 0.7065073905716294,
+    "test_balanced_accuracy": 0.7562763607259173,
+    "num_classes": 40,
+    "num_train_obs": 5767,
+    "num_val_obs": 1018,
+    "num_test_obs": 7385,
+    "primary_checkpoint": "best.pt (MAP@3); best_deadly.pt also saved on deadly@3 peak",
+    "best_epoch": 6,
+    "best_val_map3": 0.9656188605108056,
+    "databases_used": [
+      "fungitastic",
+      "gbif_es"
+    ],
+    "datasets_mounted": [
+      "fungitastic",
+      "gbif_es",
+      "mush215"
+    ]
+  },
+  "ece": {
+    "primary": "train_published",
+    "primary_value": 0.18942074356203395,
+    "primary_source": "kernel_metrics_test_ece_as_train_published",
+    "claim_train_published": true,
+    "test_ece": 0.18942074356203395,
+    "test_ece_train_published": 0.18942074356203395,
+    "posthoc_separate": true,
+    "posthoc_value": null,
+    "test_ece_posthoc": null,
+    "temperature_train": 1.5776891708374023,
+    "temperature_train_source": "temperature",
+    "temperature_posthoc": null,
+    "note": "Primary ECE is train-published only with explicit provenance (test_ece_train_published, flag, or kernel train metrics pull). Posthoc temperature search is lab-only and must not replace primary."
+  },
+  "soft_gates_advisory": {
+    "soft_map_threshold": 0.25,
+    "soft_deadly_at_3_threshold": 0.9,
+    "soft_map_pass": true,
+    "soft_deadly_at_3_pass": true,
+    "dual_deadly_keys_present": true,
+    "note": "Advisory only — never unlock Identify from soft gates alone."
+  },
+  "checks": {
+    "artifacts": {
+      "present": {
+        "metrics.json": true,
+        "label2idx.json": true,
+        "split_manifest.json": true,
+        "train_obs.json": true,
+        "val_obs.json": true,
+        "test_obs.json": true,
+        "test_predictions.npz": true,
+        "training_history.json": true,
+        "best.pt": true,
+        "best_deadly.pt": true,
+        "temperature_scaler.pt": true
+      },
+      "sizes_bytes": {
+        "metrics.json": 2379,
+        "label2idx.json": 1109,
+        "split_manifest.json": 2145,
+        "train_obs.json": 2579927,
+        "val_obs.json": 459194,
+        "test_obs.json": 2539545,
+        "test_predictions.npz": 2482354,
+        "training_history.json": 3493,
+        "best.pt": 122432990,
+        "best_deadly.pt": 122449490,
+        "temperature_scaler.pt": 1363
+      },
+      "required_ok": true,
+      "required": [
+        "metrics.json",
+        "label2idx.json",
+        "split_manifest.json"
+      ]
+    },
+    "split_manifest": {
+      "pass": true,
+      "status": "PASS",
+      "protocol": "source_holdout_e20c_mo_inat",
+      "protocol_requires_source_holdout": true,
+      "protocol_ok": true,
+      "leaks": {
+        "train_val": 0,
+        "train_test": 0,
+        "val_test": 0
+      },
+      "manifest_pass_flag": true,
+      "n_shared_near_dup_keys_post_split": 0,
+      "near_dup_status": "PASS",
+      "cross_domain_oids": 0,
+      "cross_domain_status": "PASS",
+      "n_train_obs": 5767,
+      "n_val_obs": 1018,
+      "n_test_obs": 7385,
+      "test_domain": "gbif_es_only",
+      "orientation_only": true,
+      "policy": "never_consumption_permission",
+      "detail": "split_manifest source_holdout rails OK"
+    },
+    "obs_disjoint": {
+      "pass": true,
+      "status": "PASS",
+      "n_train": 5767,
+      "n_val": 1018,
+      "n_test": 7385,
+      "leaks": {
+        "train_val": 0,
+        "train_test": 0,
+        "val_test": 0
+      },
+      "runtime_ids_reverified": true,
+      "detail": "observation_id sets disjoint across train/val/test"
+    },
+    "source_domains": {
+      "pass": true,
+      "status": "PASS",
+      "train_sources": [
+        "fungitastic"
+      ],
+      "test_sources": [
+        "gbif_es"
+      ],
+      "train_polluted_with_test_domain": false,
+      "detail": "source domains respect E20 holdout (train≠gbif_es pure test)",
+      "source": "runtime_obs"
+    },
+    "code_rails": {
+      "pass": true,
+      "files": {
+        "anti_leak_splitter": "kaggle/anti_leak_splitter.py",
+        "leak_invariants": "kaggle/ml_qa/leak_invariants.py",
+        "industrial_anti_leak_split": "scripts/industrial_anti_leak_split.py",
+        "e19_leak_audit_script": "scripts/audit_e19_leak.py"
+      },
+      "present": {
+        "anti_leak_splitter": true,
+        "leak_invariants": true,
+        "industrial_anti_leak_split": true,
+        "e19_leak_audit_script": true
+      }
+    },
+    "source_counts": {
+      "train": {
+        "fungitastic": 5767
+      },
+      "val": {
+        "fungitastic": 1018
+      },
+      "test": {
+        "gbif_es": 7385
+      }
+    },
+    "mo_inat": {
+      "claimed_in_protocol_or_config": true,
+      "train_source_keys_matching": [],
+      "train_mo_inat_obs": 0,
+      "note": "If claimed but zero, suite still runs on available FT+GBIF metrics; do not invent MO+iNat uplift."
+    },
+    "leak_hits_total": 0
+  },
+  "gaps": [
+    "mo_inat_claimed_but_zero_train_obs"
+  ],
+  "operator_action": "Post-train suite complete. Compare vs E20 SSOT with loop_ml_compare_to_baseline.py. product_unlock remains false. Do not auto-unlock; continue lab frictions (open-set / deadly@1 / ECE dual). GAP: MO+iNat claimed in protocol but train_obs has zero MO/iNat rows — metrics reflect FT-only train (same family as E20); investigate dataset mount.",
+  "honesty": {
+    "metrics_from_ssot_files_only": true,
+    "dual_ece_primary": "train_published",
+    "posthoc_never_primary": true,
+    "product_unlock_forced_false": true,
+    "no_invented_metrics": true,
+    "map_is_not_safety": true,
+    "open_set_honesty": true
+  },
+  "never": [
+    "auto product_unlock=true",
+    "sell posthoc ECE as primary",
+    "forage or consumption permission",
+    "invent MAP/deadly/ECE/version",
+    "pick max(MAP) across kernels for serve gate"
+  ],
+  "citation_rule": "Copy full-precision [MEASURED] values from this JSON or kernel metrics.json; do not round in PR titles.",
+  "note": "Post-train suite for VisionSetil ML lab. Orientation only. Kernel weights under kaggle/kernel_output* are gitignored — suite + snapshot JSON are the durable lab artifacts."
+}
