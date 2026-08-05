@@ -328,7 +328,6 @@ export function GamesHubPage() {
           </Button>
           <LinkButton
             to="/identificar"
-            skin="cn"
             variant="ghost"
             size="sm"
             data-testid="games-hub-identify-secondary"
