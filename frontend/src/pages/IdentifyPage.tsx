@@ -18,7 +18,6 @@ import {
 } from '../api/client'
 import type { ClassificationResult, ObservationMetadata } from '../api/types'
 import { ResultCard } from '../components/ResultCard'
-import { ImageCompare, pickComparePair } from '../components/ImageCompare'
 import { Button, LinkButton, PageShell } from '../components/ui'
 import { PreflightBanner } from '../components/PreflightBanner'
 import { UploadZone } from '../components/UploadZone'
@@ -1348,24 +1347,7 @@ export function IdentifyPage() {
                   setShowCamera(true)
                 }}
               />
-              {/* Hierarchy 5b: user multi-view ImageCompare when ≥2 captures */}
-              {(() => {
-                const resultViewTypes = useWizard
-                  ? orderedSlotKeys(assignments)
-                  : selectedImages.map((_, i) => `free_${i + 1}`)
-                const resultPreviews = useWizard
-                  ? orderedSlotKeys(assignments).map((k) => assignments[k]!.previewUrl)
-                  : selectedImages.map((i) => i.preview)
-                const pair = pickComparePair(resultViewTypes, resultPreviews)
-                if (!pair) return null
-                return (
-                  <ImageCompare
-                    left={pair.left}
-                    right={pair.right}
-                    testId="identify-result-image-compare"
-                  />
-                )
-              })()}
+              {/* ImageCompare lives inside ResultCard after lookalikes (hierarchy 5b) */}
               <div className="result-image-section result-image-section--deferred">
                 <Button
                   type="button"

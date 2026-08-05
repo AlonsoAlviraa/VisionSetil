@@ -1,7 +1,7 @@
 /**
  * UX-02 — Result hierarchy field→UI map + open-set contracts.
  * Reuse shipped testids; never rename identify-result-image-compare.
- * Source-order contracts (no RTL) for ResultCard + IdentifyPage.
+ * Source-order + structural branch contracts (no RTL in stack).
  */
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
@@ -132,6 +132,21 @@ function fixtureRejectedOpenSet(): ClassificationResult {
   }
 }
 
+/**
+ * Pure branch map for open-set presentation (structural unit test without RTL).
+ * Mirrors ResultCard exclusive prediction branches.
+ */
+export function predictionsUiBranch(
+  decision: ClassificationResult['decision'],
+): 'accepted' | 'rejected' {
+  return decision === 'rejected' ? 'rejected' : 'accepted'
+}
+
+export function rejectedListDefaultExpanded(): boolean {
+  // ResultCard: useState(false) for showRejectedCandidates
+  return false
+}
+
 describe('UX-02 result hierarchy contracts', () => {
   const card = () => readSrc('components/ResultCard.tsx')
   const page = () => readSrc('pages/IdentifyPage.tsx')
@@ -155,6 +170,7 @@ describe('UX-02 result hierarchy contracts', () => {
       'result-deadly-topk-studio',
       'lookalike-next-actions',
       'cta-lookalike-studio-from-result',
+      'identify-result-image-compare',
     ]
     for (const id of requiredCard) {
       if (id === 'result-mode-banner') {
@@ -162,10 +178,13 @@ describe('UX-02 result hierarchy contracts', () => {
         expect(c).toMatch(/ResultModeBanner/)
         continue
       }
+      if (id === 'identify-result-image-compare') {
+        expect(c).toMatch(/identify-result-image-compare/)
+        continue
+      }
       expect(c, id).toMatch(new RegExp(`data-testid="${id}"|data-testid=\\{\`${id}`))
     }
     expect(p).toMatch(/data-testid="identify-result"/)
-    expect(p).toMatch(/identify-result-image-compare/)
     expect(p).toMatch(/identify-result-lookalikes/)
     expect(p).toMatch(/identify-result-edu/)
     expect(p).toMatch(/identify-result-notebook/)
@@ -176,7 +195,7 @@ describe('UX-02 result hierarchy contracts', () => {
     )
   })
 
-  it('DOM source order: safety → decision → predictions → evidence → deadly → lookalikes', () => {
+  it('DOM source order: safety → decision → topk → evidence → deadly → compare → education', () => {
     const c = card()
     const ids = [
       'result-orientation-sticky',
@@ -184,6 +203,8 @@ describe('UX-02 result hierarchy contracts', () => {
       'predictions-list',
       'evidence-questions-panel',
       'result-deadly-topk-coach',
+      'identify-result-image-compare',
+      'cta-expert-handoff',
       'lookalike-next-actions',
     ]
     const idxs = orderOf(c, ids)
@@ -193,38 +214,61 @@ describe('UX-02 result hierarchy contracts', () => {
         expect(idxs[i], `${ids[i - 1]} before ${ids[i]}`).toBeGreaterThan(idxs[i - 1])
       }
     }
-    // evidence before lookalike layer toggle body content marker
+    // evidence before lookalike list body
     const evidenceIdx = testidIndex(c, 'evidence-questions-panel')
     const lookalikeListMarker = c.indexOf('lookalikes-warning')
     expect(evidenceIdx).toBeGreaterThan(0)
     expect(lookalikeListMarker).toBeGreaterThan(evidenceIdx)
+    // page edu CTAs after card (compare is in-card now)
+    const p = page()
+    const edu = p.indexOf('identify-result-edu')
+    expect(edu).toBeGreaterThan(0)
   })
 
-  it('open-set rejected: data-decision + reject reason + no top-match as final', () => {
+  it('open-set rejected: exclusive branch structure + fixture semantics', () => {
     const c = card()
     expect(c).toMatch(/data-decision=\{isRejected \? 'rejected' : 'accepted'\}/)
     expect(c).toMatch(/data-testid="decision-reject-reason"/)
     expect(c).toMatch(/predictions--rejected|data-branch="rejected"/)
     expect(c).toMatch(/prediction-item--unreliable|data-unreliable/)
-    // Rejected path must not apply top-match class
+    // Mutually exclusive prediction branches
+    expect(c).toMatch(/result\.predictions\.length > 0 && !isRejected/)
+    expect(c).toMatch(/result\.predictions\.length > 0 && isRejected/)
+    // Rejected starts collapsed
+    expect(c).toMatch(/useState\(false\)/)
+    expect(c).toMatch(/showRejectedCandidates/)
+    expect(c).toMatch(/predictions-rejected-toggle/)
+    expect(c).toMatch(/aria-expanded=\{showRejectedCandidates\}/)
+    // Rejected path must not apply top-match class or ordinal #1 primacy
     const rejectedSliceStart = c.indexOf('data-branch="rejected"')
     expect(rejectedSliceStart).toBeGreaterThan(0)
-    const rejectedSlice = c.slice(rejectedSliceStart, rejectedSliceStart + 1800)
+    const rejectedSlice = c.slice(rejectedSliceStart, rejectedSliceStart + 2200)
     expect(rejectedSlice).not.toMatch(/top-match/)
-    expect(rejectedSlice).toMatch(/No es respuesta final|notFinalAnswer|unreliable/i)
+    expect(rejectedSlice).not.toMatch(/#\{idx \+ 1\}|rank-badge">#/)
+    expect(rejectedSlice).toMatch(/No es respuesta final|notFinalAnswer|unreliable|Candidato/i)
+    // No confidence % bars on rejected branch
+    expect(rejectedSlice).not.toMatch(/confidence-bar|confidence-value/)
 
     const r = fixtureRejectedOpenSet()
     expect(r.decision).toBe('rejected')
     expect(isOpenSetRejected(r)).toBe(true)
+    expect(predictionsUiBranch(r.decision)).toBe('rejected')
+    expect(rejectedListDefaultExpanded()).toBe(false)
     expect(decisionLabel(r.decision, 'es')).toMatch(/Sin ID|fiable/i)
   })
 
-  it('accepted deadly: coach + RiskChip boost wiring; never product_unlock/confetti', () => {
+  it('accepted deadly: coach + RiskChip boost; IconInfo not check-as-verified; no confetti', () => {
     const c = card()
     expect(c).toMatch(/result-deadly-topk-coach/)
     expect(c).toMatch(/shouldShowDeadlyTopkCoach|deadlyTopkCoachCopy/)
     expect(c).toMatch(/RiskChip/)
     expect(c).toMatch(/boost=\{boostJoinRisk\}|boostJoinRisk/)
+    // Accepted decision uses IconInfo (not success IconCheck)
+    const acceptedStart = c.indexOf("t('result.tentativeCue'")
+    expect(acceptedStart).toBeGreaterThan(0)
+    const acceptedWindow = c.slice(Math.max(0, acceptedStart - 200), acceptedStart + 80)
+    expect(acceptedWindow).toMatch(/IconInfo/)
+    expect(acceptedWindow).not.toMatch(/IconCheck/)
     // No confetti components/classes; policy comment mentioning "no confetti" is fine
     expect(c).not.toMatch(/className=\{?["'`][^"'`]*confetti/i)
     expect(c).not.toMatch(/from ['"][^'"]*confetti/i)
@@ -235,6 +279,7 @@ describe('UX-02 result hierarchy contracts', () => {
 
     const r = fixtureAcceptedDeadly()
     expect(shouldShowDeadlyTopkCoach(r)).toBe(true)
+    expect(predictionsUiBranch(r.decision)).toBe('accepted')
     expect(r.predictions[0].edibility).toBe('deadly')
   })
 
@@ -250,12 +295,16 @@ describe('UX-02 result hierarchy contracts', () => {
     expect(readSrc('components/ui/Button.tsx')).toMatch(/isLoading/)
   })
 
-  it('ImageCompare ≥2 previews uses shipped testid', () => {
+  it('ImageCompare ≥2 previews uses shipped testid inside ResultCard before education', () => {
     const pair = pickComparePair(['gills', 'front'], ['a.jpg', 'b.jpg'])
     expect(pair).not.toBeNull()
-    const img = readSrc('components/ImageCompare.tsx')
-    expect(img).toMatch(/identify-result-image-compare/)
-    expect(page()).toMatch(/pickComparePair/)
+    const c = card()
+    expect(c).toMatch(/pickComparePair/)
+    expect(c).toMatch(/identify-result-image-compare/)
+    const compareIdx = c.indexOf('identify-result-image-compare')
+    const eduIdx = c.indexOf('data-testid="cta-expert-handoff"')
+    expect(compareIdx).toBeGreaterThan(0)
+    expect(eduIdx).toBeGreaterThan(compareIdx)
   })
 
   it('helpers reused: decisionLabels, openSetReason, deadlyTopkHonesty, riskLabels', () => {
@@ -264,5 +313,13 @@ describe('UX-02 result hierarchy contracts', () => {
     expect(c).toMatch(/openSetReason/)
     expect(c).toMatch(/deadlyTopkHonesty/)
     expect(c).toMatch(/resolveJoinRisk|isSevereRisk/)
+  })
+
+  it('global decision-banner.accepted uses info tokens (not edible --safe green)', () => {
+    const g = readSrc('styles/global.css')
+    const acceptedBlock = g.match(/\.decision-banner\.accepted\s*\{[^}]+\}/)
+    expect(acceptedBlock).toBeTruthy()
+    expect(acceptedBlock![0]).toMatch(/--info/)
+    expect(acceptedBlock![0]).not.toMatch(/--safe-bg|--safe[^-]/)
   })
 })

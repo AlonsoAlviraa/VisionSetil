@@ -1216,8 +1216,11 @@
   border: 1px solid var(--border, #e2e8f0);
   aspect-ratio: 4 / 3;
   background: #0f172a10;
+  /* --wipe-pct set inline from slider (e.g. 50%) */
+  --wipe-pct: 50%;
 }
 
+/* Both layers are full-frame; top is cropped via clip-path (not width-scale). */
 .image-compare__wipe-base,
 .image-compare__wipe-top {
   position: absolute;
@@ -1231,11 +1234,28 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  /* Never shrink with clip box — frame stays full container size */
+  max-width: none;
 }
 
 .image-compare__wipe-top {
-  border-right: 2px solid var(--info, #0284c7);
   z-index: 1;
+  /* Reveal left portion: clip right side away (full-width image underneath) */
+  clip-path: inset(0 calc(100% - var(--wipe-pct)) 0 0);
+}
+
+/* Divider at wipe edge */
+.image-compare__wipe-top::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--wipe-pct);
+  width: 2px;
+  margin-left: -1px;
+  background: var(--info, #0284c7);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.35);
+  pointer-events: none;
 }
 
 .image-compare__wipe-control {

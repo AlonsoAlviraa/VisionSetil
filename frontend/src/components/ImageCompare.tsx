@@ -165,11 +165,20 @@ export function ImageCompare({
           data-testid="image-compare-wipe"
           style={wipeStyle}
         >
+          {/* Full-frame base (right) — always full size under the clip */}
           <div className="image-compare__wipe-base">
             <img src={right.src} alt={rightLabel} loading="lazy" decoding="async" />
           </div>
-          <div className="image-compare__wipe-top" style={{ width: `${wipe}%` }}>
-            <img src={left.src} alt={leftLabel} loading="lazy" decoding="async" />
+          {/*
+            Full-frame reveal (left): layer is always full container size;
+            clip-path crops via --wipe-pct (not width-scale of the image).
+          */}
+          <div
+            className="image-compare__wipe-top"
+            data-testid="image-compare-wipe-clip"
+            aria-hidden="true"
+          >
+            <img src={left.src} alt="" loading="lazy" decoding="async" />
           </div>
           <label className="image-compare__wipe-control">
             <span className="visually-hidden">
@@ -186,6 +195,9 @@ export function ImageCompare({
               aria-valuemin={5}
               aria-valuemax={95}
               aria-valuenow={wipe}
+              aria-label={t('result.imageCompareWipeSlider', {
+                defaultValue: 'Deslizar comparación',
+              })}
               onChange={(e) => setWipe(Number(e.target.value))}
             />
           </label>

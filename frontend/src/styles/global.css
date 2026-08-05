@@ -1309,9 +1309,10 @@ button.btn-retry:not(.btn-atelier) {
   position: relative;
 }
 
+/* B-35 / UX-02: info/slate — not edible/success green (--safe) */
 .decision-banner.accepted {
-  background: linear-gradient(135deg, var(--safe-bg), transparent);
-  border-left: 4px solid var(--safe);
+  background: linear-gradient(135deg, var(--info-bg, #f0f9ff), transparent);
+  border-left: 4px solid var(--info, #0284c7);
 }
 
 .decision-banner.rejected {

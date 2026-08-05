@@ -50,6 +50,7 @@ import { SpeciesThumb } from './SpeciesThumb'
 import { Button, LinkButton } from './ui'
 import { SpeciesNameBlock } from './SpeciesNameBlock'
 import { RiskChip } from './RiskChip'
+import { ImageCompare, pickComparePair } from './ImageCompare'
 import {
   buildExpertHandoff,
   expertReviewPath,
@@ -230,6 +231,11 @@ export function ResultCard({
   const stackBadgeInfo = stackBadge(result.model_stack, locale)
   const decisionText = decisionLabel(result.decision, locale)
   const decisionHintText = decisionHint(result.decision, locale)
+  /** Hierarchy 5b: user multi-view compare when ≥2 captures (before education CTAs). */
+  const comparePair = useMemo(
+    () => pickComparePair(viewTypes, previews),
+    [viewTypes, previews],
+  )
 
   const [catalogTick, setCatalogTick] = useState(0)
   useEffect(() => {
@@ -473,7 +479,7 @@ export function ResultCard({
               ) : (
                 <>
                   <strong className="decision-banner__title">
-                    <IconCheck size={18} />
+                    <IconInfo size={18} />
                     {t('result.tentativeCue', { defaultValue: decisionText })}
                   </strong>
                   <p>
@@ -671,7 +677,12 @@ export function ResultCard({
                               className="prediction-thumb"
                             />
                             <div className="prediction-info">
-                              <span className="rank-badge rank-badge--muted">#{idx + 1}</span>
+                              {/* No ordinal #1 rank — avoids top-match skim semantics on open-set */}
+                              <span className="rank-badge rank-badge--muted">
+                                {t('result.unreliableCandidateLabel', {
+                                  defaultValue: 'Candidato',
+                                })}
+                              </span>
                               <SpeciesNameBlock
                                 taxon={pred.species}
                                 commonNames={pred.common_name}
@@ -992,6 +1003,15 @@ export function ResultCard({
           )}
         </section>
       )}
+
+      {/* Hierarchy 5b: ImageCompare with lookalikes — before education CTAs */}
+      {comparePair ? (
+        <ImageCompare
+          left={comparePair.left}
+          right={comparePair.right}
+          testId="identify-result-image-compare"
+        />
+      ) : null}
 
       {/* ── Hierarchy 6: education / expert / verification CTAs ── */}
       <div className="review-callout review-callout--compact">
