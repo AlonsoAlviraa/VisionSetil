@@ -1,0 +1,19 @@
+{
+  "id": "alonsoalviraaaa/visionsetil-exp-v20b-lepiota-ft",
+  "title": "visionsetil-exp-v20b-lepiota-ft",
+  "code_file": "visionsetil_exp_v20b_lepiota_ft.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "dataset_sources": [
+    "picekl/fungitastic",
+    "alonsoalviraaaa/visionsetil-gbif-es-allowlist40",
+    "daniilonishchenko/mushrooms-images-classification-215",
+    "alonsoalviraaaa/visionsetil-e20-weights"
+  ],
+  "competition_sources": [],
+  "kernel_sources": []
+}

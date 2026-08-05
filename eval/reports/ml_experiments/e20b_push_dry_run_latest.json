@@ -1,0 +1,24 @@
+{
+  "generated_at": "2026-08-05T20:34:48.328280+00:00",
+  "mode": "dry_run",
+  "product_unlock": false,
+  "kaggle_push": false,
+  "slug": "alonsoalviraaaa/visionsetil-exp-v20b-lepiota-ft",
+  "notebook": {
+    "tracked_notebook": "C:\\Users\\Mariano\\.grok\\worktrees\\alonsoo-visionsetil\\subagent-019fd398-2410-7852-ac06-d7b1e767cfd6\\kaggle\\visionsetil_exp_v20b_lepiota_ft.ipynb",
+    "tracked_metadata": "C:\\Users\\Mariano\\.grok\\worktrees\\alonsoo-visionsetil\\subagent-019fd398-2410-7852-ac06-d7b1e767cfd6\\kaggle\\kernel-metadata-exp-v20b.json",
+    "notebook": "C:\\Users\\Mariano\\.grok\\worktrees\\alonsoo-visionsetil\\subagent-019fd398-2410-7852-ac06-d7b1e767cfd6\\kaggle\\visionsetil_exp_v20b_lepiota_ft.ipynb",
+    "notebook_present": true,
+    "metadata_present": true,
+    "syntax_fix_present": true,
+    "weight_path_fix_present": true,
+    "ready": true
+  },
+  "rails_can_stage": true,
+  "diagnose_present": true,
+  "diagnose_decision": "RELAUNCH_PATH_DOCUMENTED_NOT_EXECUTED",
+  "relaunch_allowed_in_diagnose": true,
+  "would_push": true,
+  "blockers": [],
+  "note": "Dry-run only. Real push needs --execute and --i-accept-operator-responsibility. Never product_unlock."
+}
