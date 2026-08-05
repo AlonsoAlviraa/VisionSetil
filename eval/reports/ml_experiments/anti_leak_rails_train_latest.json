@@ -1,0 +1,106 @@
+{
+  "generated_at": "2026-08-05T19:51:48.666246+00:00",
+  "policy": "orientation_only_never_consume",
+  "product_unlock": false,
+  "can_auto_unlock": false,
+  "forage_permission": false,
+  "consumption_permission": false,
+  "lab_only": true,
+  "kaggle_push": false,
+  "auto_kaggle_push": false,
+  "status": "rails_green_can_stage",
+  "can_stage_train_notebook": true,
+  "can_stage": true,
+  "models_dir": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models",
+  "checks": {
+    "code_rails_present": {
+      "pass": true,
+      "files": {
+        "anti_leak_splitter": "C:\\Users\\Mariano\\.grok\\worktrees\\alonsoo-visionsetil\\subagent-019fd375-fbc5-7073-a1f6-8d12395a30d0\\kaggle\\anti_leak_splitter.py",
+        "leak_invariants": "C:\\Users\\Mariano\\.grok\\worktrees\\alonsoo-visionsetil\\subagent-019fd375-fbc5-7073-a1f6-8d12395a30d0\\kaggle\\ml_qa\\leak_invariants.py",
+        "industrial_anti_leak_split": "C:\\Users\\Mariano\\.grok\\worktrees\\alonsoo-visionsetil\\subagent-019fd375-fbc5-7073-a1f6-8d12395a30d0\\scripts\\industrial_anti_leak_split.py",
+        "e19_leak_audit_script": "C:\\Users\\Mariano\\.grok\\worktrees\\alonsoo-visionsetil\\subagent-019fd375-fbc5-7073-a1f6-8d12395a30d0\\scripts\\audit_e19_leak.py"
+      },
+      "present": {
+        "anti_leak_splitter": true,
+        "leak_invariants": true,
+        "industrial_anti_leak_split": true,
+        "e19_leak_audit_script": true
+      }
+    },
+    "models_dir": {
+      "pass": true,
+      "status": "PASS",
+      "path": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models"
+    },
+    "split_manifest": {
+      "pass": true,
+      "status": "PASS",
+      "protocol": "source_holdout_e20",
+      "leaks": {
+        "train_val": 0,
+        "train_test": 0,
+        "val_test": 0
+      },
+      "manifest_pass_flag": true,
+      "n_shared_near_dup_keys_post_split": 0,
+      "cross_domain_oids": 0,
+      "n_train_obs": 5767,
+      "n_val_obs": 1018,
+      "n_test_obs": 7385,
+      "test_domain": "gbif_es_only",
+      "orientation_only": true,
+      "policy": "never_consumption_permission"
+    },
+    "obs_disjoint_runtime": {
+      "pass": true,
+      "status": "PASS",
+      "n_train": 5767,
+      "n_val": 1018,
+      "n_test": 7385,
+      "leaks": {
+        "train_val": 0,
+        "train_test": 0,
+        "val_test": 0
+      },
+      "runtime_ids_reverified": true,
+      "detail": "observation_id sets disjoint across train/val/test"
+    },
+    "source_domains": {
+      "pass": true,
+      "status": "PASS",
+      "train_sources": [
+        "fungitastic"
+      ],
+      "test_sources": [
+        "gbif_es"
+      ],
+      "train_polluted_with_test_domain": false,
+      "detail": "source domains respect E20 holdout (train≠gbif_es pure test)",
+      "source": "runtime_obs"
+    },
+    "metrics_split_artifacts": {
+      "pass": true,
+      "status": "PASS",
+      "split_artifacts": [
+        "train_obs.json",
+        "val_obs.json",
+        "test_obs.json",
+        "split_manifest.json"
+      ],
+      "eval_protocol": "source_holdout_e20",
+      "version": "v20-E20-source-holdout"
+    }
+  },
+  "fail_reasons": [],
+  "gaps": [],
+  "operator_action": "anti-leak rails PASS — may stage train notebook (scripts/stage_train_notebook_if_rails_ok.py); never auto push Kaggle; never auto product_unlock",
+  "honesty": {
+    "metrics_label": "[MEASURED]",
+    "never_invent_metrics": true,
+    "gbif_es_holdout_must_stay_pure": true,
+    "primary_ece": "train_published",
+    "posthoc_separate": true
+  },
+  "note": "Anti-leak gate for train staging only. Never flips product_unlock. Never forages. Exit 0 iff can_stage_train_notebook."
+}
