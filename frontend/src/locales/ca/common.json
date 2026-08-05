@@ -32,18 +32,18 @@
       "dev": "Herramientas"
     },
     "blurb": {
-      "education": "Seguridad y multi-vista de campo",
-      "lookalikes": "Compara especies que se confunden",
+      "education": "Multi-vista (làmines, perfil, base) i estudi mortals · només orientació",
+      "lookalikes": "Confusions costat a costat · estudi, mai consum",
       "games": "Setadle, Wordle y reto diario",
-      "quiz": "Reto de confusiones y caracteres",
+      "quiz": "Quiz de caràcters · sense permís de consum",
       "notebook": "Tus observaciones en este dispositivo",
       "offline": "Fichas para estudiar sin conexión",
       "community": "Opiniones humanas, nunca certeza",
       "experts": "Prepara el envío a un micólogo",
       "ml": "Métricas honestas del modelo",
       "map": "Zonas y cotos — no identifica setas",
-      "wordle": "Nombres de setas, letra a letra",
-      "setadle": "Puzzle diario de hábitat y rasgos",
+      "wordle": "Lletres del nom · només estudi",
+      "setadle": "Endevina el bolet · joc d'estudi",
       "login": "Cuenta opcional",
       "beta": "Cuéntanos qué falla"
     },
@@ -304,13 +304,14 @@
     "alsoStudy": "Más estudio"
   },
   "more": {
-    "orientation": "Solo orientación · nunca consumo",
-    "title": "Más",
-    "policy": "Todo el producto, en un solo sitio.",
+    "orientation": "Només orientació · mai consum",
+    "title": "Més",
+    "policy": "Tot el producte, en un sol lloc.",
+    "learnLead": "Aprèn amb fotos multi-vista i confusions. Només orientació — mai consum ni recol·lecció.",
     "ctaIdentify": "Identificar",
     "foot": "VisionSetil",
-    "worldTitle": "Recursos del mundo",
-    "worldLead": "Webs y apps de referencia. Solo estudio."
+    "worldTitle": "Recursos del món",
+    "worldLead": "Webs i apps de referència. Només estudi."
   },
   "layout": {
     "modeAria": "Formato de visualización",

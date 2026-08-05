@@ -32,18 +32,18 @@
       "dev": "Herramientas"
     },
     "blurb": {
-      "education": "Seguridad y multi-vista de campo",
-      "lookalikes": "Compara especies que se confunden",
+      "education": "Ikuspegi anitz (orriak, profila, oinarria) eta hilkorren azterketa · soilik orientazioa",
+      "lookalikes": "Nahasketa-pareak aldamenetan · azterketa, inoiz ez kontsumoa",
       "games": "Setadle, Wordle y reto diario",
-      "quiz": "Reto de confusiones y caracteres",
+      "quiz": "Karaktere-galdeketa · kontsumorako baimenik gabe",
       "notebook": "Tus observaciones en este dispositivo",
       "offline": "Fichas para estudiar sin conexión",
       "community": "Opiniones humanas, nunca certeza",
       "experts": "Prepara el envío a un micólogo",
       "ml": "Métricas honestas del modelo",
       "map": "Zonas y cotos — no identifica setas",
-      "wordle": "Nombres de setas, letra a letra",
-      "setadle": "Puzzle diario de hábitat y rasgos",
+      "wordle": "Izenaren letrak · soilik azterketa",
+      "setadle": "Asmatu perretxikoa · azterketa-jokoa",
       "login": "Cuenta opcional",
       "beta": "Cuéntanos qué falla"
     },
@@ -304,13 +304,14 @@
     "alsoStudy": "Más estudio"
   },
   "more": {
-    "orientation": "Solo orientación · nunca consumo",
-    "title": "Más",
-    "policy": "Todo el producto, en un solo sitio.",
-    "ctaIdentify": "Identificar",
+    "orientation": "Soilik orientazioa · inoiz ez kontsumoa",
+    "title": "Gehiago",
+    "policy": "Produktu osoa, leku bakarrean.",
+    "learnLead": "Ikasi ikuspegi anitzeko argazkiekin eta nahasketa-pareekin. Soilik orientazioa — inoiz ez kontsumoa ez bilketa.",
+    "ctaIdentify": "Identifikatu",
     "foot": "VisionSetil",
-    "worldTitle": "Recursos del mundo",
-    "worldLead": "Webs y apps de referencia. Solo estudio."
+    "worldTitle": "Munduko baliabideak",
+    "worldLead": "Erreferentziazko webguneak eta app-ak. Soilik azterketa."
   },
   "layout": {
     "modeAria": "Formato de visualización",

@@ -146,7 +146,7 @@ export const MORE_NAV_GROUPS: readonly MoreNavGroup[] = [
         labelKey: 'nav.lookalikes',
         fallback: 'Confusiones',
         blurbKey: 'nav.blurb.lookalikes',
-        blurbFallback: 'Lookalikes lado a lado · estudio, nunca consumo',
+        blurbFallback: 'Confusiones lado a lado · estudio, nunca consumo',
         glyph: 'compare',
       },
       {

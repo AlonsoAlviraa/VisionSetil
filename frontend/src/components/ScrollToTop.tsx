@@ -2,9 +2,19 @@
  * Reset window scroll on client-side route changes.
  * Fixes encyclopedia → ficha landing mid-page / at bottom.
  * Double-rAF + short delayed pass: catches late layout from lazy routes/images.
+ *
+ * Hash deep-links (/educacion#multi-view): do NOT force top — Education (and
+ * other anchors) own scrollIntoView after lazy mount.
  */
 import { useLayoutEffect } from 'react'
 import { useLocation } from 'react-router-dom'
+
+/** True when a non-empty URL hash should preserve scroll (deep-link anchors). */
+export function shouldSkipScrollToTop(hash: string | null | undefined): boolean {
+  if (!hash) return false
+  // '#' alone is empty; require an id fragment
+  return hash.replace(/^#/, '').length > 0
+}
 
 function forceScrollTop() {
   const main = document.getElementById('main-content')
@@ -15,9 +25,12 @@ function forceScrollTop() {
 }
 
 export function ScrollToTop() {
-  const { pathname } = useLocation()
+  const { pathname, hash } = useLocation()
 
   useLayoutEffect(() => {
+    // Deep-link anchors (PhotoCoach / Más → #multi-view): skip force-top race
+    if (shouldSkipScrollToTop(hash)) return
+
     try {
       if ('scrollRestoration' in window.history) {
         window.history.scrollRestoration = 'manual'
@@ -40,7 +53,7 @@ export function ScrollToTop() {
       window.clearTimeout(t2)
       window.clearTimeout(t3)
     }
-  }, [pathname])
+  }, [pathname, hash])
 
   return null
 }

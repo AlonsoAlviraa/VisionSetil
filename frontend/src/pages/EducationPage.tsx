@@ -213,6 +213,7 @@ export function EducationPage() {
   const coach = useMemo(() => deadlyCoach(locale), [locale])
 
   // Lazy route: native hash jump often races mount — re-scroll when hash is known.
+  // ScrollToTop skips force-top when hash is set; still re-try past lazy paint.
   useEffect(() => {
     const hash = location.hash || window.location.hash
     if (!hash) return
@@ -220,9 +221,11 @@ export function EducationPage() {
     run()
     const t0 = window.setTimeout(run, 50)
     const t1 = window.setTimeout(run, 200)
+    const t2 = window.setTimeout(run, 450)
     return () => {
       window.clearTimeout(t0)
       window.clearTimeout(t1)
+      window.clearTimeout(t2)
     }
   }, [location.hash, location.pathname])
 
@@ -353,7 +356,7 @@ export function EducationPage() {
         <DichotomousKey />
       </section>
 
-      {/* Deep-link targets: /educacion#multi-view · /educacion#deadly-study */}
+      {/* Deep-link: /educacion#multi-view (PhotoCoach / Más soft-dep) */}
       <section
         id="multi-view"
         className="edu-section edu-multiview-diag edu-anchor-target"
@@ -392,54 +395,6 @@ export function EducationPage() {
             </span>
           ))}
         </div>
-        <div
-          id="deadly-study"
-          className="edu-deadly-study edu-anchor-target"
-          data-testid="edu-deadly-study"
-          tabIndex={-1}
-          aria-label={t('education.deadlyStudyAria', {
-            defaultValue: 'Estudio de confusiones mortales (educativo)',
-          })}
-        >
-          <h3 className="edu-deadly-study__title">
-            {t('education.deadlyStudyTitle', {
-              defaultValue: 'Estudio mortales — pares y vistas clave',
-            })}
-          </h3>
-          <p className="edu-intro muted">
-            {t('education.deadlyStudyLead', {
-              defaultValue:
-                'Pares de confusión con riesgo mortal: compara solo con fotos multi-vista. Orientación de estudio — nunca permiso de consumo ni de recolección.',
-            })}
-          </p>
-          {deadlyPairs.length > 0 ? (
-            <div className="edu-diag-pairs" data-testid="edu-diag-pairs">
-              {deadlyPairs.map((pair) => (
-                <article
-                  key={pair.id}
-                  className="edu-diag-pair atelier-panel"
-                  data-pair-id={pair.id}
-                >
-                  <h3 className="edu-diag-pair__taxa">
-                    {pair.taxa.slice(0, 2).join(' ↔ ')}
-                  </h3>
-                  {pair.why ? <p className="edu-diag-pair__why muted">{pair.why}</p> : null}
-                  <div className="lookalike-item__diag-views">
-                    {(pair.critical_views || []).slice(0, 4).map((view) => (
-                      <span
-                        key={view}
-                        className="lookalike-item__diag-badge lookalike-item__diag-badge--static"
-                        data-slot={view}
-                      >
-                        {t(`identify.views.${view}`, { defaultValue: view })}
-                      </span>
-                    ))}
-                  </div>
-                </article>
-              ))}
-            </div>
-          ) : null}
-        </div>
         <p className="lookalike-item__diag-policy muted" data-policy={diagnosticPolicy()}>
           {t('result.pairDiagPolicy', {
             defaultValue:
@@ -464,6 +419,57 @@ export function EducationPage() {
             </span>
           </Link>
         </div>
+      </section>
+
+      {/* Sibling deep-link: /educacion#deadly-study (first-class deadly pairs study) */}
+      <section
+        id="deadly-study"
+        className="edu-section edu-deadly-study edu-anchor-target"
+        data-testid="edu-deadly-study"
+        tabIndex={-1}
+        aria-label={t('education.deadlyStudyAria', {
+          defaultValue: 'Estudio de confusiones mortales (educativo)',
+        })}
+      >
+        <h2 className="edu-section-title edu-deadly-study__title">
+          <IconAlert size={22} />
+          {t('education.deadlyStudyTitle', {
+            defaultValue: 'Estudio mortales — pares y vistas clave',
+          })}
+        </h2>
+        <p className="edu-intro muted">
+          {t('education.deadlyStudyLead', {
+            defaultValue:
+              'Pares de confusión con riesgo mortal: compara solo con fotos multi-vista. Orientación de estudio — nunca permiso de consumo ni de recolección.',
+          })}
+        </p>
+        {deadlyPairs.length > 0 ? (
+          <div className="edu-diag-pairs" data-testid="edu-diag-pairs">
+            {deadlyPairs.map((pair) => (
+              <article
+                key={pair.id}
+                className="edu-diag-pair atelier-panel"
+                data-pair-id={pair.id}
+              >
+                <h3 className="edu-diag-pair__taxa">
+                  {pair.taxa.slice(0, 2).join(' ↔ ')}
+                </h3>
+                {pair.why ? <p className="edu-diag-pair__why muted">{pair.why}</p> : null}
+                <div className="lookalike-item__diag-views">
+                  {(pair.critical_views || []).slice(0, 4).map((view) => (
+                    <span
+                      key={view}
+                      className="lookalike-item__diag-badge lookalike-item__diag-badge--static"
+                      data-slot={view}
+                    >
+                      {t(`identify.views.${view}`, { defaultValue: view })}
+                    </span>
+                  ))}
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : null}
       </section>
 
       <section className="edu-section">
