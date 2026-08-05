@@ -1,6 +1,7 @@
 /**
  * Guided multi-view capture — 4 slots, field-ready, orientation-only.
  * Soft readiness (≥1 photo); critical views (gills/front) recommended.
+ * PhotoCoach panel (UX-03): educates better photos — never consumption.
  */
 import { useCallback, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -23,6 +24,7 @@ import {
 import { featureFlags } from '../lib/featureFlags'
 import { IconCamera, ViewIcon } from './icons'
 import { Button } from './ui'
+import { PhotoCoachPanel } from './PhotoCoachPanel'
 
 type Props = {
   assignments: SlotAssignment
@@ -123,6 +125,15 @@ export function MultiViewWizard({ assignments, onAssign, onClear, onOpenCamera }
 
   const nextEmpty = VIEW_SLOTS.find((s) => !assignments[s.view])?.view ?? null
   const pct = Math.round((readiness.filled / FULL_PACKET_PHOTOS) * 100)
+  /** Active coach target: next empty slot, else last filled, else gills. */
+  const coachView: CanonicalView =
+    nextEmpty ??
+    orderedSlotKeys(assignments).slice(-1)[0] ??
+    'gills'
+  const coachSlot = assignments[coachView]
+  const coachFileMeta = coachSlot?.file
+    ? { byteLength: coachSlot.file.size }
+    : undefined
 
   return (
     <section
@@ -505,6 +516,12 @@ export function MultiViewWizard({ assignments, onAssign, onClear, onOpenCamera }
           )
         })}
       </div>
+
+      <PhotoCoachPanel
+        view={coachView}
+        fileMeta={coachFileMeta}
+        className="multi-view-wizard__photo-coach"
+      />
 
       {readiness.warningCodes.length > 0 && (
         <ul className="mv-warnings" data-testid="mv-warnings">

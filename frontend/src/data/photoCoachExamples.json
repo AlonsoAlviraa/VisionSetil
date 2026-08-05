@@ -1,0 +1,86 @@
+{
+  "version": 1,
+  "policy": "orientation_only_never_consumption",
+  "views": {
+    "gills": {
+      "examples": [
+        {
+          "id": "gills-good",
+          "quality": "good",
+          "labelEs": "Buena captura diagnóstica: himenio nítido y centrado",
+          "labelEn": "Good diagnostic capture: sharp, centered hymenium",
+          "cssFrame": "hymenium-close",
+          "thumb": "/coach/gills-good.webp"
+        },
+        {
+          "id": "gills-bad",
+          "quality": "bad",
+          "labelEs": "Mala captura: solo sombrero desde arriba / demasiado lejos",
+          "labelEn": "Poor capture: top-down cap only / too far away",
+          "cssFrame": "topdown-far",
+          "thumb": "/coach/gills-bad.webp"
+        }
+      ]
+    },
+    "front": {
+      "examples": [
+        {
+          "id": "front-good",
+          "quality": "good",
+          "labelEs": "Buena captura: perfil completo sombrero + pie + base",
+          "labelEn": "Good capture: full profile cap + stem + base",
+          "cssFrame": "full-profile",
+          "thumb": "/coach/front-good.webp"
+        },
+        {
+          "id": "front-bad",
+          "quality": "bad",
+          "labelEs": "Mala captura: solo sombrero recortado, sin pie ni base",
+          "labelEn": "Poor capture: cropped cap only, no stem or base",
+          "cssFrame": "cap-only",
+          "thumb": "/coach/front-bad.webp"
+        }
+      ]
+    },
+    "habitat": {
+      "examples": [
+        {
+          "id": "habitat-good",
+          "quality": "good",
+          "labelEs": "Buena captura: seta en contexto (suelo, madera o árbol)",
+          "labelEn": "Good capture: mushroom in context (soil, wood, or tree)",
+          "cssFrame": "context-wide",
+          "thumb": "/coach/habitat-good.webp"
+        },
+        {
+          "id": "habitat-bad",
+          "quality": "bad",
+          "labelEs": "Mala captura: recorte total sin sustrato ni entorno",
+          "labelEn": "Poor capture: tight crop with no substrate or surroundings",
+          "cssFrame": "no-context",
+          "thumb": "/coach/habitat-bad.webp"
+        }
+      ]
+    },
+    "detail": {
+      "examples": [
+        {
+          "id": "detail-good",
+          "quality": "good",
+          "labelEs": "Buena captura: macro de anillo, volva o textura del pie",
+          "labelEn": "Good capture: macro of ring, volva, or stem texture",
+          "cssFrame": "macro-ring",
+          "thumb": "/coach/detail-good.webp"
+        },
+        {
+          "id": "detail-bad",
+          "quality": "bad",
+          "labelEs": "Mala captura: sombreado total / desenfoque / demasiado lejos",
+          "labelEn": "Poor capture: fully shaded / blurry / too far",
+          "cssFrame": "shadow-blur",
+          "thumb": "/coach/detail-bad.webp"
+        }
+      ]
+    }
+  }
+}

@@ -52,6 +52,11 @@ export const featureFlags = {
    * FE uses credentials:include and never stores token in localStorage.
    */
   AUTH_COOKIE: envBool('VITE_FEATURE_AUTH_COOKIE', false),
+  /**
+   * UX-03 PhotoCoach: optional canvas luminance hints (luma_dark / luma_bright).
+   * Default OFF — size/edge/aspect still run; luminance is progressive enhancement.
+   */
+  PHOTO_COACH_LUMINANCE: envBool('VITE_FEATURE_PHOTO_COACH_LUMINANCE', false),
 } as const
 
 export type FeatureFlagKey = keyof typeof featureFlags

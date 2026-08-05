@@ -4336,6 +4336,253 @@ html[data-skin='campo-nocturno'] .container {
   backdrop-filter: blur(6px);
 }
 
+/* —— PhotoCoach (UX-03): zero-webp learning panel —— */
+.photo-coach-panel,
+.multi-view-wizard__photo-coach {
+  margin-top: 0.85rem;
+  border-radius: 1rem;
+  border: 1px solid color-mix(in srgb, var(--cn-moss, #8fbc8f) 22%, transparent);
+  background: color-mix(in srgb, var(--cn-surface, #141a14) 94%, #000);
+  overflow: hidden;
+}
+.photo-coach-panel__toggle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.55rem;
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.65rem 0.85rem;
+  border: 0;
+  background: transparent;
+  color: var(--cn-cream, #f3f0e6);
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-align: left;
+  cursor: pointer;
+}
+.photo-coach-panel__toggle:focus-visible {
+  outline: 2px solid var(--cn-moss-bright, #9dcea6);
+  outline-offset: -2px;
+}
+.photo-coach-panel__toggle-title {
+  flex: 1 1 auto;
+}
+.photo-coach-panel__toggle-view {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--cn-moss-bright, #9dcea6);
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--cn-moss, #8fbc8f) 35%, transparent);
+}
+.photo-coach-panel__chevron {
+  opacity: 0.7;
+  font-size: 0.85rem;
+}
+.photo-coach-panel__body {
+  padding: 0 0.85rem 0.9rem;
+  border-top: 1px solid color-mix(in srgb, #fff 8%, transparent);
+}
+.photo-coach-panel__body[hidden] {
+  display: none !important;
+}
+.photo-coach-panel__policy {
+  margin: 0.65rem 0 0.55rem;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--cn-muted, #a8b5a8);
+}
+.photo-coach-panel__checklist {
+  margin: 0 0 0.75rem;
+  padding: 0 0 0 1.1rem;
+  font-size: 0.84rem;
+  line-height: 1.4;
+  color: var(--cn-cream, #f3f0e6);
+}
+.photo-coach-panel__checklist li {
+  margin-bottom: 0.3rem;
+}
+.photo-coach-panel__examples {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+  margin-bottom: 0.7rem;
+}
+@media (max-width: 420px) {
+  .photo-coach-panel__examples {
+    grid-template-columns: 1fr;
+  }
+}
+.photo-coach-example {
+  margin: 0;
+  border-radius: 0.75rem;
+  border: 1px solid color-mix(in srgb, #fff 10%, transparent);
+  background: color-mix(in srgb, #fff 4%, transparent);
+  overflow: hidden;
+}
+.photo-coach-example--good {
+  border-color: color-mix(in srgb, var(--cn-moss, #8fbc8f) 45%, transparent);
+}
+.photo-coach-example--bad {
+  border-color: color-mix(in srgb, #e08a6a 40%, transparent);
+}
+.photo-coach-frame {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  display: grid;
+  place-items: center;
+  background:
+    linear-gradient(145deg, color-mix(in srgb, #1a221a 90%, #000), #0c100c);
+  overflow: hidden;
+}
+.photo-coach-frame__thumb {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.photo-coach-frame__wire {
+  display: block;
+  width: 72%;
+  height: 62%;
+  border-radius: 0.55rem;
+  border: 1.5px dashed color-mix(in srgb, var(--cn-moss-bright, #9dcea6) 55%, transparent);
+  background: color-mix(in srgb, var(--cn-moss, #8fbc8f) 12%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, #fff 6%, transparent);
+}
+/* CSS wireframe variants (no webp required) */
+.photo-coach-frame--hymenium-close .photo-coach-frame__wire {
+  width: 78%;
+  height: 70%;
+  border-radius: 50% 50% 42% 42%;
+  border-style: solid;
+  border-color: color-mix(in srgb, var(--cn-moss-bright, #9dcea6) 70%, #fff);
+}
+.photo-coach-frame--topdown-far .photo-coach-frame__wire {
+  width: 28%;
+  height: 24%;
+  border-radius: 50%;
+  opacity: 0.55;
+  border-color: color-mix(in srgb, #e08a6a 70%, #fff);
+}
+.photo-coach-frame--full-profile .photo-coach-frame__wire {
+  width: 36%;
+  height: 78%;
+  border-radius: 40% 40% 18% 18% / 28% 28% 12% 12%;
+  border-style: solid;
+}
+.photo-coach-frame--cap-only .photo-coach-frame__wire {
+  width: 70%;
+  height: 32%;
+  border-radius: 50% 50% 20% 20%;
+  margin-top: -20%;
+  border-color: color-mix(in srgb, #e08a6a 70%, #fff);
+}
+.photo-coach-frame--context-wide .photo-coach-frame__wire {
+  width: 88%;
+  height: 48%;
+  border-radius: 0.4rem;
+  border-style: solid;
+  opacity: 0.9;
+}
+.photo-coach-frame--no-context .photo-coach-frame__wire {
+  width: 92%;
+  height: 88%;
+  border-radius: 0.35rem;
+  border-color: color-mix(in srgb, #e08a6a 65%, #fff);
+}
+.photo-coach-frame--macro-ring .photo-coach-frame__wire {
+  width: 48%;
+  height: 48%;
+  border-radius: 50%;
+  border-style: double;
+  border-width: 3px;
+}
+.photo-coach-frame--shadow-blur .photo-coach-frame__wire {
+  width: 55%;
+  height: 55%;
+  border-radius: 40%;
+  opacity: 0.35;
+  filter: blur(1.5px);
+  border-color: color-mix(in srgb, #e08a6a 60%, #fff);
+}
+.photo-coach-frame__badge {
+  position: absolute;
+  top: 0.35rem;
+  left: 0.35rem;
+  z-index: 1;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.15rem 0.4rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, #000 55%, transparent);
+  color: #fff;
+}
+.photo-coach-example--good .photo-coach-frame__badge {
+  background: color-mix(in srgb, var(--cn-moss, #6f9f6f) 85%, #000);
+}
+.photo-coach-example--bad .photo-coach-frame__badge {
+  background: color-mix(in srgb, #b85a40 85%, #000);
+}
+.photo-coach-example__caption {
+  margin: 0;
+  padding: 0.4rem 0.5rem 0.5rem;
+  font-size: 0.72rem;
+  line-height: 1.35;
+  color: var(--cn-muted, #a8b5a8);
+}
+.photo-coach-panel__hints {
+  margin: 0 0 0.65rem;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.photo-coach-hint {
+  margin: 0;
+  padding: 0.45rem 0.6rem;
+  border-radius: 0.55rem;
+  font-size: 0.8rem;
+  line-height: 1.35;
+  border: 1px solid color-mix(in srgb, #fff 10%, transparent);
+  background: color-mix(in srgb, #fff 5%, transparent);
+  color: var(--cn-cream, #f3f0e6);
+}
+.photo-coach-hint--warn {
+  border-color: color-mix(in srgb, #e0b060 40%, transparent);
+  background: color-mix(in srgb, #e0b060 12%, transparent);
+}
+.photo-coach-hint--info {
+  border-color: color-mix(in srgb, var(--cn-moss, #8fbc8f) 30%, transparent);
+}
+.photo-coach-panel__edu-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.5rem;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--cn-moss-bright, #9dcea6);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+.photo-coach-panel__edu-link:hover {
+  color: #c5e6cb;
+}
+@media (prefers-reduced-motion: reduce) {
+  .photo-coach-frame--shadow-blur .photo-coach-frame__wire {
+    filter: none;
+    opacity: 0.45;
+  }
+}
+
 .page-identify .image-review-section--wizard-clean {
   margin-top: 0.85rem;
   padding: 0.85rem;

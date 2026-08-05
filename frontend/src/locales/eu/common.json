@@ -402,6 +402,43 @@
     "coachTip2": "Llena el encuadre con la seta",
     "coachTip3": "Incluye pie y base",
     "coachTip4": "Más vistas = mejor orientación",
+    "coach": {
+      "title": "Cómo fotografiar esta vista",
+      "panelAria": "Consejos de foto para {{view}}",
+      "policy": "Solo orientación de campo — mejores fotos reducen confusiones, nunca autorizan consumo.",
+      "good": "Bien",
+      "bad": "Mal",
+      "learnMore": "Cómo fotografiar (guía multi-vista)",
+      "hint": {
+        "file_tiny": "Archivo muy pequeño: puede faltar detalle diagnóstico.",
+        "edge_small": "Resolución baja en el lado corto: acércate o usa más megapíxeles.",
+        "aspect_extreme": "Proporción extrema: reencuadra la seta al centro.",
+        "luma_dark": "Imagen muy oscura: busca luz frontal (sin flash cegador).",
+        "luma_bright": "Imagen muy clara: evita contraluz y brillos quemados."
+      },
+      "checklist": {
+        "gills": {
+          "hymenium_visible": "¿Se ven láminas, poros o pliegues del himenio?",
+          "in_focus": "¿Enfoque en el himenio (no en el fondo)?",
+          "not_top_only": "¿El sombrero no tapa todo el inferior?"
+        },
+        "front": {
+          "full_profile": "¿Sombrero + pie + base en el cuadro?",
+          "ring_volva": "¿Anillo/volva visibles si existen?",
+          "side_angle": "¿Ángulo de perfil (no solo desde arriba)?"
+        },
+        "habitat": {
+          "substrate": "¿Suelo, madera o árbol de contexto visibles?",
+          "no_tight_crop": "¿Sin recortar todo el sustrato?",
+          "context_scale": "¿Se entiende dónde crece (paso atrás)?"
+        },
+        "detail": {
+          "macro_diag": "¿Macro de volva, anillo o textura del pie?",
+          "clean_cut": "¿Corte limpio si lo hay (sin probar)?",
+          "never_taste": "Nunca morder ni lamer para «probar»."
+        }
+      }
+    },
     "views": {
       "gills": "Láminas",
       "front": "Sombrero",
