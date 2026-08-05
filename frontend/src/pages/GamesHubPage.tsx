@@ -1,10 +1,10 @@
-/**
- * Games hub — LoLdle-inspired daily board:
- * - one civil day → several modes
- * - foto del día from verified pool
- * - continue CTA → first incomplete daily mode
- * - honest share card (orientation footer · never forage)
- * Educational only · never consumption / never product_unlock.
+﻿/**
+ * Games hub â€” LoLdle-inspired daily board:
+ * - one civil day â†’ several modes
+ * - foto del dÃ­a from verified pool
+ * - continue CTA â†’ first incomplete daily mode
+ * - honest share card (orientation footer Â· never forage)
+ * Educational only Â· never consumption / never product_unlock.
  *
  * T3: await speciesPhotos hydrate before buildVerifiedGamesPool so the
  * verified deck is not empty/thin while photos db.version === 'pending'.
@@ -132,7 +132,7 @@ export function GamesHubPage() {
       locale,
     })
     const result = await shareGameText(text, {
-      title: t('games.shareTitle', { defaultValue: 'VisionSetil · retos del día' }),
+      title: t('games.shareTitle', { defaultValue: 'VisionSetil Â· retos del dÃ­a' }),
     })
     setShareFeedback(shareFeedbackMessage(result, t))
   }, [day, streak.current, locale, t])
@@ -140,11 +140,11 @@ export function GamesHubPage() {
   const continueModeLabel = dailyModeTitle(incompleteMode || continueTarget, locale)
 
   const primaryCtaLabel = boardComplete
-    ? t('games.primaryReplay', { defaultValue: 'Repetir retos del día' })
+    ? t('games.primaryReplay', { defaultValue: 'Repetir retos del dÃ­a' })
     : progress.done === 0
-      ? t('games.primaryStart', { defaultValue: 'Continuar · empezar retos' })
+      ? t('games.primaryStart', { defaultValue: 'Continuar Â· empezar retos' })
       : t('games.primaryContinue', {
-          defaultValue: 'Continuar · {{mode}}',
+          defaultValue: 'Continuar Â· {{mode}}',
           mode: continueModeLabel,
         })
 
@@ -154,12 +154,12 @@ export function GamesHubPage() {
       testId="games-hub-page"
       orientationSticky
       orientationText={t('games.orientation', {
-        defaultValue: 'Solo educación · nunca consumo',
+        defaultValue: 'Solo educaciÃ³n Â· nunca consumo',
       })}
     >
       <header className="cn-page-head cn-page-pad">
         <p className="cn-kicker mkt-kicker">
-          {t('games.kicker', { defaultValue: 'Juegos · diario' })}
+          {t('games.kicker', { defaultValue: 'Juegos Â· diario' })}
         </p>
         <h1 className="cn-page-head__title">
           {t('games.title', { defaultValue: 'Entrena el ojo' })}
@@ -167,14 +167,14 @@ export function GamesHubPage() {
         <p className="cn-page-head__lead">
           {t('games.policyLoldle', {
             defaultValue:
-              'Como LoLdle: varios retos al día, mismos para todos. Solo educación — no identifica setas reales ni autoriza consumo.',
+              'Como LoLdle: varios retos al dÃ­a, mismos para todos. Solo educaciÃ³n â€” no identifica setas reales ni autoriza consumo.',
           })}
         </p>
         <p className="games-hub-day" data-testid="games-hub-day">
-          {t('games.today', { defaultValue: 'Hoy · {{day}}', day })}
+          {t('games.today', { defaultValue: 'Hoy Â· {{day}}', day })}
           {verifiedPool.length > 0 ? (
             <span className="games-hub-day__pool">
-              {' · '}
+              {' Â· '}
               {t('games.verifiedPool', {
                 defaultValue: '{{n}} especies verificadas',
                 n: verifiedPool.length,
@@ -184,7 +184,7 @@ export function GamesHubPage() {
         </p>
       </header>
 
-      {/* Foto del día — LoLdle splash energy */}
+      {/* Foto del dÃ­a â€” LoLdle splash energy */}
       {fotoDelDia ? (
         <section
           className="games-daily-photo cn-page-pad"
@@ -196,7 +196,7 @@ export function GamesHubPage() {
               scientificName={fotoDelDia.taxon}
               slug={fotoDelDia.slug}
               alt={t('games.dailyPhotoAlt', {
-                defaultValue: 'Foto del día (educativa)',
+                defaultValue: 'Foto del dÃ­a (educativa)',
               })}
               variant="detail"
               layout="fill"
@@ -204,12 +204,12 @@ export function GamesHubPage() {
               priority
               quality="display"
               sizes="(max-width: 640px) 100vw, 720px"
-              // games_hub surface: display ≤500px (MEDIA_SURFACE_POLICY)
+              // games_hub surface: display â‰¤500px (MEDIA_SURFACE_POLICY)
             />
             <div className="games-daily-photo__scrim" aria-hidden="true" />
             <div className="games-daily-photo__meta">
               <p className="games-daily-photo__kicker" id="games-daily-photo-title">
-                {t('games.dailyPhotoKicker', { defaultValue: 'Foto del día' })}
+                {t('games.dailyPhotoKicker', { defaultValue: 'Foto del dÃ­a' })}
               </p>
               <p className="games-daily-photo__common">{fotoDelDia.common}</p>
               <p className="games-daily-photo__taxon">
@@ -218,12 +218,11 @@ export function GamesHubPage() {
               <p className="games-daily-photo__hint muted">
                 {t('games.dailyPhotoHint', {
                   defaultValue:
-                    'Cambia cada día · misma para todos · solo orientación',
+                    'Cambia cada dÃ­a Â· misma para todos Â· solo orientaciÃ³n',
                 })}
               </p>
               <LinkButton
                 to={`/enciclopedia/${fotoDelDia.slug}`}
-                skin="cn"
                 variant="ghost"
                 size="sm"
                 data-testid="games-daily-photo-fiche"
@@ -235,7 +234,7 @@ export function GamesHubPage() {
         </section>
       ) : null}
 
-      {/* Daily progress — LoLdle multi-mode board */}
+      {/* Daily progress â€” LoLdle multi-mode board */}
       <section
         className="games-daily-progress cn-glass cn-page-pad"
         data-testid="games-daily-progress"
@@ -244,7 +243,7 @@ export function GamesHubPage() {
         <div className="games-daily-progress__head">
           <strong>
             {t('games.dailyProgress', {
-              defaultValue: 'Retos de hoy · {{done}}/{{total}}',
+              defaultValue: 'Retos de hoy Â· {{done}}/{{total}}',
               done: progress.done,
               total: progress.total,
             })}
@@ -269,7 +268,7 @@ export function GamesHubPage() {
           <div>
             <strong className="games-study-panel__streak-num">{streak.current}</strong>
             <span className="games-study-panel__streak-label">
-              {t('games.streakDays', { defaultValue: 'días seguidos' })}
+              {t('games.streakDays', { defaultValue: 'dÃ­as seguidos' })}
             </span>
           </div>
         </div>
@@ -296,17 +295,16 @@ export function GamesHubPage() {
         {totalActivities === 0 && (
           <p className="games-study-panel__hint">
             {t('games.progressHint', {
-              defaultValue: 'Tu progreso se guarda en este dispositivo. ¡Empieza tu racha!',
+              defaultValue: 'Tu progreso se guarda en este dispositivo. Â¡Empieza tu racha!',
             })}
           </p>
         )}
       </section>
 
-      {/* Primary CTA → first incomplete daily mode (UX-05 continue-path) */}
+      {/* Primary CTA â†’ first incomplete daily mode (UX-05 continue-path) */}
       <div className="games-hub-primary cn-page-pad" data-testid="games-hub-primary">
         <LinkButton
           to={continueTarget.to}
-          skin="cn"
           variant="primary"
           size="lg"
           block
@@ -346,12 +344,12 @@ export function GamesHubPage() {
         <p className="games-hub-primary__hint muted">
           {t('games.primaryDailyHint', {
             defaultValue:
-              'Continuar → primer modo incompleto · misma fecha · solo orientación · nunca recolección',
+              'Continuar â†’ primer modo incompleto Â· misma fecha Â· solo orientaciÃ³n Â· nunca recolecciÃ³n',
           })}
         </p>
       </div>
 
-      {/* Mode grid — LoLdle list of daily challenges */}
+      {/* Mode grid â€” LoLdle list of daily challenges */}
       <ul className="games-hub-grid games-hub-grid--modes cn-page-pad" data-testid="games-daily-modes">
         {modeCards.map((g) => (
           <li key={g.id}>
@@ -403,7 +401,7 @@ export function GamesHubPage() {
               </h2>
               <p className="games-deadly-block__lead">
                 {t('games.deadlyLead', {
-                  defaultValue: 'Estudia estas setas de cerca. Solo orientación.',
+                  defaultValue: 'Estudia estas setas de cerca. Solo orientaciÃ³n.',
                 })}
               </p>
             </div>
@@ -448,7 +446,7 @@ export function GamesHubPage() {
           <Link to="/lookalikes">
             {t('nav.lookalikes', { defaultValue: 'Confusiones' })}
           </Link>
-          <Link to="/educacion">{t('nav.education', { defaultValue: 'Educación' })}</Link>
+          <Link to="/educacion">{t('nav.education', { defaultValue: 'EducaciÃ³n' })}</Link>
           <Link to="/identificar">{t('nav.identify', { defaultValue: 'Identificar' })}</Link>
           <Link to="/setadle">{t('nav.setadle', { defaultValue: 'Todos los modos Setadle' })}</Link>
         </div>
