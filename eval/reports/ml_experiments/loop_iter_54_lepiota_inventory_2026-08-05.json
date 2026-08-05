@@ -1,0 +1,271 @@
+{
+  "loop_iter_id": 54,
+  "slug": "lepiota_inventory",
+  "friction": "Lepiota focus inventory (split counts + holdout + FT focus)",
+  "artifact_stem": "loop_iter_54_lepiota_inventory_2026-08-05",
+  "generated_at": "2026-08-05T21:03:04.569116+00:00",
+  "metrics_label": "[MEASURED]",
+  "status": "measured_ok",
+  "product_unlock": false,
+  "can_auto_unlock": false,
+  "forage_permission": false,
+  "consumption_permission": false,
+  "policy": "orientation_only_never_consume",
+  "lab_only": true,
+  "kaggle_push": false,
+  "baseline_fallback_ok": true,
+  "used_baseline_fallback": true,
+  "eval_protocol": "source_holdout_e20",
+  "provenance": {
+    "checkpoint": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models",
+    "predictions": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models\\test_predictions.npz",
+    "label2idx": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models\\label2idx.json",
+    "deadly_set": "data/industrial_v1/deadly_set.json",
+    "ssot_baseline": "eval/reports/ml_experiments/E20_BASELINE_METRICS_TO_IMPROVE.json",
+    "version": "v20-E20-source-holdout",
+    "train_domain": "fungitastic_plus_soft_non_gbif",
+    "test_domain": "gbif_es_only"
+  },
+  "ece": {
+    "primary": "train_published",
+    "primary_value": 0.18741017924867615,
+    "primary_source": "test_ece_train_published",
+    "claim_train_published": true,
+    "posthoc_separate": true,
+    "posthoc_value": 0.04544782004819755
+  },
+  "kernel_metrics_cited": {
+    "test_map_at_3": 0.8575265177160878,
+    "safety_recall_deadly_at_1": 0.7895348837209303,
+    "safety_recall_deadly_at_3": 0.9217054263565891,
+    "test_ece": 0.18741017924867615,
+    "test_ece_train_published": 0.18741017924867615,
+    "test_ece_posthoc": 0.04544782004819755,
+    "version": "v20-E20-source-holdout"
+  },
+  "ssot_baseline_cited": {
+    "test_map_at_3": 0.8575265177160878,
+    "safety_recall_deadly_at_1": 0.7895348837209303,
+    "safety_recall_deadly_at_3": 0.9217054263565891,
+    "ece_primary": 0.18741017924867615
+  },
+  "global_holdout": {
+    "n_eval": 7385,
+    "top1_all": 0.8032498307379824,
+    "map_at_3_all": 0.8575265177160912
+  },
+  "label_space": {
+    "n_classes": 40,
+    "lepiota_family_taxa": [
+      "Lepiota castanea",
+      "Lepiota cristata",
+      "Lepiota subincarnata"
+    ],
+    "n_lepiota_family": 3,
+    "lepiota_deadly_in_label": [],
+    "focus_list_in_label": [
+      "Lepiota subincarnata",
+      "Lepiota castanea"
+    ],
+    "focus_list_missing_from_label": [
+      "Lepiota brunneoincarnata",
+      "Lepiota josserandii",
+      "Lepiota helveola"
+    ]
+  },
+  "inventory": [
+    {
+      "taxon": "Lepiota castanea",
+      "class_idx": 26,
+      "is_deadly_industrial": false,
+      "is_focus_list": true,
+      "n_train": 20,
+      "n_val": 4,
+      "n_test_obs": 82,
+      "n_holdout": 82,
+      "top1": 0.5487804878048781,
+      "top3": 0.926829268292683,
+      "misses": 37,
+      "top_confusions": [
+        {
+          "pred_taxon": "Lepiota cristata",
+          "pred_idx": 27,
+          "count": 16,
+          "rate": 0.195122
+        },
+        {
+          "pred_taxon": "Armillaria lutea",
+          "pred_idx": 7,
+          "count": 5,
+          "rate": 0.060976
+        },
+        {
+          "pred_taxon": "Laccaria laccata",
+          "pred_idx": 22,
+          "count": 4,
+          "rate": 0.04878
+        },
+        {
+          "pred_taxon": "Trametes versicolor",
+          "pred_idx": 39,
+          "count": 3,
+          "rate": 0.036585
+        },
+        {
+          "pred_taxon": "Amanita virosa",
+          "pred_idx": 6,
+          "count": 3,
+          "rate": 0.036585
+        }
+      ]
+    },
+    {
+      "taxon": "Lepiota cristata",
+      "class_idx": 27,
+      "is_deadly_industrial": false,
+      "is_focus_list": false,
+      "n_train": 87,
+      "n_val": 15,
+      "n_test_obs": 179,
+      "n_holdout": 179,
+      "top1": 0.8770949720670391,
+      "top3": 0.9441340782122905,
+      "misses": 22,
+      "top_confusions": [
+        {
+          "pred_taxon": "Laccaria laccata",
+          "pred_idx": 22,
+          "count": 3,
+          "rate": 0.01676
+        },
+        {
+          "pred_taxon": "Marasmius oreades",
+          "pred_idx": 30,
+          "count": 3,
+          "rate": 0.01676
+        },
+        {
+          "pred_taxon": "Chlorophyllum olivieri",
+          "pred_idx": 9,
+          "count": 3,
+          "rate": 0.01676
+        },
+        {
+          "pred_taxon": "Amanita phalloides",
+          "pred_idx": 4,
+          "count": 2,
+          "rate": 0.011173
+        },
+        {
+          "pred_taxon": "Amanita virosa",
+          "pred_idx": 6,
+          "count": 2,
+          "rate": 0.011173
+        }
+      ]
+    },
+    {
+      "taxon": "Lepiota subincarnata",
+      "class_idx": 28,
+      "is_deadly_industrial": false,
+      "is_focus_list": true,
+      "n_train": 6,
+      "n_val": 1,
+      "n_test_obs": 57,
+      "n_holdout": 57,
+      "top1": 0.0,
+      "top3": 0.47368421052631576,
+      "misses": 57,
+      "top_confusions": [
+        {
+          "pred_taxon": "Lepiota cristata",
+          "pred_idx": 27,
+          "count": 37,
+          "rate": 0.649123
+        },
+        {
+          "pred_taxon": "Armillaria lutea",
+          "pred_idx": 7,
+          "count": 6,
+          "rate": 0.105263
+        },
+        {
+          "pred_taxon": "Amanita virosa",
+          "pred_idx": 6,
+          "count": 4,
+          "rate": 0.070175
+        },
+        {
+          "pred_taxon": "Lepiota castanea",
+          "pred_idx": 26,
+          "count": 3,
+          "rate": 0.052632
+        },
+        {
+          "pred_taxon": "Marasmius oreades",
+          "pred_idx": 30,
+          "count": 2,
+          "rate": 0.035088
+        }
+      ]
+    }
+  ],
+  "ft_focus_candidates": [
+    {
+      "taxon": "Lepiota castanea",
+      "n_train": 20,
+      "n_holdout": 82,
+      "top1": 0.5487804878048781,
+      "top3": 0.926829268292683,
+      "primary_confusion": {
+        "pred_taxon": "Lepiota cristata",
+        "pred_idx": 27,
+        "count": 16,
+        "rate": 0.195122
+      },
+      "reasons": [
+        "holdout_top1_low=0.5487804878048781",
+        "train_test_imbalance"
+      ]
+    },
+    {
+      "taxon": "Lepiota subincarnata",
+      "n_train": 6,
+      "n_holdout": 57,
+      "top1": 0.0,
+      "top3": 0.47368421052631576,
+      "primary_confusion": {
+        "pred_taxon": "Lepiota cristata",
+        "pred_idx": 27,
+        "count": 37,
+        "rate": 0.649123
+      },
+      "reasons": [
+        "holdout_top1_low=0.0",
+        "holdout_top1_zero",
+        "train_starved_n_train=6",
+        "train_test_imbalance"
+      ]
+    }
+  ],
+  "curated_lookalike_pairs_lepiota": [],
+  "e20b_motivation": {
+    "note": "E20b Lepiota FT targets deadly small Lepiota with weak top1 (esp. subincarnata). Inventory valuable on baseline even if E20b delayed.",
+    "priority_taxa": [
+      "Lepiota castanea",
+      "Lepiota subincarnata"
+    ]
+  },
+  "gaps": [
+    "deadly_set_missing_or_empty"
+  ],
+  "honesty": {
+    "metrics_from_predictions_and_files_only": true,
+    "dual_ece_primary_train_published": true,
+    "product_unlock_forced_false": true,
+    "no_invented_metrics": true,
+    "pairs_curated_only": true,
+    "baseline_fallback_ok": true
+  },
+  "note": "Lab inventory for Lepiota FT planning. Fresh timestamp DoD. Orientation only — never consumption. product_unlock=false."
+}

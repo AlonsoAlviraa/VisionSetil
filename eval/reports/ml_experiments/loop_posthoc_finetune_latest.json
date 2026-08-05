@@ -1,0 +1,181 @@
+{
+  "loop_iter_id": 53,
+  "slug": "ece_posthoc",
+  "friction": "ECE dual honesty + posthoc temperature grid (lab-only sidecar)",
+  "artifact_stem": "loop_iter_53_ece_posthoc_2026-08-05",
+  "generated_at": "2026-08-05T21:03:04.059713+00:00",
+  "metrics_label": "[MEASURED]",
+  "status": "measured_ok",
+  "product_unlock": false,
+  "can_auto_unlock": false,
+  "forage_permission": false,
+  "consumption_permission": false,
+  "policy": "orientation_only_never_consume",
+  "lab_only": true,
+  "kaggle_push": false,
+  "eval_protocol": "source_holdout_e20",
+  "provenance": {
+    "checkpoint": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models",
+    "predictions": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models\\test_predictions.npz",
+    "metrics": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models\\metrics.json",
+    "ssot_baseline": "eval/reports/ml_experiments/E20_BASELINE_METRICS_TO_IMPROVE.json",
+    "version": "v20-E20-source-holdout",
+    "train_domain": "fungitastic_plus_soft_non_gbif",
+    "test_domain": "gbif_es_only"
+  },
+  "dual_ece": {
+    "primary": "train_published",
+    "primary_value": 0.18741017924867615,
+    "primary_source": "test_ece_train_published",
+    "claim_train_published": true,
+    "definition_primary": "naive_mean_abs_maxprob_minus_correct (as published test_ece)",
+    "band_primary": "high",
+    "temperature_train": 1.5812190771102905,
+    "posthoc_separate": true,
+    "posthoc_lab_only": true,
+    "posthoc_must_not_replace_primary": true,
+    "posthoc_T_star": 2.899999999999997,
+    "posthoc_objective": "min 15-bin reliability ECE on same holdout logits (optimistic)",
+    "posthoc_ece_binned_15": 0.04544782004819755,
+    "posthoc_ece_naive_at_T_star": 0.2564976358194531,
+    "definition_posthoc_objective": "ece_binned_15",
+    "note": "Primary ECE is train-published only. Posthoc T* search is lab-only and must not replace primary in serve or unlock gates. Binned ECE improvement does not imply naive ECE improvement."
+  },
+  "recomputed": {
+    "at_train_T": {
+      "T": 1.5812190771102905,
+      "ece_naive": 0.18741017820230482,
+      "ece_binned_15": 0.14870422026184088,
+      "top1": 0.8032498307379824,
+      "mean_conf": 0.9519540509998232
+    },
+    "at_posthoc_T_star": {
+      "T": 2.899999999999997,
+      "ece_naive": 0.2564976358194531,
+      "ece_binned_15": 0.04544782004819755,
+      "top1": 0.8032498307379824,
+      "mean_conf": 0.7925723746292545
+    },
+    "stored_probs_ece": {
+      "ece_naive": 0.18741017924867615,
+      "ece_binned_15": 0.14870421949599993,
+      "top1": 0.8032498307379824
+    },
+    "top1_unchanged": true
+  },
+  "temperature": {
+    "train_published": 1.5812190771102905,
+    "posthoc_best_binned": 2.899999999999997,
+    "posthoc_best_naive_T": 1.4000000000000004,
+    "posthoc_best_naive_ece": 0.18660244149990038
+  },
+  "open_set_lab_sidecar": {
+    "conf_thr": 0.74,
+    "margin_thr": 0.05,
+    "entropy_thr": 2.0,
+    "reject_rate": 0.24170616113744076,
+    "acc_keep": 0.8876785714285714,
+    "score": 0.8844226472579553,
+    "stats_reject_rate": 0.24170616113744076,
+    "stats_acc_keep": 0.8876785714285714,
+    "stats_top1_all": 0.8032498307379824,
+    "stats_n": 7385,
+    "stats_n_keep": 5600,
+    "note": "Lab thr fit on softmax(logits/T*); NOT auto-served"
+  },
+  "grid_best_5_by_binned_ece": [
+    {
+      "T": 2.899999999999997,
+      "ece_naive": 0.2564976358194531,
+      "ece_binned_15": 0.04544782004819755,
+      "top1": 0.8032498307379824,
+      "mean_conf": 0.7925723746292545
+    },
+    {
+      "T": 2.799999999999997,
+      "ece_naive": 0.2462881825549679,
+      "ece_binned_15": 0.04806262105458718,
+      "top1": 0.8032498307379824,
+      "mean_conf": 0.8105430933899386
+    },
+    {
+      "T": 2.849999999999997,
+      "ece_naive": 0.25129484780180045,
+      "ece_binned_15": 0.0481231684115152,
+      "top1": 0.8032498307379824,
+      "mean_conf": 0.8016588555297772
+    },
+    {
+      "T": 2.9499999999999966,
+      "ece_naive": 0.2618885808558974,
+      "ece_binned_15": 0.05006455628855512,
+      "top1": 0.8032498307379824,
+      "mean_conf": 0.7832958755522063
+    },
+    {
+      "T": 2.7499999999999973,
+      "ece_naive": 0.24148468552191477,
+      "ece_binned_15": 0.050328646379981606,
+      "top1": 0.8032498307379824,
+      "mean_conf": 0.8192137679134417
+    }
+  ],
+  "kernel_metrics_cited": {
+    "test_ece": 0.18741017924867615,
+    "test_ece_train_published": 0.18741017924867615,
+    "test_ece_posthoc": 0.04544782004819755,
+    "temperature": 1.5812190771102905,
+    "temperature_train": 1.5812190771102905,
+    "temperature_posthoc": 2.899999999999997,
+    "test_map_at_3": 0.8575265177160878,
+    "safety_recall_deadly_at_3": 0.9217054263565891,
+    "version": "v20-E20-source-holdout",
+    "posthoc_finetune_prior": {
+      "method": "scalar_temperature_grid_on_holdout_logits",
+      "T_star": 2.899999999999997,
+      "T_train": 1.5812190771102905,
+      "ece_before": 0.18741017924867615,
+      "ece_after": 0.04544782004819755,
+      "top1_unchanged": true,
+      "primary_fields_unchanged": true,
+      "lab_only": true,
+      "note": "P0: primary test_ece + temperature remain train-published; posthoc is lab-only sidecar (optimistic on same holdout).",
+      "product_unlock": false,
+      "generated": "2026-08-05T08:42:15.406268+00:00"
+    }
+  },
+  "guidance": {
+    "show_confidence": false,
+    "deemphasize_confidence": true,
+    "prefer_open_set_abstain": true,
+    "summary_es": "ECE primary (train-published)=0.18741017924867615 banda=high. Posthoc lab T*=2.899999999999997 ece_binned=0.04544782004819755 (naive@T*=0.2564976358194531). Nunca permiso de consumo.",
+    "summary_en": "Primary ECE (train-published)=0.18741017924867615 band=high. Posthoc lab T*=2.899999999999997 binned_ece=0.04544782004819755 (naive@T*=0.2564976358194531). Never consumption permission."
+  },
+  "residual_actions": [
+    "Keep product_unlock=false (orientation only).",
+    "Cite primary ECE only for serve / model card / quality-gate advisory.",
+    "Never sell posthoc binned ECE as primary confidence reliability.",
+    "Prefer open-set reject / needs_review over forced top-1 when ECE residual high.",
+    "Optional human-reviewed temp scaler rewrite — not this script default."
+  ],
+  "gaps": [
+    "posthoc_T_star_worsens_naive_ece_vs_train_T"
+  ],
+  "honesty": {
+    "metrics_from_predictions_and_files_only": true,
+    "dual_ece_channels": true,
+    "primary_is_train_published_when_provenanced": true,
+    "posthoc_not_primary": true,
+    "product_unlock_forced_false": true,
+    "no_invented_metrics": true,
+    "definitions_labeled": true
+  },
+  "artifacts": {
+    "report_json": "loop_iter_53_ece_posthoc_2026-08-05.json",
+    "report_md": "loop_iter_53_ece_posthoc_2026-08-05.md",
+    "latest_json": "loop_posthoc_finetune_latest.json",
+    "latest_md": "loop_posthoc_finetune_latest.md",
+    "open_set_posthoc_sidecar": "open_set_thresholds_posthoc.json"
+  },
+  "note": "Lab posthoc T + open-set thr fit only. MAP@3/deadly ranking unchanged under scalar T. Never forage. product_unlock=false."
+}
