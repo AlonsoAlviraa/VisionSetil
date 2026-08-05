@@ -1338,6 +1338,49 @@ button[aria-pressed='true'] {
   text-align: center;
 }
 
+.games-hub-primary__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.games-hub-primary__share-fb {
+  margin: 0;
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+/* Post-reveal study strip (Setadle / Wordle / Quiz) — orientation only */
+.game-study-after {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  margin-top: 0.75rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.game-study-after__risk {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.game-study-after__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  align-items: center;
+}
+
+.game-study-after__hint {
+  margin: 0;
+  font-size: 0.78rem;
+}
+
 .games-hub-card--featured {
   box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.35), 0 12px 28px rgba(0, 0, 0, 0.28);
 }

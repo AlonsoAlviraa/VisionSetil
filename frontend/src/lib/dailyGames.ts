@@ -275,6 +275,31 @@ export function dailyGamesCompletion(
   }
 }
 
+/**
+ * First daily mode not yet marked done (LoLdle continue-path).
+ * When the board is complete, returns null so the hub can switch to "Repetir".
+ */
+export function firstIncompleteDailyMode(
+  day = gamesDayKey(),
+): DailyGameModeDef | null {
+  const s = readDailyGamesProgress(day)
+  return DAILY_GAME_MODES.find((m) => !s.done[m.id]) ?? null
+}
+
+/** True when every DAILY_GAME_MODES entry is marked done for the day. */
+export function isDailyBoardComplete(day = gamesDayKey()): boolean {
+  const { done, total } = dailyGamesCompletion(day)
+  return total > 0 && done >= total
+}
+
+/**
+ * Hub primary CTA target: first incomplete mode, or first mode for replay.
+ * Always a real route from DAILY_GAME_MODES (never a bare product_unlock).
+ */
+export function continueDailyPath(day = gamesDayKey()): DailyGameModeDef {
+  return firstIncompleteDailyMode(day) ?? DAILY_GAME_MODES[0]
+}
+
 function firstCommon(c: CatalogSpecies, locale = 'es'): string | null {
   const list = commonsForLocale(c, locale)
   for (const raw of list) {

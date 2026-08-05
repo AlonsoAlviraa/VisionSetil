@@ -2,17 +2,18 @@
  * Games hub — LoLdle-inspired daily board:
  * - one civil day → several modes
  * - foto del día from verified pool
- * - progress chips per mode
- * Educational only · never consumption.
+ * - continue CTA → first incomplete daily mode
+ * - honest share card (orientation footer · never forage)
+ * Educational only · never consumption / never product_unlock.
  *
  * T3: await speciesPhotos hydrate before buildVerifiedGamesPool so the
  * verified deck is not empty/thin while photos db.version === 'pending'.
  */
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { SpeciesImage } from '../components/SpeciesImage'
-import { Icon, LinkButton, PageShell } from '../components/ui'
+import { Button, Icon, LinkButton, PageShell } from '../components/ui'
 import { useSpeciesCatalog } from '../hooks/useSpeciesCatalog'
 import { readStudyStreak, readStudyStats } from '../lib/studyBadges'
 import { HIGH_SEARCH_TAXA } from '../lib/encyclopediaPopularity'
@@ -24,14 +25,21 @@ import {
 } from '../lib/speciesImageService'
 import {
   buildVerifiedGamesPool,
+  continueDailyPath,
   DAILY_GAME_MODES,
   dailyGamesCompletion,
+  firstIncompleteDailyMode,
   gamesDayKey,
+  isDailyBoardComplete,
   pickDailyPhotoSpecies,
   pickDailySpeciesForMode,
   readDailyGamesProgress,
   type DailyGameModeId,
 } from '../lib/dailyGames'
+import {
+  buildDailyBoardShareCard,
+  shareGameText,
+} from '../lib/gameShare'
 
 function useDeadlyHighlights() {
   const { catalog } = useSpeciesCatalog()
@@ -89,6 +97,10 @@ export function GamesHubPage() {
 
   const progress = useMemo(() => dailyGamesCompletion(day), [day])
   const doneMap = useMemo(() => readDailyGamesProgress(day).done, [day])
+  const boardComplete = useMemo(() => isDailyBoardComplete(day), [day])
+  const continueTarget = useMemo(() => continueDailyPath(day), [day])
+  const incompleteMode = useMemo(() => firstIncompleteDailyMode(day), [day])
+  const [shareFeedback, setShareFeedback] = useState<string | null>(null)
 
   const modeCards = useMemo(() => {
     return DAILY_GAME_MODES.map((m) => {
@@ -110,6 +122,33 @@ export function GamesHubPage() {
 
   const totalActivities =
     stats.quizSessions + stats.setadleWins + stats.lookalikeCompares + stats.encyclopediaViews
+
+  const onShareBoard = useCallback(async () => {
+    const text = buildDailyBoardShareCard({
+      day,
+      streak: streak.current,
+      locale,
+    })
+    const result = await shareGameText(text, {
+      title: t('games.shareTitle', { defaultValue: 'VisionSetil · retos del día' }),
+    })
+    if (result === 'shared') {
+      setShareFeedback(t('games.shareDone', { defaultValue: 'Compartido' }))
+    } else if (result === 'copied') {
+      setShareFeedback(t('games.shareCopied', { defaultValue: 'Tarjeta copiada' }))
+    } else {
+      setShareFeedback(t('games.shareFailed', { defaultValue: 'No se pudo compartir' }))
+    }
+  }, [day, streak.current, locale, t])
+
+  const primaryCtaLabel = boardComplete
+    ? t('games.primaryReplay', { defaultValue: 'Repetir retos del día' })
+    : progress.done === 0
+      ? t('games.primaryStart', { defaultValue: 'Continuar · empezar retos' })
+      : t('games.primaryContinue', {
+          defaultValue: 'Continuar · {{mode}}',
+          mode: incompleteMode?.titleEs || continueTarget.titleEs,
+        })
 
   return (
     <PageShell
@@ -265,25 +304,51 @@ export function GamesHubPage() {
         )}
       </section>
 
-      {/* Primary CTA → first incomplete daily mode (or quiz) */}
+      {/* Primary CTA → first incomplete daily mode (UX-05 continue-path) */}
       <div className="games-hub-primary cn-page-pad" data-testid="games-hub-primary">
         <LinkButton
-          to={modeCards.find((m) => !m.done)?.to || '/reto'}
+          to={continueTarget.to}
           skin="cn"
           variant="primary"
           size="lg"
           block
           className="games-hub-primary__cta"
           data-testid="games-hub-primary-reto"
+          data-continue-mode={continueTarget.id}
         >
           <Icon name="emoji_events" size="md" aria-hidden="true" />
-          {t('games.primaryDaily', {
-            defaultValue: progress.done === 0 ? 'Empezar retos del día' : 'Seguir retos del día',
-          })}
+          {primaryCtaLabel}
         </LinkButton>
+        <div className="games-hub-primary__row">
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => void onShareBoard()}
+            data-testid="games-hub-share"
+          >
+            <Icon name="share" size="sm" aria-hidden="true" />
+            {t('games.shareBoard', { defaultValue: 'Compartir tablero' })}
+          </Button>
+          <LinkButton
+            to="/identificar"
+            skin="cn"
+            variant="ghost"
+            size="sm"
+            data-testid="games-hub-identify-secondary"
+          >
+            {t('games.identifyField', { defaultValue: 'Identificar en campo' })}
+          </LinkButton>
+        </div>
+        {shareFeedback ? (
+          <p className="games-hub-primary__share-fb muted" role="status" data-testid="games-hub-share-fb">
+            {shareFeedback}
+          </p>
+        ) : null}
         <p className="games-hub-primary__hint muted">
           {t('games.primaryDailyHint', {
-            defaultValue: 'Varios modos · misma fecha · solo educación',
+            defaultValue:
+              'Continuar → primer modo incompleto · misma fecha · solo orientación · nunca recolección',
           })}
         </p>
       </div>

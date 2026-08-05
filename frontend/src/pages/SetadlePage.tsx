@@ -40,6 +40,11 @@ import {
 } from '../lib/entitlements'
 import { ProPlanBanner } from '../components/ProPlanBanner'
 import { markDailyGameDone, type DailyGameModeId } from '../lib/dailyGames'
+import {
+  buildSetadleShareCard,
+  shareGameText,
+} from '../lib/gameShare'
+import { getRiskMeta } from '../lib/riskLabels'
 import { recordStudyActivity } from '../lib/studyBadges'
 import { StudyBadgesPanel } from '../components/StudyBadgesPanel'
 
@@ -112,6 +117,7 @@ export function SetadlePage() {
   const [dailyDone, setDailyDone] = useState(false)
   const [lost, setLost] = useState(false)
   const [autoNextIn, setAutoNextIn] = useState<number | null>(null)
+  const [shareFeedback, setShareFeedback] = useState<string | null>(null)
   const searchInputRef = useRef<HTMLInputElement>(null)
 
   /** Classic-style modes: max attempts then auto-next (Wordle rhythm). */
@@ -733,6 +739,49 @@ export function SetadlePage() {
                   })}
                 </p>
               )}
+              <div className="game-study-after" data-testid="setadle-habitat-study-after">
+                <div className="game-study-after__actions">
+                  <LinkButton
+                    to="/lookalikes"
+                    variant="secondary"
+                    size="sm"
+                    data-testid="setadle-habitat-study-lookalikes"
+                  >
+                    {t('nav.lookalikes', { defaultValue: 'Confusiones' })}
+                  </LinkButton>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    data-testid="setadle-habitat-share"
+                    onClick={() => {
+                      const text = buildSetadleShareCard({
+                        won: true,
+                        modeTitle: 'Setadle · Hábitat',
+                        locale,
+                      })
+                      void shareGameText(text, {
+                        title: t('setadle.shareTitle', { defaultValue: 'VisionSetil Setadle' }),
+                      }).then((r) => {
+                        setShareFeedback(
+                          r === 'shared'
+                            ? t('games.shareDone', { defaultValue: 'Compartido' })
+                            : r === 'copied'
+                              ? t('games.shareCopied', { defaultValue: 'Tarjeta copiada' })
+                              : t('games.shareFailed', { defaultValue: 'No se pudo compartir' }),
+                        )
+                      })
+                    }}
+                  >
+                    {t('games.share', { defaultValue: 'Compartir' })}
+                  </Button>
+                </div>
+                {shareFeedback ? (
+                  <p className="muted game-study-after__hint" role="status">
+                    {shareFeedback}
+                  </p>
+                ) : null}
+              </div>
               <div className="setadle-win__actions">
                 {playKind === 'unlimited' && (
                   <Button
@@ -743,6 +792,7 @@ export function SetadlePage() {
                       setHabitatKey((k) => k + 1)
                       setWon(false)
                       setAutoNextIn(null)
+                      setShareFeedback(null)
                     }}
                   >
                     {t('setadle.anotherRound', { defaultValue: 'Otra partida' })}
@@ -898,10 +948,68 @@ export function SetadlePage() {
                   })}
                 </p>
               )}
+              {/* UX-05 post-reveal: RiskChip + Confusiones study CTAs (orientation only) */}
+              <div className="game-study-after" data-testid="setadle-study-after">
+                <div className="game-study-after__risk">
+                  <RiskChip risk={secret.risk_raw || secret.risk} />
+                  <span className="muted game-study-after__hint">
+                    {t('setadle.riskStudyHint', {
+                      defaultValue: 'Riesgo de estudio · nunca consumo',
+                    })}
+                  </span>
+                </div>
+                <div className="game-study-after__actions">
+                  <LinkButton
+                    to={`/lookalikes?focus=${encodeURIComponent(secret.slug)}`}
+                    variant="secondary"
+                    size="sm"
+                    data-testid="setadle-study-lookalikes"
+                  >
+                    {t('nav.lookalikes', { defaultValue: 'Confusiones' })}
+                  </LinkButton>
+                  <LinkButton to={`/enciclopedia/${secret.slug}`} variant="ghost" size="sm">
+                    {t('setadle.openFiche', { defaultValue: 'Ver ficha' })}
+                  </LinkButton>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    data-testid="setadle-share"
+                    onClick={() => {
+                      const riskMeta = getRiskMeta(secret.risk_raw || secret.risk)
+                      const text = buildSetadleShareCard({
+                        won,
+                        guesses: guesses.length,
+                        maxGuesses: MAX_NAME_GUESSES,
+                        modeTitle: `Setadle · ${mode || 'classic'}`,
+                        common: secret.common,
+                        taxon: secret.taxon,
+                        riskShort: riskMeta.short,
+                        locale,
+                      })
+                      void shareGameText(text, {
+                        title: t('setadle.shareTitle', { defaultValue: 'VisionSetil Setadle' }),
+                      }).then((r) => {
+                        setShareFeedback(
+                          r === 'shared'
+                            ? t('games.shareDone', { defaultValue: 'Compartido' })
+                            : r === 'copied'
+                              ? t('games.shareCopied', { defaultValue: 'Tarjeta copiada' })
+                              : t('games.shareFailed', { defaultValue: 'No se pudo compartir' }),
+                        )
+                      })
+                    }}
+                  >
+                    {t('games.share', { defaultValue: 'Compartir' })}
+                  </Button>
+                </div>
+                {shareFeedback ? (
+                  <p className="muted game-study-after__hint" role="status">
+                    {shareFeedback}
+                  </p>
+                ) : null}
+              </div>
               <div className="setadle-win__actions">
-                <LinkButton to={`/enciclopedia/${secret.slug}`} variant="ghost">
-                  {t('setadle.openFiche', { defaultValue: 'Ver ficha' })}
-                </LinkButton>
                 <Button
                   type="button"
                   variant="primary"
@@ -914,6 +1022,7 @@ export function SetadlePage() {
                     setLost(false)
                     setDailyDone(false)
                     setAutoNextIn(null)
+                    setShareFeedback(null)
                   }}
                 >
                   {t('setadle.nextNow', { defaultValue: 'Siguiente ya' })}

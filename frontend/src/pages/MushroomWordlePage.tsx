@@ -27,6 +27,11 @@ import {
 } from '../lib/mushroomWordle'
 import { scientificNameToSlug } from '../lib/slug'
 import { markDailyGameDone } from '../lib/dailyGames'
+import {
+  buildWordleShareCard,
+  shareGameText,
+} from '../lib/gameShare'
+import { getRiskMeta } from '../lib/riskLabels'
 
 type PlayKind = 'daily' | 'streak'
 
@@ -52,6 +57,7 @@ export function MushroomWordlePage() {
   const [round, setRound] = useState(0)
   const [countdown, setCountdown] = useState<number | null>(null)
   const [stats, setStats] = useState({ won: 0, lost: 0 })
+  const [shareFeedback, setShareFeedback] = useState<string | null>(null)
 
   useEffect(() => {
     let cancel = false
@@ -451,6 +457,64 @@ export function MushroomWordlePage() {
               <em>{secret.taxon}</em>
             </p>
             <RiskChip risk={secret.risk_label} />
+            {/* UX-05 post-reveal study CTAs */}
+            <div className="game-study-after" data-testid="wordle-study-after">
+              <div className="game-study-after__actions">
+                <LinkButton
+                  to={`/lookalikes?focus=${encodeURIComponent(
+                    secret.slug || scientificNameToSlug(secret.taxon),
+                  )}`}
+                  variant="secondary"
+                  size="sm"
+                  data-testid="wordle-study-lookalikes"
+                >
+                  {t('nav.lookalikes', { defaultValue: 'Confusiones' })}
+                </LinkButton>
+                <LinkButton
+                  to={`/enciclopedia/${secret.slug || scientificNameToSlug(secret.taxon)}`}
+                  variant="ghost"
+                  size="sm"
+                >
+                  {t('wordle.openFiche', { defaultValue: 'Ver ficha' })}
+                </LinkButton>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  data-testid="wordle-share"
+                  onClick={() => {
+                    const riskMeta = getRiskMeta(secret.risk_label)
+                    const text = buildWordleShareCard({
+                      won: phase === 'won',
+                      guesses: rows.length,
+                      maxGuesses: WORDLE_MAX_GUESSES,
+                      common: secret.common,
+                      taxon: secret.taxon,
+                      riskShort: riskMeta.short,
+                      locale,
+                    })
+                    void shareGameText(text, {
+                      title: t('wordle.shareTitle', { defaultValue: 'VisionSetil Wordle' }),
+                    }).then((r) => {
+                      setShareFeedback(
+                        r === 'shared'
+                          ? t('games.shareDone', { defaultValue: 'Compartido' })
+                          : r === 'copied'
+                            ? t('games.shareCopied', { defaultValue: 'Tarjeta copiada' })
+                            : t('games.shareFailed', { defaultValue: 'No se pudo compartir' }),
+                      )
+                    })
+                  }}
+                >
+                  {t('games.share', { defaultValue: 'Compartir' })}
+                </Button>
+              </div>
+              {shareFeedback ? (
+                <p className="muted game-study-after__hint" role="status">
+                  {shareFeedback}
+                </p>
+              ) : null}
+            </div>
             <p className="wordle-reveal__next">
               {countdown != null && countdown > 0
                 ? t('wordle.nextIn', {
@@ -464,18 +528,13 @@ export function MushroomWordlePage() {
                 type="button"
                 variant="primary"
                 data-testid="wordle-next-now"
-                onClick={() =>
+                onClick={() => {
+                  setShareFeedback(null)
                   startRound('streak', [...recent, secret.answer])
-                }
+                }}
               >
                 {t('wordle.nextNowBtn', { defaultValue: 'Siguiente ya' })}
               </Button>
-              <LinkButton
-                to={`/enciclopedia/${secret.slug || scientificNameToSlug(secret.taxon)}`}
-                variant="ghost"
-              >
-                {t('wordle.openFiche', { defaultValue: 'Ver ficha' })}
-              </LinkButton>
             </div>
             <p className="wordle-safety">
               {t('wordle.safety', {
