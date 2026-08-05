@@ -180,15 +180,15 @@ def resolve_ece_primary(
         temp_train = _f(metrics.get("temperature"))
         temp_train_source = "temperature" if temp_train is not None else None
 
+    # S1 honesty: never synthesize test_ece_train_published when kernel lacked the key.
+    # claim_train_published + primary_source carry kernel-path provenance instead.
     return {
         "primary": primary_label,
         "primary_value": primary_value,
         "primary_source": primary_source,
         "claim_train_published": claim,
         "test_ece": ece_raw,
-        "test_ece_train_published": ece_train_pub if ece_train_pub is not None else (
-            primary_value if claim else None
-        ),
+        "test_ece_train_published": ece_train_pub,  # only if present on metrics; never backfill
         "posthoc_separate": True,
         "posthoc_value": ece_posthoc,
         "test_ece_posthoc": ece_posthoc,
@@ -198,10 +198,59 @@ def resolve_ece_primary(
         "gaps": gaps,
         "note": (
             "Primary ECE is train-published only with explicit provenance "
-            "(test_ece_train_published, flag, or kernel train metrics pull). "
+            "(test_ece_train_published, flag, or kernel train metrics pull via primary_source). "
+            "test_ece_train_published is never synthesized when absent from metrics.json. "
             "Posthoc temperature search is lab-only and must not replace primary."
         ),
     }
+
+
+# Known MO / iNat source aliases (exact token match after normalize; N1)
+_MO_INAT_SOURCE_ALIASES = frozenset(
+    {
+        "mo",
+        "mushroom_observer",
+        "mushroom-observer",
+        "inat",
+        "inaturalist",
+        "i_naturalist",
+        "i-naturalist",
+    }
+)
+
+
+def _normalize_source_token(s: str) -> str:
+    return str(s).strip().lower().replace("-", "_").replace(" ", "_")
+
+
+def is_mo_inat_source(source_key: str) -> bool:
+    """True iff source_key is a known MO/iNat alias (exact token, not substring)."""
+    tok = _normalize_source_token(source_key)
+    if tok in _MO_INAT_SOURCE_ALIASES:
+        return True
+    # allow dotted / path-ish keys ending with a known alias (e.g. train.mo)
+    parts = [p for p in tok.replace(".", "_").split("_") if p]
+    if not parts:
+        return False
+    # require last segment or full rejoin of last two in alias set — avoid "demo" / "common"
+    if parts[-1] in _MO_INAT_SOURCE_ALIASES:
+        return True
+    if len(parts) >= 2 and f"{parts[-2]}_{parts[-1]}" in _MO_INAT_SOURCE_ALIASES:
+        return True
+    return False
+
+
+def runtime_train_domain_label(train_src: dict[str, int]) -> str | None:
+    """Derive runtime train domain from observation source counts (measured reality)."""
+    if not train_src:
+        return None
+    # drop non-count noise
+    keys = sorted(k for k, n in train_src.items() if k != "non_dict_row" and int(n or 0) > 0)
+    if not keys:
+        return None
+    if len(keys) == 1:
+        return f"{keys[0]}_only"
+    return "+".join(keys)
 
 
 def _artifact_presence(models_dir: Path) -> dict[str, Any]:
@@ -366,28 +415,49 @@ def run_suite(
         "test": test_src,
     }
 
-    # E20c-specific honesty: MO+iNat claimed but may be empty in train
-    mo_inat_markers = ("mo", "mushroom_observer", "inat", "inaturalist")
+    # E20c-specific honesty: MO+iNat claimed but may be empty in train (exact aliases; N1)
     train_keys = set(train_src.keys())
-    mo_inat_in_train = sorted(k for k in train_keys if any(m in k for m in mo_inat_markers))
+    mo_inat_in_train = sorted(k for k in train_keys if is_mo_inat_source(k))
     claimed_mo_inat = False
     sc = metrics.get("subsample_config") if isinstance(metrics.get("subsample_config"), dict) else {}
     sources_train = sc.get("sources_train") if isinstance(sc.get("sources_train"), list) else []
-    if any(
-        any(m in str(s).lower() for m in mo_inat_markers) for s in sources_train
-    ) or "mo_inat" in str(eval_protocol or "").lower() or "mo-inat" in str(version or "").lower():
+    if any(is_mo_inat_source(str(s)) for s in sources_train):
         claimed_mo_inat = True
-    if claimed_mo_inat and not mo_inat_in_train:
+    # protocol / version markers use underscore or hyphen form (not bare substring "mo")
+    proto_l = str(eval_protocol or "").lower()
+    ver_l = str(version or "").lower()
+    if "mo_inat" in proto_l or "mo-inat" in proto_l or "mo_inat" in ver_l or "mo-inat" in ver_l:
+        claimed_mo_inat = True
+    train_mo_inat_obs = sum(int(train_src.get(k, 0) or 0) for k in mo_inat_in_train)
+    if claimed_mo_inat and train_mo_inat_obs == 0:
         gaps.append("mo_inat_claimed_but_zero_train_obs")
     checks["mo_inat"] = {
         "claimed_in_protocol_or_config": claimed_mo_inat,
         "train_source_keys_matching": mo_inat_in_train,
-        "train_mo_inat_obs": sum(train_src.get(k, 0) for k in mo_inat_in_train),
+        "train_mo_inat_obs": train_mo_inat_obs,
         "note": (
             "If claimed but zero, suite still runs on available FT+GBIF metrics; "
             "do not invent MO+iNat uplift."
         ),
     }
+
+    # S3: dual-write claimed vs runtime train domain (do not let claim string look measured)
+    train_domain_claimed = metrics.get("train_domain")
+    train_domain_runtime = runtime_train_domain_label(train_src)
+    checks["train_domain"] = {
+        "claimed": train_domain_claimed,
+        "runtime": train_domain_runtime,
+        "source_counts_train": train_src,
+    }
+    if (
+        train_domain_claimed
+        and train_domain_runtime
+        and "mo" in str(train_domain_claimed).lower()
+        and train_domain_runtime == "fungitastic_only"
+    ):
+        # informative only; mo_inat gap already covers uplift honesty
+        if "train_domain_claim_vs_runtime_mismatch" not in gaps:
+            gaps.append("train_domain_claim_vs_runtime_mismatch")
 
     leak_hits = 0
     for block in (split_check.get("leaks") or {}, disjoint.get("leaks") or {}):
@@ -479,7 +549,10 @@ def run_suite(
         "version": version,
         "eval_protocol": eval_protocol,
         "test_domain": metrics.get("test_domain"),
-        "train_domain": metrics.get("train_domain"),
+        # keep kernel claim for provenance, but dual-write runtime (S3)
+        "train_domain": train_domain_claimed,
+        "train_domain_claimed": train_domain_claimed,
+        "train_domain_runtime": train_domain_runtime,
         "measured": measured,
         "ece": {
             "primary": ece["primary"],
@@ -487,6 +560,7 @@ def run_suite(
             "primary_source": ece["primary_source"],
             "claim_train_published": ece["claim_train_published"],
             "test_ece": ece["test_ece"],
+            # null when kernel lacked the key — do not synthesize (S1)
             "test_ece_train_published": ece["test_ece_train_published"],
             "posthoc_separate": True,
             "posthoc_value": ece["posthoc_value"],
@@ -556,7 +630,9 @@ def render_md(report: dict[str, Any]) -> str:
         "",
         f"Source: `{report.get('source_metrics_path')}`  ",
         f"version: `{report.get('version')}` · protocol: `{report.get('eval_protocol')}`  ",
-        f"train_domain: `{report.get('train_domain')}` · test_domain: `{report.get('test_domain')}`",
+        f"train_domain_claimed: `{report.get('train_domain_claimed')}`  ",
+        f"train_domain_runtime: `{report.get('train_domain_runtime')}`  ",
+        f"test_domain: `{report.get('test_domain')}`",
         "",
         "| Metric | [MEASURED] |",
         "|--------|------------|",
@@ -568,6 +644,7 @@ def render_md(report: dict[str, Any]) -> str:
         f"| ECE posthoc (lab-only) | {json.dumps(e.get('posthoc_value')) if e.get('posthoc_value') is not None else 'n/a'} |",
         f"| claim_train_published | `{e.get('claim_train_published')}` |",
         f"| primary_source | `{e.get('primary_source')}` |",
+        f"| test_ece_train_published (kernel key only) | {json.dumps(e.get('test_ece_train_published')) if e.get('test_ece_train_published') is not None else 'null'} |",
         "",
         "### Soft gates (advisory only)",
         "",
@@ -578,7 +655,9 @@ def render_md(report: dict[str, Any]) -> str:
         "## Dual ECE honesty",
         "",
         f"- **Primary:** `{e.get('primary')}` = `{e.get('primary_value')}` "
-        f"(source=`{e.get('primary_source')}`)",
+        f"(source=`{e.get('primary_source')}`, claim_train_published=`{e.get('claim_train_published')}`)",
+        f"- **test_ece_train_published key:** `{json.dumps(e.get('test_ece_train_published'))}` "
+        f"(null unless present on kernel metrics.json — never backfilled)",
         f"- **Posthoc (separate, no serve):** `{e.get('posthoc_value')}`",
         "",
         "## Checks",
@@ -587,7 +666,7 @@ def render_md(report: dict[str, Any]) -> str:
         f"- split_manifest: `{(report.get('checks') or {}).get('split_manifest', {}).get('status')}`",
         f"- obs_disjoint: `{(report.get('checks') or {}).get('obs_disjoint', {}).get('status')}`",
         f"- source_domains: `{(report.get('checks') or {}).get('source_domains', {}).get('status')}`",
-        f"- mo_inat: `{(report.get('checks') or {}).get('mo_inat')}`",
+        f"- mo_inat: `{json.dumps((report.get('checks') or {}).get('mo_inat'), ensure_ascii=False)}`",
         "",
     ]
     if gaps:
@@ -668,7 +747,9 @@ def main(argv: list[str] | None = None) -> int:
             "version": metrics.get("version") if isinstance(metrics, dict) else None,
             "eval_protocol": metrics.get("eval_protocol") if isinstance(metrics, dict) else None,
             "test_domain": metrics.get("test_domain") if isinstance(metrics, dict) else None,
-            "train_domain": metrics.get("train_domain") if isinstance(metrics, dict) else None,
+            "train_domain": report.get("train_domain"),
+            "train_domain_claimed": report.get("train_domain_claimed"),
+            "train_domain_runtime": report.get("train_domain_runtime"),
             "measured": report.get("measured"),
             "ece": report.get("ece"),
             "soft_gates_advisory": report.get("soft_gates_advisory"),
@@ -681,7 +762,9 @@ def main(argv: list[str] | None = None) -> int:
             "note": (
                 "Snapshot of E20c kernel metrics for git-durable SSOT. "
                 "Full weights under kaggle/kernel_output_v20c are gitignored. "
-                "Primary ECE = train-published; never auto unlock."
+                "Primary ECE claimed train-published via primary_source; "
+                "test_ece_train_published is null unless kernel wrote that key. "
+                "Never auto unlock. train_domain_runtime is measured from obs counts."
             ),
         }
         _write_json(snap_path, snap)

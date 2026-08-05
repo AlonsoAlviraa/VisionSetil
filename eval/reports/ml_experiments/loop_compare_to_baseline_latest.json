@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-05T20:31:51.109394+00:00",
+  "generated_at": "2026-08-05T20:39:43.308580+00:00",
   "status": "compared",
   "policy": "orientation_only_never_consume",
   "product_unlock": false,
@@ -36,6 +36,8 @@
     "eval_protocol": "source_holdout_e20c_mo_inat",
     "test_domain": "gbif_es_only",
     "train_domain": "fungitastic_plus_mo_inat_non_gbif",
+    "train_domain_claimed": "fungitastic_plus_mo_inat_non_gbif",
+    "train_domain_runtime": "fungitastic_only",
     "measured": {
       "test_map_at_3": 0.8572782667569362,
       "safety_recall_deadly_at_1": 0.789922480620155,
@@ -48,9 +50,31 @@
       "primary_value": 0.18942074356203395,
       "primary_source": "kernel_metrics_test_ece_as_train_published",
       "claim_train_published": true,
+      "test_ece_train_published": null,
       "posthoc_separate": true,
       "posthoc_value": null
-    }
+    },
+    "mo_inat": {
+      "claimed_in_protocol_or_config": true,
+      "train_source_keys_matching": [],
+      "train_mo_inat_obs": 0,
+      "note": "If claimed but zero, suite still runs on available FT+GBIF metrics; do not invent MO+iNat uplift."
+    },
+    "source_counts": {
+      "train": {
+        "fungitastic": 5767
+      },
+      "val": {
+        "fungitastic": 1018
+      },
+      "test": {
+        "gbif_es": 7385
+      }
+    },
+    "gaps_from_candidate": [
+      "mo_inat_claimed_but_zero_train_obs",
+      "train_domain_claim_vs_runtime_mismatch"
+    ]
   },
   "deltas": [
     {
@@ -111,23 +135,30 @@
     "note": "Advisory lab signals only. Never product_unlock. MAP improvement is not safety. ECE primary remains train-published."
   },
   "dual_deadly_both_sides": true,
-  "gaps": [],
-  "operator_action": "Compared candidate vs E20 SSOT file. product_unlock=false. Continue lab loop frictions; do not auto-unlock; do not serve posthoc ECE.",
+  "mo_inat_empty_train": true,
+  "gaps": [
+    "mo_inat_claimed_but_zero_train_obs",
+    "train_domain_claim_vs_runtime_mismatch"
+  ],
+  "operator_action": "Compared candidate vs E20 SSOT file. product_unlock=false. Continue lab loop frictions; do not auto-unlock; do not serve posthoc ECE. GAP: MO+iNat claimed but train_mo_inat_obs=0 — metrics ≈ FT-only E20 family; no MO+iNat uplift. Do not cite protocol name as multi-source success.",
   "honesty": {
     "metrics_from_ssot_files_only": true,
     "dual_ece_primary": "train_published_when_proven",
     "posthoc_never_primary": true,
     "product_unlock_forced_false": true,
     "no_invented_metrics": true,
-    "map_is_not_safety": true
+    "map_is_not_safety": true,
+    "mo_inat_gap_resurfaced": true,
+    "test_ece_train_published_not_synthesized": true
   },
   "never": [
     "auto product_unlock=true",
     "sell posthoc ECE as primary",
     "forage or consumption permission",
     "invent metrics",
-    "pick max(MAP) across kernels for serve gate"
+    "pick max(MAP) across kernels for serve gate",
+    "cite MO+iNat multi-source success when train_mo_inat_obs=0"
   ],
   "citation_rule": "Copy full-precision [MEASURED] from baseline/candidate JSON files; do not round in PR titles.",
-  "note": "Lab compare only. Orientation only. product_unlock forced false. Primary ECE channel is train-published; posthoc is separate."
+  "note": "Lab compare only. Orientation only. product_unlock forced false. Primary ECE channel is train-published when claimed; posthoc is separate. Candidate GAPs (including empty MO+iNat) are re-surfaced from suite/snapshot."
 }

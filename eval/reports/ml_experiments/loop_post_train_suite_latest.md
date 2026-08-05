@@ -1,6 +1,6 @@
 # Loop post-train suite (latest)
 
-**Generated:** `2026-08-05T20:31:50.962146+00:00`  
+**Generated:** `2026-08-05T20:39:43.176130+00:00`  
 **Run id:** `e20c`  
 **Status:** `suite_ok_with_gaps`  
 **suite_ok:** `True`  
@@ -17,7 +17,9 @@ Post-train suite complete. Compare vs E20 SSOT with loop_ml_compare_to_baseline.
 
 Source: `kaggle/kernel_output_v20c/models/metrics.json`  
 version: `v20c-E20-mo-inat` · protocol: `source_holdout_e20c_mo_inat`  
-train_domain: `fungitastic_plus_mo_inat_non_gbif` · test_domain: `gbif_es_only`
+train_domain_claimed: `fungitastic_plus_mo_inat_non_gbif`  
+train_domain_runtime: `fungitastic_only`  
+test_domain: `gbif_es_only`
 
 | Metric | [MEASURED] |
 |--------|------------|
@@ -29,6 +31,7 @@ train_domain: `fungitastic_plus_mo_inat_non_gbif` · test_domain: `gbif_es_only`
 | ECE posthoc (lab-only) | n/a |
 | claim_train_published | `True` |
 | primary_source | `kernel_metrics_test_ece_as_train_published` |
+| test_ece_train_published (kernel key only) | null |
 
 ### Soft gates (advisory only)
 
@@ -38,7 +41,8 @@ train_domain: `fungitastic_plus_mo_inat_non_gbif` · test_domain: `gbif_es_only`
 
 ## Dual ECE honesty
 
-- **Primary:** `train_published` = `0.18942074356203395` (source=`kernel_metrics_test_ece_as_train_published`)
+- **Primary:** `train_published` = `0.18942074356203395` (source=`kernel_metrics_test_ece_as_train_published`, claim_train_published=`True`)
+- **test_ece_train_published key:** `null` (null unless present on kernel metrics.json — never backfilled)
 - **Posthoc (separate, no serve):** `None`
 
 ## Checks
@@ -47,11 +51,12 @@ train_domain: `fungitastic_plus_mo_inat_non_gbif` · test_domain: `gbif_es_only`
 - split_manifest: `PASS`
 - obs_disjoint: `PASS`
 - source_domains: `PASS`
-- mo_inat: `{'claimed_in_protocol_or_config': True, 'train_source_keys_matching': [], 'train_mo_inat_obs': 0, 'note': 'If claimed but zero, suite still runs on available FT+GBIF metrics; do not invent MO+iNat uplift.'}`
+- mo_inat: `{"claimed_in_protocol_or_config": true, "train_source_keys_matching": [], "train_mo_inat_obs": 0, "note": "If claimed but zero, suite still runs on available FT+GBIF metrics; do not invent MO+iNat uplift."}`
 
 ## GAPs
 
 - `mo_inat_claimed_but_zero_train_obs`
+- `train_domain_claim_vs_runtime_mismatch`
 
 ---
 

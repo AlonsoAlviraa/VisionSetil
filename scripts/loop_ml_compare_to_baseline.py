@@ -109,9 +109,8 @@ def _extract_measured(blob: dict[str, Any]) -> dict[str, Any]:
         ece_claim = ece_src.get("claim_train_published")
         ece_source = ece_src.get("primary_source")
         ece_posthoc = _f(ece_src.get("posthoc_value") or ece_src.get("test_ece_posthoc"))
+        # S1: never synthesize test_ece_train_published from primary_value
         ece_train_pub = _f(ece_src.get("test_ece_train_published"))
-        if ece_train_pub is None and ece_claim and ece_primary is not None:
-            ece_train_pub = ece_primary
     else:
         ece_train_pub = _f(blob.get("test_ece_train_published"))
         ece_raw = _f(blob.get("test_ece"))
@@ -315,6 +314,43 @@ def compare(
     if not cand.get("ece_claim_train_published"):
         gaps.append("candidate_ece_not_claimed_train_published")
 
+    # S2: re-surface candidate suite/snapshot honesty GAPs (esp. empty MO+iNat)
+    cand_gaps_in = candidate_blob.get("gaps") if isinstance(candidate_blob.get("gaps"), list) else []
+    for g in cand_gaps_in:
+        if isinstance(g, str) and g not in gaps:
+            gaps.append(g)
+
+    mo_inat = candidate_blob.get("mo_inat")
+    if not isinstance(mo_inat, dict):
+        # suite nests under checks.mo_inat
+        checks = candidate_blob.get("checks") if isinstance(candidate_blob.get("checks"), dict) else {}
+        mo_inat = checks.get("mo_inat") if isinstance(checks.get("mo_inat"), dict) else None
+
+    source_counts = candidate_blob.get("source_counts")
+    if not isinstance(source_counts, dict):
+        checks = candidate_blob.get("checks") if isinstance(candidate_blob.get("checks"), dict) else {}
+        source_counts = checks.get("source_counts") if isinstance(checks.get("source_counts"), dict) else None
+
+    train_domain_claimed = (
+        candidate_blob.get("train_domain_claimed")
+        or candidate_blob.get("train_domain")
+        or cand.get("train_domain")
+    )
+    train_domain_runtime = candidate_blob.get("train_domain_runtime")
+
+    mo_inat_empty = False
+    if isinstance(mo_inat, dict):
+        claimed = bool(mo_inat.get("claimed_in_protocol_or_config"))
+        n_mo = mo_inat.get("train_mo_inat_obs")
+        try:
+            n_mo_i = int(n_mo) if n_mo is not None else None
+        except (TypeError, ValueError):
+            n_mo_i = None
+        if claimed and n_mo_i == 0:
+            mo_inat_empty = True
+            if "mo_inat_claimed_but_zero_train_obs" not in gaps:
+                gaps.append("mo_inat_claimed_but_zero_train_obs")
+
     operator_action = (
         "Compared candidate vs E20 SSOT file. product_unlock=false. "
         "Continue lab loop frictions; do not auto-unlock; do not serve posthoc ECE."
@@ -324,6 +360,19 @@ def compare(
             "Candidate shows advisory regression vs E20 SSOT on MAP and/or deadly@3. "
             "Keep product_unlock=false; prefer E20 baseline for serve; investigate train data."
         )
+    if mo_inat_empty or "mo_inat_claimed_but_zero_train_obs" in gaps:
+        operator_action += (
+            " GAP: MO+iNat claimed but train_mo_inat_obs=0 — metrics ≈ FT-only E20 family; "
+            "no MO+iNat uplift. Do not cite protocol name as multi-source success."
+        )
+
+    # ECE primary_source honesty on candidate (kernel path may claim without SSOT key)
+    cand_ece_source = cand.get("ece_primary_source")
+    cand_ece_key = None
+    ece_blob = candidate_blob.get("ece") if isinstance(candidate_blob.get("ece"), dict) else {}
+    if ece_blob:
+        cand_ece_key = ece_blob.get("test_ece_train_published")
+        cand_ece_source = ece_blob.get("primary_source") or cand_ece_source
 
     return {
         "generated_at": _utc_now(),
@@ -363,6 +412,8 @@ def compare(
             "eval_protocol": cand.get("eval_protocol"),
             "test_domain": cand.get("test_domain"),
             "train_domain": cand.get("train_domain"),
+            "train_domain_claimed": train_domain_claimed,
+            "train_domain_runtime": train_domain_runtime,
             "measured": {
                 "test_map_at_3": cand.get("test_map_at_3"),
                 "safety_recall_deadly_at_1": cand.get("safety_recall_deadly_at_1"),
@@ -373,11 +424,15 @@ def compare(
             "ece": {
                 "primary": cand.get("ece_primary_label"),
                 "primary_value": cand.get("ece_primary_value"),
-                "primary_source": cand.get("ece_primary_source"),
+                "primary_source": cand_ece_source,
                 "claim_train_published": cand.get("ece_claim_train_published"),
+                "test_ece_train_published": cand_ece_key,
                 "posthoc_separate": True,
                 "posthoc_value": cand.get("ece_posthoc_value"),
             },
+            "mo_inat": mo_inat,
+            "source_counts": source_counts,
+            "gaps_from_candidate": list(cand_gaps_in) if cand_gaps_in else [],
         },
         "deltas": rows,
         "summary_deltas": {
@@ -391,6 +446,7 @@ def compare(
         },
         "advisory": advisory,
         "dual_deadly_both_sides": dual_ok,
+        "mo_inat_empty_train": mo_inat_empty,
         "gaps": gaps,
         "operator_action": operator_action,
         "honesty": {
@@ -400,6 +456,9 @@ def compare(
             "product_unlock_forced_false": True,
             "no_invented_metrics": True,
             "map_is_not_safety": True,
+            "mo_inat_gap_resurfaced": mo_inat_empty
+            or ("mo_inat_claimed_but_zero_train_obs" in gaps),
+            "test_ece_train_published_not_synthesized": True,
         },
         "never": [
             "auto product_unlock=true",
@@ -407,6 +466,7 @@ def compare(
             "forage or consumption permission",
             "invent metrics",
             "pick max(MAP) across kernels for serve gate",
+            "cite MO+iNat multi-source success when train_mo_inat_obs=0",
         ],
         "citation_rule": (
             "Copy full-precision [MEASURED] from baseline/candidate JSON files; "
@@ -414,7 +474,8 @@ def compare(
         ),
         "note": (
             "Lab compare only. Orientation only. product_unlock forced false. "
-            "Primary ECE channel is train-published; posthoc is separate."
+            "Primary ECE channel is train-published when claimed; posthoc is separate. "
+            "Candidate GAPs (including empty MO+iNat) are re-surfaced from suite/snapshot."
         ),
     }
 
@@ -477,7 +538,15 @@ def render_md(report: dict[str, Any]) -> str:
             f"- Candidate posthoc (lab): `{ce.get('posthoc_value')}`",
             "",
             f"Versions: baseline `{b.get('version')}` · candidate `{c.get('version')}`  ",
-            f"Protocols: baseline `{b.get('eval_protocol')}` · candidate `{c.get('eval_protocol')}`",
+            f"Protocols: baseline `{b.get('eval_protocol')}` · candidate `{c.get('eval_protocol')}`  ",
+            f"Candidate train_domain_claimed: `{c.get('train_domain_claimed')}`  ",
+            f"Candidate train_domain_runtime: `{c.get('train_domain_runtime')}`",
+            "",
+            "## MO+iNat honesty (from candidate suite/snapshot)",
+            "",
+            f"- mo_inat_empty_train: `{report.get('mo_inat_empty_train')}`",
+            f"- mo_inat: `{json.dumps(c.get('mo_inat'), ensure_ascii=False)}`",
+            f"- source_counts: `{json.dumps(c.get('source_counts'), ensure_ascii=False)}`",
             "",
             "## Advisory",
             "",

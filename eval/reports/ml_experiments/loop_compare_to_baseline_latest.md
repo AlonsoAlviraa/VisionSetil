@@ -1,6 +1,6 @@
 # Loop compare to baseline (latest)
 
-**Generated:** `2026-08-05T20:31:51.109394+00:00`  
+**Generated:** `2026-08-05T20:39:43.308580+00:00`  
 **Status:** `compared`  
 **product_unlock:** `False` (forced false)  
 **Policy:** `orientation_only_never_consume`
@@ -10,7 +10,7 @@ Candidate: `eval/reports/ml_experiments/e20c_metrics_snapshot.json`
 
 ## Operator action
 
-Compared candidate vs E20 SSOT file. product_unlock=false. Continue lab loop frictions; do not auto-unlock; do not serve posthoc ECE.
+Compared candidate vs E20 SSOT file. product_unlock=false. Continue lab loop frictions; do not auto-unlock; do not serve posthoc ECE. GAP: MO+iNat claimed but train_mo_inat_obs=0 — metrics ≈ FT-only E20 family; no MO+iNat uplift. Do not cite protocol name as multi-source success.
 
 ## [MEASURED] side-by-side
 
@@ -38,11 +38,24 @@ Compared candidate vs E20 SSOT file. product_unlock=false. Continue lab loop fri
 - Candidate posthoc (lab): `None`
 
 Versions: baseline `v20-E20-source-holdout` · candidate `v20c-E20-mo-inat`  
-Protocols: baseline `source_holdout_e20` · candidate `source_holdout_e20c_mo_inat`
+Protocols: baseline `source_holdout_e20` · candidate `source_holdout_e20c_mo_inat`  
+Candidate train_domain_claimed: `fungitastic_plus_mo_inat_non_gbif`  
+Candidate train_domain_runtime: `fungitastic_only`
+
+## MO+iNat honesty (from candidate suite/snapshot)
+
+- mo_inat_empty_train: `True`
+- mo_inat: `{"claimed_in_protocol_or_config": true, "train_source_keys_matching": [], "train_mo_inat_obs": 0, "note": "If claimed but zero, suite still runs on available FT+GBIF metrics; do not invent MO+iNat uplift."}`
+- source_counts: `{"train": {"fungitastic": 5767}, "val": {"fungitastic": 1018}, "test": {"gbif_es": 7385}}`
 
 ## Advisory
 
 `{"map_crash_threshold": -0.05, "deadly3_crash_threshold": -0.05, "map_crash": false, "deadly3_crash": false, "ece_primary_worse_by_gt_0_02": false, "note": "Advisory lab signals only. Never product_unlock. MAP improvement is not safety. ECE primary remains train-published."}`
+
+## GAPs
+
+- `mo_inat_claimed_but_zero_train_obs`
+- `train_domain_claim_vs_runtime_mismatch`
 
 ---
 
