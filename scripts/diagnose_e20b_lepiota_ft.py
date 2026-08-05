@@ -14,6 +14,7 @@ Dual ECE: primary = train_published; posthoc is separate lab sidecar.
 from __future__ import annotations
 
 import argparse
+import ast
 import json
 import re
 import subprocess
@@ -30,25 +31,26 @@ OUT_MD = REPORT_DIR / "e20b_diagnose_lepiota_ft.md"
 SSOT = REPORT_DIR / "E20_BASELINE_METRICS_TO_IMPROVE.json"
 RAILS = REPORT_DIR / "anti_leak_rails_train_latest.json"
 HANDOFF = REPORT_DIR / "loop_operator_handoff_latest.json"
+ACTIONS_LOG = REPORT_DIR / "e20b_operator_actions.jsonl"
 
 KERNEL_SLUG = "alonsoalviraaaa/visionsetil-exp-v20b-lepiota-ft"
 BASELINE_SLUG = "alonsoalviraaaa/visionsetil-exp-v20-source-holdout"
 WEIGHTS_DATASET = "alonsoalviraaaa/visionsetil-e20-weights"
+MAX_HUMAN_RELAUNCH_BUDGET = 1
 
-# Prefer main-repo artifacts, then worktree-local
+# Prefer worktree-local artifacts, then optional operator main-repo fallback
 _DEFAULT_MODELS = [
-    Path(r"C:\Users\Mariano\Documents\ALONSOO\VISIONSETIL\kaggle\kernel_output_v20\models"),
     ROOT / "kaggle" / "kernel_output_v20" / "models",
+    Path(r"C:\Users\Mariano\Documents\ALONSOO\VISIONSETIL\kaggle\kernel_output_v20\models"),
 ]
 _DEFAULT_E20B_OUT = [
-    Path(r"C:\Users\Mariano\Documents\ALONSOO\VISIONSETIL\kaggle\kernel_output_v20b"),
     ROOT / "kaggle" / "kernel_output_v20b",
+    Path(r"C:\Users\Mariano\Documents\ALONSOO\VISIONSETIL\kaggle\kernel_output_v20b"),
 ]
 _DEFAULT_PUSH = [
-    # Tracked notebook lives next to other exp notebooks; push_e* is gitignored
+    # Tracked notebook lives under kaggle/; push_e* is gitignored
     ROOT / "kaggle",
     ROOT / "kaggle" / "push_e20b",
-    Path(r"C:\Users\Mariano\Documents\ALONSOO\VISIONSETIL\kaggle\push_e20b"),
 ]
 
 POLICY = "orientation_only_never_consume"
@@ -74,6 +76,93 @@ def _first_existing(paths: list[Path]) -> Path | None:
         if p.exists():
             return p
     return None
+
+
+def _repo_rel(path: Path | None) -> str | None:
+    """Prefer repo-relative path for committed artifacts; None if missing."""
+    if path is None:
+        return None
+    try:
+        return path.resolve().relative_to(ROOT.resolve()).as_posix()
+    except ValueError:
+        return None
+
+
+def _path_fields(path: Path | None) -> dict[str, Any]:
+    """Emit relative path when under ROOT; absolute only as resolved_path debug."""
+    if path is None:
+        return {"path": None, "resolved_path": None}
+    rel = _repo_rel(path)
+    try:
+        resolved = str(path.resolve())
+    except OSError:
+        resolved = str(path)
+    return {
+        "path": rel if rel is not None else resolved,
+        "resolved_path": resolved if rel is None else resolved,
+        "under_repo": rel is not None,
+    }
+
+
+def _count_successful_pushes(slug: str = KERNEL_SLUG) -> int:
+    if not ACTIONS_LOG.is_file():
+        return 0
+    n = 0
+    try:
+        lines = ACTIONS_LOG.read_text(encoding="utf-8").splitlines()
+    except OSError:
+        return 0
+    for line in lines:
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            rec = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if (
+            isinstance(rec, dict)
+            and rec.get("action") == "kaggle_kernels_push"
+            and rec.get("slug") == slug
+            and rec.get("returncode") == 0
+        ):
+            n += 1
+    return n
+
+
+def _hard_neg_syntax_ok(source: str) -> bool:
+    """AST-check _HARD_NEG dict; reject comma-inside-comment residual pattern."""
+    if "_HARD_NEG" in source and re.search(
+        r":\s*\d+(?:\.\d+)?\s+#.*,\s*$", source, re.M
+    ):
+        return False
+    m = re.search(r"_HARD_NEG\s*=\s*\{.*?\n\}", source, re.S)
+    if not m:
+        m = re.search(r"_HARD_NEG\s*=\s*\{[^}]+\}", source)
+    if not m:
+        return False
+    try:
+        tree = ast.parse(m.group(0))
+    except SyntaxError:
+        return False
+    assign = None
+    for node in tree.body:
+        if isinstance(node, ast.Assign):
+            for t in node.targets:
+                if isinstance(t, ast.Name) and t.id == "_HARD_NEG":
+                    assign = node
+                    break
+    if assign is None or not isinstance(assign.value, ast.Dict):
+        return False
+    keys: dict[str, float] = {}
+    for k_node, v_node in zip(assign.value.keys, assign.value.values):
+        if isinstance(k_node, ast.Constant) and isinstance(k_node.value, str):
+            if isinstance(v_node, ast.Constant) and isinstance(
+                v_node.value, (int, float)
+            ):
+                keys[str(k_node.value).lower()] = float(v_node.value)
+    required = {"lepiota subincarnata", "lepiota castanea", "lepiota cristata"}
+    return required.issubset(keys) and all(keys[k] > 0 for k in required)
 
 
 def _run_kaggle(args: list[str], timeout: int = 60) -> tuple[int, str]:
@@ -266,9 +355,11 @@ def _map_at_3(probs, labels) -> float:
 
 
 def _lepiota_baseline_metrics(models_dir: Path | None) -> dict[str, Any]:
+    pf = _path_fields(models_dir)
     out: dict[str, Any] = {
         "available": False,
-        "models_dir": str(models_dir) if models_dir else None,
+        "models_dir": pf.get("path"),
+        "models_dir_resolved": pf.get("resolved_path"),
         "species": {},
         "split_counts": {},
         "note": "Measured from E20 baseline test_predictions.npz when present; not E20b (failed).",
@@ -368,17 +459,18 @@ def _lepiota_baseline_metrics(models_dir: Path | None) -> dict[str, Any]:
 
 def _notebook_fix_status(push_dir: Path | None) -> dict[str, Any]:
     info: dict[str, Any] = {
-        "push_dir": str(push_dir) if push_dir else None,
+        "push_dir": _repo_rel(push_dir) or (str(push_dir) if push_dir else None),
         "notebook_present": False,
         "syntax_fix_present": False,
         "weight_path_fix_present": False,
+        "check_method": "ast_hard_neg_plus_weight_path_substring",
     }
     if not push_dir:
         return info
-    # Accept tracked paths under kaggle/ or gitignored push_e20b/
+    # Prefer tracked notebook under kaggle/ (push_e* is gitignored)
     candidates = [
-        push_dir / "visionsetil_exp_v20b_lepiota_ft.ipynb",
         ROOT / "kaggle" / "visionsetil_exp_v20b_lepiota_ft.ipynb",
+        push_dir / "visionsetil_exp_v20b_lepiota_ft.ipynb",
         push_dir / "push_e20b" / "visionsetil_exp_v20b_lepiota_ft.ipynb",
     ]
     meta_candidates = [
@@ -389,19 +481,25 @@ def _notebook_fix_status(push_dir: Path | None) -> dict[str, Any]:
     ]
     nb = next((p for p in candidates if p.is_file()), None)
     meta = next((p for p in meta_candidates if p.is_file()), None)
-    info["notebook_path"] = str(nb) if nb else None
-    info["metadata_path"] = str(meta) if meta else None
+    info["notebook_path"] = _repo_rel(nb) or (str(nb) if nb else None)
+    info["notebook_resolved_path"] = str(nb.resolve()) if nb else None
+    info["metadata_path"] = _repo_rel(meta) or (str(meta) if meta else None)
     info["notebook_present"] = nb is not None
     info["metadata_present"] = meta is not None
     if not nb:
         return info
-    text = nb.read_text(encoding="utf-8", errors="replace")
-    info["syntax_fix_present"] = (
-        "'lepiota subincarnata': 28.0,  # E20b FT boost" in text
-        and "'lepiota subincarnata': 28.0  # E20b FT boost," not in text
-    )
+    try:
+        nb_obj = json.loads(nb.read_text(encoding="utf-8"))
+        joined = "\n".join(
+            "".join(c.get("source") or [])
+            for c in (nb_obj.get("cells") or [])
+            if c.get("cell_type") == "code"
+        )
+    except (OSError, json.JSONDecodeError, TypeError):
+        joined = nb.read_text(encoding="utf-8", errors="replace")
+    info["syntax_fix_present"] = _hard_neg_syntax_ok(joined)
     info["weight_path_fix_present"] = (
-        "datasets/alonsoalviraaaa/visionsetil-e20-weights" in text
+        "datasets/alonsoalviraaaa/visionsetil-e20-weights" in joined
     )
     return info
 
@@ -429,23 +527,33 @@ def decide(
         }
 
     if classification == "launch_script_bug" and rails_can_stage and notebook_ok:
+        used = _count_successful_pushes()
+        remaining = max(0, MAX_HUMAN_RELAUNCH_BUDGET - used)
         return {
             "decision": "RELAUNCH_PATH_DOCUMENTED_NOT_EXECUTED",
-            "relaunch_allowed": True,
-            "relaunch_budget_remaining": 1,
+            "relaunch_allowed": remaining > 0,
+            "relaunch_budget_remaining": remaining,
+            "relaunch_budget_used": used,
+            "max_human_relaunch_budget": MAX_HUMAN_RELAUNCH_BUDGET,
+            "auto_relaunch": False,
             "relaunch_executed": False,
             "continue_baseline": True,
             "operator_action": (
-                "Rails green + SyntaxError+weight-path fixed in kaggle/push_e20b. "
-                "≤1 safe relaunch is allowed AFTER human operator explicit push "
-                "(scripts/push_kaggle_e20b.py --execute ...). This diagnose run "
-                "does NOT push. Continue E20 baseline SSOT until e20b COMPLETE."
+                "Rails green + SyntaxError+weight-path fixed in tracked "
+                "kaggle/visionsetil_exp_v20b_lepiota_ft.ipynb + "
+                "kaggle/kernel-metadata-exp-v20b.json "
+                "(push_e20b is gitignored staging only). "
+                f"≤1 human relaunch budget remaining={remaining} (used={used}). "
+                "Push only via scripts/push_kaggle_e20b.py --execute "
+                "--i-accept-operator-responsibility after dry-run. "
+                "This diagnose run does NOT push. Continue E20 baseline SSOT "
+                "until e20b COMPLETE. product_unlock=false."
             ),
             "relaunch_checklist": [
                 "Confirm anti-leak rails still green (verify_anti_leak_rails_for_train.py)",
-                "Confirm visionsetil-e20-weights has best.pt on Kaggle",
-                "Confirm notebook syntax_fix_present + weight_path_fix_present",
-                "Human: python scripts/push_kaggle_e20b.py --dry-run  (inspect)",
+                "Confirm visionsetil-e20-weights has best.pt on Kaggle (push preflight)",
+                "Confirm tracked notebook syntax_fix_present + weight_path_fix_present",
+                "Human: python scripts/push_kaggle_e20b.py --dry-run  (inspect gates)",
                 "Human: python scripts/push_kaggle_e20b.py --execute --i-accept-operator-responsibility",
                 "No blind epoch bumps; keep 12-epoch FT + hard-neg weights design",
                 "Never product_unlock; dual ECE primary=train_published",
@@ -579,7 +687,7 @@ def build_report(
             "decision": decision,
         },
         "artifacts": {
-            "e20b_output_dir": str(e20b_out) if e20b_out else None,
+            "e20b_output_dir": _path_fields(e20b_out),
             "e20b_metrics_present": e20b_metrics is not None,
             "e20b_split_manifest": {
                 "present": e20b_manifest is not None,
@@ -589,8 +697,8 @@ def build_report(
                 "n_val_obs": (e20b_manifest or {}).get("n_val_obs"),
                 "n_test_obs": (e20b_manifest or {}).get("n_test_obs"),
             },
-            "push_dir": nb_info,
-            "baseline_models_dir": str(models_dir) if models_dir else None,
+            "notebook": nb_info,
+            "baseline_models_dir": _path_fields(models_dir),
         },
         "baseline_ssot": {
             "path": "eval/reports/ml_experiments/E20_BASELINE_METRICS_TO_IMPROVE.json",
@@ -639,10 +747,12 @@ def build_report(
                 if classified["classification"] == "launch_script_bug"
                 else classified["classification"]
             ),
+            # Causal high-severity secondaries only; low/info stay under findings
             "secondary": [
                 f["id"]
                 for f in classified["findings"]
                 if f.get("id") != "syntax_hard_neg_commas"
+                and f.get("severity") in ("high", "blocking")
             ],
             "not_a_training_quality_failure": classified["classification"]
             == "launch_script_bug",
@@ -663,8 +773,10 @@ def build_report(
             "no_auto_kaggle_push": True,
             "map_is_not_safety": True,
             "diagnose_before_relaunch": True,
-            "max_auto_relaunch": 1,
+            "auto_relaunch": False,
+            "max_human_relaunch_budget": MAX_HUMAN_RELAUNCH_BUDGET,
             "relaunch_requires_human_operator": True,
+            "push_enforces_diagnose_and_budget": True,
         },
         "never": [
             "auto product_unlock=true",
@@ -694,7 +806,7 @@ def render_md(report: dict[str, Any]) -> str:
     rails = report.get("rails") or {}
     root = report.get("root_cause") or {}
     arts = report.get("artifacts") or {}
-    nb = arts.get("push_dir") or {}
+    nb = arts.get("notebook") or arts.get("push_dir") or {}
 
     lines = [
         "# E20b diagnose — Lepiota FT (ML-02)",

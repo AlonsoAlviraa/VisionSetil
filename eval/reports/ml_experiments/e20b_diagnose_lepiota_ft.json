@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-05T20:34:48.145491+00:00",
+  "generated_at": "2026-08-05T20:43:03.533933+00:00",
   "pr": "pr-10 / ML-02",
   "title": "ml(e20b): diagnose Lepiota FT; suite or one safe relaunch",
   "policy": "orientation_only_never_consume",
@@ -60,14 +60,17 @@
       "decision": "RELAUNCH_PATH_DOCUMENTED_NOT_EXECUTED",
       "relaunch_allowed": true,
       "relaunch_budget_remaining": 1,
+      "relaunch_budget_used": 0,
+      "max_human_relaunch_budget": 1,
+      "auto_relaunch": false,
       "relaunch_executed": false,
       "continue_baseline": true,
-      "operator_action": "Rails green + SyntaxError+weight-path fixed in kaggle/push_e20b. ≤1 safe relaunch is allowed AFTER human operator explicit push (scripts/push_kaggle_e20b.py --execute ...). This diagnose run does NOT push. Continue E20 baseline SSOT until e20b COMPLETE.",
+      "operator_action": "Rails green + SyntaxError+weight-path fixed in tracked kaggle/visionsetil_exp_v20b_lepiota_ft.ipynb + kaggle/kernel-metadata-exp-v20b.json (push_e20b is gitignored staging only). ≤1 human relaunch budget remaining=1 (used=0). Push only via scripts/push_kaggle_e20b.py --execute --i-accept-operator-responsibility after dry-run. This diagnose run does NOT push. Continue E20 baseline SSOT until e20b COMPLETE. product_unlock=false.",
       "relaunch_checklist": [
         "Confirm anti-leak rails still green (verify_anti_leak_rails_for_train.py)",
-        "Confirm visionsetil-e20-weights has best.pt on Kaggle",
-        "Confirm notebook syntax_fix_present + weight_path_fix_present",
-        "Human: python scripts/push_kaggle_e20b.py --dry-run  (inspect)",
+        "Confirm visionsetil-e20-weights has best.pt on Kaggle (push preflight)",
+        "Confirm tracked notebook syntax_fix_present + weight_path_fix_present",
+        "Human: python scripts/push_kaggle_e20b.py --dry-run  (inspect gates)",
         "Human: python scripts/push_kaggle_e20b.py --execute --i-accept-operator-responsibility",
         "No blind epoch bumps; keep 12-epoch FT + hard-neg weights design",
         "Never product_unlock; dual ECE primary=train_published"
@@ -75,7 +78,11 @@
     }
   },
   "artifacts": {
-    "e20b_output_dir": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20b",
+    "e20b_output_dir": {
+      "path": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20b",
+      "resolved_path": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20b",
+      "under_repo": false
+    },
     "e20b_metrics_present": false,
     "e20b_split_manifest": {
       "present": true,
@@ -85,16 +92,22 @@
       "n_val_obs": 1018,
       "n_test_obs": 7385
     },
-    "push_dir": {
-      "push_dir": "C:\\Users\\Mariano\\.grok\\worktrees\\alonsoo-visionsetil\\subagent-019fd398-2410-7852-ac06-d7b1e767cfd6\\kaggle",
+    "notebook": {
+      "push_dir": "kaggle",
       "notebook_present": true,
       "syntax_fix_present": true,
       "weight_path_fix_present": true,
-      "notebook_path": "C:\\Users\\Mariano\\.grok\\worktrees\\alonsoo-visionsetil\\subagent-019fd398-2410-7852-ac06-d7b1e767cfd6\\kaggle\\visionsetil_exp_v20b_lepiota_ft.ipynb",
-      "metadata_path": "C:\\Users\\Mariano\\.grok\\worktrees\\alonsoo-visionsetil\\subagent-019fd398-2410-7852-ac06-d7b1e767cfd6\\kaggle\\kernel-metadata-exp-v20b.json",
+      "check_method": "ast_hard_neg_plus_weight_path_substring",
+      "notebook_path": "kaggle/visionsetil_exp_v20b_lepiota_ft.ipynb",
+      "notebook_resolved_path": "C:\\Users\\Mariano\\.grok\\worktrees\\alonsoo-visionsetil\\subagent-019fd398-2410-7852-ac06-d7b1e767cfd6\\kaggle\\visionsetil_exp_v20b_lepiota_ft.ipynb",
+      "metadata_path": "kaggle/kernel-metadata-exp-v20b.json",
       "metadata_present": true
     },
-    "baseline_models_dir": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models"
+    "baseline_models_dir": {
+      "path": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models",
+      "resolved_path": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models",
+      "under_repo": false
+    }
   },
   "baseline_ssot": {
     "path": "eval/reports/ml_experiments/E20_BASELINE_METRICS_TO_IMPROVE.json",
@@ -129,6 +142,7 @@
   "lepiota_baseline_holdout": {
     "available": true,
     "models_dir": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models",
+    "models_dir_resolved": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models",
     "species": {
       "Lepiota castanea": {
         "n": 82,
@@ -261,9 +275,7 @@
   "root_cause": {
     "primary": "SyntaxError in _HARD_NEG class-weight dict (commas inside comments)",
     "secondary": [
-      "missing_pretrained_weights_path",
-      "mush215_optional_empty",
-      "split_rails_pass_before_crash"
+      "missing_pretrained_weights_path"
     ],
     "not_a_training_quality_failure": true,
     "no_blind_epoch_bump": true
@@ -282,8 +294,10 @@
     "no_auto_kaggle_push": true,
     "map_is_not_safety": true,
     "diagnose_before_relaunch": true,
-    "max_auto_relaunch": 1,
-    "relaunch_requires_human_operator": true
+    "auto_relaunch": false,
+    "max_human_relaunch_budget": 1,
+    "relaunch_requires_human_operator": true,
+    "push_enforces_diagnose_and_budget": true
   },
   "never": [
     "auto product_unlock=true",

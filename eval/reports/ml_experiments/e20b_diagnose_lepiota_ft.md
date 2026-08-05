@@ -1,6 +1,6 @@
 # E20b diagnose — Lepiota FT (ML-02)
 
-**Generated:** `2026-08-05T20:34:48.145491+00:00`  
+**Generated:** `2026-08-05T20:43:03.533933+00:00`  
 **Kernel:** `alonsoalviraaaa/visionsetil-exp-v20b-lepiota-ft`  
 **Kaggle status:** `ERROR`  
 **Classification:** `launch_script_bug`  
@@ -19,7 +19,7 @@
 4. **diagnose first** → this artifact
 5. **suite OR ≤1 relaunch OR continue baseline** → RELAUNCH_PATH_DOCUMENTED_NOT_EXECUTED
 
-**Operator action:** Rails green + SyntaxError+weight-path fixed in kaggle/push_e20b. ≤1 safe relaunch is allowed AFTER human operator explicit push (scripts/push_kaggle_e20b.py --execute ...). This diagnose run does NOT push. Continue E20 baseline SSOT until e20b COMPLETE.
+**Operator action:** Rails green + SyntaxError+weight-path fixed in tracked kaggle/visionsetil_exp_v20b_lepiota_ft.ipynb + kaggle/kernel-metadata-exp-v20b.json (push_e20b is gitignored staging only). ≤1 human relaunch budget remaining=1 (used=0). Push only via scripts/push_kaggle_e20b.py --execute --i-accept-operator-responsibility after dry-run. This diagnose run does NOT push. Continue E20 baseline SSOT until e20b COMPLETE. product_unlock=false.
 
 ## Findings
 
@@ -31,7 +31,7 @@
 ## Root cause
 
 - **Primary:** SyntaxError in _HARD_NEG class-weight dict (commas inside comments)
-- **Secondary:** missing_pretrained_weights_path, mush215_optional_empty, split_rails_pass_before_crash
+- **Secondary:** missing_pretrained_weights_path
 - **Training quality failure?** `False`
 - **Blind epoch bump?** `False` (must stay false)
 
@@ -46,9 +46,9 @@
 ### ≤1 relaunch checklist (human only — not executed here)
 
 - [ ] Confirm anti-leak rails still green (verify_anti_leak_rails_for_train.py)
-- [ ] Confirm visionsetil-e20-weights has best.pt on Kaggle
-- [ ] Confirm notebook syntax_fix_present + weight_path_fix_present
-- [ ] Human: python scripts/push_kaggle_e20b.py --dry-run  (inspect)
+- [ ] Confirm visionsetil-e20-weights has best.pt on Kaggle (push preflight)
+- [ ] Confirm tracked notebook syntax_fix_present + weight_path_fix_present
+- [ ] Human: python scripts/push_kaggle_e20b.py --dry-run  (inspect gates)
 - [ ] Human: python scripts/push_kaggle_e20b.py --execute --i-accept-operator-responsibility
 - [ ] No blind epoch bumps; keep 12-epoch FT + hard-neg weights design
 - [ ] Never product_unlock; dual ECE primary=train_published
