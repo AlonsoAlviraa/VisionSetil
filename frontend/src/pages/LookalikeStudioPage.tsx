@@ -1,8 +1,12 @@
 /**
  * Lookalike Studio — classic confusions + side-by-side compare.
  * Photography-first, risk-honest (RiskChip only), one-tap classic pairs.
+ *
+ * Deep link: `/lookalikes?focus=<catalog-slug|taxon>` seeds selection once
+ * (UX-05 study CTAs from games). Unknown focus → empty state, no crash.
  */
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Button, LinkButton, PageShell } from '../components/ui'
 import { recordStudyActivity } from '../lib/studyBadges'
@@ -15,6 +19,7 @@ import {
   LOOKALIKE_STUDIO_MAX,
   LOOKALIKE_STUDIO_MIN,
   removeFromStudioSelection,
+  resolveStudioTaxon,
   suggestStudioPeers,
   type ClassicLookalikePair,
   type StudioTaxonCard,
@@ -36,12 +41,16 @@ import {
 export function LookalikeStudioPage() {
   const { t, i18n } = useTranslation()
   const locale = i18n.resolvedLanguage || i18n.language || 'es'
+  const [searchParams] = useSearchParams()
+  const focusParam = (searchParams.get('focus') || '').trim()
   const { catalog: speciesCatalog, loading: catalogLoading } = useSpeciesCatalog()
   const [query, setQuery] = useState('')
   const [selection, setSelection] = useState<StudioTaxonCard[]>([])
   const [error, setError] = useState<string | null>(null)
   const [focused, setFocused] = useState(false)
   const [activePairId, setActivePairId] = useState<string | null>(null)
+  /** Unknown/empty focus slug from games deep-link — amable empty, no crash. */
+  const [focusEmpty, setFocusEmpty] = useState(false)
 
   const rows = useMemo(() => buildCompareRows(selection), [selection])
   const classics = useMemo(() => {
@@ -65,6 +74,35 @@ export function LookalikeStudioPage() {
     }
     return null
   }, [selection])
+
+  // UX-05 / UX-06: seed studio from ?focus=<catalog-slug|taxon> once (games study CTAs).
+  const focusApplied = useRef(false)
+  useEffect(() => {
+    if (focusApplied.current) return
+    if (!focusParam) return
+    if (catalogLoading || speciesCatalog.length === 0) return
+    focusApplied.current = true
+    const card = resolveStudioTaxon(focusParam)
+    if (!card || !card.in_catalog) {
+      setFocusEmpty(true)
+      setError(
+        t('lookalike.focusUnknown', {
+          defaultValue: 'No se encontró esa especie en el catálogo. Busca o elige un par clásico.',
+        }),
+      )
+      return
+    }
+    const { selection: next, error: err } = addToStudioSelection([], card.taxon)
+    if (err || next.length === 0) {
+      setFocusEmpty(true)
+      setError(err)
+      return
+    }
+    setSelection(next)
+    setFocusEmpty(false)
+    setError(null)
+    setActivePairId(null)
+  }, [focusParam, catalogLoading, speciesCatalog.length, t])
 
   // Study badge: once per page visit when a valid compare is ready (local, privacy-first)
   const lookalikeCounted = useRef(false)
@@ -167,6 +205,24 @@ export function LookalikeStudioPage() {
           </span>
         </div>
       </header>
+
+      {focusEmpty && focusParam ? (
+        <div
+          className="atelier-panel lookalike-focus-empty cn-page-pad"
+          data-testid="lookalike-focus-empty"
+          role="status"
+        >
+          <EmptyState
+            title={t('lookalike.focusEmptyTitle', {
+              defaultValue: 'Especie del enlace no encontrada',
+            })}
+            description={t('lookalike.focusEmptyBody', {
+              defaultValue:
+                'El enlace de estudio no coincide con el catálogo. Elige un par clásico o busca por nombre — solo orientación, nunca consumo.',
+            })}
+          />
+        </div>
+      ) : null}
 
       {/* Classic one-tap confusions */}
       <section

@@ -28,6 +28,7 @@ import {
   continueDailyPath,
   DAILY_GAME_MODES,
   dailyGamesCompletion,
+  dailyModeTitle,
   firstIncompleteDailyMode,
   gamesDayKey,
   isDailyBoardComplete,
@@ -38,6 +39,7 @@ import {
 } from '../lib/dailyGames'
 import {
   buildDailyBoardShareCard,
+  shareFeedbackMessage,
   shareGameText,
 } from '../lib/gameShare'
 
@@ -132,14 +134,10 @@ export function GamesHubPage() {
     const result = await shareGameText(text, {
       title: t('games.shareTitle', { defaultValue: 'VisionSetil · retos del día' }),
     })
-    if (result === 'shared') {
-      setShareFeedback(t('games.shareDone', { defaultValue: 'Compartido' }))
-    } else if (result === 'copied') {
-      setShareFeedback(t('games.shareCopied', { defaultValue: 'Tarjeta copiada' }))
-    } else {
-      setShareFeedback(t('games.shareFailed', { defaultValue: 'No se pudo compartir' }))
-    }
+    setShareFeedback(shareFeedbackMessage(result, t))
   }, [day, streak.current, locale, t])
+
+  const continueModeLabel = dailyModeTitle(incompleteMode || continueTarget, locale)
 
   const primaryCtaLabel = boardComplete
     ? t('games.primaryReplay', { defaultValue: 'Repetir retos del día' })
@@ -147,7 +145,7 @@ export function GamesHubPage() {
       ? t('games.primaryStart', { defaultValue: 'Continuar · empezar retos' })
       : t('games.primaryContinue', {
           defaultValue: 'Continuar · {{mode}}',
-          mode: incompleteMode?.titleEs || continueTarget.titleEs,
+          mode: continueModeLabel,
         })
 
   return (
@@ -313,7 +311,7 @@ export function GamesHubPage() {
           size="lg"
           block
           className="games-hub-primary__cta"
-          data-testid="games-hub-primary-reto"
+          data-testid="games-hub-primary-continue"
           data-continue-mode={continueTarget.id}
         >
           <Icon name="emoji_events" size="md" aria-hidden="true" />

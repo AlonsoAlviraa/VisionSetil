@@ -1,10 +1,12 @@
-import { describe, expect, it, beforeEach } from 'vitest'
+import { describe, expect, it, beforeEach, vi } from 'vitest'
 import {
   buildDailyBoardShareCard,
   buildModeShareCard,
   buildQuizShareCard,
   buildSetadleShareCard,
   buildWordleShareCard,
+  shareFeedbackMessage,
+  shareGameText,
   shareOrientationFooter,
   SHARE_ORIENTATION_FOOTER_EN,
   SHARE_ORIENTATION_FOOTER_ES,
@@ -122,7 +124,6 @@ describe('gameShare (UX-05 honest share)', () => {
       locale: 'es',
     })
     const quiz = buildQuizShareCard({
-      won: true,
       score: 420,
       accuracyPct: 83,
       locale: 'es',
@@ -135,6 +136,8 @@ describe('gameShare (UX-05 honest share)', () => {
     expect(wordle).toMatch(/Sin acierto/)
     expect(wordle).toMatch(/Riesgo \(orientación\): Mortal/)
     expect(quiz).toMatch(/Puntos: 420/)
+    // Quiz is score-centric — no misleading Resuelto from partial accuracy
+    expect(quiz).not.toMatch(/Resuelto|Sin acierto/)
   })
 
   it('mode share never treats risk as edible clearance', () => {
@@ -149,5 +152,29 @@ describe('gameShare (UX-05 honest share)', () => {
     assertNoForbidden(text)
     expect(fold(text)).toMatch(/orientacion|riesgo/)
     expect(fold(text)).not.toMatch(/\bcomestible\b/)
+  })
+
+  it('shareGameText: AbortError is cancelled (no clipboard)', async () => {
+    const prevShare = navigator.share
+    const prevClipboard = navigator.clipboard
+    const writeText = vi.fn(async () => undefined)
+    // @ts-expect-error test stub
+    navigator.share = async () => {
+      const err = new Error('user cancelled')
+      err.name = 'AbortError'
+      throw err
+    }
+    // @ts-expect-error test stub
+    navigator.clipboard = { writeText }
+
+    const r = await shareGameText('hola', { title: 't' })
+    expect(r).toBe('cancelled')
+    expect(writeText).not.toHaveBeenCalled()
+    expect(shareFeedbackMessage('cancelled', (k, o) => o?.defaultValue || k)).toBeNull()
+
+    // @ts-expect-error restore
+    navigator.share = prevShare
+    // @ts-expect-error restore
+    navigator.clipboard = prevClipboard
   })
 })

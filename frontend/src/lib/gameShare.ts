@@ -80,7 +80,8 @@ export function buildDailyBoardShareCard(input: DailyBoardShareInput = {}): stri
 export type ModeShareInput = {
   /** Human mode title (e.g. Setadle Clásico, Wordle, Reto). */
   modeTitle: string
-  won: boolean
+  /** Win/loss for single-round modes. Optional when `scoreOnly`. */
+  won?: boolean
   guesses?: number
   maxGuesses?: number
   /** Optional emoji grid (Wordle/Setadle style) — no edible symbols. */
@@ -97,6 +98,11 @@ export type ModeShareInput = {
   riskShort?: string
   score?: number
   accuracyPct?: number
+  /**
+   * When true (or when score is set without guesses), skip Resuelto/Sin acierto.
+   * Quiz multi-round shares are score-centric.
+   */
+  scoreOnly?: boolean
 }
 
 /**
@@ -106,17 +112,22 @@ export type ModeShareInput = {
 export function buildModeShareCard(input: ModeShareInput): string {
   const en = isEnglish(input.locale)
   const day = input.day ?? gamesDayKey()
-  const result = input.won
-    ? en
-      ? 'Solved'
-      : 'Resuelto'
-    : en
-      ? 'Not solved'
-      : 'Sin acierto'
-  const lines: string[] = [
-    `VisionSetil · ${input.modeTitle}`,
-    `${result}${input.guesses != null ? ` · ${input.guesses}${input.maxGuesses != null ? `/${input.maxGuesses}` : ''} ${en ? 'tries' : 'intentos'}` : ''}`,
-  ]
+  const scoreCentric =
+    input.scoreOnly === true || (input.score != null && input.guesses == null)
+  const lines: string[] = [`VisionSetil · ${input.modeTitle}`]
+  if (!scoreCentric) {
+    const result = input.won
+      ? en
+        ? 'Solved'
+        : 'Resuelto'
+      : en
+        ? 'Not solved'
+        : 'Sin acierto'
+    lines.push(
+      `${result}${input.guesses != null ? ` · ${input.guesses}${input.maxGuesses != null ? `/${input.maxGuesses}` : ''} ${en ? 'tries' : 'intentos'}` : ''}`,
+    )
+  }
+  // note: when scoreOnly, `won` is ignored intentionally
   if (input.score != null) {
     lines.push(
       en
@@ -164,21 +175,29 @@ export function buildWordleShareCard(
   })
 }
 
-/** Reto / quiz finished share helper. */
+/** Reto / quiz finished share helper (score-centric; no false Resuelto). */
 export function buildQuizShareCard(
-  input: Omit<ModeShareInput, 'modeTitle'> & { modeTitle?: string },
+  input: Omit<ModeShareInput, 'modeTitle' | 'scoreOnly'> & { modeTitle?: string },
 ): string {
   return buildModeShareCard({
     ...input,
     modeTitle: input.modeTitle || 'Reto micológico',
     won: input.won ?? true,
+    scoreOnly: true,
   })
 }
 
-export type ShareResult = 'shared' | 'copied' | 'failed'
+export type ShareResult = 'shared' | 'copied' | 'cancelled' | 'failed'
+
+function isShareAbort(err: unknown): boolean {
+  if (!err || typeof err !== 'object') return false
+  const name = (err as { name?: string }).name || ''
+  return name === 'AbortError' || name === 'NotAllowedError'
+}
 
 /**
  * Prefer Web Share API; fall back to clipboard.
+ * User cancel (AbortError) → `'cancelled'` (no clipboard).
  * Never mutates text — callers must pass honest builders above.
  */
 export async function shareGameText(
@@ -186,13 +205,14 @@ export async function shareGameText(
   options: { title?: string } = {},
 ): Promise<ShareResult> {
   const title = options.title || 'VisionSetil'
-  try {
-    if (typeof navigator !== 'undefined' && typeof navigator.share === 'function') {
+  if (typeof navigator !== 'undefined' && typeof navigator.share === 'function') {
+    try {
       await navigator.share({ title, text })
       return 'shared'
+    } catch (err) {
+      if (isShareAbort(err)) return 'cancelled'
+      /* non-cancel share failure → clipboard below */
     }
-  } catch {
-    /* user cancel or share fail → clipboard */
   }
   try {
     if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
@@ -203,4 +223,21 @@ export async function shareGameText(
     /* ignore */
   }
   return 'failed'
+}
+
+/** i18n-friendly feedback for shareGameText results (DRY across game pages). */
+export function shareFeedbackMessage(
+  result: ShareResult,
+  t: (key: string, opts?: { defaultValue?: string }) => string,
+): string | null {
+  if (result === 'shared') {
+    return t('games.shareDone', { defaultValue: 'Compartido' })
+  }
+  if (result === 'copied') {
+    return t('games.shareCopied', { defaultValue: 'Tarjeta copiada' })
+  }
+  if (result === 'cancelled') {
+    return null
+  }
+  return t('games.shareFailed', { defaultValue: 'No se pudo compartir' })
 }

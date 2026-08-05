@@ -29,6 +29,7 @@ import { scientificNameToSlug } from '../lib/slug'
 import { markDailyGameDone } from '../lib/dailyGames'
 import {
   buildWordleShareCard,
+  shareFeedbackMessage,
   shareGameText,
 } from '../lib/gameShare'
 import { getRiskMeta } from '../lib/riskLabels'
@@ -456,9 +457,16 @@ export function MushroomWordlePage() {
             <p>
               <em>{secret.taxon}</em>
             </p>
-            <RiskChip risk={secret.risk_label} />
-            {/* UX-05 post-reveal study CTAs */}
+            {/* UX-05 post-reveal: RiskChip + study hint + Confusiones (mirror Setadle) */}
             <div className="game-study-after" data-testid="wordle-study-after">
+              <div className="game-study-after__risk">
+                <RiskChip risk={secret.risk_label} />
+                <span className="muted game-study-after__hint">
+                  {t('wordle.riskStudyHint', {
+                    defaultValue: 'Riesgo de estudio · nunca consumo',
+                  })}
+                </span>
+              </div>
               <div className="game-study-after__actions">
                 <LinkButton
                   to={`/lookalikes?focus=${encodeURIComponent(
@@ -495,15 +503,7 @@ export function MushroomWordlePage() {
                     })
                     void shareGameText(text, {
                       title: t('wordle.shareTitle', { defaultValue: 'VisionSetil Wordle' }),
-                    }).then((r) => {
-                      setShareFeedback(
-                        r === 'shared'
-                          ? t('games.shareDone', { defaultValue: 'Compartido' })
-                          : r === 'copied'
-                            ? t('games.shareCopied', { defaultValue: 'Tarjeta copiada' })
-                            : t('games.shareFailed', { defaultValue: 'No se pudo compartir' }),
-                      )
-                    })
+                    }).then((r) => setShareFeedback(shareFeedbackMessage(r, t)))
                   }}
                 >
                   {t('games.share', { defaultValue: 'Compartir' })}

@@ -42,11 +42,21 @@ import { ProPlanBanner } from '../components/ProPlanBanner'
 import { markDailyGameDone, type DailyGameModeId } from '../lib/dailyGames'
 import {
   buildSetadleShareCard,
+  shareFeedbackMessage,
   shareGameText,
 } from '../lib/gameShare'
 import { getRiskMeta } from '../lib/riskLabels'
+import { scientificNameToSlug } from '../lib/slug'
 import { recordStudyActivity } from '../lib/studyBadges'
 import { StudyBadgesPanel } from '../components/StudyBadgesPanel'
+
+const MODE_TITLE_DEFAULTS: Record<SetadleMode, string> = {
+  classic: 'Clásico',
+  clue: 'Pistas',
+  trait: 'Rasgos',
+  habitat: 'Hábitat',
+  photo: 'Foto',
+}
 
 type PlayKind = 'daily' | 'unlimited'
 
@@ -755,22 +765,17 @@ export function SetadlePage() {
                     size="sm"
                     data-testid="setadle-habitat-share"
                     onClick={() => {
+                      const habitatLabel = t(MODE_TITLE_KEYS.habitat, {
+                        defaultValue: MODE_TITLE_DEFAULTS.habitat,
+                      })
                       const text = buildSetadleShareCard({
                         won: true,
-                        modeTitle: 'Setadle · Hábitat',
+                        modeTitle: `Setadle · ${habitatLabel}`,
                         locale,
                       })
                       void shareGameText(text, {
                         title: t('setadle.shareTitle', { defaultValue: 'VisionSetil Setadle' }),
-                      }).then((r) => {
-                        setShareFeedback(
-                          r === 'shared'
-                            ? t('games.shareDone', { defaultValue: 'Compartido' })
-                            : r === 'copied'
-                              ? t('games.shareCopied', { defaultValue: 'Tarjeta copiada' })
-                              : t('games.shareFailed', { defaultValue: 'No se pudo compartir' }),
-                        )
-                      })
+                      }).then((r) => setShareFeedback(shareFeedbackMessage(r, t)))
                     }}
                   >
                     {t('games.share', { defaultValue: 'Compartir' })}
@@ -960,14 +965,20 @@ export function SetadlePage() {
                 </div>
                 <div className="game-study-after__actions">
                   <LinkButton
-                    to={`/lookalikes?focus=${encodeURIComponent(secret.slug)}`}
+                    to={`/lookalikes?focus=${encodeURIComponent(
+                      secret.slug || scientificNameToSlug(secret.taxon),
+                    )}`}
                     variant="secondary"
                     size="sm"
                     data-testid="setadle-study-lookalikes"
                   >
                     {t('nav.lookalikes', { defaultValue: 'Confusiones' })}
                   </LinkButton>
-                  <LinkButton to={`/enciclopedia/${secret.slug}`} variant="ghost" size="sm">
+                  <LinkButton
+                    to={`/enciclopedia/${secret.slug || scientificNameToSlug(secret.taxon)}`}
+                    variant="ghost"
+                    size="sm"
+                  >
                     {t('setadle.openFiche', { defaultValue: 'Ver ficha' })}
                   </LinkButton>
                   <Button
@@ -977,11 +988,15 @@ export function SetadlePage() {
                     data-testid="setadle-share"
                     onClick={() => {
                       const riskMeta = getRiskMeta(secret.risk_raw || secret.risk)
+                      const modeKey = (mode || 'classic') as SetadleMode
+                      const modeLabel = t(MODE_TITLE_KEYS[modeKey], {
+                        defaultValue: MODE_TITLE_DEFAULTS[modeKey],
+                      })
                       const text = buildSetadleShareCard({
                         won,
                         guesses: guesses.length,
                         maxGuesses: MAX_NAME_GUESSES,
-                        modeTitle: `Setadle · ${mode || 'classic'}`,
+                        modeTitle: `Setadle · ${modeLabel}`,
                         common: secret.common,
                         taxon: secret.taxon,
                         riskShort: riskMeta.short,
@@ -989,15 +1004,7 @@ export function SetadlePage() {
                       })
                       void shareGameText(text, {
                         title: t('setadle.shareTitle', { defaultValue: 'VisionSetil Setadle' }),
-                      }).then((r) => {
-                        setShareFeedback(
-                          r === 'shared'
-                            ? t('games.shareDone', { defaultValue: 'Compartido' })
-                            : r === 'copied'
-                              ? t('games.shareCopied', { defaultValue: 'Tarjeta copiada' })
-                              : t('games.shareFailed', { defaultValue: 'No se pudo compartir' }),
-                        )
-                      })
+                      }).then((r) => setShareFeedback(shareFeedbackMessage(r, t)))
                     }}
                   >
                     {t('games.share', { defaultValue: 'Compartir' })}

@@ -48,8 +48,10 @@ import { StudyBadgesPanel } from '../components/StudyBadgesPanel'
 import { markDailyGameDone } from '../lib/dailyGames'
 import {
   buildQuizShareCard,
+  shareFeedbackMessage,
   shareGameText,
 } from '../lib/gameShare'
+import { scientificNameToSlug } from '../lib/slug'
 
 const LETTERS = ['A', 'B', 'C', 'D'] as const
 const LETTER_COLORS = ['tri-a', 'tri-b', 'tri-c', 'tri-d'] as const
@@ -542,23 +544,15 @@ export function QuizGamePage() {
                   className="quiz-link-btn"
                   data-testid="quiz-share"
                   onClick={() => {
+                    // Score-centric share (no false Resuelto from 1/N hits)
                     const text = buildQuizShareCard({
-                      won: summary.correctCount > 0,
                       score: summary.score,
                       accuracyPct: Math.round(summary.accuracy * 100),
                       locale,
                     })
                     void shareGameText(text, {
                       title: t('quiz.shareTitle', { defaultValue: 'VisionSetil Reto' }),
-                    }).then((r) => {
-                      setShareFeedback(
-                        r === 'shared'
-                          ? t('games.shareDone', { defaultValue: 'Compartido' })
-                          : r === 'copied'
-                            ? t('games.shareCopied', { defaultValue: 'Tarjeta copiada' })
-                            : t('games.shareFailed', { defaultValue: 'No se pudo compartir' }),
-                      )
-                    })
+                    }).then((r) => setShareFeedback(shareFeedbackMessage(r, t)))
                   }}
                 >
                   {t('games.share', { defaultValue: 'Compartir' })}
@@ -865,14 +859,18 @@ export function QuizGamePage() {
                     </div>
                     <div className="game-study-after__actions">
                       <Link
-                        to={`/lookalikes?focus=${encodeURIComponent(round.subject.slug)}`}
+                        to={`/lookalikes?focus=${encodeURIComponent(
+                          round.subject.slug || scientificNameToSlug(round.subject.taxon),
+                        )}`}
                         className="quiz-link-btn"
                         data-testid="quiz-study-lookalikes"
                       >
                         {t('nav.lookalikes', { defaultValue: 'Confusiones' })}
                       </Link>
                       <Link
-                        to={`/enciclopedia/${round.subject.slug}`}
+                        to={`/enciclopedia/${
+                          round.subject.slug || scientificNameToSlug(round.subject.taxon)
+                        }`}
                         className="quiz-link-btn"
                       >
                         {t('quiz.viewCard', { defaultValue: 'Ver ficha' })}
