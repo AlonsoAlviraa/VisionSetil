@@ -976,7 +976,11 @@
     "openCard": "Open card",
     "legendTitle": "Condition alert",
     "hotspotLegend": "Halo = educational hotspot",
-    "safetyChip": "Educational · no foraging",
+    "safetyChip": "Educational · cotos ≠ consumption",
+    "policyBanner": "MAP ≠ safety · regulated areas ≠ permission to eat. Educational orientation only; does not authorize foraging, ID, or consumption.",
+    "cotosPolicy": "Official permits ≠ permission to consume. The map orients; it does not identify mushrooms or authorize foraging.",
+    "multiviewChip": "Field · multi-view",
+    "multiviewTip": "In the field: photo gills + profile + base. The map does not identify or authorize consumption.",
     "layerMarkers": "Markers",
     "layerHalos": "Halos",
     "layerHotspotsOnly": "Hotspots only",
@@ -1060,7 +1064,7 @@
     "openEncyclopedia": "Encyclopedia",
     "openOsm": "Open map",
     "keepExploring": "Continue",
-    "disclaimerShort": "Educational · no foraging or consumption. Check local rules and a mycologist."
+    "disclaimerShort": "Educational · cotos ≠ consumption. Does not authorize foraging or ID. Check local rules and a mycologist."
   },
   "offline": {
     "kicker": "Field · PWA",

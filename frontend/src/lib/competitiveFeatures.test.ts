@@ -126,7 +126,9 @@ describe('competitive feature adoption', () => {
     expect(home).toMatch(/nunca consumo|orientaci/i)
     const map = readFileSync(resolve(root, 'src/pages/SpainMapPage.tsx'), 'utf8')
     expect(map).toMatch(/map-multiview-chip/)
-    expect(map).toMatch(/multi-vista|no recolección|no identifica/i)
+    expect(map).toMatch(/map-map-ne-safety-banner/)
+    expect(map).toMatch(/cotos\s*≠\s*consumo|MAP\s*≠\s*seguridad/i)
+    expect(map).toMatch(/multi-vista|no identifica|no autoriza consumo/i)
   })
 
   it('PreflightBanner wires multiview diagnostic tip (no unlock language)', () => {

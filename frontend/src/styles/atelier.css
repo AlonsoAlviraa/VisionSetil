@@ -5743,6 +5743,33 @@ body {
   gap: 0.65rem 1rem;
 }
 
+/* MAP ≠ safety / cotos ≠ consumo — visible under bare PageShell (no cn-warn-strip) */
+.map-policy-banner {
+  margin: 0;
+  padding: 0.4rem 0.7rem;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.35;
+  color: #7a3030;
+  background: color-mix(in srgb, #8b3a3a 12%, var(--surface, #f6f3ec));
+  border: 1px solid color-mix(in srgb, #8b3a3a 28%, var(--line, transparent));
+}
+
+.map-regulated-dir__policy {
+  margin: 0.35rem 0 0.5rem;
+  padding: 0.45rem 0.65rem;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: #7a3030;
+  background: color-mix(in srgb, #8b3a3a 10%, var(--surface, #f6f3ec));
+  border: 1px solid color-mix(in srgb, #8b3a3a 24%, var(--line, transparent));
+}
+
 .map-safety-chip {
   display: inline-flex;
   align-items: center;
@@ -5756,6 +5783,13 @@ body {
   background: color-mix(in srgb, #84cc16 14%, var(--surface, #f6f3ec));
   border: 1px solid color-mix(in srgb, #65a30d 35%, var(--line, transparent));
   white-space: nowrap;
+}
+
+[data-theme='dark'] .map-policy-banner,
+[data-theme='dark'] .map-regulated-dir__policy {
+  color: #f5c4c4;
+  background: color-mix(in srgb, #8b3a3a 22%, var(--surface, #1a2420));
+  border-color: color-mix(in srgb, #8b3a3a 40%, var(--line, transparent));
 }
 
 .map-safety-chip--mv {

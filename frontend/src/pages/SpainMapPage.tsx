@@ -630,7 +630,7 @@ function ZoneDetailBody({
       <p className="zone-disclaimer zone-disclaimer--peek">
         {t('map.disclaimerShort', {
           defaultValue:
-            'Educativo · no autoriza recolección ni consumo. Enlaces a webs oficiales o de gestión del coto.',
+            'Educativo · cotos ≠ consumo. No autoriza recolección ni identificación. Enlaces oficiales de gestión del coto.',
         })}
       </p>
     </div>
@@ -1112,12 +1112,29 @@ export default function SpainMapPage() {
     >
       {/* Unified chrome: one mode, filters + climate on zone click */}
       <header className="map-chrome">
+        {/* MAP ≠ safety sticky: bare PageShell has no cn-warn-strip — keep rails visible */}
+        <p
+          className="map-policy-banner"
+          role="note"
+          data-testid="map-map-ne-safety-banner"
+        >
+          {t('map.policyBanner', {
+            defaultValue:
+              'MAP ≠ seguridad · cotos ≠ consumo. Solo orientación educativa; no autoriza recolección, identificación ni consumo.',
+          })}
+        </p>
         <div className="map-chrome__title-row">
           <h1 className="map-chrome__title">
             {t('map.title', { defaultValue: 'Mapa micológico' })}
           </h1>
-          <span className="map-safety-chip" role="note">
-            {t('map.safetyChip', { defaultValue: 'Educativo · no recolección' })}
+          <span
+            className="map-safety-chip"
+            role="note"
+            data-testid="map-safety-chip"
+          >
+            {t('map.safetyChip', {
+              defaultValue: 'Educativo · cotos ≠ consumo',
+            })}
           </span>
           <span
             className="map-safety-chip map-safety-chip--mv"
@@ -1397,6 +1414,16 @@ export default function SpainMapPage() {
               {regulatedStats.cotos} acotados CyL · {regulatedStats.parks} parques ·{' '}
               {regulatedStats.cotosOther} cotos · {regulatedStats.withPermit} con enlace
               de permiso
+            </p>
+            <p
+              className="map-regulated-dir__policy"
+              role="note"
+              data-testid="map-cotos-ne-consumo"
+            >
+              {t('map.cotosPolicy', {
+                defaultValue:
+                  'Cotos y permisos oficiales ≠ permiso de consumo. El mapa orienta; no identifica setas ni autoriza recolección.',
+              })}
             </p>
             <p className="map-regulated-dir__partner" role="note">
               {B2B_PARTNER_BLURB_ES}

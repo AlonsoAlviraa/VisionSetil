@@ -970,7 +970,11 @@
     "openCard": "Abrir ficha",
     "legendTitle": "Aviso de condiciones",
     "hotspotLegend": "Halo = hotspot educativo",
-    "safetyChip": "Educativo · no recolección",
+    "safetyChip": "Educativo · cotos ≠ consumo",
+    "policyBanner": "MAP ≠ seguridad · cotos ≠ consumo. Solo orientación educativa; no autoriza recolección, identificación ni consumo.",
+    "cotosPolicy": "Cotos y permisos oficiales ≠ permiso de consumo. El mapa orienta; no identifica setas ni autoriza recolección.",
+    "multiviewChip": "Campo · multi-vista",
+    "multiviewTip": "En el campo: foto láminas + perfil + base. El mapa no identifica ni autoriza consumo.",
     "layerMarkers": "Marcadores",
     "layerHalos": "Halos",
     "layerHotspotsOnly": "Solo hotspots",
@@ -1032,7 +1036,7 @@
     "openEncyclopedia": "Enciclopedia",
     "openOsm": "Ver en mapa",
     "keepExploring": "Seguir",
-    "disclaimerShort": "Educativo · no recolección ni consumo. Consulta normativa y un micólogo.",
+    "disclaimerShort": "Educativo · cotos ≠ consumo. No autoriza recolección ni identificación. Consulta normativa y un micólogo.",
     "alert": {
       "unknown": {
         "label": "Sin datos",
