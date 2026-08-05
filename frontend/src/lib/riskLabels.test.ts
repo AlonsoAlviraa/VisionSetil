@@ -7,10 +7,10 @@ import {
   getRiskMeta,
   isSevereRisk,
   resolveJoinRisk,
+  RISK_DEFAULT,
   RISK_META,
   toRiskLabel,
 } from './riskLabels'
-import { RISK_DEFAULT } from '../components/RiskChip'
 
 import es from '../locales/es/common.json'
 import en from '../locales/en/common.json'

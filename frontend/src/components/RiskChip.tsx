@@ -3,10 +3,13 @@ import { useTranslation } from 'react-i18next'
 import {
   getRiskMeta,
   isSevereRisk,
-  RISK_META,
+  RISK_DEFAULT,
   toRiskLabel,
   type RiskLabel,
 } from '../lib/riskLabels'
+
+// Re-export SSOT fallbacks for callers that historically imported from the chip module.
+export { RISK_DEFAULT } from '../lib/riskLabels'
 
 type Props = {
   risk?: string | null
@@ -26,19 +29,6 @@ const RISK_I18N_KEY: Record<RiskLabel, string> = {
   unknown_or_risky: 'risk.orientation',
   dangerous_or_unknown: 'risk.dangerous_or_unknown',
   not_for_consumption_guidance: 'risk.not_for_consumption',
-}
-
-/**
- * ES fallbacks when i18n key is missing — must match RISK_META (SSOT).
- * poisonous = Venenosa; toxic = Tóxica (never collapse).
- */
-export const RISK_DEFAULT: Record<RiskLabel, string> = {
-  deadly: RISK_META.deadly.short,
-  poisonous: RISK_META.poisonous.short,
-  toxic: RISK_META.toxic.short,
-  unknown_or_risky: RISK_META.unknown_or_risky.short,
-  dangerous_or_unknown: RISK_META.dangerous_or_unknown.short,
-  not_for_consumption_guidance: RISK_META.not_for_consumption_guidance.short,
 }
 
 export function RiskChip({ risk, label, className = '', boost = false }: Props) {

@@ -44,6 +44,19 @@ export const RISK_META: Record<
   },
 }
 
+/**
+ * ES fallbacks when i18n key is missing — pure projection of RISK_META.short.
+ * poisonous = Venenosa; toxic = Tóxica (never collapse). Lives next to RISK_META (SSOT).
+ */
+export const RISK_DEFAULT: Record<RiskLabel, string> = {
+  deadly: RISK_META.deadly.short,
+  poisonous: RISK_META.poisonous.short,
+  toxic: RISK_META.toxic.short,
+  unknown_or_risky: RISK_META.unknown_or_risky.short,
+  dangerous_or_unknown: RISK_META.dangerous_or_unknown.short,
+  not_for_consumption_guidance: RISK_META.not_for_consumption_guidance.short,
+}
+
 /** Normalize backend edibility / risk strings to RiskLabel. */
 export function toRiskLabel(raw: string | null | undefined): RiskLabel {
   if (!raw) return 'dangerous_or_unknown'
