@@ -47,40 +47,42 @@ Ver también: `docs/SAFETY_POLICY.md`, `docs/OPERATOR_UNLOCK_RUNBOOK.md`, `docs/
 
 ## SSOT de diseño (execute-plan)
 
-| Rol | Path / nota |
-|-----|-------------|
-| **Design SSOT (execute-plan)** | Scratch session artifact: `C:\Users\Mariano\AppData\Local\Temp\grok-Mariano\grok-design-doc-08b0a458.md` — *Rediseño total VisionSetil: UX/fotos learning-first + loop ML continuo* (2026-08-05). **Not checked into this repo as a full design duplicate.** |
-| **Exec plan DAG** | `C:\Users\Mariano\AppData\Local\Temp\grok-Mariano\grok-exec-plan-bfde5857.json` |
+| Rol | ID / nota |
+|-----|-----------|
+| **Design SSOT** | execute-plan design scratch for plan **`bfde5857`** / design **`08b0a458`** — title *Rediseño total VisionSetil: UX/fotos learning-first + loop ML continuo* (2026-08-05). **Not checked into this repo** (no full design duplicate). Session-local scratch only; do not rely on machine absolute paths. |
+| **Exec plan DAG** | plan **`bfde5857`** — linearized pr-1…pr-18 (UX ∥ ML); see PR track table below |
 | **This file** | In-repo goal pointer + acceptance checklist only |
 
-Si el design se materializa en-repo más adelante, preferir un único doc bajo `docs/design/` y dejar **este** archivo como entry point (no copiar el cuerpo).
+Si el design se materializa en-repo más adelante, preferir un único doc bajo `docs/design/` (e.g. relative `docs/design/LEARNING_FIRST_UX.md`) y dejar **este** archivo como entry point (no copiar el cuerpo).
 
 ---
 
 ## Skills (implementación)
 
-| Skill | Path |
-|-------|------|
-| Frontend | [`.grok/skills/frontend-visionsetil/SKILL.md`](../.grok/skills/frontend-visionsetil/SKILL.md) |
-| Loop ML | [`.grok/skills/loop-ml-visionsetil/SKILL.md`](../.grok/skills/loop-ml-visionsetil/SKILL.md) *(path canónico del design; crear/rellenar si ausente)* |
-| Mycology safety | [`.grok/skills/mycology-safety/SKILL.md`](../.grok/skills/mycology-safety/SKILL.md) |
+| Skill | Path | In-tree |
+|-------|------|---------|
+| Frontend | [`.grok/skills/frontend-visionsetil/SKILL.md`](../.grok/skills/frontend-visionsetil/SKILL.md) | present |
+| Loop ML | `.grok/skills/loop-ml-visionsetil/SKILL.md` | **pending** — path canónico del design; crear/rellenar si ausente |
+| Mycology safety | [`.grok/skills/mycology-safety/SKILL.md`](../.grok/skills/mycology-safety/SKILL.md) | present |
 
 ---
 
 ## Related goal / loop / launch docs
 
-| Doc | Path | Notas |
-|-----|------|--------|
-| Redesign goal | [`docs/GOAL_APP_WEB_REDESIGN.md`](GOAL_APP_WEB_REDESIGN.md) | Shell / redesign bar (puede estar pending en tree) |
-| Games parity | [`docs/GOAL_APP_WEB_PARITY_GAMES.md`](GOAL_APP_WEB_PARITY_GAMES.md) | App/web games parity |
-| Launch readiness | [`docs/LAUNCH_READINESS.md`](LAUNCH_READINESS.md) | Launch honesty; no public identify-as-field-tool sin quality |
-| Loop ML full | [`docs/LOOP_ENGINEERING_ML.md`](LOOP_ENGINEERING_ML.md) | Pipeline ML continuo (canónico design) |
-| Loop engineering (producto 8w) | [`docs/LOOP_ENGINEERING_2M_PLAN.md`](LOOP_ENGINEERING_2M_PLAN.md) | Plan loop producto (shipped) |
-| Safety policy | [`docs/SAFETY_POLICY.md`](SAFETY_POLICY.md) | R1/R7 posture |
-| Open-set notes | [`docs/OPEN_SET_CALIBRATION_NOTES.md`](OPEN_SET_CALIBRATION_NOTES.md) | Serve honesty |
-| ML experiments index | [`eval/reports/ml_experiments/LOOP_INDEX.md`](../eval/reports/ml_experiments/LOOP_INDEX.md) | Lab index (si existe) |
-| E20 metrics SSOT | [`eval/reports/ml_experiments/E20_BASELINE_METRICS_TO_IMPROVE.json`](../eval/reports/ml_experiments/E20_BASELINE_METRICS_TO_IMPROVE.json) | Cite metrics from file only |
-| FE audit | [`docs/audits/frontend-ux-perf-audit-2026-07-30.md`](audits/frontend-ux-perf-audit-2026-07-30.md) | Residual UX debt |
+Rows marked **pending** are canonic design targets not present in this worktree yet (404 until created). They are **not** product-rails failures — pointer honesty only.
+
+| Doc | Path | In-tree | Notas |
+|-----|------|---------|--------|
+| Redesign goal | `docs/GOAL_APP_WEB_REDESIGN.md` | **pending** | Shell / redesign bar |
+| Games parity | `docs/GOAL_APP_WEB_PARITY_GAMES.md` | **pending** | App/web games parity |
+| Launch readiness | `docs/LAUNCH_READINESS.md` | **pending** | Launch honesty; no public identify-as-field-tool sin quality |
+| Loop ML full | `docs/LOOP_ENGINEERING_ML.md` | **pending** | Pipeline ML continuo (canónico design) |
+| Loop engineering (producto 8w) | [`docs/LOOP_ENGINEERING_2M_PLAN.md`](LOOP_ENGINEERING_2M_PLAN.md) | present | Plan loop producto (shipped) |
+| Safety policy | [`docs/SAFETY_POLICY.md`](SAFETY_POLICY.md) | present | R1/R7 posture |
+| Open-set notes | [`docs/OPEN_SET_CALIBRATION_NOTES.md`](OPEN_SET_CALIBRATION_NOTES.md) | present | Serve honesty |
+| ML experiments index | `eval/reports/ml_experiments/LOOP_INDEX.md` | **pending** | Lab index |
+| E20 metrics SSOT | `eval/reports/ml_experiments/E20_BASELINE_METRICS_TO_IMPROVE.json` | **pending** | Cite metrics from file only when present |
+| FE audit | [`docs/audits/frontend-ux-perf-audit-2026-07-30.md`](audits/frontend-ux-perf-audit-2026-07-30.md) | present | Residual UX debt |
 
 ---
 
