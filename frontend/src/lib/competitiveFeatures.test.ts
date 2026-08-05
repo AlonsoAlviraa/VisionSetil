@@ -411,6 +411,50 @@ describe('competitive feature adoption', () => {
     expect(slots).toMatch(/preSubmitFreeModeCoach/)
   })
 
+  it('UX-01 Identify residual R1–R5 (sticky / soft-confirm / slot / ES / JPEG)', () => {
+    // R1: sticky analyze/result CTAs clear fixed bottom-nav (≥ nav + 8px + safe-area)
+    const cn = readFileSync(resolve(root, 'src/styles/campo-nocturno.css'), 'utf8')
+    expect(cn).toMatch(
+      /--cn-sticky-above-nav:\s*calc\(\s*var\(--cn-bottom-nav-h\)\s*\+\s*8px/,
+    )
+    expect(cn).toMatch(
+      /\.app--has-bottom-nav\s+\.page-identify\s+\.analyze-actions/,
+    )
+    expect(cn).toMatch(
+      /\.app--has-bottom-nav\s+\.page-identify\s+\.identify-sticky-cta/,
+    )
+    expect(cn).toMatch(/bottom:\s*var\(--cn-sticky-above-nav\)/)
+
+    // R2: soft-confirm UI wired (not no-op) — open, add→camera, proceed→classify
+    const id = readFileSync(resolve(root, 'src/pages/IdentifyPage.tsx'), 'utf8')
+    expect(id).toMatch(/data-testid="identify-soft-confirm"/)
+    expect(id).toMatch(/data-testid="identify-soft-confirm-add"/)
+    expect(id).toMatch(/data-testid="identify-soft-confirm-proceed"/)
+    expect(id).toMatch(/dismissSoftConfirm|confirmClassifySoft|requestClassify/)
+    expect(id).toMatch(/setSoftConfirmOpen\(true\)/)
+    expect(id).toMatch(/onAdd=\{dismissSoftConfirm\}/)
+    expect(id).toMatch(/onProceed=\{confirmClassifySoft\}/)
+
+    // R3: pressed wizard slot → cameraTargetSlot → onAssign that view
+    expect(id).toMatch(/setCameraTargetSlot\(view\)/)
+    expect(id).toMatch(/cameraTargetSlot\s*\?\?\s*\(useWizard\s*\?\s*nextCameraSlot/)
+    expect(id).toMatch(/onAssignSlot\(target,\s*file,\s*previewUrl\)/)
+    const wiz = readFileSync(resolve(root, 'src/components/MultiViewWizard.tsx'), 'utf8')
+    expect(wiz).toMatch(/onOpenCamera\(slot\.view\)/)
+
+    // R4: ES soft-confirm proceed exact (audit cheat-sheet; no raw "orientación only")
+    const es = readFileSync(resolve(root, 'src/locales/es/common.json'), 'utf8')
+    expect(es).toMatch(/"Identificar con 1 foto \(menos fiable\)"/)
+    expect(es).toMatch(/"Continuar sin más fotos"/)
+    expect(es).not.toMatch(/orientaci[oó]n only/i)
+
+    // R5: JPEG long-edge ≤1280 (already in CameraCapture — lock regression)
+    const cam = readFileSync(resolve(root, 'src/components/CameraCapture.tsx'), 'utf8')
+    expect(cam).toMatch(/maxEdge\s*=\s*1280/)
+    expect(cam).toMatch(/image\/jpeg/)
+    expect(cam).toMatch(/0\.82/)
+  })
+
   it('v1.8 community human consensus + offline encyclopedia depth', () => {
     const community = readFileSync(resolve(root, 'src/pages/CommunityPage.tsx'), 'utf8')
     expect(community).toMatch(/community-consensus-strip|communityConsensusChip/)

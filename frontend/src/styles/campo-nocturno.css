@@ -410,9 +410,14 @@ body {
 
 /* ── Bottom nav (design bar) ────────────────────────────────────────────── */
 :root {
-  /* Height of bottom nav chrome (min-height item + padding, excl. safe-area) */
-  --cn-bottom-nav-h: 3.6rem;
-  --cn-sticky-above-nav: calc(var(--cn-bottom-nav-h) + env(safe-area-inset-bottom, 0px));
+  /* Height of bottom nav chrome excl. safe-area:
+   * pad-top 0.35 + item min-height 3.1 + pad-bottom 0.4 = 3.85rem
+   * (was 3.6rem → sticky Analizar sat slightly under the bar). */
+  --cn-bottom-nav-h: 3.85rem;
+  /* UX-01 R1: sticky CTA clearance ≥ nav + 8px + home-indicator safe-area */
+  --cn-sticky-above-nav: calc(
+    var(--cn-bottom-nav-h) + 8px + env(safe-area-inset-bottom, 0px)
+  );
 }
 
 .cn-bottom-nav,
