@@ -110,6 +110,23 @@ describe('competitive feature adoption', () => {
     expect(edu).toMatch(/orientation|nunca consumo|pairDiagPolicy/i)
   })
 
+  it('Education anchors #multi-view and #deadly-study for PhotoCoach / Más deep-links', () => {
+    const edu = readFileSync(resolve(root, 'src/pages/EducationPage.tsx'), 'utf8')
+    expect(edu).toMatch(/id=["']multi-view["']/)
+    expect(edu).toMatch(/id=["']deadly-study["']/)
+    expect(edu).toMatch(/edu-deadly-study/)
+    expect(edu).toMatch(/scrollIntoView|location\.hash/)
+    expect(edu).toMatch(/nunca consumo|orientaci/i)
+    const more = readFileSync(resolve(root, 'src/pages/MoreHubPage.tsx'), 'utf8')
+    expect(more).toMatch(/more-hub-learn-blurb/)
+    expect(more).toMatch(/\/educacion#multi-view/)
+    expect(more).toMatch(/multi-vista|multi-view|lookalike/i)
+    expect(more).toMatch(/orientaci[oó]n|nunca consumo/i)
+    const nav = readFileSync(resolve(root, 'src/lib/navConfig.ts'), 'utf8')
+    expect(nav).toMatch(/to:\s*['"]\/educacion['"]/)
+    expect(nav).toMatch(/Multi-vista|multi-vista/)
+  })
+
   it('Offline pack + Community surface multi-view honesty (no unlock)', () => {
     const offline = readFileSync(resolve(root, 'src/pages/OfflinePackPage.tsx'), 'utf8')
     expect(offline).toMatch(/offlinePackMultiviewHonesty|offline-multiview-honesty/)

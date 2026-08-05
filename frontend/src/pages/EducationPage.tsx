@@ -1,9 +1,10 @@
 /**
  * Education — safety, anatomy, seasons, multi-view diagnostics, emergency.
  * Wave A: no cooking/dosing/consumption-permission language.
+ * Anchors: #multi-view (PhotoCoach CTA), #deadly-study (pairs / study).
  */
-import { useMemo, useState, type ReactNode } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useMemo, useState, type ReactNode } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
   IconAlert,
@@ -182,14 +183,48 @@ const faqItems: AccordionItem[] = [
   },
 ]
 
+/** Hash targets for PhotoCoach / Más soft deep-links (SPA scroll after lazy mount). */
+const EDU_HASH_IDS = new Set(['multi-view', 'deadly-study'])
+
+function scrollEducationHash(hash: string) {
+  const id = hash.replace(/^#/, '')
+  if (!id || !EDU_HASH_IDS.has(id)) return
+  const el = document.getElementById(id)
+  if (!el) return
+  el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  // Move focus for a11y without forcing a visible ring unless keyboard user
+  if (typeof el.focus === 'function') {
+    try {
+      el.focus({ preventScroll: true })
+    } catch {
+      el.focus()
+    }
+  }
+}
+
 export function EducationPage() {
   const { t, i18n } = useTranslation()
+  const location = useLocation()
   const locale = i18n.resolvedLanguage || i18n.language || 'es'
   const [openFaq, setOpenFaq] = useState<number | null>(0)
 
   const priorityViews = useMemo(() => deadlyPriorityViews().slice(0, 3), [])
   const deadlyPairs = useMemo(() => deadlyDiagnosticPairs().slice(0, 8), [])
   const coach = useMemo(() => deadlyCoach(locale), [locale])
+
+  // Lazy route: native hash jump often races mount — re-scroll when hash is known.
+  useEffect(() => {
+    const hash = location.hash || window.location.hash
+    if (!hash) return
+    const run = () => scrollEducationHash(hash)
+    run()
+    const t0 = window.setTimeout(run, 50)
+    const t1 = window.setTimeout(run, 200)
+    return () => {
+      window.clearTimeout(t0)
+      window.clearTimeout(t1)
+    }
+  }, [location.hash, location.pathname])
 
   return (
     <PageShell
@@ -318,9 +353,12 @@ export function EducationPage() {
         <DichotomousKey />
       </section>
 
+      {/* Deep-link targets: /educacion#multi-view · /educacion#deadly-study */}
       <section
-        className="edu-section edu-multiview-diag"
+        id="multi-view"
+        className="edu-section edu-multiview-diag edu-anchor-target"
         data-testid="edu-multiview-diagnostic"
+        tabIndex={-1}
         aria-label={t('education.multiviewDiagAria', {
           defaultValue: 'Multi-vista diagnóstica (educativo)',
         })}
@@ -354,33 +392,54 @@ export function EducationPage() {
             </span>
           ))}
         </div>
-        {deadlyPairs.length > 0 && (
-          <div className="edu-diag-pairs" data-testid="edu-diag-pairs">
-            {deadlyPairs.map((pair) => (
-              <article
-                key={pair.id}
-                className="edu-diag-pair atelier-panel"
-                data-pair-id={pair.id}
-              >
-                <h3 className="edu-diag-pair__taxa">
-                  {pair.taxa.slice(0, 2).join(' ↔ ')}
-                </h3>
-                {pair.why ? <p className="edu-diag-pair__why muted">{pair.why}</p> : null}
-                <div className="lookalike-item__diag-views">
-                  {(pair.critical_views || []).slice(0, 4).map((view) => (
-                    <span
-                      key={view}
-                      className="lookalike-item__diag-badge lookalike-item__diag-badge--static"
-                      data-slot={view}
-                    >
-                      {t(`identify.views.${view}`, { defaultValue: view })}
-                    </span>
-                  ))}
-                </div>
-              </article>
-            ))}
-          </div>
-        )}
+        <div
+          id="deadly-study"
+          className="edu-deadly-study edu-anchor-target"
+          data-testid="edu-deadly-study"
+          tabIndex={-1}
+          aria-label={t('education.deadlyStudyAria', {
+            defaultValue: 'Estudio de confusiones mortales (educativo)',
+          })}
+        >
+          <h3 className="edu-deadly-study__title">
+            {t('education.deadlyStudyTitle', {
+              defaultValue: 'Estudio mortales — pares y vistas clave',
+            })}
+          </h3>
+          <p className="edu-intro muted">
+            {t('education.deadlyStudyLead', {
+              defaultValue:
+                'Pares de confusión con riesgo mortal: compara solo con fotos multi-vista. Orientación de estudio — nunca permiso de consumo ni de recolección.',
+            })}
+          </p>
+          {deadlyPairs.length > 0 ? (
+            <div className="edu-diag-pairs" data-testid="edu-diag-pairs">
+              {deadlyPairs.map((pair) => (
+                <article
+                  key={pair.id}
+                  className="edu-diag-pair atelier-panel"
+                  data-pair-id={pair.id}
+                >
+                  <h3 className="edu-diag-pair__taxa">
+                    {pair.taxa.slice(0, 2).join(' ↔ ')}
+                  </h3>
+                  {pair.why ? <p className="edu-diag-pair__why muted">{pair.why}</p> : null}
+                  <div className="lookalike-item__diag-views">
+                    {(pair.critical_views || []).slice(0, 4).map((view) => (
+                      <span
+                        key={view}
+                        className="lookalike-item__diag-badge lookalike-item__diag-badge--static"
+                        data-slot={view}
+                      >
+                        {t(`identify.views.${view}`, { defaultValue: view })}
+                      </span>
+                    ))}
+                  </div>
+                </article>
+              ))}
+            </div>
+          ) : null}
+        </div>
         <p className="lookalike-item__diag-policy muted" data-policy={diagnosticPolicy()}>
           {t('result.pairDiagPolicy', {
             defaultValue:

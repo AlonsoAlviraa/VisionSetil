@@ -10,6 +10,19 @@ import {
 import { WORLD_MUSHROOM_RESOURCES } from '../lib/openStudyLinks'
 import { MORE_NAV_GROUPS } from '../lib/navConfig'
 
+/**
+ * Learn-group blurb clarity (PR-UX-07b): multi-view photos + lookalikes + orientation only.
+ * Falls back to navConfig blurbFallback when i18n key is missing.
+ */
+const LEARN_BLURB_DEFAULTS: Record<string, string> = {
+  'nav.blurb.education':
+    'Multi-vista (láminas, perfil, base) y estudio mortales · solo orientación',
+  'nav.blurb.lookalikes': 'Lookalikes lado a lado · estudio, nunca consumo',
+  'nav.blurb.setadle': 'Adivina la seta · juego de estudio',
+  'nav.blurb.quiz': 'Quiz de caracteres · sin permiso de consumo',
+  'nav.blurb.wordle': 'Letras del nombre · solo estudio',
+}
+
 export function MoreHubPage() {
   const { t } = useTranslation()
   const betaHref = betaFeedbackHref()
@@ -45,10 +58,28 @@ export function MoreHubPage() {
                 {g.glyph ? <Icon name={g.glyph} size="sm" aria-hidden="true" /> : null}
                 {t(g.titleKey, { defaultValue: g.titleFallback })}
               </h2>
+              {g.id === 'learn' ? (
+                <p
+                  className="more-hub-group__lead muted"
+                  data-testid="more-hub-learn-blurb"
+                  role="note"
+                >
+                  {t('more.learnLead', {
+                    defaultValue:
+                      'Aprende con fotos multi-vista y confusiones (lookalikes). Solo orientación — nunca consumo ni recolección.',
+                  })}
+                </p>
+              ) : null}
               <ul className="more-hub-list more-hub-list--v12">
                 {g.items.map((item) => {
                   const isBeta = item.to === '/beta-feedback'
                   const glyph = item.glyph || 'circle'
+                  const blurbDefault =
+                    (g.id === 'learn' && LEARN_BLURB_DEFAULTS[item.blurbKey]) ||
+                    item.blurbFallback
+                  // Soft deep-link PhotoCoach / learn CTA into multi-view education anchor
+                  const to =
+                    item.to === '/educacion' ? '/educacion#multi-view' : item.to
                   const body = (
                     <>
                       <span className="more-hub-tile__icon" aria-hidden="true">
@@ -59,7 +90,7 @@ export function MoreHubPage() {
                           {t(item.labelKey, { defaultValue: item.fallback })}
                         </span>
                         <span className="more-hub-tile__blurb">
-                          {t(item.blurbKey, { defaultValue: item.blurbFallback })}
+                          {t(item.blurbKey, { defaultValue: blurbDefault })}
                         </span>
                       </span>
                       <Icon
@@ -88,7 +119,7 @@ export function MoreHubPage() {
                   }
                   return (
                     <li key={item.to} className="more-hub-tile">
-                      <Link to={item.to} className="more-hub-tile__link" data-testid={item.testId}>
+                      <Link to={to} className="more-hub-tile__link" data-testid={item.testId}>
                         {body}
                       </Link>
                     </li>

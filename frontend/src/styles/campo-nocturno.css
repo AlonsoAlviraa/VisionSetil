@@ -4464,6 +4464,30 @@ html[data-skin='campo-nocturno'] .container {
   scroll-margin-top: calc(var(--header-h, 64px) + 5.5rem);
   outline: none;
 }
+
+/* Education deep-links: /educacion#multi-view · #deadly-study (clear sticky chrome) */
+.edu-anchor-target {
+  scroll-margin-top: calc(var(--header-h, 64px) + 4.5rem);
+  outline: none;
+}
+.edu-deadly-study {
+  margin-top: 1rem;
+}
+.edu-deadly-study__title {
+  margin: 0 0 0.4rem;
+  font-family: var(--font-display, inherit);
+  font-size: 1.05rem;
+  font-weight: 650;
+  color: var(--cn-cream, inherit);
+}
+
+/* Más hub learn group lead (PR-UX-07b) */
+.page-more-hub--v12 .more-hub-group__lead {
+  margin: -0.25rem 0 0.75rem;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  max-width: 40rem;
+}
 .page-encyclopedia--cn .family-guide-strip__card {
   position: relative;
   z-index: 1;
