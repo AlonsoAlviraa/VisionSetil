@@ -9,14 +9,16 @@ Insights (lookalike hotspots, deadly@1, hard-neg pairs) are OPTIONAL:
   recorded / copied as sidecars when present; never block staging alone.
 
 NEVER auto-push Kaggle. product_unlock always false.
-  --push is human-only and requires --i-accept-operator-responsibility.
+  --push is human-only and requires the triple gate:
+  --push --i-accept-operator-responsibility --execute
 
 Usage:
   python scripts/stage_train_notebook_if_rails_ok.py
   python scripts/stage_train_notebook_if_rails_ok.py --models-dir PATH
   python scripts/stage_train_notebook_if_rails_ok.py --rebuild-notebook
-  # Human push only (still no product_unlock):
-  python scripts/stage_train_notebook_if_rails_ok.py --push --i-accept-operator-responsibility
+  # Human push only (still no product_unlock) — all three flags required:
+  python scripts/stage_train_notebook_if_rails_ok.py \\
+    --push --i-accept-operator-responsibility --execute
 """
 from __future__ import annotations
 
@@ -28,7 +30,7 @@ import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
@@ -56,24 +58,6 @@ KERNEL_SLUG = "alonsoalviraaaa/visionsetil-exp-v20-source-holdout"
 FT_DATASET = "picekl/fungitastic"
 GBIF_DATASET = "alonsoalviraaaa/visionsetil-gbif-es-allowlist40"
 
-def _hard_neg_candidates() -> list[Path]:
-    """Portable hard-neg paths (in-repo + optional VISIONSETIL_DATA_DIR)."""
-    cands = [ROOT / "data" / "industrial_v1" / "hard_negative_pairs_e20.json"]
-    data_env = (os.environ.get("VISIONSETIL_DATA_DIR") or "").strip()
-    if data_env:
-        cands.append(Path(data_env) / "industrial_v1" / "hard_negative_pairs_e20.json")
-    # Sibling of models dir when VISIONSETIL_MODELS_DIR points at .../kernel_output_v20/models
-    models_env = (os.environ.get("VISIONSETIL_MODELS_DIR") or "").strip()
-    if models_env:
-        md = Path(models_env)
-        # .../VISIONSETIL/kaggle/kernel_output_v20/models → .../VISIONSETIL/data/industrial_v1
-        try:
-            repo_guess = md.resolve().parents[2]  # up from models → kernel_output → kaggle → repo
-            cands.append(repo_guess / "data" / "industrial_v1" / "hard_negative_pairs_e20.json")
-        except (IndexError, OSError):
-            pass
-    return cands
-
 # Optional insight globs under eval/reports/ml_experiments (not hard deps)
 INSIGHT_GLOBS = (
     "loop_iter*hotspot*.json",
@@ -84,6 +68,8 @@ INSIGHT_GLOBS = (
     "dual_deadly_honest_recompute.json",
     "*lepiota*inventory*.json",
 )
+
+KaggleRunner = Callable[[list[str]], dict[str, Any]]
 
 
 def _utc_now() -> str:
@@ -99,8 +85,87 @@ def _load_json(path: Path) -> Any | None:
         return None
 
 
+def _in_repo_rel(path: Path | str | None) -> str | None:
+    """Repo-relative POSIX path only; None when outside repo (unlike _repo_rel)."""
+    if path is None:
+        return None
+    p = Path(path)
+    try:
+        return p.resolve().relative_to(ROOT.resolve()).as_posix()
+    except (ValueError, OSError):
+        return None
+
+
+def _path_hygiene(path: Path | None, *, env_label: str = "env_or_explicit") -> dict[str, Any]:
+    """Prefer repo-rel for portable keys; absolute only under *_resolved."""
+    if path is None:
+        return {
+            "path": None,
+            "path_resolved": None,
+            "path_source": None,
+            "in_repo": False,
+        }
+    rel = _in_repo_rel(path)
+    try:
+        resolved = str(path.resolve())
+    except OSError:
+        resolved = str(path)
+    return {
+        "path": rel,  # None when outside repo — not absolute workstation path
+        "path_resolved": resolved,
+        "path_source": "in_repo" if rel else env_label,
+        "in_repo": rel is not None,
+    }
+
+
+def _hard_neg_candidates() -> list[tuple[Path, str]]:
+    """Portable hard-neg paths with source labels.
+
+    Returns (path, source_label) pairs. Layout assumption for models-dir sibling:
+      VISIONSETIL_MODELS_DIR = <repo>/kaggle/kernel_output_*/models
+    only then parents[2] is treated as repo root (parent.name chain ends .../kaggle/...).
+    Prefer VISIONSETIL_DATA_DIR when set; never invent paths.
+    """
+    cands: list[tuple[Path, str]] = [
+        (ROOT / "data" / "industrial_v1" / "hard_negative_pairs_e20.json", "in_repo"),
+    ]
+    data_env = (os.environ.get("VISIONSETIL_DATA_DIR") or "").strip()
+    if data_env:
+        cands.append(
+            (
+                Path(data_env) / "industrial_v1" / "hard_negative_pairs_e20.json",
+                "VISIONSETIL_DATA_DIR",
+            )
+        )
+    models_env = (os.environ.get("VISIONSETIL_MODELS_DIR") or "").strip()
+    if models_env:
+        md = Path(models_env)
+        try:
+            resolved = md.resolve()
+            # Expected: <repo>/kaggle/kernel_output_*/models
+            # parents[0]=kernel_output_*, [1]=kaggle, [2]=repo
+            if (
+                resolved.is_dir()
+                and resolved.name == "models"
+                and resolved.parent.parent.name == "kaggle"
+            ):
+                repo_guess = resolved.parents[2]
+                cands.append(
+                    (
+                        repo_guess
+                        / "data"
+                        / "industrial_v1"
+                        / "hard_negative_pairs_e20.json",
+                        "models_dir_sibling_layout",
+                    )
+                )
+        except (IndexError, OSError):
+            pass
+    return cands
+
+
 def discover_optional_insights(report_dir: Path = REPORT_DIR) -> dict[str, Any]:
-    """Find optional loop insights. Missing = GAP note, not a block."""
+    """Find optional loop insights. Missing = optional_gaps only, not a block."""
     found: list[dict[str, Any]] = []
     seen: set[str] = set()
     if report_dir.is_dir():
@@ -115,15 +180,17 @@ def discover_optional_insights(report_dir: Path = REPORT_DIR) -> dict[str, Any]:
                 found.append(
                     {
                         "name": key,
-                        "path": _repo_rel(p) or str(p),
+                        "path": _in_repo_rel(p) or _repo_rel(p) or str(p),
                         "size_bytes": p.stat().st_size,
                     }
                 )
 
     hard_neg_path: Path | None = None
-    for cand in _hard_neg_candidates():
-        if cand and cand.is_file():
+    hard_neg_source: str | None = None
+    for cand, source in _hard_neg_candidates():
+        if cand.is_file():
             hard_neg_path = cand
+            hard_neg_source = source
             break
 
     hard_neg_payload = _load_json(hard_neg_path) if hard_neg_path else None
@@ -146,26 +213,30 @@ def discover_optional_insights(report_dir: Path = REPORT_DIR) -> dict[str, Any]:
                     if isinstance(t, str) and t not in focus_taxa:
                         focus_taxa.append(t)
 
-    gaps: list[str] = []
+    optional_gaps: list[str] = []
     if not found:
-        gaps.append("loop_insight_jsons_absent_optional")
+        optional_gaps.append("loop_insight_jsons_absent_optional")
     if hard_neg_path is None:
-        gaps.append("hard_negative_pairs_absent_optional")
+        optional_gaps.append("hard_negative_pairs_absent_optional")
+
+    hn_hygiene = _path_hygiene(
+        hard_neg_path,
+        env_label=hard_neg_source or "outside_repo",
+    )
 
     return {
         "optional": True,
         "insights_present": bool(found) or hard_neg_path is not None,
         "insight_files": found,
-        "hard_negative_pairs_path": (
-            _repo_rel(hard_neg_path) if hard_neg_path else None
-        ),
-        "hard_negative_pairs_resolved": (
-            str(hard_neg_path.resolve()) if hard_neg_path else None
-        ),
+        # Portable key: repo-rel only; absolute only under *_resolved
+        "hard_negative_pairs_path": hn_hygiene["path"],
+        "hard_negative_pairs_resolved": hn_hygiene["path_resolved"],
+        "hard_negative_pairs_source": hard_neg_source,
         "hard_negative_pair_count": len(hard_neg_pairs),
         "hard_negative_pairs": hard_neg_pairs,
         "focus_taxa": focus_taxa,
-        "gaps": gaps,
+        "gaps": optional_gaps,  # kept under insights only
+        "optional_gaps": optional_gaps,
         "note": (
             "Insights optional for ML-07: stage proceeds on rails alone; "
             "hard_neg/focus used when present for sampler/boost sidecars."
@@ -174,7 +245,7 @@ def discover_optional_insights(report_dir: Path = REPORT_DIR) -> dict[str, Any]:
 
 
 def ensure_notebook(*, rebuild: bool = False) -> tuple[Path | None, list[str]]:
-    """Return notebook path or None + gaps. Optional rebuild via build_exp_v20."""
+    """Return notebook path or None + blocking gaps. Optional rebuild via build_exp_v20."""
     gaps: list[str] = []
     if rebuild or not NOTEBOOK_SRC.is_file():
         if not BUILD_SCRIPT.is_file():
@@ -242,7 +313,7 @@ def stage_notebook(
         if src.is_file():
             dest_hn = staging_dir / "hard_negative_pairs_e20.json"
             shutil.copy2(src, dest_hn)
-            sidecars.append(_repo_rel(dest_hn) or str(dest_hn))
+            sidecars.append(_in_repo_rel(dest_hn) or str(dest_hn))
 
     # Focus summary for human operator (lab only)
     focus_path = staging_dir / "stage_focus_sidecar.json"
@@ -264,13 +335,13 @@ def stage_notebook(
         json.dumps(focus_payload, indent=2, ensure_ascii=False) + "\n",
         encoding="utf-8",
     )
-    sidecars.append(_repo_rel(focus_path) or str(focus_path))
+    sidecars.append(_in_repo_rel(focus_path) or str(focus_path))
 
     return {
         "staged": True,
-        "staging_dir": _repo_rel(staging_dir) or str(staging_dir),
-        "notebook": _repo_rel(dest_nb) or str(dest_nb),
-        "kernel_metadata": _repo_rel(dest_meta) or str(dest_meta),
+        "staging_dir": _in_repo_rel(staging_dir) or str(staging_dir),
+        "notebook": _in_repo_rel(dest_nb) or str(dest_nb),
+        "kernel_metadata": _in_repo_rel(dest_meta) or str(dest_meta),
         "kernel_slug": KERNEL_SLUG,
         "notebook_bytes": dest_nb.stat().st_size,
         "sidecars": sidecars,
@@ -284,8 +355,13 @@ def attempt_human_push(
     *,
     confirm: bool,
     execute: bool,
+    kaggle_runner: KaggleRunner | None = None,
 ) -> dict[str, Any]:
-    """Human-only push. Fail-closed without confirm+execute. Never product_unlock."""
+    """Human-only push. Fail-closed without confirm+execute. Never product_unlock.
+
+    Missing ``kaggle`` CLI is caught and returned as structured push_failed so the
+    caller can still write stage_train_notebook_latest.json after staging.
+    """
     out: dict[str, Any] = {
         "requested": True,
         "attempted": False,
@@ -316,10 +392,87 @@ def attempt_human_push(
         )
         return out
 
-    # Even with flags, this PR path defaults dry unless --execute (already gated)
     cmd = ["kaggle", "kernels", "push", "-p", str(staging_dir)]
     print(" $", " ".join(cmd))
-    r = subprocess.run(cmd, capture_output=True, text=True, cwd=str(ROOT))
+
+    if kaggle_runner is not None:
+        try:
+            result = kaggle_runner(cmd)
+        except (FileNotFoundError, OSError) as exc:
+            out.update(
+                {
+                    "attempted": True,
+                    "dry_run": False,
+                    "success": False,
+                    "returncode": 127,
+                    "status": "push_failed",
+                    "error": "kaggle_cli_missing_or_os_error",
+                    "output_tail": str(exc),
+                    "cmd": cmd,
+                    "monitor": f"https://www.kaggle.com/code/{KERNEL_SLUG}",
+                    "note": "Kaggle CLI missing or OS error; report still written.",
+                }
+            )
+            return out
+        rc = int(result.get("returncode", 1))
+        tail = str(result.get("output_tail") or "")[-4000:]
+        out.update(
+            {
+                "attempted": True,
+                "dry_run": False,
+                "success": rc == 0,
+                "returncode": rc,
+                "output_tail": tail,
+                "status": "pushed" if rc == 0 else "push_failed",
+                "cmd": cmd,
+                "monitor": f"https://www.kaggle.com/code/{KERNEL_SLUG}",
+            }
+        )
+        return out
+
+    try:
+        r = subprocess.run(cmd, capture_output=True, text=True, cwd=str(ROOT))
+    except FileNotFoundError as exc:
+        # kaggle not on PATH — do not abort evaluate_and_stage / write_report
+        msg = f"kaggle CLI not found on PATH: {exc}"
+        print(msg, file=sys.stderr)
+        out.update(
+            {
+                "attempted": True,
+                "dry_run": False,
+                "success": False,
+                "returncode": 127,
+                "status": "push_failed",
+                "error": "kaggle_cli_not_found",
+                "output_tail": msg,
+                "cmd": cmd,
+                "monitor": f"https://www.kaggle.com/code/{KERNEL_SLUG}",
+                "note": (
+                    "Install/authenticate Kaggle CLI before human push. "
+                    "Staging already complete; SSOT report will still be written."
+                ),
+            }
+        )
+        return out
+    except OSError as exc:
+        msg = f"kaggle push OS error: {exc}"
+        print(msg, file=sys.stderr)
+        out.update(
+            {
+                "attempted": True,
+                "dry_run": False,
+                "success": False,
+                "returncode": 1,
+                "status": "push_failed",
+                "error": "kaggle_push_os_error",
+                "output_tail": msg,
+                "cmd": cmd,
+                "monitor": f"https://www.kaggle.com/code/{KERNEL_SLUG}",
+                "note": "OS error during push; staging intact; report still written.",
+            }
+        )
+        return out
+
     tail = ((r.stdout or "") + (r.stderr or ""))[-4000:]
     out.update(
         {
@@ -348,6 +501,7 @@ def evaluate_and_stage(
     push_confirm: bool = False,
     push_execute: bool = False,
     skip_rails_refresh: bool = False,
+    kaggle_runner: KaggleRunner | None = None,
 ) -> dict[str, Any]:
     """Core pipeline. product_unlock always false. Stage-only by default."""
     mdir = resolve_models_dir(models_dir)
@@ -361,19 +515,22 @@ def evaluate_and_stage(
         rails = evaluate_anti_leak_rails(models_dir=models_dir)
         write_rails_report(rails)
 
-    can_stage = bool(
-        rails.get("can_stage_train_notebook") or rails.get("can_stage")
-    )
+    # Prefer sole explicit key; missing → false (no soft can_stage fallback)
+    can_stage = bool(rails.get("can_stage_train_notebook"))
     insights = discover_optional_insights()
-    gaps: list[str] = list(rails.get("gaps") or []) + list(insights.get("gaps") or [])
+
+    # Split: optional insight gaps never land in top-level blocking list
+    blocking_gaps: list[str] = list(rails.get("gaps") or [])
+    optional_gaps: list[str] = list(insights.get("optional_gaps") or insights.get("gaps") or [])
 
     staged_info: dict[str, Any] | None = None
     notebook_gaps: list[str] = []
     push_info: dict[str, Any] | None = None
+    operator_action = ""
 
     if can_stage:
         nb, notebook_gaps = ensure_notebook(rebuild=rebuild_notebook)
-        gaps.extend(notebook_gaps)
+        blocking_gaps.extend(notebook_gaps)
         if nb is not None:
             staged_info = stage_notebook(nb, insights)
             status = "staged_rails_green"
@@ -388,15 +545,17 @@ def evaluate_and_stage(
                     STAGING_DIR,
                     confirm=push_confirm,
                     execute=push_execute,
+                    kaggle_runner=kaggle_runner,
                 )
                 if push_info.get("success"):
                     status = "staged_and_human_pushed"
                 elif push_info.get("attempted"):
                     status = "staged_push_failed"
-                    gaps.append("human_push_failed")
+                    blocking_gaps.append("human_push_failed")
                 else:
+                    # Stage OK; human gates missing — not a blocking failure for exit
                     status = "staged_push_blocked_gates"
-                    gaps.append("human_push_gates_missing")
+                    optional_gaps.append("human_push_gates_missing_optional")
         else:
             status = "rails_green_notebook_gap"
             operator_action = (
@@ -411,6 +570,29 @@ def evaluate_and_stage(
             "Fix rails / provide E20 models dir first."
         )
 
+    # Path hygiene: models_dir portable key is repo-rel only
+    models_hygiene = _path_hygiene(
+        mdir,
+        env_label=(
+            "VISIONSETIL_MODELS_DIR_or_explicit"
+            if mdir is not None
+            else "missing"
+        ),
+    )
+    # Prefer our hygiene; fall back to rails keys cleaned the same way
+    rails_models_path = rails.get("models_dir")
+    rails_models_resolved = rails.get("models_dir_resolved")
+    if models_hygiene["path"] is None and rails_models_path:
+        # rails may have stored absolute via _repo_rel — re-hygiene
+        rails_hygiene = _path_hygiene(
+            Path(rails_models_resolved or rails_models_path)
+            if (rails_models_resolved or rails_models_path)
+            else None,
+            env_label="rails_report",
+        )
+        if mdir is None:
+            models_hygiene = rails_hygiene
+
     payload: dict[str, Any] = {
         "generated_at": _utc_now(),
         "policy": POLICY,
@@ -423,7 +605,7 @@ def evaluate_and_stage(
         "auto_kaggle_push": False,
         "status": status,
         "can_stage_train_notebook": can_stage,
-        "can_stage": can_stage,
+        "can_stage": can_stage,  # mirror explicit key only (same value)
         "staged": bool(staged_info and staged_info.get("staged")),
         "staging": staged_info,
         "insights": insights,
@@ -432,22 +614,28 @@ def evaluate_and_stage(
             "can_stage_train_notebook": can_stage,
             "fail_reasons": rails.get("fail_reasons") or [],
             "gaps": rails.get("gaps") or [],
-            "report_path": _repo_rel(RAILS_OUT) or str(RAILS_OUT),
-            "models_dir": rails.get("models_dir"),
-            "models_dir_resolved": rails.get("models_dir_resolved"),
+            "report_path": _in_repo_rel(RAILS_OUT) or str(RAILS_OUT),
+            # Portable: repo-rel only; absolute under models_dir_resolved
+            "models_dir": models_hygiene["path"],
+            "models_dir_resolved": models_hygiene["path_resolved"],
+            "models_dir_source": models_hygiene["path_source"],
         },
-        "models_dir": _repo_rel(mdir) if mdir else rails.get("models_dir"),
-        "models_dir_resolved": (
-            str(mdir.resolve()) if mdir else rails.get("models_dir_resolved")
-        ),
+        "models_dir": models_hygiene["path"],
+        "models_dir_resolved": models_hygiene["path_resolved"],
+        "models_dir_source": models_hygiene["path_source"],
         "push": push_info
         or {
             "requested": False,
             "attempted": False,
+            "success": False,
             "auto_kaggle_push": False,
+            "product_unlock": False,
             "note": "Default path is stage-only; no Kaggle push.",
         },
-        "gaps": gaps,
+        # Top-level gaps = blocking only (optional never false-negatives green stage)
+        "gaps": blocking_gaps,
+        "blocking_gaps": blocking_gaps,
+        "optional_gaps": optional_gaps,
         "operator_action": operator_action,
         "honesty": {
             "metrics_label": "[MEASURED]",
@@ -456,12 +644,15 @@ def evaluate_and_stage(
             "never_auto_push": True,
             "product_unlock_forced_false": True,
             "gbif_es_holdout_must_stay_pure": True,
+            "exit_nonzero_on_human_push_failure": True,
+            "path_hygiene_absolute_only_under_resolved": True,
         },
         "note": (
             "ML-07 stage gate: rails required; insights optional. "
-            "Never flips product_unlock. Never forages. Never auto Kaggle push."
+            "Never flips product_unlock. Never forages. Never auto Kaggle push. "
+            "Exit non-zero if human push attempted and failed."
         ),
-        "report_path": _repo_rel(OUT_JSON) or str(OUT_JSON),
+        "report_path": _in_repo_rel(OUT_JSON) or str(OUT_JSON),
     }
     return payload
 
@@ -473,6 +664,20 @@ def write_report(payload: dict[str, Any], path: Path | None = None) -> Path:
         json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
     )
     return out
+
+
+def exit_code_for_payload(payload: dict[str, Any]) -> int:
+    """Exit 0 only for successful stage without failed human push.
+
+    - staged + no push attempt → 0
+    - staged + push blocked on human gates (not attempted) → 0
+    - staged + push attempted and failed → 1 (fail closed)
+    - not staged → 1
+    """
+    push = payload.get("push") or {}
+    if push.get("attempted") and not push.get("success"):
+        return 1
+    return 0 if payload.get("staged") else 1
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -512,7 +717,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument(
         "--execute",
         action="store_true",
-        help="Opt-in out of dry-run for real kaggle kernels push",
+        help="Opt-in out of dry-run for real kaggle kernels push (required with --push)",
     )
     args = ap.parse_args(argv)
 
@@ -527,6 +732,7 @@ def main(argv: list[str] | None = None) -> int:
         push_execute=bool(args.execute),
         skip_rails_refresh=bool(args.skip_rails_refresh),
     )
+    # Always write report — including after push CLI errors (caught in attempt_human_push)
     out_path = write_report(payload, args.out)
 
     print(f"Wrote {out_path}")
@@ -539,12 +745,13 @@ def main(argv: list[str] | None = None) -> int:
     if payload.get("staging"):
         print(f"staging_dir={payload['staging'].get('staging_dir')}")
         print(f"notebook={payload['staging'].get('notebook')}")
-    if payload.get("gaps"):
-        print("gaps:", ", ".join(payload["gaps"]))
+    if payload.get("blocking_gaps"):
+        print("blocking_gaps:", ", ".join(payload["blocking_gaps"]))
+    if payload.get("optional_gaps"):
+        print("optional_gaps:", ", ".join(payload["optional_gaps"]))
     print(f"operator_action: {payload.get('operator_action')}")
 
-    # Exit 0 only when staged (rails green + notebook written)
-    return 0 if payload.get("staged") else 1
+    return exit_code_for_payload(payload)
 
 
 if __name__ == "__main__":

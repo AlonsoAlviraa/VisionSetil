@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-05T20:49:19.662395+00:00",
+  "generated_at": "2026-08-05T20:57:34.579846+00:00",
   "policy": "orientation_only_never_consume",
   "product_unlock": false,
   "can_auto_unlock": false,
@@ -45,8 +45,9 @@
         "size_bytes": 1553
       }
     ],
-    "hard_negative_pairs_path": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\data\\industrial_v1\\hard_negative_pairs_e20.json",
+    "hard_negative_pairs_path": null,
     "hard_negative_pairs_resolved": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\data\\industrial_v1\\hard_negative_pairs_e20.json",
+    "hard_negative_pairs_source": "VISIONSETIL_DATA_DIR",
     "hard_negative_pair_count": 5,
     "hard_negative_pairs": [
       {
@@ -100,6 +101,7 @@
       "Amanita phalloides"
     ],
     "gaps": [],
+    "optional_gaps": [],
     "note": "Insights optional for ML-07: stage proceeds on rails alone; hard_neg/focus used when present for sampler/boost sidecars."
   },
   "rails": {
@@ -108,18 +110,24 @@
     "fail_reasons": [],
     "gaps": [],
     "report_path": "eval/reports/ml_experiments/anti_leak_rails_train_latest.json",
-    "models_dir": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models",
-    "models_dir_resolved": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models"
+    "models_dir": null,
+    "models_dir_resolved": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models",
+    "models_dir_source": "VISIONSETIL_MODELS_DIR_or_explicit"
   },
-  "models_dir": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models",
+  "models_dir": null,
   "models_dir_resolved": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models",
+  "models_dir_source": "VISIONSETIL_MODELS_DIR_or_explicit",
   "push": {
     "requested": false,
     "attempted": false,
+    "success": false,
     "auto_kaggle_push": false,
+    "product_unlock": false,
     "note": "Default path is stage-only; no Kaggle push."
   },
   "gaps": [],
+  "blocking_gaps": [],
+  "optional_gaps": [],
   "operator_action": "Notebook staged under kaggle/push_e20. Review sidecars; push only with human --push --i-accept-operator-responsibility --execute. Never auto product_unlock.",
   "honesty": {
     "metrics_label": "[MEASURED]",
@@ -127,8 +135,10 @@
     "insights_optional": true,
     "never_auto_push": true,
     "product_unlock_forced_false": true,
-    "gbif_es_holdout_must_stay_pure": true
+    "gbif_es_holdout_must_stay_pure": true,
+    "exit_nonzero_on_human_push_failure": true,
+    "path_hygiene_absolute_only_under_resolved": true
   },
-  "note": "ML-07 stage gate: rails required; insights optional. Never flips product_unlock. Never forages. Never auto Kaggle push.",
+  "note": "ML-07 stage gate: rails required; insights optional. Never flips product_unlock. Never forages. Never auto Kaggle push. Exit non-zero if human push attempted and failed.",
   "report_path": "eval/reports/ml_experiments/stage_train_notebook_latest.json"
 }
