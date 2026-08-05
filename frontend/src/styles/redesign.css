@@ -1079,3 +1079,212 @@
     transform: none;
   }
 }
+
+/* ── UX-02 result hierarchy: open-set, deadly coach, ImageCompare ── */
+
+.decision-banner__retry {
+  margin-top: 0.75rem;
+}
+
+.predictions--rejected {
+  margin: 0.5rem 0 1rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 12px;
+  border: 1px dashed var(--border, #cbd5e1);
+  background: color-mix(in srgb, var(--surface, #fff) 92%, #64748b 8%);
+}
+
+.predictions--rejected__note {
+  margin: 0.35rem 0 0.65rem;
+  font-size: 0.88rem;
+  color: var(--text-muted, #64748b);
+  line-height: 1.4;
+}
+
+/* Never paint rejected candidates as safe top-1 (no top-match / safe-bg) */
+.prediction-item--unreliable,
+.predictions--rejected .prediction-item {
+  background: transparent !important;
+  border: 1px solid var(--border, #e2e8f0) !important;
+  margin: 0 0 0.4rem !important;
+  opacity: 0.92;
+}
+
+.prediction-item--unreliable.top-match,
+.predictions--rejected .prediction-item.top-match {
+  background: transparent !important;
+  border-color: var(--border, #e2e8f0) !important;
+  box-shadow: none !important;
+}
+
+.rank-badge--muted {
+  opacity: 0.65;
+  font-weight: 600;
+}
+
+.result-deadly-topk-coach {
+  margin: 0.85rem 0 1rem;
+  padding: 0.95rem 1.05rem;
+  border-radius: 14px;
+  border: 2px solid var(--deadly, #b91c1c);
+  background: color-mix(in srgb, var(--deadly, #b91c1c) 10%, var(--surface, #fff));
+  color: var(--text);
+}
+
+.result-deadly-topk-coach__title {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--deadly, #b91c1c);
+  margin: 0 0 0.4rem;
+}
+
+.result-deadly-topk-coach__body {
+  margin: 0 0 0.65rem;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  color: var(--text-muted, #475569);
+}
+
+.result-deadly-topk-coach__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.image-compare {
+  margin: 0.85rem 0 1.1rem;
+  padding: 0.85rem 0.9rem 0.75rem;
+  border-radius: 14px;
+  border: 1px solid var(--border, #e2e8f0);
+  background: var(--surface, #fff);
+}
+
+.image-compare__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.65rem;
+}
+
+.image-compare__title {
+  font-size: 0.98rem;
+  font-weight: 700;
+}
+
+.image-compare__modes {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.image-compare__side {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.55rem;
+}
+
+.image-compare__panel {
+  margin: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border, #e2e8f0);
+  background: #0f172a08;
+}
+
+.image-compare__panel img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+.image-compare__panel figcaption {
+  padding: 0.35rem 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted, #64748b);
+}
+
+.image-compare__wipe {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border, #e2e8f0);
+  aspect-ratio: 4 / 3;
+  background: #0f172a10;
+}
+
+.image-compare__wipe-base,
+.image-compare__wipe-top {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.image-compare__wipe-base img,
+.image-compare__wipe-top img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.image-compare__wipe-top {
+  border-right: 2px solid var(--info, #0284c7);
+  z-index: 1;
+}
+
+.image-compare__wipe-control {
+  position: absolute;
+  left: 0.5rem;
+  right: 0.5rem;
+  bottom: 1.6rem;
+  z-index: 2;
+}
+
+.image-compare__wipe-control input[type='range'] {
+  width: 100%;
+}
+
+.image-compare__wipe-labels {
+  position: absolute;
+  left: 0.5rem;
+  right: 0.5rem;
+  bottom: 0.35rem;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.65);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.image-compare__footnote {
+  margin: 0.55rem 0 0;
+  font-size: 0.82rem;
+  color: var(--text-muted, #64748b);
+}
+
+.vs-btn--loading,
+.btn-atelier--loading {
+  opacity: 0.85;
+  cursor: wait;
+}
+
+@media (max-width: 540px) {
+  .image-compare__side {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .image-compare__wipe-top {
+    transition: none;
+  }
+}

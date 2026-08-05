@@ -18,6 +18,7 @@ import {
 } from '../api/client'
 import type { ClassificationResult, ObservationMetadata } from '../api/types'
 import { ResultCard } from '../components/ResultCard'
+import { ImageCompare, pickComparePair } from '../components/ImageCompare'
 import { Button, LinkButton, PageShell } from '../components/ui'
 import { PreflightBanner } from '../components/PreflightBanner'
 import { UploadZone } from '../components/UploadZone'
@@ -956,7 +957,8 @@ export function IdentifyPage() {
                         variant="primary"
                         block
                         onClick={requestClassify}
-                        disabled={loading || !readiness.canSubmit || !canClickSubmit}
+                        isLoading={loading}
+                        disabled={!readiness.canSubmit || !canClickSubmit}
                         data-testid="identify-submit"
                         data-soft-coach={preSubmitCoach.needsSoftConfirm ? '1' : '0'}
                         data-mode="wizard"
@@ -1178,7 +1180,8 @@ export function IdentifyPage() {
                     variant="primary"
                     block
                     onClick={requestClassify}
-                    disabled={loading || !canClickSubmit}
+                    isLoading={loading}
+                    disabled={!canClickSubmit}
                     data-testid="identify-submit"
                     data-soft-coach={preSubmitCoach.needsSoftConfirm ? '1' : '0'}
                     data-mode="free"
@@ -1320,7 +1323,7 @@ export function IdentifyPage() {
             })}
           >
             <div className="result-layout identify-result-layout" data-testid="identify-result">
-              {/* ResultCard first so ResultModeBanner leads the honesty chrome */}
+              {/* Hierarchy: safety→decision→top-3→evidence→lookalikes inside ResultCard */}
               <ResultCard
                 key={result.request_id}
                 result={result}
@@ -1345,6 +1348,24 @@ export function IdentifyPage() {
                   setShowCamera(true)
                 }}
               />
+              {/* Hierarchy 5b: user multi-view ImageCompare when ≥2 captures */}
+              {(() => {
+                const resultViewTypes = useWizard
+                  ? orderedSlotKeys(assignments)
+                  : selectedImages.map((_, i) => `free_${i + 1}`)
+                const resultPreviews = useWizard
+                  ? orderedSlotKeys(assignments).map((k) => assignments[k]!.previewUrl)
+                  : selectedImages.map((i) => i.preview)
+                const pair = pickComparePair(resultViewTypes, resultPreviews)
+                if (!pair) return null
+                return (
+                  <ImageCompare
+                    left={pair.left}
+                    right={pair.right}
+                    testId="identify-result-image-compare"
+                  />
+                )
+              })()}
               <div className="result-image-section result-image-section--deferred">
                 <Button
                   type="button"
@@ -1406,24 +1427,56 @@ export function IdentifyPage() {
         )}
       </div>
 
-      {/* Sticky orientation strip on result (mobile-first; CSS: identify-sticky-cta) */}
+      {/* Sticky strip: one primary only — rejected → add view; accepted → new analysis */}
       {phase === 'result' && result && (
         <div
           className="identify-sticky-cta identify-sticky-cta--result"
           data-testid="identify-orientation-sticky"
+          data-decision={result.decision}
           role="status"
         >
           <p className="identify-sticky-cta__copy">{orientationStickyLine(locale)}</p>
           <div className="identify-sticky-cta__actions">
-            <Button
-              type="button"
-              variant="primary"
-              className="identify-submit-btn"
-              onClick={reset}
-              data-testid="identify-sticky-new"
-            >
-              {t('identify.newAnalysis', { defaultValue: 'Nuevo análisis' })}
-            </Button>
+            {result.decision === 'rejected' ? (
+              <>
+                <Button
+                  type="button"
+                  variant="primary"
+                  className="identify-submit-btn"
+                  data-testid="identify-sticky-add-view"
+                  onClick={() => {
+                    setUseWizard(true)
+                    setResult(null)
+                    setError(null)
+                    setSoftConfirmOpen(false)
+                    setCameraTargetSlot('gills')
+                    setShowCamera(true)
+                  }}
+                >
+                  {t('result.addViewRetry', {
+                    defaultValue: 'Añadir vista y reintentar',
+                  })}
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={reset}
+                  data-testid="identify-sticky-new"
+                >
+                  {t('identify.newAnalysis', { defaultValue: 'Nuevo análisis' })}
+                </Button>
+              </>
+            ) : (
+              <Button
+                type="button"
+                variant="primary"
+                className="identify-submit-btn"
+                onClick={reset}
+                data-testid="identify-sticky-new"
+              >
+                {t('identify.newAnalysis', { defaultValue: 'Nuevo análisis' })}
+              </Button>
+            )}
             <LinkButton
               to="/revision-experta"
               variant="ghost"

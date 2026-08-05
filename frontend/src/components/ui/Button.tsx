@@ -13,6 +13,8 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode
   /** Stretch to container width */
   block?: boolean
+  /** Disable + aria-busy while an async action runs (e.g. classify). */
+  isLoading?: boolean
 }
 
 function atelierVariant(variant: Variant): string {
@@ -39,6 +41,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     children,
     type = 'button',
     block = false,
+    isLoading = false,
+    disabled,
     ...rest
   },
   ref,
@@ -50,13 +54,22 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     'btn-atelier',
     atelierVariant(variant),
     block ? 'btn-atelier--block' : '',
+    isLoading ? 'vs-btn--loading btn-atelier--loading' : '',
     className,
   ]
     .filter(Boolean)
     .join(' ')
 
   return (
-    <button ref={ref} type={type} className={classes} {...rest}>
+    <button
+      ref={ref}
+      type={type}
+      className={classes}
+      disabled={disabled || isLoading}
+      aria-busy={isLoading || undefined}
+      data-loading={isLoading ? 'true' : undefined}
+      {...rest}
+    >
       {children}
     </button>
   )
