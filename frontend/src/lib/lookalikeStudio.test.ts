@@ -122,4 +122,27 @@ describe('lookalike studio', () => {
     expect(bySci.status).toBe('ok')
     expect(bySci.focusSlug).toBe('amanita-phalloides')
   })
+
+  it('resolveFocusSlug forces explicit peer into selection (pair deep-link)', async () => {
+    await loadSpeciesCatalog()
+    const pair = resolveFocusSlug('amanita-caesarea', {
+      peerParam: 'amanita-phalloides',
+    })
+    expect(pair.status).toBe('ok')
+    expect(pair.focusSlug).toBe('amanita-caesarea')
+    expect(pair.peerSlug).toBe('amanita-phalloides')
+    expect(pair.selection.map((s) => s.slug)).toEqual(
+      expect.arrayContaining(['amanita-caesarea', 'amanita-phalloides']),
+    )
+    expect(pair.selection[0].slug).toBe('amanita-caesarea')
+    expect(canCompare(pair.selection)).toBe(true)
+
+    // Unknown peer is ignored; focus still OK (may get curated fallback peer)
+    const badPeer = resolveFocusSlug('amanita-phalloides', {
+      peerParam: 'not-a-real-peer-xyz',
+    })
+    expect(badPeer.status).toBe('ok')
+    expect(badPeer.peerSlug).toBeNull()
+    expect(badPeer.selection[0].slug).toBe('amanita-phalloides')
+  })
 })

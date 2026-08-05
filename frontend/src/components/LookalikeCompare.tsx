@@ -8,6 +8,7 @@ import { scientificNameToSlug } from '../lib/slug'
 import { riskToPlaceholder } from '../lib/edibility'
 import { displayCommonName } from '../data/speciesCatalog'
 import { findDiagnosticPair } from '../lib/diagnosticViews'
+import { MEDIA_SURFACE_POLICY } from '../lib/speciesMediaStack'
 
 export interface LookalikeSpecies {
   scientific_name?: string
@@ -69,6 +70,8 @@ export function LookalikeCompare({ current, lookalikes, resolve }: LookalikeComp
   const locale = i18n.resolvedLanguage || i18n.language || 'es'
   const [selectedIdx, setSelectedIdx] = useState(0)
   const pickerRef = useRef<HTMLDivElement>(null)
+  // SSOT media policy — avoid hardcode drift from B7/B8 thumb cap
+  const photoQuality = MEDIA_SURFACE_POLICY.lookalike_compare.quality
 
   const pairs = useMemo(() => {
     return lookalikes.map((la) => {
@@ -171,7 +174,7 @@ export function LookalikeCompare({ current, lookalikes, resolve }: LookalikeComp
               scientificName={sciName(current)}
               slug={current.slug}
               variant="card"
-              quality="thumb"
+              quality={photoQuality}
               riskLevel={riskToPlaceholder(curRisk)}
               alt={sciName(current)}
               showMediaBadge="auto"
@@ -200,7 +203,7 @@ export function LookalikeCompare({ current, lookalikes, resolve }: LookalikeComp
               scientificName={selected.la.scientific_name}
               slug={selected.slug}
               variant="card"
-              quality="thumb"
+              quality={photoQuality}
               riskLevel={riskToPlaceholder(
                 other?.risk_level || other?.risk_label,
                 other?.edibility_code,
@@ -223,12 +226,12 @@ export function LookalikeCompare({ current, lookalikes, resolve }: LookalikeComp
                   {t('lookalike.viewDetail', { defaultValue: 'Ver ficha' })}
                 </LinkButton>
                 <LinkButton
-                  to={`/lookalikes?focus=${encodeURIComponent(other.slug || selected.slug)}`}
+                  to={`/lookalikes?focus=${encodeURIComponent(current.slug)}&peer=${encodeURIComponent(other.slug || selected.slug)}`}
                   variant="ghost"
                   data-testid="lookalike-compare-open-studio"
                 >
                   {t('lookalike.openStudioFocus', {
-                    defaultValue: 'Estudiar en studio',
+                    defaultValue: 'Estudiar en el estudio',
                   })}
                 </LinkButton>
               </>

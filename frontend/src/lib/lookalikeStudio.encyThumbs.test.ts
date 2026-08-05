@@ -38,9 +38,12 @@ describe('UX-06 encyclopedia thumbs + risk SSOT', () => {
     expect(page).toMatch(/Tóxica/)
   })
 
-  it('LookalikeCompare opens studio with focus slug path', () => {
+  it('LookalikeCompare opens studio with focus=current & peer=mate', () => {
     const src = readSrc('components/LookalikeCompare.tsx')
     expect(src).toMatch(/\/lookalikes\?focus=/)
-    expect(src).toMatch(/quality=["']thumb["']/)
+    expect(src).toMatch(/&peer=/)
+    expect(src).toMatch(/MEDIA_SURFACE_POLICY\.lookalike_compare/)
+    // quality comes from policy (thumb), not a bare hardcode drift path only
+    expect(src).toMatch(/quality=\{photoQuality\}|quality=["']thumb["']/)
   })
 })

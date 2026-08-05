@@ -37,15 +37,16 @@ import {
 } from '../lib/diagnosticViews'
 import { ImageCompare } from '../components/ImageCompare'
 import { getCatalogPhotoUrlHd } from '../lib/speciesImageService'
-import { speciesImageUrl } from '../lib/speciesImageUrl'
+import { MEDIA_SURFACE_POLICY } from '../lib/speciesMediaStack'
 
-/** Prefer catalog thumb URL; fall back to local media path for compare slots. */
+/**
+ * Catalog-only photo URL for ImageCompare (no invent path).
+ * `getCatalogPhotoUrlHd` name is historical; quality comes from lookalike_compare policy (thumb).
+ * Returns null when catalog has no photo — never forces a missing /media/... path into raw <img>.
+ */
 function studioCompareSrc(card: StudioTaxonCard): string | null {
-  return (
-    getCatalogPhotoUrlHd(card.taxon, 'thumb') ||
-    speciesImageUrl(card.slug || card.taxon, 'thumb') ||
-    null
-  )
+  const quality = MEDIA_SURFACE_POLICY.lookalike_compare.quality
+  return getCatalogPhotoUrlHd(card.taxon, quality)
 }
 
 export function LookalikeStudioPage() {
@@ -54,6 +55,8 @@ export function LookalikeStudioPage() {
   const { catalog: speciesCatalog, loading: catalogLoading } = useSpeciesCatalog()
   const [searchParams] = useSearchParams()
   const focusParam = searchParams.get('focus')
+  // peer | with — LookalikeCompare pair deep-link
+  const peerParam = searchParams.get('peer') || searchParams.get('with')
 
   const [query, setQuery] = useState('')
   const [selection, setSelection] = useState<StudioTaxonCard[]>([])
@@ -65,15 +68,15 @@ export function LookalikeStudioPage() {
   const [focusStatus, setFocusStatus] = useState<'none' | 'ok' | 'unknown'>('none')
   const [focusSlugApplied, setFocusSlugApplied] = useState<string | null>(null)
 
-  // Apply ?focus=<catalog-slug> once catalog is ready (unknown → empty, no crash).
+  // Apply ?focus=&peer= once catalog is ready (unknown focus → empty, no crash).
   const focusAppliedKey = useRef<string | null>(null)
   useEffect(() => {
     if (catalogLoading) return
-    const key = focusParam ?? ''
+    const key = `${focusParam ?? ''}|${peerParam ?? ''}`
     if (focusAppliedKey.current === key) return
     focusAppliedKey.current = key
 
-    const resolved = resolveFocusSlug(focusParam)
+    const resolved = resolveFocusSlug(focusParam, { peerParam })
     setFocusStatus(resolved.status)
     setFocusSlugApplied(resolved.focusSlug)
     setLearnStep(0)
@@ -87,7 +90,7 @@ export function LookalikeStudioPage() {
       setError(null)
     }
     // status none: leave selection alone on first mount (empty); if user clears focus later, ignore
-  }, [catalogLoading, focusParam, speciesCatalog.length])
+  }, [catalogLoading, focusParam, peerParam, speciesCatalog.length])
 
   const rows = useMemo(() => buildCompareRows(selection), [selection])
   const classics = useMemo(() => {
@@ -113,7 +116,13 @@ export function LookalikeStudioPage() {
 
   const compareReady = canCompare(selection)
 
-  // ImageCompare slots (thumb quality) when ≥2 taxa have photo URLs
+  /** Prefer pair diagnostic critical_views for learn steps 1–2 (fallback: generic himenio / estípite). */
+  const learnViews = useMemo(() => {
+    const views = selectionDiag?.critical_views?.filter(Boolean) || []
+    return views.slice(0, 2)
+  }, [selectionDiag])
+
+  // ImageCompare slots (catalog thumb only) when ≥2 taxa have catalog photos
   const comparePair = useMemo(() => {
     if (!compareReady || selection.length < 2) return null
     const leftSrc = studioCompareSrc(selection[0])
@@ -452,6 +461,12 @@ export function LookalikeStudioPage() {
           right={comparePair.right}
           defaultMode="wipe"
           testId="lookalike-studio-image-compare"
+          title={t('lookalike.imageCompareTitle', {
+            defaultValue: 'Compara confusiones',
+          })}
+          ariaLabel={t('lookalike.imageCompareAria', {
+            defaultValue: 'Comparar especies',
+          })}
           footnote={t('lookalike.imageCompareFootnote', {
             defaultValue:
               'Comparación morfológica educativa · solo orientación · nunca consumo',
@@ -481,15 +496,27 @@ export function LookalikeStudioPage() {
               </span>
               <div className="lookalike-learn-path__body">
                 <strong>
-                  {t('lookalike.learnStep1Title', {
-                    defaultValue: 'Observa el himenio',
-                  })}
+                  {learnViews[0]
+                    ? t('lookalike.learnStepViewTitle', {
+                        defaultValue: 'Observa: {{view}}',
+                        view: t(`identify.views.${learnViews[0]}`, {
+                          defaultValue: learnViews[0],
+                        }),
+                      })
+                    : t('lookalike.learnStep1Title', {
+                        defaultValue: 'Observa el himenio',
+                      })}
                 </strong>
                 <span>
-                  {t('lookalike.learnStep1Body', {
-                    defaultValue:
-                      'Láminas, poros o pliegues: color, inserción y textura. Usa el deslizador si ayuda.',
-                  })}
+                  {learnViews[0]
+                    ? t('lookalike.learnStepViewBody', {
+                        defaultValue:
+                          'Vista diagnóstica de este par. Usa el deslizador si ayuda. Solo orientación.',
+                      })
+                    : t('lookalike.learnStep1Body', {
+                        defaultValue:
+                          'Láminas, poros o pliegues: color, inserción y textura. Usa el deslizador si ayuda.',
+                      })}
                 </span>
                 {learnStep < 1 && (
                   <Button
@@ -512,15 +539,27 @@ export function LookalikeStudioPage() {
               </span>
               <div className="lookalike-learn-path__body">
                 <strong>
-                  {t('lookalike.learnStep2Title', {
-                    defaultValue: 'Observa pie y volva',
-                  })}
+                  {learnViews[1]
+                    ? t('lookalike.learnStepViewTitle', {
+                        defaultValue: 'Observa: {{view}}',
+                        view: t(`identify.views.${learnViews[1]}`, {
+                          defaultValue: learnViews[1],
+                        }),
+                      })
+                    : t('lookalike.learnStep2Title', {
+                        defaultValue: 'Observa pie y volva',
+                      })}
                 </strong>
                 <span>
-                  {t('lookalike.learnStep2Body', {
-                    defaultValue:
-                      'Anillo, base del pie y volva deciden muchas confusiones mortales.',
-                  })}
+                  {learnViews[1]
+                    ? t('lookalike.learnStepViewBody', {
+                        defaultValue:
+                          'Segunda vista crítica del par. Contrasta ambas fichas. Nunca consumo.',
+                      })
+                    : t('lookalike.learnStep2Body', {
+                        defaultValue:
+                          'Anillo, base del pie y caracteres del estípite deciden muchas confusiones de riesgo.',
+                      })}
                 </span>
                 {learnStep === 1 && (
                   <Button

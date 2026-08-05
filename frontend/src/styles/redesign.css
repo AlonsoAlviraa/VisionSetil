@@ -1303,8 +1303,9 @@
   }
 }
 
+/* Reduced motion: no animated wipe divider; slider still works. */
 @media (prefers-reduced-motion: reduce) {
-  .image-compare__wipe-top {
+  .image-compare__wipe-top::after {
     transition: none;
   }
 }

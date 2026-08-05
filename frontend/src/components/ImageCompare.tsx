@@ -24,6 +24,16 @@ export type ImageCompareProps = {
   /** SSOT testid — never rename without e2e/ImageCompare tests. */
   testId?: string
   footnote?: string
+  /**
+   * Header title override. Identify defaults: “Compara tus vistas”.
+   * Lookalike studio should pass taxa-compare copy (not user-capture wording).
+   */
+  title?: string
+  /**
+   * Section aria-label override. Identify defaults: “Comparar tus fotos”.
+   * Lookalike studio: “Comparar especies”.
+   */
+  ariaLabel?: string
 }
 
 /**
@@ -73,6 +83,8 @@ export function ImageCompare({
   className = '',
   testId = 'identify-result-image-compare',
   footnote,
+  title,
+  ariaLabel,
 }: ImageCompareProps) {
   const { t } = useTranslation()
   const [mode, setMode] = useState<ImageCompareMode>(defaultMode)
@@ -84,6 +96,18 @@ export function ImageCompare({
       defaultValue: 'Solo orientación · nunca consumo',
     })
 
+  const headTitle =
+    title ||
+    t('result.imageCompareTitle', {
+      defaultValue: 'Compara tus vistas',
+    })
+  const sectionAria =
+    ariaLabel ||
+    t('result.imageCompareAria', {
+      defaultValue: 'Comparar tus fotos',
+    })
+
+  // Prefer explicit slot.label (taxon names in studio). Fall back to view i18n for identify captures.
   const leftLabel =
     left.label ||
     t(`identify.views.${left.view || 'gills'}`, {
@@ -108,16 +132,10 @@ export function ImageCompare({
       className={`image-compare image-compare--${mode} ${className}`.trim()}
       data-testid={testId}
       data-mode={mode}
-      aria-label={t('result.imageCompareAria', {
-        defaultValue: 'Comparar tus fotos',
-      })}
+      aria-label={sectionAria}
     >
       <header className="image-compare__head">
-        <strong className="image-compare__title">
-          {t('result.imageCompareTitle', {
-            defaultValue: 'Compara tus vistas',
-          })}
-        </strong>
+        <strong className="image-compare__title">{headTitle}</strong>
         <div
           className="image-compare__modes"
           role="group"
