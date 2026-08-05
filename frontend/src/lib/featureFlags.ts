@@ -54,7 +54,9 @@ export const featureFlags = {
   AUTH_COOKIE: envBool('VITE_FEATURE_AUTH_COOKIE', false),
   /**
    * UX-03 PhotoCoach: optional canvas luminance hints (luma_dark / luma_bright).
-   * Default OFF — size/edge/aspect still run; luminance is progressive enhancement.
+   * Default OFF — size/edge/aspect still run from byteLength + Image probe.
+   * When ON, PhotoCoachPanel runs a cheap downscaled canvas mean via
+   * `probePhotoClientMeta` (fail-open; never blocks classify).
    */
   PHOTO_COACH_LUMINANCE: envBool('VITE_FEATURE_PHOTO_COACH_LUMINANCE', false),
 } as const

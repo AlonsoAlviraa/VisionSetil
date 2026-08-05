@@ -1,9 +1,10 @@
 /**
  * PhotoCoach panel — multi-view learning (UX-03).
- * Works with ZERO webp: JSON captions + CSS wireframes; optional thumbs progressive.
+ * Works with ZERO webp: JSON captions + CSS wireframes always painted first.
+ * Optional thumbs only overlay after successful load (never exclusive broken img).
  * Orientation only — never consumption permission.
  */
-import { useCallback, useId, useMemo, useState } from 'react'
+import { useCallback, useEffect, useId, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import type { CanonicalView } from '../lib/multiViewSlots'
@@ -11,21 +12,26 @@ import {
   assessPhotoClientHints,
   checklistForView,
   examplesForView,
+  probePhotoClientMeta,
   recordPhotoCoachOpen,
   type CoachHint,
 } from '../lib/photoCoach'
 import { featureFlags } from '../lib/featureFlags'
 
+export type PhotoCoachFileMeta = {
+  byteLength?: number
+  width?: number
+  height?: number
+  lumaMean?: number
+  /** preview object URL or remote URL for progressive dim/luma probe */
+  previewUrl?: string
+}
+
 export type PhotoCoachPanelProps = {
-  /** Active / next slot the coach explains. */
+  /** Active / next slot the coach explains (checklist + examples). */
   view: CanonicalView
-  /** Optional file metadata for client quality hints. */
-  fileMeta?: {
-    byteLength?: number
-    width?: number
-    height?: number
-    lumaMean?: number
-  }
+  /** Optional file metadata for client quality hints (prefer last filled photo). */
+  fileMeta?: PhotoCoachFileMeta
   /** Start expanded (default collapsed). */
   defaultOpen?: boolean
   className?: string
@@ -74,26 +80,74 @@ export function PhotoCoachPanel({
   const { t, i18n } = useTranslation()
   const panelId = useId()
   const [open, setOpen] = useState(defaultOpen)
+  /** Thumbs only shown after successful load — wireframe always present. */
+  const [thumbReady, setThumbReady] = useState<Record<string, boolean>>({})
   const [thumbFailed, setThumbFailed] = useState<Record<string, boolean>>({})
+  const [probedWidth, setProbedWidth] = useState<number | undefined>()
+  const [probedHeight, setProbedHeight] = useState<number | undefined>()
+  const [probedLuma, setProbedLuma] = useState<number | undefined>()
+
   const locale = (i18n.resolvedLanguage || i18n.language || 'es').toLowerCase()
   const en = locale.startsWith('en')
+  const luminanceOn = featureFlags.PHOTO_COACH_LUMINANCE
 
   const checklist = useMemo(() => checklistForView(view), [view])
   const examples = useMemo(() => examplesForView(view), [view])
 
+  // Reset progressive thumb state when view (example set) changes
+  useEffect(() => {
+    setThumbReady({})
+    setThumbFailed({})
+  }, [view])
+
+  // Progressive dims (+ optional luma) from preview URL — fail-open, never blocks
+  const previewUrl = fileMeta?.previewUrl
+  const metaByteLength = fileMeta?.byteLength
+  const metaWidth = fileMeta?.width
+  const metaHeight = fileMeta?.height
+  const metaLuma = fileMeta?.lumaMean
+
+  useEffect(() => {
+    let cancelled = false
+    setProbedWidth(undefined)
+    setProbedHeight(undefined)
+    setProbedLuma(undefined)
+    if (!previewUrl) return
+    // Skip probe if caller already supplied dims and (if needed) luma
+    if (
+      metaWidth != null &&
+      metaHeight != null &&
+      (!luminanceOn || metaLuma != null)
+    ) {
+      return
+    }
+    void probePhotoClientMeta(previewUrl, { luminance: luminanceOn }).then((probed) => {
+      if (cancelled) return
+      if (probed.width != null) setProbedWidth(probed.width)
+      if (probed.height != null) setProbedHeight(probed.height)
+      if (probed.lumaMean != null) setProbedLuma(probed.lumaMean)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [previewUrl, metaWidth, metaHeight, metaLuma, luminanceOn])
+
+  const width = metaWidth ?? probedWidth
+  const height = metaHeight ?? probedHeight
+  const lumaMean = metaLuma ?? probedLuma
+
   const clientHints: CoachHint[] = useMemo(() => {
-    const byteLength = fileMeta?.byteLength
-    if (byteLength == null && fileMeta?.width == null) return []
+    if (metaByteLength == null && width == null && height == null) return []
     return assessPhotoClientHints(
       {
-        byteLength: byteLength ?? 0,
-        width: fileMeta?.width,
-        height: fileMeta?.height,
-        lumaMean: fileMeta?.lumaMean,
+        byteLength: metaByteLength ?? 0,
+        width,
+        height,
+        lumaMean,
       },
-      { luminance: featureFlags.PHOTO_COACH_LUMINANCE },
+      { luminance: luminanceOn },
     )
-  }, [fileMeta])
+  }, [metaByteLength, width, height, lumaMean, luminanceOn])
 
   const onToggle = useCallback(() => {
     setOpen((prev) => {
@@ -167,7 +221,8 @@ export function PhotoCoachPanel({
         <div className="photo-coach-panel__examples" data-testid="photo-coach-examples">
           {examples.map((ex) => {
             const label = en ? ex.labelEn : ex.labelEs
-            const showThumb = Boolean(ex.thumb) && !thumbFailed[ex.id]
+            const wantsThumb = Boolean(ex.thumb) && !thumbFailed[ex.id]
+            const showThumbOverlay = wantsThumb && thumbReady[ex.id]
             return (
               <figure
                 key={ex.id}
@@ -183,20 +238,30 @@ export function PhotoCoachPanel({
                   ].join(' ')}
                   aria-hidden="true"
                 >
-                  {showThumb ? (
+                  {/* Wire always present — zero-webp first paint; never exclusive broken img */}
+                  <span
+                    className="photo-coach-frame__wire"
+                    data-testid={`photo-coach-wire-${ex.id}`}
+                  />
+                  {wantsThumb ? (
                     <img
                       src={ex.thumb}
                       alt=""
-                      className="photo-coach-frame__thumb"
+                      className={[
+                        'photo-coach-frame__thumb',
+                        showThumbOverlay ? 'is-ready' : 'is-pending',
+                      ].join(' ')}
                       loading="lazy"
                       decoding="async"
+                      data-testid={`photo-coach-thumb-${ex.id}`}
+                      onLoad={() =>
+                        setThumbReady((prev) => ({ ...prev, [ex.id]: true }))
+                      }
                       onError={() =>
                         setThumbFailed((prev) => ({ ...prev, [ex.id]: true }))
                       }
                     />
-                  ) : (
-                    <span className="photo-coach-frame__wire" />
-                  )}
+                  ) : null}
                   <span className="photo-coach-frame__badge">
                     {ex.quality === 'good'
                       ? t('identify.coach.good', { defaultValue: 'Bien' })

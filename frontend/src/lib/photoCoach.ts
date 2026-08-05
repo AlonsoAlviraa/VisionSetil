@@ -324,3 +324,86 @@ export function recordPhotoCoachOpen(storage?: StorageLike | null): PhotoCoachSk
   }
   return next
 }
+
+/** Progressive probe result for client hints (not required for submit). */
+export type ProbedPhotoMeta = {
+  width?: number
+  height?: number
+  lumaMean?: number
+}
+
+const LUMA_SAMPLE_MAX = 64
+
+/**
+ * Progressive image probe: natural width/height and optional mean luminance.
+ * Fail-open: returns {} on any error / missing DOM Image / decode failure.
+ * Never throws; never blocks classify.
+ */
+export async function probePhotoClientMeta(
+  source: string | Blob | null | undefined,
+  options: { luminance?: boolean } = {},
+): Promise<ProbedPhotoMeta> {
+  if (source == null || source === '') return {}
+  if (typeof Image === 'undefined') return {}
+
+  let objectUrl: string | null = null
+  try {
+    const src =
+      typeof source === 'string'
+        ? source
+        : ((objectUrl = URL.createObjectURL(source)), objectUrl)
+
+    const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const el = new Image()
+      el.onload = () => resolve(el)
+      el.onerror = () => reject(new Error('image_decode_failed'))
+      el.src = src
+    })
+
+    const width = img.naturalWidth || img.width
+    const height = img.naturalHeight || img.height
+    const out: ProbedPhotoMeta = {}
+    if (width > 0 && height > 0) {
+      out.width = width
+      out.height = height
+    }
+
+    if (options.luminance === true && typeof document !== 'undefined') {
+      try {
+        const canvas = document.createElement('canvas')
+        const sw = Math.min(LUMA_SAMPLE_MAX, width || LUMA_SAMPLE_MAX)
+        const sh = Math.min(LUMA_SAMPLE_MAX, height || LUMA_SAMPLE_MAX)
+        if (sw > 0 && sh > 0) {
+          canvas.width = sw
+          canvas.height = sh
+          const ctx = canvas.getContext('2d', { willReadFrequently: true })
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, sw, sh)
+            const data = ctx.getImageData(0, 0, sw, sh).data
+            let sum = 0
+            const n = sw * sh
+            for (let i = 0; i < data.length; i += 4) {
+              // Rec. 601 luma
+              sum += 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2]
+            }
+            if (n > 0) out.lumaMean = sum / n
+          }
+        }
+      } catch {
+        // fail-open: dims still useful without luma
+      }
+    }
+
+    return out
+  } catch {
+    return {}
+  } finally {
+    if (objectUrl) {
+      try {
+        URL.revokeObjectURL(objectUrl)
+      } catch {
+        /* ignore */
+      }
+    }
+  }
+}

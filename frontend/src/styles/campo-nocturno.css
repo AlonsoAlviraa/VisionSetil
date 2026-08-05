@@ -4445,7 +4445,18 @@ html[data-skin='campo-nocturno'] .container {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  z-index: 1;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
 }
+.photo-coach-frame__thumb.is-pending {
+  opacity: 0;
+}
+.photo-coach-frame__thumb.is-ready {
+  opacity: 1;
+}
+/* Wire always painted (zero-webp first paint); thumb overlays only when ready */
 .photo-coach-frame__wire {
   display: block;
   width: 72%;
@@ -4454,6 +4465,7 @@ html[data-skin='campo-nocturno'] .container {
   border: 1.5px dashed color-mix(in srgb, var(--cn-moss-bright, #9dcea6) 55%, transparent);
   background: color-mix(in srgb, var(--cn-moss, #8fbc8f) 12%, transparent);
   box-shadow: inset 0 0 0 1px color-mix(in srgb, #fff 6%, transparent);
+  z-index: 0;
 }
 /* CSS wireframe variants (no webp required) */
 .photo-coach-frame--hymenium-close .photo-coach-frame__wire {
@@ -4515,7 +4527,7 @@ html[data-skin='campo-nocturno'] .container {
   position: absolute;
   top: 0.35rem;
   left: 0.35rem;
-  z-index: 1;
+  z-index: 2;
   font-size: 0.65rem;
   font-weight: 800;
   letter-spacing: 0.04em;

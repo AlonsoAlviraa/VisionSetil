@@ -12,6 +12,7 @@ import {
   assessPhotoClientHints,
   checklistForView,
   examplesForView,
+  probePhotoClientMeta,
   readPhotoCoachSkill,
   recordPhotoCoachOpen,
   type PhotoClientHintInput,
@@ -161,19 +162,34 @@ describe('slot checklists & examples (zero webp required)', () => {
     }
   })
 
-  it('examples JSON has good+bad per view with cssFrame (thumb optional)', () => {
+  it('examples JSON has good+bad per view with cssFrame (zero webp: no thumbs required)', () => {
     for (const view of ['gills', 'front', 'habitat', 'detail'] as const) {
       const ex = examplesForView(view)
       expect(ex.some((e) => e.quality === 'good'), `${view} good`).toBe(true)
       expect(ex.some((e) => e.quality === 'bad'), `${view} bad`).toBe(true)
       for (const e of ex) {
         expect(e.cssFrame).toBeTruthy()
+        // Ship without public/coach assets — omit thumb until media lands
+        expect(e.thumb, `${e.id} should not force missing webp`).toBeUndefined()
         expect(e.labelEs).toMatch(/captura|diagnóst|perfil|hábitat|macro|sombre|recorte/i)
         // Never consumption framing
         expect(e.labelEs.toLowerCase()).not.toMatch(/comestible|seguro para comer|puedes comer/)
         expect(e.labelEn.toLowerCase()).not.toMatch(/safe to eat|edible clearance|you can eat/)
       }
     }
+  })
+})
+
+describe('probePhotoClientMeta (progressive, fail-open)', () => {
+  it('returns empty for null/empty source', async () => {
+    expect(await probePhotoClientMeta(null)).toEqual({})
+    expect(await probePhotoClientMeta('')).toEqual({})
+    expect(await probePhotoClientMeta(undefined)).toEqual({})
+  })
+
+  it('returns empty on decode failure (no throw)', async () => {
+    const out = await probePhotoClientMeta('blob:invalid-or-missing')
+    expect(out).toEqual({})
   })
 })
 

@@ -125,15 +125,26 @@ export function MultiViewWizard({ assignments, onAssign, onClear, onOpenCamera }
 
   const nextEmpty = VIEW_SLOTS.find((s) => !assignments[s.view])?.view ?? null
   const pct = Math.round((readiness.filled / FULL_PACKET_PHOTOS) * 100)
-  /** Active coach target: next empty slot, else last filled, else gills. */
-  const coachView: CanonicalView =
-    nextEmpty ??
-    orderedSlotKeys(assignments).slice(-1)[0] ??
-    'gills'
-  const coachSlot = assignments[coachView]
-  const coachFileMeta = coachSlot?.file
-    ? { byteLength: coachSlot.file.size }
-    : undefined
+  const filledKeys = orderedSlotKeys(assignments)
+  /** Checklist/examples target: next empty slot, else last filled, else gills. */
+  const coachView: CanonicalView = nextEmpty ?? filledKeys.slice(-1)[0] ?? 'gills'
+  /**
+   * Quality hints from last filled photo (not the empty next-slot), so edge/aspect
+   * and file_tiny can fire while the checklist still coaches the next view.
+   * previewUrl drives progressive dim probe in PhotoCoachPanel (fail-open).
+   */
+  const hintView: CanonicalView | null = filledKeys.slice(-1)[0] ?? null
+  const hintSlot = hintView ? assignments[hintView] : undefined
+  const coachFileMeta = useMemo(() => {
+    if (!hintSlot) return undefined
+    const byteLength = hintSlot.file?.size
+    const previewUrl = hintSlot.previewUrl || undefined
+    if (byteLength == null && !previewUrl) return undefined
+    return {
+      byteLength,
+      previewUrl,
+    }
+  }, [hintSlot?.file?.size, hintSlot?.previewUrl, hintView])
 
   return (
     <section
