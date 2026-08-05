@@ -11,7 +11,11 @@ export type RiskLabel =
   | 'dangerous_or_unknown'
   | 'not_for_consumption_guidance'
 
-/** Short, clean labels — color carries severity (not long ugly sentences). */
+/**
+ * Short, clean labels — color carries severity (not long ugly sentences).
+ * SSOT for ES display copy: poisonous = Venenosa, toxic = Tóxica (distinct).
+ * i18n keys under `risk.*` must stay in parity (es/en/ca/eu).
+ */
 export const RISK_META: Record<
   RiskLabel,
   { label: string; className: string; icon: string; short: string }

@@ -96,18 +96,30 @@ export function EncyclopediaPage() {
   const foodStats = useMemo(() => foodQualityStats(), [])
   const traitCounts = useMemo(() => countByStudyTrait(speciesCatalog), [speciesCatalog])
 
-  // SSOT risk labels only (no dead `poisonous` option — catalog maps to toxic)
+  // SSOT risk chips: poisonous=Venenosa, toxic=Tóxica (distinct; never collapse).
+  // Catalog browse buckets use toxic for high/toxico; poisonous remains a live RiskLabel
+  // for Identify/API paths and is filterable when present.
   const riskFilters = useMemo(
     () =>
       [
         { id: 'all' as const, label: t('encyclopedia.riskAll', { defaultValue: 'Todos' }) },
         {
           id: 'deadly' as const,
-          label: t('encyclopedia.riskDeadly', { defaultValue: 'Mortal' }),
+          label: t('risk.deadly', {
+            defaultValue: t('encyclopedia.riskDeadly', { defaultValue: 'Mortal' }),
+          }),
+        },
+        {
+          id: 'poisonous' as const,
+          label: t('risk.poisonous', {
+            defaultValue: t('encyclopedia.riskPoisonous', { defaultValue: 'Venenosa' }),
+          }),
         },
         {
           id: 'toxic' as const,
-          label: t('encyclopedia.riskToxic', { defaultValue: 'Tóxica' }),
+          label: t('risk.toxic', {
+            defaultValue: t('encyclopedia.riskToxic', { defaultValue: 'Tóxica' }),
+          }),
         },
         {
           id: 'unknown_or_risky' as const,

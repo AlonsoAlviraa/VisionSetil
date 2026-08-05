@@ -2846,6 +2846,14 @@ button.btn-retry:not(.btn-atelier) {
   backdrop-filter: blur(4px);
 }
 
+/* RiskChip overlay — no green forage pill; inherits RiskChip chrome */
+.mushroom-card-badge--risk {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  backdrop-filter: none;
+}
+
 .mushroom-card-body {
   padding: 1rem;
   display: flex;

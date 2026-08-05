@@ -1,6 +1,12 @@
 /** Compact risk badge — short label + soft color (no long warning sentences). */
 import { useTranslation } from 'react-i18next'
-import { getRiskMeta, isSevereRisk, toRiskLabel, type RiskLabel } from '../lib/riskLabels'
+import {
+  getRiskMeta,
+  isSevereRisk,
+  RISK_META,
+  toRiskLabel,
+  type RiskLabel,
+} from '../lib/riskLabels'
 
 type Props = {
   risk?: string | null
@@ -22,13 +28,17 @@ const RISK_I18N_KEY: Record<RiskLabel, string> = {
   not_for_consumption_guidance: 'risk.not_for_consumption',
 }
 
-const RISK_DEFAULT: Record<RiskLabel, string> = {
-  deadly: 'Mortal',
-  poisonous: 'Tóxica',
-  toxic: 'Tóxica',
-  unknown_or_risky: 'Orientación',
-  dangerous_or_unknown: 'Precaución',
-  not_for_consumption_guidance: 'No apta',
+/**
+ * ES fallbacks when i18n key is missing — must match RISK_META (SSOT).
+ * poisonous = Venenosa; toxic = Tóxica (never collapse).
+ */
+export const RISK_DEFAULT: Record<RiskLabel, string> = {
+  deadly: RISK_META.deadly.short,
+  poisonous: RISK_META.poisonous.short,
+  toxic: RISK_META.toxic.short,
+  unknown_or_risky: RISK_META.unknown_or_risky.short,
+  dangerous_or_unknown: RISK_META.dangerous_or_unknown.short,
+  not_for_consumption_guidance: RISK_META.not_for_consumption_guidance.short,
 }
 
 export function RiskChip({ risk, label, className = '', boost = false }: Props) {

@@ -363,6 +363,7 @@
     "foodLabel": "Ficha documental",
     "foodAria": "Filtrar por ficha documental (orientación, no consumo)",
     "riskAll": "Todos",
+    "riskPoisonous": "Venenosa",
     "riskToxic": "Tóxica",
     "riskUnknown": "Sin ficha de riesgo",
     "riskCaution": "Precaución",

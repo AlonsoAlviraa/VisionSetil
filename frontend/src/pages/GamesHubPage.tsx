@@ -16,7 +16,7 @@ import { Icon, LinkButton, PageShell } from '../components/ui'
 import { useSpeciesCatalog } from '../hooks/useSpeciesCatalog'
 import { readStudyStreak, readStudyStats } from '../lib/studyBadges'
 import { HIGH_SEARCH_TAXA } from '../lib/encyclopediaPopularity'
-import { getRiskMeta } from '../lib/riskLabels'
+import { getRiskMeta, isSevereRisk } from '../lib/riskLabels'
 import { scientificNameToSlug } from '../lib/slug'
 import {
   areSpeciesPhotosReady,
@@ -38,7 +38,7 @@ function useDeadlyHighlights() {
   return useMemo(() => {
     const byTaxon = new Map(catalog.map((s) => [s.taxon, s]))
     return HIGH_SEARCH_TAXA.map((t) => byTaxon.get(t))
-      .filter((s) => s && (s.risk_label === 'deadly' || s.risk_label === 'poisonous'))
+      .filter((s) => s && isSevereRisk(s.risk_label))
       .slice(0, 4)
   }, [catalog])
 }

@@ -1,10 +1,10 @@
 /** Species card — always local /media via SpeciesImage (unified Phase A). */
 import { Link } from 'react-router-dom'
 import type { MushroomSpecies } from '../data/mushroomDatabase'
-import { EDIBILITY_COLORS, EDIBILITY_LABELS } from '../data/mushroomDatabase'
 import { SpeciesImage } from './SpeciesImage'
 import { scientificNameToSlug } from '../lib/slug'
 import { riskToPlaceholder } from '../lib/edibility'
+import { RiskChip } from './RiskChip'
 
 interface MushroomCardProps {
   species: MushroomSpecies
@@ -12,9 +12,13 @@ interface MushroomCardProps {
   riskLevel?: string
 }
 
+/**
+ * Browse card — RiskChip only (orientation). Never green edibility forage pills.
+ */
 export function MushroomCard({ species, slug: slugProp, riskLevel }: MushroomCardProps) {
   const slug = slugProp || scientificNameToSlug(species.scientificName)
   const alt = `${species.commonNames[0] || species.scientificName} (${species.scientificName})`
+  const riskRaw = riskLevel || species.edibility
 
   return (
     <Link to={`/enciclopedia/${slug}`} className="mushroom-card card-glow">
@@ -26,11 +30,8 @@ export function MushroomCard({ species, slug: slugProp, riskLevel }: MushroomCar
           riskLevel={riskToPlaceholder(riskLevel, species.edibility)}
           alt={alt}
         />
-        <span
-          className="mushroom-card-badge"
-          style={{ backgroundColor: EDIBILITY_COLORS[species.edibility] }}
-        >
-          {EDIBILITY_LABELS[species.edibility]}
+        <span className="mushroom-card-badge mushroom-card-badge--risk">
+          <RiskChip risk={riskRaw} />
         </span>
       </div>
       <div className="mushroom-card-body">

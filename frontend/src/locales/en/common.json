@@ -279,6 +279,7 @@
     "foodLabel": "Documentary sheet",
     "foodAria": "Filter by documentary sheet (orientation, not consumption)",
     "riskAll": "All",
+    "riskPoisonous": "Poisonous",
     "riskToxic": "Toxic",
     "riskUnknown": "No risk sheet",
     "riskCaution": "Caution",
