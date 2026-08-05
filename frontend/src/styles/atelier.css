@@ -5031,8 +5031,9 @@ body {
   border: 1px solid var(--line, rgba(13, 18, 16, 0.12));
   background: color-mix(in srgb, var(--surface, #fff) 94%, var(--moss, #3f6b4a));
   position: sticky;
-  top: calc(var(--header-h, 64px) + 0.2rem);
-  /* Below header/Más (3000+), above map tiles */
+  /* Sit under sticky MAP≠safety banner (~2.5rem) so rails stay visible on scroll */
+  top: calc(var(--header-h, 64px) + 2.55rem);
+  /* Below header/Más (3000+), above map tiles; under policy banner z-index */
   z-index: 20;
   backdrop-filter: blur(10px);
 }
@@ -5743,8 +5744,11 @@ body {
   gap: 0.65rem 1rem;
 }
 
-/* MAP ≠ safety / cotos ≠ consumo — visible under bare PageShell (no cn-warn-strip) */
+/* MAP ≠ safety / cotos ≠ consumo — sticky rails under bare PageShell (no cn-warn-strip) */
 .map-policy-banner {
+  position: sticky;
+  top: calc(var(--header-h, 64px) + 0.15rem);
+  z-index: 25;
   margin: 0;
   padding: 0.4rem 0.7rem;
   border-radius: 10px;
@@ -5754,8 +5758,17 @@ body {
   letter-spacing: 0.02em;
   line-height: 1.35;
   color: #7a3030;
-  background: color-mix(in srgb, #8b3a3a 12%, var(--surface, #f6f3ec));
+  background: color-mix(in srgb, #8b3a3a 14%, var(--surface, #f6f3ec));
   border: 1px solid color-mix(in srgb, #8b3a3a 28%, var(--line, transparent));
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 10px color-mix(in srgb, #8b3a3a 12%, transparent);
+}
+
+.page-map--map-first .map-policy-banner {
+  /* Ensure sticky context wins inside map-first chrome stack */
+  position: sticky;
+  top: calc(var(--header-h, 64px) + 0.15rem);
+  z-index: 25;
 }
 
 .map-regulated-dir__policy {
@@ -5770,6 +5783,7 @@ body {
   border: 1px solid color-mix(in srgb, #8b3a3a 24%, var(--line, transparent));
 }
 
+/* Warning palette — cotos≠consumo must not read as “OK/safe” green */
 .map-safety-chip {
   display: inline-flex;
   align-items: center;
@@ -5779,14 +5793,15 @@ body {
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.02em;
-  color: var(--forest, #3f6212);
-  background: color-mix(in srgb, #84cc16 14%, var(--surface, #f6f3ec));
-  border: 1px solid color-mix(in srgb, #65a30d 35%, var(--line, transparent));
+  color: #7a3030;
+  background: color-mix(in srgb, #8b3a3a 12%, var(--surface, #f6f3ec));
+  border: 1px solid color-mix(in srgb, #8b3a3a 30%, var(--line, transparent));
   white-space: nowrap;
 }
 
 [data-theme='dark'] .map-policy-banner,
-[data-theme='dark'] .map-regulated-dir__policy {
+[data-theme='dark'] .map-regulated-dir__policy,
+[data-theme='dark'] .map-safety-chip:not(.map-safety-chip--floating) {
   color: #f5c4c4;
   background: color-mix(in srgb, #8b3a3a 22%, var(--surface, #1a2420));
   border-color: color-mix(in srgb, #8b3a3a 40%, var(--line, transparent));
@@ -6016,11 +6031,17 @@ body {
   color: color-mix(in srgb, var(--forest, #9dca72) 80%, #fff);
 }
 
-[data-theme='dark'] .map-safety-chip,
+/* Safety rails stay warning-red (never “OK green”) — floating overlay may keep soft glass */
+[data-theme='dark'] .map-safety-chip {
+  color: #f5c4c4;
+  background: color-mix(in srgb, #8b3a3a 28%, var(--surface, #1a1f1c));
+  border-color: color-mix(in srgb, #8b3a3a 45%, var(--line));
+}
+
 [data-theme='dark'] .map-safety-chip--floating {
-  color: color-mix(in srgb, #b8e08a 70%, #fff);
-  background: color-mix(in srgb, #365314 35%, var(--surface, #1a1f1c));
-  border-color: color-mix(in srgb, #65a30d 40%, var(--line));
+  color: #f5c4c4;
+  background: color-mix(in srgb, var(--glass-bg, var(--surface, #1a1f1c)) 88%, rgba(139, 58, 58, 0.28));
+  border-color: color-mix(in srgb, #8b3a3a 40%, var(--glass-border, transparent));
 }
 
 [data-theme='dark'] .map-legend--glass {

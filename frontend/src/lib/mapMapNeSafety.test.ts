@@ -7,12 +7,19 @@ import { describe, expect, it } from 'vitest'
 
 const root = resolve(__dirname, '..')
 const mapPage = readFileSync(resolve(root, 'pages/SpainMapPage.tsx'), 'utf8')
-const es = JSON.parse(
-  readFileSync(resolve(root, 'locales/es/common.json'), 'utf8'),
-) as { map: Record<string, string> }
-const en = JSON.parse(
-  readFileSync(resolve(root, 'locales/en/common.json'), 'utf8'),
-) as { map: Record<string, string> }
+const atelierCss = readFileSync(resolve(root, 'styles/atelier.css'), 'utf8')
+
+function loadMapLocale(lang: string): Record<string, string> {
+  const json = JSON.parse(
+    readFileSync(resolve(root, `locales/${lang}/common.json`), 'utf8'),
+  ) as { map: Record<string, string> }
+  return json.map
+}
+
+const es = loadMapLocale('es')
+const en = loadMapLocale('en')
+const ca = loadMapLocale('ca')
+const eu = loadMapLocale('eu')
 
 describe('map MAP≠safety / cotos≠consumo (UX-07a)', () => {
   it('SpainMapPage exposes policy banner + cotos policy testids', () => {
@@ -29,14 +36,52 @@ describe('map MAP≠safety / cotos≠consumo (UX-07a)', () => {
     expect(mapPage).not.toMatch(/safe to eat|comestible seguro|puedes comer/i)
   })
 
-  it('locale SSOT includes policy keys (ES/EN)', () => {
-    for (const loc of [es, en]) {
-      expect(loc.map.policyBanner).toMatch(/MAP|seguridad|safety|consumo|consumption/i)
-      expect(loc.map.cotosPolicy).toMatch(/consum|permiso|permission/i)
-      expect(loc.map.safetyChip).toMatch(/cotos|consum/i)
-      expect(loc.map.disclaimerShort).toMatch(/cotos|consum|forag/i)
+  it('policy banner CSS is sticky under app header', () => {
+    expect(atelierCss).toMatch(
+      /\.map-policy-banner\s*\{[^}]*position:\s*sticky/s,
+    )
+    expect(atelierCss).toMatch(
+      /\.map-policy-banner\s*\{[^}]*top:\s*calc\(\s*var\(--header-h/s,
+    )
+    // Filters sit below sticky banner so rails remain visible
+    expect(atelierCss).toMatch(
+      /\.page-map--map-first\s+\.map-chrome__filters\s*\{[^}]*top:\s*calc\(\s*var\(--header-h[^)]*\)\s*\+\s*2\.55rem/s,
+    )
+  })
+
+  it('locale SSOT: ES/EN/CA/EU policy keys + EN MAP≠safety', () => {
+    for (const loc of [es, en, ca, eu]) {
+      expect(loc.policyBanner?.length).toBeGreaterThan(20)
+      expect(loc.cotosPolicy?.length).toBeGreaterThan(20)
+      expect(loc.safetyChip?.length).toBeGreaterThan(8)
+      expect(loc.disclaimerShort?.length).toBeGreaterThan(20)
+      // Deny forage / consumption permission polarity
+      expect(loc.policyBanner).toMatch(
+        /MAP\s*≠|≠\s*(seguridad|seguretat|segurtasuna|safety)|no autoritz|no autoriza|ez du|does not authorize|forag|recol|bilket|consum/i,
+      )
+      expect(loc.policyBanner + ' ' + loc.cotosPolicy).not.toMatch(
+        /safe to eat|puedes comer|comestible seguro/i,
+      )
     }
-    expect(es.map.policyBanner).toMatch(/cotos\s*≠\s*consumo/)
-    expect(es.map.safetyChip).toMatch(/cotos\s*≠\s*consumo/)
+
+    expect(es.policyBanner).toMatch(/MAP\s*≠\s*seguridad/i)
+    expect(es.policyBanner).toMatch(/cotos\s*≠\s*consumo/i)
+    expect(es.safetyChip).toMatch(/cotos\s*≠\s*consumo/)
+
+    expect(en.policyBanner).toMatch(/MAP\s*≠\s*safety/i)
+    expect(en.policyBanner).toMatch(/forag|consum/i)
+    expect(en.cotosPolicy).toMatch(/consum|forag|permission/i)
+
+    // CA Catalan (not Spanish clone of new keys)
+    expect(ca.policyBanner).toMatch(/MAP\s*≠\s*seguretat/i)
+    expect(ca.policyBanner).toMatch(/cotos\s*≠\s*consum/i)
+    expect(ca.safetyChip).toMatch(/Educatiu|cotos\s*≠\s*consum/i)
+    expect(ca.cotosPolicy).toMatch(/bolets|recol·lecció|consum/i)
+
+    // EU Basque (not Spanish clone of new keys)
+    expect(eu.policyBanner).toMatch(/MAP\s*≠\s*segurtasuna/i)
+    expect(eu.policyBanner).toMatch(/kotoak\s*≠\s*kontsumoa/i)
+    expect(eu.safetyChip).toMatch(/kotoak|kontsumoa|Hezigarria/i)
+    expect(eu.cotosPolicy).toMatch(/onddoak|kontsumo|bilketa/i)
   })
 })

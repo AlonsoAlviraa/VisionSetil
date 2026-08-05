@@ -1112,7 +1112,7 @@ export default function SpainMapPage() {
     >
       {/* Unified chrome: one mode, filters + climate on zone click */}
       <header className="map-chrome">
-        {/* MAP ≠ safety sticky: bare PageShell has no cn-warn-strip — keep rails visible */}
+        {/* MAP ≠ safety sticky (CSS position:sticky under --header-h); bare PageShell has no cn-warn-strip */}
         <p
           className="map-policy-banner"
           role="note"
