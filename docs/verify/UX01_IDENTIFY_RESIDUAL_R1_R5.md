@@ -1,8 +1,8 @@
 # UX-01 Identify residual checklist R1–R5 (verify-then-fix)
 
-**Plan:** UX-01 / pr-2  
-**Branch:** `execute-plan/bfde5857-pr-2-identify-residual-checklist-verify-then-fix`  
-**Verified:** 2026-08-05  
+**Plan:** UX-01 / pr-2
+**Branch:** `execute-plan/bfde5857-pr-2-identify-residual-checklist-verify-then-fix`
+**Verified:** 2026-08-05
 **Rails:** orientation only · never forage · never auto `product_unlock`
 
 ## Summary
@@ -113,9 +113,9 @@ Out of PR code scope while green (design KD).
 
 ## Tests
 
-- `frontend/src/lib/competitiveFeatures.test.ts` — new case  
-  `UX-01 Identify residual R1–R5 (sticky / soft-confirm / slot / ES / JPEG)`  
-  structural lock on the five residuals.
+- `frontend/src/lib/competitiveFeatures.test.ts` — new case
+  `UX-01 Identify residual R1–R5 (sticky / soft-confirm / slot / ES / JPEG)`
+  structural lock on the five residuals (nav height 3.85rem + 8px + safe-area).
 - Run: related competitiveFeatures / Identify suite (see PR verification).
 
 ---

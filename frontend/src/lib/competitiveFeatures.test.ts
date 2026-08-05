@@ -412,10 +412,12 @@ describe('competitive feature adoption', () => {
   })
 
   it('UX-01 Identify residual R1–R5 (sticky / soft-confirm / slot / ES / JPEG)', () => {
-    // R1: sticky analyze/result CTAs clear fixed bottom-nav (≥ nav + 8px + safe-area)
+    // R1: sticky analyze/result CTAs clear fixed bottom-nav (≥ actual nav + 8px + safe-area)
     const cn = readFileSync(resolve(root, 'src/styles/campo-nocturno.css'), 'utf8')
+    // Lock both halves of the R1 fix: accurate chrome height + gap + home-indicator
+    expect(cn).toMatch(/--cn-bottom-nav-h:\s*3\.85rem/)
     expect(cn).toMatch(
-      /--cn-sticky-above-nav:\s*calc\(\s*var\(--cn-bottom-nav-h\)\s*\+\s*8px/,
+      /--cn-sticky-above-nav:\s*calc\(\s*var\(--cn-bottom-nav-h\)\s*\+\s*8px\s*\+\s*env\(safe-area-inset-bottom/,
     )
     expect(cn).toMatch(
       /\.app--has-bottom-nav\s+\.page-identify\s+\.analyze-actions/,
