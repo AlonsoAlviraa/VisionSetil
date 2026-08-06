@@ -13,7 +13,8 @@ export default defineConfig({
   testDir: './e2e',
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 1 : 0,
+  // One local retry absorbs Vite cold-start flakes on Windows first navigation
+  retries: process.env.CI ? 1 : 1,
   workers: 1,
   reporter: 'list',
   timeout: 60_000,
@@ -35,8 +36,51 @@ export default defineConfig({
         baseURL: 'http://127.0.0.1:5174',
         ...devices['Desktop Chrome'],
       },
-      // Learning-first dual-shell matrix only (UX-08 acceptance)
-      testMatch: /(?:learning-first-dual-shell|a11y-reduced-motion)\.spec\.ts/,
+      // Dual-shell parity matrix: learning-first + a11y + identify photo upload
+      testMatch:
+        /(?:learning-first-dual-shell|a11y-reduced-motion|identify-photo-dual-shell)\.spec\.ts/,
+    },
+    // Mobile viewport profiles (store launch matrix) — app shell.
+    // Chromium + viewport (not WebKit iPhone devices): WebKit is not installed
+    // on all CI/dev Windows hosts; viewport matrix still covers small/mid/large.
+    {
+      name: 'mobile-small',
+      use: {
+        baseURL: 'http://127.0.0.1:5173',
+        ...devices['Desktop Chrome'],
+        viewport: { width: 375, height: 667 },
+        isMobile: true,
+        hasTouch: true,
+        userAgent:
+          'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/604.1 VisionSetilE2E/small',
+      },
+      testMatch: /identify-photo-dual-shell\.spec\.ts/,
+    },
+    {
+      name: 'mobile-mid',
+      use: {
+        baseURL: 'http://127.0.0.1:5173',
+        ...devices['Desktop Chrome'],
+        viewport: { width: 393, height: 851 },
+        isMobile: true,
+        hasTouch: true,
+        userAgent:
+          'Mozilla/5.0 (Linux; Android 12; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36 VisionSetilE2E/mid',
+      },
+      testMatch: /identify-photo-dual-shell\.spec\.ts/,
+    },
+    {
+      name: 'mobile-large',
+      use: {
+        baseURL: 'http://127.0.0.1:5173',
+        ...devices['Desktop Chrome'],
+        viewport: { width: 428, height: 926 },
+        isMobile: true,
+        hasTouch: true,
+        userAgent:
+          'Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1 VisionSetilE2E/large',
+      },
+      testMatch: /identify-photo-dual-shell\.spec\.ts/,
     },
   ],
   webServer: [

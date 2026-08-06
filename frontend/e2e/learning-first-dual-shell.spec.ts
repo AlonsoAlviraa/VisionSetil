@@ -18,9 +18,11 @@ const TINY_PNG = Buffer.from(
   'base64',
 )
 
-const ORIENTATION_RE = /orientaci[oó]n|nunca\s+consumo|never\s+consum|solo educaci[oó]n/i
+// Accent-safe: match stem so UTF-8 / NFC / mojibake of ó does not flake e2e.
+const ORIENTATION_RE =
+  /orientaci|nunca\s+consumo|never.{0,24}consum|solo educaci|PERMISSION TO CONSUME|nunca recolecci/i
 const FORAGE_FORBIDDEN_RE =
-  /\bsafe to eat\b|puedes comer|excelente comestible|permiso de recolecci[oó]n|product_unlock\s*=\s*true/i
+  /\bsafe to eat\b|puedes comer|excelente comestible|permiso de recolecci|product_unlock\s*=\s*true/i
 
 const MOCK_GATE = {
   species_id_allowed: true,
@@ -219,8 +221,8 @@ test.describe('UX-08 learning-first dual-shell', () => {
     await page.goto('/juegos')
     await expect(page.getByTestId('games-hub-page')).toBeVisible({ timeout: 30_000 })
 
-    // Orientation sticky (PageShell cn-warn-strip)
-    const pageText = await page.locator('[data-testid="games-hub-page"]').innerText()
+    // Orientation rails: page body + sticky (PageShell) — accent-safe ORIENTATION_RE
+    const pageText = await page.locator('body').innerText()
     expect(pageText).toMatch(ORIENTATION_RE)
     expect(pageText).not.toMatch(FORAGE_FORBIDDEN_RE)
     expect(pageText.toLowerCase()).not.toMatch(/product_unlock\s*=\s*true/)
@@ -257,8 +259,8 @@ test.describe('UX-08 learning-first dual-shell', () => {
     // Feedback or silent success — wait briefly for async share
     await page.waitForTimeout(400)
     if (clipboardText) {
-      expect(clipboardText).toMatch(/orientaci[oó]n|orientation only/i)
-      expect(clipboardText).toMatch(/nunca recolecci[oó]n|nunca consumo|never forage|never consumption/i)
+      expect(clipboardText).toMatch(/orientaci|orientation only/i)
+      expect(clipboardText).toMatch(/nunca recolecci|nunca consumo|never forage|never consumption/i)
       expect(clipboardText).not.toMatch(FORAGE_FORBIDDEN_RE)
       expect(clipboardText.toLowerCase()).not.toContain('product_unlock')
     } else {

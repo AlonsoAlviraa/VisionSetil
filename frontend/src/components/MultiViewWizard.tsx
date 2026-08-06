@@ -22,6 +22,7 @@ import {
   missingDeadlyCriticalViews,
 } from '../lib/diagnosticViews'
 import { featureFlags } from '../lib/featureFlags'
+import { prepareIdentifyImageFile } from '../lib/prepareIdentifyImage'
 import { IconCamera, ViewIcon } from './icons'
 import { Button } from './ui'
 import { PhotoCoachPanel } from './PhotoCoachPanel'
@@ -107,10 +108,13 @@ export function MultiViewWizard({ assignments, onAssign, onClear, onOpenCamera }
 
   const onFile = useCallback(
     (view: CanonicalView, fileList: FileList | null) => {
-      const file = fileList?.[0]
-      if (!file) return
-      const previewUrl = URL.createObjectURL(file)
-      onAssign(view, file, previewUrl)
+      const raw = fileList?.[0]
+      if (!raw) return
+      // Async re-encode (JPEG edge cap) — fail-open to original file
+      void prepareIdentifyImageFile(raw).then((file) => {
+        const previewUrl = URL.createObjectURL(file)
+        onAssign(view, file, previewUrl)
+      })
     },
     [onAssign],
   )
@@ -342,8 +346,10 @@ export function MultiViewWizard({ assignments, onAssign, onClear, onOpenCamera }
                       defaultValue: `Vista ${label}`,
                     })}
                     className="mv-preview"
-                    loading="lazy"
+                    // User-selected blob previews are above-fold — lazy can blank on mobile WebView/PWA
+                    loading="eager"
                     decoding="async"
+                    data-testid={`mv-preview-${slot.view}`}
                     onError={(e) => {
                       e.currentTarget.style.opacity = '0.35'
                     }}
@@ -510,13 +516,20 @@ export function MultiViewWizard({ assignments, onAssign, onClear, onOpenCamera }
                   </div>
                 </div>
               )}
+              {/*
+                Galería MUST NOT set capture=environment — on iOS/Android WebView/PWA
+                that forces the camera and blocks photo-library pick (app shell break
+                while desktop web still works). Camera path uses CameraCapture (getUserMedia).
+              */}
               <input
                 ref={(el) => {
                   inputRefs.current[slot.view] = el
                 }}
                 type="file"
-                accept="image/*"
-                capture="environment"
+                accept="image/jpeg,image/png,image/webp,image/*"
+                // No capture attr — library picker on phones; camera is explicit CTA
+                data-testid={`mv-gallery-input-${slot.view}`}
+                className="mv-gallery-input"
                 hidden
                 onChange={(e) => {
                   onFile(slot.view, e.target.files)

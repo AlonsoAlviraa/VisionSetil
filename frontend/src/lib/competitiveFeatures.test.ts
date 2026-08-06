@@ -478,11 +478,18 @@ describe('competitive feature adoption', () => {
     expect(es).toMatch(/"Continuar sin más fotos"/)
     expect(es).not.toMatch(/orientaci[oó]n only/i)
 
-    // R5: JPEG long-edge ≤1280 (already in CameraCapture — lock regression)
+    // R5: JPEG long-edge ≤1280 (shared prepareIdentifyImage SSOT + CameraCapture)
     const cam = readFileSync(resolve(root, 'src/components/CameraCapture.tsx'), 'utf8')
-    expect(cam).toMatch(/maxEdge\s*=\s*1280/)
+    expect(cam).toMatch(/IDENTIFY_JPEG_MAX_EDGE|maxEdge\s*=\s*1280/)
     expect(cam).toMatch(/image\/jpeg/)
-    expect(cam).toMatch(/0\.82/)
+    expect(cam).toMatch(/IDENTIFY_JPEG_QUALITY|0\.82/)
+    const prep = readFileSync(resolve(root, 'src/lib/prepareIdentifyImage.ts'), 'utf8')
+    expect(prep).toMatch(/IDENTIFY_JPEG_MAX_EDGE\s*=\s*1280/)
+    expect(prep).toMatch(/IDENTIFY_JPEG_QUALITY\s*=\s*0\.82/)
+    // Gallery must not force capture= (app shell / mobile library pick)
+    expect(wiz).not.toMatch(/capture\s*=\s*["']environment["']/)
+    expect(wiz).toMatch(/prepareIdentifyImageFile/)
+    expect(wiz).toMatch(/loading=["']eager["']/)
   })
 
   it('v1.8 community human consensus + offline encyclopedia depth', () => {

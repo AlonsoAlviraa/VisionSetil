@@ -98,6 +98,47 @@ describe('dual-shell shared surface contracts (UX-08)', () => {
     expect(pw).toMatch(/5173/)
     expect(pw).toMatch(/5174/)
     expect(pw).toMatch(/dev:app|dev:web/)
-    expect(pw).toMatch(/learning-first-dual-shell|a11y-reduced-motion/)
+    expect(pw).toMatch(/learning-first-dual-shell|a11y-reduced-motion|identify-photo-dual-shell/)
+  })
+
+  it('Identify photo path is shared (no shell-specific UploadZone/Camera/Wizard forks)', () => {
+    // Both entries mount the same App → IdentifyPage; no main-app photo fork.
+    const app = read('main-app.tsx')
+    const web = read('main-web.tsx')
+    expect(app).not.toMatch(/UploadZone|CameraCapture|MultiViewWizard|IdentifyPage/)
+    expect(web).not.toMatch(/UploadZone|CameraCapture|MultiViewWizard|IdentifyPage/)
+    expect(app).toMatch(/from '\.\/App/)
+    expect(web).toMatch(/from '\.\/App/)
+
+    const identify = read('pages/IdentifyPage.tsx')
+    expect(identify).toMatch(/from ['"].*UploadZone['"]/)
+    expect(identify).toMatch(/from ['"].*CameraCapture['"]/)
+    expect(identify).toMatch(/from ['"].*MultiViewWizard['"]/)
+    expect(identify).toMatch(/prepareIdentifyImageFile/)
+    expect(identify).toMatch(/data-testid="identify-submit"/)
+    expect(identify).toMatch(/identify-sticky-cta|analyze-actions/)
+
+    const upload = read('components/UploadZone.tsx')
+    const cam = read('components/CameraCapture.tsx')
+    const wiz = read('components/MultiViewWizard.tsx')
+    expect(upload).toMatch(/data-testid="upload-dropzone"/)
+    expect(upload).toMatch(/data-testid="upload-open-camera"/)
+    expect(cam).toMatch(/IDENTIFY_JPEG_MAX_EDGE|maxEdge/)
+    expect(cam).toMatch(/getUserMedia/)
+    expect(wiz).toMatch(/data-testid="multi-view-wizard"/)
+    expect(wiz).toMatch(/PhotoCoachPanel/)
+    // App-shell regression lock: gallery must not force rear camera
+    expect(wiz).not.toMatch(/capture\s*=\s*["']environment["']/)
+    expect(wiz).toMatch(/prepareIdentifyImageFile/)
+  })
+
+  it('PWA is app-shell only; web shell has no service worker plugin path', () => {
+    const vite = readRoot('vite.config.ts')
+    // Factory enables VitePWA only when target !== web
+    expect(vite).toMatch(/VitePWA|vite-plugin-pwa/)
+    expect(vite).toMatch(/isWeb/)
+    expect(vite).toMatch(/dist-\$\{target\}|dist-app|dist-web/)
+    const webCfg = readRoot('vite.web.config.ts')
+    expect(webCfg).toMatch(/createViteConfig\('web'\)/)
   })
 })

@@ -83,6 +83,7 @@ import {
   fetchEceBandForIdentify,
   type EceBand,
 } from '../lib/eceHonesty'
+import { prepareIdentifyImageFile } from '../lib/prepareIdentifyImage'
 
 interface SelectedImage {
   file: File
@@ -205,7 +206,8 @@ export function IdentifyPage() {
   const [assignments, setAssignments] = useState<SlotAssignment>({})
   // v1.12: free mode (1 photo) is the default — industry consensus (Seek/Lens/Picture Mushroom).
   // Guided multi-view is an opt-in toggle for users who want max precision.
-  const [useWizard, setUseWizard] = useState(false)
+  // Default guided multi-view: better mobile photo path (slots + gallery without capture lock)
+  const [useWizard, setUseWizard] = useState(true)
   const [result, setResult] = useState<ClassificationResult | null>(null)
   const [loading, setLoading] = useState(false)
   /** Honest client pipeline stage while loading (B-28). */
@@ -350,11 +352,14 @@ export function IdentifyPage() {
   }, [])
 
   const addFiles = useCallback((files: File[]) => {
-    const newImages = files.map((file) => ({
-      file,
-      preview: URL.createObjectURL(file),
-    }))
-    setSelectedImages((prev) => [...prev, ...newImages].slice(0, 10))
+    // JPEG edge cap shared with wizard/camera — both shells (app/web)
+    void Promise.all(files.map((f) => prepareIdentifyImageFile(f))).then((prepared) => {
+      const newImages = prepared.map((file) => ({
+        file,
+        preview: URL.createObjectURL(file),
+      }))
+      setSelectedImages((prev) => [...prev, ...newImages].slice(0, 10))
+    })
   }, [])
 
   const removeImage = useCallback((index: number) => {
@@ -1093,8 +1098,9 @@ export function IdentifyPage() {
                             defaultValue: 'Seta {{n}}',
                             n: idx + 1,
                           })}
-                          loading="lazy"
+                          loading="eager"
                           decoding="async"
+                          data-testid={`identify-free-preview-${idx}`}
                           onError={(e) => {
                             e.currentTarget.style.opacity = '0.3'
                           }}
@@ -1372,7 +1378,7 @@ export function IdentifyPage() {
                         src={src}
                         alt={t('identify.resultPhotoAlt', { defaultValue: 'Resultado {{n}}', n: idx + 1 })}
                         className="preview-image"
-                        loading="lazy"
+                        loading="eager"
                         decoding="async"
                         role="button"
                         tabIndex={0}
