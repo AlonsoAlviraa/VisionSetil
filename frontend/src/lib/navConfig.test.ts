@@ -43,4 +43,15 @@ describe('navConfig SSOT (architecture M1)', () => {
     expect(paths).toContain('/mapa')
     expect(MORE_NAV_GROUPS.some((g) => g.id === 'learn')).toBe(true)
   })
+
+  it('learn group blurbs cover multi-view + confusiones (orientation only)', () => {
+    const learn = MORE_NAV_GROUPS.find((g) => g.id === 'learn')
+    expect(learn).toBeTruthy()
+    const edu = learn!.items.find((i) => i.to === '/educacion')
+    expect(edu?.to).toBe('/educacion')
+    expect(edu?.blurbFallback.toLowerCase()).toMatch(/multi-vista|orientaci/)
+    const look = learn!.items.find((i) => i.to === '/lookalikes')
+    expect(look?.blurbFallback.toLowerCase()).toMatch(/confusiones|estudio|consumo/)
+    expect(look?.blurbFallback).not.toMatch(/Lookalikes/)
+  })
 })

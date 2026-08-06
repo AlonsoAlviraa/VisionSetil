@@ -83,6 +83,7 @@ import {
   fetchEceBandForIdentify,
   type EceBand,
 } from '../lib/eceHonesty'
+import { prepareIdentifyImageFile } from '../lib/prepareIdentifyImage'
 
 interface SelectedImage {
   file: File
@@ -205,7 +206,8 @@ export function IdentifyPage() {
   const [assignments, setAssignments] = useState<SlotAssignment>({})
   // v1.12: free mode (1 photo) is the default — industry consensus (Seek/Lens/Picture Mushroom).
   // Guided multi-view is an opt-in toggle for users who want max precision.
-  const [useWizard, setUseWizard] = useState(false)
+  // Default guided multi-view: better mobile photo path (slots + gallery without capture lock)
+  const [useWizard, setUseWizard] = useState(true)
   const [result, setResult] = useState<ClassificationResult | null>(null)
   const [loading, setLoading] = useState(false)
   /** Honest client pipeline stage while loading (B-28). */
@@ -350,11 +352,14 @@ export function IdentifyPage() {
   }, [])
 
   const addFiles = useCallback((files: File[]) => {
-    const newImages = files.map((file) => ({
-      file,
-      preview: URL.createObjectURL(file),
-    }))
-    setSelectedImages((prev) => [...prev, ...newImages].slice(0, 10))
+    // JPEG edge cap shared with wizard/camera — both shells (app/web)
+    void Promise.all(files.map((f) => prepareIdentifyImageFile(f))).then((prepared) => {
+      const newImages = prepared.map((file) => ({
+        file,
+        preview: URL.createObjectURL(file),
+      }))
+      setSelectedImages((prev) => [...prev, ...newImages].slice(0, 10))
+    })
   }, [])
 
   const removeImage = useCallback((index: number) => {
@@ -956,7 +961,8 @@ export function IdentifyPage() {
                         variant="primary"
                         block
                         onClick={requestClassify}
-                        disabled={loading || !readiness.canSubmit || !canClickSubmit}
+                        isLoading={loading}
+                        disabled={!readiness.canSubmit || !canClickSubmit}
                         data-testid="identify-submit"
                         data-soft-coach={preSubmitCoach.needsSoftConfirm ? '1' : '0'}
                         data-mode="wizard"
@@ -1092,8 +1098,9 @@ export function IdentifyPage() {
                             defaultValue: 'Seta {{n}}',
                             n: idx + 1,
                           })}
-                          loading="lazy"
+                          loading="eager"
                           decoding="async"
+                          data-testid={`identify-free-preview-${idx}`}
                           onError={(e) => {
                             e.currentTarget.style.opacity = '0.3'
                           }}
@@ -1178,7 +1185,8 @@ export function IdentifyPage() {
                     variant="primary"
                     block
                     onClick={requestClassify}
-                    disabled={loading || !canClickSubmit}
+                    isLoading={loading}
+                    disabled={!canClickSubmit}
                     data-testid="identify-submit"
                     data-soft-coach={preSubmitCoach.needsSoftConfirm ? '1' : '0'}
                     data-mode="free"
@@ -1320,7 +1328,7 @@ export function IdentifyPage() {
             })}
           >
             <div className="result-layout identify-result-layout" data-testid="identify-result">
-              {/* ResultCard first so ResultModeBanner leads the honesty chrome */}
+              {/* Hierarchy: safety→decision→top-3→evidence→lookalikes inside ResultCard */}
               <ResultCard
                 key={result.request_id}
                 result={result}
@@ -1345,6 +1353,7 @@ export function IdentifyPage() {
                   setShowCamera(true)
                 }}
               />
+              {/* ImageCompare lives inside ResultCard after lookalikes (hierarchy 5b) */}
               <div className="result-image-section result-image-section--deferred">
                 <Button
                   type="button"
@@ -1369,7 +1378,7 @@ export function IdentifyPage() {
                         src={src}
                         alt={t('identify.resultPhotoAlt', { defaultValue: 'Resultado {{n}}', n: idx + 1 })}
                         className="preview-image"
-                        loading="lazy"
+                        loading="eager"
                         decoding="async"
                         role="button"
                         tabIndex={0}
@@ -1406,24 +1415,56 @@ export function IdentifyPage() {
         )}
       </div>
 
-      {/* Sticky orientation strip on result (mobile-first; CSS: identify-sticky-cta) */}
+      {/* Sticky strip: one primary only — rejected → add view; accepted → new analysis */}
       {phase === 'result' && result && (
         <div
           className="identify-sticky-cta identify-sticky-cta--result"
           data-testid="identify-orientation-sticky"
+          data-decision={result.decision}
           role="status"
         >
           <p className="identify-sticky-cta__copy">{orientationStickyLine(locale)}</p>
           <div className="identify-sticky-cta__actions">
-            <Button
-              type="button"
-              variant="primary"
-              className="identify-submit-btn"
-              onClick={reset}
-              data-testid="identify-sticky-new"
-            >
-              {t('identify.newAnalysis', { defaultValue: 'Nuevo análisis' })}
-            </Button>
+            {result.decision === 'rejected' ? (
+              <>
+                <Button
+                  type="button"
+                  variant="primary"
+                  className="identify-submit-btn"
+                  data-testid="identify-sticky-add-view"
+                  onClick={() => {
+                    setUseWizard(true)
+                    setResult(null)
+                    setError(null)
+                    setSoftConfirmOpen(false)
+                    setCameraTargetSlot('gills')
+                    setShowCamera(true)
+                  }}
+                >
+                  {t('result.addViewRetry', {
+                    defaultValue: 'Añadir vista y reintentar',
+                  })}
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={reset}
+                  data-testid="identify-sticky-new"
+                >
+                  {t('identify.newAnalysis', { defaultValue: 'Nuevo análisis' })}
+                </Button>
+              </>
+            ) : (
+              <Button
+                type="button"
+                variant="primary"
+                className="identify-submit-btn"
+                onClick={reset}
+                data-testid="identify-sticky-new"
+              >
+                {t('identify.newAnalysis', { defaultValue: 'Nuevo análisis' })}
+              </Button>
+            )}
             <LinkButton
               to="/revision-experta"
               variant="ghost"

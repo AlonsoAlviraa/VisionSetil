@@ -18,6 +18,7 @@ interface ImportMetaEnv {
   readonly VITE_FEATURE_ASYNC_CLASSIFY?: string
   /** E-08: HttpOnly cookie sessions (opt-in; pair with AUTH_COOKIE_ENABLED). */
   readonly VITE_FEATURE_AUTH_COOKIE?: string
+  readonly VITE_FEATURE_PHOTO_COACH_LUMINANCE?: string
 }
 
 interface ImportMeta {

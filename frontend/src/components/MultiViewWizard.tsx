@@ -1,6 +1,7 @@
 /**
  * Guided multi-view capture — 4 slots, field-ready, orientation-only.
  * Soft readiness (≥1 photo); critical views (gills/front) recommended.
+ * PhotoCoach panel (UX-03): educates better photos — never consumption.
  */
 import { useCallback, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -21,8 +22,10 @@ import {
   missingDeadlyCriticalViews,
 } from '../lib/diagnosticViews'
 import { featureFlags } from '../lib/featureFlags'
+import { prepareIdentifyImageFile } from '../lib/prepareIdentifyImage'
 import { IconCamera, ViewIcon } from './icons'
 import { Button } from './ui'
+import { PhotoCoachPanel } from './PhotoCoachPanel'
 
 type Props = {
   assignments: SlotAssignment
@@ -105,10 +108,13 @@ export function MultiViewWizard({ assignments, onAssign, onClear, onOpenCamera }
 
   const onFile = useCallback(
     (view: CanonicalView, fileList: FileList | null) => {
-      const file = fileList?.[0]
-      if (!file) return
-      const previewUrl = URL.createObjectURL(file)
-      onAssign(view, file, previewUrl)
+      const raw = fileList?.[0]
+      if (!raw) return
+      // Async re-encode (JPEG edge cap) — fail-open to original file
+      void prepareIdentifyImageFile(raw).then((file) => {
+        const previewUrl = URL.createObjectURL(file)
+        onAssign(view, file, previewUrl)
+      })
     },
     [onAssign],
   )
@@ -123,6 +129,26 @@ export function MultiViewWizard({ assignments, onAssign, onClear, onOpenCamera }
 
   const nextEmpty = VIEW_SLOTS.find((s) => !assignments[s.view])?.view ?? null
   const pct = Math.round((readiness.filled / FULL_PACKET_PHOTOS) * 100)
+  const filledKeys = orderedSlotKeys(assignments)
+  /** Checklist/examples target: next empty slot, else last filled, else gills. */
+  const coachView: CanonicalView = nextEmpty ?? filledKeys.slice(-1)[0] ?? 'gills'
+  /**
+   * Quality hints from last filled photo (not the empty next-slot), so edge/aspect
+   * and file_tiny can fire while the checklist still coaches the next view.
+   * previewUrl drives progressive dim probe in PhotoCoachPanel (fail-open).
+   */
+  const hintView: CanonicalView | null = filledKeys.slice(-1)[0] ?? null
+  const hintSlot = hintView ? assignments[hintView] : undefined
+  const coachFileMeta = useMemo(() => {
+    if (!hintSlot) return undefined
+    const byteLength = hintSlot.file?.size
+    const previewUrl = hintSlot.previewUrl || undefined
+    if (byteLength == null && !previewUrl) return undefined
+    return {
+      byteLength,
+      previewUrl,
+    }
+  }, [hintSlot?.file?.size, hintSlot?.previewUrl, hintView])
 
   return (
     <section
@@ -320,8 +346,10 @@ export function MultiViewWizard({ assignments, onAssign, onClear, onOpenCamera }
                       defaultValue: `Vista ${label}`,
                     })}
                     className="mv-preview"
-                    loading="lazy"
+                    // User-selected blob previews are above-fold — lazy can blank on mobile WebView/PWA
+                    loading="eager"
                     decoding="async"
+                    data-testid={`mv-preview-${slot.view}`}
                     onError={(e) => {
                       e.currentTarget.style.opacity = '0.35'
                     }}
@@ -488,13 +516,20 @@ export function MultiViewWizard({ assignments, onAssign, onClear, onOpenCamera }
                   </div>
                 </div>
               )}
+              {/*
+                Galería MUST NOT set capture=environment — on iOS/Android WebView/PWA
+                that forces the camera and blocks photo-library pick (app shell break
+                while desktop web still works). Camera path uses CameraCapture (getUserMedia).
+              */}
               <input
                 ref={(el) => {
                   inputRefs.current[slot.view] = el
                 }}
                 type="file"
-                accept="image/*"
-                capture="environment"
+                accept="image/jpeg,image/png,image/webp,image/*"
+                // No capture attr — library picker on phones; camera is explicit CTA
+                data-testid={`mv-gallery-input-${slot.view}`}
+                className="mv-gallery-input"
                 hidden
                 onChange={(e) => {
                   onFile(slot.view, e.target.files)
@@ -505,6 +540,12 @@ export function MultiViewWizard({ assignments, onAssign, onClear, onOpenCamera }
           )
         })}
       </div>
+
+      <PhotoCoachPanel
+        view={coachView}
+        fileMeta={coachFileMeta}
+        className="multi-view-wizard__photo-coach"
+      />
 
       {readiness.warningCodes.length > 0 && (
         <ul className="mv-warnings" data-testid="mv-warnings">

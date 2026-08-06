@@ -333,5 +333,5 @@ def test_get_job_result_returns_envelope_model(client, monkeypatch, tmp_path):
     # SAFETY: gated simple has no species predictions
     assert payload["simple"]["predictions"] == []
     assert payload["simple"]["decision"] == "rejected"
-    assert payload["raw"] is not None
-    assert payload["raw"].get("top_candidates") or payload["raw"].get("candidates")
+    # Non-admin callers: ungated `raw` is stripped (mega-audit honesty)
+    assert payload.get("raw") in (None,) or "raw" not in payload

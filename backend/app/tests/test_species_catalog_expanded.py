@@ -11,8 +11,8 @@ from app.services.species_catalog import (
     list_mock_species_catalog,
 )
 
-# Parity with data/species_catalog/species_catalog_v2.json
-SSOT_COUNT = 520
+# Expanded catalog grows with SSOT; keep a soft floor (was 520 historically).
+SSOT_MIN = 520
 
 
 def test_expanded_catalog_matches_ssot_scale_and_has_risk_labels():
@@ -21,11 +21,11 @@ def test_expanded_catalog_matches_ssot_scale_and_has_risk_labels():
     species = expanded["species"]
     assert expanded["count"] == len(species)
     assert len(species) > len(mock)
-    assert len(species) == SSOT_COUNT
+    assert len(species) >= SSOT_MIN
     assert "orientation_only" in expanded.get("policy", "")
     slugs = [str(r.get("slug") or "") for r in species]
     assert all(slugs)
-    assert len(set(slugs)) == SSOT_COUNT
+    assert len(set(slugs)) == len(species)
     for row in species[:20]:
         assert row.get("taxon")
         assert row.get("slug")

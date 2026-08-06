@@ -45,10 +45,25 @@ export function MoreHubPage() {
                 {g.glyph ? <Icon name={g.glyph} size="sm" aria-hidden="true" /> : null}
                 {t(g.titleKey, { defaultValue: g.titleFallback })}
               </h2>
+              {g.id === 'learn' ? (
+                <p
+                  className="more-hub-group__lead muted"
+                  data-testid="more-hub-learn-blurb"
+                  role="note"
+                >
+                  {t('more.learnLead', {
+                    defaultValue:
+                      'Aprende con fotos multi-vista y confusiones. Solo orientación — nunca consumo ni recolección.',
+                  })}
+                </p>
+              ) : null}
               <ul className="more-hub-list more-hub-list--v12">
                 {g.items.map((item) => {
                   const isBeta = item.to === '/beta-feedback'
                   const glyph = item.glyph || 'circle'
+                  // Soft deep-link PhotoCoach / learn CTA into multi-view education anchor
+                  const to =
+                    item.to === '/educacion' ? '/educacion#multi-view' : item.to
                   const body = (
                     <>
                       <span className="more-hub-tile__icon" aria-hidden="true">
@@ -88,7 +103,7 @@ export function MoreHubPage() {
                   }
                   return (
                     <li key={item.to} className="more-hub-tile">
-                      <Link to={item.to} className="more-hub-tile__link" data-testid={item.testId}>
+                      <Link to={to} className="more-hub-tile__link" data-testid={item.testId}>
                         {body}
                       </Link>
                     </li>
@@ -140,7 +155,6 @@ export function MoreHubPage() {
         <div className="more-hub-cta">
           <LinkButton
             to="/identificar"
-            skin="cn"
             variant="primary"
             block
             className="more-hub-cta__btn"

@@ -166,7 +166,11 @@ class Settings(BaseSettings):
     # Prefer in-repo Kaggle best.pt when present; else backend/app/ml/weights/.
     multi_view_weights_path: Path = Field(
         # Prefer E20 source-holdout when present; weight_discovery also scans v*.
-        default=_REPO_ROOT / "kaggle" / "kernel_output_v20" / "models" / "best.pt"
+        default=_REPO_ROOT
+        / "kaggle"
+        / "kernel_output_v20"
+        / "models"
+        / "best.pt"
     )
     # Path to the view classifier ONNX weights.
     view_classifier_model_path: str = Field(default="")

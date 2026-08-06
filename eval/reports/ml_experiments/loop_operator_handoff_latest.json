@@ -1,0 +1,91 @@
+{
+  "generated_at": "2026-08-05T20:01:27.070044+00:00",
+  "policy": "orientation_only_never_consume",
+  "product_unlock": false,
+  "can_auto_unlock": false,
+  "forage_permission": false,
+  "consumption_permission": false,
+  "lab_only": true,
+  "kaggle_push": false,
+  "auto_kaggle_push": false,
+  "status": "ready_for_lab_loop",
+  "can_stage_train_notebook": true,
+  "can_stage": true,
+  "operator_action": "Rails green + SSOT metrics present. Continue lab loop (E20b diagnose / E20c pull / friction iters). Stage notebook only via stage script; never auto push; never product_unlock. (soft_gates_advisory dual_deadly=True both_soft=True (never unlock))",
+  "metrics_label": "[MEASURED]",
+  "ssot_path": "eval/reports/ml_experiments/E20_BASELINE_METRICS_TO_IMPROVE.json",
+  "ssot_present": true,
+  "models_dir": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models",
+  "models_dir_resolved": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models",
+  "measured": {
+    "test_map_at_3": 0.8575265177160878,
+    "safety_recall_deadly_at_1": 0.7895348837209303,
+    "safety_recall_deadly_at_3": 0.9217054263565891,
+    "n_deadly_in_test": 2580,
+    "test_accuracy": 0.8032498307379824,
+    "num_classes": 40,
+    "num_train_obs": 5767,
+    "num_test_obs": 7385,
+    "version": "v20-E20-source-holdout",
+    "eval_protocol": "source_holdout_e20",
+    "test_domain": "gbif_es_only",
+    "train_domain": "fungitastic_plus_soft_non_gbif"
+  },
+  "ece": {
+    "primary": "train_published",
+    "primary_value": 0.18741017924867615,
+    "primary_source": "test_ece_train_published",
+    "claim_train_published": true,
+    "posthoc_separate": true,
+    "posthoc_value": 0.04544782004819755,
+    "temperature_train": 1.5812190771102905,
+    "temperature_posthoc": 2.899999999999997,
+    "note": "Primary ECE is train-published only when test_ece_train_published is set or ece_primary_is_train_published=true. Bare test_ece is not asserted as train-published. Posthoc temperature search is lab-only and must not replace primary."
+  },
+  "soft_gates_advisory": {
+    "soft_map_threshold": 0.25,
+    "soft_deadly_at_3_threshold": 0.9,
+    "soft_map_pass": true,
+    "soft_deadly_at_3_pass": true,
+    "dual_deadly_keys_present": true,
+    "note": "Advisory only — never unlock Identify from soft gates alone."
+  },
+  "rails": {
+    "status": "rails_green_can_stage",
+    "can_stage_train_notebook": true,
+    "fail_reasons": [],
+    "gaps": [],
+    "report_path": "eval/reports/ml_experiments/anti_leak_rails_train_latest.json"
+  },
+  "unlock_advisory": {
+    "unlock_eligible_advisory": true,
+    "product_unlock": false,
+    "note": "Advisory eligibility from operator package is never an auto unlock. Human operator cycle required; orientation only."
+  },
+  "pipeline_next": [
+    "1) verify_anti_leak_rails_for_train.py (gating exit; this handoff is non-gating unless --gate-on-rails)",
+    "2) E20b diagnose JSON always before any relaunch (≤1 auto if rails OK)",
+    "3) E20c pull + post_train_suite + compare vs SSOT file",
+    "4) Fresh loop_iter frictions (open-set / deadly@1 / hotspots / ECE dual)",
+    "5) stage_train_notebook_if_rails_ok.py only if can_stage — no auto push"
+  ],
+  "never": [
+    "auto product_unlock=true",
+    "pick max(MAP) across kernels for serve gate",
+    "contaminate GBIF ES holdout",
+    "sell posthoc ECE as primary",
+    "forage or consumption permission",
+    "invent version/protocol/ECE provenance"
+  ],
+  "gaps": [],
+  "honesty": {
+    "metrics_from_ssot_only": true,
+    "dual_ece_primary": "train_published",
+    "open_set_honesty": true,
+    "map_is_not_safety": true,
+    "product_unlock_forced_false": true,
+    "handoff_exit_non_gating_by_default": true,
+    "rails_gate_script": "scripts/verify_anti_leak_rails_for_train.py"
+  },
+  "note": "Operator handoff for VisionSetil ML lab loop. Metrics cited only from E20_BASELINE_METRICS_TO_IMPROVE.json [MEASURED] full precision. product_unlock remains false. Default exit 0 is report-only; use verify script or --gate-on-rails for fail-closed CI."
+}

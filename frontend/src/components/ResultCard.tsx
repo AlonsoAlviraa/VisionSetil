@@ -1,11 +1,12 @@
 /**
- * Result card — 3-layer hierarchy (Wave A) + Phase B honesty (B-08):
- * 0) ResultModeBanner + educational blocked shell
- * 1) Safety + decision + top predictions (no FoodQualityChip — D-B16)
- * Policy: docs/SAFETY_POLICY.md Safety-by-surface (D16 / D-B16).
- * 2) Confidence (gated D-B9) + lookalikes (collapsed default — D-08)
- * 2.5) B-36: missing evidence + questions_for_user panel (deep-link wizard slots)
- * 3) Accordion: quality, feedback, technical
+ * Result card — UX-02 hierarchy (field→UI map from ClassificationResult):
+ * 1) Safety chrome (ResultModeBanner + orientation sticky + safety_level)
+ * 2) Decision (accepted | open-set rejected FIRST-CLASS)
+ * 3) Top-3 predictions + RiskChip (rejected → unreliable candidates, never safe top-1)
+ * 4) Evidence (missing_evidence + questions_for_user)
+ * 5) Lookalikes + deadly top-k coach
+ * 6) Education / expert CTAs (page-level + handoff)
+ * Policy: docs/SAFETY_POLICY.md — no FoodQualityChip, no confetti, no edible green.
  */
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
@@ -23,6 +24,11 @@ import {
   resolveIdentifyConfidenceChrome,
   type EceBand,
 } from '../lib/eceHonesty'
+import { decisionHint, decisionLabel } from '../lib/decisionLabels'
+import {
+  deadlyTopkCoachCopy,
+  shouldShowDeadlyTopkCoach,
+} from '../lib/deadlyTopkHonesty'
 import { openSetReasonFallback, openSetReasonI18nKey } from '../lib/openSetReason'
 import { linkEvidenceItems } from '../lib/evidenceSlotMap'
 import {
@@ -44,6 +50,7 @@ import { SpeciesThumb } from './SpeciesThumb'
 import { Button, LinkButton } from './ui'
 import { SpeciesNameBlock } from './SpeciesNameBlock'
 import { RiskChip } from './RiskChip'
+import { ImageCompare, pickComparePair } from './ImageCompare'
 import {
   buildExpertHandoff,
   expertReviewPath,
@@ -190,7 +197,9 @@ export function ResultCard({
   const [feedbackSent, setFeedbackSent] = useState(false)
   const [layer2Open, setLayer2Open] = useState(false)
   const [layer3Open, setLayer3Open] = useState(false)
+  /** Accepted: show top-1 by default. Rejected: collapsed unreliable candidates. */
   const [showMorePredictions, setShowMorePredictions] = useState(false)
+  const [showRejectedCandidates, setShowRejectedCandidates] = useState(false)
   const [handoffSaved, setHandoffSaved] = useState(false)
 
   const mode = resolveDisplayMode(result)
@@ -204,7 +213,10 @@ export function ResultCard({
   const openSetRejected = isOpenSetRejected(result)
   const isRejected = result.decision === 'rejected'
   const topPrediction = result.predictions[0]
-  const topEdibility = getEdibilityMeta(topPrediction?.edibility ?? null, t)
+  const topEdibility = getEdibilityMeta(
+    topPrediction?.risk_level || topPrediction?.edibility || null,
+    t,
+  )
   const isDangerous = [
     'risk-toxic',
     'risk-poisonous',
@@ -214,7 +226,16 @@ export function ResultCard({
   ].includes(topEdibility.class)
   const isDeadly =
     topEdibility.class === 'risk-deadly' || topEdibility.class === 'ed-deadly'
+  const showDeadlyCoach = shouldShowDeadlyTopkCoach(result)
+  const deadlyCopy = useMemo(() => deadlyTopkCoachCopy(locale), [locale])
   const stackBadgeInfo = stackBadge(result.model_stack, locale)
+  const decisionText = decisionLabel(result.decision, locale)
+  const decisionHintText = decisionHint(result.decision, locale)
+  /** Hierarchy 5b: user multi-view compare when ≥2 captures (before education CTAs). */
+  const comparePair = useMemo(
+    () => pickComparePair(viewTypes, previews),
+    [viewTypes, previews],
+  )
 
   const [catalogTick, setCatalogTick] = useState(0)
   useEffect(() => {
@@ -254,7 +275,7 @@ export function ResultCard({
   const hasLayer2 =
     (!showBlockedShell && !isRejected && !!topPrediction && showConfidence) ||
     rankedLookalikes.length > 0 ||
-    (isDangerous && !showBlockedShell)
+    (isDangerous && !showBlockedShell && !isRejected)
   const hasLayer3 = true /* always show ML insights accordion */
 
   // D-08 density + safety: auto-open lookalikes when deadly/high-risk confusions exist
@@ -265,6 +286,7 @@ export function ResultCard({
       setLayer2Open(false)
     }
     setShowMorePredictions(false)
+    setShowRejectedCandidates(false)
     setLayer3Open(false)
   }, [result.request_id, lookalikeStats.deadly, lookalikeStats.high])
 
@@ -403,6 +425,7 @@ export function ResultCard({
             <div
               className={`decision-banner ${isRejected ? 'rejected' : 'accepted'}`}
               data-testid="decision-banner"
+              data-decision={isRejected ? 'rejected' : 'accepted'}
               data-open-set={openSetRejected ? 'true' : 'false'}
             >
               {isRejected ? (
@@ -410,8 +433,12 @@ export function ResultCard({
                   <strong className="decision-banner__title">
                     <IconAlert size={18} />
                     {openSetRejected
-                      ? t('honesty.decision.rejected_open_set')
-                      : t('honesty.decision.rejected_gate')}
+                      ? t('honesty.decision.rejected_open_set', {
+                          defaultValue: decisionText,
+                        })
+                      : t('honesty.decision.rejected_gate', {
+                          defaultValue: decisionText,
+                        })}
                   </strong>
                   <p data-testid="decision-reject-reason">
                     {(() => {
@@ -419,8 +446,12 @@ export function ResultCard({
                         result.rejection_reason || result.open_set_reason || null
                       if (!raw) {
                         return openSetRejected
-                          ? t('honesty.decision.rejected_open_set')
-                          : t('honesty.decision.rejected_gate')
+                          ? t('honesty.decision.rejected_open_set', {
+                              defaultValue: decisionHintText || decisionText,
+                            })
+                          : t('honesty.decision.rejected_gate', {
+                              defaultValue: decisionHintText || decisionText,
+                            })
                       }
                       const key = openSetReasonI18nKey(raw)
                       if (key) {
@@ -431,12 +462,25 @@ export function ResultCard({
                       return openSetReasonFallback(raw, i18n.language)
                     })()}
                   </p>
+                  {onFocusWizardSlot && (
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      className="decision-banner__retry"
+                      data-testid="decision-retry-views"
+                      onClick={() => onFocusWizardSlot('gills')}
+                    >
+                      {t('result.addViewRetry', {
+                        defaultValue: 'Añadir vista y reintentar',
+                      })}
+                    </Button>
+                  )}
                 </>
               ) : (
                 <>
                   <strong className="decision-banner__title">
-                    <IconCheck size={18} />
-                    {t('result.tentativeCue', { defaultValue: 'Pista tentativa' })}
+                    <IconInfo size={18} />
+                    {t('result.tentativeCue', { defaultValue: decisionText })}
                   </strong>
                   <p>
                     {showConfidence && topPrediction ? (
@@ -497,72 +541,70 @@ export function ResultCard({
 
             {/* D-B16: FoodQualityChip banned on Identify — risk chips only */}
 
-            {result.predictions.length > 0 && (
-              <div className="predictions" data-testid="predictions-list">
-                <h3 className="result-predictions-title">{t('result.topHints', { defaultValue: 'Mejores pistas' })}</h3>
+            {/* Top-3: accepted = primary list; rejected = optional unreliable candidates (never safe top-1) */}
+            {result.predictions.length > 0 && !isRejected && (
+              <div className="predictions" data-testid="predictions-list" data-branch="accepted">
+                <h3 className="result-predictions-title">
+                  {t('result.topHints', { defaultValue: 'Mejores pistas' })}
+                </h3>
                 <ul>
-                  {result.predictions.slice(0, showMorePredictions ? 3 : 1).map((pred: SpeciesPrediction, idx: number) => {
-                    // B-42: join model edibility with catalog risk_level; boost severe on real mode
-                    const joinRisk = resolveJoinRisk(pred.edibility, pred.risk_level)
-                    const boostJoinRisk = mode === 'real' && isSevereRisk(joinRisk)
-                    const meta = getEdibilityMeta(joinRisk, t)
-                    return (
-                      <li
-                        key={`${pred.species}-${idx}`}
-                        className={`prediction-item ${meta.class} ${idx === 0 ? 'top-match' : ''} ${boostJoinRisk ? 'prediction-item--join-severe' : ''}`}
-                        data-testid={`prediction-item-${idx}`}
-                      >
-                        <SpeciesThumb
-                          taxon={pred.species}
-                          riskLabel={joinRisk}
-                          size={idx === 0 ? 56 : 44}
-                          className="prediction-thumb"
-                        />
-                        <div className="prediction-info">
-                          <span className="rank-badge">#{idx + 1}</span>
-                          <SpeciesNameBlock
+                  {result.predictions
+                    .slice(0, showMorePredictions ? 3 : 1)
+                    .map((pred: SpeciesPrediction, idx: number) => {
+                      const joinRisk = resolveJoinRisk(pred.edibility, pred.risk_level)
+                      const boostJoinRisk = mode === 'real' && isSevereRisk(joinRisk)
+                      const meta = getEdibilityMeta(joinRisk, t)
+                      return (
+                        <li
+                          key={`${pred.species}-${idx}`}
+                          className={`prediction-item ${meta.class} ${idx === 0 ? 'top-match' : ''} ${boostJoinRisk ? 'prediction-item--join-severe' : ''}`}
+                          data-testid={`prediction-item-${idx}`}
+                        >
+                          <SpeciesThumb
                             taxon={pred.species}
-                            commonNames={pred.common_name}
-                            size="sm"
-                            showFamily
+                            riskLabel={joinRisk}
+                            size={idx === 0 ? 56 : 44}
+                            className="prediction-thumb"
                           />
-                          <RiskChip
-                            risk={joinRisk}
-                            boost={boostJoinRisk}
-                            className={`edibility-badge ${meta.class}`}
-                          />
-                          {showConfidence ? (
-                            <>
-                              <div
-                                className="confidence-bar"
-                                data-testid="confidence-bar"
-                              >
-                                <div
-                                  className="confidence-fill"
-                                  style={{
-                                    width: `${Math.min(pred.confidence * 100, 100)}%`,
-                                  }}
-                                />
-                              </div>
+                          <div className="prediction-info">
+                            <span className="rank-badge">#{idx + 1}</span>
+                            <SpeciesNameBlock
+                              taxon={pred.species}
+                              commonNames={pred.common_name}
+                              size="sm"
+                              showFamily
+                            />
+                            <RiskChip
+                              risk={joinRisk}
+                              boost={boostJoinRisk}
+                              className={`edibility-badge ${meta.class}`}
+                            />
+                            {showConfidence ? (
+                              <>
+                                <div className="confidence-bar" data-testid="confidence-bar">
+                                  <div
+                                    className="confidence-fill"
+                                    style={{
+                                      width: `${Math.min(pred.confidence * 100, 100)}%`,
+                                    }}
+                                  />
+                                </div>
+                                <span className="confidence-value" data-testid="confidence-value">
+                                  {(pred.confidence * 100).toFixed(1)}%
+                                </span>
+                              </>
+                            ) : (
                               <span
-                                className="confidence-value"
-                                data-testid="confidence-value"
+                                className="confidence-hidden muted"
+                                data-testid="confidence-hidden"
                               >
-                                {(pred.confidence * 100).toFixed(1)}%
+                                {t('honesty.confidence_hidden')}
                               </span>
-                            </>
-                          ) : (
-                            <span
-                              className="confidence-hidden muted"
-                              data-testid="confidence-hidden"
-                            >
-                              {t('honesty.confidence_hidden')}
-                            </span>
-                          )}
-                        </div>
-                      </li>
-                    )
-                  })}
+                            )}
+                          </div>
+                        </li>
+                      )
+                    })}
                 </ul>
                 {result.predictions.length > 1 && (
                   <Button
@@ -583,274 +625,97 @@ export function ResultCard({
                 )}
               </div>
             )}
+
+            {result.predictions.length > 0 && isRejected && (
+              <div
+                className="predictions predictions--rejected"
+                data-testid="predictions-list"
+                data-branch="rejected"
+                data-unreliable="true"
+              >
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="result-more-toggle result-rejected-candidates-toggle"
+                  data-testid="predictions-rejected-toggle"
+                  aria-expanded={showRejectedCandidates}
+                  onClick={() => setShowRejectedCandidates((v) => !v)}
+                >
+                  {showRejectedCandidates
+                    ? t('result.hideUnreliableCandidates', {
+                        defaultValue: 'Ocultar candidatos no confiables',
+                      })
+                    : t('result.showUnreliableCandidates', {
+                        defaultValue: 'Candidatos no confiables ({{count}})',
+                        count: Math.min(result.predictions.length, 3),
+                      })}
+                </Button>
+                {showRejectedCandidates && (
+                  <>
+                    <p className="predictions--rejected__note" role="note">
+                      {t('result.unreliableCandidatesNote', {
+                        defaultValue:
+                          'No son una respuesta final. El modelo se abstuvo (open-set). Solo orientación · nunca consumo.',
+                      })}
+                    </p>
+                    <ul>
+                      {result.predictions.slice(0, 3).map((pred: SpeciesPrediction, idx: number) => {
+                        const joinRisk = resolveJoinRisk(pred.edibility, pred.risk_level)
+                        const boostJoinRisk = mode === 'real' && isSevereRisk(joinRisk)
+                        const meta = getEdibilityMeta(joinRisk, t)
+                        return (
+                          <li
+                            key={`${pred.species}-${idx}`}
+                            className={`prediction-item prediction-item--unreliable ${meta.class} ${boostJoinRisk ? 'prediction-item--join-severe' : ''}`}
+                            data-testid={`prediction-item-${idx}`}
+                            data-unreliable="true"
+                          >
+                            <SpeciesThumb
+                              taxon={pred.species}
+                              riskLabel={joinRisk}
+                              size={40}
+                              className="prediction-thumb"
+                            />
+                            <div className="prediction-info">
+                              {/* No ordinal #1 rank — avoids top-match skim semantics on open-set */}
+                              <span className="rank-badge rank-badge--muted">
+                                {t('result.unreliableCandidateLabel', {
+                                  defaultValue: 'Candidato',
+                                })}
+                              </span>
+                              <SpeciesNameBlock
+                                taxon={pred.species}
+                                commonNames={pred.common_name}
+                                size="sm"
+                                showFamily
+                              />
+                              <RiskChip
+                                risk={joinRisk}
+                                boost={boostJoinRisk}
+                                className={`edibility-badge ${meta.class}`}
+                              />
+                              <span
+                                className="confidence-hidden muted"
+                                data-testid={idx === 0 ? 'confidence-hidden' : undefined}
+                              >
+                                {t('result.notFinalAnswer', {
+                                  defaultValue: 'No es respuesta final',
+                                })}
+                              </span>
+                            </div>
+                          </li>
+                        )
+                      })}
+                    </ul>
+                  </>
+                )}
+              </div>
+            )}
           </>
         )}
-
-        <div className="review-callout review-callout--compact">
-          <div className="review-callout__actions">
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={handleExpertHandoff}
-              data-testid="cta-expert-handoff"
-            >
-              <IconExpert size={16} />
-              {needsExpert
-                ? t('result.expertReviewCta', { defaultValue: 'Revisión experta' })
-                : t('result.secondOpinionCta', { defaultValue: 'Segunda opinión' })}
-            </Button>
-            <LinkButton variant="ghost" to="/lookalikes">
-              {t('nav.lookalikes', { defaultValue: 'Confusiones' })}
-            </LinkButton>
-            {showBlockedShell && (
-              <LinkButton
-                variant="ghost"
-                to="/enciclopedia"
-                data-testid="cta-encyclopedia-inline"
-              >
-                {t('nav.encyclopedia', { defaultValue: 'Enciclopedia' })}
-              </LinkButton>
-            )}
-          </div>
-          {handoffSaved && (
-            <p className="muted" role="status">
-              {t('result.draftSaved', { defaultValue: 'Borrador guardado.' })}
-            </p>
-          )}
-        </div>
-
-        {/* iNat-inspired verification status — model never mints research-grade */}
-        <section
-          className="result-verification"
-          data-testid="result-verification-status"
-          data-status={verification.id}
-          data-research-grade="false"
-          aria-label={t('result.verificationAria', {
-            defaultValue: 'Estado de verificación',
-          })}
-        >
-          <header className="result-verification__head">
-            <IconInfo size={16} />
-            <strong data-testid="result-verification-title">
-              {verificationTitle(verification, locale)}
-            </strong>
-          </header>
-          <p className="result-verification__body" data-testid="result-verification-body">
-            {verificationBody(verification, locale)}
-          </p>
-          {/* Always-visible second-opinion CTAs (Studio + community) — not only when lookalikes exist */}
-          <div className="lookalike-next-actions" data-testid="lookalike-next-actions">
-            <LinkButton
-              variant="ghost"
-              to="/lookalikes"
-              data-testid="cta-lookalike-studio-from-result"
-            >
-              {t('result.compareInStudio', {
-                defaultValue: 'Comparar confusiones',
-              })}
-            </LinkButton>
-            <LinkButton
-              variant="ghost"
-              to="/comunidad"
-              data-testid="cta-community-from-result"
-            >
-              {t('result.askCommunity', {
-                defaultValue: 'Preguntar a la comunidad',
-              })}
-            </LinkButton>
-          </div>
-        </section>
       </section>
 
-      {/* ── Layer 2: confidence + lookalikes ── */}
-      {hasLayer2 && (
-        <section className="result-layer result-layer--2">
-          <button
-            type="button"
-            className="result-layer__toggle"
-            aria-expanded={layer2Open}
-            onClick={() => setLayer2Open((v) => !v)}
-          >
-            <span>
-              {showConfidence
-                ? t('result.layer2Confidence', {
-                    defaultValue: 'Confianza y confusiones',
-                  })
-                : t('result.layer2Lookalikes', {
-                    defaultValue: 'Confusiones de riesgo',
-                  })}
-              {lookalikeStats.deadly > 0
-                ? t('result.layer2DeadlyCount', {
-                    defaultValue: ' · {{n}} mortales',
-                    n: lookalikeStats.deadly,
-                  })
-                : lookalikeStats.high > 0
-                  ? t('result.layer2HighCount', {
-                      defaultValue: ' · {{n}} alto riesgo',
-                      n: lookalikeStats.high,
-                    })
-                  : ''}
-            </span>
-            <span aria-hidden="true">{layer2Open ? '−' : '+'}</span>
-          </button>
-          {layer2Open && (
-            <div className="result-layer__body">
-              {showConfidence && !isRejected && topPrediction && (() => {
-                const interp = getConfidenceInterpretation(topPrediction.confidence, t)
-                return (
-                  <div
-                    className={`confidence-interpretation ci-${interp.level}`}
-                    data-testid="confidence-interpretation"
-                  >
-                    <span className="ci-icon" aria-hidden="true">
-                      {interp.level === 'high' ? (
-                        <IconCheck size={16} />
-                      ) : interp.level === 'moderate' ? (
-                        <IconAlert size={16} />
-                      ) : (
-                        <IconClose size={16} />
-                      )}
-                    </span>
-                    <div>
-                      <strong>{interp.label}</strong>
-                      <p>{interp.description}</p>
-                    </div>
-                  </div>
-                )
-              })()}
-
-              {rankedLookalikes.length > 0 && (
-                <div className="lookalikes-warning lookalikes-ranked" role="alert">
-                  <strong className="lookalikes-warning__title">
-                    <IconAlert size={16} />
-                    {t('result.lookalikesHeader', {
-                      defaultValue: 'Confusiones de riesgo ({{total}})',
-                      total: lookalikeStats.total,
-                    })}
-                    {lookalikeStats.deadly > 0
-                      ? t('result.layer2DeadlyCount', {
-                          defaultValue: ' · {{n}} mortales',
-                          n: lookalikeStats.deadly,
-                        })
-                      : ''}
-                  </strong>
-                  <ul className="lookalike-list">
-                    {rankedLookalikes.map((sp) => {
-                      const meta = getRiskMeta(sp.risk_label)
-                      const lookalikeCommons = commonsForLocale(
-                        {
-                          taxon: sp.name,
-                          common_names: sp.common_names,
-                          common_names_en: sp.common_names_en,
-                        },
-                        locale,
-                      )
-                      // Pair-specific critical_views from diagnostic map (educational)
-                      const pairDiag: LookalikePairDiagnostic | null =
-                        diagnosticForLookalikeMate(predictionTaxa, sp.name)
-                      return (
-                        <li
-                          key={sp.name}
-                          className={`lookalike-item ${meta.className}`}
-                          data-testid={`lookalike-item-${sp.slug || sp.name}`}
-                          data-pair-id={pairDiag?.pair_id || undefined}
-                        >
-                          <SpeciesThumb taxon={sp.name} riskLabel={sp.risk_label} size={40} />
-                          <div className="lookalike-item__text">
-                            <RiskChip risk={sp.risk_label} />
-                            <SpeciesNameBlock
-                              taxon={sp.name}
-                              commonNames={lookalikeCommons}
-                              size="sm"
-                              showFamily={false}
-                            />
-                            {sp.slug && (
-                              <Link to={`/enciclopedia/${sp.slug}`} className="lookalike-link">
-                                {t('result.viewSheet', { defaultValue: 'Ver ficha' })}
-                              </Link>
-                            )}
-                            {pairDiag && pairDiag.critical_views.length > 0 && (
-                              <div
-                                className="lookalike-item__diag"
-                                data-testid={`lookalike-diag-${pairDiag.pair_id}`}
-                                data-pair-source={pairDiag.source}
-                              >
-                                {pairDiag.why ? (
-                                  <p className="lookalike-item__diag-why muted">
-                                    {pairDiag.why}
-                                  </p>
-                                ) : null}
-                                <div
-                                  className="lookalike-item__diag-views"
-                                  aria-label={t('result.pairCriticalViewsAria', {
-                                    defaultValue: 'Vistas diagnósticas para esta confusión',
-                                  })}
-                                >
-                                  <span className="lookalike-item__diag-label">
-                                    {t('result.pairCriticalViews', {
-                                      defaultValue: 'Vistas que discriminan:',
-                                    })}
-                                  </span>
-                                  {pairDiag.critical_views.map((view) => {
-                                    const viewLabel = t(`identify.views.${view}`, {
-                                      defaultValue: view,
-                                    })
-                                    if (onFocusWizardSlot) {
-                                      return (
-                                        <button
-                                          key={view}
-                                          type="button"
-                                          className="lookalike-item__diag-badge"
-                                          data-testid={`lookalike-diag-view-${view}`}
-                                          data-slot={view}
-                                          title={t('result.addViewCtaHint', {
-                                            defaultValue: 'Añadir esta vista al asistente multi-foto',
-                                          })}
-                                          onClick={() => onFocusWizardSlot(view)}
-                                        >
-                                          {viewLabel}
-                                        </button>
-                                      )
-                                    }
-                                    return (
-                                      <span
-                                        key={view}
-                                        className="lookalike-item__diag-badge lookalike-item__diag-badge--static"
-                                        data-testid={`lookalike-diag-view-${view}`}
-                                        data-slot={view}
-                                      >
-                                        {viewLabel}
-                                      </span>
-                                    )
-                                  })}
-                                </div>
-                                <p className="lookalike-item__diag-policy muted">
-                                  {t('result.pairDiagPolicy', {
-                                    defaultValue:
-                                      'Educativo: multi-foto sin estas vistas no basta — solo orientación, nunca consumo.',
-                                  })}
-                                </p>
-                              </div>
-                            )}
-                          </div>
-                        </li>
-                      )
-                    })}
-                  </ul>
-                  <p className="lookalikes-warning__hint muted">
-                    {t('result.lookalikeCtaHint', {
-                      defaultValue:
-                        'Compara en Studio o pide segunda opinión (arriba) — nunca es permiso de consumo.',
-                    })}
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
-        </section>
-      )}
-
-      {/* ── B-36: Missing evidence + questions panel (promoted, always open) ── */}
+      {/* ── Hierarchy 4: Evidence (before lookalikes) ── */}
       {hasEvidencePanel && (
         <section
           className="result-layer result-layer--evidence result-evidence-panel"
@@ -924,6 +789,304 @@ export function ResultCard({
           </div>
         </section>
       )}
+
+      {/* ── Hierarchy 5: Deadly coach + lookalikes ── */}
+      {showDeadlyCoach && (
+        <section
+          className="result-deadly-topk-coach"
+          data-testid="result-deadly-topk-coach"
+          role="alert"
+          data-product-unlock="false"
+        >
+          <strong className="result-deadly-topk-coach__title">
+            <IconAlert size={18} /> {deadlyCopy.title}
+          </strong>
+          <p className="result-deadly-topk-coach__body">{deadlyCopy.body}</p>
+          <div className="result-deadly-topk-coach__actions">
+            <LinkButton
+              variant="ghost"
+              to="/lookalikes"
+              data-testid="result-deadly-topk-studio"
+            >
+              {deadlyCopy.studioCta}
+            </LinkButton>
+            <LinkButton variant="ghost" to="/educacion" data-testid="result-deadly-topk-edu">
+              {t('nav.education', { defaultValue: 'Educación' })}
+            </LinkButton>
+          </div>
+        </section>
+      )}
+
+      {hasLayer2 && (
+        <section className="result-layer result-layer--2">
+          <button
+            type="button"
+            className="result-layer__toggle"
+            aria-expanded={layer2Open}
+            onClick={() => setLayer2Open((v) => !v)}
+          >
+            <span>
+              {showConfidence && !isRejected
+                ? t('result.layer2Confidence', {
+                    defaultValue: 'Confianza y confusiones',
+                  })
+                : t('result.layer2Lookalikes', {
+                    defaultValue: 'Confusiones de riesgo',
+                  })}
+              {lookalikeStats.deadly > 0
+                ? t('result.layer2DeadlyCount', {
+                    defaultValue: ' · {{n}} mortales',
+                    n: lookalikeStats.deadly,
+                  })
+                : lookalikeStats.high > 0
+                  ? t('result.layer2HighCount', {
+                      defaultValue: ' · {{n}} alto riesgo',
+                      n: lookalikeStats.high,
+                    })
+                  : ''}
+            </span>
+            <span aria-hidden="true">{layer2Open ? '−' : '+'}</span>
+          </button>
+          {layer2Open && (
+            <div className="result-layer__body">
+              {showConfidence && !isRejected && topPrediction && (() => {
+                const interp = getConfidenceInterpretation(topPrediction.confidence, t)
+                return (
+                  <div
+                    className={`confidence-interpretation ci-${interp.level}`}
+                    data-testid="confidence-interpretation"
+                  >
+                    <span className="ci-icon" aria-hidden="true">
+                      {interp.level === 'high' ? (
+                        <IconCheck size={16} />
+                      ) : interp.level === 'moderate' ? (
+                        <IconAlert size={16} />
+                      ) : (
+                        <IconClose size={16} />
+                      )}
+                    </span>
+                    <div>
+                      <strong>{interp.label}</strong>
+                      <p>{interp.description}</p>
+                    </div>
+                  </div>
+                )
+              })()}
+
+              {rankedLookalikes.length > 0 && (
+                <div className="lookalikes-warning lookalikes-ranked" role="alert">
+                  <strong className="lookalikes-warning__title">
+                    <IconAlert size={16} />
+                    {t('result.lookalikesHeader', {
+                      defaultValue: 'Confusiones de riesgo ({{total}})',
+                      total: lookalikeStats.total,
+                    })}
+                    {lookalikeStats.deadly > 0
+                      ? t('result.layer2DeadlyCount', {
+                          defaultValue: ' · {{n}} mortales',
+                          n: lookalikeStats.deadly,
+                        })
+                      : ''}
+                  </strong>
+                  <ul className="lookalike-list">
+                    {rankedLookalikes.map((sp) => {
+                      const meta = getRiskMeta(sp.risk_label)
+                      const lookalikeCommons = commonsForLocale(
+                        {
+                          taxon: sp.name,
+                          common_names: sp.common_names,
+                          common_names_en: sp.common_names_en,
+                        },
+                        locale,
+                      )
+                      const pairDiag: LookalikePairDiagnostic | null =
+                        diagnosticForLookalikeMate(predictionTaxa, sp.name)
+                      return (
+                        <li
+                          key={sp.name}
+                          className={`lookalike-item ${meta.className}`}
+                          data-testid={`lookalike-item-${sp.slug || sp.name}`}
+                          data-pair-id={pairDiag?.pair_id || undefined}
+                        >
+                          <SpeciesThumb taxon={sp.name} riskLabel={sp.risk_label} size={40} />
+                          <div className="lookalike-item__text">
+                            <RiskChip risk={sp.risk_label} />
+                            <SpeciesNameBlock
+                              taxon={sp.name}
+                              commonNames={lookalikeCommons}
+                              size="sm"
+                              showFamily={false}
+                            />
+                            {sp.slug && (
+                              <Link to={`/enciclopedia/${sp.slug}`} className="lookalike-link">
+                                {t('result.viewSheet', { defaultValue: 'Ver ficha' })}
+                              </Link>
+                            )}
+                            {pairDiag && pairDiag.critical_views.length > 0 && (
+                              <div
+                                className="lookalike-item__diag"
+                                data-testid={`lookalike-diag-${pairDiag.pair_id}`}
+                                data-pair-source={pairDiag.source}
+                              >
+                                {pairDiag.why ? (
+                                  <p className="lookalike-item__diag-why muted">
+                                    {pairDiag.why}
+                                  </p>
+                                ) : null}
+                                <div
+                                  className="lookalike-item__diag-views"
+                                  aria-label={t('result.pairCriticalViewsAria', {
+                                    defaultValue: 'Vistas diagnósticas para esta confusión',
+                                  })}
+                                >
+                                  <span className="lookalike-item__diag-label">
+                                    {t('result.pairCriticalViews', {
+                                      defaultValue: 'Vistas que discriminan:',
+                                    })}
+                                  </span>
+                                  {pairDiag.critical_views.map((view) => {
+                                    const viewLabel = t(`identify.views.${view}`, {
+                                      defaultValue: view,
+                                    })
+                                    if (onFocusWizardSlot) {
+                                      return (
+                                        <button
+                                          key={view}
+                                          type="button"
+                                          className="lookalike-item__diag-badge"
+                                          data-testid={`lookalike-diag-view-${view}`}
+                                          data-slot={view}
+                                          title={t('result.addViewCtaHint', {
+                                            defaultValue:
+                                              'Añadir esta vista al asistente multi-foto',
+                                          })}
+                                          onClick={() => onFocusWizardSlot(view)}
+                                        >
+                                          {viewLabel}
+                                        </button>
+                                      )
+                                    }
+                                    return (
+                                      <span
+                                        key={view}
+                                        className="lookalike-item__diag-badge lookalike-item__diag-badge--static"
+                                        data-testid={`lookalike-diag-view-${view}`}
+                                        data-slot={view}
+                                      >
+                                        {viewLabel}
+                                      </span>
+                                    )
+                                  })}
+                                </div>
+                                <p className="lookalike-item__diag-policy muted">
+                                  {t('result.pairDiagPolicy', {
+                                    defaultValue:
+                                      'Educativo: multi-foto sin estas vistas no basta — solo orientación, nunca consumo.',
+                                  })}
+                                </p>
+                              </div>
+                            )}
+                          </div>
+                        </li>
+                      )
+                    })}
+                  </ul>
+                  <p className="lookalikes-warning__hint muted">
+                    {t('result.lookalikeCtaHint', {
+                      defaultValue:
+                        'Compara en Studio o pide segunda opinión — nunca es permiso de consumo.',
+                    })}
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+        </section>
+      )}
+
+      {/* Hierarchy 5b: ImageCompare with lookalikes — before education CTAs */}
+      {comparePair ? (
+        <ImageCompare
+          left={comparePair.left}
+          right={comparePair.right}
+          testId="identify-result-image-compare"
+        />
+      ) : null}
+
+      {/* ── Hierarchy 6: education / expert / verification CTAs ── */}
+      <div className="review-callout review-callout--compact">
+        <div className="review-callout__actions">
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={handleExpertHandoff}
+            data-testid="cta-expert-handoff"
+          >
+            <IconExpert size={16} />
+            {needsExpert
+              ? t('result.expertReviewCta', { defaultValue: 'Revisión experta' })
+              : t('result.secondOpinionCta', { defaultValue: 'Segunda opinión' })}
+          </Button>
+          <LinkButton variant="ghost" to="/lookalikes">
+            {t('nav.lookalikes', { defaultValue: 'Confusiones' })}
+          </LinkButton>
+          {showBlockedShell && (
+            <LinkButton
+              variant="ghost"
+              to="/enciclopedia"
+              data-testid="cta-encyclopedia-inline"
+            >
+              {t('nav.encyclopedia', { defaultValue: 'Enciclopedia' })}
+            </LinkButton>
+          )}
+        </div>
+        {handoffSaved && (
+          <p className="muted" role="status">
+            {t('result.draftSaved', { defaultValue: 'Borrador guardado.' })}
+          </p>
+        )}
+      </div>
+
+      <section
+        className="result-verification"
+        data-testid="result-verification-status"
+        data-status={verification.id}
+        data-research-grade="false"
+        aria-label={t('result.verificationAria', {
+          defaultValue: 'Estado de verificación',
+        })}
+      >
+        <header className="result-verification__head">
+          <IconInfo size={16} />
+          <strong data-testid="result-verification-title">
+            {verificationTitle(verification, locale)}
+          </strong>
+        </header>
+        <p className="result-verification__body" data-testid="result-verification-body">
+          {verificationBody(verification, locale)}
+        </p>
+        {/* Always-visible second-opinion CTAs (Studio + community) — not only when lookalikes exist */}
+        <div className="lookalike-next-actions" data-testid="lookalike-next-actions">
+          <LinkButton
+            variant="ghost"
+            to="/lookalikes"
+            data-testid="cta-lookalike-studio-from-result"
+          >
+            {t('result.compareInStudio', {
+              defaultValue: 'Comparar confusiones',
+            })}
+          </LinkButton>
+          <LinkButton
+            variant="ghost"
+            to="/comunidad"
+            data-testid="cta-community-from-result"
+          >
+            {t('result.askCommunity', {
+              defaultValue: 'Preguntar a la comunidad',
+            })}
+          </LinkButton>
+        </div>
+      </section>
 
       {/* ── Layer 3: details accordion ── */}
       {hasLayer3 && (

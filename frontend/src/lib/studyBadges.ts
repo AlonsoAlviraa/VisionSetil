@@ -2,7 +2,10 @@
  * Educational study badges & streaks (Seek-inspired gamification).
  *
  * Rules:
- * - Games / study only (quiz + setadle) — never tied to identify "edible" outcomes.
+ * - Games / study only (quiz + setadle + lookalike + encyclopedia) — never tied to
+ *   identify "edible" outcomes or forage permission.
+ * - Lookalike activity: `recordStudyActivity('lookalike')` from Lookalike Studio
+ *   learning path step 3 (UX-06) — reuse this counter; do not invent parallel keys.
  * - No consumption language; badge titles are learning milestones.
  * - Local-only progress (privacy-first, no account required).
  */

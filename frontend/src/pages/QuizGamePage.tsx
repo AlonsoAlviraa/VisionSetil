@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { PageShell } from '../components/ui'
+import { RiskChip } from '../components/RiskChip'
 import { SpeciesImage } from '../components/SpeciesImage'
 import { SpeciesThumb } from '../components/SpeciesThumb'
 import { foodQualityStats } from '../lib/foodQuality'
@@ -45,6 +46,12 @@ import {
 import { recordStudyActivity } from '../lib/studyBadges'
 import { StudyBadgesPanel } from '../components/StudyBadgesPanel'
 import { markDailyGameDone } from '../lib/dailyGames'
+import {
+  buildQuizShareCard,
+  shareFeedbackMessage,
+  shareGameText,
+} from '../lib/gameShare'
+import { scientificNameToSlug } from '../lib/slug'
 
 const LETTERS = ['A', 'B', 'C', 'D'] as const
 const LETTER_COLORS = ['tri-a', 'tri-b', 'tri-c', 'tri-d'] as const
@@ -88,9 +95,11 @@ function QuizPhoto({
 type UiPhase = 'lobby' | 'playing' | 'reveal' | 'finished'
 
 export function QuizGamePage() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const locale = i18n.resolvedLanguage || i18n.language || 'es'
   const [pool, setPool] = useState(() => buildQuizPool())
   const [catalogReady, setCatalogReady] = useState(false)
+  const [shareFeedback, setShareFeedback] = useState<string | null>(null)
   const stats = useMemo(() => foodQualityStats(), [])
   const today = useMemo(() => dayKey(), [])
   const [mode, setMode] = useState<QuizMode>('food')
@@ -521,6 +530,45 @@ export function QuizGamePage() {
                   })}`
                 : ''}
             </p>
+            <div className="game-study-after" data-testid="quiz-study-after-finished">
+              <div className="game-study-after__actions">
+                <Link
+                  to="/lookalikes"
+                  className="quiz-link-btn"
+                  data-testid="quiz-study-lookalikes-finished"
+                >
+                  {t('nav.lookalikes', { defaultValue: 'Confusiones' })}
+                </Link>
+                <button
+                  type="button"
+                  className="quiz-link-btn"
+                  data-testid="quiz-share"
+                  onClick={() => {
+                    // Score-centric share (no false Resuelto from 1/N hits)
+                    const text = buildQuizShareCard({
+                      score: summary.score,
+                      accuracyPct: Math.round(summary.accuracy * 100),
+                      locale,
+                    })
+                    void shareGameText(text, {
+                      title: t('quiz.shareTitle', { defaultValue: 'VisionSetil Reto' }),
+                    }).then((r) => setShareFeedback(shareFeedbackMessage(r, t)))
+                  }}
+                >
+                  {t('games.share', { defaultValue: 'Compartir' })}
+                </button>
+              </div>
+              {shareFeedback ? (
+                <p className="muted game-study-after__hint" role="status">
+                  {shareFeedback}
+                </p>
+              ) : null}
+              <p className="muted game-study-after__hint">
+                {t('quiz.shareFooter', {
+                  defaultValue: 'Solo orientación · nunca recolección · nunca consumo',
+                })}
+              </p>
+            </div>
             <div className="quiz-feedback__actions" style={{ justifyContent: 'center' }}>
               {playKind === 'daily' ? (
                 <button type="button" className="quiz-play-btn" onClick={startDaily}>
@@ -799,6 +847,36 @@ export function QuizGamePage() {
                   <p className="quiz-feedback__species">
                     {round.subject.common} · <em>{round.subject.taxon}</em>
                   </p>
+                  {/* UX-05 post-reveal RiskChip + Confusiones study CTAs */}
+                  <div className="game-study-after" data-testid="quiz-study-after">
+                    <div className="game-study-after__risk">
+                      <RiskChip risk={round.subject.risk_label} />
+                      <span className="muted game-study-after__hint">
+                        {t('quiz.riskStudyHint', {
+                          defaultValue: 'Riesgo de estudio · nunca consumo',
+                        })}
+                      </span>
+                    </div>
+                    <div className="game-study-after__actions">
+                      <Link
+                        to={`/lookalikes?focus=${encodeURIComponent(
+                          round.subject.slug || scientificNameToSlug(round.subject.taxon),
+                        )}`}
+                        className="quiz-link-btn"
+                        data-testid="quiz-study-lookalikes"
+                      >
+                        {t('nav.lookalikes', { defaultValue: 'Confusiones' })}
+                      </Link>
+                      <Link
+                        to={`/enciclopedia/${
+                          round.subject.slug || scientificNameToSlug(round.subject.taxon)
+                        }`}
+                        className="quiz-link-btn"
+                      >
+                        {t('quiz.viewCard', { defaultValue: 'Ver ficha' })}
+                      </Link>
+                    </div>
+                  </div>
                   {round.mode === 'food' && (
                     <p className="quiz-feedback__source">
                       {t('quiz.source', { defaultValue: 'Fuente' })}: {round.sourceNote}
@@ -863,9 +941,6 @@ export function QuizGamePage() {
                           defaultValue: 'Siguiente ({{n}}/{{total}})',
                         })}
                   </button>
-                  <Link to={`/enciclopedia/${round.subject.slug}`} className="quiz-link-btn">
-                    {t('quiz.viewCard', { defaultValue: 'Ver ficha' })}
-                  </Link>
                 </div>
               </div>
             )}

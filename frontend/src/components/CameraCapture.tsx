@@ -13,6 +13,10 @@ import {
   IconSkip,
   ViewIcon,
 } from './icons'
+import {
+  IDENTIFY_JPEG_MAX_EDGE,
+  IDENTIFY_JPEG_QUALITY,
+} from '../lib/prepareIdentifyImage'
 import { Button } from './ui'
 
 const VIEW_STEPS = [
@@ -100,11 +104,41 @@ export function CameraCapture({
           videoRef.current.onloadedmetadata = () => setIsReady(true)
         }
       } catch (err) {
-        const msg = err instanceof Error ? err.message : 'No se pudo acceder a la cámara'
+        const name = err instanceof DOMException ? err.name : ''
+        const raw = err instanceof Error ? err.message : String(err ?? '')
+        // iOS Safari / Android WebView: NotAllowedError when user denied or insecure origin
+        let msg: string
+        if (name === 'NotAllowedError' || /permission|notallowed|denied/i.test(raw)) {
+          msg = t('identify.cameraPermissionDenied', {
+            defaultValue:
+              'Permiso de cámara denegado. En Ajustes del teléfono permite la cámara para este sitio, o usa Galería. Solo orientación — nunca consumo.',
+          })
+        } else if (name === 'NotFoundError' || /not found|no device/i.test(raw)) {
+          msg = t('identify.cameraNotFound', {
+            defaultValue:
+              'No hay cámara disponible. Usa Galería para subir una foto de la librería.',
+          })
+        } else if (
+          typeof window !== 'undefined' &&
+          !window.isSecureContext &&
+          location.hostname !== 'localhost' &&
+          location.hostname !== '127.0.0.1'
+        ) {
+          msg = t('identify.cameraNeedsHttps', {
+            defaultValue:
+              'La cámara requiere HTTPS (o localhost). Abre la app en un origen seguro o usa Galería.',
+          })
+        } else {
+          msg =
+            raw ||
+            t('identify.cameraGenericError', {
+              defaultValue: 'No se pudo acceder a la cámara. Prueba Galería.',
+            })
+        }
         setError(msg)
       }
     },
-    [stopStream],
+    [stopStream, t],
   )
 
   useEffect(() => {
@@ -116,8 +150,8 @@ export function CameraCapture({
     if (!videoRef.current || !isReady) return
     const video = videoRef.current
     const canvas = document.createElement('canvas')
-    // Downscale long edge to ≤1280 to limit memory + classify upload size
-    const maxEdge = 1280
+    // Shared JPEG long-edge budget (prepareIdentifyImage SSOT) — memory + upload
+    const maxEdge = IDENTIFY_JPEG_MAX_EDGE
     const vw = video.videoWidth || 1280
     const vh = video.videoHeight || 720
     const scale = Math.min(1, maxEdge / Math.max(vw, vh))
@@ -158,7 +192,7 @@ export function CameraCapture({
         }
       },
       'image/jpeg',
-      0.82,
+      IDENTIFY_JPEG_QUALITY,
     )
   }, [
     isReady,

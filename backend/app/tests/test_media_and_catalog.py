@@ -281,7 +281,9 @@ def test_species_detail_resolves_synonym_slug(client: TestClient):
 
 
 def test_species_search_resolves_synonym_query(client: TestClient):
-    r = client.get("/species", params={"q": "Coprinopsis atramentaria", "locale": "es", "limit": 10})
+    r = client.get(
+        "/species", params={"q": "Coprinopsis atramentaria", "locale": "es", "limit": 10}
+    )
     assert r.status_code == 200
     data = r.json()
     names = [it.get("scientific_name") for it in data.get("items") or []]

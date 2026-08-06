@@ -1,0 +1,48 @@
+{
+  "generated_at": "2026-08-05T20:43:04.809444+00:00",
+  "product_unlock": false,
+  "kaggle_push": false,
+  "auto_kaggle_push": false,
+  "slug": "alonsoalviraaaa/visionsetil-exp-v20b-lepiota-ft",
+  "notebook": {
+    "tracked_notebook": "C:\\Users\\Mariano\\.grok\\worktrees\\alonsoo-visionsetil\\subagent-019fd398-2410-7852-ac06-d7b1e767cfd6\\kaggle\\visionsetil_exp_v20b_lepiota_ft.ipynb",
+    "tracked_metadata": "C:\\Users\\Mariano\\.grok\\worktrees\\alonsoo-visionsetil\\subagent-019fd398-2410-7852-ac06-d7b1e767cfd6\\kaggle\\kernel-metadata-exp-v20b.json",
+    "notebook": "C:\\Users\\Mariano\\.grok\\worktrees\\alonsoo-visionsetil\\subagent-019fd398-2410-7852-ac06-d7b1e767cfd6\\kaggle\\visionsetil_exp_v20b_lepiota_ft.ipynb",
+    "notebook_present": true,
+    "metadata_present": true,
+    "syntax_fix_present": true,
+    "weight_path_fix_present": true,
+    "ready": true
+  },
+  "rails_can_stage": true,
+  "diagnose": {
+    "diagnose_present": true,
+    "relaunch_allowed": true,
+    "product_unlock_false": true,
+    "decision": "RELAUNCH_PATH_DOCUMENTED_NOT_EXECUTED",
+    "ok": true,
+    "blockers": []
+  },
+  "budget": {
+    "successful_pushes": 0,
+    "max_human_relaunch_budget": 1,
+    "budget_remaining": 1,
+    "accept_extra": false,
+    "ok": true,
+    "blockers": []
+  },
+  "weights": {
+    "dataset": "alonsoalviraaaa/visionsetil-e20-weights",
+    "skipped": false,
+    "ok": true,
+    "has_best_pt": true,
+    "blockers": []
+  },
+  "would_push": true,
+  "blockers": [],
+  "note": "product_unlock forced false. Execute requires diagnose + relaunch_allowed + budget + notebook + weights + dual human flags.",
+  "mode": "dry_run",
+  "diagnose_present": true,
+  "diagnose_decision": "RELAUNCH_PATH_DOCUMENTED_NOT_EXECUTED",
+  "relaunch_allowed_in_diagnose": true
+}

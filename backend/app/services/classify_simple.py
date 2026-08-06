@@ -158,9 +158,13 @@ def _record_classify_metrics(result: SimpleClassificationResult, gate: dict[str,
             record_gate_blocked(str(gate.get("reason_code") or "unknown"))
         # Open-set reason histogram (Identify abstention, not quality-gate block)
         open_reason = result.open_set_reason or result.rejection_reason
-        if rejected and open_reason and "quality_gate" not in str(open_reason).lower():
-            if not str(open_reason).startswith("model_quality_gate"):
-                record_open_set_reject(str(open_reason))
+        if (
+            rejected
+            and open_reason
+            and "quality_gate" not in str(open_reason).lower()
+            and not str(open_reason).startswith("model_quality_gate")
+        ):
+            record_open_set_reject(str(open_reason))
 
         # S9 live reject monitor: append JSONL for ops (orientation only)
         preds = [
@@ -260,9 +264,7 @@ def _hydrate_simple_result(
     # SSOT safety surface: union lookalikes for top-2 hydrated taxa
     ssot_lists = [_ssot_lookalikes_for_taxon(p.species) for p in hydrated[:2]]
     merged_lk = _merge_dangerous_lookalikes(result.dangerous_lookalikes, *ssot_lists)
-    return result.model_copy(
-        update={"predictions": hydrated, "dangerous_lookalikes": merged_lk}
-    )
+    return result.model_copy(update={"predictions": hydrated, "dangerous_lookalikes": merged_lk})
 
 
 # Job result envelope version (D-B18 / D-B24 — raw kept indefinitely for admin/debug).

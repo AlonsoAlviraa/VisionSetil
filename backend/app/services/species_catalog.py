@@ -365,7 +365,9 @@ def describe_active_open_set_thresholds() -> dict:
         if mar is None:
             mar = settings.open_set_min_margin
     holdout = thr.get("holdout_stats") if isinstance(thr.get("holdout_stats"), dict) else {}
-    mate = thr.get("lookalike_mate_rates") if isinstance(thr.get("lookalike_mate_rates"), dict) else {}
+    mate = (
+        thr.get("lookalike_mate_rates") if isinstance(thr.get("lookalike_mate_rates"), dict) else {}
+    )
     return {
         "status": status,
         "calibrated": calibrated,

@@ -22,8 +22,7 @@ import hashlib
 import json
 import logging
 import os
-import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -38,7 +37,7 @@ _CANONICAL_VIEWS = frozenset({"gills", "front", "habitat", "detail"})
 
 def utc_iso_now() -> str:
     """UTC timestamp with offset for S9 window parsing."""
-    return datetime.now(timezone.utc).isoformat(timespec="seconds")
+    return datetime.now(UTC).isoformat(timespec="seconds")
 
 
 def normalize_view_coverage(raw: Any) -> list[str]:
@@ -83,9 +82,7 @@ def build_s9_log_entry(
     meta["can_auto_unlock"] = False
     meta["policy"] = "orientation_only_never_consume"
 
-    view_cov = normalize_view_coverage(
-        meta.get("view_coverage") or meta.get("view_types")
-    )
+    view_cov = normalize_view_coverage(meta.get("view_coverage") or meta.get("view_types"))
     if view_cov:
         meta["view_coverage"] = view_cov
         meta["n_views"] = len(view_cov)

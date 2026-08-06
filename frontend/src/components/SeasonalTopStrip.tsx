@@ -64,7 +64,7 @@ export function SeasonalTopStrip({ limit = 8 }: { limit?: number }) {
                   variant="card"
                   layout="fill"
                   preferCatalog
-                  quality="display"
+                  quality="thumb"
                   priority={idx === 0}
                   sizes="(max-width: 640px) 45vw, 280px"
                 />

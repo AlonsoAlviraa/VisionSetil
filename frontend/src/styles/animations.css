@@ -19,6 +19,40 @@
   overflow: hidden;
 }
 
+/* Pure-CSS spore field (SporeParticles.tsx) — decorative only */
+.spore-particles-css {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.spore-particles-css__dot {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--cn-moss-bright, #9dcea6) 45%, transparent);
+  opacity: 0.35;
+  left: calc(8% + (var(--i, 0) * 7.1%));
+  top: calc(12% + (var(--i, 0) * 5.3%));
+  animation: sporeCssDrift calc(12s + var(--i, 0) * 0.7s) ease-in-out infinite;
+  animation-delay: calc(var(--i, 0) * -0.4s);
+}
+
+@keyframes sporeCssDrift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0.2;
+  }
+  50% {
+    transform: translate3d(6px, -18px, 0);
+    opacity: 0.45;
+  }
+}
+
 .spore {
   position: absolute;
   border-radius: 50%;
@@ -706,10 +740,16 @@
     scroll-behavior: auto !important;
   }
 
+  /* Decorative motion kill list (UX-08 PRM) — keep interactive wipe/compare usable via duration collapse above */
   .mushroom-auto-rotate,
   .mushroom-float-rotate,
   .spore-particles,
-  .bg-aurora::before {
+  .spore-particles-css,
+  .spore-particles-css__dot,
+  .bg-aurora,
+  .bg-aurora::before,
+  .mkt-mesh::before {
     animation: none !important;
+    transform: none !important;
   }
 }

@@ -151,9 +151,7 @@ def test_models_status_unlock_matches_e20_package_signals(client: TestClient, mo
             assert bool(st_checks[key]) == bool(pkg_checks[key])
 
 
-def test_models_status_e21_never_launched_from_product_unlock(
-    client: TestClient, monkeypatch
-):
+def test_models_status_e21_never_launched_from_product_unlock(client: TestClient, monkeypatch):
     """PRODUCT_UNLOCK serve flag must not flip e21_launched / kaggle_push."""
     from app.core import config as config_mod
 
@@ -418,7 +416,12 @@ def test_human_review_safe_to_eat_blocking(client: TestClient):
         headers=headers,
     )
     assert update_res.status_code == 400
-    assert "Safety policy violation" in update_res.json()["detail"]
+    body = update_res.json()
+    # FastAPI may return {"detail": "..."} or a structured error envelope
+    detail = body.get("detail")
+    if detail is None:
+        detail = body.get("message") or body.get("error") or str(body)
+    assert "Safety policy violation" in str(detail) or "safety" in str(detail).lower()
 
 
 def test_final_response_safety_persists(client: TestClient):

@@ -11,7 +11,11 @@ export type RiskLabel =
   | 'dangerous_or_unknown'
   | 'not_for_consumption_guidance'
 
-/** Short, clean labels — color carries severity (not long ugly sentences). */
+/**
+ * Short, clean labels — color carries severity (not long ugly sentences).
+ * SSOT for ES display copy: poisonous = Venenosa, toxic = Tóxica (distinct).
+ * i18n keys under `risk.*` must stay in parity (es/en/ca/eu).
+ */
 export const RISK_META: Record<
   RiskLabel,
   { label: string; className: string; icon: string; short: string }
@@ -38,6 +42,19 @@ export const RISK_META: Record<
     className: 'risk-noapte',
     icon: '',
   },
+}
+
+/**
+ * ES fallbacks when i18n key is missing — pure projection of RISK_META.short.
+ * poisonous = Venenosa; toxic = Tóxica (never collapse). Lives next to RISK_META (SSOT).
+ */
+export const RISK_DEFAULT: Record<RiskLabel, string> = {
+  deadly: RISK_META.deadly.short,
+  poisonous: RISK_META.poisonous.short,
+  toxic: RISK_META.toxic.short,
+  unknown_or_risky: RISK_META.unknown_or_risky.short,
+  dangerous_or_unknown: RISK_META.dangerous_or_unknown.short,
+  not_for_consumption_guidance: RISK_META.not_for_consumption_guidance.short,
 }
 
 /** Normalize backend edibility / risk strings to RiskLabel. */

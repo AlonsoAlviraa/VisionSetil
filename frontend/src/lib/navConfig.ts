@@ -132,11 +132,13 @@ export const MORE_NAV_GROUPS: readonly MoreNavGroup[] = [
     glyph: 'school',
     items: [
       {
+        // Path stays bare for NavLink active match; Más hub deep-links #multi-view (PR-UX-07b)
         to: '/educacion',
         labelKey: 'nav.education',
         fallback: 'Educación',
         blurbKey: 'nav.blurb.education',
-        blurbFallback: 'Seguridad y campo',
+        blurbFallback:
+          'Multi-vista (láminas, perfil, base) y estudio mortales · solo orientación',
         glyph: 'school',
       },
       {
@@ -144,7 +146,7 @@ export const MORE_NAV_GROUPS: readonly MoreNavGroup[] = [
         labelKey: 'nav.lookalikes',
         fallback: 'Confusiones',
         blurbKey: 'nav.blurb.lookalikes',
-        blurbFallback: 'Especies que se parecen',
+        blurbFallback: 'Confusiones lado a lado · estudio, nunca consumo',
         glyph: 'compare',
       },
       {
@@ -152,7 +154,7 @@ export const MORE_NAV_GROUPS: readonly MoreNavGroup[] = [
         labelKey: 'nav.setadle',
         fallback: 'Setadle',
         blurbKey: 'nav.blurb.setadle',
-        blurbFallback: 'Adivina la seta',
+        blurbFallback: 'Adivina la seta · juego de estudio',
         glyph: 'extension',
       },
       {
@@ -160,7 +162,7 @@ export const MORE_NAV_GROUPS: readonly MoreNavGroup[] = [
         labelKey: 'nav.quiz',
         fallback: 'Reto',
         blurbKey: 'nav.blurb.quiz',
-        blurbFallback: 'Quiz diario',
+        blurbFallback: 'Quiz de caracteres · sin permiso de consumo',
         glyph: 'quiz',
       },
       {
@@ -168,7 +170,7 @@ export const MORE_NAV_GROUPS: readonly MoreNavGroup[] = [
         labelKey: 'nav.wordle',
         fallback: 'Wordle setas',
         blurbKey: 'nav.blurb.wordle',
-        blurbFallback: 'Letras del nombre',
+        blurbFallback: 'Letras del nombre · solo estudio',
         glyph: 'spellcheck',
       },
     ],

@@ -129,11 +129,12 @@ test.describe('3h loop product smoke', () => {
 
     await page.goto('/juegos')
     await expect(page.getByTestId('games-hub-page')).toBeVisible({ timeout: 15_000 })
-    await expect(page.getByTestId('games-hub-primary-reto')).toBeVisible()
+    await expect(page.getByTestId('games-hub-primary-continue')).toBeVisible()
     await shot(page, '20-games-hub')
-    await page.getByTestId('games-hub-primary-reto').click()
-    await page.waitForURL(/\/reto/)
-    await shot(page, '21-reto-from-primary')
+    // Continue path → first incomplete daily mode (classic/photo/habitat/wordle/reto)
+    await page.getByTestId('games-hub-primary-continue').click()
+    await page.waitForURL(/\/(reto|wordle|setadle)/)
+    await shot(page, '21-continue-from-primary')
 
     await page.goto('/offline')
     await expect(page.getByTestId('offline-pack-page')).toBeVisible({ timeout: 15_000 })

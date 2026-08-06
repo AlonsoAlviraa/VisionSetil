@@ -1309,9 +1309,10 @@ button.btn-retry:not(.btn-atelier) {
   position: relative;
 }
 
+/* B-35 / UX-02: info/slate — not edible/success green (--safe) */
 .decision-banner.accepted {
-  background: linear-gradient(135deg, var(--safe-bg), transparent);
-  border-left: 4px solid var(--safe);
+  background: linear-gradient(135deg, var(--info-bg, #f0f9ff), transparent);
+  border-left: 4px solid var(--info, #0284c7);
 }
 
 .decision-banner.rejected {
@@ -2844,6 +2845,14 @@ button.btn-retry:not(.btn-atelier) {
   padding: 0.25rem 0.6rem;
   border-radius: 100px;
   backdrop-filter: blur(4px);
+}
+
+/* RiskChip overlay — no green forage pill; inherits RiskChip chrome */
+.mushroom-card-badge--risk {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  backdrop-filter: none;
 }
 
 .mushroom-card-body {

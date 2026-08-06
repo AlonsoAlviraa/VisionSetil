@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom'
-import { type MushroomSpecies, EDIBILITY_COLORS, EDIBILITY_LABELS } from '../data/mushroomDatabase'
+import { type MushroomSpecies } from '../data/mushroomDatabase'
 import { SpeciesImage } from './SpeciesImage'
 import { scientificNameToSlug } from '../lib/slug'
+import { riskToPlaceholder } from '../lib/edibility'
+import { RiskChip } from './RiskChip'
 
 interface Props {
   species: MushroomSpecies
@@ -9,16 +11,11 @@ interface Props {
 
 /**
  * Featured card — SpeciesImage cascade (single image SSOT).
- * Flat 2D only; risk chip is orientation, never consumption clearance.
+ * Flat 2D only; RiskChip is orientation only — never green forage clearance.
  */
 export function FeaturedMushroomCard({ species }: Props) {
   const slug = scientificNameToSlug(species.scientificName)
-  const risk =
-    species.edibility === 'mortifero'
-      ? 'deadly'
-      : species.edibility === 'toxico'
-        ? 'toxic'
-        : 'default'
+  const riskLevel = riskToPlaceholder(null, species.edibility)
 
   return (
     <div className="featured-mushroom-card featured-mushroom-card--flat">
@@ -33,24 +30,21 @@ export function FeaturedMushroomCard({ species }: Props) {
             alt={species.commonNames[0] || species.scientificName}
             variant="card"
             quality="thumb"
-            riskLevel={risk}
+            riskLevel={riskLevel}
             layout="fill"
             preferCatalog
             sizes="(max-width: 640px) 45vw, 280px"
             showMediaBadge="auto"
           />
           <span
-            className="edibility-pill"
+            className="featured-mushroom-card__risk"
             style={{
-              backgroundColor: EDIBILITY_COLORS[species.edibility],
               position: 'absolute',
               top: '0.6rem',
               right: '0.6rem',
-              color: 'white',
-              backdropFilter: 'blur(8px)',
             }}
           >
-            {EDIBILITY_LABELS[species.edibility]}
+            <RiskChip risk={species.edibility} />
           </span>
         </div>
         <div className="featured-mushroom-body">

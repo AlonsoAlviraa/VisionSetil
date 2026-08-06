@@ -3,6 +3,7 @@
 Skips if kernel_output_v20/models/best.pt is missing (CI without artifacts).
 Never asserts product_unlock=True — orientation-only policy.
 """
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -31,11 +32,7 @@ from app.services.multi_view_classifier import (
 _E20_BEST = (
     Path(settings.multi_view_weights_path)
     if Path(settings.multi_view_weights_path).is_file()
-    else Path(__file__).resolve().parents[3]
-    / "kaggle"
-    / "kernel_output_v20"
-    / "models"
-    / "best.pt"
+    else Path(__file__).resolve().parents[3] / "kaggle" / "kernel_output_v20" / "models" / "best.pt"
 )
 
 
@@ -118,9 +115,7 @@ def test_e20_map_to_simple_real_mode_wires_lookalikes(e20_classifier):
         smell=None,
         color_change_on_cut=None,
     )
-    cands = clf._build_candidates(
-        probs, obs, images=[], views=["gills", "front", "detail"]
-    )
+    cands = clf._build_candidates(probs, obs, images=[], views=["gills", "front", "detail"])
     assert cands
     primary = cands[0]
     assert primary.taxon == target
@@ -157,12 +152,8 @@ def test_e20_map_to_simple_real_mode_wires_lookalikes(e20_classifier):
             heavy_compression_or_blur=False,
             quality_warnings=[],
         ),
-        open_set=OpenSetResponse(
-            is_unknown_or_uncertain=False, reason="ok", decision="accept"
-        ),
-        human_review=HumanReviewResponse(
-            recommended=False, priority="low", reason="none"
-        ),
+        open_set=OpenSetResponse(is_unknown_or_uncertain=False, reason="ok", decision="accept"),
+        human_review=HumanReviewResponse(recommended=False, priority="low", reason="none"),
         final_warning="orientation only — never consume",
         trace=TraceResponse(
             pipeline_version="e20-real-smoke",

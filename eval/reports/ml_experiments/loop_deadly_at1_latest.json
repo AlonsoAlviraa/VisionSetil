@@ -1,0 +1,565 @@
+{
+  "loop_iter_id": 51,
+  "slug": "deadly_at1",
+  "friction": "deadly@1 dual analysis + per-taxon confusions",
+  "artifact_stem": "loop_iter_51_deadly_at1_2026-08-05",
+  "generated_at": "2026-08-05T20:51:27.115280+00:00",
+  "metrics_label": "[MEASURED]",
+  "status": "measured_ok",
+  "product_unlock": false,
+  "can_auto_unlock": false,
+  "forage_permission": false,
+  "consumption_permission": false,
+  "policy": "orientation_only_never_consume",
+  "lab_only": true,
+  "kaggle_push": false,
+  "eval_protocol": "source_holdout_e20",
+  "provenance": {
+    "checkpoint": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models",
+    "predictions": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models\\test_predictions.npz",
+    "label2idx": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models\\label2idx.json",
+    "deadly_set": "data/industrial_v1/deadly_set.json",
+    "ssot_baseline": "eval/reports/ml_experiments/E20_BASELINE_METRICS_TO_IMPROVE.json",
+    "version": "v20-E20-source-holdout",
+    "train": "fungitastic_plus_soft_non_gbif",
+    "test": "gbif_es_only"
+  },
+  "ece": {
+    "primary": "train_published",
+    "primary_value": 0.18741017924867615,
+    "primary_source": "test_ece_train_published",
+    "claim_train_published": true,
+    "posthoc_separate": true,
+    "posthoc_value": 0.04544782004819755
+  },
+  "kernel_metrics_cited": {
+    "safety_recall_deadly_at_1": 0.7895348837209303,
+    "safety_recall_deadly_at_3": 0.9217054263565891,
+    "n_deadly_in_test": 2580,
+    "version": "v20-E20-source-holdout",
+    "eval_protocol": "source_holdout_e20",
+    "test_domain": "gbif_es_only",
+    "train_domain": "fungitastic_plus_soft_non_gbif"
+  },
+  "ssot_baseline_cited": {
+    "safety_recall_deadly_at_1": 0.7895348837209303,
+    "safety_recall_deadly_at_3": 0.9217054263565891,
+    "n_deadly_in_test": 2580,
+    "test_map_at_3": 0.8575265177160878
+  },
+  "recomputed_from_npz": {
+    "safety_recall_deadly_at_1": 0.7895348837209303,
+    "safety_recall_deadly_at_3": 0.9217054263565891,
+    "n_deadly": 2580,
+    "map_at_3": 0.8575265177160912,
+    "top1": 0.8032498307379824,
+    "n_eval": 7385,
+    "n_deadly_classes_in_label_space": 11,
+    "deadly_index_source": "industrial_v1/deadly_set.json+label2idx"
+  },
+  "dual_deadly": {
+    "definition_at_1": "true deadly class is top-1 among deadly-labeled samples (diagnostic)",
+    "definition_at_3": "true deadly class in top-3 among deadly-labeled samples (safety recall)",
+    "at_1": 0.7895348837209303,
+    "at_3": 0.9217054263565891,
+    "n_deadly": 2580,
+    "note": "deadly@1 is diagnostic only — product gate uses dual keys + open-set; never 100% claim"
+  },
+  "deadly_taxa_in_label_space": [
+    "Amanita muscaria",
+    "Amanita pantherina",
+    "Amanita phalloides",
+    "Amanita virosa",
+    "Cortinarius rubellus",
+    "Galerina marginata",
+    "Gyromitra esculenta",
+    "Hypholoma fasciculare",
+    "Lepiota castanea",
+    "Lepiota subincarnata",
+    "Paxillus involutus"
+  ],
+  "deadly_taxa_not_in_label_space": [],
+  "by_taxon": [
+    {
+      "taxon": "Lepiota subincarnata",
+      "class_idx": 28,
+      "n": 57,
+      "top1": 0.0,
+      "top3": 0.47368421052631576,
+      "misses": 57,
+      "top_confusions": [
+        {
+          "pred_taxon": "Lepiota cristata",
+          "pred_idx": 27,
+          "count": 37,
+          "rate": 0.649123
+        },
+        {
+          "pred_taxon": "Armillaria lutea",
+          "pred_idx": 7,
+          "count": 6,
+          "rate": 0.105263
+        },
+        {
+          "pred_taxon": "Amanita virosa",
+          "pred_idx": 6,
+          "count": 4,
+          "rate": 0.070175
+        },
+        {
+          "pred_taxon": "Lepiota castanea",
+          "pred_idx": 26,
+          "count": 3,
+          "rate": 0.052632
+        },
+        {
+          "pred_taxon": "Marasmius oreades",
+          "pred_idx": 30,
+          "count": 2,
+          "rate": 0.035088
+        }
+      ]
+    },
+    {
+      "taxon": "Cortinarius rubellus",
+      "class_idx": 12,
+      "n": 1,
+      "top1": 0.0,
+      "top3": 0.0,
+      "misses": 1,
+      "top_confusions": [
+        {
+          "pred_taxon": "Laccaria laccata",
+          "pred_idx": 22,
+          "count": 1,
+          "rate": 1.0
+        }
+      ]
+    },
+    {
+      "taxon": "Galerina marginata",
+      "class_idx": 15,
+      "n": 338,
+      "top1": 0.44970414201183434,
+      "top3": 0.8609467455621301,
+      "misses": 186,
+      "top_confusions": [
+        {
+          "pred_taxon": "Laccaria laccata",
+          "pred_idx": 22,
+          "count": 96,
+          "rate": 0.284024
+        },
+        {
+          "pred_taxon": "Kuehneromyces mutabilis",
+          "pred_idx": 20,
+          "count": 31,
+          "rate": 0.091716
+        },
+        {
+          "pred_taxon": "Hygrophoropsis aurantiaca",
+          "pred_idx": 17,
+          "count": 15,
+          "rate": 0.044379
+        },
+        {
+          "pred_taxon": "Suillus grevillei",
+          "pred_idx": 37,
+          "count": 10,
+          "rate": 0.029586
+        },
+        {
+          "pred_taxon": "Hypholoma fasciculare",
+          "pred_idx": 18,
+          "count": 7,
+          "rate": 0.02071
+        }
+      ]
+    },
+    {
+      "taxon": "Lepiota castanea",
+      "class_idx": 26,
+      "n": 82,
+      "top1": 0.5487804878048781,
+      "top3": 0.926829268292683,
+      "misses": 37,
+      "top_confusions": [
+        {
+          "pred_taxon": "Lepiota cristata",
+          "pred_idx": 27,
+          "count": 16,
+          "rate": 0.195122
+        },
+        {
+          "pred_taxon": "Armillaria lutea",
+          "pred_idx": 7,
+          "count": 5,
+          "rate": 0.060976
+        },
+        {
+          "pred_taxon": "Laccaria laccata",
+          "pred_idx": 22,
+          "count": 4,
+          "rate": 0.04878
+        },
+        {
+          "pred_taxon": "Trametes versicolor",
+          "pred_idx": 39,
+          "count": 3,
+          "rate": 0.036585
+        },
+        {
+          "pred_taxon": "Amanita virosa",
+          "pred_idx": 6,
+          "count": 3,
+          "rate": 0.036585
+        }
+      ]
+    },
+    {
+      "taxon": "Paxillus involutus",
+      "class_idx": 31,
+      "n": 368,
+      "top1": 0.6847826086956522,
+      "top3": 0.875,
+      "misses": 116,
+      "top_confusions": [
+        {
+          "pred_taxon": "Hygrophoropsis aurantiaca",
+          "pred_idx": 17,
+          "count": 32,
+          "rate": 0.086957
+        },
+        {
+          "pred_taxon": "Lactarius deterrimus",
+          "pred_idx": 23,
+          "count": 25,
+          "rate": 0.067935
+        },
+        {
+          "pred_taxon": "Suillus grevillei",
+          "pred_idx": 37,
+          "count": 14,
+          "rate": 0.038043
+        },
+        {
+          "pred_taxon": "Armillaria lutea",
+          "pred_idx": 7,
+          "count": 8,
+          "rate": 0.021739
+        },
+        {
+          "pred_taxon": "Scleroderma citrinum",
+          "pred_idx": 36,
+          "count": 8,
+          "rate": 0.021739
+        }
+      ]
+    },
+    {
+      "taxon": "Amanita virosa",
+      "class_idx": 6,
+      "n": 7,
+      "top1": 0.8571428571428571,
+      "top3": 1.0,
+      "misses": 1,
+      "top_confusions": [
+        {
+          "pred_taxon": "Amanita citrina",
+          "pred_idx": 1,
+          "count": 1,
+          "rate": 0.142857
+        }
+      ]
+    },
+    {
+      "taxon": "Amanita phalloides",
+      "class_idx": 4,
+      "n": 400,
+      "top1": 0.8575,
+      "top3": 0.9475,
+      "misses": 57,
+      "top_confusions": [
+        {
+          "pred_taxon": "Amanita virosa",
+          "pred_idx": 6,
+          "count": 20,
+          "rate": 0.05
+        },
+        {
+          "pred_taxon": "Amanita citrina",
+          "pred_idx": 1,
+          "count": 20,
+          "rate": 0.05
+        },
+        {
+          "pred_taxon": "Amanita pantherina",
+          "pred_idx": 3,
+          "count": 9,
+          "rate": 0.0225
+        },
+        {
+          "pred_taxon": "Chlorophyllum olivieri",
+          "pred_idx": 9,
+          "count": 2,
+          "rate": 0.005
+        },
+        {
+          "pred_taxon": "Russula ochroleuca",
+          "pred_idx": 35,
+          "count": 1,
+          "rate": 0.0025
+        }
+      ]
+    },
+    {
+      "taxon": "Amanita pantherina",
+      "class_idx": 3,
+      "n": 400,
+      "top1": 0.8975,
+      "top3": 0.94,
+      "misses": 41,
+      "top_confusions": [
+        {
+          "pred_taxon": "Amanita citrina",
+          "pred_idx": 1,
+          "count": 12,
+          "rate": 0.03
+        },
+        {
+          "pred_taxon": "Amanita virosa",
+          "pred_idx": 6,
+          "count": 10,
+          "rate": 0.025
+        },
+        {
+          "pred_taxon": "Amanita phalloides",
+          "pred_idx": 4,
+          "count": 4,
+          "rate": 0.01
+        },
+        {
+          "pred_taxon": "Russula ochroleuca",
+          "pred_idx": 35,
+          "count": 3,
+          "rate": 0.0075
+        },
+        {
+          "pred_taxon": "Amanita muscaria",
+          "pred_idx": 2,
+          "count": 2,
+          "rate": 0.005
+        }
+      ]
+    },
+    {
+      "taxon": "Hypholoma fasciculare",
+      "class_idx": 18,
+      "n": 400,
+      "top1": 0.9175,
+      "top3": 0.9475,
+      "misses": 33,
+      "top_confusions": [
+        {
+          "pred_taxon": "Kuehneromyces mutabilis",
+          "pred_idx": 20,
+          "count": 9,
+          "rate": 0.0225
+        },
+        {
+          "pred_taxon": "Craterellus tubaeformis",
+          "pred_idx": 13,
+          "count": 6,
+          "rate": 0.015
+        },
+        {
+          "pred_taxon": "Galerina marginata",
+          "pred_idx": 15,
+          "count": 3,
+          "rate": 0.0075
+        },
+        {
+          "pred_taxon": "Gyromitra esculenta",
+          "pred_idx": 16,
+          "count": 3,
+          "rate": 0.0075
+        },
+        {
+          "pred_taxon": "Marasmius oreades",
+          "pred_idx": 30,
+          "count": 2,
+          "rate": 0.005
+        }
+      ]
+    },
+    {
+      "taxon": "Amanita muscaria",
+      "class_idx": 2,
+      "n": 400,
+      "top1": 0.965,
+      "top3": 0.985,
+      "misses": 14,
+      "top_confusions": [
+        {
+          "pred_taxon": "Amanita rubescens",
+          "pred_idx": 5,
+          "count": 3,
+          "rate": 0.0075
+        },
+        {
+          "pred_taxon": "Laetiporus sulphureus",
+          "pred_idx": 24,
+          "count": 2,
+          "rate": 0.005
+        },
+        {
+          "pred_taxon": "Amanita citrina",
+          "pred_idx": 1,
+          "count": 1,
+          "rate": 0.0025
+        },
+        {
+          "pred_taxon": "Marasmius oreades",
+          "pred_idx": 30,
+          "count": 1,
+          "rate": 0.0025
+        },
+        {
+          "pred_taxon": "Fomitopsis pinicola",
+          "pred_idx": 14,
+          "count": 1,
+          "rate": 0.0025
+        }
+      ]
+    },
+    {
+      "taxon": "Gyromitra esculenta",
+      "class_idx": 16,
+      "n": 127,
+      "top1": 1.0,
+      "top3": 1.0,
+      "misses": 0,
+      "top_confusions": []
+    }
+  ],
+  "ft_focus_candidates": [
+    {
+      "taxon": "Lepiota subincarnata",
+      "n": 57,
+      "top1": 0.0,
+      "top3": 0.47368421052631576,
+      "primary_confusion": {
+        "pred_taxon": "Lepiota cristata",
+        "pred_idx": 27,
+        "count": 37,
+        "rate": 0.649123
+      }
+    },
+    {
+      "taxon": "Cortinarius rubellus",
+      "n": 1,
+      "top1": 0.0,
+      "top3": 0.0,
+      "primary_confusion": {
+        "pred_taxon": "Laccaria laccata",
+        "pred_idx": 22,
+        "count": 1,
+        "rate": 1.0
+      }
+    },
+    {
+      "taxon": "Galerina marginata",
+      "n": 338,
+      "top1": 0.44970414201183434,
+      "top3": 0.8609467455621301,
+      "primary_confusion": {
+        "pred_taxon": "Laccaria laccata",
+        "pred_idx": 22,
+        "count": 96,
+        "rate": 0.284024
+      }
+    },
+    {
+      "taxon": "Lepiota castanea",
+      "n": 82,
+      "top1": 0.5487804878048781,
+      "top3": 0.926829268292683,
+      "primary_confusion": {
+        "pred_taxon": "Lepiota cristata",
+        "pred_idx": 27,
+        "count": 16,
+        "rate": 0.195122
+      }
+    },
+    {
+      "taxon": "Paxillus involutus",
+      "n": 368,
+      "top1": 0.6847826086956522,
+      "top3": 0.875,
+      "primary_confusion": {
+        "pred_taxon": "Hygrophoropsis aurantiaca",
+        "pred_idx": 17,
+        "count": 32,
+        "rate": 0.086957
+      }
+    },
+    {
+      "taxon": "Amanita phalloides",
+      "n": 400,
+      "top1": 0.8575,
+      "top3": 0.9475,
+      "primary_confusion": {
+        "pred_taxon": "Amanita virosa",
+        "pred_idx": 6,
+        "count": 20,
+        "rate": 0.05
+      }
+    },
+    {
+      "taxon": "Amanita pantherina",
+      "n": 400,
+      "top1": 0.8975,
+      "top3": 0.94,
+      "primary_confusion": {
+        "pred_taxon": "Amanita citrina",
+        "pred_idx": 1,
+        "count": 12,
+        "rate": 0.03
+      }
+    },
+    {
+      "taxon": "Hypholoma fasciculare",
+      "n": 400,
+      "top1": 0.9175,
+      "top3": 0.9475,
+      "primary_confusion": {
+        "pred_taxon": "Kuehneromyces mutabilis",
+        "pred_idx": 20,
+        "count": 9,
+        "rate": 0.0225
+      }
+    },
+    {
+      "taxon": "Amanita muscaria",
+      "n": 400,
+      "top1": 0.965,
+      "top3": 0.985,
+      "primary_confusion": {
+        "pred_taxon": "Amanita rubescens",
+        "pred_idx": 5,
+        "count": 3,
+        "rate": 0.0075
+      }
+    }
+  ],
+  "gaps": [],
+  "honesty": {
+    "metrics_from_predictions_and_files_only": true,
+    "dual_deadly_keys": true,
+    "map_is_not_safety": true,
+    "product_unlock_forced_false": true,
+    "no_invented_metrics": true
+  },
+  "ux_data_only": true,
+  "note": "Lab friction report for deadly@1. Fresh timestamp DoD. Orientation only — never consumption permission. product_unlock=false."
+}

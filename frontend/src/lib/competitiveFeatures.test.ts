@@ -110,6 +110,32 @@ describe('competitive feature adoption', () => {
     expect(edu).toMatch(/orientation|nunca consumo|pairDiagPolicy/i)
   })
 
+  it('Education anchors #multi-view and #deadly-study for PhotoCoach / Más deep-links', () => {
+    const edu = readFileSync(resolve(root, 'src/pages/EducationPage.tsx'), 'utf8')
+    expect(edu).toMatch(/id=["']multi-view["']/)
+    expect(edu).toMatch(/id=["']deadly-study["']/)
+    expect(edu).toMatch(/edu-deadly-study/)
+    expect(edu).toMatch(/scrollIntoView|location\.hash/)
+    expect(edu).toMatch(/nunca consumo|orientaci/i)
+    // Sibling sections (not nested) for first-class deep-links
+    expect(edu).toMatch(/id=["']multi-view["'][\s\S]*?<\/section>[\s\S]*?id=["']deadly-study["']/)
+    const more = readFileSync(resolve(root, 'src/pages/MoreHubPage.tsx'), 'utf8')
+    expect(more).toMatch(/more-hub-learn-blurb/)
+    expect(more).toMatch(/\/educacion#multi-view/)
+    expect(more).not.toMatch(/LEARN_BLURB_DEFAULTS/)
+    expect(more).toMatch(/multi-vista|confusiones/i)
+    const nav = readFileSync(resolve(root, 'src/lib/navConfig.ts'), 'utf8')
+    expect(nav).toMatch(/to:\s*['"]\/educacion['"]/)
+    expect(nav).toMatch(/Multi-vista|multi-vista/)
+    expect(nav).toMatch(/Confusiones lado a lado/)
+    const scroll = readFileSync(resolve(root, 'src/components/ScrollToTop.tsx'), 'utf8')
+    expect(scroll).toMatch(/shouldSkipScrollToTop/)
+    // Live locale tiles (not only blurbFallback)
+    const es = readFileSync(resolve(root, 'src/locales/es/common.json'), 'utf8')
+    expect(es).toMatch(/Multi-vista \(láminas|solo orientación/i)
+    expect(es).toMatch(/Confusiones lado a lado|nunca consumo/i)
+  })
+
   it('Offline pack + Community surface multi-view honesty (no unlock)', () => {
     const offline = readFileSync(resolve(root, 'src/pages/OfflinePackPage.tsx'), 'utf8')
     expect(offline).toMatch(/offlinePackMultiviewHonesty|offline-multiview-honesty/)
@@ -126,7 +152,9 @@ describe('competitive feature adoption', () => {
     expect(home).toMatch(/nunca consumo|orientaci/i)
     const map = readFileSync(resolve(root, 'src/pages/SpainMapPage.tsx'), 'utf8')
     expect(map).toMatch(/map-multiview-chip/)
-    expect(map).toMatch(/multi-vista|no recolección|no identifica/i)
+    expect(map).toMatch(/map-map-ne-safety-banner/)
+    expect(map).toMatch(/cotos\s*≠\s*consumo|MAP\s*≠\s*seguridad/i)
+    expect(map).toMatch(/multi-vista|no identifica|no autoriza consumo/i)
   })
 
   it('PreflightBanner wires multiview diagnostic tip (no unlock language)', () => {
@@ -409,6 +437,59 @@ describe('competitive feature adoption', () => {
     expect(cam.toLowerCase()).toMatch(/no identifica|nunca|encuadre/)
     const slots = readFileSync(resolve(root, 'src/lib/multiViewSlots.ts'), 'utf8')
     expect(slots).toMatch(/preSubmitFreeModeCoach/)
+  })
+
+  it('UX-01 Identify residual R1–R5 (sticky / soft-confirm / slot / ES / JPEG)', () => {
+    // R1: sticky analyze/result CTAs clear fixed bottom-nav (≥ actual nav + 8px + safe-area)
+    const cn = readFileSync(resolve(root, 'src/styles/campo-nocturno.css'), 'utf8')
+    // Lock both halves of the R1 fix: accurate chrome height + gap + home-indicator
+    expect(cn).toMatch(/--cn-bottom-nav-h:\s*3\.85rem/)
+    expect(cn).toMatch(
+      /--cn-sticky-above-nav:\s*calc\(\s*var\(--cn-bottom-nav-h\)\s*\+\s*8px\s*\+\s*env\(safe-area-inset-bottom/,
+    )
+    expect(cn).toMatch(
+      /\.app--has-bottom-nav\s+\.page-identify\s+\.analyze-actions/,
+    )
+    expect(cn).toMatch(
+      /\.app--has-bottom-nav\s+\.page-identify\s+\.identify-sticky-cta/,
+    )
+    expect(cn).toMatch(/bottom:\s*var\(--cn-sticky-above-nav\)/)
+
+    // R2: soft-confirm UI wired (not no-op) — open, add→camera, proceed→classify
+    const id = readFileSync(resolve(root, 'src/pages/IdentifyPage.tsx'), 'utf8')
+    expect(id).toMatch(/data-testid="identify-soft-confirm"/)
+    expect(id).toMatch(/data-testid="identify-soft-confirm-add"/)
+    expect(id).toMatch(/data-testid="identify-soft-confirm-proceed"/)
+    expect(id).toMatch(/dismissSoftConfirm|confirmClassifySoft|requestClassify/)
+    expect(id).toMatch(/setSoftConfirmOpen\(true\)/)
+    expect(id).toMatch(/onAdd=\{dismissSoftConfirm\}/)
+    expect(id).toMatch(/onProceed=\{confirmClassifySoft\}/)
+
+    // R3: pressed wizard slot → cameraTargetSlot → onAssign that view
+    expect(id).toMatch(/setCameraTargetSlot\(view\)/)
+    expect(id).toMatch(/cameraTargetSlot\s*\?\?\s*\(useWizard\s*\?\s*nextCameraSlot/)
+    expect(id).toMatch(/onAssignSlot\(target,\s*file,\s*previewUrl\)/)
+    const wiz = readFileSync(resolve(root, 'src/components/MultiViewWizard.tsx'), 'utf8')
+    expect(wiz).toMatch(/onOpenCamera\(slot\.view\)/)
+
+    // R4: ES soft-confirm proceed exact (audit cheat-sheet; no raw "orientación only")
+    const es = readFileSync(resolve(root, 'src/locales/es/common.json'), 'utf8')
+    expect(es).toMatch(/"Identificar con 1 foto \(menos fiable\)"/)
+    expect(es).toMatch(/"Continuar sin más fotos"/)
+    expect(es).not.toMatch(/orientaci[oó]n only/i)
+
+    // R5: JPEG long-edge ≤1280 (shared prepareIdentifyImage SSOT + CameraCapture)
+    const cam = readFileSync(resolve(root, 'src/components/CameraCapture.tsx'), 'utf8')
+    expect(cam).toMatch(/IDENTIFY_JPEG_MAX_EDGE|maxEdge\s*=\s*1280/)
+    expect(cam).toMatch(/image\/jpeg/)
+    expect(cam).toMatch(/IDENTIFY_JPEG_QUALITY|0\.82/)
+    const prep = readFileSync(resolve(root, 'src/lib/prepareIdentifyImage.ts'), 'utf8')
+    expect(prep).toMatch(/IDENTIFY_JPEG_MAX_EDGE\s*=\s*1280/)
+    expect(prep).toMatch(/IDENTIFY_JPEG_QUALITY\s*=\s*0\.82/)
+    // Gallery must not force capture= (app shell / mobile library pick)
+    expect(wiz).not.toMatch(/capture\s*=\s*["']environment["']/)
+    expect(wiz).toMatch(/prepareIdentifyImageFile/)
+    expect(wiz).toMatch(/loading=["']eager["']/)
   })
 
   it('v1.8 community human consensus + offline encyclopedia depth', () => {

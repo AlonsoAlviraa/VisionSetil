@@ -205,9 +205,7 @@ def models_status() -> dict:
         status["summary"]["live_reject_rate_7d"] = live.get("reject_rate_7d")
         status["summary"]["live_reject_n_7d"] = live.get("n_entries_7d")
         status["summary"]["live_reject_top_reason"] = live.get("top_reason")
-        status["summary"]["live_reject_health_flags"] = list(
-            live.get("health_flags") or []
-        )
+        status["summary"]["live_reject_health_flags"] = list(live.get("health_flags") or [])
         status["summary"]["live_reject_traffic_depth"] = live.get("traffic_depth")
         status["summary"]["live_reject_n_real"] = live.get("n_real_mode")
         status["summary"]["live_reject_n_mock"] = live.get("n_mock_mode")
@@ -283,9 +281,7 @@ def models_status() -> dict:
         status["summary"]["e21_kaggle_push"] = False
         status["summary"]["e21_auto_kaggle_push"] = False
         status["summary"]["e21_status"] = e21.get("status")
-        status["summary"]["e21_operator_approved"] = bool(
-            e21.get("operator_schedule_approved")
-        )
+        status["summary"]["e21_operator_approved"] = bool(e21.get("operator_schedule_approved"))
         status["summary"]["e21_operator_push_cli"] = e21.get(
             "operator_push_cli", "scripts/e21_operator_push.py"
         )
@@ -352,9 +348,7 @@ def models_status() -> dict:
         status["e21_readiness"]["requires_operator_dual_gate"] = True
         status["e21_readiness"]["product_unlock_does_not_push"] = True
         status["e21_readiness"]["serve_product_unlock_does_not_launch_e21"] = True
-        status["e21_readiness"].setdefault(
-            "operator_push_cli", "scripts/e21_operator_push.py"
-        )
+        status["e21_readiness"].setdefault("operator_push_cli", "scripts/e21_operator_push.py")
     status["summary"]["product_unlock"] = serve_unlocked
     status["summary"]["forage_permission"] = False
     status["summary"]["consumption_permission"] = False
@@ -364,9 +358,7 @@ def models_status() -> dict:
     status["summary"]["e21_launched"] = False
     status["summary"]["e21_kaggle_push"] = False
     status["summary"]["e21_auto_kaggle_push"] = False
-    status["summary"].setdefault(
-        "e21_operator_push_cli", "scripts/e21_operator_push.py"
-    )
+    status["summary"].setdefault("e21_operator_push_cli", "scripts/e21_operator_push.py")
     # Multi-view product contracts + four-photo bench + paired inventory
     try:
         from app.ml.multiview_product import describe_multiview_product
@@ -379,8 +371,8 @@ def models_status() -> dict:
         fh = (mv_prod or {}).get("field_holdout_m3") if isinstance(mv_prod, dict) else None
         if isinstance(fh, dict):
             status["summary"]["field_holdout_gates_pass"] = fh.get("gates_pass")
-            status["summary"]["field_holdout_map3_4_minus_1"] = (
-                (fh.get("headline") or {}).get("map3_4_minus_1")
+            status["summary"]["field_holdout_map3_4_minus_1"] = (fh.get("headline") or {}).get(
+                "map3_4_minus_1"
             )
             status["summary"]["field_holdout_deadly_caveat"] = bool(
                 fh.get("deadly_multiview_caveat")
@@ -395,7 +387,6 @@ def models_status() -> dict:
     except Exception:  # noqa: BLE001
         status["multiview_product"] = {"product_unlock": False, "status": "unavailable"}
     return status
-
 
 
 @router.get("/models/discovery")

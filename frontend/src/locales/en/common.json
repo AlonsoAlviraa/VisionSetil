@@ -32,18 +32,18 @@
       "dev": "Tools"
     },
     "blurb": {
-      "education": "Safety and multi-view field craft",
-      "lookalikes": "Compare confusable species",
+      "education": "Multi-view (gills, profile, base) and deadly study · orientation only",
+      "lookalikes": "Side-by-side lookalikes · study, never consumption",
       "games": "Setadle, Wordle and daily challenge",
-      "quiz": "Lookalike and character quiz",
+      "quiz": "Character quiz · no consumption permission",
       "notebook": "Your observations on this device",
       "offline": "Study cards without a connection",
       "community": "Human opinions, never certainty",
       "experts": "Package a case for a mycologist",
       "ml": "Honest model metrics",
       "map": "Zones and permits — does not identify mushrooms",
-      "wordle": "Mushroom names, letter by letter",
-      "setadle": "Daily habitat and trait puzzle",
+      "wordle": "Name letters · study only",
+      "setadle": "Guess the mushroom · study game",
       "login": "Optional account",
       "beta": "Tell us what is broken"
     },
@@ -223,6 +223,7 @@
     "orientation": "Orientation only · never permission to consume",
     "title": "More tools",
     "policy": "Full product map. Identify and games orient — they never grant permission to consume.",
+    "learnLead": "Learn with multi-view photos and lookalikes. Orientation only — never consumption or foraging.",
     "ctaIdentify": "Go to Identify",
     "foot": "VisionSetil · night field",
     "worldTitle": "World resources",
@@ -279,6 +280,7 @@
     "foodLabel": "Documentary sheet",
     "foodAria": "Filter by documentary sheet (orientation, not consumption)",
     "riskAll": "All",
+    "riskPoisonous": "Poisonous",
     "riskToxic": "Toxic",
     "riskUnknown": "No risk sheet",
     "riskCaution": "Caution",
@@ -330,6 +332,43 @@
     "coachTip2": "Fill the frame with the mushroom",
     "coachTip3": "Include stem and base when possible",
     "coachTip4": "More views = better guidance (never 100 percent safe)",
+    "coach": {
+      "title": "How to photograph this view",
+      "panelAria": "Photo tips for {{view}}",
+      "policy": "Field orientation only — better photos reduce confusions, never authorize consumption.",
+      "good": "Good",
+      "bad": "Poor",
+      "learnMore": "How to photograph (multi-view guide)",
+      "hint": {
+        "file_tiny": "File is very small: diagnostic detail may be missing.",
+        "edge_small": "Short edge is low-res: move closer or use more megapixels.",
+        "aspect_extreme": "Extreme aspect ratio: reframe the mushroom in the center.",
+        "luma_dark": "Very dark image: prefer front light (no blinding flash).",
+        "luma_bright": "Very bright image: avoid backlight and blown highlights."
+      },
+      "checklist": {
+        "gills": {
+          "hymenium_visible": "Are gills, pores, or folds of the hymenium visible?",
+          "in_focus": "Is focus on the hymenium (not the background)?",
+          "not_top_only": "Is the underside not fully hidden by the cap?"
+        },
+        "front": {
+          "full_profile": "Cap + stem + base all in frame?",
+          "ring_volva": "Ring/volva visible when present?",
+          "side_angle": "Side profile angle (not only top-down)?"
+        },
+        "habitat": {
+          "substrate": "Soil, wood, or host tree context visible?",
+          "no_tight_crop": "Substrate not fully cropped out?",
+          "context_scale": "Is the growth context clear (step back)?"
+        },
+        "detail": {
+          "macro_diag": "Macro of volva, ring, or stem texture?",
+          "clean_cut": "Clean cut surface if any (never taste)?",
+          "never_taste": "Never bite or lick to “taste”."
+        }
+      }
+    },
     "missingViews": "Recommended missing views",
     "viewIcon": {
       "gills": "🔻",
@@ -770,6 +809,7 @@
     "vs": "VS",
     "viewDetail": "View card",
     "notInCatalog": "Not in the local catalog.",
+    "openStudioFocus": "Study in the studio",
     "kicker": "Education · Dangerous confusions",
     "studioTitle": "Confusion studio",
     "addLookalike": "Add confusion",
@@ -782,6 +822,24 @@
     "add": "Add",
     "emptyTitle": "Pick mushrooms to compare",
     "emptyBody": "Search by common or scientific name, or tap a high-risk suggestion.",
+    "focusUnknownTitle": "Taxon not found",
+    "focusUnknownBody": "No catalog card for «{{slug}}». Pick a classic pair or search a catalog taxon.",
+    "imageCompareTitle": "Compare lookalikes",
+    "imageCompareAria": "Compare species",
+    "imageCompareFootnote": "Educational morphology compare · orientation only · never consumption",
+    "learnPathAria": "Lookalike study path",
+    "learnPathTitle": "Learn to tell them apart (3 steps)",
+    "learnStep1Title": "Observe the hymenium",
+    "learnStep1Body": "Gills, pores or folds: colour, attachment and texture. Use the slider if it helps.",
+    "learnStep2Title": "Observe stipe and base",
+    "learnStep2Body": "Ring, stipe base and characters decide many high-risk confusions.",
+    "learnStepViewTitle": "Observe: {{view}}",
+    "learnStepViewBody": "Diagnostic view for this pair. Use the slider if it helps. Orientation only.",
+    "learnStep3Title": "I can tell them apart",
+    "learnStep3Body": "Mark this study. Learning only — never consumption permission.",
+    "learnStepDone": "Done",
+    "learnStepComplete": "Complete study",
+    "learnComplete": "Study recorded (local)",
     "tableTitle": "Comparison table",
     "tableLead": "Read horizontally. Risk is safety orientation, not edibility.",
     "characterCol": "Trait",
@@ -975,7 +1033,11 @@
     "openCard": "Open card",
     "legendTitle": "Condition alert",
     "hotspotLegend": "Halo = educational hotspot",
-    "safetyChip": "Educational · no foraging",
+    "safetyChip": "Educational · cotos ≠ consumption",
+    "policyBanner": "MAP ≠ safety · regulated areas ≠ permission to eat. Educational orientation only; does not authorize foraging, ID, or consumption.",
+    "cotosPolicy": "Official permits ≠ permission to consume. The map orients; it does not identify mushrooms or authorize foraging.",
+    "multiviewChip": "Field · multi-view",
+    "multiviewTip": "In the field: photo gills + profile + base. The map does not identify or authorize consumption.",
     "layerMarkers": "Markers",
     "layerHalos": "Halos",
     "layerHotspotsOnly": "Hotspots only",
@@ -1059,7 +1121,7 @@
     "openEncyclopedia": "Encyclopedia",
     "openOsm": "Open map",
     "keepExploring": "Continue",
-    "disclaimerShort": "Educational · no foraging or consumption. Check local rules and a mycologist."
+    "disclaimerShort": "Educational · cotos ≠ consumption. Does not authorize foraging or ID. Check local rules and a mycologist."
   },
   "offline": {
     "kicker": "Field · PWA",

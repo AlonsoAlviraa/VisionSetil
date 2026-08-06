@@ -32,18 +32,18 @@
       "dev": "Herramientas"
     },
     "blurb": {
-      "education": "Seguridad y multi-vista de campo",
-      "lookalikes": "Compara especies que se confunden",
+      "education": "Multi-vista (láminas, perfil, base) y estudio mortales · solo orientación",
+      "lookalikes": "Confusiones lado a lado · estudio, nunca consumo",
       "games": "Setadle, Wordle y reto diario",
-      "quiz": "Reto de confusiones y caracteres",
+      "quiz": "Quiz de caracteres · sin permiso de consumo",
       "notebook": "Tus observaciones en este dispositivo",
       "offline": "Fichas para estudiar sin conexión",
       "community": "Opiniones humanas, nunca certeza",
       "experts": "Prepara el envío a un micólogo",
       "ml": "Métricas honestas del modelo",
       "map": "Zonas y cotos — no identifica setas",
-      "wordle": "Nombres de setas, letra a letra",
-      "setadle": "Puzzle diario de hábitat y rasgos",
+      "wordle": "Letras del nombre · solo estudio",
+      "setadle": "Adivina la seta · juego de estudio",
       "login": "Cuenta opcional",
       "beta": "Cuéntanos qué falla"
     },
@@ -307,6 +307,7 @@
     "orientation": "Solo orientación · nunca consumo",
     "title": "Más",
     "policy": "Todo el producto, en un solo sitio.",
+    "learnLead": "Aprende con fotos multi-vista y confusiones. Solo orientación — nunca consumo ni recolección.",
     "ctaIdentify": "Identificar",
     "foot": "VisionSetil",
     "worldTitle": "Recursos del mundo",
@@ -363,6 +364,7 @@
     "foodLabel": "Ficha documental",
     "foodAria": "Filtrar por ficha documental (orientación, no consumo)",
     "riskAll": "Todos",
+    "riskPoisonous": "Venenosa",
     "riskToxic": "Tóxica",
     "riskUnknown": "Sin ficha de riesgo",
     "riskCaution": "Precaución",
@@ -400,6 +402,43 @@
     "coachTip2": "Llena el encuadre con la seta",
     "coachTip3": "Incluye pie y base",
     "coachTip4": "Más vistas = mejor orientación",
+    "coach": {
+      "title": "Cómo fotografiar esta vista",
+      "panelAria": "Consejos de foto para {{view}}",
+      "policy": "Solo orientación de campo — mejores fotos reducen confusiones, nunca autorizan consumo.",
+      "good": "Bien",
+      "bad": "Mal",
+      "learnMore": "Cómo fotografiar (guía multi-vista)",
+      "hint": {
+        "file_tiny": "Archivo muy pequeño: puede faltar detalle diagnóstico.",
+        "edge_small": "Resolución baja en el lado corto: acércate o usa más megapíxeles.",
+        "aspect_extreme": "Proporción extrema: reencuadra la seta al centro.",
+        "luma_dark": "Imagen muy oscura: busca luz frontal (sin flash cegador).",
+        "luma_bright": "Imagen muy clara: evita contraluz y brillos quemados."
+      },
+      "checklist": {
+        "gills": {
+          "hymenium_visible": "¿Se ven láminas, poros o pliegues del himenio?",
+          "in_focus": "¿Enfoque en el himenio (no en el fondo)?",
+          "not_top_only": "¿El sombrero no tapa todo el inferior?"
+        },
+        "front": {
+          "full_profile": "¿Sombrero + pie + base en el cuadro?",
+          "ring_volva": "¿Anillo/volva visibles si existen?",
+          "side_angle": "¿Ángulo de perfil (no solo desde arriba)?"
+        },
+        "habitat": {
+          "substrate": "¿Suelo, madera o árbol de contexto visibles?",
+          "no_tight_crop": "¿Sin recortar todo el sustrato?",
+          "context_scale": "¿Se entiende dónde crece (paso atrás)?"
+        },
+        "detail": {
+          "macro_diag": "¿Macro de volva, anillo o textura del pie?",
+          "clean_cut": "¿Corte limpio si lo hay (sin probar)?",
+          "never_taste": "Nunca morder ni lamer para «probar»."
+        }
+      }
+    },
     "views": {
       "gills": "Láminas",
       "front": "Sombrero",
@@ -764,6 +803,7 @@
     "vs": "VS",
     "viewDetail": "Ver ficha",
     "notInCatalog": "No está en el catálogo local.",
+    "openStudioFocus": "Estudiar en el estudio",
     "kicker": "Educación · Confusiones peligrosas",
     "studioTitle": "Estudio de confusiones",
     "addLookalike": "Añadir confusión",
@@ -779,6 +819,24 @@
     "add": "Añadir",
     "emptyTitle": "Elige setas para comparar",
     "emptyBody": "Busca por nombre común o científico, o toca una sugerencia de alto riesgo.",
+    "focusUnknownTitle": "Taxón no encontrado",
+    "focusUnknownBody": "No hay una ficha de catálogo para «{{slug}}». Elige un par clásico o busca un taxón del catálogo.",
+    "imageCompareTitle": "Compara confusiones",
+    "imageCompareAria": "Comparar especies",
+    "imageCompareFootnote": "Comparación morfológica educativa · solo orientación · nunca consumo",
+    "learnPathAria": "Ruta de estudio de confusiones",
+    "learnPathTitle": "Aprende a diferenciar (3 pasos)",
+    "learnStep1Title": "Observa el himenio",
+    "learnStep1Body": "Láminas, poros o pliegues: color, inserción y textura. Usa el deslizador si ayuda.",
+    "learnStep2Title": "Observa pie y estípite",
+    "learnStep2Body": "Anillo, base del pie y caracteres del estípite deciden muchas confusiones de riesgo.",
+    "learnStepViewTitle": "Observa: {{view}}",
+    "learnStepViewBody": "Vista diagnóstica de este par. Usa el deslizador si ayuda. Solo orientación.",
+    "learnStep3Title": "Ya sé diferenciar",
+    "learnStep3Body": "Marca este estudio. Solo aprendizaje — nunca permiso de consumo.",
+    "learnStepDone": "Hecho",
+    "learnStepComplete": "Completar estudio",
+    "learnComplete": "Estudio registrado (local)",
     "tableTitle": "Tabla de comparación",
     "tableLead": "Lee en horizontal. El riesgo es orientación de seguridad, no edibilidad.",
     "characterCol": "Carácter",
@@ -969,7 +1027,11 @@
     "openCard": "Abrir ficha",
     "legendTitle": "Aviso de condiciones",
     "hotspotLegend": "Halo = hotspot educativo",
-    "safetyChip": "Educativo · no recolección",
+    "safetyChip": "Educativo · cotos ≠ consumo",
+    "policyBanner": "MAP ≠ seguridad · cotos ≠ consumo. Solo orientación educativa; no autoriza recolección, identificación ni consumo.",
+    "cotosPolicy": "Cotos y permisos oficiales ≠ permiso de consumo. El mapa orienta; no identifica setas ni autoriza recolección.",
+    "multiviewChip": "Campo · multi-vista",
+    "multiviewTip": "En el campo: foto láminas + perfil + base. El mapa no identifica ni autoriza consumo.",
     "layerMarkers": "Marcadores",
     "layerHalos": "Halos",
     "layerHotspotsOnly": "Solo hotspots",
@@ -1031,7 +1093,7 @@
     "openEncyclopedia": "Enciclopedia",
     "openOsm": "Ver en mapa",
     "keepExploring": "Seguir",
-    "disclaimerShort": "Educativo · no recolección ni consumo. Consulta normativa y un micólogo.",
+    "disclaimerShort": "Educativo · cotos ≠ consumo. No autoriza recolección ni identificación. Consulta normativa y un micólogo.",
     "alert": {
       "unknown": {
         "label": "Sin datos",

@@ -1,0 +1,311 @@
+{
+  "generated_at": "2026-08-05T20:43:03.533933+00:00",
+  "pr": "pr-10 / ML-02",
+  "title": "ml(e20b): diagnose Lepiota FT; suite or one safe relaunch",
+  "policy": "orientation_only_never_consume",
+  "lab_only": true,
+  "product_unlock": false,
+  "can_auto_unlock": false,
+  "forage_permission": false,
+  "consumption_permission": false,
+  "kaggle_push": false,
+  "auto_kaggle_push": false,
+  "relaunch_executed": false,
+  "kernel": {
+    "slug": "alonsoalviraaaa/visionsetil-exp-v20b-lepiota-ft",
+    "baseline_slug": "alonsoalviraaaa/visionsetil-exp-v20-source-holdout",
+    "weights_dataset": "alonsoalviraaaa/visionsetil-e20-weights",
+    "status": "ERROR",
+    "status_raw": "alonsoalviraaaa/visionsetil-exp-v20b-lepiota-ft has status \"KernelWorkerStatus.ERROR\"",
+    "status_rc": 0
+  },
+  "decision_tree": {
+    "steps": [
+      "status",
+      "logs",
+      "classify",
+      "diagnose_first",
+      "suite_or_relaunch_or_baseline"
+    ],
+    "status": "ERROR",
+    "classification": "launch_script_bug",
+    "blocking": true,
+    "findings": [
+      {
+        "id": "syntax_hard_neg_commas",
+        "severity": "blocking",
+        "summary": "SyntaxError in In[17] _HARD_NEG dict: trailing commas lived inside comments after values (e.g. `28.0  # E20b FT boost,`), so the next key was a SyntaxError.",
+        "evidence": "PapermillExecutionError / SyntaxError: invalid syntax. Perhaps you forgot a comma?"
+      },
+      {
+        "id": "missing_pretrained_weights_path",
+        "severity": "high",
+        "summary": "E20b FT resume did not find best.pt. Dataset alonsoalviraaaa/visionsetil-e20-weights may be mounted under /kaggle/input/datasets/<owner>/<slug>/ while notebook only probed /kaggle/input/visionsetil-e20-weights/.",
+        "evidence": "E20b FT WARNING: no pretrained best.pt found"
+      },
+      {
+        "id": "mush215_optional_empty",
+        "severity": "low",
+        "summary": "Optional mush215 source loaded 0 images (non-blocking; FT train still fungitastic).",
+        "evidence": "Loaded: 0 images from 'mush215'"
+      },
+      {
+        "id": "split_rails_pass_before_crash",
+        "severity": "info",
+        "summary": "Source-holdout split artifacts written and pass=True before crash.",
+        "evidence": "protocol=source_holdout_e20b_lepiota_ft pass=True"
+      }
+    ],
+    "decision": {
+      "decision": "RELAUNCH_PATH_DOCUMENTED_NOT_EXECUTED",
+      "relaunch_allowed": true,
+      "relaunch_budget_remaining": 1,
+      "relaunch_budget_used": 0,
+      "max_human_relaunch_budget": 1,
+      "auto_relaunch": false,
+      "relaunch_executed": false,
+      "continue_baseline": true,
+      "operator_action": "Rails green + SyntaxError+weight-path fixed in tracked kaggle/visionsetil_exp_v20b_lepiota_ft.ipynb + kaggle/kernel-metadata-exp-v20b.json (push_e20b is gitignored staging only). ≤1 human relaunch budget remaining=1 (used=0). Push only via scripts/push_kaggle_e20b.py --execute --i-accept-operator-responsibility after dry-run. This diagnose run does NOT push. Continue E20 baseline SSOT until e20b COMPLETE. product_unlock=false.",
+      "relaunch_checklist": [
+        "Confirm anti-leak rails still green (verify_anti_leak_rails_for_train.py)",
+        "Confirm visionsetil-e20-weights has best.pt on Kaggle (push preflight)",
+        "Confirm tracked notebook syntax_fix_present + weight_path_fix_present",
+        "Human: python scripts/push_kaggle_e20b.py --dry-run  (inspect gates)",
+        "Human: python scripts/push_kaggle_e20b.py --execute --i-accept-operator-responsibility",
+        "No blind epoch bumps; keep 12-epoch FT + hard-neg weights design",
+        "Never product_unlock; dual ECE primary=train_published"
+      ]
+    }
+  },
+  "artifacts": {
+    "e20b_output_dir": {
+      "path": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20b",
+      "resolved_path": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20b",
+      "under_repo": false
+    },
+    "e20b_metrics_present": false,
+    "e20b_split_manifest": {
+      "present": true,
+      "protocol": "source_holdout_e20b_lepiota_ft",
+      "pass": true,
+      "n_train_obs": 5767,
+      "n_val_obs": 1018,
+      "n_test_obs": 7385
+    },
+    "notebook": {
+      "push_dir": "kaggle",
+      "notebook_present": true,
+      "syntax_fix_present": true,
+      "weight_path_fix_present": true,
+      "check_method": "ast_hard_neg_plus_weight_path_substring",
+      "notebook_path": "kaggle/visionsetil_exp_v20b_lepiota_ft.ipynb",
+      "notebook_resolved_path": "C:\\Users\\Mariano\\.grok\\worktrees\\alonsoo-visionsetil\\subagent-019fd398-2410-7852-ac06-d7b1e767cfd6\\kaggle\\visionsetil_exp_v20b_lepiota_ft.ipynb",
+      "metadata_path": "kaggle/kernel-metadata-exp-v20b.json",
+      "metadata_present": true
+    },
+    "baseline_models_dir": {
+      "path": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models",
+      "resolved_path": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models",
+      "under_repo": false
+    }
+  },
+  "baseline_ssot": {
+    "path": "eval/reports/ml_experiments/E20_BASELINE_METRICS_TO_IMPROVE.json",
+    "present": true,
+    "version": "v20-E20-source-holdout",
+    "eval_protocol": "source_holdout_e20",
+    "test_domain": "gbif_es_only",
+    "measured": {
+      "test_map_at_3": 0.8575265177160878,
+      "safety_recall_deadly_at_1": 0.7895348837209303,
+      "safety_recall_deadly_at_3": 0.9217054263565891,
+      "n_deadly_in_test": 2580
+    },
+    "ece_dual": {
+      "primary": "train_published",
+      "primary_value": 0.18741017924867615,
+      "primary_source": "test_ece_train_published",
+      "claim_train_published": true,
+      "posthoc_separate": true,
+      "posthoc_value": 0.04544782004819755,
+      "temperature_train": 1.5812190771102905,
+      "temperature_posthoc": 2.899999999999997,
+      "note": "Primary ECE is train-published only. Posthoc is lab-only sidecar; never sell as primary; never unlock from ECE."
+    },
+    "product_unlock": false
+  },
+  "rails": {
+    "can_stage_train_notebook": true,
+    "status": "rails_green_can_stage",
+    "report_path": "eval/reports/ml_experiments/anti_leak_rails_train_latest.json"
+  },
+  "lepiota_baseline_holdout": {
+    "available": true,
+    "models_dir": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models",
+    "models_dir_resolved": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models",
+    "species": {
+      "Lepiota castanea": {
+        "n": 82,
+        "top1": 0.5487804878048781,
+        "map_at_3": 0.7256097560975611,
+        "true_in_top3": 0.926829268292683,
+        "top_pred_confusions": [
+          {
+            "species": "Lepiota castanea",
+            "count": 45,
+            "rate": 0.5487804878048781
+          },
+          {
+            "species": "Lepiota cristata",
+            "count": 16,
+            "rate": 0.1951219512195122
+          },
+          {
+            "species": "Armillaria lutea",
+            "count": 5,
+            "rate": 0.06097560975609756
+          },
+          {
+            "species": "Laccaria laccata",
+            "count": 4,
+            "rate": 0.04878048780487805
+          },
+          {
+            "species": "Trametes versicolor",
+            "count": 3,
+            "rate": 0.036585365853658534
+          }
+        ],
+        "deadly": true
+      },
+      "Lepiota cristata": {
+        "n": 179,
+        "top1": 0.8770949720670391,
+        "map_at_3": 0.9050279329608939,
+        "true_in_top3": 0.9441340782122905,
+        "top_pred_confusions": [
+          {
+            "species": "Lepiota cristata",
+            "count": 157,
+            "rate": 0.8770949720670391
+          },
+          {
+            "species": "Laccaria laccata",
+            "count": 3,
+            "rate": 0.01675977653631285
+          },
+          {
+            "species": "Marasmius oreades",
+            "count": 3,
+            "rate": 0.01675977653631285
+          },
+          {
+            "species": "Chlorophyllum olivieri",
+            "count": 3,
+            "rate": 0.01675977653631285
+          },
+          {
+            "species": "Amanita phalloides",
+            "count": 2,
+            "rate": 0.0111731843575419
+          }
+        ],
+        "deadly": false
+      },
+      "Lepiota subincarnata": {
+        "n": 57,
+        "top1": 0.0,
+        "map_at_3": 0.17543859649122806,
+        "true_in_top3": 0.47368421052631576,
+        "top_pred_confusions": [
+          {
+            "species": "Lepiota cristata",
+            "count": 37,
+            "rate": 0.6491228070175439
+          },
+          {
+            "species": "Armillaria lutea",
+            "count": 6,
+            "rate": 0.10526315789473684
+          },
+          {
+            "species": "Amanita virosa",
+            "count": 4,
+            "rate": 0.07017543859649122
+          },
+          {
+            "species": "Lepiota castanea",
+            "count": 3,
+            "rate": 0.05263157894736842
+          },
+          {
+            "species": "Marasmius oreades",
+            "count": 2,
+            "rate": 0.03508771929824561
+          }
+        ],
+        "deadly": true
+      }
+    },
+    "split_counts": {
+      "train_obs": {
+        "Lepiota castanea": 20,
+        "Lepiota cristata": 87,
+        "Lepiota subincarnata": 6
+      },
+      "val_obs": {
+        "Lepiota cristata": 15,
+        "Lepiota castanea": 4,
+        "Lepiota subincarnata": 1
+      },
+      "test_obs": {
+        "Lepiota cristata": 179,
+        "Lepiota castanea": 82,
+        "Lepiota subincarnata": 57
+      }
+    },
+    "note": "Measured from E20 baseline test_predictions.npz when present; not E20b (failed).",
+    "friction": {
+      "subincarnata_top1_collapse": true,
+      "subincarnata_train_obs": 6,
+      "primary_confuser": "Lepiota cristata",
+      "rationale": "Deadly L. subincarnata collapses to L. cristata on GBIF-ES holdout; tiny train n drives E20b hard-neg FT design. Orientation only."
+    }
+  },
+  "root_cause": {
+    "primary": "SyntaxError in _HARD_NEG class-weight dict (commas inside comments)",
+    "secondary": [
+      "missing_pretrained_weights_path"
+    ],
+    "not_a_training_quality_failure": true,
+    "no_blind_epoch_bump": true
+  },
+  "suite": {
+    "ran": false,
+    "reason": "E20b not COMPLETE with metrics — suite deferred. Continue baseline SSOT; suite only after successful e20b COMPLETE."
+  },
+  "gaps": [
+    "e20b_metrics_json_missing"
+  ],
+  "honesty": {
+    "metrics_from_ssot_or_measured_only": true,
+    "dual_ece_primary": "train_published",
+    "product_unlock_forced_false": true,
+    "no_auto_kaggle_push": true,
+    "map_is_not_safety": true,
+    "diagnose_before_relaunch": true,
+    "auto_relaunch": false,
+    "max_human_relaunch_budget": 1,
+    "relaunch_requires_human_operator": true,
+    "push_enforces_diagnose_and_budget": true
+  },
+  "never": [
+    "auto product_unlock=true",
+    "auto kaggle push without operator gates",
+    "blind epoch bumps",
+    "sell posthoc ECE as primary",
+    "forage or consumption permission",
+    "contaminate GBIF ES holdout"
+  ],
+  "note": "ML-02 E20b diagnose artifact. Orientation only — never consumption. product_unlock=false. If credentials/artifacts missing, gaps list is honest."
+}

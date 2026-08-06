@@ -1,6 +1,15 @@
 /** Compact risk badge — short label + soft color (no long warning sentences). */
 import { useTranslation } from 'react-i18next'
-import { getRiskMeta, isSevereRisk, toRiskLabel, type RiskLabel } from '../lib/riskLabels'
+import {
+  getRiskMeta,
+  isSevereRisk,
+  RISK_DEFAULT,
+  toRiskLabel,
+  type RiskLabel,
+} from '../lib/riskLabels'
+
+// Re-export SSOT fallbacks for callers that historically imported from the chip module.
+export { RISK_DEFAULT } from '../lib/riskLabels'
 
 type Props = {
   risk?: string | null
@@ -20,15 +29,6 @@ const RISK_I18N_KEY: Record<RiskLabel, string> = {
   unknown_or_risky: 'risk.orientation',
   dangerous_or_unknown: 'risk.dangerous_or_unknown',
   not_for_consumption_guidance: 'risk.not_for_consumption',
-}
-
-const RISK_DEFAULT: Record<RiskLabel, string> = {
-  deadly: 'Mortal',
-  poisonous: 'Tóxica',
-  toxic: 'Tóxica',
-  unknown_or_risky: 'Orientación',
-  dangerous_or_unknown: 'Precaución',
-  not_for_consumption_guidance: 'No apta',
 }
 
 export function RiskChip({ risk, label, className = '', boost = false }: Props) {

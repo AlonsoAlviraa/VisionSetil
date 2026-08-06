@@ -128,6 +128,7 @@ export type DailyGameModeDef = {
   id: DailyGameModeId
   to: string
   titleEs: string
+  titleEn: string
   blurbEs: string
   badgeEs: string
   glyph: string
@@ -141,6 +142,7 @@ export const DAILY_GAME_MODES: readonly DailyGameModeDef[] = [
     id: 'setadle-classic',
     to: '/setadle/classic',
     titleEs: 'Clásico',
+    titleEn: 'Classic',
     blurbEs: 'Pistas de familia, género y riesgo en cada intento.',
     badgeEs: 'Diario',
     glyph: 'grid_view',
@@ -150,6 +152,7 @@ export const DAILY_GAME_MODES: readonly DailyGameModeDef[] = [
     id: 'setadle-photo',
     to: '/setadle/photo',
     titleEs: 'Foto',
+    titleEn: 'Photo',
     blurbEs: 'Recorte de la foto del día; se revela al fallar.',
     badgeEs: 'Foto',
     glyph: 'photo_camera',
@@ -159,6 +162,7 @@ export const DAILY_GAME_MODES: readonly DailyGameModeDef[] = [
     id: 'setadle-habitat',
     to: '/setadle/habitat',
     titleEs: 'Hábitat',
+    titleEn: 'Habitat',
     blurbEs: '¿Vive aquí o no? Pinar, hayedo, prado…',
     badgeEs: 'Campo',
     glyph: 'forest',
@@ -168,6 +172,7 @@ export const DAILY_GAME_MODES: readonly DailyGameModeDef[] = [
     id: 'wordle',
     to: '/wordle',
     titleEs: 'Wordle de setas',
+    titleEn: 'Mushroom Wordle',
     blurbEs: 'Nombre común, letra a letra (verde / ámbar).',
     badgeEs: 'Letras',
     glyph: 'spellcheck',
@@ -177,12 +182,19 @@ export const DAILY_GAME_MODES: readonly DailyGameModeDef[] = [
     id: 'quiz',
     to: '/reto',
     titleEs: 'Reto diario',
+    titleEn: 'Daily challenge',
     blurbEs: 'Rondas cortas: foto, nombre y confusiones.',
     badgeEs: 'Reto',
     glyph: 'emoji_events',
     seedSalt: 'quiz',
   },
 ] as const
+
+/** Localized mode title (ES primary product language). */
+export function dailyModeTitle(mode: DailyGameModeDef, locale?: string): string {
+  const loc = (locale || 'es').toLowerCase()
+  return loc.startsWith('en') ? mode.titleEn : mode.titleEs
+}
 
 const STORAGE_KEY = 'visionsetil_daily_games_v1'
 
@@ -273,6 +285,31 @@ export function dailyGamesCompletion(
     pct: total ? Math.round((done / total) * 100) : 0,
     modes,
   }
+}
+
+/**
+ * First daily mode not yet marked done (LoLdle continue-path).
+ * When the board is complete, returns null so the hub can switch to "Repetir".
+ */
+export function firstIncompleteDailyMode(
+  day = gamesDayKey(),
+): DailyGameModeDef | null {
+  const s = readDailyGamesProgress(day)
+  return DAILY_GAME_MODES.find((m) => !s.done[m.id]) ?? null
+}
+
+/** True when every DAILY_GAME_MODES entry is marked done for the day. */
+export function isDailyBoardComplete(day = gamesDayKey()): boolean {
+  const { done, total } = dailyGamesCompletion(day)
+  return total > 0 && done >= total
+}
+
+/**
+ * Hub primary CTA target: first incomplete mode, or first mode for replay.
+ * Always a real route from DAILY_GAME_MODES (never a bare product_unlock).
+ */
+export function continueDailyPath(day = gamesDayKey()): DailyGameModeDef {
+  return firstIncompleteDailyMode(day) ?? DAILY_GAME_MODES[0]
 }
 
 function firstCommon(c: CatalogSpecies, locale = 'es'): string | null {

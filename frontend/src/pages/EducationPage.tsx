@@ -1,9 +1,10 @@
 /**
  * Education — safety, anatomy, seasons, multi-view diagnostics, emergency.
  * Wave A: no cooking/dosing/consumption-permission language.
+ * Anchors: #multi-view (PhotoCoach CTA), #deadly-study (pairs / study).
  */
-import { useMemo, useState, type ReactNode } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useMemo, useState, type ReactNode } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
   IconAlert,
@@ -182,14 +183,51 @@ const faqItems: AccordionItem[] = [
   },
 ]
 
+/** Hash targets for PhotoCoach / Más soft deep-links (SPA scroll after lazy mount). */
+const EDU_HASH_IDS = new Set(['multi-view', 'deadly-study'])
+
+function scrollEducationHash(hash: string) {
+  const id = hash.replace(/^#/, '')
+  if (!id || !EDU_HASH_IDS.has(id)) return
+  const el = document.getElementById(id)
+  if (!el) return
+  el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  // Move focus for a11y without forcing a visible ring unless keyboard user
+  if (typeof el.focus === 'function') {
+    try {
+      el.focus({ preventScroll: true })
+    } catch {
+      el.focus()
+    }
+  }
+}
+
 export function EducationPage() {
   const { t, i18n } = useTranslation()
+  const location = useLocation()
   const locale = i18n.resolvedLanguage || i18n.language || 'es'
   const [openFaq, setOpenFaq] = useState<number | null>(0)
 
   const priorityViews = useMemo(() => deadlyPriorityViews().slice(0, 3), [])
   const deadlyPairs = useMemo(() => deadlyDiagnosticPairs().slice(0, 8), [])
   const coach = useMemo(() => deadlyCoach(locale), [locale])
+
+  // Lazy route: native hash jump often races mount — re-scroll when hash is known.
+  // ScrollToTop skips force-top when hash is set; still re-try past lazy paint.
+  useEffect(() => {
+    const hash = location.hash || window.location.hash
+    if (!hash) return
+    const run = () => scrollEducationHash(hash)
+    run()
+    const t0 = window.setTimeout(run, 50)
+    const t1 = window.setTimeout(run, 200)
+    const t2 = window.setTimeout(run, 450)
+    return () => {
+      window.clearTimeout(t0)
+      window.clearTimeout(t1)
+      window.clearTimeout(t2)
+    }
+  }, [location.hash, location.pathname])
 
   return (
     <PageShell
@@ -318,9 +356,12 @@ export function EducationPage() {
         <DichotomousKey />
       </section>
 
+      {/* Deep-link: /educacion#multi-view (PhotoCoach / Más soft-dep) */}
       <section
-        className="edu-section edu-multiview-diag"
+        id="multi-view"
+        className="edu-section edu-multiview-diag edu-anchor-target"
         data-testid="edu-multiview-diagnostic"
+        tabIndex={-1}
         aria-label={t('education.multiviewDiagAria', {
           defaultValue: 'Multi-vista diagnóstica (educativo)',
         })}
@@ -354,7 +395,55 @@ export function EducationPage() {
             </span>
           ))}
         </div>
-        {deadlyPairs.length > 0 && (
+        <p className="lookalike-item__diag-policy muted" data-policy={diagnosticPolicy()}>
+          {t('result.pairDiagPolicy', {
+            defaultValue:
+              'Educativo: multi-foto sin estas vistas no basta — solo orientación, nunca consumo.',
+          })}
+        </p>
+        <div className="edu-cta-cards" style={{ marginTop: '0.75rem' }}>
+          <Link to="/identificar" className="edu-cta-card atelier-panel">
+            <strong>{t('nav.identify', { defaultValue: 'Identificar' })}</strong>
+            <span>
+              {t('education.tryMultiview', {
+                defaultValue: 'Prueba el asistente multi-vista (open-set puede abstenerse).',
+              })}
+            </span>
+          </Link>
+          <Link to="/lookalikes" className="edu-cta-card atelier-panel">
+            <strong>{t('nav.lookalikes', { defaultValue: 'Confusiones' })}</strong>
+            <span>
+              {t('education.openStudio', {
+                defaultValue: 'Compara confusiones clásicas con vistas clave.',
+              })}
+            </span>
+          </Link>
+        </div>
+      </section>
+
+      {/* Sibling deep-link: /educacion#deadly-study (first-class deadly pairs study) */}
+      <section
+        id="deadly-study"
+        className="edu-section edu-deadly-study edu-anchor-target"
+        data-testid="edu-deadly-study"
+        tabIndex={-1}
+        aria-label={t('education.deadlyStudyAria', {
+          defaultValue: 'Estudio de confusiones mortales (educativo)',
+        })}
+      >
+        <h2 className="edu-section-title edu-deadly-study__title">
+          <IconAlert size={22} />
+          {t('education.deadlyStudyTitle', {
+            defaultValue: 'Estudio mortales — pares y vistas clave',
+          })}
+        </h2>
+        <p className="edu-intro muted">
+          {t('education.deadlyStudyLead', {
+            defaultValue:
+              'Pares de confusión con riesgo mortal: compara solo con fotos multi-vista. Orientación de estudio — nunca permiso de consumo ni de recolección.',
+          })}
+        </p>
+        {deadlyPairs.length > 0 ? (
           <div className="edu-diag-pairs" data-testid="edu-diag-pairs">
             {deadlyPairs.map((pair) => (
               <article
@@ -380,31 +469,7 @@ export function EducationPage() {
               </article>
             ))}
           </div>
-        )}
-        <p className="lookalike-item__diag-policy muted" data-policy={diagnosticPolicy()}>
-          {t('result.pairDiagPolicy', {
-            defaultValue:
-              'Educativo: multi-foto sin estas vistas no basta — solo orientación, nunca consumo.',
-          })}
-        </p>
-        <div className="edu-cta-cards" style={{ marginTop: '0.75rem' }}>
-          <Link to="/identificar" className="edu-cta-card atelier-panel">
-            <strong>{t('nav.identify', { defaultValue: 'Identificar' })}</strong>
-            <span>
-              {t('education.tryMultiview', {
-                defaultValue: 'Prueba el asistente multi-vista (open-set puede abstenerse).',
-              })}
-            </span>
-          </Link>
-          <Link to="/lookalikes" className="edu-cta-card atelier-panel">
-            <strong>{t('nav.lookalikes', { defaultValue: 'Confusiones' })}</strong>
-            <span>
-              {t('education.openStudio', {
-                defaultValue: 'Compara confusiones clásicas con vistas clave.',
-              })}
-            </span>
-          </Link>
-        </div>
+        ) : null}
       </section>
 
       <section className="edu-section">

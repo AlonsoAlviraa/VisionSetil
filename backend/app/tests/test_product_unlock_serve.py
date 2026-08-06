@@ -42,9 +42,7 @@ def test_apply_serve_flag_default_locked():
 
 
 def test_apply_serve_flag_true_when_eligible():
-    out = apply_operator_serve_unlock(
-        _eligible_package(), serve_flag=True, require_eligible=True
-    )
+    out = apply_operator_serve_unlock(_eligible_package(), serve_flag=True, require_eligible=True)
     assert out["product_unlock"] is True
     assert out["can_auto_unlock"] is False
     assert out["forage_permission"] is False
@@ -140,9 +138,7 @@ def test_models_status_product_unlock_true_via_settings(client: TestClient, monk
         assert data["operator_unlock_ops"]["product_unlock"] is True
     else:
         assert data["summary"]["product_unlock"] is False
-        assert "serve_flag_set_but_not_eligible" in (
-            unlock.get("residual_lock_reasons") or []
-        )
+        assert "serve_flag_set_but_not_eligible" in (unlock.get("residual_lock_reasons") or [])
     # Hard policy always — serve unlock never grants forage
     assert unlock["can_auto_unlock"] is False
     assert unlock["forage_permission"] is False

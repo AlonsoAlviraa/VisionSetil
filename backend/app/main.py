@@ -33,7 +33,7 @@ from app.core.errors import (
     unhandled_exception_handler,
     validation_exception_handler,
 )
-from app.core.logging import configure_logging, bind_request_id
+from app.core.logging import bind_request_id, configure_logging
 from app.db.database import init_db
 from app.middleware.api_key_auth import APIKeyMiddleware
 from app.middleware.rate_limit import RateLimitMiddleware

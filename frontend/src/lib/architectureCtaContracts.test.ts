@@ -55,6 +55,7 @@ describe('architecture CTA contracts (M8)', () => {
   it('core product pages prefer LinkButton or Button primitives', () => {
     const mustUsePrimitives = [
       'MoreHubPage.tsx',
+      'GamesHubPage.tsx',
       'NotFoundPage.tsx',
       'IdentifyPage.tsx',
       'HomePage.tsx',
@@ -83,6 +84,24 @@ describe('architecture CTA contracts (M8)', () => {
         text.includes("from '../components/ui/Button'") ||
         text.includes("from './ui'")
       expect(ok, `${name} should import Button/LinkButton primitives`).toBe(true)
+    }
+  })
+
+  it('Games / Más / Setadle CTAs use atelier SSOT (no cn/mkt LinkButton skin dialect)', () => {
+    const pages = ['GamesHubPage.tsx', 'MoreHubPage.tsx', 'SetadlePage.tsx']
+    for (const name of pages) {
+      const file = pageFiles.find((f) => f.endsWith(name))
+      expect(file, name).toBeTruthy()
+      const text = readFileSync(file!, 'utf8')
+      expect(text, `${name} should not use skin="cn"`).not.toMatch(/skin=["']cn["']/)
+      expect(text, `${name} should not use skin="mkt"`).not.toMatch(/skin=["']mkt["']/)
+      // Prefer primitives; no raw multi-dialect class strings on CTAs
+      expect(text, `${name} should not hardcode cn-btn classes`).not.toMatch(
+        /className=\{?["'`][^"'`]*\bcn-btn\b/,
+      )
+      expect(text, `${name} should not hardcode mkt-btn classes`).not.toMatch(
+        /className=\{?["'`][^"'`]*\bmkt-btn\b/,
+      )
     }
   })
 

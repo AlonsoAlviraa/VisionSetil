@@ -1,9 +1,12 @@
 import { describe, expect, it, beforeEach } from 'vitest'
 import {
   buildVerifiedGamesPool,
+  continueDailyPath,
   dailyGamesCompletion,
+  firstIncompleteDailyMode,
   gamesDayKey,
   hashSeed,
+  isDailyBoardComplete,
   markDailyGameDone,
   pickDailyFromPool,
   pickDailyPhotoSpecies,
@@ -134,5 +137,24 @@ describe('dailyGames (LoLdle-style)', () => {
     expect(after.total).toBe(DAILY_GAME_MODES.length)
     expect(after.pct).toBeGreaterThan(0)
     expect(after.pct).toBe(Math.round((2 / DAILY_GAME_MODES.length) * 100))
+  })
+
+  it('UX-05 continue-path: first incomplete daily mode', () => {
+    const day = gamesDayKey()
+    expect(firstIncompleteDailyMode(day)?.id).toBe(DAILY_GAME_MODES[0].id)
+    expect(continueDailyPath(day).id).toBe(DAILY_GAME_MODES[0].id)
+    expect(isDailyBoardComplete(day)).toBe(false)
+
+    markDailyGameDone(DAILY_GAME_MODES[0].id, day)
+    expect(firstIncompleteDailyMode(day)?.id).toBe(DAILY_GAME_MODES[1].id)
+    expect(continueDailyPath(day).to).toBe(DAILY_GAME_MODES[1].to)
+
+    for (const m of DAILY_GAME_MODES) {
+      markDailyGameDone(m.id, day)
+    }
+    expect(firstIncompleteDailyMode(day)).toBeNull()
+    expect(isDailyBoardComplete(day)).toBe(true)
+    // Replay path falls back to first mode (never product_unlock)
+    expect(continueDailyPath(day).id).toBe(DAILY_GAME_MODES[0].id)
   })
 })

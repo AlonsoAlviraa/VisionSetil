@@ -12,6 +12,7 @@ Every JSON error from the API should look like::
 HTTPException.detail may still be a plain string for FastAPI defaults; the
 exception handler normalizes both shapes.
 """
+
 from __future__ import annotations
 
 from typing import Any
@@ -19,6 +20,7 @@ from typing import Any
 from fastapi import HTTPException, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
+
 try:
     from starlette.status import HTTP_422_UNPROCESSABLE_CONTENT as HTTP_422
 except ImportError:  # pragma: no cover

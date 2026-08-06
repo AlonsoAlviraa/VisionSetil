@@ -1,10 +1,10 @@
 """Index Fungorum client + nomenclature routes (mocked network)."""
+
 from __future__ import annotations
 
 from unittest.mock import patch
 
 from app.services import index_fungorum as ifs
-
 
 SAMPLE_XML = """<?xml version="1.0" encoding="utf-8"?>
 <NewDataSet>
@@ -76,9 +76,10 @@ def test_resolve_name_mocked():
     assert out["current_name"] == "Amanita phalloides"
     assert out["attribution"]["url"].startswith("https://www.indexfungorum.org")
     assert out["policy"] == "nomenclature_only_never_consumption"
-    assert any(s["name"] == "Coprinus atramentarius" for s in out["synonyms"]) or len(
-        out["synonyms"]
-    ) >= 1
+    assert (
+        any(s["name"] == "Coprinus atramentarius" for s in out["synonyms"])
+        or len(out["synonyms"]) >= 1
+    )
     # never edible language
     blob = str(out).lower()
     assert "safe to eat" not in blob

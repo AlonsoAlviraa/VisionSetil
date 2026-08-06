@@ -1,0 +1,144 @@
+{
+  "generated_at": "2026-08-05T20:57:34.579846+00:00",
+  "policy": "orientation_only_never_consume",
+  "product_unlock": false,
+  "can_auto_unlock": false,
+  "forage_permission": false,
+  "consumption_permission": false,
+  "lab_only": true,
+  "kaggle_push": false,
+  "auto_kaggle_push": false,
+  "status": "staged_rails_green",
+  "can_stage_train_notebook": true,
+  "can_stage": true,
+  "staged": true,
+  "staging": {
+    "staged": true,
+    "staging_dir": "kaggle/push_e20",
+    "notebook": "kaggle/push_e20/visionsetil_exp_v20_source_holdout.ipynb",
+    "kernel_metadata": "kaggle/push_e20/kernel-metadata.json",
+    "kernel_slug": "alonsoalviraaaa/visionsetil-exp-v20-source-holdout",
+    "notebook_bytes": 146370,
+    "sidecars": [
+      "kaggle/push_e20/hard_negative_pairs_e20.json",
+      "kaggle/push_e20/stage_focus_sidecar.json"
+    ],
+    "dataset_sources": [
+      "picekl/fungitastic",
+      "alonsoalviraaaa/visionsetil-gbif-es-allowlist40",
+      "daniilonishchenko/mushrooms-images-classification-215"
+    ],
+    "enable_gpu": true
+  },
+  "insights": {
+    "optional": true,
+    "insights_present": true,
+    "insight_files": [
+      {
+        "name": "e20_pair_metrics.json",
+        "path": "eval/reports/ml_experiments/e20_pair_metrics.json",
+        "size_bytes": 2734
+      },
+      {
+        "name": "dual_deadly_honest_recompute.json",
+        "path": "eval/reports/ml_experiments/dual_deadly_honest_recompute.json",
+        "size_bytes": 1553
+      }
+    ],
+    "hard_negative_pairs_path": null,
+    "hard_negative_pairs_resolved": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\data\\industrial_v1\\hard_negative_pairs_e20.json",
+    "hard_negative_pairs_source": "VISIONSETIL_DATA_DIR",
+    "hard_negative_pair_count": 5,
+    "hard_negative_pairs": [
+      {
+        "id": "subincarnata-cristata",
+        "taxa": [
+          "Lepiota subincarnata",
+          "Lepiota cristata"
+        ],
+        "priority": 1
+      },
+      {
+        "id": "castanea-cristata",
+        "taxa": [
+          "Lepiota castanea",
+          "Lepiota cristata"
+        ],
+        "priority": 2
+      },
+      {
+        "id": "castanea-subincarnata",
+        "taxa": [
+          "Lepiota castanea",
+          "Lepiota subincarnata"
+        ],
+        "priority": 2
+      },
+      {
+        "id": "muscaria-pantherina",
+        "taxa": [
+          "Amanita muscaria",
+          "Amanita pantherina"
+        ],
+        "priority": 3
+      },
+      {
+        "id": "citrina-phalloides",
+        "taxa": [
+          "Amanita citrina",
+          "Amanita phalloides"
+        ],
+        "priority": 3
+      }
+    ],
+    "focus_taxa": [
+      "Lepiota subincarnata",
+      "Lepiota cristata",
+      "Lepiota castanea",
+      "Amanita muscaria",
+      "Amanita pantherina",
+      "Amanita citrina",
+      "Amanita phalloides"
+    ],
+    "gaps": [],
+    "optional_gaps": [],
+    "note": "Insights optional for ML-07: stage proceeds on rails alone; hard_neg/focus used when present for sampler/boost sidecars."
+  },
+  "rails": {
+    "status": "rails_green_can_stage",
+    "can_stage_train_notebook": true,
+    "fail_reasons": [],
+    "gaps": [],
+    "report_path": "eval/reports/ml_experiments/anti_leak_rails_train_latest.json",
+    "models_dir": null,
+    "models_dir_resolved": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models",
+    "models_dir_source": "VISIONSETIL_MODELS_DIR_or_explicit"
+  },
+  "models_dir": null,
+  "models_dir_resolved": "C:\\Users\\Mariano\\Documents\\ALONSOO\\VISIONSETIL\\kaggle\\kernel_output_v20\\models",
+  "models_dir_source": "VISIONSETIL_MODELS_DIR_or_explicit",
+  "push": {
+    "requested": false,
+    "attempted": false,
+    "success": false,
+    "auto_kaggle_push": false,
+    "product_unlock": false,
+    "note": "Default path is stage-only; no Kaggle push."
+  },
+  "gaps": [],
+  "blocking_gaps": [],
+  "optional_gaps": [],
+  "operator_action": "Notebook staged under kaggle/push_e20. Review sidecars; push only with human --push --i-accept-operator-responsibility --execute. Never auto product_unlock.",
+  "honesty": {
+    "metrics_label": "[MEASURED]",
+    "never_invent_metrics": true,
+    "insights_optional": true,
+    "never_auto_push": true,
+    "product_unlock_forced_false": true,
+    "gbif_es_holdout_must_stay_pure": true,
+    "exit_nonzero_on_human_push_failure": true,
+    "path_hygiene_absolute_only_under_resolved": true
+  },
+  "note": "ML-07 stage gate: rails required; insights optional. Never flips product_unlock. Never forages. Never auto Kaggle push. Exit non-zero if human push attempted and failed.",
+  "report_path": "eval/reports/ml_experiments/stage_train_notebook_latest.json"
+}

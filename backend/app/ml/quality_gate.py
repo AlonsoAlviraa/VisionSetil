@@ -196,9 +196,7 @@ def quality_gate_status(
     map_ok = map3_f is not None and map3_f >= min_map
     # R7 requires @3 semantics — ambiguous top-1-only legacy fails closed
     deadly_honest = deadly_def in {"at_3", "legacy_declared_at_3"}
-    deadly_ok = (
-        deadly_honest and deadly_f is not None and deadly_f >= min_deadly
-    )
+    deadly_ok = deadly_honest and deadly_f is not None and deadly_f >= min_deadly
 
     # Raw metrics signal — NEVER forced true by disable (D-B15)
     if map3_f is None:

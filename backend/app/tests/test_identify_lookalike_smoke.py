@@ -4,10 +4,10 @@ Runs without real GPU inference (weights discovery stubbed). Ensures the
 MultiView path that powers Identify populates lookalikes / dangerous_lookalikes
 from curated SSOT for classic confusable taxa.
 """
+
 from __future__ import annotations
 
 import pytest
-
 
 # Classic SSOT pairs that must remain non-empty for Identify safety surfaces
 _SMOKE_TAXA = [
@@ -67,9 +67,9 @@ def test_lookalike_index_covers_classic_pairs(multiview_mock_weights):
         lks = clf._lookalikes_for(taxon)
         assert lks, f"empty lookalikes for {taxon}"
         mates_lower = {m.lower() for m in lks}
-        assert mate.lower() in mates_lower, (
-            f"expected mate {mate!r} in lookalikes for {taxon!r}, got {lks}"
-        )
+        assert (
+            mate.lower() in mates_lower
+        ), f"expected mate {mate!r} in lookalikes for {taxon!r}, got {lks}"
 
 
 def test_lookalikes_for_resolves_synonym_spellings(multiview_mock_weights):

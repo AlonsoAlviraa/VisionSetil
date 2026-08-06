@@ -96,30 +96,48 @@ export function EncyclopediaPage() {
   const foodStats = useMemo(() => foodQualityStats(), [])
   const traitCounts = useMemo(() => countByStudyTrait(speciesCatalog), [speciesCatalog])
 
-  // SSOT risk labels only (no dead `poisonous` option — catalog maps to toxic)
-  const riskFilters = useMemo(
-    () =>
-      [
-        { id: 'all' as const, label: t('encyclopedia.riskAll', { defaultValue: 'Todos' }) },
-        {
-          id: 'deadly' as const,
-          label: t('encyclopedia.riskDeadly', { defaultValue: 'Mortal' }),
-        },
-        {
-          id: 'toxic' as const,
-          label: t('encyclopedia.riskToxic', { defaultValue: 'Tóxica' }),
-        },
-        {
-          id: 'unknown_or_risky' as const,
-          label: t('encyclopedia.riskUnknown', { defaultValue: 'Sin ficha de riesgo' }),
-        },
-        {
-          id: 'dangerous_or_unknown' as const,
-          label: t('encyclopedia.riskCaution', { defaultValue: 'Precaución' }),
-        },
-      ] satisfies Array<{ id: 'all' | RiskLabel; label: string }>,
-    [t],
-  )
+  // SSOT risk chips: poisonous=Venenosa, toxic=Tóxica (distinct; never collapse / alias).
+  // Catalog browse currently emits toxic for high|toxico (not poisonous). Hide zero-count
+  // options so Venenosa is not a dead empty filter; show when count > 0 (or Identify data).
+  const riskFilters = useMemo(() => {
+    const all = [
+      { id: 'all' as const, label: t('encyclopedia.riskAll', { defaultValue: 'Todos' }) },
+      {
+        id: 'deadly' as const,
+        label: t('risk.deadly', {
+          defaultValue: t('encyclopedia.riskDeadly', { defaultValue: 'Mortal' }),
+        }),
+      },
+      {
+        id: 'poisonous' as const,
+        label: t('risk.poisonous', {
+          defaultValue: t('encyclopedia.riskPoisonous', { defaultValue: 'Venenosa' }),
+        }),
+      },
+      {
+        id: 'toxic' as const,
+        label: t('risk.toxic', {
+          defaultValue: t('encyclopedia.riskToxic', { defaultValue: 'Tóxica' }),
+        }),
+      },
+      {
+        id: 'unknown_or_risky' as const,
+        label: t('encyclopedia.riskUnknown', { defaultValue: 'Sin ficha de riesgo' }),
+      },
+      {
+        id: 'dangerous_or_unknown' as const,
+        label: t('encyclopedia.riskCaution', { defaultValue: 'Precaución' }),
+      },
+    ] satisfies Array<{ id: 'all' | RiskLabel; label: string }>
+    return all.filter((f) => f.id === 'all' || (counts[f.id] ?? 0) > 0)
+  }, [t, counts])
+
+  // If active risk filter disappeared (e.g. empty poisonous bucket), reset to all.
+  useEffect(() => {
+    if (risk !== 'all' && !riskFilters.some((f) => f.id === risk)) {
+      setRisk('all')
+    }
+  }, [risk, riskFilters])
 
   const foodFilters = useMemo(
     () =>
