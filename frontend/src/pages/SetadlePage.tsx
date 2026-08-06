@@ -638,7 +638,7 @@ export function SetadlePage() {
                 defaultValue: 'No hay especies disponibles para jugar.',
               })}
           </p>
-          <LinkButton to="/enciclopedia" skin="mkt" variant="primary">
+          <LinkButton to="/enciclopedia" variant="primary">
             {t('setadle.goEncyclopedia', { defaultValue: 'Ir a Enciclopedia' })}
           </LinkButton>
         </header>

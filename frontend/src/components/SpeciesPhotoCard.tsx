@@ -26,8 +26,9 @@ type Props = {
   /** Eager load for first grid row */
   priority?: boolean
   /**
-   * Remote resize quality. Default follows encyclopedia_grid policy (`thumb`).
-   * Featured / priority rows may pass `display`.
+   * Remote resize quality. Default follows encyclopedia_grid policy (`thumb` ≈250px).
+   * Featured / priority rows may pass `display` (never hd on grid cards).
+   * UX-06: scroll grids stay thumb to avoid 500px bandwidth storms.
    */
   quality?: PhotoDisplayQuality
   /** Defaults to encyclopedia_grid (T1/T6). */

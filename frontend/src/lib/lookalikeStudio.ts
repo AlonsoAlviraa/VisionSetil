@@ -443,3 +443,84 @@ export function availableClassicPairs(): ClassicLookalikePair[] {
     return resolved.length >= 2
   })
 }
+
+/**
+ * Deep-link focus for `/lookalikes?focus=<catalog-slug>&peer=<catalog-slug>`.
+ * - Missing/blank focus → status `none` (default studio empty).
+ * - Unknown / non-catalog focus → status `unknown`, empty selection (no crash).
+ * - Known focus → seed focus first; optional `peer` forced when in catalog;
+ *   otherwise first curated peer so ImageCompare / learning path can start.
+ * Peer alone never invents focus; unknown peer is ignored (focus still OK).
+ */
+export type FocusSlugStatus = 'none' | 'ok' | 'unknown'
+
+export type FocusSlugResult = {
+  status: FocusSlugStatus
+  /** Normalized catalog slug when parseable; null when param empty. */
+  focusSlug: string | null
+  /** Normalized peer slug when provided and resolved; else null. */
+  peerSlug: string | null
+  selection: StudioTaxonCard[]
+}
+
+export type ResolveFocusSlugOpts = {
+  /** Optional mate slug (`peer` or `with` query param). */
+  peerParam?: string | null
+}
+
+export function resolveFocusSlug(
+  focusParam: string | null | undefined,
+  opts?: ResolveFocusSlugOpts,
+): FocusSlugResult {
+  if (focusParam == null) {
+    return { status: 'none', focusSlug: null, peerSlug: null, selection: [] }
+  }
+  const raw = String(focusParam).trim()
+  if (!raw) {
+    return { status: 'none', focusSlug: null, peerSlug: null, selection: [] }
+  }
+
+  const focusSlug = normalizeSlugParam(raw)
+  if (!focusSlug) {
+    return { status: 'unknown', focusSlug: raw, peerSlug: null, selection: [] }
+  }
+
+  // Catalog slug only — free-text / unknown never invents taxa.
+  const species = getSpeciesBySlug(focusSlug)
+  if (!species) {
+    return { status: 'unknown', focusSlug, peerSlug: null, selection: [] }
+  }
+
+  const focus = catalogToCard(species)
+  const selection: StudioTaxonCard[] = [focus]
+  let peerSlug: string | null = null
+
+  // Prefer explicit peer (LookalikeCompare pair deep-link) when catalog-resolvable.
+  const peerRaw = opts?.peerParam != null ? String(opts.peerParam).trim() : ''
+  if (peerRaw) {
+    const peerKey = normalizeSlugParam(peerRaw)
+    if (peerKey) {
+      const peerSpecies = getSpeciesBySlug(peerKey)
+      if (peerSpecies && fold(peerSpecies.taxon) !== fold(focus.taxon)) {
+        selection.push(catalogToCard(peerSpecies))
+        peerSlug = peerSpecies.slug
+      }
+    }
+  }
+
+  // Fallback: first curated peer so wipe/side compare is available without extra taps.
+  if (selection.length < LOOKALIKE_STUDIO_MIN) {
+    for (const peer of suggestStudioPeers(focus.taxon, 4)) {
+      if (selection.length >= LOOKALIKE_STUDIO_MIN) break
+      if (selection.some((s) => fold(s.taxon) === fold(peer.taxon))) continue
+      selection.push(peer)
+    }
+  }
+
+  return {
+    status: 'ok',
+    focusSlug: focus.slug,
+    peerSlug,
+    selection: selection.slice(0, LOOKALIKE_STUDIO_MAX),
+  }
+}

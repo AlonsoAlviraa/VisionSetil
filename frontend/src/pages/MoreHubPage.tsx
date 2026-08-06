@@ -155,7 +155,6 @@ export function MoreHubPage() {
         <div className="more-hub-cta">
           <LinkButton
             to="/identificar"
-            skin="cn"
             variant="primary"
             block
             className="more-hub-cta__btn"

@@ -63,7 +63,8 @@ export const MEDIA_SURFACE_POLICY: Record<MediaSurface, MediaSurfacePolicy> = {
     maxGallery: 0,
   },
   lookalike_compare: {
-    quality: 'display',
+    // Side-by-side educational cards — thumb (~250px), not display 500px (perf B7/B8)
+    quality: 'thumb',
     preferLocal: false,
     maxCandidates: 3,
     maxGallery: 0,
