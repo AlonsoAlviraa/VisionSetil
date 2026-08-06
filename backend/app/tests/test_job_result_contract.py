@@ -303,10 +303,9 @@ def test_http_job_result_contract_mode_gate_and_permanent_raw(client, monkeypatc
     assert resp.status_code == 200, resp.text
     payload = resp.json()
 
-    # Envelope shape
+    # Envelope shape (product HTTP path may strip `raw` without admin scope)
     assert payload["schema_version"] == 2
     assert "simple" in payload
-    _assert_raw_permanent(payload)
 
     # simple.mode + simple.quality_gate (B-45 primary assert)
     _assert_simple_has_mode_and_gate(payload["simple"])
@@ -315,12 +314,18 @@ def test_http_job_result_contract_mode_gate_and_permanent_raw(client, monkeypatc
     assert gate["species_id_allowed"] is False
     assert gate["metrics_acceptable"] is False
 
-    # Permanent raw still carries full ClassificationResponse for admin/debug
-    assert payload["raw"] is not None
-    assert payload["raw"].get("top_candidates") or payload["raw"].get("candidates")
+    # Non-admin HTTP path strips ungated raw (mega-audit). Envelope on disk still
+    # dual-writes raw; product clients must only use simple.
+    assert payload.get("raw") in (None,) or "raw" not in payload
+    # Stored envelope still dual-writes raw for admin/debug consumers
+    _assert_raw_permanent(envelope)
+    stored = envelope.get("raw")
+    assert stored is not None
+    assert stored.get("top_candidates") or stored.get("candidates")
 
-    # OpenAPI response_model accepts the payload
-    JobResultEnvelope.model_validate(payload)
+    # OpenAPI response_model accepts the product-facing payload shape
+    product_payload = {**payload, "raw": None}
+    JobResultEnvelope.model_validate(product_payload)
 
 
 def test_job_result_docs_contract_product_reads_simple_only():
