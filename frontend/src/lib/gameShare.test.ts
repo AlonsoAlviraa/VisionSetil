@@ -155,26 +155,39 @@ describe('gameShare (UX-05 honest share)', () => {
   })
 
   it('shareGameText: AbortError is cancelled (no clipboard)', async () => {
-    const prevShare = navigator.share
-    const prevClipboard = navigator.clipboard
     const writeText = vi.fn(async () => undefined)
-    // @ts-expect-error test stub
-    navigator.share = async () => {
-      const err = new Error('user cancelled')
-      err.name = 'AbortError'
-      throw err
+    const g = globalThis as typeof globalThis & { navigator?: Navigator }
+    const prevNav = g.navigator
+    const navStub = {
+      share: async () => {
+        const err = new Error('user cancelled')
+        err.name = 'AbortError'
+        throw err
+      },
+      clipboard: { writeText },
     }
-    // @ts-expect-error test stub
-    navigator.clipboard = { writeText }
+    Object.defineProperty(g, 'navigator', {
+      configurable: true,
+      writable: true,
+      value: navStub,
+    })
 
-    const r = await shareGameText('hola', { title: 't' })
-    expect(r).toBe('cancelled')
-    expect(writeText).not.toHaveBeenCalled()
-    expect(shareFeedbackMessage('cancelled', (k, o) => o?.defaultValue || k)).toBeNull()
-
-    // @ts-expect-error restore
-    navigator.share = prevShare
-    // @ts-expect-error restore
-    navigator.clipboard = prevClipboard
+    try {
+      const r = await shareGameText('hola', { title: 't' })
+      expect(r).toBe('cancelled')
+      expect(writeText).not.toHaveBeenCalled()
+      expect(shareFeedbackMessage('cancelled', (k, o) => o?.defaultValue || k)).toBeNull()
+    } finally {
+      if (prevNav === undefined) {
+        // @ts-expect-error restore node env without navigator
+        delete g.navigator
+      } else {
+        Object.defineProperty(g, 'navigator', {
+          configurable: true,
+          writable: true,
+          value: prevNav,
+        })
+      }
+    }
   })
 })
