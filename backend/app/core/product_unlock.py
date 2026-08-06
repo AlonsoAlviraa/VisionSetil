@@ -100,9 +100,7 @@ def apply_operator_serve_unlock(
 
     flag = serve_product_unlock_requested() if serve_flag is None else bool(serve_flag)
     need_elig = (
-        require_eligible_for_serve_unlock()
-        if require_eligible is None
-        else bool(require_eligible)
+        require_eligible_for_serve_unlock() if require_eligible is None else bool(require_eligible)
     )
     eligible = bool(out.get("unlock_eligible_advisory"))
 

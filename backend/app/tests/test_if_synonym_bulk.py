@@ -1,4 +1,5 @@
 """Unit tests for P16 IF bulk synonym merge (no live network)."""
+
 from __future__ import annotations
 
 import importlib.util

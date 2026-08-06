@@ -10,6 +10,7 @@ Policy:
   - Always attribute Index Fungorum + link back to site (Kew request).
   - Does NOT auto-overwrite VisionSetil SSOT product names.
 """
+
 from __future__ import annotations
 
 import re
@@ -35,7 +36,9 @@ IF_ATTR_POLICY = (
     "https://www.indexfungorum.org/ when used as a taxonomic backbone. "
     "Never forage/consumption permission."
 )
-USER_AGENT = "VisionSetil/1.0 (educational mycology; orientation-only; +https://www.indexfungorum.org/)"
+USER_AGENT = (
+    "VisionSetil/1.0 (educational mycology; orientation-only; +https://www.indexfungorum.org/)"
+)
 DEFAULT_TIMEOUT = 20.0
 
 
@@ -153,8 +156,7 @@ def _row_to_name(row: dict[str, str]) -> IndexFungorumName:
         basionym_record_number=row.get("BASIONYM RECORD NUMBER")
         or row.get("BASIONYM_RECORD_NUMBER"),
         uuid=row.get("UUID"),
-        nomenclatural_comment=row.get("NOMENCLATURAL COMMENT")
-        or row.get("NOMENCLATURAL_COMMENT"),
+        nomenclatural_comment=row.get("NOMENCLATURAL COMMENT") or row.get("NOMENCLATURAL_COMMENT"),
     )
 
 
@@ -268,9 +270,7 @@ def resolve_name(
         out["current_name"] = current
         # Product SSOT is independent; surface if IF current differs from query
         out["ssot_unchanged"] = True
-        out["if_differs_from_query"] = bool(
-            current and current.lower() != q.lower()
-        )
+        out["if_differs_from_query"] = bool(current and current.lower() != q.lower())
 
         if include_synonyms:
             key = best.current_name_record_number or best.record_number

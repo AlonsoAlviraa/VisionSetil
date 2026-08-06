@@ -2,6 +2,7 @@
 
 Uses app.db.models metadata so ``alembic revision --autogenerate`` works.
 """
+
 from __future__ import annotations
 
 # Ensure backend package is importable when running from backend/

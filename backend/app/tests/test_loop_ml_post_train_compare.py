@@ -3,6 +3,7 @@
 Covers: dual ECE primary provenance (no SSOT key synthesis), MO+iNat GAP,
 product_unlock forced false, no invented metrics when files missing.
 """
+
 from __future__ import annotations
 
 import json
@@ -152,7 +153,9 @@ def test_compare_propagates_mo_inat_gap(tmp_path: Path):
     assert report["mo_inat_empty_train"] is True
     assert report["honesty"]["mo_inat_gap_resurfaced"] is True
     assert report["candidate"]["mo_inat"]["train_mo_inat_obs"] == 0
-    assert "FT-only" in report["operator_action"] or "no MO+iNat uplift" in report["operator_action"]
+    assert (
+        "FT-only" in report["operator_action"] or "no MO+iNat uplift" in report["operator_action"]
+    )
     # candidate ECE key not synthesized
     assert report["candidate"]["ece"]["test_ece_train_published"] is None
     assert report["candidate"]["ece"]["primary_source"] == (

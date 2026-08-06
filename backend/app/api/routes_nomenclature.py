@@ -1,4 +1,5 @@
 """Nomenclature routes — Index Fungorum backbone (orientation names only)."""
+
 from __future__ import annotations
 
 from fastapi import APIRouter, Query

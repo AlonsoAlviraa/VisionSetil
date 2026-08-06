@@ -12,6 +12,7 @@ Every JSON error from the API should look like::
 HTTPException.detail may still be a plain string for FastAPI defaults; the
 exception handler normalizes both shapes.
 """
+
 from __future__ import annotations
 
 from typing import Any

@@ -151,9 +151,7 @@ def test_models_status_unlock_matches_e20_package_signals(client: TestClient, mo
             assert bool(st_checks[key]) == bool(pkg_checks[key])
 
 
-def test_models_status_e21_never_launched_from_product_unlock(
-    client: TestClient, monkeypatch
-):
+def test_models_status_e21_never_launched_from_product_unlock(client: TestClient, monkeypatch):
     """PRODUCT_UNLOCK serve flag must not flip e21_launched / kaggle_push."""
     from app.core import config as config_mod
 

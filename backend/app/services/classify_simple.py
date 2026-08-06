@@ -264,9 +264,7 @@ def _hydrate_simple_result(
     # SSOT safety surface: union lookalikes for top-2 hydrated taxa
     ssot_lists = [_ssot_lookalikes_for_taxon(p.species) for p in hydrated[:2]]
     merged_lk = _merge_dangerous_lookalikes(result.dangerous_lookalikes, *ssot_lists)
-    return result.model_copy(
-        update={"predictions": hydrated, "dangerous_lookalikes": merged_lk}
-    )
+    return result.model_copy(update={"predictions": hydrated, "dangerous_lookalikes": merged_lk})
 
 
 # Job result envelope version (D-B18 / D-B24 — raw kept indefinitely for admin/debug).

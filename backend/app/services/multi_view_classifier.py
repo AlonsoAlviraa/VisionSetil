@@ -1060,9 +1060,7 @@ class MultiViewMushroomClassifier:
                         str(candidate.get("taxon") or "")
                     )
                 else:
-                    candidate["lookalikes"] = normalize_lookalike_names(
-                        candidate.get("lookalikes")
-                    )
+                    candidate["lookalikes"] = normalize_lookalike_names(candidate.get("lookalikes"))
 
             confidence = float(probs[idx])
             # Honest ceiling: weak few-shot model must never show high confidence.
@@ -1070,7 +1068,8 @@ class MultiViewMushroomClassifier:
             confidence = min(confidence, 0.45)
 
             lookalikes = normalize_lookalike_names(
-                candidate.get("lookalikes") or self._lookalikes_for(str(candidate.get("taxon") or ""))
+                candidate.get("lookalikes")
+                or self._lookalikes_for(str(candidate.get("taxon") or ""))
             )
 
             candidates.append(
@@ -1209,9 +1208,7 @@ class MultiViewMushroomClassifier:
         else:
             ckpt_quality = "checkpoint_quality_below_gate_or_mock"
             thr_status = (
-                "multiview_uncalibrated_or_below_gate"
-                if self.is_real
-                else "multiview_mock_path"
+                "multiview_uncalibrated_or_below_gate" if self.is_real else "multiview_mock_path"
             )
             open_reason = (
                 "low_confidence_or_margin_multiview_few_shot"

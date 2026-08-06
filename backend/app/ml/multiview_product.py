@@ -2,6 +2,7 @@
 
 Loads eval reports when present. Never unlocks Identify.
 """
+
 from __future__ import annotations
 
 import json
@@ -30,11 +31,13 @@ def describe_multiview_product(repo_root: Path | str) -> dict[str, Any]:
         "full_packet": 4,
         "note": "gills+front first (Picture Mushroom / field-guide style)",
     }
-    bench_path = root / "eval" / "reports" / "ml_experiments" / "multiview_four_photo_benchmark.json"
+    bench_path = (
+        root / "eval" / "reports" / "ml_experiments" / "multiview_four_photo_benchmark.json"
+    )
     if bench_path.is_file():
         try:
             bench = json.loads(bench_path.read_text(encoding="utf-8"))
-            by_n = ((bench.get("proxy_ablation") or {}).get("by_n_views") or {})
+            by_n = (bench.get("proxy_ablation") or {}).get("by_n_views") or {}
             deltas = (bench.get("proxy_ablation") or {}).get("deltas") or {}
             out["benchmark"] = {
                 "path": str(bench_path.relative_to(root)).replace("\\", "/"),
@@ -75,7 +78,7 @@ def describe_multiview_product(repo_root: Path | str) -> dict[str, Any]:
     if loo_path.is_file():
         try:
             loo = json.loads(loo_path.read_text(encoding="utf-8"))
-            by = ((loo.get("torch") or {}).get("by_n_views") or {})
+            by = (loo.get("torch") or {}).get("by_n_views") or {}
             out["paired_loo_eval"] = {
                 "path": str(loo_path.relative_to(root)).replace("\\", "/"),
                 "protocol": loo.get("protocol"),
@@ -105,13 +108,11 @@ def describe_multiview_product(repo_root: Path | str) -> dict[str, Any]:
         except (OSError, ValueError, TypeError):
             out["paired_loo_eval"] = {"error": "unreadable"}
 
-    deadly_path = (
-        root / "eval" / "reports" / "ml_experiments" / "paired_multiview_loo_deadly.json"
-    )
+    deadly_path = root / "eval" / "reports" / "ml_experiments" / "paired_multiview_loo_deadly.json"
     if deadly_path.is_file():
         try:
             dloo = json.loads(deadly_path.read_text(encoding="utf-8"))
-            dby = ((dloo.get("torch") or {}).get("by_n_views") or {})
+            dby = (dloo.get("torch") or {}).get("by_n_views") or {}
             out["paired_loo_deadly"] = {
                 "path": str(deadly_path.relative_to(root)).replace("\\", "/"),
                 "protocol": dloo.get("protocol"),

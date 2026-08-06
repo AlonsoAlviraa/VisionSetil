@@ -82,9 +82,7 @@ def build_s9_log_entry(
     meta["can_auto_unlock"] = False
     meta["policy"] = "orientation_only_never_consume"
 
-    view_cov = normalize_view_coverage(
-        meta.get("view_coverage") or meta.get("view_types")
-    )
+    view_cov = normalize_view_coverage(meta.get("view_coverage") or meta.get("view_types"))
     if view_cov:
         meta["view_coverage"] = view_cov
         meta["n_views"] = len(view_cov)

@@ -56,9 +56,7 @@ def discover_metrics_artifacts(repo_root: Path | str | None = None) -> list[dict
         best_deadly = models / "best_deadly.pt"
         run_name = models.parent.name
         # Parse version: kernel_output_v20 / kernel_output_v16_live → 20 / 16
-        digits = "".join(
-            ch if ch.isdigit() else " " for ch in run_name.split("_v", 1)[-1]
-        )
+        digits = "".join(ch if ch.isdigit() else " " for ch in run_name.split("_v", 1)[-1])
         try:
             ver = int(digits.split()[0]) if digits.strip() else 0
         except ValueError:
@@ -72,9 +70,7 @@ def discover_metrics_artifacts(repo_root: Path | str | None = None) -> list[dict
                 "weights_best_exists": best_pt.is_file(),
                 "weights_best_path": str(best_pt) if best_pt.is_file() else None,
                 "weights_best_deadly_exists": best_deadly.is_file(),
-                "weights_best_deadly_path": str(best_deadly)
-                if best_deadly.is_file()
-                else None,
+                "weights_best_deadly_path": str(best_deadly) if best_deadly.is_file() else None,
                 "metrics": metrics if isinstance(metrics, dict) else {"raw": metrics},
                 "history_len": len(history) if isinstance(history, list) else 0,
                 "history_tail": history[-3:] if isinstance(history, list) else None,

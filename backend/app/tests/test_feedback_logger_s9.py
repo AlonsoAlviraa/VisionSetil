@@ -1,4 +1,5 @@
 """S9-friendly classification log shape (v1.9.9). Never product_unlock."""
+
 from __future__ import annotations
 
 import json

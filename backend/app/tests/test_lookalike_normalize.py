@@ -19,9 +19,9 @@ def test_normalize_objects_and_strings():
 def test_canonical_synonym_map():
     assert canonical_taxon_name("Coprinopsis atramentaria") == "Coprinus atramentarius"
     assert canonical_taxon_name("Tricholoma sulfureum") == "Tricholoma sulphureum"
-    assert normalize_lookalike_names(
-        ["Coprinopsis atramentaria", "Coprinus atramentarius"]
-    ) == ["Coprinus atramentarius"]
+    assert normalize_lookalike_names(["Coprinopsis atramentaria", "Coprinus atramentarius"]) == [
+        "Coprinus atramentarius"
+    ]
 
 
 def test_catalog_slug_and_name_resolve_synonyms():
@@ -84,16 +84,10 @@ def test_catalog_v2_lookalike_edges_are_bidirectional():
 
     root = Path(__file__).resolve().parents[3]
     data = json.loads(
-        (root / "data" / "species_catalog" / "species_catalog_v2.json").read_text(
-            encoding="utf-8"
-        )
+        (root / "data" / "species_catalog" / "species_catalog_v2.json").read_text(encoding="utf-8")
     )
     rows = data.get("species") or []
-    by = {
-        str(r.get("scientific_name") or "").lower(): r
-        for r in rows
-        if r.get("scientific_name")
-    }
+    by = {str(r.get("scientific_name") or "").lower(): r for r in rows if r.get("scientific_name")}
 
     def mates(row: dict) -> set[str]:
         out: set[str] = set()
@@ -139,16 +133,10 @@ def test_p0_xanthoderma_and_satanas_edges_and_synonyms():
 
     root = Path(__file__).resolve().parents[3]
     data = json.loads(
-        (root / "data" / "species_catalog" / "species_catalog_v2.json").read_text(
-            encoding="utf-8"
-        )
+        (root / "data" / "species_catalog" / "species_catalog_v2.json").read_text(encoding="utf-8")
     )
     rows = data.get("species") or []
-    by = {
-        str(r.get("scientific_name") or "").lower(): r
-        for r in rows
-        if r.get("scientific_name")
-    }
+    by = {str(r.get("scientific_name") or "").lower(): r for r in rows if r.get("scientific_name")}
 
     def mates(row: dict) -> set[str]:
         out: set[str] = set()
@@ -173,9 +161,7 @@ def test_p0_xanthoderma_and_satanas_edges_and_synonyms():
 
     # Expanded catalog (Identify index source) mirrors P0 edges both directions
     expanded = list_expanded_species_catalog()
-    by_exp = {
-        str(s.get("taxon") or "").lower(): s for s in (expanded.get("species") or [])
-    }
+    by_exp = {str(s.get("taxon") or "").lower(): s for s in (expanded.get("species") or [])}
     assert "agaricus xanthoderma" in {
         n.lower() for n in (by_exp["agaricus campestris"].get("lookalikes") or [])
     }
