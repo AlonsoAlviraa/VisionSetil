@@ -8,7 +8,6 @@ import json
 from pathlib import Path
 from typing import Any
 
-
 CANONICAL_VIEWS = ("gills", "front", "habitat", "detail")
 VIEW_WEIGHTS = {
     "gills": 0.38,

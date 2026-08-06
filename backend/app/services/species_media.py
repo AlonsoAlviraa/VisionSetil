@@ -344,10 +344,9 @@ def serve_gallery_file(slug: str, filename: str) -> Response:
         raise HTTPException(status_code=400, detail="Invalid gallery filename")
     media_slug = resolve_ssot_slug(slug)
     path = _safe_under(media_root(), "species", media_slug, "gallery", name)
-    if not path.exists() or not path.is_file():
-        # Fallback to request slug if SSOT folder missing
-        if media_slug != slug:
-            path = _safe_under(media_root(), "species", slug, "gallery", name)
+    # Fallback to request slug if SSOT folder missing
+    if (not path.exists() or not path.is_file()) and media_slug != slug:
+        path = _safe_under(media_root(), "species", slug, "gallery", name)
     if not path.exists() or not path.is_file():
         raise HTTPException(status_code=404, detail="Gallery image not found")
     return _file_response(path, cache_seconds=604800)

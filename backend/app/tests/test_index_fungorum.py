@@ -5,7 +5,6 @@ from unittest.mock import patch
 
 from app.services import index_fungorum as ifs
 
-
 SAMPLE_XML = """<?xml version="1.0" encoding="utf-8"?>
 <NewDataSet>
   <IndexFungorum>

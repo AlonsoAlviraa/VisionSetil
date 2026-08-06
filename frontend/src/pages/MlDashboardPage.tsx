@@ -1128,7 +1128,7 @@ export function MlDashboardPage() {
         <p className="muted" data-testid="ml-metrics-not-forage-note" role="note">
           Metrics eligibility is <strong>not</strong> forage permission · soft MAP/deadly
           gates are advisory only · deadly confusions can still fail · orientation only —
-          never &quot;safe to eat&quot; / nunca permiso de consumo.
+          never consumption permission / nunca permiso de consumo.
         </p>
         {(status?.open_set || summary?.open_set_status) && (
           <p className="muted" data-testid="ml-open-set-status">
@@ -1322,7 +1322,7 @@ export function MlDashboardPage() {
           <strong>unlock_eligible_advisory</strong> (metrics checklist) ≠ serve{' '}
           <strong>product_unlock</strong> (PRODUCT_UNLOCK env only). Soft MAP/deadly
           gates are advisory only and <strong>never</strong> authorize forage. Deadly
-          confusions can still fail — orientation only, never &quot;safe to eat&quot;.
+          confusions can still fail — orientation only, never consumption permission.
         </p>
         <dl className="ml-dash-meta">
           <div>
@@ -1573,7 +1573,7 @@ export function MlDashboardPage() {
             Human decision gate only — never auto-flip product_unlock from metrics.
             unlock_eligible_advisory is <strong>not</strong> forage permission · soft
             MAP/deadly gates are advisory only · deadly confusions can fail · orientation
-            only · never consumption · never forage · never &quot;safe to eat&quot;.
+            only · never consumption · never forage · never consumption permission.
             PRODUCT_UNLOCK does not launch E21/Kaggle. GTM form URL (
             <code>VITE_BETA_FEEDBACK_URL</code>) is separate from unlock.
           </p>

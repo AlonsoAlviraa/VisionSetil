@@ -44,9 +44,9 @@ from app.db.schemas import (
     TraceResponse,
 )
 from app.services.classifier import MockMushroomClassifier
+from app.services.poisonous_lookalikes import normalize_lookalike_names
 from app.services.quality_validation import ImageQualityValidationService
 from app.services.safety_explanation import SafetyExplanationService
-from app.services.poisonous_lookalikes import normalize_lookalike_names
 from app.services.species_catalog import (
     list_expanded_species_catalog,
     list_mock_species_catalog,

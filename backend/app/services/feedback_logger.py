@@ -22,8 +22,7 @@ import hashlib
 import json
 import logging
 import os
-import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -38,7 +37,7 @@ _CANONICAL_VIEWS = frozenset({"gills", "front", "habitat", "detail"})
 
 def utc_iso_now() -> str:
     """UTC timestamp with offset for S9 window parsing."""
-    return datetime.now(timezone.utc).isoformat(timespec="seconds")
+    return datetime.now(UTC).isoformat(timespec="seconds")
 
 
 def normalize_view_coverage(raw: Any) -> list[str]:

@@ -158,9 +158,13 @@ def _record_classify_metrics(result: SimpleClassificationResult, gate: dict[str,
             record_gate_blocked(str(gate.get("reason_code") or "unknown"))
         # Open-set reason histogram (Identify abstention, not quality-gate block)
         open_reason = result.open_set_reason or result.rejection_reason
-        if rejected and open_reason and "quality_gate" not in str(open_reason).lower():
-            if not str(open_reason).startswith("model_quality_gate"):
-                record_open_set_reject(str(open_reason))
+        if (
+            rejected
+            and open_reason
+            and "quality_gate" not in str(open_reason).lower()
+            and not str(open_reason).startswith("model_quality_gate")
+        ):
+            record_open_set_reject(str(open_reason))
 
         # S9 live reject monitor: append JSONL for ops (orientation only)
         preds = [

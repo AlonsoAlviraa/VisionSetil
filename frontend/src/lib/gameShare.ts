@@ -3,7 +3,7 @@
  *
  * Policy (UX-05):
  * - Clipboard / Web Share text must include orientation footer.
- * - Never "comestible", "safe to eat", or forage permission language.
+ * - Never comestible / forage permission / consumption green-light language.
  * - Species risk may appear as study orientation only (RiskChip labels), never as food OK.
  */
 import {

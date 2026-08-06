@@ -10,13 +10,13 @@ from pathlib import Path
 
 import pytest
 
+from scripts.loop_ml_compare_to_baseline import compare
 from scripts.loop_ml_post_train_suite import (
     is_mo_inat_source,
     resolve_ece_primary,
     run_suite,
     runtime_train_domain_label,
 )
-from scripts.loop_ml_compare_to_baseline import compare
 
 
 def test_resolve_ece_primary_kernel_path_does_not_synthesize_ssot_key():
@@ -81,9 +81,8 @@ def test_run_suite_missing_models_dir_gap_no_unlock():
     assert report["forage_permission"] is False
     assert report["suite_ok"] is False
     assert report["status"] == "GAP_no_kernel_output"
-    assert report["measured"] if "measured" in report else True
-    # no invented metrics block with fake MAP
-    assert "measured" not in report or report.get("measured") is None or True
+    # no invented metrics block with fake MAP when models dir is missing
+    assert report.get("measured") in (None, True) or "measured" not in report
 
 
 def test_compare_propagates_mo_inat_gap(tmp_path: Path):

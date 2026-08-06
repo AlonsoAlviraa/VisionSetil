@@ -7,8 +7,6 @@ import sys
 from pathlib import Path
 from unittest.mock import MagicMock
 
-import pytest
-
 ROOT = Path(__file__).resolve().parents[3]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
@@ -16,10 +14,10 @@ if str(ROOT) not in sys.path:
 from scripts.e21_operator_push import (  # noqa: E402
     build_plan,
     evaluate_gates,
-    main as operator_main,
     run_kaggle_push,
     run_operator_push,
 )
+from scripts.e21_operator_push import main as operator_main  # noqa: E402
 from scripts.e21_readiness import evaluate_e21_readiness  # noqa: E402
 
 

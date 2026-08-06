@@ -16,10 +16,15 @@ import re
 import urllib.error
 import urllib.parse
 import urllib.request
-import xml.etree.ElementTree as ET
 from dataclasses import asdict, dataclass
 from functools import lru_cache
 from typing import Any
+
+try:
+    # Prefer defusedxml for untrusted remote IF XML (Bandit B314)
+    from defusedxml import ElementTree as ET  # type: ignore[no-redef]
+except ImportError:  # pragma: no cover - fallback if optional dep missing
+    import xml.etree.ElementTree as ET  # noqa: S314
 
 IF_API_BASE = "https://www.indexfungorum.org/ixfwebservice/fungus.asmx"
 IF_HOME = "https://www.indexfungorum.org/"
@@ -84,8 +89,14 @@ def _decode_tag(tag: str) -> str:
 
 
 def _http_get(url: str, timeout: float = DEFAULT_TIMEOUT) -> str:
+    # Index Fungorum only — scheme allowlist (Bandit B310)
+    parsed = urllib.parse.urlparse(url)
+    if parsed.scheme not in ("http", "https"):
+        raise ValueError(f"Unsupported URL scheme for Index Fungorum: {parsed.scheme!r}")
+    if not (parsed.netloc or "").lower().endswith("indexfungorum.org"):
+        raise ValueError(f"Refusing non-Index-Fungorum host: {parsed.netloc!r}")
     req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
-    with urllib.request.urlopen(req, timeout=timeout) as resp:
+    with urllib.request.urlopen(req, timeout=timeout) as resp:  # nosec B310
         return resp.read().decode("utf-8", errors="replace")
 
 
@@ -101,7 +112,7 @@ def _parse_index_fungorum_xml(xml_text: str) -> list[dict[str, str]]:
     rows: list[dict[str, str]] = []
     # Prefer ElementTree; fall back to regex blocks if namespaces confuse
     try:
-        root = ET.fromstring(xml_text)
+        root = ET.fromstring(xml_text)  # nosec B314 — prefer defusedxml when installed
         for node in root.iter():
             tag = _decode_tag(node.tag.split("}")[-1] if "}" in node.tag else node.tag)
             if tag != "IndexFungorum":

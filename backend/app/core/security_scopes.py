@@ -35,7 +35,7 @@ PATH_SCOPE_RULES: list[tuple[str, str]] = [
 # (e.g. /observations/{id}/classify-advanced) that PATH_SCOPE_RULES prefix
 # matching cannot express. These return ungated raw predictions and MUST
 # require the admin scope — closing the gate-bypass found in the audit.
-import re as _re
+import re as _re  # noqa: E402
 
 _ADMIN_PATH_PATTERNS: list[tuple[_re.Pattern[str], str]] = [
     (_re.compile(r"^/observations/\d+/classify(-advanced)?$"), "admin"),

@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import pytest
 
-
 # Classic SSOT pairs that must remain non-empty for Identify safety surfaces
 _SMOKE_TAXA = [
     ("Amanita caesarea", "Amanita phalloides"),
